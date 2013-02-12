@@ -9,10 +9,11 @@
   },
   "main": "site/index.js",
   "dependencies": {
-    "send":"*",
-    "express":"3.x",
-    "less":"*",
-    "jade":"*"
+    "send": "*",
+    "express": "3.x",
+    "less": "*",
+    "jade": "*",
+    "easy-config": "0.1.5"
   },
   "devDependencies": {
   },
