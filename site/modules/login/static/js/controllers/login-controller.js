@@ -3,7 +3,7 @@
 (function(ng, app){
   app.controller(
     'LoginController',
-    function($scope, $http, authService) {
+    function($scope, $http) {
       
     }
   );

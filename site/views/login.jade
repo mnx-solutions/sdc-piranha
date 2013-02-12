@@ -1,48 +1,11 @@
-html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
+html(lang='en',data-ng-app='JoyentPortal')
   head
     meta(charset='utf-8')
     meta(name='fragment',content='!')
     title(data-ng-bind='windowTitle') LOGIN
     each css in csss
       link(rel='stylesheet',href='#{css}',type='text/css')
-    style(type='text/css')
-      body {
-        margin: 0;
-      }
-
-      #login-container {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        margin: 0px;
-        background-color: white;
-      }
-
-      #login-container .controls {
-        position: relative;
-        margin: 0 auto;
-        height: 40%;
-        width: 40%;
-      }
-
-      .controls form {
-        position: relative;
-        margin: 0 auto;
-        height: 100%;
-        width: 100%;
-      }
-  body(class='auth-interceptor')
-    div(id='login-container')
-      div(class='controls')
-        div(ng-controller='LoginController')
-          form(ng-submit='submit()')
-            fieldset
-              legend Login
-              label Username
-              input(type='text', ng-model='username')
-              label Password
-              input(type='text', ng-model='password')
-              br
-              button(type='submit', class='btn') Login
-
-
+  body(class="JoyentPortal-module-login")
+    div(class="login-form")
+    each javascript in javascripts
+      script(type='text/javascript',src='#{javascript}')
