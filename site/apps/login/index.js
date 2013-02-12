@@ -10,7 +10,7 @@ module.exports = {
     '/static/vendor/bootstrap/js/bootstrap.min.js',
     '/static/js/angular.js',
     '/static/js/angular-resource.js',
-    '/static/js/login.js'
+    '/static/js/simple-app.js'
   ],
   csss: [
     '/static/vendor/bootstrap/css/bootstrap.min.css'

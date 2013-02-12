@@ -8,7 +8,7 @@ app.use(express.bodyParser());
 var Modulizer = require('../lib/modulizer');
 var modulizer = new Modulizer(app);
 
-modulizer.loadApps(['main','home','login']);
+modulizer.loadApps(['main','home','login','signup']);
 
 modulizer.loadModuleStack(function(){
     
