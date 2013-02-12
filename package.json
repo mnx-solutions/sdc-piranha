@@ -1,0 +1,23 @@
+{
+  "author": "TBD",
+  "name": "piranha",
+  "description": "SDC7 Client Portal",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/joyent/piranha.git"
+  },
+  "main": "site/index.js",
+  "dependencies": {
+    "send":"*",
+    "express":"3.x",
+    "less":"*"
+  },
+  "devDependencies": {
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": ">=0.8.0"
+  },
+  "private": true
+}
