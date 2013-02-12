@@ -3,9 +3,8 @@
 (function(ng, app){
   app.controller(
     'MainController',
-    function($scope, $http, $route, $routeParams, requestContext, $location, Menu){
+    function($scope, $rootScope, $route, $routeParams, requestContext){
       $scope.pageTitle = 'Joyent Portal';
-      $scope.mainMenu = Menu.getMenu();
 
       $scope.setWindowTitle = function(title){
         $scope.windowTitle = title;
@@ -50,12 +49,22 @@
       );
 
       $scope.requireLogin = function() {
-        $http.get('/machine/restricted')
-          .success(function(data, code) {
-          })
-          .error(function(data, code) {
-          });
+        $rootScope.$broadcast('event:auth-loginRequired');
       };
+      
+      $scope.cancelLogin = function(){
+        $scope.subview = oldSubview;
+      };
+      
+      var oldSubview;
+      $scope.$on('event:auth-loginRequired', function() {
+        oldSubview = $scope.subview;
+        $scope.subview = 'login';
+      });
+
+      $scope.$on('event:auth-loginConfirmed', function() {
+        $scope.subview = oldSubview;
+      });
     }
   );
 })(angular, JoyentPortal);

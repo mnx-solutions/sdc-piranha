@@ -11,7 +11,8 @@
   "dependencies": {
     "send":"*",
     "express":"3.x",
-    "less":"*"
+    "less":"*",
+    "jade":"*"
   },
   "devDependencies": {
   },

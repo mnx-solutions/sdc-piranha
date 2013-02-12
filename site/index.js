@@ -6,7 +6,7 @@ var app = express();
 var Modulizer = require('../lib/modulizer');
 var modulizer = new Modulizer(app);
 
-modulizer.loadApps([]);
+modulizer.loadApps(['main']);
 
 modulizer.loadModuleStack(function(){
     
