@@ -1,8 +1,7 @@
 
 module.exports = {
-  route: '/home',
-  index: 'home.jade',
-  authenticate: true,
+  route: '/',
+  index: 'index.jade',
   modules: [
     'login'
   ],
@@ -15,7 +14,7 @@ module.exports = {
     '/static/js/config/routes.js',
     '/static/js/http-auth-interceptor.js',
     '/static/js/controllers/main-controller.js',
-    '/static/js/controllers/wide-controller.js',
+    '/static/js/controllers/landing-controller.js',
     '/static/js/services/request-context.js',
     '/static/js/values/render-context.js'
   ],
@@ -23,9 +22,9 @@ module.exports = {
     '/static/vendor/bootstrap/css/bootstrap.min.css'
   ],
   layouts: [{
-    name:'wide',
-    include:'/static/partials/layouts/main.html',
+    name:'landing',
+    include:'/static/partials/layouts/landing.html',
     module:'main',
-    controller:'WideController'
+    controller:'LandingController'
   }]
 };

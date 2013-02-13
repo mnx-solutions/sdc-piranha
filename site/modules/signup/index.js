@@ -7,7 +7,6 @@ module.exports.app = app;
 
 module.exports.css = ['css/main.css'];
 module.exports.javascripts = [
-  'js/services/signup.js',
   'js/controllers/signup-controller.js',
   'js/config/routes.js'
 ];

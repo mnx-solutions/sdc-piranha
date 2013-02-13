@@ -4,10 +4,12 @@ var config = require('easy-config');
 var express = require('express');
 var app = express();
 
+app.use(express.bodyParser());
+
 var Modulizer = require('../lib/modulizer');
 var modulizer = new Modulizer(app);
 
-modulizer.loadApps(['main', 'signup']);
+modulizer.loadApps(['main','home','login','signup']);
 
 modulizer.loadModuleStack(function(){
 

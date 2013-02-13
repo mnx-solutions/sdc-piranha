@@ -1,4 +1,3 @@
-<style type="text/css">
   body {
     padding-top: 40px;
     padding-bottom: 40px;
@@ -21,25 +20,10 @@
   .form-signin .checkbox {
     margin-bottom: 10px;
   }
-  .form-signin input[type="text"],
+  .form-signin input[type="email"],
   .form-signin input[type="password"] {
     font-size: 16px;
     height: auto;
     margin-bottom: 15px;
     padding: 7px 9px;
   }
-</style>
-<div class="container">
-
-  <form class="form-signin">
-    <h2 class="form-signin-heading">Please sign in</h2>
-    <input type="text" class="input-block-level" placeholder="Email address">
-    <input type="password" class="input-block-level" placeholder="Password">
-    <label class="checkbox">
-      <input type="checkbox" value="remember-me"> Remember me
-    </label>
-    <a data-ng-click="cancelLogin()">Cancel</a>
-    <button class="btn btn-large btn-primary" type="submit">Sign in</button>
-  </form>
-
-</div>
