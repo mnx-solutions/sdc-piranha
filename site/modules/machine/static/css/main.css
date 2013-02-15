@@ -1,0 +1,92 @@
+h1 {
+  color:green;
+}
+
+.machines {
+	display: table;
+}
+
+.machines .machine {
+	display: table-row;
+}
+
+.machine .selection, .header .selection {
+	padding: 20px;
+}
+
+.machines .header {
+	background-color: #fefefe;
+	display: table-row;
+}
+
+.machine .field {
+	vertical-align: top;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: 15px;
+	display: table-cell;
+}
+
+.field.selection {
+	width: 40px;
+	height: 40px;
+}
+
+.field.name {
+	width: 350px;
+	max-width: 350px;
+}
+
+.field.type {
+	width: 100px;
+	max-width: 100px;
+}
+
+.field.network {
+	width: 100px;
+	max-width: 100px;
+}
+
+.field.memory {
+	width: 50px;
+	max-width: 50px;
+}
+
+.field.age {
+	width: 200px;
+	max-width: 200px;
+}
+
+.title {
+	padding: 15px;
+	margin: 5px;
+	font-weight: bold;
+	cursor: pointer;
+	display: table-cell;
+}
+
+.title.name {
+	width: 350px;
+	max-width: 350px;
+}
+
+.title.type {
+	width: 100px;
+	max-width: 100px;
+}
+
+.title.network {
+	width: 100px;
+	max-width: 100px;
+}
+
+.title.memory {
+	width: 50px;
+	max-width: 50px;
+}
+
+.title.age {
+	width: 200px;
+	max-width: 200px;
+}

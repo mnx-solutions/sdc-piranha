@@ -1,0 +1,76 @@
+.JoyentPortal-module-machine h1 {
+  color: green;
+}
+.JoyentPortal-module-machine .machines {
+  display: table;
+}
+.JoyentPortal-module-machine .machines .machine {
+  display: table-row;
+}
+.JoyentPortal-module-machine .machine .selection,
+.JoyentPortal-module-machine .header .selection {
+  padding: 20px;
+}
+.JoyentPortal-module-machine .machines .header {
+  background-color: #fefefe;
+  display: table-row;
+}
+.JoyentPortal-module-machine .machine .field {
+  vertical-align: top;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 15px;
+  display: table-cell;
+}
+.JoyentPortal-module-machine .field.selection {
+  width: 40px;
+  height: 40px;
+}
+.JoyentPortal-module-machine .field.name {
+  width: 350px;
+  max-width: 350px;
+}
+.JoyentPortal-module-machine .field.type {
+  width: 100px;
+  max-width: 100px;
+}
+.JoyentPortal-module-machine .field.network {
+  width: 100px;
+  max-width: 100px;
+}
+.JoyentPortal-module-machine .field.memory {
+  width: 50px;
+  max-width: 50px;
+}
+.JoyentPortal-module-machine .field.age {
+  width: 200px;
+  max-width: 200px;
+}
+.JoyentPortal-module-machine .title {
+  padding: 15px;
+  margin: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  display: table-cell;
+}
+.JoyentPortal-module-machine .title.name {
+  width: 350px;
+  max-width: 350px;
+}
+.JoyentPortal-module-machine .title.type {
+  width: 100px;
+  max-width: 100px;
+}
+.JoyentPortal-module-machine .title.network {
+  width: 100px;
+  max-width: 100px;
+}
+.JoyentPortal-module-machine .title.memory {
+  width: 50px;
+  max-width: 50px;
+}
+.JoyentPortal-module-machine .title.age {
+  width: 200px;
+  max-width: 200px;
+}

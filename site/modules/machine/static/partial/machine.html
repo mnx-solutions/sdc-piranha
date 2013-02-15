@@ -1,0 +1,37 @@
+<div data-ng-switch="subview">
+  <div data-ng-switch-when="index" data-ng-controller="MachinesController">
+    <h2>Machines</h2>
+    <div class="machines">
+    	<div class="header">
+    		<div class="selection">
+    			<input type="checkbox" id="all" data-ng-click="selectAll();" />
+    		</div>
+    		<div class="title name" data-ng-click="sortMachinesByColumn('id');">Name</div>
+    		<div class="title type" data-ng-click="sortMachinesByColumn('type');">Type</div>
+    		<div class="title network" data-ng-click="sortMachinesByColumn('network');">Network</div>
+    		<div class="title memory" data-ng-click="sortMachinesByColumn('memory');">Memory</div>
+    		<div class="title age" data-ng-click="sortMachinesByColumn('age');">Age</div>
+    	</div>
+    	<div class="machine" data-ng-repeat="machine in machines">
+    		<div class="selection">
+    			<input type="checkbox" id="{{machine.id}}" data-ng-click="selectMachine(machine.id);" data-ng-checked="selection.isSelected(machine.id)"/>
+    		</div>
+    		<div class="field name">
+    			<a href="#!/machine/details/{{machine.id}}">{{machine.name || machine.id}}</a>
+    		</div>
+    		<div class="field type">{{machine.type}}</div>
+    		<div class="field network">
+	    		<p data-ng-repeat="ip in machine.ips">
+	    			{{ ip }}
+	    		</p>
+    		</div>
+    		<div class="field memory">{{machine.memory}}MB</div>
+    		<div class="field age">{{machine.created}}MB</div>
+    	</div>
+        <button data-ng-click="showSelections();">Show selections</button>
+    </div>
+  </div>
+  <div data-ng-switch-when="details" data-ng-controller="MachineController">
+  	Placeholder....
+  </div>
+</div>
