@@ -28,11 +28,11 @@
 						this._drection = direction;
 					}
 
-					if (this.key === key && !direction) {
+					if (this._key === key && !direction) {
 						this._direction = -this._direction;
 					}
 
-					this.key = key;
+					this._key = key;
 
 					var self = this;
 					this._data.sort(function(a, b) {
@@ -44,6 +44,14 @@
 
 						return 0;
 					});
+				},
+
+				isKey: function(key) {
+					return (this._key === key);
+				},
+
+				getDirection: function() {
+					return (this._direction === 1 ? 'asc' : 'desc')
 				}
 			};
 
@@ -66,7 +74,8 @@
 
 				toggleAll: function() {
 					if ((this._state === this.STATE.CHECKED)) {
-						this.init();
+						this._state =  this.STATE.UNCHECKED;
+						this._selections = [];
 					} else {
 						var self = this;
 						this._data.forEach(function(item, index) {
@@ -110,7 +119,7 @@
 			$scope.selection.init();
 
 			$scope.sorter = sorter;
-			$scope.sorter.init([ 'name', 'type', 'memory' ]);
+			$scope.sorter.init([ 'id', 'type', 'memory', 'created' ]);
 
 			/**
 			 * Controller methods
@@ -126,7 +135,6 @@
 			$scope.sortMachinesByColumn = function(column) {
 				sorter.bindData(machines);
 				sorter.sortByKey(column);
-				console.log(machines[0].id);
 			};
 
 			$scope.updateMachines = function() {
