@@ -5,6 +5,11 @@
   display: table;
   margin: 0 auto;
 }
+.JoyentPortal-module-machine .machines .container {
+  border: 1px solid #b7b7b7;
+  padding: 0;
+  margin: 0;
+}
 .JoyentPortal-module-machine .machines .machine {
   display: table-row;
 }
@@ -16,7 +21,35 @@
 }
 .JoyentPortal-module-machine .machine .selection,
 .JoyentPortal-module-machine .header .selection {
-  padding: 15px;
+  padding: 20px;
+  border-top: 1px solid #b7b7b7;
+  border-right: 1px solid #b7b7b7;
+}
+.JoyentPortal-module-machine .header .selection {
+  border-top: 0;
+}
+.JoyentPortal-module-machine .controls {
+  position: relative;
+  padding-bottom: 10px;
+  width: 100%;
+  height: 40px;
+}
+.JoyentPortal-module-machine .controls .buttons {
+  position: absolute;
+  display: inline-block;
+  width: 30%;
+}
+.JoyentPortal-module-machine .controls .group {
+  position: absolute;
+  display: inline-block;
+  width: 40%;
+}
+.JoyentPortal-module-machine .controls .filter {
+  position: absolute;
+  display: inline-block;
+  width: 30%;
+  right: 0;
+  text-align: right;
 }
 .JoyentPortal-module-machine .machines .header {
   background-color: #fefefe;
@@ -31,7 +64,7 @@
   text-overflow: ellipsis;
   padding: 15px 0 15px 10px;
   display: table-cell;
-  border-bottom: 1px solid #b7b7b7;
+  border-top: 1px solid #b7b7b7;
 }
 .JoyentPortal-module-machine .field.selection {
   width: 40px;
@@ -56,8 +89,8 @@
   padding-left: 20px;
 }
 .JoyentPortal-module-machine .field.age {
-  width: 100px;
-  max-width: 100px;
+  width: 110px;
+  max-width: 110px;
 }
 .JoyentPortal-module-machine .title {
   padding: 15px;
@@ -83,6 +116,6 @@
   max-width: 90px;
 }
 .JoyentPortal-module-machine .title.age {
-  width: 100px;
-  max-width: 1000px;
+  width: 110px;
+  max-width: 110px;
 }

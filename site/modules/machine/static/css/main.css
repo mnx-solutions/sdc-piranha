@@ -7,6 +7,12 @@ h1 {
 	margin: 0 auto;
 }
 
+.machines .container {
+	border: 1px solid #b7b7b7;
+	padding: 0;
+	margin: 0;
+}
+
 .machines .machine {
 	display: table-row;
 }
@@ -20,7 +26,40 @@ h1 {
 }
 
 .machine .selection, .header .selection {
-	padding: 15px;
+	padding: 20px;
+	border-top: 1px solid #b7b7b7;
+	border-right: 1px solid #b7b7b7;
+}
+
+.header .selection {
+	border-top: 0;
+}
+
+.controls {
+	position: relative;
+	padding-bottom: 10px;
+	width: 100%;
+	height: 40px;
+}
+
+.controls .buttons {
+	position: absolute;
+	display: inline-block;
+	width: 30%;
+}
+
+.controls .group {
+	position: absolute;
+	display: inline-block;
+	width: 40%;
+}
+
+.controls .filter {
+	position: absolute;
+	display: inline-block;
+	width: 30%;
+	right: 0;
+	text-align: right;
 }
 
 .machines .header {
@@ -37,7 +76,7 @@ h1 {
 	text-overflow: ellipsis;
 	padding: 15px 0 15px 10px;
 	display: table-cell;
-	border-bottom: 1px solid #b7b7b7;
+	border-top: 1px solid #b7b7b7;
 }
 
 .field.selection {
@@ -68,8 +107,8 @@ h1 {
 }
 
 .field.age {
-	width: 100px;
-	max-width: 100px;
+	width: 110px;
+	max-width: 110px;
 }
 
 .title {
@@ -101,6 +140,6 @@ h1 {
 }
 
 .title.age {
-	width: 100px;
-	max-width: 1000px;
+	width: 110px;
+	max-width: 110px;
 }
