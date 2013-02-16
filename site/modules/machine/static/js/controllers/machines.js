@@ -133,13 +133,14 @@
 			};
 
 			$scope.sortMachinesByColumn = function(column) {
-				sorter.bindData(machines);
 				sorter.sortByKey(column);
 			};
 
 			$scope.updateMachines = function() {
 				machines = Machine.query();
 				$scope.machines = machines;
+
+				sorter.bindData(machines);
 				selection.bindData(machines);
 			};
 
