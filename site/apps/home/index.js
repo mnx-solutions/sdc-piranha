@@ -3,7 +3,7 @@ module.exports = {
   route: '/',
   index: 'index.jade',
   modules: [
-    'login'
+    'login','password-reset'
   ],
   javascripts: [
    '//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js',
