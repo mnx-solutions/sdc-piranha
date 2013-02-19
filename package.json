@@ -17,7 +17,7 @@
     "easy-config": "0.1.5"
   },
   "devDependencies": {
-    "grunt":"0.4.0rc7",
+    "grunt":">=0.4.0",
     "jasmine-node":"*"
   },
   "optionalDependencies": {},

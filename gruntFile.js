@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 
 	grunt.initConfig({
 		init: {
-			precommitDest: './gist/hooks/pre-commit',
+			precommitDest: './.git/hooks/pre-commit',
 			precommit: './tools/pre-commit'
 		},
 		deps: {
@@ -33,10 +33,11 @@ module.exports = function (grunt) {
 		},
 		jsStyle: {
 			path: './<%= deps.jsStyle.path %>/jsstyle',
-      files: ['**/*.js',
-              '!**/node_modules/**',
-              '!**/vendor/**',
-              '!**/*.spec.js']
+			files: ['**/*.js',
+							'!**/node_modules/**',
+							'!**/vendor/**',
+							'!**/deps/**',
+							'!**/*.spec.js']
 		},
 		jasmineNode: {
 			directory: './'
