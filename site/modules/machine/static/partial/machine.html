@@ -1,0 +1,90 @@
+<div data-ng-switch="subview">
+  <div data-ng-switch-when="index" data-ng-controller="MachinesController">
+    <div class="machines">
+        <h3>Machines</h3>
+        <div class="controls">
+            <div class="buttons">
+                <button class="btn">Restart</button>
+                <button class="btn">Start/Stop</button>
+                <button class="btn">Delete</button>
+            </div>
+
+            <div class="filter">
+                <div class="input-prepend">
+                    <span class="add-on">
+                        <i class="icon-search"></i>
+                    </span>
+                    <input type="search" class="span3" placeholder="Search" name="search" id="search"/>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+        	<div class="header">
+        		<div class="selection">
+        			<input type="checkbox" id="all" data-ng-click="selectAll();" />
+        		</div>
+        		<div class="title name" data-ng-click="sortMachinesByColumn('id');">
+                    <span class="text">Name</span>
+                    <span class="state" data-ng-show="sorter.isKey('id')">
+                        <data-ng-switch on="sorter.getDirection()">
+                            <i class="icon-arrow-up" ng-switch-when="asc" />
+                            <i class="icon-arrow-down" ng-switch-when="desc" />
+                        </data-ng-switch>
+                    </span>
+                </div>
+        		<div class="title type" data-ng-click="sortMachinesByColumn('type');">
+                    <span class="text">Type</span>
+                    <span class="state" data-ng-show="sorter.isKey('type')">
+                        <data-ng-switch on="sorter.getDirection()">
+                            <i class="icon-arrow-up" ng-switch-when="asc" />
+                            <i class="icon-arrow-down" ng-switch-when="desc" />
+                        </data-ng-switch>
+                    </span>
+                </div>
+        		<div class="title network">Network</div>
+        		<div class="title memory" data-ng-click="sortMachinesByColumn('memory');">
+                    <span class="text">Memory</span>
+                    <span class="state" data-ng-show="sorter.isKey('memory')">
+                        <data-ng-switch on="sorter.getDirection()">
+                            <i class="icon-arrow-up" ng-switch-when="asc" />
+                            <i class="icon-arrow-down" ng-switch-when="desc" />
+                        </data-ng-switch>
+                    </span>
+                </div>
+        		<div class="title age" data-ng-click="sortMachinesByColumn('created');">
+                    <span class="text">Created</span>
+                    <span class="state" data-ng-show="sorter.isKey('created')">
+                        <data-ng-switch on="sorter.getDirection()">
+                            <i class="icon-arrow-up" ng-switch-when="asc" />
+                            <i class="icon-arrow-down" ng-switch-when="desc" />
+                        </data-ng-switch>
+                    </span>
+                </div>
+        	</div>
+        	<div class="machine" data-ng-repeat="machine in machines" ng-class-odd="'odd'" ng-class-even="'even'">
+        		<div class="selection">
+        			<input type="checkbox" id="{{machine.id}}" data-ng-click="selectMachine(machine.id);" data-ng-checked="selection.isSelected(machine.id)"/>
+        		</div>
+        		<div class="field name">
+                    <!--
+        			<a href="#!/machine/details/{{machine.id}}">{{machine.name || machine.id}}</a>
+                    -->
+                    {{machine.name || machine.id}}
+        		</div>
+        		<div class="field type">{{machine.type}}</div>
+        		<div class="field network">
+    	    		<span data-ng-repeat="ip in machine.ips">
+    	    			{{ ip }}
+    	    		</span>
+        		</div>
+        		<div class="field memory">{{machine.memory}}MB</div>
+        		<div class="field age">{{machine.created | fromNow}}</div>
+        	</div>
+            <button data-ng-click="showSelections();">Show selections</button>
+        </div>
+    </div>
+  </div>
+  <div data-ng-switch-when="details" data-ng-controller="MachineController">
+  	Placeholder....
+  </div>
+</div>
