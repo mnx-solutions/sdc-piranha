@@ -6,6 +6,8 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
     each css in csss
       link(rel='stylesheet',href='#{css}',type='text/css')
   body
+    div(data-main-menu, class="JoyentPortal-module-menu navbar")
+
     div(data-ng-switch='subview')
       each layout in layouts
         div(data-ng-switch-when='#{layout.name}',data-ng-include="'#{layout.include}'",class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.controller}')

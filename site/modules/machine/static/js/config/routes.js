@@ -10,11 +10,9 @@ JoyentPortal.config(function($routeProvider) {
     });
 });
 
-/*
 JoyentPortal.run(function(Menu){
   Menu.register({
     name:'Machine',
-    action:'machine'
+    link:'machine'
   });
 });
-*/

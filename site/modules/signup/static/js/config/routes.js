@@ -4,3 +4,10 @@ JoyentPortal.config(function($routeProvider) {
       action: 'signup.home'
     });
 });
+
+JoyentPortal.run(function(Menu){
+  Menu.register({
+    name:'Signup',
+    link:'signup'
+  });
+});
