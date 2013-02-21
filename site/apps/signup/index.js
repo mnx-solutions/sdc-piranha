@@ -5,7 +5,6 @@ module.exports = {
   modules: [
     'signup',
     'login',
-    'menu',
     'machine'
   ],
 
