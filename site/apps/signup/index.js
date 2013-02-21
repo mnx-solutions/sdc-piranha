@@ -5,7 +5,8 @@ module.exports = {
 	index: 'signup.jade',
 	modules: [
 		'signup',
-		'login'
+		'login',
+		'menu'
 	],
 
 	javascripts: [

@@ -7,3 +7,10 @@ JoyentPortal.config(function($routeProvider) {
 		}
 	);
 });
+
+JoyentPortal.run(function(Menu){
+  Menu.register({
+    name:'Signup',
+    link:'signup'
+  });
+});

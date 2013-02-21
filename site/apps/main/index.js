@@ -3,7 +3,7 @@ module.exports = {
 	route: '/home',
 	index: 'home.jade',
 	modules: [
-		'machine'
+		'login','password-reset','menu','signup','machine'
 	],
 
 	javascripts: [
