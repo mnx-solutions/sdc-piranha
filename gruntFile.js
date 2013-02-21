@@ -28,7 +28,7 @@ module.exports = function (grunt) {
 				'!**/vendor/**',
 				'!**/deps/**',
 				'!**/*.spec.js'],
-			conf: './tools/jsl/jsl.node.conf',
+			conf: './tools/jsl.node.conf',
 			options: '--nologo --nofilelisting --conf=<%= jsLint.conf %>'
 		},
 		jsStyle: {
