@@ -1,6 +1,52 @@
 
-<div data-ng-switch="subview">
-  <div data-ng-switch-when="home" data-ng-controller="machine.SignupController">
-    Home
+<div data-ng-switch="subview" class="container">
+  <div data-ng-switch-when="index" data-ng-controller="SignupController" class="row span12">
+  	<div class="signup span8">
+  		<h3>Signup</h3>
+  		<ol class="navigation-header nav nav-tabs">
+  			<li class="step"
+  				id="{{item.id}}"
+  				data-ng-class="{0: 'disabled', 1: 'active', 2: 'disabled', 3: 'disabled'}[item.state]"
+  				data-ng-repeat="item in navigation.items"
+  				data-ng-click="navigateToStep($index)">
+  				<a>{{item.name}}</a>
+  			</li>
+  		</ol>
+
+  		<div class="content">
+			<div class="step"
+				id="{{item.id}}"
+				data-ng-repeat="item in navigation.items"
+				data-ng-show="item.selected">
+				<div class="container" data-ng-include src="item.partial" onload="pageLoaded()"></div>
+			</div>
+		</div>
+  	</div>
+	<div class="signin span4">
+		<div class="signin-container">
+			<div class="alert alert-success">
+			  <h4>Already registered?</h4><br />
+				<div class="control-group">
+					<div class="controls">
+						<input type="text" id="inputEmail" placeholder="Username" />
+			    	</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<input type="password" id="inputEmail" placeholder="Password" />
+			    	</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<label class="checkbox text-medium">
+							<input type="checkbox" /> Remember me
+						</label>
+						<button type="submit" class="btn btn-success">Sign in</button>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="text-small" id="forgot-password" data-toggle="popover" data-placement="top" title="" data-content="No problem. Just enter your email and lets fix it" data-original-title="Forgot you password?">Forgot Password</a>
+		</div>
+	</div>
   </div>
 </div>

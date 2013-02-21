@@ -1,3 +1,47 @@
-.JoyentPortal-module-signup h1 {
-  color: green;
+.JoyentPortal-module-signup .signin {
+  width: 250px;
+  margin-top: 70px;
+}
+.JoyentPortal-module-signup .signin-container {
+  padding: 35px 0 0 0;
+}
+.JoyentPortal-module-signup .signup .navigation-header {
+  margin-top: 20px;
+}
+.JoyentPortal-module-signup .navigation-footer .ruler {
+  height: 10px;
+  background-image: url('/signup/static/img/stripes-colorful.gif');
+  background-position: 0px 0px;
+  background-repeat: repeat-x;
+  border-top: none;
+  background-color: #fcfcfc;
+}
+.JoyentPortal-module-signup .navigation-footer .controls {
+  height: 30px;
+  right: 10px;
+}
+.JoyentPortal-module-signup .controls input[type="submit"] {
+  margin: 8px;
+}
+.JoyentPortal-module-signup .nav {
+  margin: 0;
+}
+.JoyentPortal-module-signup li a:hover,
+.JoyentPortal-module-signup li a:focus {
+  border-color: #fff #fff #dddddd;
+}
+.JoyentPortal-module-signup .signup .container {
+  width: 100%;
+}
+.JoyentPortal-module-signup .signup .content {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-top: 1px solid white;
+  overflow: hidden;
+}
+.JoyentPortal-module-signup .content .step {
+  display: block;
+}
+.JoyentPortal-module-signup fieldset > legend {
+  padding-left: 20px;
 }

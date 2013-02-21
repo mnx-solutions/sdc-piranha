@@ -1,0 +1,109 @@
+<div data-ng-controller="PaymentController" class="container">
+	<form class="form-horizontal" data-ng-submit="submit()">
+		<div>
+			<h2 style="padding-left:20px">Payment method</h2>
+			<br />
+			<fieldset>
+				<legend>Credit Card Information</legend>
+				<div class="control-group">
+					<label class="control-label" for="inputEmail">Credit Card Number</label>
+					<div class="controls">
+						<input type="text" id="inputEmail" class="span4" placeholder="Number">
+						<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Extension without + or 00"></span>
+			    	</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputEmail">Card Expires</label>
+					<div class="controls">
+						<input type="text" id="inputEmail" maxlength="3" class="span1" placeholder="MM">
+						<input type="text" id="inputEmail" maxlength="4" class="span2" placeholder="YYYY">
+						<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Extension without + or 00"></span>
+			    	</div>
+				</div>
+
+				<div class="control-group">
+					<label class="control-label" for="inputEmail">CCV</label>
+					<div class="controls">
+						<input type="text" id="inputEmail" maxlength="3" class="span1" placeholder="CCV">
+						<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Extension without + or 00"></span>
+			    	</div>
+				</div>
+			</fieldset>
+
+			<fieldset>
+				<legend>Billing Information</legend>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">First name</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" placeholder="First name">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">Last name</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" placeholder="Last name">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">Phone Number</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" placeholder="Phone Number">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">Address 1</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" placeholder="Address 1">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">Address 2</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" placeholder="Address 2">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">City</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" placeholder="City">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">Country</label>
+					<div class="controls">
+						<select>
+						  <option>Country #1</option>
+						  <option>Country #2</option>
+						  <option>Country #3</option>
+						  <option>Country #4</option>
+						  <option>Country #5</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">State</label>
+					<div class="controls">
+						<select>
+						  <option>State #1</option>
+						  <option>State #2</option>
+						  <option>State #3</option>
+						  <option>State #4</option>
+						  <option>State #5</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="inputPassword">Postal Code</label>
+					<div class="controls">
+						<input type="text" id="inputPassword" class="span2" placeholder="Postal Code">
+					</div>
+				</div>
+
+			</fieldset>
+
+
+			<div data-ng-include src="'static/partial/steps/footer.html'"></div>
+		</div>
+	</form>
+</div>

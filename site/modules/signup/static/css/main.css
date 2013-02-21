@@ -1,3 +1,72 @@
-h1 {
-  color:green;
+
+
+.signin {
+	width: 250px;
+	margin-top: 70px;
+}
+
+.signin-container {
+	padding: 35px 0 0 0;
+}
+
+.signup {
+
+}
+
+.signup .navigation-header {
+	margin-top: 20px;
+}
+
+.navigation-header .step {
+
+}
+
+.navigation-footer {
+
+}
+
+.navigation-footer .ruler {
+	height: 10px;
+	background-image: url('/signup/static/img/stripes-colorful.gif');
+	background-position: 0px 0px;
+	background-repeat: repeat-x;
+	border-top: none;
+	background-color: #fcfcfc;
+}
+
+.navigation-footer .controls {
+	height: 30px;
+	right: 10px;
+}
+
+.controls input[type="submit"] {
+	margin: 8px;
+}
+
+.nav {
+	margin: 0;
+}
+
+li a:hover,
+li a:focus {
+	border-color: #fff #fff #dddddd;
+}
+
+.signup .container {
+	width: 100%;
+}
+
+.signup .content {
+	margin-bottom: 20px;
+	border: 1px solid #ddd;
+	border-top: 1px solid white;
+	overflow: hidden;
+}
+
+.content .step {
+	display: block;
+}
+
+fieldset > legend {
+	padding-left:20px;
 }

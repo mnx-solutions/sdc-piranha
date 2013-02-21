@@ -1,6 +1,9 @@
+'use strict';
+
 JoyentPortal.config(function($routeProvider) {
-  $routeProvider
-    .when('/signup', {
-      action: 'signup.home'
-    });
+	$routeProvider
+		.when('/signup', {
+			action: 'signup.index'
+		}
+	);
 });

@@ -1,0 +1,54 @@
+<div  class="container">
+	<form name="accountForm" class="form-horizontal" data-ng-controller="AccountController" data-ng-submit="submit()" novalidate>
+		<div>
+			<h2 style="padding-left:20px">Get started in 5 easy steps!</h2>
+			<br />
+			<div class="control-group">
+				<label class="control-label">Email</label>
+				<div class="controls">
+					<input type="email" name="email" data-ng-model="email" placeholder="Email" />
+		    	</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">Username</label>
+				<div class="controls">
+					<input type="text" name="username" placeholder="Username" />
+					<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Must container letters and numbers"></span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">Password</label>
+				<div class="controls">
+					<input type="password" id="inputPassword" placeholder="Password" />
+					<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Must be at least 7 characters"></span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">Confirm password</label>
+				<div class="controls">
+					<input type="password" id="inputPassword" placeholder="Password" />
+					<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Repeat your previously entered password"></span>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">First name</label>
+				<div class="controls">
+					<input type="text" id="inputPassword" placeholder="First name" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">Last name</label>
+				<div class="controls">
+					<input type="text" id="inputPassword" placeholder="Last name" />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">Company</label>
+				<div class="controls">
+					<input type="text" id="inputPassword" placeholder="Company" />
+				</div>
+			</div>
+		</div>
+		<div data-ng-include src="'static/partial/steps/footer.html'"></div>
+	</form>
+</div>

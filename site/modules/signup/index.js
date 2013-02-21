@@ -5,14 +5,21 @@ var app = express();
 
 module.exports.app = app;
 
-module.exports.css = ['css/main.css'];
+module.exports.css = [ 'css/main.css' ];
 module.exports.javascripts = [
-  'js/controllers/signup-controller.js',
-  'js/config/routes.js'
+	'js/navigation-item.js',
+	'js/navigation-collection.js',
+	'js/controllers/signup-layout.js',
+	'js/controllers/account.js',
+	'js/controllers/verification.js',
+	'js/controllers/payment.js',
+	'js/controllers/signup.js',
+	'js/config/routes.js',
+	'js/services/navigation.js'
 ];
 
 module.exports.layouts = [{
-    name: 'signup',
-    include:'partial/signup.html',
-    controller:'SignupController'
+	name: 'signup',
+	include: 'partial/signup.html',
+	controller: 'SignupLayoutController'
 }];

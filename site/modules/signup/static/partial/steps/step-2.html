@@ -1,0 +1,24 @@
+<div data-ng-controller="VerificationController" class="container">
+	<form class="form-horizontal" data-ng-submit="submit()">
+		<div>
+			<h2 style="padding-left:20px">Phone verification</h2>
+			<br />
+			<div class="control-group">
+				<label class="control-label" for="inputEmail">Phone Number</label>
+				<div class="controls">
+					<input type="text" id="inputEmail" maxlength="3" class="span1" placeholder="Ext">
+					<input type="text" id="inputEmail" class="span2" placeholder="Number">
+					<span data-toggle="tooltip" data-placement="right" class="-help icon-info-sign" title="Extension without + or 00"></span>
+		    	</div>
+			</div>
+			<div class="control-group">
+				<div class="controls">
+					<label class="checkbox">
+						<input type="checkbox"> Confirm all info is correct
+					</label>
+				</div>
+			</div>
+			<div data-ng-include src="'static/partial/steps/footer.html'"></div>
+		</div>
+	</form>
+</div>
