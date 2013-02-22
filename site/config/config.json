@@ -1,0 +1,6 @@
+{
+  "log":{
+    "name": "JoyentPortal",
+    "level": "debug"
+  }
+}
