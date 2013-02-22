@@ -20,5 +20,9 @@ module.exports = {
     include:'/static/partials/layouts/login.html',
     module:'login',
     controller:'LoginController'
+  }],
+  menu: [{
+    name:'Login',
+    link:'/login'
   }]
 };

@@ -11,4 +11,3 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
         div(data-ng-switch-when='#{layout.name}',data-ng-include="'#{layout.include}'",class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.controller}')
     each javascript in javascripts
       script(type='text/javascript',src='#{javascript}')
-

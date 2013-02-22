@@ -4,7 +4,8 @@ module.exports = {
   index: 'signup.jade',
   modules: [
     'signup',
-    'login'
+    'login',
+    'machine'
   ],
 
   javascripts: [
@@ -19,5 +20,9 @@ module.exports = {
   ],
 
   csss: ['/static/vendor/bootstrap/css/bootstrap.min.css'],
-  layouts: []
+  layouts: [],
+  menu: [{
+    name:'Signup',
+    link:'/signup'
+  }]
 };

@@ -1,9 +1,9 @@
 
 module.exports = {
-	route: '/home',
-	index: 'home.jade',
+	route: '/app',
+	index: 'app.jade',
 	modules: [
-		'machine'
+		'menu','machine'
 	],
 
 	javascripts: [

@@ -1,0 +1,44 @@
+.JoyentPortal-module-menu .navbar-inner {
+  background-color: #1c1c1c;
+  background-image: none;
+}
+.JoyentPortal-module-menu .navbar-inner .brand {
+  padding: 0px 0px 0px;
+}
+.JoyentPortal-module-menu .menuitem {
+  vertical-align: text-bottom;
+  font-size: 24px;
+}
+.JoyentPortal-module-menu .nav {
+  background-color: #1c1c1c;
+}
+.JoyentPortal-module-menu .nav > li {
+  display: block;
+  height: 60px;
+  line-height: 60px;
+  vertical-align: bottom;
+}
+.JoyentPortal-module-menu .nav > li > a {
+  text-shadow: none;
+  padding: 0px 15px 0px;
+}
+.JoyentPortal-module-menu .nav > li > a:hover {
+  color: #ffffff;
+  text-decoration: bold;
+  background-color: transparent;
+  padding: 0px 15px 0px;
+}
+.JoyentPortal-module-menu .nav > .active > a {
+  text-decoration: bold;
+  color: #ffffff;
+  background-color: #373737;
+  height: 58px;
+  line-height: 58px;
+  border-bottom: 3px solid #f26219;
+  padding: 0px 15px 0px;
+}
+.JoyentPortal-module-menu .nav > .active > a:hover {
+  color: #ffffff;
+  background-color: #373737;
+  padding: 0px 15px 0px;
+}
