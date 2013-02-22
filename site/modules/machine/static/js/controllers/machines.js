@@ -3,161 +3,110 @@
 (function(ng, app) {
 	app.controller(
 		'MachinesController',
-		function($scope, requestContext, Machine) {
+		function($scope, $filter, requestContext, Machine) {
 			var renderContext = requestContext.setUpRenderContext('machine.index', $scope);
-			var machines = [];
 
-			/**
-			 * Sorting wrapper
-			 */
+			$scope.sortingOrder = 'created';
+			$scope.reverse = false;
+			$scope.filteredMachines = [];
+			$scope.groupedMachines = [];
+			$scope.itemsPerPage = 4;
+			$scope.pagedMachines = [];
+			$scope.currentPage = 0;
+			$scope.machines = Machine.query(function(){
+				$scope.search();
+			});
 
-			var sorter = {
-				init: function(keys) {
-					this._keys = [];
-					this._key = null;
-					this._data = {};
-					this._direction = -1; // -1: desc, 1 asc
-				},
-
-				bindData: function(data) {
-					this._data = data;
-				},
-
-				sortByKey: function(key, direction) {
-					if (direction) {
-						this._drection = direction;
+			var searchMatch = function (haystack, needle) {
+					if (!needle) {
+							return true;
 					}
+					return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
+			};
 
-					if (this._key === key && !direction) {
-						this._direction = -this._direction;
-					}
+			// TODO: write a better search function
+			// function to search machines
+			$scope.search = function () {
+					// filter by search term
+					$scope.filteredMachines = $filter('filter')($scope.machines, function (item) {
 
-					this._key = key;
+							if (searchMatch(JSON.stringify(item), $scope.query))
+								return true;
 
-					var self = this;
-					this._data.sort(function(a, b) {
-						if (a[key] > b[key]) {
-							return self._direction;
-						} if (a[key] < b[key]) {
-							return -self._direction;
-						}
-
-						return 0;
+							return false;
 					});
-				},
-
-				isKey: function(key) {
-					return (this._key === key);
-				},
-
-				getDirection: function() {
-					return (this._direction === 1 ? 'asc' : 'desc')
-				}
+					// take care of the sorting order
+					if ($scope.sortingOrder !== '') {
+							$scope.filteredMachines = $filter('orderBy')($scope.filteredMachines, $scope.sortingOrder, $scope.reverse);
+					}
+					$scope.currentPage = 0;
+					// now group by pages
+					$scope.groupToPages();
 			};
 
-			/**
-			 * Selection handling wrapper
-			 */
-			var selection = {
-				STATE: { CHECKED: 0, UNCHECKED: 1, MODIFIED: 2 },
+			// calculate page in place
+			$scope.groupToPages = function () {
+					$scope.pagedMachines = [];
 
-				init: function(state) {
-					this._state = state || this.STATE.UNCHECKED;
-					this._selections = [];
-					this._data = {};
-				},
-
-				bindData: function(data) {
-					this.init();
-					this._data = data;
-				},
-
-				toggleAll: function() {
-					if ((this._state === this.STATE.CHECKED)) {
-						this._state =  this.STATE.UNCHECKED;
-						this._selections = [];
-					} else {
-						var self = this;
-						this._data.forEach(function(item, index) {
-							self._selections.push(item.id);
-						});
-
-						this._state = this.STATE.CHECKED;
+					for (var i = 0; i < $scope.filteredMachines.length; i++) {
+							if (i % $scope.itemsPerPage === 0) {
+									$scope.pagedMachines[Math.floor(i / $scope.itemsPerPage)] = [ $scope.filteredMachines[i] ];
+							} else {
+									$scope.pagedMachines[Math.floor(i / $scope.itemsPerPage)].push($scope.filteredMachines[i]);
+							}
 					}
-				},
+			};
 
-				toggleById: function(id) {
-					if (this.isSelected(id)) {
-						this._selections.splice(this._selections.indexOf(id), 1);
-					} else {
-						this._selections.push(id);
+			$scope.range = function (start, end) {
+					var ret = [];
+					if (!end) {
+							end = start;
+							start = 0;
 					}
+					for (var i = start; i < end; i++) {
+							ret.push(i);
+					}
+					return ret;
+			};
 
-					this._state = this.STATE.MODIFIED;
-				},
+			$scope.prevPage = function () {
+					if ($scope.currentPage > 0) {
+							$scope.currentPage--;
+					}
+			};
 
-				isSelected: function(id) {
-					return this._selections.indexOf(id) !== -1;
-				},
+			$scope.nextPage = function () {
+					if ($scope.currentPage < $scope.pagedMachines.length - 1) {
+							$scope.currentPage++;
+					}
+			};
 
-				mapSelections: function(callback) {
-					var selections = [];
+			$scope.setPage = function () {
+					$scope.currentPage = this.n;
+			};
 
-					this._selections.forEach(function(id, index) {
-						selections.push(callback(id));
+			// change sorting order
+			$scope.sort_by = function(newSortingOrder) {
+
+					if ($scope.sortingOrder == newSortingOrder)
+						$scope.reverse = !$scope.reverse;
+					else
+						$scope.reverse = false;
+
+					$scope.sortingOrder = newSortingOrder;
+					$scope.search();
+
+					// icon setup
+					$('.icon-arrow').each(function(){
+							// icon reset
+							$(this).removeClass('icon-arrow-up');
+							$(this).removeClass('icon-arrow-down');
 					});
-
-					return selections;
-				},
-
-				getState: function() {
-					return this._state;
-				}
+					if ($scope.reverse)
+						$('.title.machines-' + newSortingOrder +' i.icon-arrow').removeClass().addClass('icon-arrow icon-arrow-down');
+					else
+						$('.title.machines-' + newSortingOrder +' i.icon-arrow').removeClass().addClass('icon-arrow icon-arrow-up');
 			};
-
-			$scope.selection = selection;
-			$scope.selection.init();
-
-			$scope.sorter = sorter;
-			$scope.sorter.init([ 'id', 'type', 'memory', 'created' ]);
-
-			/**
-			 * Controller methods
-			 */
-			$scope.selectAll = function() {
-				selection.toggleAll();
-			};
-
-			$scope.selectMachine = function(uuid) {
-				selection.toggleById(uuid);
-			};
-
-			$scope.sortMachinesByColumn = function(column) {
-				sorter.sortByKey(column);
-			};
-
-			$scope.updateMachines = function() {
-				machines = Machine.query();
-				$scope.machines = machines;
-
-				sorter.bindData(machines);
-				selection.bindData(machines);
-			};
-
-			$scope.showSelections = function() {
-				var selectedMachines = $scope.selection.mapSelections(function(id) {
-					for (var i = 0, c = machines.length; i < c; i++) {
-						var machine = machines[i];
-						if (machine.id === id) {
-							return machines[i];
-						}
-					}
-				});
-
-				console.log(selectedMachines);
-			};
-
-			$scope.updateMachines();
 		}
 	);
 })(angular, JoyentPortal);
