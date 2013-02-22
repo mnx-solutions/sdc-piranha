@@ -5,7 +5,7 @@ var app = express();
 
 module.exports.app = app;
 
-module.exports.css = ['css/main.css'];
+module.exports.csss = ['css/main.css'];
 module.exports.javascripts = [
   'js/controllers/signup-controller.js',
   'js/config/routes.js'

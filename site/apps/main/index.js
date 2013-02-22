@@ -1,13 +1,13 @@
 
 module.exports = {
-  route: '/home',
-  index: 'home.jade',
+  route: '/portal',
+  index: 'portal.jade',
   authenticate: true,
   modules: [
     'login'
   ],
   javascripts: [
-   '//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js',
+    '//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js',
     '/static/vendor/bootstrap/js/bootstrap.min.js',
     '/static/js/angular.js',
     '/static/js/angular-resource.js',
