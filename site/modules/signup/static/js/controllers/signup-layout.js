@@ -7,4 +7,4 @@
 			var renderContext = requestContext.setUpRenderContext('signup', $scope);
 		}
 	);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

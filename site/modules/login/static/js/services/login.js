@@ -6,4 +6,4 @@
     var Login = $resource('/login', {}, {});
     return Login;
   }]);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

@@ -4,4 +4,4 @@
 	app.factory('navigation', function() {
 		return new NavigationCollection();
 	});
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

@@ -4,4 +4,4 @@
 	app.factory('Machine', ['$resource', function ($resource) {
 		return $resource('/machine', {}, {});
 	}]);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

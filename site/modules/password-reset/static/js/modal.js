@@ -77,4 +77,4 @@ app.constant('modalConfig', {
     }
   };
 }]);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

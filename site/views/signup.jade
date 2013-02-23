@@ -8,6 +8,9 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
     each css in csss
       link(rel='stylesheet',href='#{css}',type='text/css')
 
+    each template in templates
+      script(type='text/ng-template',id='#{template.id}')!= template.data
+
   body(class='auth-interceptor')
     div(data-main-menu, class="navbar")
 

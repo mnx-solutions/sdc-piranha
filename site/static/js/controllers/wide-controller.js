@@ -9,4 +9,4 @@
     }
   );
 
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

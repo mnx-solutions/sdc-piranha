@@ -14,11 +14,12 @@
     "less": "*",
     "jade": "*",
     "vasync": "1.3.x",
-    "easy-config": "0.1.5"
+    "easy-config": "0.1.5",
+    "easy-asset": "*"
   },
   "devDependencies": {
-    "grunt":">=0.4.0",
-    "jasmine-node":"*"
+    "grunt": ">=0.4.0",
+    "jasmine-node": "*"
   },
   "optionalDependencies": {},
   "engines": {

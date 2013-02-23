@@ -16,4 +16,4 @@
       templateUrl: "password-reset/static/js/directives/template.html"
     };
   });
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

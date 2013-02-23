@@ -6,4 +6,4 @@
       })
       .otherwise({redirectTo: '/'});
   });
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

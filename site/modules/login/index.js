@@ -18,7 +18,7 @@ module.exports = {
     'js/services/login.js',
     'js/directives/login-form.js'
   ],
-  css: [
+  csss: [
     'css/login.css'
   ],
   layouts: [{

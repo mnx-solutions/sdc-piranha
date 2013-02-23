@@ -7,4 +7,4 @@
 			var renderContext = requestContext.setUpRenderContext('machine.details', $scope);
 		}
 	);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

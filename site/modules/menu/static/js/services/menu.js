@@ -15,4 +15,4 @@
 
     return Menu;
   }]);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);

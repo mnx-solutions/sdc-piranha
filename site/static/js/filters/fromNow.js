@@ -6,4 +6,4 @@
       		return moment(new Date(dateString)).fromNow();
     	};
 	});
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);
