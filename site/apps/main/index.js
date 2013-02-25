@@ -29,5 +29,4 @@ module.exports = {
 			include:'/partials/layouts/wide.html'
 		}
 	]
-
 };

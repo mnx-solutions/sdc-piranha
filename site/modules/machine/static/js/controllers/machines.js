@@ -3,8 +3,11 @@
 (function(ng, app) {
 	app.controller(
 		'MachinesController',
-		function($scope, $filter, requestContext, Machines, $rootScope) {
+		function($scope, $filter, requestContext, account, Machines, $rootScope) {
 			var renderContext = requestContext.setUpRenderContext('machine.index', $scope);
+
+			$scope.account = account.getUser();
+			$scope.keys = account.getKeys();
 
 			$scope.sortingOrder = 'created';
 			$scope.reverse = false;

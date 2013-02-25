@@ -5,7 +5,7 @@ var app = express();
 
 module.exports.app = app;
 
-module.exports.csss = ['css/main.css'];
+module.exports.csss = [ 'css/main.css' ];
 module.exports.javascripts = [
   'js/navigation-item.js',
   'js/navigation-collection.js',
@@ -22,4 +22,4 @@ module.exports.layouts = [{
     name: 'signup',
     include: 'partial/signup.html',
     controller: 'SignupLayoutController'
-  }];
+}];
