@@ -33,6 +33,8 @@ module.exports = function(grunt) {
     },
     jsStyle: {
       path: './<%= deps.jsStyle.path %>/jsstyle',
+	  options: '-f <%= jsStyle.conf %>',
+      conf: './tools/jsstyle.conf',
       files: ['**/*.js',
         '!**/node_modules/**',
         '!**/vendor/**',
@@ -179,7 +181,7 @@ module.exports = function(grunt) {
     var done = this.async();
     var jsStyle = grunt.config('jsStyle');
     var files = grunt.file.expand(jsStyle.files);
-    var command = jsStyle.path + ' ' + files.join(' ');
+    var command = jsStyle.path + ' '+ jsStyle.options + ' ' + files.join(' ');
 
     exec(command, function(styleError, stdout, stderr) {
 
