@@ -3,11 +3,16 @@
 var express = require('express');
 var app = express();
 
-app.get('/', function(req, res) {
-	res.json(require('./static/machines.json'));
+app.get('/', function (req, res) {
+	req.cloud.listMachines(function (err, machines) {
+		if (!err) {
+			res.json(machines);
+		}
+	})
 });
 
 module.exports.app = app;
+
 
 module.exports.css = [ 'css/main.css' ];
 module.exports.javascripts = [
@@ -18,8 +23,12 @@ module.exports.javascripts = [
 	'js/config/routes.js'
 ];
 
-module.exports.layouts = [{
-    name: 'machine',
-    include: 'partial/machine.html',
-    controller: 'MachineLayoutController'
-}];
+module.exports.authenticate = true;
+
+module.exports.layouts = [
+	{
+		name:'machine',
+		include:'partial/machine.html',
+		controller:'MachineLayoutController'
+	}
+];

@@ -1,24 +1,22 @@
 'use strict';
 
-(function(ng, app) {
-  app.controller(
-	  'LoginFormController',
-	  function($scope, $http, Login) {
-	    $scope.login = {
-	      email: '',
-	      password: '',
-	      remember: ''
-	    };
+(function (ng, app) {
+	app.controller(
+		'LoginFormController',
+		function ($scope, $http, Login, $window) {
+			$scope.login = {
+				email:'',
+				password:'',
+				remember:''
+			};
 
-	    $scope.logIn = function() {
-	      var login = new Login($scope.login);
-	      if (login.$valid) {
-		login.$save();
-		console.log(login);
-	      } else {
-		console.log('INVALID');
-	      }
-	    };
-	  }
-  );
+			$scope.logIn = function () {
+				Login($scope.login, function (result) {
+					if (result.success) {
+						$window.location.href = "/app#!/machine";
+					}
+				});
+			};
+		}
+	);
 })(window.angular, window.LoginModule);

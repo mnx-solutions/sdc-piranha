@@ -3,7 +3,7 @@
 (function(ng, app) {
 	app.controller(
 		'MachinesController',
-		function($scope, $filter, requestContext, Machine) {
+		function($scope, $filter, requestContext, Machines, $rootScope) {
 			var renderContext = requestContext.setUpRenderContext('machine.index', $scope);
 
 			$scope.sortingOrder = 'created';
@@ -13,9 +13,11 @@
 			$scope.itemsPerPage = 4;
 			$scope.pagedMachines = [];
 			$scope.currentPage = 0;
-			$scope.machines = Machine.query(function(){
-				$scope.search();
-			});
+            $scope.machines = Machines.getMachines();
+
+            $scope.$watch("machines", function(){
+                $scope.search();
+            }, true);
 
 			var searchMatch = function (haystack, needle) {
 					if (!needle) {

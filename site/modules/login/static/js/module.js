@@ -1,6 +1,6 @@
 'use strict';
 
 
-var LoginModule = angular.module('LoginModule', ['ngResource', 'http-auth-interceptor']);
+var LoginModule = angular.module('LoginModule', ['ngResource']);
 
 MODULES.push('LoginModule');
