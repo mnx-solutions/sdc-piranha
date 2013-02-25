@@ -14,7 +14,7 @@
     "less": "*",
     "jade": "*",
     "vasync": "1.3.x",
-    "easy-config": "0.1.5",
+    "easy-config": "0.1.7",
     "easy-asset": "*"
   },
   "devDependencies": {

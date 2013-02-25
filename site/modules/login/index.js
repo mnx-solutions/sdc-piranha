@@ -4,7 +4,7 @@
 var express = require('express');
 var app = express();
 
-app.post('/', function(req, res){
+app.post('/', function(req, res) {
   var login = req.body;
   login.success = true;
   res.json(login);
@@ -13,6 +13,7 @@ app.post('/', function(req, res){
 module.exports = {
   app: app,
   javascripts: [
+    'js/module.js',
     'js/controllers/login-controller.js',
     'js/controllers/login-form-controller.js',
     'js/services/login.js',
@@ -22,8 +23,8 @@ module.exports = {
     'css/login.css'
   ],
   layouts: [{
-    name: 'login',
-    include:'partials/login.html',
-    controller:'LoginController'
-  }]
+      name: 'login',
+      include: 'partials/login.html',
+      controller: 'LoginController'
+    }]
 };
