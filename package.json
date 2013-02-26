@@ -19,7 +19,8 @@
     "smartdc": "*",
     "vasync": "1.3.x",
     "easy-config": "0.1.7",
-    "easy-asset": "*"
+    "easy-asset": "*",
+    "mustache": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
