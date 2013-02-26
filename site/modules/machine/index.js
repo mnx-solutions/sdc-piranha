@@ -16,12 +16,10 @@ module.exports.app = app;
 
 
 module.exports.csss = [
-	'css/prettyCheckable.css',
 	'css/machines.css'
 ];
-//module.exports.csss = [ 'css/main.css', 'css/prettyCheckable.css' ];
+
 module.exports.javascripts = [
-	'js/vendor/prettyCheckable.js',
 	'js/services/machine.js',
 	'js/controllers/machine-layout.js',
 	'js/controllers/machines.js',
