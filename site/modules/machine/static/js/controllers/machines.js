@@ -25,15 +25,15 @@ function ($scope, $filter, requestContext, Machines) {
 
 	// Searching
 	$scope.searchOptions = {
-		'All':[
+		All:[
 			'created', 'id', 'name',
 			'type', 'dataset', 'ips',
 			'memory', 'disk', 'metadata'
 		],
-		'Name':[ 'id', 'name' ],
-		'Type':[ 'type' ],
-		'Ip':[ 'ips' ],
-		'Memory':[ 'memory' ]
+		Name:[ 'id', 'name' ],
+		Type:[ 'type' ],
+		Ip:[ 'ips' ],
+		Memory:[ 'memory' ]
 	};
 	$scope.searchable = $scope.searchOptions.All;
 	$scope.filteredMachines = [];
@@ -177,4 +177,4 @@ function ($scope, $filter, requestContext, Machines) {
 }
 
 	);
-})(angular, JoyentPortal);
+})(window.angular, window.JoyentPortal);
