@@ -14,7 +14,7 @@
 		/* get reference to the machines list */
 		service.getMachines = function () {
 			return machines;
-		}
+		};
 
 		/* find machine by uuid */
 		service.getMachine = function (uuid) {
@@ -24,5 +24,5 @@
 		};
 
 		return service;
-	}])
+	}]);
 })(window.angular, window.JoyentPortal);

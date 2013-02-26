@@ -1,6 +1,6 @@
 'use strict';
 
-JoyentPortal.config(function($routeProvider) {
+window.JoyentPortal.config(function($routeProvider) {
   $routeProvider
     .when('/machine', {
       action: 'machine.index'
@@ -10,7 +10,7 @@ JoyentPortal.config(function($routeProvider) {
     });
 });
 
-JoyentPortal.run(function(Menu){
+window.JoyentPortal.run(function(Menu){
   Menu.register({
     name:'Machine',
     link:'machine'

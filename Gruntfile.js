@@ -36,8 +36,8 @@ module.exports = function (grunt) {
                 },
                 conf: './tools/jsl.node.conf',
                 options: '--nologo --nofilelisting --conf=<%= jsLint.node.conf %>'
-            },
-            client: {
+            }
+            ,client: {
                 path: './<%= deps.jsLint.path %>/build/install/jsl',
                 files: {
                     src:[
@@ -152,8 +152,33 @@ module.exports = function (grunt) {
 
             });
 
+    function getErrors(stdout, useStrictErr){
+        var messages = stdout[stdout.length - 2].split(', ');
+        var warnings = parseInt(messages.pop(), 10);
+
+        if(warnings - useStrictErr > 0){
+            messages[1] = (warnings - useStrictErr) + ' warning(s)';
+            messages.push(useStrictErr + ' use Strict warning(s)');
+            return messages.join(', ');
+        }
+
+        return false;
+    }
+    function useStrictFilter(line){
+        if(line.indexOf('(1):') === -1 && line.indexOf('want_assign_or_call') === -1)
+            return true;
+
+        return false;
+    }
+
     // task for running javascript lint for node files and
     // client-side files with separate conf
+    //
+    // Since current configs throw warnings on "use strict" common usage,
+    // this task includes a hack to ignore use strict warnings,
+    // they are identified by line 1 and errorflag "want_assign_or_call"
+    // (see getErrors and useStrictFilter functions)
+    //
     grunt.registerMultiTask('jsLint', 'javascript lint', function() {
 
         var done = this.async();
@@ -166,17 +191,28 @@ module.exports = function (grunt) {
                 throw new Error(stderr);
             }
 
-            grunt.log.writeln(stdout);
+            var errors = false;
 
-            if (lintError) {
-                var res = stdout.split('\n');
-                var err = res[res.length - 2];
-                grunt.log.error(err);
+            var stdoutList = stdout.split('\n');
+            var newStd =  stdoutList.filter(useStrictFilter);
+            var useStrictErr = stdoutList.length - newStd.length;
+
+            var output = newStd.slice(0, newStd.length - 2).join('\n');
+            grunt.log.writeln(output);
+
+            if(lintError){
+                errors = getErrors(newStd, useStrictErr);
+            }
+            if (errors) {
+                grunt.log.error(errors);
                 grunt.warn('fix Lint issues before continuing');
             } else {
+                if(useStrictErr) {
+                    grunt.log.writeln('>> ' + useStrictErr + ' use strict warning(s)');
+                }
                 grunt.log.ok(files.length +
                         ' file' + (files.length === 1 ? '' : 's') +
-                        ' correct.');
+                        ' without fatal warnings/errors.');
             }
 
             done();
@@ -207,7 +243,7 @@ module.exports = function (grunt) {
             } else {
                 grunt.log.ok(files.length +
                         ' file' + (files.length === 1 ? '' : 's') +
-                        ' correct.');
+                        ' without fatal warnings/errors.');
             }
 
             done();
