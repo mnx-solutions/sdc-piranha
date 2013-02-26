@@ -4,7 +4,8 @@
   // I provide information about the current route request.
   app.factory('Menu', ['$resource', function ($resource, requestContext) {
     var Menu = $resource('/menu', {}, {});
-    var mainMenu = [];
+    var mainMenu = [{link:"xxx",name:"Dashboard"}, {link:"xxx",name:"Storage"}];
+
     Menu.getMenu = function(){
       return mainMenu;
     };

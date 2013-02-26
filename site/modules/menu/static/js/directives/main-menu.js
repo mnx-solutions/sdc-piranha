@@ -15,12 +15,11 @@
           })
       },
 
-      template:'<div class="navbar-inner"><div class="brand"><img src="/static/vendor/bootstrap/img/joyentcloud.png" alt="JoyentCloud"></div><ul class="nav">' +
+      template:'<ul class="nav nav-list">' +
         '<li data-ng-repeat="item in mainMenu" class="menuitem" ng-class="{active: item.active}">' +
           '<a href="#!/{{item.link}}">{{item.name}}</a>' +
         '</li>' +
-      '</ul></div>'
-
+      '</ul>'
     };
   });
 })(window.angular, window.JoyentPortal);
