@@ -3,5 +3,10 @@
     "name": "piranha",
     "level": "debug"
   },
-  "minify": true
+  "minify": true,
+  "cloudapi": {
+  	"url": "https://10.88.88.3",
+  	"username": "admin",
+  	"password": "parool"
+  }
 }

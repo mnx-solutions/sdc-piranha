@@ -2,7 +2,7 @@ module.exports = {
 	route:'/app',
 	index:'app.jade',
 	modules:[
-		'menu', 'machine', 'login'
+		'menu', 'machine', 'login', 'account'
 	],
 	authenticate:true,
 	javascripts:[
@@ -29,5 +29,4 @@ module.exports = {
 			include:'/partials/layouts/wide.html'
 		}
 	]
-
 };
