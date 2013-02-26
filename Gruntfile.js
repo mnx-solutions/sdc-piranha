@@ -1,217 +1,206 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
-  grunt.initConfig({
-    init: {
-      precommitDest: './.git/hooks/pre-commit',
-      precommit: './tools/pre-commit'
-    },
-    deps: {
-      jsLint: {
-        path: 'deps/javascriptlint',
-        url: 'git://github.com/davepacheco/javascriptlint.git'
-      },
-      jsStyle: {
-        path: 'deps/jsstyle',
-        url: 'git://github.com/davepacheco/jsstyle.git'
-      },
-      restDown: {
-        path: 'deps/restdown',
-        url: 'git://github.com/trentm/restdown'
-      }
-    },
-    jsLint: {
-      path: './<%= deps.jsLint.path %>/build/install/jsl',
-      files: ['**/*.js',
-        '!**/node_modules/**',
-        '!**/vendor/**',
-        '!**/deps/**',
-        '!**/*.spec.js'],
-      conf: './tools/jsl.node.conf',
-      options: '--nologo --nofilelisting --conf=<%= jsLint.conf %>'
-    },
-    jsStyle: {
-      path: './<%= deps.jsStyle.path %>/jsstyle',
-	  options: '-f <%= jsStyle.conf %>',
-      conf: './tools/jsstyle.conf',
-      files: ['**/*.js',
-        '!**/node_modules/**',
-        '!**/vendor/**',
-        '!**/deps/**',
-        '!**/*.spec.js']
-    },
-    jasmineNode: {
-      directory: './'
-    }
-  });
+	grunt.initConfig({
+		init: {
+			precommitDest: './.git/hooks/pre-commit',
+			precommit: './tools/pre-commit'
+		},
+		deps: {
+			jsLint: {
+				path: 'deps/javascriptlint',
+				url: 'git://github.com/davepacheco/javascriptlint.git'
+			},
+			jsStyle: {
+				path: 'deps/jsstyle',
+				url: 'git://github.com/davepacheco/jsstyle.git'
+			},
+			restDown: {
+				path: 'deps/restdown',
+				url: 'git://github.com/trentm/restdown'
+			}
+		},
+		jsLint: {
+			path: './<%= deps.jsLint.path %>/build/install/jsl',
+			files: ['**/*.js',
+				'!**/node_modules/**',
+				'!**/vendor/**',
+				'!**/deps/**',
+				'!**/*.spec.js'],
+			conf: './tools/jsl.node.conf',
+			options: '--nologo --nofilelisting --conf=<%= jsLint.conf %>'
+		},
+		jsStyle: {
+			path: './<%= deps.jsStyle.path %>/jsstyle',
+			files: ['**/*.js',
+							'!**/node_modules/**',
+							'!**/vendor/**',
+							'!**/deps/**',
+							'!**/*.spec.js']
+		},
+		jasmineNode: {
+			directory: './'
+		},
+		jasmine: {
+			directory: ''
+		}
+	});
 
-  grunt.registerMultiTask('deps', 'set up dependencies', function() {
-    var command = 'git clone ' + this.data.url + ' ' + this.data.path;
+	grunt.registerMultiTask('deps', 'set up dependencies', function () {
+		var command = 'git clone ' + this.data.url + ' ' + this.data.path;
 
-    var done = this.async();
-    var self = this;
-    exec(command, function(error, stdout, stderr) {
-      console.log(stdout);
-      // if jsLint, we need to install it
-      if (self.target === 'jsLint') {
-        exec('make install',
-                {cwd: self.data.path},
-        function(err, stdoutInstall, stderrInstall) {
-          console.log(stdoutInstall);
-          done();
-        });
+		var done = this.async();
+		var self = this;
+		exec(command, function (error, stdout, stderr) {
+			console.log(stdout);
+			// if jsLint, we need to install it
+			if (self.target === 'jsLint') {
+				exec('make install',
+					{cwd: self.data.path},
+					function (err, stdoutInstall, stderrInstall) {
+						console.log(stdoutInstall);
+						done();
+				});
 
-      } else {
-        done();
-      }
-    });
+			} else {
+				done();
+			}
+		});
 
-  });
+	});
 
-  grunt.registerTask('npmDeps', 'set up npm dependencies', function() {
-    var command = 'npm install';
+	grunt.registerTask('npmDeps', 'set up npm dependencies', function () {
+		var command = 'npm install';
 
-    var done = this.async();
-    exec(command, function(error, stdout, stderr) {
-      console.log(stdout);
-      done();
-    });
+		var done = this.async();
+		exec(command, function (error, stdout, stderr) {
+			console.log(stdout);
+			done();
+		});
 
-  });
+	});
 
-  // task for setting up deps and git hook for testing
-  grunt.registerTask('init', 'set up', function() {
-    var done = this.async();
+	// task for setting up deps and git hook for testing
+	grunt.registerTask('init', 'set up', function () {
+		var done = this.async();
 
-    grunt.task.run('deps');
-    grunt.task.run('npmDeps');
+		grunt.task.run('deps');
+		grunt.task.run('npmDeps');
 
-    var precommit = grunt.config('init.precommit');
-    var precommitDest = grunt.config('init.precommitDest');
+		var precommit = grunt.config('init.precommit');
+		var precommitDest = grunt.config('init.precommitDest');
 
-    fs.exists(precommitDest, function(exists) {
-      if (!exists) {
-        grunt.file.copy(precommit, precommitDest);
-      }
-      done();
-    });
+		fs.exists(precommitDest, function (exists) {
+			if (!exists) {
+				grunt.file.copy(precommit, precommitDest);
+			}
+			done();
+		});
 
-  });
+	});
 
-  // task for running jasmine-node with tap reporter
-  grunt.registerTask('jasmineNode',
-          'jasmine testing for node',
-          function() {
+	// npm Task for running client-side jasmine tests
+	grunt.loadNpmTasks('grunt-contrib-jasmine');
 
-            var done = this.async();
-            var dir = grunt.config('jasmineNode.directory');
-            var command = 'node ./test/jasmine-wrapper.js ' + dir + ' --verbose';
+	// task for running jasmine-node with tap reporter
+	grunt.registerTask('jasmineNode',
+					'jasmine testing for node',
+					function () {
 
-            exec(command, function(testError, stdout, stderr) {
-              if (stderr) {
-                throw new Error(stderr);
-              }
+						var done = this.async();
+						var dir = grunt.config('jasmineNode.directory');
+						var command = 'node ./test/jasmine-wrapper.js ' + dir + ' --verbose';
 
-              grunt.log.writeln(stdout);
+						exec(command, function (testError, stdout, stderr) {
+							if (stderr) {
+								throw new Error(stderr);
+							}
 
-              if (testError) {
-//          grunt.log.error('Failed');
-                grunt.warn('fix issues before continuing');
-              } else {
-                grunt.log.ok('All tests passed!');
-              }
+							grunt.log.writeln(stdout);
 
-              done();
-            });
+							if (testError) {
+								grunt.warn('fix issues before continuing');
+							} else {
+								grunt.log.ok('All tests passed!');
+							}
 
-          });
+							done();
+						});
 
-  // task for running javascript lint
-  grunt.registerTask('jsLint', 'javascript lint', function() {
+					});
 
-    var done = this.async();
-    var jsLint = grunt.config('jsLint');
-    var files = grunt.file.expand(jsLint.files);
-    var command = jsLint.path + ' ' + jsLint.options + ' ' + files.join(' ');
+	// task for running javascript lint
+	grunt.registerTask('jsLint', 'javascript lint', function () {
 
-    exec(command, function(lintError, stdout, stderr) {
+		var done = this.async();
+		var jsLint = grunt.config('jsLint');
+		var files = grunt.file.expand(jsLint.files);
 
-      if (stderr) {
-        throw new Error(stderr);
-      }
+		var command = jsLint.path + ' ' + jsLint.options + ' ' + files.join(' ');
 
-      var stdoutList = stdout.split('\n');
-      var err = stdoutList[stdoutList.length - 2].split(', ');
-      err = err.shift();
+		exec(command, function (lintError, stdout, stderr) {
 
-      stdoutList = stdoutList.slice(0, stdout.length - 3);
-      stdout = [];
-      stdoutList.forEach(function(line) {
-        if (line.indexOf('(1):') < 0) {
-          stdout.push(line);
-        }
-      });
-      if (stdout.length > 0 && err !== '0 error(s)') {
-        stdout.push('');
-        stdout.push(err);
-        stdout.push(stdout.length + ' warning(s)');
-      }
-      grunt.log.writeln(stdout.join('\n'));
+			if (stderr) {
+				throw new Error(stderr);
+			}
 
-      if (lintError && stdout.length > 0) {
-        var err = stdout[stdout.length - 2];
-        grunt.log.error(err);
-        grunt.warn('fix Lint issues before continuing');
-      } else {
-        grunt.log.ok(files.length +
-                ' file' + (files.length === 1 ? '' : 's') +
-                ' correct.');
-      }
+			grunt.log.writeln(stdout);
 
-      done();
+			if (lintError) {
+				var res = stdout.split('\n');
+				var err = res[res.length - 2];
+				grunt.log.error(err);
+				grunt.warn('fix Lint issues before continuing');
+			} else {
+				grunt.log.ok(files.length +
+								' file' + (files.length === 1 ? '' : 's') +
+								' correct.');
+			}
 
-    });
+			done();
 
-  });
+		});
 
-  // task for running javascript style check
-  grunt.registerTask('jsStyle', 'javascript style check', function() {
+	});
 
-    var done = this.async();
-    var jsStyle = grunt.config('jsStyle');
-    var files = grunt.file.expand(jsStyle.files);
-    var command = jsStyle.path + ' '+ jsStyle.options + ' ' + files.join(' ');
+	// task for running javascript style check
+	grunt.registerTask('jsStyle', 'javascript style check', function () {
 
-    exec(command, function(styleError, stdout, stderr) {
+		var done = this.async();
+		var jsStyle = grunt.config('jsStyle');
+		var files = grunt.file.expand(jsStyle.files);
+		var command = jsStyle.path + ' ' + files.join(' ');
 
-      if (stderr) {
-        throw new Error(stderr);
-      }
+		exec(command, function (styleError, stdout, stderr) {
 
-      grunt.log.writeln(stdout);
+			if (stderr) {
+				throw new Error(stderr);
+			}
 
-      if (styleError) {
-        grunt.log.error(stdout.split('\n').length - 1 + ' warnings');
-        grunt.warn('fix Style issues before continuing');
-      } else {
-        grunt.log.ok(files.length +
-                ' file' + (files.length === 1 ? '' : 's') +
-                ' correct.');
-      }
+			grunt.log.writeln(stdout);
 
-      done();
+			if (styleError) {
+				grunt.log.error(stdout.split('\n').length - 1 + ' warnings');
+				grunt.warn('fix Style issues before continuing');
+			} else {
+				grunt.log.ok(files.length +
+								' file' + (files.length === 1 ? '' : 's') +
+								' correct.');
+			}
 
-    });
+			done();
 
-  });
+		});
+
+	});
 
 // register tasks as they should be in the makefile
-  grunt.registerTask('default', ['jsLint', 'jsStyle', 'test']);
-  grunt.registerTask('check', ['jsLint', 'jsStyle']);
+	grunt.registerTask('default', ['jsLint', 'jsStyle', 'test']);
+	grunt.registerTask('check', ['jsLint', 'jsStyle']);
 //  grunt.registerTask('clean', '');
-  grunt.registerTask('prepush', ['jsLint', 'jsStyle', 'test']);
-  grunt.registerTask('test', 'jasmineNode');
+	grunt.registerTask('prepush', ['jsLint', 'jsStyle', 'test']);
+	grunt.registerTask('test', ['jasmineNode', 'jasmine']);
 //  grunt.registerTask('release', ['jsLint', 'jsStyle test']);
 
 };

@@ -4,17 +4,18 @@ var express = require('express');
 var app = express();
 
 app.get('/', function (req, res) {
-	req.cloud.listMachines(function (err, machines) {
-		if (!err) {
-			res.json(machines);
-		}
-	})
+	res.json(require('./static/machines.json'));
+//	req.cloud.listMachines(function (err, machines) {
+//		if (!err) {
+//			res.json(machines);
+//		}
+//	})
 });
 
 module.exports.app = app;
 
 
-module.exports.css = [ 'css/main.css' ];
+module.exports.csss = [ 'css/main.css' ];
 module.exports.javascripts = [
 	'js/services/machine.js',
 	'js/controllers/machine-layout.js',
@@ -28,6 +29,7 @@ module.exports.authenticate = true;
 module.exports.layouts = [
 	{
 		name:'machine',
+		module:'machine',
 		include:'partial/machine.html',
 		controller:'MachineLayoutController'
 	}

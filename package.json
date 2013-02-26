@@ -10,6 +10,9 @@
   "main": "site/index.js",
   "dependencies": {
     "send": "*",
+		"bunyan": "*",
+		"uglify-js":"*",
+		"sqwish":"*",
     "express": "3.x",
     "less": "*",
     "jade": "*",
@@ -20,6 +23,7 @@
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
+		"grunt-contrib-jasmine":"*",
     "jasmine-node": "*"
   },
   "optionalDependencies": {},

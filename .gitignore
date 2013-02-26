@@ -6,9 +6,11 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.DS_Store
 
 pids
 logs
+deps
 results
 node_modules
 nbproject

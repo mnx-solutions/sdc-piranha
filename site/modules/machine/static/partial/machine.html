@@ -9,37 +9,38 @@
                         <i class="icon-search"></i>
                     </span>
                     <input type="search" class="span3" ng-model="query" ng-change="search()" placeholder="Search" name="search" id="search"/>
-                </div>
-            </div>
+
+								</div>
+            From:	<select ng-model="searchable" ng-options="val as key for (key, val) in searchOptions"></select>
+						</div>
+
         </div>
         <div class="container">
         	<div class="header">
-<!--        		<div class="selection">
-        			<input type="checkbox" id="all" data-ng-click="selectAll();" />
-        		</div>-->
-        		<div class="title name machines-id" data-ng-click="sort_by('id');">
+        		<div class="title name" data-ng-click="sortBy('id');" ng-switch on="sortIcon.id">
                     <span class="text">Name</span>
-										<i class="icon-arrow"/>
+										<i class="icon-arrow-up" ng-switch-when="up"/>
+										<i class="icon-arrow-down" ng-switch-when="down"/>
 						</div>
-        		<div class="title type machines-type" data-ng-click="sort_by('type');">
+        		<div class="title type" data-ng-click="sortBy('type');" ng-switch on="sortIcon.type">
                     <span class="text">Type</span>
-										<i class="icon-arrow"/>
+										<i class="icon-arrow-up" ng-switch-when="up"/>
+										<i class="icon-arrow-down" ng-switch-when="down"/>
 						</div>
         		<div class="title network">Network</div>
-        		<div class="title memory machines-memory" data-ng-click="sort_by('memory');">
+        		<div class="title memory" data-ng-click="sortBy('memory');" ng-switch on="sortIcon.memory">
                     <span class="text">Memory</span>
-										<i class="icon-arrow"/>
+										<i class="icon-arrow-up" ng-switch-when="up"/>
+										<i class="icon-arrow-down" ng-switch-when="down"/>
 						</div>
-        		<div class="title age machines-created" data-ng-click="sort_by('created');">
+        		<div class="title age" data-ng-click="sortBy('created');" ng-switch on="sortIcon.created">
                     <span class="text">Created</span>
-										<i class="icon-arrow"/>
+										<i class="icon-arrow-up" ng-switch-when="up"/>
+										<i class="icon-arrow-down" ng-switch-when="down"/>
 						</div>
         	</div>
 
         	<div class="machine" data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" ng-class-odd="'odd'" ng-class-even="'even'">
-<!--        		<div class="selection">
-        			<input type="checkbox" id="{{machine.id}}" data-ng-click="selectMachine(machine.id);" data-ng-checked="selection.isSelected(machine.id)"/>
-        		</div>-->
         		<div class="field name">
                     <!--
         			<a href="#!/machine/details/{{machine.id}}">{{machine.name || machine.id}}</a>
@@ -60,7 +61,7 @@
 										<li ng-class="{disabled: currentPage == 0}">
 												<a href ng-click="prevPage()">« Prev</a>
 										</li>
-										<li ng-repeat="n in range(pagedMachines.length)"
+										<li ng-repeat="n in range()"
 												ng-class="{active: n == currentPage}"
 										ng-click="setPage()">
 												<a href ng-bind="n + 1">1</a>
