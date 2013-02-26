@@ -9,13 +9,13 @@
 
 		return {
 			getUser: function(callback) {
-				return user ? callback(user) : User.get(callback);
+				return user ? (callback ? callback(user) : user) : User.get(callback);
 			},
 
 			updateUser: function(data) {
 				this.getUser(function(user) {
 					new User(ng.extend(user, data)).$save(function() {
-						$rootScope.$broadcast('account.onUpdate');
+						$rootScope.$broadcast('account:update');
 					});
 				});
 			},
@@ -36,7 +36,7 @@
 				}
 
 				new Key(data).$save(function() {
-					$rootScope.$broadcast('account.onUpdate');
+					$rootScope.$broadcast('account:update');
 					callback();
 				});
 			}
