@@ -86,40 +86,42 @@
 
 			</h2>
 		</div>
-			<ol class="nav nav-tabs" id="step-container">
+			<div class="nav nav-tabs" id="step-container">
 				<li class="active"><a>Overview</a></li>
 				<!--<li><a href="#">Intelligents</a></li>-->
-			</ol>
+			</div>
 			
-				<div class="container" style="border:1px solid #ddd;border-top:1px solid white;padding:0px 10px 10px 0px">
-						<div class="span7" style="margin-left:10px;">
+				<div style="border:1px solid #ddd;border-top:1px solid white;">
+						<div class="span7" >
 							<h4>Overview</h4>
-							<div class="row">
-								<span class="span2 key">Machine Name</span>
-								<span class="span3 value">{{selectedmachine.name}} </span>
-							</div>
+                            <table>
+							<tr >
+								<td class="span3 key">Machine Name</td>
+								<td class="span3 value">{{selectedmachine.name}} </td>
+							</tr>
 
 
-							<div class="row">
-								<span class="span2 key">Type</span>
-								<span class="span3 value">{{selectedmachine.type}}</span>
-							</div>
-							<div class="row">
-								<span class="span2 key">IP Addresses</span>
-								<span class="span3 value"><span data-ng-repeat="ip in selectedmachine.ips">{{ ip }} </span></span>
-							</div>
-							<div class="row">
-								<span class="span2 key">Image</span>
-								<span class="span3 value">{{selectedmachine.dataset}}</span>
-							</div>
-							<div class="row">
-								<span class="span2 key">Created</span>
-								<span class="span3 value">{{selectedmachine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}</span>
-							</div>
-							<div class="row">
-								<span class="span2 key">Data center</span>
-								<span class="span3 value">us-east-1</span>
-							</div>
+							<tr >
+								<td class="td3 key">Type</td>
+								<td class="td3 value">{{selectedmachine.type}}</td>
+							</tr>
+							<tr >
+								<td class="td3 key">IP Addresses</td>
+								<td class="td3 value"><span data-ng-repeat="ip in selectedmachine.ips">{{ ip }} </span></td>
+							</tr>
+							<tr >
+								<td class="td3 key">Image</td>
+								<td class="td3 value">{{selectedmachine.dataset}}</td>
+							</tr>
+							<tr >
+								<td class="td3 key">Created</td>
+								<td class="td3 value">{{selectedmachine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+							</tr>
+							<tr >
+								<td class="td3 key">Data center</td>
+								<td class="td3 value">us-east-1</td>
+							</tr>
+                            </table>
 							<br>
 							<h4>Credentials</h4>
 							<table class="table table-striped text-medium" style="width:470px">
