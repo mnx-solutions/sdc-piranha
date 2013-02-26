@@ -3,11 +3,26 @@
 (function(ng, app) {
 	app.controller(
 		'MachinesController',
-		function($scope, $filter, requestContext, account, Machines, $rootScope) {
+		function($scope, $filter, requestContext, $timeout, account, Machines, $rootScope) {
 			var renderContext = requestContext.setUpRenderContext('machine.index', $scope);
 
+			/*
 			$scope.account = account.getUser();
 			$scope.keys = account.getKeys();
+
+			$scope.$on('account.onUpdate', function() {
+				console.log('update');
+			});
+
+			account.createKey({
+				name: 'random2',
+				key: 'ssh-dss AAAAB3NzaC1kc3MAAACBAK/5+Ix1K57IWTekTt/9xdCkcE2fooFJPixf0vSg+NkQ5pgaTk5ELdWV4OGN7rBNHOpnGqsWWu76/7XEjWtFt1yq8IO0QZwFEtBFs9fNXtaBWZK3qjOcCEHJQzKnh1//DOMML+/v2nLdyleOytzTVFavu42xTcKD3vImQOzAQpnlAAAAFQCpv4Rp2eWj9gxZumYgn0Y3xPYB3QAAAIEAlnckiRNuYgUelbCAKulh9UNQCTdXGv6gf33WOw1+TpydHJO6vFWFFnsOvACmVPaOXl+RagtCuY9XrHwr+0r/7Nt3AZ9wrvu9noGjt6YCVTl83TQfkylBfv9rqJJGpp9+wVEfZC17aKcu1lqelsr7Bhv8JukZiuPs6ATZxTa+IgAAAACBAI0MbhcaGy/H9ODHT92ScwTBzIs2DsjjPgrew2oCeKMVsvK4r5goKQyGBVzipCR72Fq2fpyAc3FA5fxdN6HQGMZSmwFf34xvMldEb4ho8Lg8HdXFADGTX2lfzjMd6jwkJFutgfxnPYUIUkn4hEe8msdW84a17Kk9S4cG9MMQf98o user@localhost'
+			});
+
+			$timeout(function() {
+				account.updateUser();
+			}, 2000);
+*/
 
 			$scope.sortingOrder = 'created';
 			$scope.reverse = false;
