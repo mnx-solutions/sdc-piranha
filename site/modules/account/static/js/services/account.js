@@ -5,9 +5,11 @@
 		var User = $resource('/account');
 		var Key = $resource('/account/keys/:key');
 
+		var user = User.get();
+
 		return {
 			getUser: function(callback) {
-				return User.get(callback);
+				return user ? callback(user) : User.get(callback);
 			},
 
 			updateUser: function(data) {
@@ -22,17 +24,20 @@
 				return Key.query({ key: key });
 			},
 
-			createKey: function(data) {
+			createKey: function(data, callback) {
 				if (!data.name) {
-					throw new Error('Key name is missing');
+					callback(new Error('Key name is missing'));
+					return;
 				}
 
 				if (!data.key) {
-					throw new Error('Key content is missing');
+					callback(new Error('Key content is missing'));
+					return;
 				}
 
 				new Key(data).$save(function() {
 					$rootScope.$broadcast('account.onUpdate');
+					callback();
 				});
 			}
 		};
