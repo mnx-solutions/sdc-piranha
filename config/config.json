@@ -1,7 +1,10 @@
 {
-  "log": {
-    "name": "piranha",
-    "level": "debug"
-  },
-  "minify": true
+    "log":{
+        "name":"piranha",
+        "level":"debug"
+    },
+    "minify":true,
+    "cloudapi":{
+        "url": "https://10.88.88.4"
+    }
 }
