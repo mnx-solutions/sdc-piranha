@@ -31,8 +31,8 @@
 				partial: 'static/partial/steps/step-keys.html'
 			}));
 
-			navigation.item(0).state = NavigationItem.STATE.INPROGRESS;
-			navigation.item(0).selected = true;
+			navigation.item(3).state = NavigationItem.STATE.INPROGRESS;
+			navigation.item(3).selected = true;
 
 			$scope.navigation = navigation;
 
@@ -60,17 +60,16 @@
 			 * Events
 			 */
 
-			$scope.$on('step:success', function() {
-				console.log('success');
-
+			$scope.$on('step:success', function(scope, item) {
 				// Proceed to the next step
 				navigation.selectedItem.state = NavigationItem.STATE.COMPLETE;
 				navigation.selectNextItem();
 				navigation.selectedItem.state = NavigationItem.STATE.INPROGRESS;
 			});
 
-			$scope.$on('step:error', function() {
+			$scope.$on('step:error', function(scope, err, item) {
 				console.log('error');
+				console.log(arguments);
 			});
 		}
 	);

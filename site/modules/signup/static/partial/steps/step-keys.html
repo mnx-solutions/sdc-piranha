@@ -1,4 +1,4 @@
-<div data-ng-controller="VerificationController" class="container">
+<div data-ng-controller="KeysController" class="container">
 	<form class="form-horizontal" data-ng-submit="submit()">
 		<div>
 			<h2>SSH Keys</h2>
@@ -8,25 +8,42 @@
 			<div data-ng-include src="'static/partial/steps/footer.html'"></div>
 		</div>
 
-		<div id="keyModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 id="myModalLabel">Add A New SSH Key</h3>
-			</div>
-			<div class="modal-body">
-				<p>
-					<div class="control-group">
+		<div id="keyModal" class="modal fade keys-modal" tabindex="-1" role="dialog" aria-hidden="true">
+			<form class="form-inline" data-ng-submit="submit()">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3>Add A New SSH Key</h3>
+				</div>
+				<div class="modal-body">
+
+					<div class="keys-modal-controls control-group span8">
 						<div class="default-label">Name</div>
-						<input type="text" class="keyName" data-ng-model="keyName" required />
+						<input type="text" class="name" data-ng-model="name" data-ng-required />
 						<div class="default-label">SSH Key</div>
-						<textarea class="keyContent"></textarea>
+						<textarea class="content" data-ng-model="content" data-ng-required></textarea>
 					</div>
-				</p>
-		  </div>
-		  <div class="modal-footer">
-		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		    <button class="btn btn-primary">Save changes</button>
-		  </div>
+
+					<div class="keys-modal-info span4 alert">
+						<h5>More about SSH Keys</h5>
+						<p></p>
+						<p>
+							Need help generating your <a href="http://wiki.joyent.com/display/jpc2/Accessing+Your+Machine+from+Windows" target="_blank">SSH key in Windows</a>?
+						</p>
+
+						<p>
+							Need help generating your <a href="http://wiki.joyent.com/display/jpc2/Accessing+Your+Machine+from+Mac+OS+X" target="_blank">SSH key in Mac</a>?
+						</p>
+
+						<p>
+							Learn more about <a href="http://wiki.joyent.com/display/jpc2/How+to+use+SSH+Keys+with+a+Joyent+Machine" target="_blank">SSH keys in general here</a>.
+						</p>
+					</div>
+			  </div>
+			  <div class="modal-footer">
+			    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			    <button type="submit" class="btn btn-primary">Add this key</button>
+			  </div>
+		  </form>
 		</div>
 	</form>
 </div>
