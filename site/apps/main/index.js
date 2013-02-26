@@ -21,7 +21,8 @@ module.exports = {
 		'/js/filters/fromNow.js'
 	],
 	csss:[
-		'/vendor/bootstrap/css/bootstrap.min.css'
+		'/vendor/bootstrap/css/bootstrap.min.css',
+        '/css/all.css'
 	],
 	layouts:[
 		{
