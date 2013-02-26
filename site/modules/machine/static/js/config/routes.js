@@ -5,7 +5,7 @@ JoyentPortal.config(function($routeProvider) {
     .when('/machine', {
       action: 'machine.index'
     })
-    .when('/machine/details', {
+    .when('/machine/details/:machineid', {
       action: 'machine.details'
     });
 });

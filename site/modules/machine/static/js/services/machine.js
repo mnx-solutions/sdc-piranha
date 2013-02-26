@@ -19,7 +19,7 @@
 		/* find machine by uuid */
 		service.getMachine = function (uuid) {
 			return machines.filter(function (machine) {
-				return machine.uuid === uuid;
+				return machine.id === uuid;
 			});
 		};
 
