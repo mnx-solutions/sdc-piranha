@@ -1,80 +1,79 @@
 <div data-ng-switch="subview">
   <div data-ng-switch-when="index" data-ng-controller="MachinesController">
     <div class="machines">
-        <h3>Machines</h3>
-        {{account | json}}
-        {{keys | json}}
-        <div class="controls">
-            <div class="filter">
-                <div class="input-prepend">
-                    <span class="add-on">
-                        <i class="icon-search"></i>
-                    </span>
-                    <input type="search" class="span3" ng-model="query" ng-change="search()" placeholder="Search" name="search" id="search"/>
+<div class="container">
+					<div class="page-header">
+					<h1>Compute <small>A list of your computers and services</small> <a href="/joyent/machine/add/" class="btn pull-right">Add new machine</a></h1>
+				</div>
+				<div class="container controls no-corner gray glass">
+					<input type="search" class="search-query pull-right" data-ng-model="query" data-ng-change="search()" placeholder="Search" name="search" id="search">
+					<select class="search-options pull-right" ng-model="searchable" ng-options="val as key for (key, val) in searchOptions"></select>
+				</div>
+				<table class="table table-striped table-hover text-medium">
+					<thead>
+						<tr>
+							<td>#</td>
+							<td class="sortable" data-ng-click="sortBy('id');" ng-switch on="sortIcon.id">
+										<span class="text">Name</span>
+										<i class="icon-arrow-up" ng-switch-when="up"/>
+										<i class="icon-arrow-down" ng-switch-when="down"/>
+							</td>
+							<td class="sortable" data-ng-click="sortBy('type');" ng-switch on="sortIcon.type">
+											<span class="text">Type</span>
+											<i class="icon-arrow-up" ng-switch-when="up"/>
+											<i class="icon-arrow-down" ng-switch-when="down"/>
+							</td>
+							<td>Network</td>
+							<td class="sortable" data-ng-click="sortBy('memory');" ng-switch on="sortIcon.memory">
+											<span class="text">Memory</span>
+											<i class="icon-arrow-up" ng-switch-when="up"/>
+											<i class="icon-arrow-down" ng-switch-when="down"/>
+							</td>
+							<td class="sortable" data-ng-click="sortBy('created');" ng-switch on="sortIcon.created">
+											<span class="text">Created</span>
+											<i class="icon-arrow-up" ng-switch-when="up"/>
+											<i class="icon-arrow-down" ng-switch-when="down"/>
+							</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" data-ng-class-odd="odd" ng-class-even="even">
+							<td>
+								<input type="checkbox" id="machine-{{machine.id}}" />
+							</td>
+							<td>
+								<a href="#!/machine/details/{{machine.id}}">{{machine.name || machine.id}}</a>
+							</td>
+							<td>{{machine.type}}</td>
+							<td>
+								<span data-ng-repeat="ip in machine.ips">
+									{{ ip }}
+								</span>
+							</td>
+							<td>{{machine.memory}}MB</td>
+							<td>{{machine.created | fromNow}}</td>
 
-								</div>
-            From:	<select ng-model="searchable" ng-options="val as key for (key, val) in searchOptions"></select>
-						</div>
+						</tr>
+					</tbody>
+				</table>
 
-        </div>
-        <div class="container">
-        	<div class="header">
-        		<div class="title name" data-ng-click="sortBy('id');" ng-switch on="sortIcon.id">
-                    <span class="text">Name</span>
-										<i class="icon-arrow-up" ng-switch-when="up"/>
-										<i class="icon-arrow-down" ng-switch-when="down"/>
-						</div>
-        		<div class="title type" data-ng-click="sortBy('type');" ng-switch on="sortIcon.type">
-                    <span class="text">Type</span>
-										<i class="icon-arrow-up" ng-switch-when="up"/>
-										<i class="icon-arrow-down" ng-switch-when="down"/>
-						</div>
-        		<div class="title network">Network</div>
-        		<div class="title memory" data-ng-click="sortBy('memory');" ng-switch on="sortIcon.memory">
-                    <span class="text">Memory</span>
-										<i class="icon-arrow-up" ng-switch-when="up"/>
-										<i class="icon-arrow-down" ng-switch-when="down"/>
-						</div>
-        		<div class="title age" data-ng-click="sortBy('created');" ng-switch on="sortIcon.created">
-                    <span class="text">Created</span>
-										<i class="icon-arrow-up" ng-switch-when="up"/>
-										<i class="icon-arrow-down" ng-switch-when="down"/>
-						</div>
-        	</div>
-
-        	<div class="machine" data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" ng-class-odd="'odd'" ng-class-even="'even'">
-        		<div class="field name">
-                    <!--
-        			<a href="#!/machine/details/{{machine.id}}">{{machine.name || machine.id}}</a>
-                    -->
-                    {{machine.name || machine.id}}
-        		</div>
-        		<div class="field type">{{machine.type}}</div>
-        		<div class="field network">
-    	    		<span data-ng-repeat="ip in machine.ips">
-    	    			{{ ip }}
-    	    		</span>
-        		</div>
-        		<div class="field memory">{{machine.memory}}MB</div>
-        		<div class="field age">{{machine.created | fromNow}}</div>
-        	</div>
-						<div class="pagination pull-right">
-								<ul>
-										<li ng-class="{disabled: currentPage == 0}">
-												<a href ng-click="prevPage()">« Prev</a>
-										</li>
-										<li ng-repeat="n in range()"
-												ng-class="{active: n == currentPage}"
-										ng-click="setPage()">
-												<a href ng-bind="n + 1">1</a>
-										</li>
-										<li ng-class="{disabled: currentPage == pagedMachines.length - 1}">
-												<a href ng-click="nextPage()">Next »</a>
-										</li>
-								</ul>
-						</div>
-        </div>
+				<div class="pagination pagination-small pagination-centered">
+					<ul>
+							<li data-ng-class="{disabled: currentPage == 0}">
+									<a href ng-click="prevPage()">« Prev</a>
+							</li>
+							<li data-ng-repeat="n in range()"
+									data-ng-class="{active: n == currentPage}"
+									data-ng-click="setPage()">
+									<a href ng-bind="n + 1">1</a>
+							</li>
+							<li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+									<a href ng-click="nextPage()">Next »</a>
+							</li>
+					</ul>
+				</div>
     </div>
+		</div>
   </div>
   <div data-ng-switch-when="details" data-ng-controller="MachineController">
   	Placeholder....

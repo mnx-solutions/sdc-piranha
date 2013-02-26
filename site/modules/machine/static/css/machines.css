@@ -1,0 +1,51 @@
+.no-corner {
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+.table {
+	display:table;
+}
+.table td {
+	padding:4px;
+	line-height:20px;
+	margin-top:0px;
+	vertical-align: middle;
+	border-top: 1px solid #dddddd;
+}
+.table .sortable{
+	cursor:pointer;
+}
+.table thead {
+	color: #0088cc;
+	font-weight:bold;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+.table thead th {
+	text-align:left;
+	vertical-align: middle;
+}
+.text-small {
+	font-size:11px;
+}
+.text-medium {
+	font-size:12px;
+}
+.search-query {
+	margin:7px 7px 0 10px;
+}
+.search-options {
+	margin:7px 7px 0 10px;
+}
+.gray {
+	background-color:#eee;
+	border:1px solid #ddd;
+	padding:0px 5px 5px 5px;
+}
+.alert,.glass {
+	background-image: url(../img/bg-glass.png);
+	background-repeat:repeat-x;
+	background-position:0px 40%;
+}
