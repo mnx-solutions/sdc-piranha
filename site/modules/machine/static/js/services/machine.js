@@ -6,7 +6,6 @@
 		var service = {};
 
 		var machines = [];
-		var machineMap = {};
 
 		// load machines
 		machines = $resource('/machine', {}, {}).query();
@@ -25,4 +24,4 @@
 
 		return service;
 	}]);
-})(window.angular, window.JoyentPortal);
+}(window.angular, window.JP.getModule('Machine')));

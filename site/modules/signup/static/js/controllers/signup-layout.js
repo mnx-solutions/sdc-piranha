@@ -1,10 +1,10 @@
 'use strict';
 
-(function(ng, app) {
+(function (ng, app) {
 	app.controller(
 		'SignupLayoutController',
-		function($scope, requestContext) {
+		['$scope', 'requestContext', function ($scope, requestContext) {
 			var renderContext = requestContext.setUpRenderContext('signup', $scope);
-		}
+		}]
 	);
-})(window.angular, window.JoyentPortal);
+}(window.angular, window.JP.getModule('Signup')));

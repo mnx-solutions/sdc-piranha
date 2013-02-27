@@ -190,15 +190,15 @@
 			
 			<script>
 			$('.-help').bind({
-				mouseover:function(){
+				mouseover:function (){
 					$(this).tooltip('show')
 				},
-				mouseout:function(){
+				mouseout:function (){
 					$(this).tooltip('hide')
 				},
 			});
 			$('.show-password').bind({
-				click:function(){
+				click:function (){
 					$('#pwd-'+$(this).attr("rel")).toggle()
 					$('#label-'+$(this).attr("rel")).toggle()
 					if($('#pwd-'+$(this).attr("rel")).is(":visible")){

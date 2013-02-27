@@ -11,8 +11,8 @@ var client = smartdc.createClient({
   password: 'parool'
 });
 
-app.get('/', function(req, res, next) {
-	client.getAccount(function(err, account) {
+app.get('/', function (req, res, next) {
+	client.getAccount(function (err, account) {
 		if (err) {
 			res.send(500, err.message);
 			return;
@@ -22,8 +22,8 @@ app.get('/', function(req, res, next) {
 	});
 });
 
-app.post('/', function(req, res, next) {
-	client.updateAccount(req.body, function(err, account) {
+app.post('/', function (req, res, next) {
+	client.updateAccount(req.body, function (err, account) {
 		if (err) {
 			res.send(500, err.message);
 			return;
@@ -33,8 +33,8 @@ app.post('/', function(req, res, next) {
 	});
 });
 
-app.get('/keys', function(req, res, next) {
-	client.listKeys(function(err, keys) {
+app.get('/keys', function (req, res, next) {
+	client.listKeys(function (err, keys) {
 		if (err) {
 			res.send(500, err.message);
 			return;
@@ -44,8 +44,8 @@ app.get('/keys', function(req, res, next) {
 	});
 });
 
-app.post('/keys', function(req, res, next) {
-	client.createKey({ name: req.body.name, key: req.body.key }, function(err, key) {
+app.post('/keys', function (req, res, next) {
+	client.createKey({ name: req.body.name, key: req.body.key }, function (err, key) {
 		if (err) {
 			res.send(500, err.message);
 			return;
@@ -59,6 +59,7 @@ module.exports.app = app;
 
 module.exports.csss = [ 'css/main.css' ];
 module.exports.javascripts = [
+	'js/module.js',
 	'js/services/account.js'
 ];
 

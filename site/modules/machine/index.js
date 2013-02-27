@@ -20,6 +20,7 @@ module.exports.csss = [
 ];
 
 module.exports.javascripts = [
+	'js/module.js',
 	'js/services/machine.js',
 	'js/controllers/machine-layout.js',
 	'js/controllers/machines.js',
@@ -31,9 +32,9 @@ module.exports.authenticate = true;
 
 module.exports.layouts = [
 	{
-		name:'machine',
-		module:'machine',
-		include:'partial/machine.html',
-		controller:'MachineLayoutController'
+		name: 'machine',
+		module: 'machine',
+		include: 'partial/machine.html',
+		controller: 'MachineLayoutController'
 	}
 ];

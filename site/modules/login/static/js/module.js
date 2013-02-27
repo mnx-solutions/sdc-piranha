@@ -1,5 +1,3 @@
 'use strict';
 
-var LoginModule = angular.module('LoginModule', ['ngResource']);
-
-MODULES.push('LoginModule');
+window.JP.createModule('Login', ['ngResource']);

@@ -17,6 +17,6 @@ var modulizer = new Modulizer(app);
 
 modulizer.loadApps(['main', 'landing', 'signup', 'login']);
 
-modulizer.run(function() {
-  app.listen(3000);
+modulizer.run(function () {
+	app.listen(3000);
 });

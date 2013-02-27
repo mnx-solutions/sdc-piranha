@@ -1,10 +1,10 @@
 'use strict';
 
-(function(ng, app) {
+(function (ng, app) {
 	app.controller(
 		'MachineLayoutController',
-		function($scope, requestContext) {
+		['$scope', 'requestContext', function ($scope, requestContext) {
 			var renderContext = requestContext.setUpRenderContext('machine', $scope);
-		}
+		}]
 	);
-})(window.angular, window.JoyentPortal);
+}(window.angular, window.JP.getModule('Machine')));

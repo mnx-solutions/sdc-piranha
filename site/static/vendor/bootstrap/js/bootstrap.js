@@ -1094,7 +1094,7 @@
 
       clearTimeout(this.timeout)
       self.hoverState = 'in'
-      this.timeout = setTimeout(function() {
+      this.timeout = setTimeout(function () {
         if (self.hoverState == 'in') self.show()
       }, self.options.delay.show)
     }
@@ -1106,7 +1106,7 @@
       if (!self.options.delay || !self.options.delay.hide) return self.hide()
 
       self.hoverState = 'out'
-      this.timeout = setTimeout(function() {
+      this.timeout = setTimeout(function () {
         if (self.hoverState == 'out') self.hide()
       }, self.options.delay.hide)
     }
@@ -1737,7 +1737,7 @@
  * ============================================================ */
 
 
-!function($){
+!function ($){
 
   "use strict"; // jshint ;_;
 
@@ -1806,7 +1806,7 @@
         return this.shown ? this.hide() : this
       }
 
-      items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source
+      items = $.isfunction (this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source
 
       return items ? this.process(items) : this
     }
@@ -1904,7 +1904,7 @@
         .on('mouseenter', 'li', $.proxy(this.mouseenter, this))
     }
 
-  , eventSupported: function(eventName) {
+  , eventSupported: function (eventName) {
       var isSupported = eventName in this.$element
       if (!isSupported) {
         this.$element.setAttribute(eventName, 'return;')

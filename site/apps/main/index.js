@@ -1,16 +1,17 @@
 module.exports = {
-	route:'/app',
-	index:'app.jade',
-	modules:[
+	route: '/app',
+	index: 'app.jade',
+	modules: [
 		'menu', 'machine', 'login', 'account'
 	],
-	authenticate:true,
-	javascripts:[
+	authenticate: true,
+	javascripts: [
 		'//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js',
 		'//raw.github.com/timrwood/moment/2.0.0/min/moment.min.js',
 		'/vendor/bootstrap/js/bootstrap.min.js',
-		'/vendor/angular/angular.js',
+		'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.js',
 		'/vendor/angular/angular-resource.js',
+		'/js/jp.js',
 		'/js/app.js',
 		'/js/config/routes.js',
 		'/js/http-auth-interceptor.js',
@@ -20,14 +21,14 @@ module.exports = {
 		'/js/values/render-context.js',
 		'/js/filters/fromNow.js'
 	],
-	csss:[
+	csss: [
 		'/vendor/bootstrap/css/bootstrap.min.css',
-        '/css/all.css'
+		'/css/all.css'
 	],
-	layouts:[
+	layouts: [
 		{
-			name:'wide',
-			include:'/partials/layouts/wide.html'
+			name: 'wide',
+			include: '/partials/layouts/wide.jade'
 		}
 	]
 };

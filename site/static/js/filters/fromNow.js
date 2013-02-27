@@ -1,9 +1,7 @@
 'use strict';
 
-(function(ng, app) {
-	app.filter('fromNow', function() {
-    	return function(dateString) {
-      		return moment(new Date(dateString)).fromNow();
-    	};
-	});
-})(window.angular, window.JoyentPortal);
+window.JP.main.filter('fromNow', function () {
+	return function (dateString) {
+		return window.moment(new Date(dateString)).fromNow();
+	};
+});
