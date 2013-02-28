@@ -4,7 +4,7 @@ describe("Login service", function () {
 
     beforeEach(function () {
         // load module
-        module('LoginModule');
+        module('Login');
 
         inject(function ($injector) {
             $httpBackend = $injector.get('$httpBackend');
@@ -18,7 +18,7 @@ describe("Login service", function () {
         $httpBackend.when('POST', '/login').respond({success:true});
         $httpBackend.expectPOST('/login', credentials);
 
-        Login(credentials,function(user){
+        Login.try(credentials,function(user){
             expect(user.success).toEqual(true);
         });
         $httpBackend.flush();
