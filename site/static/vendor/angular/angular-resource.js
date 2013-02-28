@@ -3,7 +3,7 @@
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
-(function (window, angular, undefined) {
+(function(window, angular, undefined) {
 'use strict';
 
 /**
@@ -72,7 +72,7 @@
  *   update, delete) on server-side data like this:
  *   <pre>
         var User = $resource('/user/:userId', {userId:'@id'});
-        var user = User.get({userId:123}, function () {
+        var user = User.get({userId:123}, function() {
           user.abc = true;
           user.$save();
         });
@@ -106,7 +106,7 @@
       });
 
      // We can retrieve a collection from the server
-     var cards = CreditCard.query(function () {
+     var cards = CreditCard.query(function() {
        // GET: /user/123/card
        // server returns: [ {id:456, number:'1234', name:'Smith'} ];
 
@@ -143,7 +143,7 @@
 
    <pre>
      var User = $resource('/user/:userId', {userId:'@id'});
-     var user = User.get({userId:123}, function () {
+     var user = User.get({userId:123}, function() {
        user.abc = true;
        user.$save();
      });
@@ -155,9 +155,9 @@
  *
    <pre>
      var User = $resource('/user/:userId', {userId:'@id'});
-     User.get({userId:123}, function (u, getResponseHeaders){
+     User.get({userId:123}, function(u, getResponseHeaders){
        u.abc = true;
-       u.$save(function (u, putResponseHeaders) {
+       u.$save(function(u, putResponseHeaders) {
          //u => saved user object
          //putResponseHeaders => $http header getter
        });
@@ -180,10 +180,10 @@
          }
 
          BuzzController.prototype = {
-           fetch: function () {
+           fetch: function() {
              this.activities = this.Activity.get({userId:this.userId});
            },
-           expandReplies: function (activity) {
+           expandReplies: function(activity) {
              activity.replies = this.Activity.replies({userId:this.userId, activityId:activity.id});
            }
          };
@@ -213,7 +213,7 @@
     </doc:example>
  */
 angular.module('ngResource', ['ng']).
-  factory('$resource', ['$http', '$parse', function ($http, $parse) {
+  factory('$resource', ['$http', '$parse', function($http, $parse) {
     var DEFAULT_ACTIONS = {
       'get':    {method:'GET'},
       'save':   {method:'POST'},
@@ -226,7 +226,7 @@ angular.module('ngResource', ['ng']).
         extend = angular.extend,
         copy = angular.copy,
         isFunction = angular.isFunction,
-        getter = function (obj, path) {
+        getter = function(obj, path) {
           return $parse(path)(obj);
         };
 
@@ -273,7 +273,7 @@ angular.module('ngResource', ['ng']).
       this.template = template = template + '#';
       this.defaults = defaults || {};
       var urlParams = this.urlParams = {};
-      forEach(template.split(/\W/), function (param){
+      forEach(template.split(/\W/), function(param){
         if (param && template.match(new RegExp("[^\\\\]:" + param + "\\W"))) {
           urlParams[param] = true;
         }
@@ -282,14 +282,14 @@ angular.module('ngResource', ['ng']).
     }
 
     Route.prototype = {
-      url: function (params) {
+      url: function(params) {
         var self = this,
             url = this.template,
             val,
             encodedVal;
 
         params = params || {};
-        forEach(this.urlParams, function (_, urlParam){
+        forEach(this.urlParams, function(_, urlParam){
           val = params.hasOwnProperty(urlParam) ? params[urlParam] : self.defaults[urlParam];
           if (angular.isDefined(val) && val !== null) {
             encodedVal = encodeUriSegment(val);
@@ -300,7 +300,7 @@ angular.module('ngResource', ['ng']).
         });
         url = url.replace(/\/?#$/, '');
         var query = [];
-        forEach(params, function (value, key){
+        forEach(params, function(value, key){
           if (!self.urlParams[key]) {
             query.push(encodeUriQuery(key) + '=' + encodeUriQuery(value));
           }
@@ -320,7 +320,7 @@ angular.module('ngResource', ['ng']).
       function extractParams(data, actionParams){
         var ids = {};
         actionParams = extend({}, paramDefaults, actionParams);
-        forEach(actionParams, function (value, key){
+        forEach(actionParams, function(value, key){
           ids[key] = value.charAt && value.charAt(0) == '@' ? getter(data, value.substr(1)) : value;
         });
         return ids;
@@ -330,9 +330,9 @@ angular.module('ngResource', ['ng']).
         copy(value || {}, this);
       }
 
-      forEach(actions, function (action, name) {
+      forEach(actions, function(action, name) {
         var hasBody = action.method == 'POST' || action.method == 'PUT' || action.method == 'PATCH';
-        Resource[name] = function (a1, a2, a3, a4) {
+        Resource[name] = function(a1, a2, a3, a4) {
           var params = {};
           var data;
           var success = noop;
@@ -344,8 +344,8 @@ angular.module('ngResource', ['ng']).
             //fallthrough
           case 3:
           case 2:
-            if (isfunction (a2)) {
-              if (isfunction (a1)) {
+            if (isFunction(a2)) {
+              if (isFunction(a1)) {
                 success = a1;
                 error = a2;
                 break;
@@ -361,7 +361,7 @@ angular.module('ngResource', ['ng']).
               break;
             }
           case 1:
-            if (isfunction (a1)) success = a1;
+            if (isFunction(a1)) success = a1;
             else if (hasBody) data = a1;
             else params = a1;
             break;
@@ -376,13 +376,13 @@ angular.module('ngResource', ['ng']).
             method: action.method,
             url: route.url(extend({}, extractParams(data, action.params || {}), params)),
             data: data
-          }).then(function (response) {
+          }).then(function(response) {
               var data = response.data;
 
               if (data) {
                 if (action.isArray) {
                   value.length = 0;
-                  forEach(data, function (item) {
+                  forEach(data, function(item) {
                     value.push(new Resource(item));
                   });
                 } else {
@@ -396,12 +396,12 @@ angular.module('ngResource', ['ng']).
         };
 
 
-        Resource.bind = function (additionalParamDefaults){
+        Resource.bind = function(additionalParamDefaults){
           return ResourceFactory(url, extend({}, paramDefaults, additionalParamDefaults), actions);
         };
 
 
-        Resource.prototype['$' + name] = function (a1, a2, a3) {
+        Resource.prototype['$' + name] = function(a1, a2, a3) {
           var params = extractParams(this),
               success = noop,
               error;
@@ -410,7 +410,7 @@ angular.module('ngResource', ['ng']).
           case 3: params = a1; success = a2; error = a3; break;
           case 2:
           case 1:
-            if (isfunction (a1)) {
+            if (isFunction(a1)) {
               success = a1;
               error = a2;
             } else {
