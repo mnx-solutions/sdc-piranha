@@ -65,7 +65,13 @@ module.exports = function (grunt) {
             directory: './'
         },
         jasmine: {
-            directory: ''
+            tests: {
+                src: ["site/static/vendor/angular/angular.js","site/static/vendor/angular/angular-resource.js",
+                    "test/angular-mocks.js","site/static/js/app.js", "site/modules/login/static/js/module.js", "site/modules/login/static/js/services/login.js"],
+                options: {
+                    specs: 'site/modules/**/test.js'
+                }
+            }
         }
     });
 
