@@ -1,6 +1,6 @@
 'use strict';
 
-(function (ng, app) {
+(function (app) {
     // I provide information about the current route request.
 	app.factory('Menu', ["$resource", function ($resource){
 
