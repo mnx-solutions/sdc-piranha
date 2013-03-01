@@ -1,6 +1,6 @@
 var exec = require('child_process').exec;
 var fs = require('fs');
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
     grunt.initConfig({
         init: {
@@ -25,41 +25,62 @@ module.exports = function (grunt) {
             node: {
                 path: './<%= deps.jsLint.path %>/build/install/jsl',
                 files: {
-                    src:[
-                    '**/*.js',
-                    '!**/node_modules/**',
-                    '!**/deps/**',
-                    '!**/static/**',
-                    '!**/test/**',
-                    '!**/*.spec.js'
-                ]
+                    src: [
+                        '**/*.js',
+                        '!**/node_modules/**',
+                        '!**/deps/**',
+                        '!**/static/**',
+                        '!**/test/**',
+                        '!**/*.spec.js'
+                    ]
                 },
                 conf: './tools/jsl.node.conf',
                 options: '--nologo --nofilelisting --conf=<%= jsLint.node.conf %>'
-            }
-            ,client: {
+            },
+            client: {
                 path: './<%= deps.jsLint.path %>/build/install/jsl',
                 files: {
-                    src:[
-                    '**/static/**/*.js',
-                    '!**/node_modules/**',
-                    '!**/vendor/**',
-                    '!**/*.spec.js'
-                ]
+                    src: [
+                        '**/static/**/*.js',
+                        '!**/node_modules/**',
+                        '!**/vendor/**',
+                        '!**/*.spec.js'
+                    ]
                 },
                 conf: './tools/jsl.web.conf',
                 options: '--nologo --nofilelisting --conf=<%= jsLint.client.conf %>'
             }
         },
         jsStyle: {
-            path: './<%= deps.jsStyle.path %>/jsstyle',
-            conf: './tools/jsstyle.conf',
-            options: '-f <%= jsStyle.conf %>',
-            files: ['**/*.js',
-                '!**/node_modules/**',
-                '!**/vendor/**',
-                '!**/deps/**',
-                '!**/*.spec.js']
+            node: {
+                path: './<%= deps.jsStyle.path %>/jsstyle',
+                conf: './tools/jsstyle.conf',
+                options: '-f <%= jsStyle.client.conf %>',
+                files: {
+                    src: [
+                        '**/*.js',
+                        '!**/node_modules/**',
+                        '!**/deps/**',
+                        '!**/static/**',
+                        '!**/test/**',
+                        '!**/*.spec.js'
+                    ]
+                }
+            },
+            client: {
+                path: './<%= deps.jsStyle.path %>/jsstyle',
+                conf: './tools/jsstyle.conf',
+                options: '-f <%= jsStyle.client.conf %>',
+                files: {
+                    src: [
+                        '**/static/**/*.js',
+                        '!**/node_modules/**',
+                        '!**/vendor/**',
+                        '!**/*.spec.js'
+                    ]
+                }
+            }
+
         },
         jasmineNode: {
             directory: './'
@@ -73,7 +94,7 @@ module.exports = function (grunt) {
                     "site/static/js/*.js",
                     "site/static/js/**/*.js",
                     "site/modules/**/static/js/module.js",
-                    "site/modules/**/static/js/**/*.js",
+                                       "site/modules/**/static/js/**/*.js",
                     "**/modules/machine/**/test/mock/*.js"
                 ],
                 options: {
@@ -132,6 +153,7 @@ module.exports = function (grunt) {
         fs.exists(precommitDest, function(exists) {
             if (!exists) {
                 grunt.file.copy(precommit, precommitDest);
+                exec('chmod +x ' + precommitDest);
             }
             done();
         });
@@ -168,11 +190,11 @@ module.exports = function (grunt) {
 
             });
 
-    function getErrors(stdout, useStrictErr){
+    function getErrors(stdout, useStrictErr) {
         var messages = stdout[stdout.length - 2].split(', ');
         var warnings = parseInt(messages.pop(), 10);
 
-        if(warnings - useStrictErr > 0){
+        if (warnings - useStrictErr > 0) {
             messages[1] = (warnings - useStrictErr) + ' warning(s)';
             messages.push(useStrictErr + ' use Strict warning(s)');
             return messages.join(', ');
@@ -180,11 +202,11 @@ module.exports = function (grunt) {
 
         return false;
     }
-    function useStrictFilter(line){
-        if(line.indexOf('(1):') === -1 && line.indexOf('want_assign_or_call') === -1)
-            return true;
+    function useStrictFilter(line) {
+        if (line.indexOf('(1):') !== -1 && line.indexOf('want_assign_or_call') !== -1)
+            return false;
 
-        return false;
+        return true;
     }
 
     // task for running javascript lint for node files and
@@ -208,22 +230,22 @@ module.exports = function (grunt) {
             }
 
             var errors = false;
-
+            
             var stdoutList = stdout.split('\n');
-            var newStd =  stdoutList.filter(useStrictFilter);
+            var newStd = stdoutList.filter(useStrictFilter);
             var useStrictErr = stdoutList.length - newStd.length;
 
             var output = newStd.slice(0, newStd.length - 2).join('\n');
-            grunt.log.writeln(output);
+                grunt.log.writeln(output);
 
-            if(lintError){
+            if (lintError) {
                 errors = getErrors(newStd, useStrictErr);
             }
-            if (errors) {
-                grunt.log.error(errors);
+                if (errors) {
+                        grunt.log.error(errors);
                 grunt.warn('fix Lint issues before continuing');
             } else {
-                if(useStrictErr) {
+                if (useStrictErr) {
                     grunt.log.writeln('>> ' + useStrictErr + ' use strict warning(s)');
                 }
                 grunt.log.ok(files.length +
@@ -238,12 +260,12 @@ module.exports = function (grunt) {
     });
 
     // task for running javascript style check
-    grunt.registerTask('jsStyle', 'javascript style check', function() {
+
+    grunt.registerMultiTask('jsStyle', 'javascript style check', function() {
 
         var done = this.async();
-        var jsStyle = grunt.config('jsStyle');
-        var files = grunt.file.expand(jsStyle.files);
-        var command = jsStyle.path + ' ' + jsStyle.options + ' ' + files.join(' ');
+        var files = this.filesSrc;
+        var command = this.data.path + ' ' + this.data.options + ' ' + files.join(' ');
 
         exec(command, function(styleError, stdout, stderr) {
 

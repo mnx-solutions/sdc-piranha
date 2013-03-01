@@ -1,5 +1,5 @@
 var MockMachines = {
-    getMachines:function(){
+    getMachines:function (){
         return [{
                   "id": "104904f3-2ba3-428d-918f-b2bac299ff3f",
                   "name": 'Marabu',

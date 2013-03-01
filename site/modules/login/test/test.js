@@ -18,7 +18,7 @@ describe("Login service", function () {
         $httpBackend.when('POST', '/login').respond({success:true});
         $httpBackend.expectPOST('/login', credentials);
 
-        Login.try(credentials,function(user){
+        Login.try(credentials,function (user){
             expect(user.success).toEqual(true);
         });
         $httpBackend.flush();

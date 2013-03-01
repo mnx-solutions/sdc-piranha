@@ -21,14 +21,14 @@ var $scope;
         expect($scope.machines.length).toEqual(6);
     });
 
-    it('filters machines', function(){
+    it('filters machines', function (){
         $scope.searchable = $scope.searchOptions.Name;
         $scope.query = 'Marabu';
         $scope.search();
         expect($scope.filteredMachines.length).toEqual(1);
     });
 
-    it('paginates machines', function(){
+    it('paginates machines', function (){
         $scope.search();
         expect($scope.pagedMachines.length).toEqual(2);
         $scope.itemsPerPage = 2;
