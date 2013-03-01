@@ -66,10 +66,20 @@ module.exports = function (grunt) {
         },
         jasmine: {
             tests: {
-                src: ["site/static/vendor/angular/angular.js","site/static/vendor/angular/angular-resource.js",
-                    "test/angular-mocks.js","site/static/js/jp.js", "site/modules/login/static/js/module.js", "site/modules/login/static/js/services/login.js", "site/static/js/app.js"],
+                src: [
+                    "site/static/vendor/angular/angular.js",
+                    "site/static/vendor/angular/angular-resource.js",
+                    "test/angular-mocks.js",
+                    "site/static/js/*.js",
+                    "site/static/js/**/*.js",
+                    "site/modules/**/static/js/module.js",
+                    "site/modules/**/static/js/**/*.js",
+                    "**/modules/machine/**/test/mock/*.js"
+                ],
                 options: {
-                    specs: 'site/modules/**/test.js'
+                    specs: [
+                        "site/modules/**/test/*.js"
+                    ]
                 }
             }
         }
