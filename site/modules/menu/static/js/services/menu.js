@@ -1,23 +1,42 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     // I provide information about the current route request.
-// app.factory('Menu', ['$resource', 'requestContext',
-// function ($resource, requestContext) {
-    app.factory('Menu', ['$resource', function ($resource) {
-            var Menu = $resource('/menu', {}, {});
-            var mainMenu = [
-                {link: 'xxx', name: 'Dashboard'},
-                {link: 'xxx', name: 'Storage'}
-            ];
+	app.factory('Menu', ["$resource", function ($resource){
 
-            Menu.getMenu = function () {
-                return mainMenu;
-            };
+		var Menu = $resource('/menu', {}, {});
+		var mainMenu = [];
 
-            Menu.register = function (item) {
-                mainMenu.push(item);
-            };
+        Menu.getMenu = function () {
+            return mainMenu;
+        };
+
+        Menu.register = function (item) {
+            mainMenu.push(item);
+        };
+
+		Menu.register = function (item) {
+
+			mainMenu.push(item);
+            mainMenu.sort(function (a,b){
+                if (!a.order && !b.order){
+                    return 0;
+                }
+                if (!a.order){
+                    return 1;
+                }
+                if (!b.order){
+                    return -1;
+                }
+                if (a.order < b.order){
+                    return -1;
+                }
+                if (a.order > b.order){
+                    return 1;
+                }
+                return 0;
+            });
+		};
 
             return Menu;
         }]);
