@@ -1,3 +1,3 @@
 'use strict';
 
-window.JP.createModule('Menu');
+window.JP.createModule('Menu',['ngResource']);
