@@ -80,9 +80,9 @@
 		<div class="page-header">
 			<h3>Machine {{selectedmachine.id}} <span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small></span>
 
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta">Trash</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta">Restart</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta">Stop</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta" ng-click="actionstr = 'trash'" ng-init="actionstr=''">Trash</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'restart'" ng-init="actionstr=''">Restart</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'stop'" ng-init="actionstr=''">Stop</a>
 
 			</h2>
 		</div>
@@ -219,7 +219,7 @@
 					<h3>Confirmation</h3>
 				</div>
 				<div class="modal-body">
-					<p>Are you sure you want to.... </p>
+					<p>Are you sure you want to {{actionstr}} the machine?</p>
 				</div>
 				<div class="modal-footer">
 					<a href="#" data-dismiss="modal" aria-hidden="true" class="btn">Cancel</a>
