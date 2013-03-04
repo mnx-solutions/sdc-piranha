@@ -15,7 +15,7 @@ app.use(express.session({secret:"secret"}));
 var Modulizer = require('./lib/modulizer');
 var modulizer = new Modulizer(app);
 
-modulizer.loadApps(['main', 'landing', 'signup', 'login']);
+modulizer.loadApps(['main', 'signup', 'login']);
 
 modulizer.run(function () {
 	app.listen(3000);

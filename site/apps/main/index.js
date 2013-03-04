@@ -1,5 +1,5 @@
 module.exports = {
-	route: '/app',
+	route: '/',
 	index: 'app.jade',
 	modules: [
 		'menu', 'machine', 'login', 'account'
