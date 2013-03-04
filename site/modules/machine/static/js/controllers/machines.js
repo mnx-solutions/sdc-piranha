@@ -55,7 +55,17 @@ function ($scope, $filter, requestContext, Machines) {
 
         return (subject.indexOf(needle.toLowerCase()) !== -1);
     };
+    var _labelMachines = function(machines) {
+        for(var machine in machines) {
+            if(machines[machine].name) {
+                machines[machine].label = machines[machine].name;
+            } else {
+                machines[machine].label = machines[machine].id;
+            }
+        };
 
+        return machines;
+    };
     var _filter = function (subject) {
         var ret = $filter('filter')(subject, function (item) {
             var attrKey;
@@ -83,7 +93,7 @@ function ($scope, $filter, requestContext, Machines) {
 
             return (false);
         });
-        return (ret);
+        return (_labelMachines(ret));
     };
 
     // Controller methods

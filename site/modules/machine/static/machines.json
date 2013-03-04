@@ -1,7 +1,7 @@
 [
   {
-    "id": "104904f3-2ba3-428d-918f-b2bac299ff3f",
-    "name": null,
+    "id": "99999999",
+    "name": "alberto",
     "type": "virtualmachine",
     "state": "running",
     "dataset": "sdc:jpc:ubuntu-12.04:2.2.1",
@@ -17,8 +17,8 @@
     "updated": "2013-01-23T11:18:09+00:00"
   },
   {
-    "id": "69d4481a-99bd-4021-a466-7d20e012e5b6",
-    "name": null,
+    "id": "222222",
+    "name": "illar",
     "type": "virtualmachine",
     "state": "running",
     "dataset": "sdc:sdc:ubuntu10.04:0.1.0",

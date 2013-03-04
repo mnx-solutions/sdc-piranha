@@ -13,7 +13,7 @@
 					<thead>
 						<tr>
 							<td>#</td>
-							<td class="sortable" data-ng-click="sortBy('id');" ng-switch on="sortIcon.id">
+							<td class="sortable" data-ng-click="sortBy('label')" ng-switch on="sortIcon.label">
 										<span class="text">Name</span>
 										<i class="icon-arrow-up" ng-switch-when="up"/>
 										<i class="icon-arrow-down" ng-switch-when="down"/>
@@ -42,7 +42,7 @@
 								<input type="checkbox" id="machine-{{machine.id}}" />
 							</td>
 							<td>
-								<a href="#!/machine/details/{{machine.id}}">{{machine.name || machine.id}}</a>
+								<a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
 							</td>
 							<td>{{machine.type}}</td>
 							<td>
@@ -90,7 +90,7 @@
 				<li class="active"><a>Overview</a></li>
 				<!--<li><a href="#">Intelligents</a></li>-->
 			</div>
-			
+
 				<div style="border:1px solid #ddd;border-top:1px solid white;">
 						<div class="span7" >
 							<h4>Overview</h4>
@@ -171,9 +171,9 @@
 										</select>
 									</div>
 								</div>
-								
+
 								<h4>Tags<br><small>Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your machines.</small></h4>
-								
+
 								<div class="control-group" data-ng-repeat="(key,val) in selectedmachine.metadata">
 									<div class="controls">
 										<input type="text" class="span2" id="inputPassword" placeholder="Key" value="{{key}}">
@@ -187,7 +187,7 @@
 					<div class="clearfix"></div>
 				</div>
 				<div class="clearfix"></div>
-			
+
 			<script>
 			$('.-help').bind({
 				mouseover:function (){
@@ -206,13 +206,13 @@
 					}else{
 						$(this).html('[ Show ]');
 					}
-					
+
 				}
 			})
-			
-			
+
+
 			</script>
-			
+
 			<div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
