@@ -1,46 +1,50 @@
 'use strict';
 
 (function (ng, app) {
-	app.service('account', [ '$rootScope', '$resource', function ($rootScope, $resource) {
-		var User = $resource('/account');
-		var Key = $resource('/account/keys/:key');
+    app.service('account', ['$rootScope', '$resource',
 
-		var user = User.get();
+function ($rootScope, $resource) {
+    var User = $resource('/account');
+    var Key = $resource('/account/keys/:key');
 
-		return {
-			getUser: function (callback) {
-				return user ? (callback ? callback(user) : user) : User.get(callback);
-			},
+    var user = User.get();
 
-			updateUser: function (data) {
-				this.getUser(function (user) {
-					new User(ng.extend(user, data)).$save(function () {
-						$rootScope.$broadcast('account:update');
-					});
-				});
-			},
+    return {
+        getUser: function (callback) {
+            if (user) {
+                return callback ? callback(user) : user;
+            }
+            return User.get(callback);
+        },
+        updateUser: function (data) {
+            this.getUser(function (usr) {
+                new User(ng.extend(usr, data)).$save(function () {
+                    $rootScope.$broadcast('account:update');
+                });
+            });
+        },
+        getKeys: function (key) {
+            return Key.query({key: key});
+        },
+        createKey: function (data, callback) {
+            if (!data.name) {
+                callback(new Error('Key name is missing'));
+                return;
+            }
 
-			getKeys: function (key) {
-				return Key.query({ key: key });
-			},
+            if (!data.key) {
+                callback(new Error('Key content is missing'));
+                return;
+            }
 
-			createKey: function (data, callback) {
-				if (!data.name) {
-					callback(new Error('Key name is missing'));
-					return;
-				}
+            new Key(data).$save(function () {
+                $rootScope.$broadcast('account:update');
+                callback();
+            });
+        }
+    };
+}
 
-				if (!data.key) {
-					callback(new Error('Key content is missing'));
-					return;
-				}
-
-				new Key(data).$save(function () {
-					$rootScope.$broadcast('account:update');
-					callback();
-				});
-			}
-		};
-	}]);
+]);
 
 }(window.angular, window.JP.getModule('Account')));
