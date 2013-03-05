@@ -121,37 +121,24 @@
 								<td class="td3 key">Data center</td>
 								<td class="td3 value">us-east-1</td>
 							</tr>
-                            </table>
+							</table>
 							<br>
+							<span ng-show="{{selectedmachine.metadata.credentials}}">
 							<h4>Credentials</h4>
 							<table class="table table-striped text-medium" style="width:470px">
 								<thead>
-									<tr><th style="width:115px !important">System</th>
+									<tr>
 									<th style="width:115px !important">Username</th>
 									<th style="width:155px !important">Password</th>
 									<th>&nbsp;</th>
 								</tr></thead>
-								<tbody><tr>
-									<td>OS</td>
-									<td>root</td>
-									<td><span id="label-1">************</span><span id="pwd-1" class="none">im-ze-p455w00rd</span></td>
+								<tbody>
+								<tr data-ng-repeat="(key,val) in selectedmachine.metadata.credentials">
+									<td>{{key}}</td>
+									<td><span id="label-1">************</span><span id="pwd-1" class="none">{{val}}</span></td>
 									<td nowrap><a rel="1" class="show-password">[ Show ]</a></td>
-								</tr><tr>
-									<td>OS</td>
-									<td>admin</td>
-									<td><span id="label-2">************</span><span id="pwd-2" class="none">im-ze-p455w00rd</span></td>
-									<td nowrap><a rel="2" class="show-password">[ Show ]</a></td>
-								</tr><tr>
-									<td>MySQL</td>
-									<td>root</td>
-									<td><span id="label-3">************</span><span id="pwd-3" class="none">im-ze-p455w00rd</span></td>
-									<td nowrap><a rel="3" class="show-password">[ Show ]</a></td>
-								</tr><tr>
-									<td>PostgreSQL</td>
-									<td>root</td>
-									<td><span id="label-4">************</span><span id="pwd-4" class="none">im-ze-p455w00rd</span></td>
-									<td nowrap><a rel="4" class="show-password">[ Show ]</a></td>
 								</tr></tbody></table>
+							</span>
 						</div>
 						<div class="span5 pull-right" style="margin:0px">
 							<form class="form-horisontal">

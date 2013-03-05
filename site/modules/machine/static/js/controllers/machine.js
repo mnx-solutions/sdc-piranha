@@ -5,14 +5,15 @@
         'MachineController',
         [   '$scope',
             'requestContext',
-            'Machines',
+            'MachineInfo',
 
-function ($scope, requestContext, Machines) {
+function ($scope, requestContext, MachineInfo) {
     requestContext.setUpRenderContext('machine.details', $scope);
     var machineid = requestContext.getParam('machineid');
     $scope.machineid = machineid;
-    var selectedmachine = Machines.getMachine(machineid);
-    $scope.selectedmachine = selectedmachine[0];
+
+    var selectedmachine = MachineInfo.getMachine(machineid);
+    $scope.selectedmachine = selectedmachine;
 }
 
         ]);
