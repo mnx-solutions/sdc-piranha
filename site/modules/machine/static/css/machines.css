@@ -133,3 +133,7 @@ fieldset > legend {
 h4 {
     margin-left: 3px;
 }
+
+.none {
+  display: none;
+}
