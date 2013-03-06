@@ -17,6 +17,7 @@
         Jobs.runJob = function (args) {
             var jobObj = {};
 
+            // XXX
             if (args instanceof Array){
                 jobOjb.name = args[0];
                 jobOjb.task = args[1];
