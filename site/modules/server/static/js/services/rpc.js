@@ -1,13 +1,13 @@
 'use strict';
 
 (function (app) {
-    // XXX debug
-    var callHistory = {};
+    // XXX for debug
+    var callHistory = [];
 
-    var calls = {111:{name:"test1"}};
+    var calls = {};
 
-    // give reference to
-    app.factory('serverCallInternalse', function(){
+    // give reference of internals for debuggin purposes
+    app.factory('serverCallInternals', function(){
         return function(){
             return {calls:calls, history: callHistory};
         }
@@ -30,7 +30,6 @@
 
     // I provide information about the current route request.
     app.factory('serverCall', ["$http", "$rootScope", "$timeout", function ($http, $rootScope, $timeout) {
-       // var calls = {};
 
         // polling function, polls for rpc-call answers
         (function () {

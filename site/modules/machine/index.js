@@ -3,47 +3,35 @@
 var express = require('express');
 var app = express();
 
-app.get('/', function (req, res) {
-    req.cloud.listMachines(function (err, machines) {
-        if (!err) {
-            res.json(machines);
-        }
-    })
-});
+var server = JP.getModuleAPI("Server");
 
-var events = JP.getModuleAPI("Server");
+server.onCall("MachineList", function (callSession, data, cb) {
+    callSession.log.debug("handling machine list event");
 
-var machineList = function (cloud, data, cb) {
-    JP.getLog().debug("handling machine list event");
-
-    cloud.listMachines(function (err, machines) {
+    callSession.cloud.listMachines(function (err, machines) {
         if (!err) {
             cb(null, machines);
         } else {
             cb(err, machines);
         }
     });
-}
+});
 
-machineList.prototype.verifyOpts = function (data) {
-    console.log("verify called")
-    if (data == null) {
-        return false;
+server.onCall("MachineDetails", {
+    verify: function (data) {
+        return "string" == typeof data;
+    },
+    handler: function (callSession, data, cb) {
+        callSession.log.debug("handling machine details call");
+
+        callSession.cloud.getMachine(data, function (err, machine) {
+            if (!err) {
+                cb(null, machine);
+            } else {
+                cb(err, machine);
+            }
+        });
     }
-}
-
-events.registerCallHandler("MachineList", machineList);
-
-events.registerCallHandler("MachineDetails", function (cloud, data, cb) {
-    JP.getLog().debug("handling machine list event");
-
-    cloud.getMachine(data, function (err, machine) {
-        if (!err) {
-            cb(null, machine);
-        } else {
-            cb(err, machine);
-        }
-    });
 });
 
 

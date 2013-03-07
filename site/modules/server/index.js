@@ -10,54 +10,36 @@ var EventEmitter = require('events').EventEmitter
 var clientEvents = new EventEmitter();
 var logger = JP.getLog();
 
-
 var callHandlers = {};
 
-JP.registerModuleAPI("Server", {
-    registerEvent: function (eventname, listener) {
-        logger.debug("listener created for", eventname);
-        clientEvents.on(eventname, listener);
-    },
-    sendEvent: function (session, event, data) {
-        if (!session.clientEvents) {
-            session.clientEvents = [];
-        }
-        ;
 
-        session.clientEvents.push({event: event, data: data});
-    },
-    registerCallHandler: function (call, listener) {
-        logger.debug("long call listener registered for", call.name);
-        if (callHandlers[call]) {
-            logger.warning("can not have multiple listeners for calls, ingoring");
+JP.registerModuleAPI("Server", {
+    onCall: function (callName, handler) {
+        logger.debug("RPC Call listener registered for", callName);
+
+        if ("object" == typeof handler) {
+            assert("function" == typeof handler.handler,
+                "handler object must contain handler function");
+
+            assert(handler.verify && ("function" == typeof handler.verify),
+                "verify must be a function");
+        }
+
+        if (callHandlers[callName]) {
+            logger.warning("can not have multiple listeners for RPC calls, ignoring");
             return;
         }
 
-        callHandlers[call] = listener;
+        callHandlers[callName] = handler;
     }
 });
-
-app.get('/', function (req, res) {
-    res.json(req.session.clientEvents);
-    req.session.clientEvents = [];
-});
-
-app.post('/', function (req, res) {
-    req.body.forEach(function (event) {
-        logger.debug("Emitting clientside event", event)
-
-        clientEvents.emit(event.event, req, event.data);
-        logger.debug(clientEvents.listeners(event.name))
-    });
-});
-
 
 function returnResults(req, res) {
     if (!req.session.callResults) {
         req.session.callResults = [];
     }
 
-    req.session.callResults.forEach(function (result){
+    req.session.callResults.forEach(function (result) {
         logger.debug("Sending result of command to client", result);
     });
 
@@ -78,14 +60,40 @@ app.post('/call', function (req, res) {
         req.session.callResults = [];
     }
 
-    logger.debug("Incoming RPC call ", call.name)
+    if ("object" != typeof call || !call.id || !call.name){
+        logger.warn("Invalid call format", call);
+        res.send(400, "Invalid call format");
+        return;
+    }
+
+    logger.debug("Incoming RPC call ", call.name, call.id);
 
     var callHandler = callHandlers[call.name];
     if (callHandler) {
+        var handler;
+        if ("object" == typeof callHandler) {
+            if (!callHandler.verify(call.data)) {
+                logger.warn("Invalid parameters %s provided for call %s",
+                    call.data, call.name);
+
+                res.send(400, "Invalid parameters provided");
+                return;
+            }
+
+            handler = callHandler.handler;
+        } else {
+            handler = callHandler;
+        }
+
+        var callContext = {
+            cloud: req.cloud,
+            id: call.id,
+            log: JP.getLog({req_id:call.id, call:call.name})
+        };
 
         // call handler if everything is ok
-        callHandler(req.cloud, call.data, function (err, result) {
-            logger.debug("Call handled", call.name, call.id)
+        callHandler(callContext, call.data, function (err, result) {
+            logger.debug("Call handled, storing result", call.name, call.id)
 
             req.session.callResults.push({
                 name: call.name,
@@ -97,11 +105,10 @@ app.post('/call', function (req, res) {
             req.session.save();
         });
 
-        // wait a little bit. maybe the result of
-        // short running call will be there
-        setTimeout(returnResults(req, res), 100);
+
+        returnResults(req, res);
     } else {
-        res.send(405, "Unhandled RPC call", call.name);
+        res.send(501, "Unhandled RPC call", call.name);
         logger.warn("Client tried to call unhandled call", call);
     }
 });
@@ -112,6 +119,6 @@ module.exports = {
     csss: ['css/menu.css'],
     javascripts: [
         'js/module.js',
-        'js/services/servercall.js'
+        'js/services/rpc.js'
     ]
 };
