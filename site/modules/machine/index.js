@@ -5,14 +5,17 @@ var app = express();
 
 var server = JP.getModuleAPI("Server");
 
-server.onCall("MachineList", function (callSession, data, cb) {
+server.onCall("MachineList", function (callSession, data, done, progress) {
     callSession.log.debug("handling machine list event");
+
+    progress('start');
 
     callSession.cloud.listMachines(function (err, machines) {
         if (!err) {
-            cb(null, machines);
+            done(null, machines);
         } else {
-            cb(err, machines);
+        	progress('done');
+            done(err, machines);
         }
     });
 });
@@ -21,14 +24,14 @@ server.onCall("MachineDetails", {
     verify: function (data) {
         return "string" == typeof data;
     },
-    handler: function (callSession, data, cb) {
+    handler: function (callSession, data, done, progress) {
         callSession.log.debug("handling machine details call");
 
         callSession.cloud.getMachine(data, function (err, machine) {
             if (!err) {
-                cb(null, machine);
+                done(null, machine);
             } else {
-                cb(err, machine);
+                done(err, machine);
             }
         });
     }
