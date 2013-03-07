@@ -29,4 +29,4 @@
             }
         };
     }]);
-}(window.JP.getModule('Events')));
+}(window.JP.getModule('Server')));

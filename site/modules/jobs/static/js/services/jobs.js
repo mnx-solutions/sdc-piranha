@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.factory('Jobs', function () {
+    app.factory('Jobs', ['$timeout', function ($timeout) {
         var jobs = {};
 
         var Jobs={};
@@ -47,7 +47,7 @@
                     job.failed = true;
                     jobObj.onError && jobObj.onError(result);
                 } else {
-                    jobObj.onSuccess && jobObj.onSuccess(result);
+                    jobObj.onSuccess && $timeout(function(){jobObj.onSuccess(result)});
                 }
             });
 
@@ -55,5 +55,5 @@
         };
 
         return Jobs;
-    });
+    }]);
 }(window.JP.getModule('Jobs')));

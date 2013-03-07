@@ -28,7 +28,7 @@ JP.registerModuleAPI("Server", {
     },
     registerCallHandler: function (call, listener) {
         logger.debug("long call listener registered for", call.name);
-        if (callHandlers[call]){
+        if (callHandlers[call]) {
             logger.warning("can not have multiple listeners for calls, ingoring");
             return;
         }
@@ -51,36 +51,58 @@ app.post('/', function (req, res) {
     });
 });
 
-app.get('/call', function (req, res) {
-    if (!req.session.callResults){
+
+function returnResults(req, res) {
+    if (!req.session.callResults) {
         req.session.callResults = [];
     }
+
+    req.session.callResults.forEach(function (result){
+        logger.debug("Sending result of command to client", result);
+    });
 
     res.json(req.session.callResults);
     req.session.callResults = [];
-});
+    req.session.save();
+}
 
+// return results of all finished calls
+app.get('/call', returnResults);
+
+// handle incoming serverside calls
+// may return results of finished calls
 app.post('/call', function (req, res) {
     var call = req.body;
 
-    if (!req.session.callResults){
+    if (!req.session.callResults) {
         req.session.callResults = [];
     }
 
-    logger.debug("Handling client call", call)
+    logger.debug("Incoming RPC call ", call.name)
 
-    var handler = callHandlers[call.name];
-    if (handler){
-        handler(function(err, result){
+    var callHandler = callHandlers[call.name];
+    if (callHandler) {
+
+        // call handler if everything is ok
+        callHandler(req.cloud, call.data, function (err, result) {
+            logger.debug("Call handled", call.name, call.id)
+
             req.session.callResults.push({
                 name: call.name,
                 id: call.id,
                 error: err,
                 result: result
             });
+
+            req.session.save();
         });
+
+        // wait a little bit. maybe the result of
+        // short running call will be there
+        setTimeout(returnResults(req, res), 100);
     } else {
-        logger.warn("Unhandled call {} called", call);
+        res.send(405, "Unhandled RPC call", call.name);
+        logger.warn("Client tried to call unhandled call", call);
     }
 });
 
@@ -90,7 +112,6 @@ module.exports = {
     csss: ['css/menu.css'],
     javascripts: [
         'js/module.js',
-        'js/services/events.js',
         'js/services/servercall.js'
     ]
 };

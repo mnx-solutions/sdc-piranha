@@ -2,23 +2,25 @@
 
 
 (function (app) {
-    app.factory('Machines', ['Events', 'Jobs', '$http', "serverCall", function (Events, Jobs, $http, serverCall) {
+    app.factory('Machines', [ 'Jobs', '$http', "serverCall", function ( Jobs, $http, serverCall) {
         var service = {};
 
         var machines = [];
 
         // load machines
-
         Jobs.runJob({
             name: "getMachines",
             task: function (cb) {
-                Events.send("getMachineList");
-                Events.on("MachineList", function (data) {
-                    cb(null, data);
-                });
+                serverCall("MachineList", null, cb)
             },
             onSuccess: function (data) {
-                machines = data;
+                console.log("success called")
+                machines.length = 0;
+                machines.push.apply(machines, data);
+            },
+            onError: function(err){
+                // XXX
+                console.log("error called")
             }
         });
 
@@ -39,13 +41,13 @@
             return Jobs.runJob({
                 name: "startMachine",
                 task: function (cb) {
-                    serverCall("startMachine", cb);
+                    serverCall("startMachine", uuid, cb);
                 },
-                success: function (result) {
+                onSuccess: function (result) {
                     machines[result.uuid] = result;
                     success || success();
                 },
-                error: function (err, result) {
+                onError: function (err, result) {
                     error || error();
                 }
             });

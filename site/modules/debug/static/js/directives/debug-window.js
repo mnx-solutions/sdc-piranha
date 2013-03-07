@@ -2,10 +2,10 @@
 
 (function (app) {
 // app.directive('mainMenu', ['$timeout', 'Menu', function ($timeout, Menu) {
-    app.directive('debugWindow', ['Events', 'Jobs', function (Events, Jobs) {
+    app.directive('debugWindow', [ 'Jobs','serverCalls', function ( Jobs , serverCalls) {
             return {
                 link: function ($scope) {
-                    $scope.jobs = Jobs.getJobs();
+                    $scope.calls = serverCalls();
                 },
                 controller: function ($scope, requestContext) {
                     /*Events.
@@ -15,21 +15,13 @@
                         });
                     });*/
                 },
-                template: '<div class="debug"><div class="pull-left"><h3>Jobs</h3><div class="jobs">' +
+                template: '<div class="debug"><div class="pull-left"><h3>Ongoing calls</h3><div class="jobs">' +
                         '<ul>' +
-                        '<li data-ng-repeat="job in jobs" data-ng-class="{running: !job.isFinished, failed:job.isFailed}">' +
-                        '<span class="name">{{job.name}}</span>' +
-                        '<span class="result">{{job.result}}</span>' +
+                        '<li data-ng-repeat="call in calls" data-ng-class="{running: !job.isFinished, failed:job.isFailed}">' +
+                        '<span class="name">{{call.name}}</span>' +
+                        '' +
                         '</li>' +
                         '</ul></div></div>' +
-                    '<div class="events pull-right">' +
-                    '<h3>Events</h3>'+
-                    '<ul>' +
-                    '<li data-ng-repeat="job in jobs" data-ng-class="{running: !job.isFinished, failed:job.isFailed}">' +
-                        '<span class="name">{{job.name}}</span>' +
-                        '<span class="result">{{job.result}}</span>' +
-                        '</li>' +
-                    '</ul></div>' +
                     '</div>'
             };
         }]);

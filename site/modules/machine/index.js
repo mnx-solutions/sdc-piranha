@@ -13,27 +13,41 @@ app.get('/', function (req, res) {
 
 var events = JP.getModuleAPI("Server");
 
-events.registerEvent("getMachineList", function (req, session, data) {
+var machineList = function (cloud, data, cb) {
+    JP.getLog().debug("handling machine list event");
 
-    JP.getLog().debug("handling machine list event", req.cloud);
-    req.cloud.listMachines(function (err, machines) {
+    cloud.listMachines(function (err, machines) {
         if (!err) {
-            events.send("MachineList",session, machines);
+            cb(null, machines);
+        } else {
+            cb(err, machines);
+        }
+    });
+}
+
+machineList.prototype.verifyOpts = function (data) {
+    console.log("verify called")
+    if (data == null) {
+        return false;
+    }
+}
+
+events.registerCallHandler("MachineList", machineList);
+
+events.registerCallHandler("MachineDetails", function (cloud, data, cb) {
+    JP.getLog().debug("handling machine list event");
+
+    cloud.getMachine(data, function (err, machine) {
+        if (!err) {
+            cb(null, machine);
+        } else {
+            cb(err, machine);
         }
     });
 });
 
-events.registerCallHandler("waitForStatusChange", function (req, session, data) {
-    JP.getLog().debug("handling machine list event", req.cloud);
-    req.cloud.listMachines(function (err, machines) {
-        if (!err) {
-            events.send("MachineList",session, machines);
-        }
-    });
-});
 
 module.exports.app = app;
-
 
 module.exports.csss = [
     'css/machines.css'
