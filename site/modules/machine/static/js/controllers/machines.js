@@ -62,7 +62,7 @@ function ($scope, $filter, requestContext, Machines) {
             } else {
                 machines[machine].label = machines[machine].id;
             }
-        };
+        }
 
         return machines;
     };
