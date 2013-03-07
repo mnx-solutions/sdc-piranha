@@ -4,7 +4,6 @@ module.exports = {
 	route: '/signup',
 	index: 'signup.jade',
 	modules: [
-		'account',
 		'signup',
 		'login',
 		'menu'

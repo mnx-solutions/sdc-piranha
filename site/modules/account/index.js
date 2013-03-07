@@ -8,7 +8,7 @@ var app = express();
 var client = smartdc.createClient({
   url: 'https://10.88.88.3',
   username: 'admin',
-  password: 'parool'
+  password: 'joypass123'
 });
 
 app.get('/', function (req, res, next) {

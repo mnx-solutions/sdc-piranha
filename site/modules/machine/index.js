@@ -3,54 +3,108 @@
 var express = require('express');
 var app = express();
 
-app.get('/', function (req, res) {
-//    res.json(require('./static/machines.json'));
-    req.cloud.listMachines(function (err, machines) {
+var server = JP.getModuleAPI("Server");
+
+server.onCall("MachineList", function (callSession, data, cb) {
+    callSession.log.debug("handling machine list event");
+
+    callSession.cloud.listMachines(function (err, machines) {
         if (!err) {
-            res.json(machines);
+            cb(null, machines);
+        } else {
+            cb(err, machines);
         }
     });
 });
 
 /* GetMachine */
-app.get('/:machineid', function (req, res) {
-    var machineId = req.param('machineid');
-    req.cloud.getMachine(machineId, function (err, machine) {
-        if (!err) {
-            res.json(machine);
-        }
-    });
+server.onCall("MachineDetails", {
+    verify: function (data) {
+        return "string" == typeof data;
+    },
+    handler: function (callSession, data, cb) {
+        callSession.log.debug("handling machine details call");
+
+        callSession.cloud.getMachine(data, function (err, machine) {
+            if (!err) {
+                cb(null, machine);
+            } else {
+                cb(err, machine);
+            }
+        });
+    }
 });
 
-/* StartMachine */
-app.get('/:machineid/start', function (req, res) {
-    var machineId = req.param('machineid');
-    req.cloud.startMachine(machineId, function (err, machine) {
-        if (!err) {
-            res.json(machine);
-        }
-    });
+
+function pollForMachineState(callSession, machineId, state, cb) {
+    var timer = setInterval(function () {
+        callSession.logger.debug("Polling for machine %s to become %status", machineId, status);
+        callSession.cloud.getMachine(data, function (err, machine) {
+            if (!err) {
+                if (state == machine.state){
+                    callSession.logger.debug("machine %s state is %s as expected, returing call", machineId, state);
+                    cb(null, machine);
+                } else {
+                    callSession.logger.debug("machine %s state is %s, waiting for %s", machineId, machine.state, state);
+                }
+            }
+        });
+    }, 1000);
+}
+
+/* GetMachine */
+server.onCall("MachineStart", {
+    verify: function (data) {
+        return "string" == typeof data;
+    },
+    handler: function (callSession, machineId, cb) {
+        callSession.log.debug("Starting machine %s", machineId);
+        req.cloud.startMachine(machineId, function (err) {
+            if (!err) {
+                pollForMachineState(callSession, machineId, "running", cb)
+            } else {
+                cb(err);
+            }
+        });
+    }
 });
 
-/* StopMachine */
-app.get('/:machineid/stop', function (req, res) {
-    var machineId = req.param('machineid');
-    req.cloud.stopMachine(machineId, function (err, machine) {
-        if (!err) {
-            res.json(machine);
-        }
-    });
+/* GetMachine */
+server.onCall("MachineStop", {
+    verify: function (data) {
+        return "string" == typeof data;
+    },
+    handler: function (callSession, machineId, cb) {
+        callSession.log.debug("Starting machine %s", machineId);
+        req.cloud.stopMachine(machineId, function (err) {
+            if (!err) {
+                pollForMachineState(callSession, machineId, "stopped", cb)
+            } else {
+                cb(err);
+            }
+        });
+    }
 });
 
-/* RebootMachine */
-app.get('/:machineid/reboot', function (req, res) {
-    var machineId = req.param('machineid');
-    req.cloud.rebootMachine(machineId, function (err, machine) {
-        if (!err) {
-            res.json(machine);
-        }
-    });
+/* GetMachine */
+server.onCall("MachineReboot", {
+    verify: function (data) {
+        return "string" == typeof data;
+    },
+    handler: function (callSession, machineId, cb) {
+        callSession.log.debug("Starting machine %s", machineId);
+        req.cloud.rebootMachine(machineId, function (err) {
+            if (!err) {
+                pollForMachineState(callSession, machineId, "running", cb)
+            } else {
+                cb(err);
+            }
+        });
+    }
 });
+
+
+module.exports.app = app;
 
 module.exports.app = app;
 
