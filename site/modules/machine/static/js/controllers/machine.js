@@ -14,6 +14,18 @@ function ($scope, requestContext, MachineInfo) {
 
     var selectedmachine = MachineInfo.getMachine(machineid);
     $scope.selectedmachine = selectedmachine;
+
+    $scope.clickStart = function(uuid) {
+        $scope.retinfo = MachineInfo.startMachine(uuid);
+    }
+
+    $scope.clickStop = function(uuid) {
+        $scope.retinfo = MachineInfo.stopMachine(uuid);
+    }
+
+    $scope.clickReboot = function(uuid) {
+        $scope.retinfo = MachineInfo.rebootMachine(uuid);
+    }
 }
 
         ]);

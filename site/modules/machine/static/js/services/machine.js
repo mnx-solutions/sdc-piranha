@@ -38,6 +38,31 @@
             return deferred.promise;
         }
 
+        service.startMachine = function (uuid) {
+            var deferred = $q.defer();
+            var machine = null;
+
+            deferred.resolve($resource('/machine/' + uuid + '/start', {}, {}).get());
+
+            return deferred.promise;
+        }
+        service.stopMachine = function (uuid) {
+            var deferred = $q.defer();
+            var machine = null;
+
+            deferred.resolve($resource('/machine/' + uuid + '/stop', {}, {}).get());
+
+            return deferred.promise;
+        }
+        service.rebootMachine = function (uuid) {
+            var deferred = $q.defer();
+            var machine = null;
+
+            deferred.resolve($resource('/machine/' + uuid + '/reboot', {}, {}).get());
+
+            return deferred.promise;
+        }
+
         return service;
     }]);
 

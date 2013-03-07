@@ -78,11 +78,12 @@
   <div data-ng-switch-when="details" data-ng-controller="MachineController">
 	<div class="span14 container-pad pull-left">
 		<div class="page-header">
-			<h3>Machine {{selectedmachine.id}} <span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small></span>
+			<h3>Machine {{selectedmachine.id}} <span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small><span>{{retinfo}}</span></span>
 
 			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta" ng-click="actionstr = 'trash'" ng-init="actionstr=''">Trash</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'restart'" ng-init="actionstr=''">Restart</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'stop'" ng-init="actionstr=''">Stop</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'restart';clickReboot(selectedmachine.id);" ng-init="actionstr=''">Reboot</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'stop';clickStop(selectedmachine.id)" ng-init="actionstr=''">Stop</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'start';clickStart(selectedmachine.id)" ng-init="actionstr=''">Start</a>
 
 			</h2>
 		</div>

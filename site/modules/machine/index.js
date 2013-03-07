@@ -9,7 +9,7 @@ app.get('/', function (req, res) {
         if (!err) {
             res.json(machines);
         }
-    })
+    });
 });
 
 /* GetMachine */
@@ -19,17 +19,37 @@ app.get('/:machineid', function (req, res) {
         if (!err) {
             res.json(machine);
         }
-    })
+    });
 });
 
 /* StartMachine */
 app.get('/:machineid/start', function (req, res) {
     var machineId = req.param('machineid');
+    req.cloud.startMachine(machineId, function (err, machine) {
+        if (!err) {
+            res.json(machine);
+        }
+    });
 });
 
 /* StopMachine */
 app.get('/:machineid/stop', function (req, res) {
     var machineId = req.param('machineid');
+    req.cloud.stopMachine(machineId, function (err, machine) {
+        if (!err) {
+            res.json(machine);
+        }
+    });
+});
+
+/* RebootMachine */
+app.get('/:machineid/reboot', function (req, res) {
+    var machineId = req.param('machineid');
+    req.cloud.rebootMachine(machineId, function (err, machine) {
+        if (!err) {
+            res.json(machine);
+        }
+    });
 });
 
 module.exports.app = app;
