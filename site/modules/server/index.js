@@ -12,6 +12,8 @@ var logger = JP.getLog();
 
 var callHandlers = {};
 
+// XXX must replace with something persistent and handle timeouts
+var eventStorage = {};
 
 JP.registerModuleAPI("Server", {
     onCall: function (callName, handler) {
@@ -34,52 +36,94 @@ JP.registerModuleAPI("Server", {
     }
 });
 
+function getResultStorageForSession(session){
+    if (!eventStorage[session.id]) {
+        eventStorage[session.id] = {}
+    }
+    var result = eventStorage[session.id];
+
+    if (!result.callResults) {
+        result.callResults = [];
+    }
+
+    if (!result.callProgress) {
+        result.callProgress = [];
+    }
+
+    return result;
+}
+
 function returnResults(req, res) {
-    if (!req.session.callResults) {
-        req.session.callResults = [];
-    }
 
-    if (!req.session.callProgress) {
-        req.session.callProgress = [];
-    }
+    var result = getResultStorageForSession(req.session);
 
-    req.session.callResults.forEach(function (result) {
+    result.callResults.forEach(function (result) {
         logger.debug("Sending result of command to client", result);
     });
 
-    res.json({
-        results: req.session.callResults,
-        progress: req.session.callProgress
+    result.callProgress.forEach(function (result) {
+        logger.debug("Sending progress of command to client", result);
     });
 
-    if (req.session.callResults.length > 0) {
-        req.session.callResults = [];
+    res.json(200, {
+        results: result.callResults,
+        progress: result.callProgress
+    });
+
+    if (result.callResults.length > 0) {
+        result.callResults = [];
     }
 
-    if (req.session.callProgress.length > 0) {
-        req.session.callProgress = [];
+    if (result.callProgress.length > 0) {
+        result.callProgress = [];
     }
-
-    req.session.save();
 }
 
+var resultEmitter = new EventEmitter();
+
 // return results of all finished calls
-app.get('/call', returnResults);
+app.get('/call', function (req, res) {
+
+    var result = getResultStorageForSession(req.session);
+
+    if ((result.callResults && result.callResults.length > 0)
+        || (result.callProgress && result.callProgress.length > 0)) {
+        returnResults(req, res);
+    } else {
+
+        var listener = function () {
+            returnResults(req, res);
+        }
+
+        var timeout = setTimeout(function () {
+            resultEmitter.removeListener("result-" + req.session.id, listener);
+            res.send(200, "");
+        }, 3000);
+
+        resultEmitter.once("result-" + req.session.id, listener);
+    }
+});
 
 // handle incoming serverside calls
 // may return results of finished calls
 app.post('/call', function (req, res) {
     var call = req.body;
 
-    if (!req.session.callResults) {
-        req.session.callResults = [];
+    if (!eventStorage[req.session.id]) {
+        eventStorage[req.session.id] = {}
     }
 
-    if (!req.session.callProgress) {
-        req.session.callProgress = [];
+    var resultList = eventStorage[req.session.id];
+
+    if (!resultList.callResults) {
+        resultList.callResults = [];
     }
 
-    if ("object" != typeof call || !call.id || !call.name){
+    if (!resultList.callProgress) {
+        resultList.callProgress = [];
+    }
+
+    if ("object" != typeof call || !call.id || !call.name) {
         logger.warn("Invalid call format", call);
         res.send(400, "Invalid call format");
         return;
@@ -104,32 +148,37 @@ app.post('/call', function (req, res) {
             handler = callHandler;
         }
 
+
         var callContext = {
             cloud: req.cloud,
             id: call.id,
-            log: JP.getLog({req_id:call.id, call:call.name}),
+            log: JP.getLog({req_id: call.id, call: call.name}),
             data: call.data,
             done: function (err, result) {
                 logger.debug("Call handled, storing result", call.name, call.id)
 
-                req.session.callResults.push({
+                resultList.callResults.push({
                     name: call.name,
                     id: call.id,
                     error: err,
                     result: result
                 });
 
-                req.session.save();
+                //req.session.save();
+
+                resultEmitter.emit("result-" + req.session.id);
             },
-            progress:function (result) {
+            progress: function (result) {
                 logger.debug("Progress update handled, storing result", call.name, call.id);
 
-                req.session.callProgress.push({
+                resultList.callProgress.push({
                     id: call.id,
                     result: result
                 });
 
-                req.session.save();
+                //req.session.save();
+
+                resultEmitter.emit("result-" + req.session.id);
             }
         };
 
@@ -137,7 +186,9 @@ app.post('/call', function (req, res) {
         handler(callContext);
 
         // send pending results with POST also
-        returnResults(req, res);
+        //returnResults(req, res);
+        //res.end();
+        res.send(200);
     } else {
         res.send(501, "Unhandled RPC call", call.name);
         logger.warn("Client tried to call unhandled call", call);

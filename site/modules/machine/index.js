@@ -65,7 +65,7 @@ server.onCall("MachineStart", {
         var machineId = call.data;
 
         call.log.debug("Starting machine %s", machineId);
-        req.cloud.startMachine(machineId, function (err) {
+        call.cloud.startMachine(machineId, function (err) {
             if (!err) {
                 pollForMachineState(call)
             } else {
@@ -85,7 +85,7 @@ server.onCall("MachineStop", {
         var machineId = call.data;
 
         call.log.debug("Starting machine %s", machineId);
-        req.cloud.stopMachine(machineId, function (err) {
+        call.cloud.stopMachine(machineId, function (err) {
             if (!err) {
                 pollForMachineState(call)
             } else {
@@ -105,7 +105,7 @@ server.onCall("MachineReboot", {
         var machineId = call.data;
 
         call.log.debug("Starting machine %s", machineId);
-        req.cloud.rebootMachine(machineId, function (err) {
+        call.cloud.rebootMachine(machineId, function (err) {
             if (!err) {
                 pollForMachineState(call)
             } else {

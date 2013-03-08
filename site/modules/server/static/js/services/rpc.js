@@ -14,6 +14,12 @@
     });
 
     function handleResults(data) {
+
+        if (!data) {
+            return;
+        }
+
+
         data.progress.forEach(function (result) {
             var _call = calls[result.id];
             if (!_call || !_call.progress) {
@@ -41,22 +47,29 @@
     // I provide information about the current route request.
     app.factory('serverCall', ["$http", "$rootScope", "$timeout", function ($http, $rootScope, $timeout) {
 
+        var polling = false;
+
         // polling function, polls for rpc-call answers
-        (function () {
-            $timeout(function myFunction() {
+        function pollResults() {
+            // if we have unanswered calls
+            if (Object.keys(calls).length != 0) {
+                // TODO remove timed out calls.
+                polling = true;
+                // get call results
+                $http({timeout: 5000, method: 'get', url: '/server/call'})
+                    .success(function (data) {
+                        handleResults(data);
+                        $timeout(pollResults, 100);
+                    })
+                    .error(function () {
+                        $timeout(pollResults, 1000);
+                    });
+            } else {
+                polling = false;
+            }
+        };
 
-                // if we have unanswered calls
-                if (Object.keys(calls).length != 0) {
-
-                    // TODO remove timed out calls.
-
-                    // get call results
-                    $http.get('/server/call').success(handleResults);
-                }
-
-                $timeout(myFunction, 300);
-            }, 300);
-        })();
+        pollResults();
 
         // make a serverside rpc call
         return function (name, data, listener, progress) {
@@ -73,7 +86,10 @@
                     // store call if successful
                     calls[_call.id] = _call;
                     // handle direct results
-                    handleResults(resultList);
+                    // handleResults(resultList);
+                    if (!polling) {
+                        pollResults();
+                    };
                 }
             ).error(function () {
                     listener("call failed");
