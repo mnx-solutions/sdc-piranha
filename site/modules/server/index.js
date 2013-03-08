@@ -39,12 +39,27 @@ function returnResults(req, res) {
         req.session.callResults = [];
     }
 
+    if (!req.session.callProgress) {
+        req.session.callProgress = [];
+    }
+
     req.session.callResults.forEach(function (result) {
         logger.debug("Sending result of command to client", result);
     });
 
-    res.json(req.session.callResults);
-    req.session.callResults = [];
+    res.json({
+        results: req.session.callResults,
+        progress: req.session.callProgress
+    });
+
+    if (req.session.callResults.length > 0) {
+        req.session.callResults = [];
+    }
+
+    if (req.session.callProgress.length > 0) {
+        req.session.callProgress = [];
+    }
+
     req.session.save();
 }
 
@@ -58,6 +73,10 @@ app.post('/call', function (req, res) {
 
     if (!req.session.callResults) {
         req.session.callResults = [];
+    }
+
+    if (!req.session.callProgress) {
+        req.session.callProgress = [];
     }
 
     if ("object" != typeof call || !call.id || !call.name){
@@ -88,24 +107,36 @@ app.post('/call', function (req, res) {
         var callContext = {
             cloud: req.cloud,
             id: call.id,
-            log: JP.getLog({req_id:call.id, call:call.name})
+            log: JP.getLog({req_id:call.id, call:call.name}),
+            data: call.data,
+            done: function (err, result) {
+                logger.debug("Call handled, storing result", call.name, call.id)
+
+                req.session.callResults.push({
+                    name: call.name,
+                    id: call.id,
+                    error: err,
+                    result: result
+                });
+
+                req.session.save();
+            },
+            progress:function (result) {
+                logger.debug("Progress update handled, storing result", call.name, call.id);
+
+                req.session.callProgress.push({
+                    id: call.id,
+                    result: result
+                });
+
+                req.session.save();
+            }
         };
 
         // call handler if everything is ok
-        handler(callContext, call.data, function (err, result) {
-            logger.debug("Call handled, storing result", call.name, call.id)
+        handler(callContext);
 
-            req.session.callResults.push({
-                name: call.name,
-                id: call.id,
-                error: err,
-                result: result
-            });
-
-            req.session.save();
-        });
-
-
+        // send pending results with POST also
         returnResults(req, res);
     } else {
         res.send(501, "Unhandled RPC call", call.name);

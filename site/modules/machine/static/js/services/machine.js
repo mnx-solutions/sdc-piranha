@@ -14,6 +14,8 @@
                     machines.length = 0;
                     machines.push.apply(machines, machineList);
                 }
+            }, function (data) {
+                console.log('progress: ' + data);
             });
         };
 

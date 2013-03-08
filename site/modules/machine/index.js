@@ -5,14 +5,15 @@ var app = express();
 
 var server = JP.getModuleAPI("Server");
 
-server.onCall("MachineList", function (callSession, data, cb) {
-    callSession.log.debug("handling machine list event");
+server.onCall("MachineList", function (call) {
+    call.log.debug("handling machine list event");
 
-    callSession.cloud.listMachines(function (err, machines) {
+
+    call.cloud.listMachines(function (err, machines) {
         if (!err) {
-            cb(null, machines);
+            call.done(null, machines);
         } else {
-            cb(err, machines);
+            call.done(err, machines);
         }
     });
 });
@@ -22,30 +23,33 @@ server.onCall("MachineDetails", {
     verify: function (data) {
         return "string" == typeof data;
     },
-    handler: function (callSession, data, cb) {
-        callSession.log.debug("handling machine details call");
+    handler: function (call) {
+        call.log.debug("handling machine details call");
 
-        callSession.cloud.getMachine(data, function (err, machine) {
+        call.cloud.getMachine(call.data, function (err, machine) {
             if (!err) {
-                cb(null, machine);
+                call.done(null, machine);
             } else {
-                cb(err, machine);
+                call.done(err, machine);
             }
         });
     }
 });
 
 
-function pollForMachineState(callSession, machineId, state, cb) {
+function pollForMachineState(call) {
     var timer = setInterval(function () {
-        callSession.logger.debug("Polling for machine %s to become %status", machineId, status);
-        callSession.cloud.getMachine(data, function (err, machine) {
+
+        var machineId = call.data;
+
+        call.log.debug("Polling for machine %s to become %status", machineId, status);
+        call.cloud.getMachine(data, function (err, machine) {
             if (!err) {
-                if (state == machine.state){
-                    callSession.logger.debug("machine %s state is %s as expected, returing call", machineId, state);
-                    cb(null, machine);
+                if (state == machine.state) {
+                    call.log.debug("machine %s state is %s as expected, returing call", machineId, state);
+                    call.done(null, machine);
                 } else {
-                    callSession.logger.debug("machine %s state is %s, waiting for %s", machineId, machine.state, state);
+                    call.log.debug("machine %s state is %s, waiting for %s", machineId, machine.state, state);
                 }
             }
         });
@@ -57,13 +61,15 @@ server.onCall("MachineStart", {
     verify: function (data) {
         return "string" == typeof data;
     },
-    handler: function (callSession, machineId, cb) {
-        callSession.log.debug("Starting machine %s", machineId);
+    handler: function (call) {
+        var machineId = call.data;
+
+        call.log.debug("Starting machine %s", machineId);
         req.cloud.startMachine(machineId, function (err) {
             if (!err) {
-                pollForMachineState(callSession, machineId, "running", cb)
+                pollForMachineState(call)
             } else {
-                cb(err);
+                call.done(err);
             }
         });
     }
@@ -74,13 +80,16 @@ server.onCall("MachineStop", {
     verify: function (data) {
         return "string" == typeof data;
     },
-    handler: function (callSession, machineId, cb) {
-        callSession.log.debug("Starting machine %s", machineId);
+    handler: function (call) {
+
+        var machineId = call.data;
+
+        call.log.debug("Starting machine %s", machineId);
         req.cloud.stopMachine(machineId, function (err) {
             if (!err) {
-                pollForMachineState(callSession, machineId, "stopped", cb)
+                pollForMachineState(call)
             } else {
-                cb(err);
+                call.done(err);
             }
         });
     }
@@ -91,13 +100,16 @@ server.onCall("MachineReboot", {
     verify: function (data) {
         return "string" == typeof data;
     },
-    handler: function (callSession, machineId, cb) {
-        callSession.log.debug("Starting machine %s", machineId);
+    handler: function (call, machineId, done, progress) {
+
+        var machineId = call.data;
+
+        call.log.debug("Starting machine %s", machineId);
         req.cloud.rebootMachine(machineId, function (err) {
             if (!err) {
-                pollForMachineState(callSession, machineId, "running", cb)
+                pollForMachineState(call)
             } else {
-                cb(err);
+                call.done(err);
             }
         });
     }

@@ -7,14 +7,23 @@
     var calls = {};
 
     // give reference of internals for debuggin purposes
-    app.factory('serverCallInternals', function(){
-        return function(){
-            return {calls:calls, history: callHistory};
+    app.factory('serverCallInternals', function () {
+        return function () {
+            return {calls: calls, history: callHistory};
         }
     });
 
-    function handleResults(resultList){
-        resultList.forEach(function (result) {
+    function handleResults(data) {
+        data.progress.forEach(function (result) {
+            var _call = calls[result.id];
+            if (!_call || !_call.progress) {
+                return;
+            }
+
+            _call.progress(result.result);
+        });
+
+        data.results.forEach(function (result) {
             var _call = calls[result.id];
             if (!_call) {
                 return;
@@ -23,7 +32,8 @@
             _call.listener(result.error, result.result);
 
             // XXX debug
-            callHistory.push({name: _call.name, id: _call.id, failed: !result.error});
+            callHistory.push({name: _call.name, id: _call.id, failed: !result.error, startTime: _call.startTime, endTime: new Date().getTime()
+            });
             delete calls[result.id];
         });
     }
@@ -44,19 +54,21 @@
                     $http.get('/server/call').success(handleResults);
                 }
 
-                $timeout(myFunction, 1000);
-            }, 1000);
+                $timeout(myFunction, 300);
+            }, 300);
         })();
 
         // make a serverside rpc call
-        return function (name, data, listener) {
+        return function (name, data, listener, progress) {
             var _call = {
                 id: uuid.v4(),
                 name: name,
-                listener: listener
+                listener: listener,
+                progress: progress,
+                startTime: new Date().getTime()
             }
 
-            $http.post('/server/call', {name: name, data: data, id:_call.id}
+            $http.post('/server/call', {name: name, data: data, id: _call.id}
             ).success(function (resultList) {
                     // store call if successful
                     calls[_call.id] = _call;
@@ -65,7 +77,7 @@
                 }
             ).error(function () {
                     listener("call failed");
-            });
+                });
         }
     }]);
 }(window.JP.getModule('Server')));
