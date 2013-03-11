@@ -5,28 +5,50 @@
         'MachineController',
         [   '$scope',
             'requestContext',
-            'MachineInfo',
+            'Machines',
+            "$dialog",
+            function ($scope, requestContext, Machines, $dialog) {
 
-function ($scope, requestContext, MachineInfo) {
-    requestContext.setUpRenderContext('machine.details', $scope);
-    var machineid = requestContext.getParam('machineid');
-    $scope.machineid = machineid;
+                requestContext.setUpRenderContext('machine.details', $scope);
+                var machineid = requestContext.getParam('machineid');
 
-    var selectedmachine = MachineInfo.getMachine(machineid);
-    $scope.selectedmachine = selectedmachine;
+                var confirm = function (question, callback) {
+                    var title = 'Confirm';
+                    var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
 
-    $scope.clickStart = function(uuid) {
-        $scope.retinfo = MachineInfo.startMachine(uuid);
-    }
+                    $dialog.messageBox(title, question, btns)
+                        .open()
+                        .then(function(result){
+                            if(result=='ok'){
+                                callback();
+                            }
+                        });
+                };
 
-    $scope.clickStop = function(uuid) {
-        $scope.retinfo = MachineInfo.stopMachine(uuid);
-    }
 
-    $scope.clickReboot = function(uuid) {
-        $scope.retinfo = MachineInfo.rebootMachine(uuid);
-    }
-}
+                $scope.machineid = machineid;
+
+                var selectedmachine = Machines.getMachine(machineid);
+                $scope.selectedmachine = selectedmachine;
+
+                $scope.clickStart = function () {
+                    confirm("Are you sure you want to start the machine", function () {
+                        $scope.retinfo = Machines.startMachine(machineid);
+                    });
+                }
+
+                $scope.clickStop = function () {
+                    confirm("Are you sure you want to stop the machine", function () {
+                        $scope.retinfo = Machines.stopMachine(machineid);
+                    });
+                }
+
+                $scope.clickReboot = function () {
+                    confirm("Are you sure you want to reboot the machine", function () {
+                        $scope.retinfo = Machines.rebootMachine(machineid);
+                    });
+                }
+            }
 
         ]);
 }(window.JP.getModule('Machine')));
