@@ -36,7 +36,7 @@ JP.registerModuleAPI("Server", {
     }
 });
 
-function getResultStorageForSession(session){
+function getResultStorageForSession(session) {
     if (!eventStorage[session.id]) {
         eventStorage[session.id] = {}
     }
@@ -108,20 +108,8 @@ app.get('/call', function (req, res) {
 // may return results of finished calls
 app.post('/call', function (req, res) {
     var call = req.body;
+    var resultList = getResultStorageForSession(req.session);
 
-    if (!eventStorage[req.session.id]) {
-        eventStorage[req.session.id] = {}
-    }
-
-    var resultList = eventStorage[req.session.id];
-
-    if (!resultList.callResults) {
-        resultList.callResults = [];
-    }
-
-    if (!resultList.callProgress) {
-        resultList.callProgress = [];
-    }
 
     if ("object" != typeof call || !call.id || !call.name) {
         logger.warn("Invalid call format", call);
@@ -168,12 +156,12 @@ app.post('/call', function (req, res) {
 
                 resultEmitter.emit("result-" + req.session.id);
             },
-            progress: function (result) {
+            progress: function (progress) {
                 logger.debug("Progress update handled, storing result", call.name, call.id);
 
                 resultList.callProgress.push({
                     id: call.id,
-                    result: result
+                    result: progress
                 });
 
                 //req.session.save();
@@ -185,9 +173,6 @@ app.post('/call', function (req, res) {
         // call handler if everything is ok
         handler(callContext);
 
-        // send pending results with POST also
-        //returnResults(req, res);
-        //res.end();
         res.send(200);
     } else {
         res.send(501, "Unhandled RPC call", call.name);

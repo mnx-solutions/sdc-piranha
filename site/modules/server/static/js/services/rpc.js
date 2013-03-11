@@ -19,7 +19,6 @@
             return;
         }
 
-
         data.progress.forEach(function (result) {
             var _call = calls[result.id];
             if (!_call || !_call.progress) {
@@ -36,8 +35,11 @@
             }
 
             _call.listener(result.error, result.result);
+            _call.job.finished = true;
+            _call.job.running = false;
+            _call.job.execCallbacks(_call);
 
-            // XXX debug
+            // XXX for debug
             callHistory.push({name: _call.name, id: _call.id, failed: !result.error, startTime: _call.startTime, endTime: new Date().getTime()
             });
             delete calls[result.id];
@@ -46,7 +48,6 @@
 
     // I provide information about the current route request.
     app.factory('serverCall', ["$http", "$rootScope", "$timeout", function ($http, $rootScope, $timeout) {
-
         var polling = false;
 
         // polling function, polls for rpc-call answers
@@ -56,12 +57,13 @@
                 // TODO remove timed out calls.
                 polling = true;
                 // get call results
-                $http({timeout: 5000, method: 'get', url: '/server/call'})
+                $http({timeout: 30000, method: 'get', url: '/server/call'})
                     .success(function (data) {
                         handleResults(data);
                         $timeout(pollResults, 100);
                     })
                     .error(function () {
+                        // TODO handle errors.
                         $timeout(pollResults, 1000);
                     });
             } else {
@@ -73,27 +75,52 @@
 
         // make a serverside rpc call
         return function (name, data, listener, progress) {
+
+            var job = {
+                finished: false,
+                running: true,
+                _callbacks: [],
+                addCallback: function (callback) {
+                    if (callback) {
+                        this._callbacks.push(callback);
+                    }
+                },
+                execCallbacks: function (call) {
+                    var self = this;
+                    this._callbacks.forEach(function (cb) {
+                        cb(call);
+                    });
+                }
+            }
+
             var _call = {
                 id: uuid.v4(),
                 name: name,
                 listener: listener,
                 progress: progress,
-                startTime: new Date().getTime()
+                startTime: new Date().getTime(),
+                job: job
             }
 
             $http.post('/server/call', {name: name, data: data, id: _call.id}
             ).success(function (resultList) {
                     // store call if successful
                     calls[_call.id] = _call;
-                    // handle direct results
-                    // handleResults(resultList);
+
                     if (!polling) {
                         pollResults();
-                    };
+                    }
                 }
             ).error(function () {
                     listener("call failed");
+                    job.finished = true;
+                    job.failed = true;
+                    job.running = false;
+
+                        job.execCallbacks();
                 });
+
+            return job;
         }
     }]);
 }(window.JP.getModule('Server')));
