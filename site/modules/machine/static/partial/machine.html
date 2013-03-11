@@ -3,7 +3,7 @@
     <div class="machines">
 <div class="container pull-left">
 					<div class="page-header">
-					<h1>Compute <small>A list of your computers and services</small> <a href="/joyent/machine/add/" class="btn pull-right">Add new machine</a></h1>
+					<h1>Compute <small>A list of your computers and services</small><img ng-hide="machineList.job.finished" src="static/img/ajax-loader.gif"> <a href="/joyent/machine/add/" class="btn pull-right">Add new machine</a></h1>
 				</div>
 				<div class="container controls no-corner gray glass">
 					<input type="search" class="search-query pull-right" data-ng-model="query" data-ng-change="search()" placeholder="Search" name="search" id="search">
@@ -40,6 +40,7 @@
 						<tr data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" data-ng-class-odd="odd" ng-class-even="even">
 							<td>
 								<input type="checkbox" id="machine-{{machine.id}}" />
+                                <img ng-show="machine.job.running" src="static/img/ajax-loader.gif"/>
 							</td>
 							<td>
 								<a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
@@ -78,12 +79,12 @@
   <div data-ng-switch-when="details" data-ng-controller="MachineController">
 	<div class="span14 container-pad pull-left">
 		<div class="page-header">
-			<h3>Machine {{selectedmachine.id}} <span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small><span>{{retinfo}}</span></span>
+			<h3>Machine {{selectedmachine.id}} </h3><span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small> <img ng-show="selectedmachine.job.running" src="static/img/ajax-loader.gif"/></span>
 
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta" ng-click="actionstr = 'trash'" ng-init="actionstr=''">Trash</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'restart';clickReboot(selectedmachine.id);" ng-init="actionstr=''">Reboot</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'stop';clickStop(selectedmachine.id)" ng-init="actionstr=''">Stop</a>
-			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'start';clickStart(selectedmachine.id)" ng-init="actionstr=''">Start</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta">Trash</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickReboot(selectedmachine.id);">Reboot</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickStop(selectedmachine.id)">Stop</a>
+			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickStart(selectedmachine.id)" >Start</a>
 
 			</h2>
 		</div>
@@ -162,10 +163,10 @@
 
 								<h4>Tags<br><small>Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your machines.</small></h4>
 
-								<div class="control-group" data-ng-repeat="(key,val) in selectedmachine.metadata">
+								<div class="control-group" data-ng-repeat="(key,val) in selectedmachine.tags">
 									<div class="controls">
-										<input type="text" class="span2" id="inputPassword" placeholder="Key" value="{{key}}">
-										<input type="text" class="span2" id="inputPassword" placeholder="Value" value="{{val}}">
+										<input type="text" class="span3" placeholder="Key" value="{{key}}">
+										<input type="text" class="span3" placeholder="Value" value="{{val}}">
 										<span class="icon-trash" style="margin-top:-5px"></span>
 									</div>
 								</div>
@@ -183,7 +184,7 @@
 				},
 				mouseout:function (){
 					$(this).tooltip('hide')
-				},
+				}
 			});
 			$('.show-password').bind({
 				click:function (){
@@ -200,23 +201,6 @@
 
 
 			</script>
-
-			<div id="myModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-					<h3>Confirmation</h3>
-				</div>
-				<div class="modal-body">
-					<p>Are you sure you want to {{actionstr}} the machine?</p>
-				</div>
-				<div class="modal-footer">
-					<a href="#" data-dismiss="modal" aria-hidden="true" class="btn">Cancel</a>
-					<a href="#" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Yes</a>
-				</div>
-				<div class="clearfix"></div>
-			</div>
-			<div class="clearfix"></div>
-			<div class="clearfix"></div>
 		</div>
   </div>
 </div>

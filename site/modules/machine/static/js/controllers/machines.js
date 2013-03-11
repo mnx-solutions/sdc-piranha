@@ -19,11 +19,13 @@ function ($scope, $filter, requestContext, Machines) {
 
     // Pagination
     $scope.groupedMachines = [];
-    $scope.itemsPerPage = 4;
+    $scope.itemsPerPage = 10;
     $scope.pagedMachines = [];
     $scope.maxPages = 5;
     $scope.currentPage = 0;
-    $scope.machines = Machines.getMachines();
+    $scope.machines = Machines.getMachines().machines;
+    $scope.machineList = Machines.getMachines();
+
     $scope.$watch('machines', function () {
         $scope.search();
     }, true);
