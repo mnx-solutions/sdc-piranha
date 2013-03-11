@@ -8,7 +8,6 @@ var server = JP.getModuleAPI("Server");
 server.onCall("MachineList", function (call) {
     call.log.debug("handling machine list event");
 
-
     call.cloud.listMachines(function (err, machines) {
         if (!err) {
             call.done(null, machines);
@@ -37,19 +36,21 @@ server.onCall("MachineDetails", {
 });
 
 
-function pollForMachineState(call) {
+function pollForMachineState(call, state) {
     var timer = setInterval(function () {
 
         var machineId = call.data;
 
-        call.log.debug("Polling for machine %s to become %status", machineId, status);
-        call.cloud.getMachine(data, function (err, machine) {
+        call.log.debug("Polling for machine %s to become %status", machineId, state);
+        call.cloud.getMachine(machineId, function (err, machine) {
             if (!err) {
                 if (state == machine.state) {
                     call.log.debug("machine %s state is %s as expected, returing call", machineId, state);
                     call.done(null, machine);
+                    clearInterval(timer);
                 } else {
                     call.log.debug("machine %s state is %s, waiting for %s", machineId, machine.state, state);
+                    call.progress({state: machine.state});
                 }
             }
         });
@@ -67,7 +68,7 @@ server.onCall("MachineStart", {
         call.log.debug("Starting machine %s", machineId);
         call.cloud.startMachine(machineId, function (err) {
             if (!err) {
-                pollForMachineState(call)
+                pollForMachineState(call, "running");
             } else {
                 call.done(err);
             }
@@ -84,10 +85,10 @@ server.onCall("MachineStop", {
 
         var machineId = call.data;
 
-        call.log.debug("Starting machine %s", machineId);
+        call.log.debug("Stopping machine %s", machineId);
         call.cloud.stopMachine(machineId, function (err) {
             if (!err) {
-                pollForMachineState(call)
+                pollForMachineState(call,"stopped");
             } else {
                 call.done(err);
             }
@@ -104,10 +105,10 @@ server.onCall("MachineReboot", {
 
         var machineId = call.data;
 
-        call.log.debug("Starting machine %s", machineId);
+        call.log.debug("Rebooting machine %s", machineId);
         call.cloud.rebootMachine(machineId, function (err) {
             if (!err) {
-                pollForMachineState(call)
+                pollForMachineState(call, "running")
             } else {
                 call.done(err);
             }
@@ -126,6 +127,8 @@ module.exports.csss = [
 
 module.exports.javascripts = [
     'js/module.js',
+    'js/vendor/transition.js',
+    'js/vendor/dialog.js',
     'js/services/machine.js',
     'js/controllers/machine-layout.js',
     'js/controllers/machines.js',
