@@ -19,7 +19,8 @@ module.exports = {
 		'/js/controllers/wide-controller.js',
 		'/js/services/request-context.js',
 		'/js/values/render-context.js',
-		'/js/filters/fromNow.js'
+		'/js/filters/fromNow.js',
+		'/js/filters/sizeFormat.js'
 	],
 	csss: [
 		'/vendor/bootstrap/css/bootstrap.min.css',

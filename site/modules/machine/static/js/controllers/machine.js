@@ -4,10 +4,11 @@
     app.controller(
         'MachineController',
         [   '$scope',
+            '$filter',
             'requestContext',
             'Machines',
             "$dialog",
-            function ($scope, requestContext, Machines, $dialog) {
+            function ($scope, $filter, requestContext, Machines, $dialog) {
 
                 requestContext.setUpRenderContext('machine.details', $scope);
                 var machineid = requestContext.getParam('machineid');
@@ -31,6 +32,9 @@
                 var selectedmachine = Machines.getMachine(machineid);
                 $scope.selectedmachine = selectedmachine;
 
+                var packages = Machines.getPackages();
+                $scope.packages = packages;
+
                 $scope.clickStart = function () {
                     confirm("Are you sure you want to start the machine", function () {
                         $scope.retinfo = Machines.startMachine(machineid);
@@ -48,6 +52,13 @@
                         $scope.retinfo = Machines.rebootMachine(machineid);
                     });
                 }
+
+                $scope.clickResize = function () {
+                    confirm("Are you sure you want to resize the machine", function () {
+                        $scope.retinfo = Machines.resizeMachine(machineid, $scope.resize);
+                    });
+                }
+
             }
 
         ]);

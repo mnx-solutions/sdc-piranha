@@ -79,7 +79,7 @@
   <div data-ng-switch-when="details" data-ng-controller="MachineController">
 	<div class="span14 container-pad pull-left">
 		<div class="page-header">
-			<h3>Machine {{selectedmachine.id}} </h3><span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small> <img ng-show="selectedmachine.job.running" src="static/img/ajax-loader.gif"/></span>
+			<h3>Machine {{selectedmachine.id}} </h3><span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-success" ng-switch-when="resizing"> (Machine is being resized)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small> <img ng-show="selectedmachine.job.running" src="static/img/ajax-loader.gif"/></span>
 
 			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta">Trash</a>
 			<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickReboot(selectedmachine.id);">Reboot</a>
@@ -149,21 +149,16 @@
 									<div class="clearfix"></div>
 								</div>
 								<div class="control-group">
-									<label class="control-label">Current Size: {{selectedmachine.memory}}MB of RAM</label>
+									<label class="control-label">Current Size: {{selectedmachine.memory | sizeFormat}} of RAM</label>
 									<div class="controls">
-										<select>
-										  <option>Resize Option #1</option>
-										  <option>Resize Option #2</option>
-										  <option>Resize Option #3</option>
-										  <option>Resize Option #4</option>
-										  <option>Resize Option #5</option>
-										</select>
+										<select name="resize" data-ng-model="resize" data-ng-options="package.name for package in packages"></select>
+										<a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'resize';clickResize(selectedmachine.id)" ng-init="actionstr=''">Resize</a>
 									</div>
 								</div>
 
 								<h4>Tags<br><small>Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your machines.</small></h4>
 
-								<div class="control-group" data-ng-repeat="(key,val) in selectedmachine.tags">
+								<div class="control-group" data-ng-repeat="(key,val) in tagcloud">
 									<div class="controls">
 										<input type="text" class="span3" placeholder="Key" value="{{key}}">
 										<input type="text" class="span3" placeholder="Value" value="{{val}}">

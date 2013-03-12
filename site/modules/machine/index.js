@@ -17,6 +17,19 @@ server.onCall("MachineList", function (call) {
     });
 });
 
+/* listPackages */
+server.onCall("PackageList", function (call) {
+    call.log.debug("handling list packages event");
+
+    call.cloud.listPackages(function (err, packages) {
+        if (!err) {
+            call.done(null, packages);
+        } else {
+            call.done(err, packages);
+        }
+    });
+});
+
 /* GetMachine */
 server.onCall("MachineDetails", {
     verify: function (data) {
@@ -36,12 +49,30 @@ server.onCall("MachineDetails", {
 });
 
 
+/* listMachineTags */
+server.onCall("MachineTags", {
+    verify: function (data) {
+        return "string" == typeof data;
+    },
+    handler: function (call) {
+        call.log.debug("handling machine tags call");
+
+        call.cloud.listMachineTags(call.data, function (err, machine) {
+            if (!err) {
+                call.done(null, machine);
+            } else {
+                call.done(err, machine);
+            }
+        });
+    }
+});
+
 function pollForMachineState(call, state) {
     var timer = setInterval(function () {
 
         var machineId = call.data;
 
-        call.log.debug("Polling for machine %s to become %status", machineId, state);
+        call.log.debug("Polling for machine %s to become %s", machineId, state);
         call.cloud.getMachine(machineId, function (err, machine) {
             if (!err) {
                 if (state == machine.state) {
@@ -51,6 +82,31 @@ function pollForMachineState(call, state) {
                 } else {
                     call.log.debug("machine %s state is %s, waiting for %s", machineId, machine.state, state);
                     call.progress({state: machine.state});
+                }
+            }
+        });
+    }, 1000);
+}
+
+function pollForMachinePackageChange(call, sdcpackage) {
+    var timer = setInterval(function () {
+
+        if ("object" == typeof(call.data)) {
+            var machineId = call.data.machineid;
+        } else {
+            var machineId = call.data;
+        }
+
+        call.log.debug("Polling for machine %s to resize to %s", machineId, sdcpackage.memory);
+        call.cloud.getMachine(machineId, function (err, machine) {
+            if (!err) {
+                if (sdcpackage.memory == machine.memory) {
+                    call.log.debug("machine %s resized to %s as expected, returing call", machineId, sdcpackage.memory);
+                    call.done(null, machine);
+                    clearInterval(timer);
+                } else {
+                    call.log.debug("machine %s memory size is %s, waiting for %s", machineId, machine.memory, sdcpackage.memory);
+                    call.progress({state: 'resizing'});
                 }
             }
         });
@@ -109,6 +165,28 @@ server.onCall("MachineReboot", {
         call.cloud.rebootMachine(machineId, function (err) {
             if (!err) {
                 pollForMachineState(call, "running")
+            } else {
+                call.done(err);
+            }
+        });
+    }
+});
+
+/* ResizeMachine */
+server.onCall("MachineResize", {
+    verify: function (data) {
+        return "object" == typeof data;
+    },
+    handler: function (call, machineId, options, done, progress) {
+
+        var machineId = call.data.machineid;
+        var options = {};
+        options.package = call.data.sdcpackage.name;
+
+        call.log.debug("Resizing machine %s", machineId);
+        call.cloud.resizeMachine(machineId, options, function (err) {
+            if (!err) {
+                pollForMachinePackageChange(call, call.data.sdcpackage)
             } else {
                 call.done(err);
             }

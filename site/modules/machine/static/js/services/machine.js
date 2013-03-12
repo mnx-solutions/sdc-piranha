@@ -6,6 +6,7 @@
         var service = {};
 
         var machineList = {job: null, machines: []};
+        var packageList = {job: null, packages: []};
 
         var findMachine = function (id) {
             var filtered = machineList.machines.filter(function (machine) {
@@ -38,8 +39,49 @@
             machineList.job.addCallback(callback);
         };
 
+
+        // list packages
+        service.getPackages = function () {
+
+            if (packageList.packages.length) {
+                return packageList.packages;
+            }
+
+            // get the new machine list.
+            var job = service.updatePackages();
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(packageList.packages);
+            });
+
+            return deferred.promise;
+        };
+
+        // load packages
+        service.updatePackages = function (callback) {
+
+            if (packageList.job && !packageList.job.finished) {
+                packageList.job.addCallback(callback);
+                return packageList.job;
+            }
+
+            packageList.job = serverCall("PackageList", null, function (err, result) {
+                if (!err) {
+                    packageList.packages.length = 0;
+                    packageList.packages.push.apply(packageList.packages, result);
+                }
+            }, function (data) {
+                // handle progress
+            });
+
+            packageList.job.addCallback(callback);
+        };
+
         // run updateMachines
         service.updateMachines();
+
+        // run updatePackages
+        service.updatePackages();
 
         // get reference to the machines list
         service.getMachines = function () {
@@ -105,6 +147,26 @@
             machine.job = serverCall("MachineReboot", uuid, function (err, result) {
                 if (!err) {
                     machine.state = result.state;
+                }
+            }, function (progress) {
+                machine.state = progress.state;
+            });
+
+            return machine.job;
+        }
+
+
+        service.resizeMachine = function (uuid, sdcpackage) {
+            var machine = findMachine(uuid);
+            var data = {};
+            data.machineid = uuid;
+            console.log(sdcpackage);
+            data.sdcpackage = sdcpackage;
+
+            machine.job = serverCall("MachineResize", data, function (err, result) {
+                if (!err) {
+                    machine.state = result.state;
+                    machine.memory = result.memory;
                 }
             }, function (progress) {
                 machine.state = progress.state;

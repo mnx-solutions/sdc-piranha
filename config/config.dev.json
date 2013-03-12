@@ -4,9 +4,8 @@
         "assetize": false
     },
     "cloudapi": {
-        "url": "https://10.88.88.3",
-        "username": "admin",
-        "keyId": "49:95:f1:a5:fc:3a:2d:d2:0f:a6:fb:96:2c:1e:7d:b9",
-        "keyPath": "/Users/jaan/.ssh/cloudapi"
+        "url": "https://us-east-1.api.joyentcloud.com",
+        "username": "Antti",
+        "password": "2wsx3edc"
     }
 }
