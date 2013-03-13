@@ -2,7 +2,7 @@ module.exports = {
 	route: '/',
 	index: 'app.jade',
 	modules: [
-		'menu','server', 'machine', 'login', 'debug', 'jobs', 'no-tracking'
+		'menu','server', 'machine', 'login', 'debug', 'no-tracking'
 	],
 	authenticate: true,
 	javascripts: [
