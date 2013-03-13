@@ -2,7 +2,7 @@
 
 (function (app) {
 // app.directive('mainMenu', ['$timeout', 'Menu', function ($timeout, Menu) {
-    app.directive('debugWindow', [ 'Jobs', 'serverCallInternals', function (Jobs, serverCalls) {
+    app.directive('debugWindow', [ 'serverCallInternals', function ( serverCalls) {
         return {
             link: function ($scope) {
                 $scope.calls = serverCalls().calls;

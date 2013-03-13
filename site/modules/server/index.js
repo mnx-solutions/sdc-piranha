@@ -142,8 +142,9 @@ app.post('/call', function (req, res) {
             id: call.id,
             log: JP.getLog({req_id: call.id, call: call.name}),
             data: call.data,
+            startTime: new Date().getTime(),
             done: function (err, result) {
-                logger.debug("Call handled, storing result", call.name, call.id)
+                this.log.debug("Call %s handled in %sms, storing result", call.name, new Date().getTime() - this.startTime)
 
                 resultList.callResults.push({
                     name: call.name,
@@ -151,8 +152,6 @@ app.post('/call', function (req, res) {
                     error: err,
                     result: result
                 });
-
-                //req.session.save();
 
                 resultEmitter.emit("result-" + req.session.id);
             },
@@ -163,8 +162,6 @@ app.post('/call', function (req, res) {
                     id: call.id,
                     result: progress
                 });
-
-                //req.session.save();
 
                 resultEmitter.emit("result-" + req.session.id);
             }
@@ -186,6 +183,7 @@ module.exports = {
     csss: ['css/menu.css'],
     javascripts: [
         'js/module.js',
-        'js/services/rpc.js'
+        'js/services/rpc.js',
+        'js/vendor/uuid.js'
     ]
 };
