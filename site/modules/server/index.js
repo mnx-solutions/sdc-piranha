@@ -136,15 +136,15 @@ app.post('/call', function (req, res) {
             handler = callHandler;
         }
 
-
         var callContext = {
             cloud: req.cloud,
             id: call.id,
-            log: JP.getLog({req_id: call.id, call: call.name}),
+            log: req.log.child({call_id: call.id, call: call.name}),
             data: call.data,
             startTime: new Date().getTime(),
             done: function (err, result) {
-                this.log.debug("Call %s handled in %sms, storing result", call.name, new Date().getTime() - this.startTime)
+                var execTime = new Date().getTime() - this.startTime;
+                this.log.debug({execTime: execTime, err: err}, "Call %s handled in %sms, storing result", call.name, execTime )
 
                 resultList.callResults.push({
                     name: call.name,
