@@ -10,7 +10,11 @@
             },
             page: function () {
                 _gaq.push(['_trackPageview', $location.path()]);
+            },
+            timing: function (category, variable, time) {
+                _gaq.push(['_trackTiming', category, variable, time]);
             }
+
         }
     }]);
 

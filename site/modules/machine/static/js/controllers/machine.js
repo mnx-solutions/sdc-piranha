@@ -8,8 +8,7 @@
             'requestContext',
             'Machines',
             "$dialog",
-            "$$trackEvent",
-            "$$trackPage",
+            "$$track",
             function ($scope, $filter, requestContext, Machines, $dialog, $$track) {
                 $$track.page();
 

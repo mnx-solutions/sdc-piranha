@@ -13,7 +13,7 @@
         }
     });
 
-    function handleResults(data) {
+    function handleResults(data, $$track) {
 
         if (!data) {
             return;
@@ -39,6 +39,8 @@
             _call.job.running = false;
             _call.job.execCallbacks(_call);
 
+            $$track.timing("Task", _call.name, _call.startTime - new Date().getTime());
+
             // XXX for debug
             callHistory.push({name: _call.name, id: _call.id, failed: !result.error, startTime: _call.startTime, endTime: new Date().getTime()
             });
@@ -47,7 +49,7 @@
     }
 
     // I provide information about the current route request.
-    app.factory('serverCall', ["$http", "$rootScope", "$timeout", function ($http, $rootScope, $timeout) {
+    app.factory('serverCall', ["$http", "$rootScope", "$timeout", "$$track", function ($http, $rootScope, $timeout, $$track) {
         var polling = false;
 
         // polling function, polls for rpc-call answers
@@ -59,7 +61,7 @@
                 // get call results
                 $http({timeout: 30000, method: 'get', url: '/server/call'})
                     .success(function (data) {
-                        handleResults(data);
+                        handleResults(data, $$track);
                         $timeout(pollResults, 100);
                     })
                     .error(function () {
@@ -116,8 +118,7 @@
                     job.finished = true;
                     job.failed = true;
                     job.running = false;
-
-                        job.execCallbacks();
+                    job.execCallbacks();
                 });
 
             return job;

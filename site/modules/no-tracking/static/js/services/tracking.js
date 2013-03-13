@@ -7,6 +7,8 @@
             event: function () {
             },
             page: function () {
+            },
+            timing: function () {
             }
         }
     }]);

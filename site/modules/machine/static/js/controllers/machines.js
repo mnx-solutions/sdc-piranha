@@ -8,9 +8,12 @@
             '$filter',
             'requestContext',
             'Machines',
+            '$$track',
 
-function ($scope, $filter, requestContext, Machines) {
+function ($scope, $filter, requestContext, Machines, $$track) {
     requestContext.setUpRenderContext('machine.index', $scope);
+
+    $$track.page();
 
     // Sorting
     $scope.sortingOrder = 'created';
