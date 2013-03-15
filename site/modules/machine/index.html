@@ -3,7 +3,7 @@
         <div class="machines">
             <div class="container pull-left">
                 <div class="page-header">
-                    <h1>Compute <small>A list of your computers and services</small><img ng-hide="machineList.job.finished" src="static/img/ajax-loader.gif"> <a href="/joyent/machine/add/" class="btn pull-right">Add new machine</a></h1>
+                    <h1>Compute <small>A list of your computers and services</small><img ng-hide="machineList.job.finished" src="static/img/ajax-loader.gif"> <a href="#!/machine/add/" class="btn pull-right">Add new machine</a></h1>
                 </div>
                 <div class="container controls no-corner gray glass">
                     <input type="search" class="search-query pull-right" data-ng-model="query" data-ng-change="search()" placeholder="Search" name="search" id="search">
@@ -171,6 +171,16 @@
                 <div class="clearfix"></div>
             </div>
             <div class="clearfix"></div>
+        </div>
+    </div>
+    <div data-ng-switch-when="provision" data-ng-controller="ProvisionController">
+        <div class="controls">
+            Name: <input type="text" class="span3" placeholder="Name" name="macinename" data-ng-model="machinename"><br/>
+            Datacenter: <select data-ng-model="datacenter" data-ng-options="value as key for (key, value) in datacenters"></select><br/>
+            Image (version): <select data-ng-model="dataset" data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select><br/>
+            Package: <select data-ng-model="sdcpackage" data-ng-options="package.name for package in packages"></select><br/>
+
+            <a href="#myModal" role="button" data-toggle="modal" class="btn pull-left margin5right cta" ng-click="clickProvision();">Add new machine</a>
         </div>
     </div>
 </div>

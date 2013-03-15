@@ -28,6 +28,32 @@ module.exports = function (scope, callback) {
 		});
 	});
 
+    /* listDatasets */
+    server.onCall("DatasetList", function (call) {
+        call.log.debug("handling list datasets event");
+
+        call.cloud.listDatasets(function (err, packages) {
+            if (!err) {
+                call.done(null, packages);
+            } else {
+                call.done(err, packages);
+            }
+        });
+    });
+
+    /* listDatasets */
+    server.onCall("DatacenterList", function (call) {
+        call.log.debug("handling list datasets event");
+
+        call.cloud.listDatacenters(function (err, packages) {
+            if (!err) {
+                call.done(null, packages);
+            } else {
+                call.done(err, packages);
+            }
+        });
+    });
+
 	/* GetMachine */
 	server.onCall("MachineDetails", {
 		verify: function (data) {
@@ -187,6 +213,32 @@ module.exports = function (scope, callback) {
 			});
 		}
 	});
+
+    /* ResizeMachine */
+    server.onCall("MachineCreate", {
+        verify: function (data) {
+            return "object" === typeof data;
+        },
+        handler: function (call, machineId, options, done, progress) {
+
+            options = {};
+            options.name = call.data.name;
+            options.package = call.data.sdcpackage.name;
+            options.dataset = call.data.dataset.urn;
+
+            call.log.debug("Creating machine %s", call.data.name);
+            call.cloud.createMachine(options, function (err, machine) {
+                if (!err) {
+                    call.data = {};
+                    call.data = machine.id;
+                    pollForMachineState(call, "running");
+                } else {
+                    call.done(err);
+                }
+            });
+
+        }
+    });
 
 	setImmediate(callback);
 }

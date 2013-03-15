@@ -7,6 +7,9 @@
 
         var machineList = {job: null, machines: []};
         var packageList = {job: null, packages: []};
+        var datasetList = {job: null, datasets: []};
+        var datacenterList = {job: null, datacenters: {}};
+        var dummyMachine = {job: null};
 
         var findMachine = function (id) {
             var filtered = machineList.machines.filter(function (machine) {
@@ -23,16 +26,16 @@
         service.getMachine = function (uuid) {
           if (loaded) {
             var tmp = machines.filter(function (machine) {
-	            return machine.id === uuid;
+                return machine.id === uuid;
             });
             return tmp[0];
           } else {
             var deferred = $q.defer();
             onLoad.push(function() {
-	            var tmp = machines.filter(function (machine) {
-		            return machine.id === uuid;
-	            });
-	            deferred.resolve(tmp[0]);
+                var tmp = machines.filter(function (machine) {
+                    return machine.id === uuid;
+                });
+                deferred.resolve(tmp[0]);
             });
 
             return deferred.promise;
@@ -57,7 +60,6 @@
 
             machineList.job.addCallback(callback);
         };
-
 
         // list packages
         service.getPackages = function () {
@@ -94,6 +96,80 @@
             });
 
             packageList.job.addCallback(callback);
+        };
+
+        // list datasets
+        service.getDatasets = function () {
+
+            if (datasetList.datasets.length) {
+                return datasetList.datasets;
+            }
+
+            // get the new machine list.
+            var job = service.updateDatasets();
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(datasetList.datasets);
+            });
+
+            return deferred.promise;
+        };
+
+        // load datasets
+        service.updateDatasets = function (callback) {
+
+            if (datasetList.job && !datasetList.job.finished) {
+                datasetList.job.addCallback(callback);
+                return datasetList.job;
+            }
+
+            datasetList.job = serverCall("DatasetList", null, function (err, result) {
+                if (!err) {
+                    datasetList.datasets.length = 0;
+                    datasetList.datasets.push.apply(datasetList.datasets, result);
+                }
+            }, function (data) {
+                // handle progress
+            });
+
+            datasetList.job.addCallback(callback);
+        };
+
+        // list datacenters
+        service.getDatacenters = function () {
+
+            if (datacenterList.datacenters.length) {
+                return datacenterList.datacenters;
+            }
+
+            // get the new machine list.
+            var job = service.updateDatacenters();
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(datacenterList.datacenters);
+            });
+
+            return deferred.promise;
+        };
+
+        // load datacenters
+        service.updateDatacenters = function (callback) {
+
+            if (datacenterList.job && !datacenterList.job.finished) {
+                datacenterList.job.addCallback(callback);
+                return datacenterList.job;
+            }
+
+            datacenterList.job = serverCall("DatacenterList", null, function (err, result) {
+                if (!err) {
+                    datacenterList.datacenters = {};
+                    datacenterList.datacenters = result;
+                }
+            }, function (data) {
+                // handle progress
+            });
+
+            datacenterList.job.addCallback(callback);
         };
 
         // run updateMachines
@@ -179,7 +255,6 @@
             var machine = findMachine(uuid);
             var data = {};
             data.machineid = uuid;
-            console.log(sdcpackage);
             data.sdcpackage = sdcpackage;
 
             machine.job = serverCall("MachineResize", data, function (err, result) {
@@ -194,6 +269,19 @@
             return machine.job;
         }
 
+        service.provisionMachine = function (name, sdcpackage, dataset) {
+            var data = {};
+            data.name = name;
+            data.sdcpackage = sdcpackage;
+            data.dataset = dataset;
+            dummyMachine.job = serverCall("MachineCreate", data, function (err, result) {
+                if (!err) {
+                }
+            }, function (progress) {
+            });
+
+            return dummyMachine.job;
+        }
 
         return service;
     }]);

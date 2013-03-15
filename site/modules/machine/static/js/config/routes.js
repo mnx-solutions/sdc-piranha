@@ -7,6 +7,9 @@ window.JP.main.config(['$routeProvider', function ($routeProvider) {
         })
                 .when('/machine/details/:machineid', {
             action: 'machine.details'
+        })
+                .when('/machine/add', {
+            action: 'machine.provision'
         });
     }]);
 
