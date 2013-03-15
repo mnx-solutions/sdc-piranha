@@ -1,19 +1,29 @@
 {
-    "server": {
-        "port": 3000
-    },
-    "log": {
-        "name": "piranha",
-        "level": "debug"
-    },
-    "cloudapi": {
-        "url": "https://10.88.88.3",
-        "username": "",
-        "keyId": "",
-        "keyPath": ""
-    },
-    "modulizer": {
-        "minify": true,
-        "assetize": true
-    }
+  "server": {
+      "port": 3000
+  },
+  "log": {
+      "name": "piranha",
+      "level": "debug"
+  },
+	"cloudapi": {
+	},
+  "modulizer": {
+      "minify": true,
+      "assetize": true
+  },
+	"static":{
+		"js": {
+			"concat": ["use-strict-rm"],
+			"cache": "all",
+			"ext": "js",
+			"transform": ["use-strict-add","uglify-js","gzip"]
+		},
+		"css": {
+			"concat":true,
+			"cache": "all",
+			"ext": "css",
+			"transform": ["less", "sqwish", "gzip"]
+		}
+	}
 }

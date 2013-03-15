@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-            'MachineLayoutController',
+            'machine.LayoutController',
             ['$scope', 'requestContext',
                 function ($scope, requestContext) {
                     requestContext.setUpRenderContext('machine', $scope);

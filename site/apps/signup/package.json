@@ -1,6 +1,11 @@
 {
 	"em": {
-		"route": "/",
-		"modules": ["account"]
+		"route": "/signup",
+		"modules": ["signup", "login", "menu"],
+		"pre": {
+			"css": [
+				"/vendor/bootstrap/css/bootstrap-responsive.css"
+			]
+		}
 	}
 }

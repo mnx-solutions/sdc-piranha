@@ -9,7 +9,7 @@
   },
   "main": "site/index.js",
   "dependencies": {
-    "send": "*",
+	  "send": "*",
 		"bunyan": "*",
 		"uglify-js":"*",
 		"sqwish":"*",
@@ -17,19 +17,20 @@
     "less": "*",
     "jade": "*",
     "smartdc": "https://github.com/kusor/node-smartdc/tarball/pre-v7",
-     "vasync": "1.3.x",
-    "easy-config": "0.1.7",
-    "easy-asset": "*",
+    "vasync": "1.3.x",
+    "easy-config": "0.1.8",
+    "easy-asset": "git+https://github.com/joyent/node-easy-asset.git",
+	  "express-modulizer": "git+https://github.com/joyent/node-express-modulizer.git",
     "mustache": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
-		"grunt-contrib-jasmine":"*",
-    "jasmine-node": "*"
+	  "grunt-contrib-jasmine":"*",
+	  "jasmine-node": "*"
   },
   "optionalDependencies": {},
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.10.0"
   },
   "private": true
 }

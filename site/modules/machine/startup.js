@@ -1,7 +1,7 @@
 'use strict';
 
-module.exports = function (app) {
-	var server = JP.getModuleAPI("Server");
+module.exports = function (scope, callback) {
+	var server = scope.api('Server');
 
 	server.onCall("MachineList", function (call) {
 		call.log.debug("handling machine list event");
@@ -31,7 +31,7 @@ module.exports = function (app) {
 	/* GetMachine */
 	server.onCall("MachineDetails", {
 		verify: function (data) {
-			return "string" == typeof data;
+			return "string" === typeof data;
 		},
 		handler: function (call) {
 			call.log.debug("handling machine details call");
@@ -50,7 +50,7 @@ module.exports = function (app) {
 	/* listMachineTags */
 	server.onCall("MachineTags", {
 		verify: function (data) {
-			return "string" == typeof data;
+			return "string" === typeof data;
 		},
 		handler: function (call) {
 			call.log.debug("handling machine tags call");
@@ -157,7 +157,7 @@ module.exports = function (app) {
 			call.log.debug("Rebooting machine %s", machineId);
 			call.cloud.rebootMachine(machineId, function (err) {
 				if (!err) {
-					pollForMachineState(call, "running")
+					pollForMachineState(call, "running");
 				} else {
 					call.done(err);
 				}
@@ -187,4 +187,6 @@ module.exports = function (app) {
 			});
 		}
 	});
+
+	setImmediate(callback);
 }

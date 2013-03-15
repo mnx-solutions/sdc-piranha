@@ -1,0 +1,8 @@
+{
+	"em": {
+		"route": "/login",
+		"modules": [
+			"login"
+		]
+	}
+}

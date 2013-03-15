@@ -3,12 +3,12 @@ html(lang='en',data-ng-app='JoyentPortal')
     meta(charset='utf-8')
     meta(name='fragment',content='!')
     title(data-ng-bind='windowTitle') LOGIN
-    each css in csss
-      link(rel='stylesheet',href='#{css}',type='text/css')
+    each link in css
+        link(rel='stylesheet',href='#{link._url}',type='text/css')
   body(class="JoyentPortal-module-login")
 
     div(data-main-menu, class="navbar")
 
     div(class="login-form")
-    each javascript in javascripts
-      script(type='text/javascript',src='#{javascript}')
+    each link in js
+      script(type='text/javascript',src='#{link._url}')

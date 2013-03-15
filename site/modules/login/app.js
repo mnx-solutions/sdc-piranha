@@ -1,12 +1,12 @@
 'use strict';
 
-module.exports = function (app) {
+module.exports = function (scope, app, callback) {
 
-	app.get('/', function (req, res) {
-		req.cloud.listMachines(function (err, machines) {
-			if (!err) {
-				res.json(machines);
-			}
-		});
+	app.post('/', function (req, res) {
+		var login = req.body;
+		req.session.login = login;
+		login.success = true;
+		res.json(login);
 	});
+	setImmediate(callback);
 }

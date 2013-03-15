@@ -1,9 +1,176 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index" data-ng-controller="MachinesController">
+        <div class="machines">
+            <div class="container pull-left">
+                <div class="page-header">
+                    <h1>Compute <small>A list of your computers and services</small><img ng-hide="machineList.job.finished" src="static/img/ajax-loader.gif"> <a href="/joyent/machine/add/" class="btn pull-right">Add new machine</a></h1>
+                </div>
+                <div class="container controls no-corner gray glass">
+                    <input type="search" class="search-query pull-right" data-ng-model="query" data-ng-change="search()" placeholder="Search" name="search" id="search">
+                    <select class="search-options pull-right" data-ng-model="searchable" data-ng-change="search()" data-ng-options="val as key for (key, val) in searchOptions"></select>
+                </div>
+                <table class="table table-striped table-hover text-medium">
+                    <thead>
+                    <tr>
+                        <td>#</td>
+                        <td class="sortable" data-ng-click="sortBy('label')" ng-switch on="sortIcon.label">
+                            <span class="text">Name</span>
+                            <i class="icon-arrow-up" ng-switch-when="up"/>
+                            <i class="icon-arrow-down" ng-switch-when="down"/>
+                        </td>
+                        <td class="sortable" data-ng-click="sortBy('type');" ng-switch on="sortIcon.type">
+                            <span class="text">Type</span>
+                            <i class="icon-arrow-up" ng-switch-when="up"/>
+                            <i class="icon-arrow-down" ng-switch-when="down"/>
+                        </td>
+                        <td>Network</td>
+                        <td class="sortable" data-ng-click="sortBy('memory');" ng-switch on="sortIcon.memory">
+                            <span class="text">Memory</span>
+                            <i class="icon-arrow-up" ng-switch-when="up"/>
+                            <i class="icon-arrow-down" ng-switch-when="down"/>
+                        </td>
+                        <td class="sortable" data-ng-click="sortBy('created');" ng-switch on="sortIcon.created">
+                            <span class="text">Created</span>
+                            <i class="icon-arrow-up" ng-switch-when="up"/>
+                            <i class="icon-arrow-down" ng-switch-when="down"/>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" data-ng-class-odd="odd" ng-class-even="even">
+                        <td>
+                            <input type="checkbox" id="machine-{{machine.id}}" />
+                            <img ng-show="machine.job.running" src="static/img/ajax-loader.gif"/>
+                        </td>
+                        <td>
+                            <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
+                        </td>
+                        <td>{{machine.type}}</td>
+                        <td>
+                            <span data-ng-repeat="ip in machine.ips">
+                                {{ ip }}
+                            </span>
+                        </td>
+                        <td>{{machine.memory}}MB</td>
+                        <td>{{machine.created | fromNow}}</td>
 
-</body>
-</html>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination pagination-small pagination-centered">
+                    <ul>
+                        <li data-ng-class="{disabled: currentPage == 0}">
+                            <a href ng-click="prevPage()">« Prev</a>
+                        </li>
+                        <li data-ng-repeat="n in range()"
+                            data-ng-class="{active: n == currentPage}"
+                            data-ng-click="setPage()">
+                            <a href ng-bind="n + 1">1</a>
+                        </li>
+                        <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+                            <a href ng-click="nextPage()">Next »</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-switch-when="details" data-ng-controller="MachineController">
+        <div class="span14 container-pad pull-left">
+            <div class="page-header">
+                <h3>Machine {{selectedmachine.id}} </h3><span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-success" ng-switch-when="resizing"> (Machine is being resized)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small> <img ng-show="selectedmachine.job.running" src="static/img/ajax-loader.gif"/></span>
+
+                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta">Trash</a>
+                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickReboot(selectedmachine.id);">Reboot</a>
+                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickStop(selectedmachine.id)">Stop</a>
+                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickStart(selectedmachine.id)" >Start</a>
+
+                </h2>
+            </div>
+            <div class="nav nav-tabs" id="step-container">
+                <li class="active"><a>Overview</a></li>
+                <!--<li><a href="#">Intelligents</a></li>-->
+            </div>
+
+            <div style="border:1px solid #ddd;border-top:1px solid white;">
+                <div class="span7" >
+                    <h4>Overview</h4>
+                    <table>
+                        <tr >
+                            <td class="span3 key">Machine Name</td>
+                            <td class="span3 value">{{selectedmachine.name}} </td>
+                        </tr>
+
+
+                        <tr >
+                            <td class="td3 key">Type</td>
+                            <td class="td3 value">{{selectedmachine.type}}</td>
+                        </tr>
+                        <tr >
+                            <td class="td3 key">IP Addresses</td>
+                            <td class="td3 value"><span data-ng-repeat="ip in selectedmachine.ips">{{ ip }} </span></td>
+                        </tr>
+                        <tr >
+                            <td class="td3 key">Image</td>
+                            <td class="td3 value">{{selectedmachine.dataset}}</td>
+                        </tr>
+                        <tr >
+                            <td class="td3 key">Created</td>
+                            <td class="td3 value">{{selectedmachine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                        </tr>
+                        <tr >
+                            <td class="td3 key">Data center</td>
+                            <td class="td3 value">us-east-1</td>
+                        </tr>
+                    </table>
+                    <br>
+							<span ng-show="{{selectedmachine.metadata.credentials}}">
+							<h4>Credentials</h4>
+							<table class="table table-striped text-medium" style="width:470px">
+                                <thead>
+                                <tr>
+                                    <th style="width:115px !important">Username</th>
+                                    <th style="width:155px !important">Password</th>
+                                    <th>&nbsp;</th>
+                                </tr></thead>
+                                <tbody>
+                                <tr data-ng-repeat="(key,val) in selectedmachine.metadata.credentials">
+                                    <td>{{key}}</td>
+                                    <td><span id="label-1">************</span><span id="pwd-1" class="none">{{val}}</span></td>
+                                    <td nowrap><a rel="1" class="show-password">[ Show ]</a></td>
+                                </tr></tbody></table>
+							</span>
+                </div>
+                <div class="span5 pull-right" style="margin:0px">
+                    <form class="form-horisontal">
+                        <div>
+                            <h4>Resize<br><small>Please note, that it may not always be possible to resize based on the constraints of your current server location.</small></h4>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Current Size: {{selectedmachine.memory | sizeFormat}} of RAM</label>
+                            <div class="controls">
+                                <select name="resize" data-ng-model="resize" data-ng-options="package.name for package in packages"></select>
+                                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="actionstr = 'resize';clickResize(selectedmachine.id)" ng-init="actionstr=''">Resize</a>
+                            </div>
+                        </div>
+
+                        <h4>Tags<br><small>Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your machines.</small></h4>
+
+                        <div class="control-group" data-ng-repeat="(key,val) in tagcloud">
+                            <div class="controls">
+                                <input type="text" class="span3" placeholder="Key" value="{{key}}">
+                                <input type="text" class="span3" placeholder="Value" value="{{val}}">
+                                <span class="icon-trash" style="margin-top:-5px"></span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

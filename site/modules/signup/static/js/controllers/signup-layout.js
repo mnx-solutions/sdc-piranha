@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-        'SignupLayoutController',
+        'signup.LayoutController',
         ['$scope', 'requestContext', function ($scope, requestContext) {
                 requestContext.setUpRenderContext('signup', $scope);
             }

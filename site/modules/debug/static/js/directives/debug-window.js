@@ -2,14 +2,15 @@
 
 (function (app) {
 // app.directive('mainMenu', ['$timeout', 'Menu', function ($timeout, Menu) {
-    app.directive('debugWindow', [ 'Jobs', 'serverCallInternals', function (Jobs, serverCalls) {
+    app.directive('debugWindow', ['serverCallInternals', function ( serverCalls) {
         return {
             link: function ($scope) {
                 $scope.calls = serverCalls().calls;
                 $scope.oldCalls = serverCalls().history;
             },
 
-            template: '<div class="debug"><div class="pull-left"><h3>Ongoing calls</h3><div class="jobs">' +
+            template: '<div class="JoyentPortal-module-debug">' +
+	              '<div class="debug"><div class="pull-left"><h3>Ongoing calls</h3><div class="jobs">' +
                 '<ul>' +
                 '<li data-ng-repeat="call in calls"">' +
                 '<span class="name">running: {{call.name}}</span>' +
@@ -18,7 +19,7 @@
                 '<span class="name">finished: {{call.name}} in {{call.endTime-call.startTime}}ms</span>' +
                 '</li>' +
                 '</ul></div></div>' +
-                '</div>'
+                '</div></div>'
         };
     }]);
 }(window.JP.getModule('Debug')));

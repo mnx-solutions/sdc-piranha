@@ -12,7 +12,7 @@ function ($scope, requestContext, navigation) {
     navigation.add({
         id: 'step-1',
         name: 'Create Account',
-        partial: 'static/partial/steps/step-account.html'
+        partial: 'static/partial/steps/step-index.html'
     });
 
     navigation.add({

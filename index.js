@@ -2,22 +2,28 @@
 
 var config = require('easy-config');
 var express = require('express');
-var app = express();
+var bunyan = require('bunyan');
+var Rack = require('easy-asset').Rack;
+var Modulizer = require('express-modulizer');
 
-app.set('views', process.cwd() + '/site/views');
-
-var JP = require('./lib/jp');
-global.JP = new JP(process.cwd() + '/site/');
-
+var app = express(); // main app
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 app.use(express.session({secret:"secret"}));
 
-var Modulizer = require('./lib/modulizer');
-var modulizer = new Modulizer(app);
+var rack = new Rack();
+rack.addMiddleware(app);
 
-modulizer.loadApps(['main', 'signup', 'login']);
+var compiler = require('./lib/compiler')(rack, config);
 
-modulizer.run(function () {
-	app.listen(config.server.port);
+Modulizer.create({
+	root: 'site',
+	config: config,
+	log: bunyan.createLogger(config.log),
+	main: app,
+	extensions: config.extensions,
+	compiler: compiler,
+	apps: ['login','main','signup']
+}, function (err, m) {
+	m.run(3000);
 });
