@@ -1,5 +1,6 @@
 'use strict';
 
+var config = require('easy-config');
 var express = require('express');
 var app = express();
 
@@ -18,5 +19,5 @@ var modulizer = new Modulizer(app);
 modulizer.loadApps(['main', 'signup', 'login']);
 
 modulizer.run(function () {
-	app.listen(3000);
+	app.listen(config.server.port);
 });
