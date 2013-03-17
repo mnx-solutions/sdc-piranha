@@ -8,16 +8,13 @@
             '$filter',
             'requestContext',
             'Machines',
-            '$$track',
 
-function ($scope, $filter, requestContext, Machines, $$track) {
+function ($scope, $filter, requestContext, Machines) {
     requestContext.setUpRenderContext('machine.index', $scope);
-
-    $$track.page();
 
     // Sorting
     $scope.sortingOrder = 'created';
-    $scope.reverse = false;
+    $scope.reverse = true;
     $scope.sortIcon = {};
 
     // Pagination

@@ -78,6 +78,36 @@
             return deferred.promise;
         };
 
+        var findPackage = function (packageName) {
+            var found = packageList.packages.filter(function (pack) {
+                if (pack.name === packageName) {
+                    return pack;
+                }
+            });
+            if (found.length === 1) {
+                return found[0];
+            }
+            return null;
+        }
+
+        // list packages
+        service.getPackage = function (name) {
+
+            if (packageList.packages.length) {
+                return findPackage(name);
+            }
+
+            // get the new machine list.
+            var job = service.updatePackages();
+
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(findPackage(name));
+            });
+
+            return deferred.promise;
+        };
+
         // load packages
         service.updatePackages = function (callback) {
 
@@ -178,6 +208,12 @@
         // run updatePackages
         service.updatePackages();
 
+        // run updateDatasets
+        //service.updateDatasets();
+
+        // run updateDatacenters
+        //service.updateDatacenters();
+
         // get reference to the machines list
         service.getMachines = function () {
             return machineList;
@@ -185,18 +221,19 @@
 
         // find machine by uuid
         service.getMachine = function (uuid) {
+            var deferred = $q.defer();
 
             var machine = findMachine(uuid);
 
             // got the machine, return machine
             if (machine) {
-                return machine;
+                deferred.resolve(machine);
+                return deferred.promise;
             }
 
             // get the new machine list.
             var job = service.updateMachines();
 
-            var deferred = $q.defer();
             job.addCallback(function () {
                 var machine = findMachine(uuid);
                 deferred.resolve(machine);
@@ -235,6 +272,20 @@
             return machine.job;
         }
 
+        service.deleteMachine = function (uuid) {
+            //XXX check for running jobs
+            var machine = findMachine(uuid);
+
+            machine.job = serverCall("MachineDestroy", uuid, function (err, result) {
+                if (!err) {
+                    delete machineList.machines[machine];
+                }
+            }, function (progress) {
+                machine.state = progress.state;
+            });
+
+            return machine.job;
+        }
 
         service.rebootMachine = function (uuid) {
             var machine = findMachine(uuid);

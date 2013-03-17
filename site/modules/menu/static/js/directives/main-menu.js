@@ -8,6 +8,7 @@
                 link: function (scope) {
                     scope.mainMenu = Menu.getMenu();
                 },
+
                 controller: function ($scope, requestContext) {
                     $scope.$on('requestContextChanged', function () {
                         $scope.mainMenu.forEach(function (item) {

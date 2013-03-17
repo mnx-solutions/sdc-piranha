@@ -12,7 +12,11 @@
                 <table class="table table-striped table-hover text-medium">
                     <thead>
                     <tr>
-                        <td>#</td>
+                        <td class="sortable" data-ng-click="sortBy('state')" ng-switch on="sortIcon.state">
+                            <span class="text">State</span>
+                            <i class="icon-arrow-up" ng-switch-when="up"/>
+                            <i class="icon-arrow-down" ng-switch-when="down"/>
+                        </td>
                         <td class="sortable" data-ng-click="sortBy('label')" ng-switch on="sortIcon.label">
                             <span class="text">Name</span>
                             <i class="icon-arrow-up" ng-switch-when="up"/>
@@ -39,8 +43,7 @@
                     <tbody>
                     <tr data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" data-ng-class-odd="odd" ng-class-even="even">
                         <td>
-                            <input type="checkbox" id="machine-{{machine.id}}" />
-                            <img ng-show="machine.job.running" src="static/img/ajax-loader.gif"/>
+                            <machine-status machine="machine"/>
                         </td>
                         <td>
                             <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
@@ -79,7 +82,7 @@
     <div data-ng-switch-when="details" data-ng-controller="MachineController">
         <div class="span14 container-pad pull-left">
             <div class="page-header">
-                <h3>Machine {{selectedmachine.id}} </h3><span ng-switch on="selectedmachine.state"><small class="text-success" ng-switch-when="running"> (Machine is running)</small><small class="text-success" ng-switch-when="resizing"> (Machine is being resized)</small><small class="text-warning" ng-switch-when="provisioning"> (Machine is in provisioning)</small><small ng-switch-when="stopped"> (Machine is stopped)</small> <img ng-show="selectedmachine.job.running" src="static/img/ajax-loader.gif"/></span>
+                <h1>Machine <small> {{selectedmachine.name}} </small></h1><span><machine-status machine="selectedmachine"/></span>
 
                 <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta">Trash</a>
                 <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickReboot(selectedmachine.id);">Reboot</a>

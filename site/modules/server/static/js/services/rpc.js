@@ -37,6 +37,7 @@
             _call.listener(result.error, result.result);
             _call.job.finished = true;
             _call.job.running = false;
+            _call.job.failed = !(!result.error);
             _call.job.execCallbacks(_call);
 
             $$track.timing("Task", _call.name, _call.startTime - new Date().getTime());
@@ -81,6 +82,7 @@
             var job = {
                 finished: false,
                 running: true,
+                name: name,
                 _callbacks: [],
                 addCallback: function (callback) {
                     if (callback) {

@@ -10,7 +10,6 @@
             "$dialog",
             "$$track",
             function ($scope, $filter, requestContext, Machines, $dialog, $$track) {
-                $$track.page();
 
                 requestContext.setUpRenderContext('machine.details', $scope);
                 var machineid = requestContext.getParam('machineid');
@@ -28,42 +27,53 @@
                         });
                 };
 
-
                 $scope.machineid = machineid;
 
                 var selectedmachine = Machines.getMachine(machineid);
                 $scope.selectedmachine = selectedmachine;
 
                 var packages = Machines.getPackages();
+                $scope.selectedmachine.then(function(value){
+                    $scope.package = Machines.getPackage(value.package);
+                });
+
                 $scope.packages = packages;
 
                 $scope.clickStart = function () {
-                    $$track.event("machine", "start");
                     confirm("Are you sure you want to start the machine", function () {
-                        $scope.retinfo = Machines.startMachine(machineid);
+                        $$track.event("machine", "start");
+                        var job = Machines.startMachine(machineid);
+                        job.name = "starting"
                     });
                 }
 
                 $scope.clickStop = function () {
-                    $$track.event("machine", "stop");
                     confirm("Are you sure you want to stop the machine", function () {
-                        $scope.retinfo = Machines.stopMachine(machineid);
+                        var job = Machines.stopMachine(machineid);
+                        $$track.event("machine", "stop");
+                        job.name = "stopping"
                     });
                 }
 
                 $scope.clickReboot = function () {
-                    $$track.event("machine", "reboot");
-
                     confirm("Are you sure you want to reboot the machine", function () {
-                        $scope.retinfo = Machines.rebootMachine(machineid);
+                        $$track.event("machine", "reboot");
+                        var job  = Machines.rebootMachine(machineid);
+                        job.name = "rebooting"
                     });
                 }
 
                 $scope.clickResize = function () {
-                    $$track.event("machine", "resize");
-
                     confirm("Are you sure you want to resize the machine", function () {
+                        $$track.event("machine", "resize");
                         $scope.retinfo = Machines.resizeMachine(machineid, $scope.resize);
+                    });
+                }
+
+                $scope.clickDelete = function () {
+                    confirm("Are you sure you want to delete the machine", function () {
+                        $$track.event("machine", "delete");
+                        $scope.retinfo = Machines.deleteMachine(machineid);
                     });
                 }
 
