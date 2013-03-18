@@ -84,7 +84,7 @@
             <div class="page-header">
                 <h1>Machine <small> {{selectedmachine.name}} </small></h1><span><machine-status machine="selectedmachine"/></span>
 
-                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta">Trash</a>
+                <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right cta" ng-click="clickDelete(selectedmachine.id);">Delete</a>
                 <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickReboot(selectedmachine.id);">Reboot</a>
                 <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickStop(selectedmachine.id)">Stop</a>
                 <a href="#myModal" role="button" data-toggle="modal" class="btn pull-right margin5right cta" ng-click="clickStart(selectedmachine.id)" >Start</a>
