@@ -29,37 +29,35 @@
             return {
                 priority: 10,
                 restrict: 'EA',
-                compile: function compile(element, attrs) {
+
+                link: function link(scope, element, attrs, controller) {
                     var identifier = element.text();
 
-                    return function preLink(scope, element, attrs) {
-                        // For pluralizing
-                        var countVariable = null;
-                        var countValue = 0;
+                    // For pluralizing
+                    var countVariable = null;
+                    var countValue = 0;
 
-                        if (attrs.hasOwnProperty('count')) {
-                            countVariable = attrs.count;
+                    if (attrs.hasOwnProperty('count')) {
+                        countVariable = attrs.count;
 
-                            if (scope.hasOwnProperty(countVariable)) {
-                                countValue = scope[countVariable];
-                            }
+                        if (scope.hasOwnProperty(countVariable)) {
+                            countValue = scope[countVariable];
                         }
+                    }
 
-                        // When locale changes
-                        scope.$on('localization:change', function () {
-                            onChange(scope, element, attrs, identifier, countValue);
-                        });
+                    // When locale changes
+                    scope.$on('localization:change', function () {
+                        onChange(scope, element, attrs, identifier, countValue);
+                    });
 
-                        // Watch for count variable changes
-                        if (countVariable) {
-                            scope.$watch(countVariable,
-                                function (newValue, oldValue, scope) {
-                                    countValue = newValue;
-                                    onChange(scope, element, attrs, identifier, countValue);
+                    // Watch for count variable changes
+                    if (countVariable) {
+                        scope.$watch(countVariable,
+                            function (newValue, oldValue, scope) {
+                                countValue = newValue;
+                                onChange(scope, element, attrs, identifier, countValue);
                             });
-                        }
-                    };
-
+                    }
                 }
             };
     }]);

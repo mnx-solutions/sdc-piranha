@@ -172,8 +172,6 @@
                 }
             };
 
-            console.log('here');
-
             // Set locale if not set
             if (!service.getLocale()) {
                 service.setLocale($locale.id);
