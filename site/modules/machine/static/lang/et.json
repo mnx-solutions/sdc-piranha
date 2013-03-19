@@ -1,0 +1,7 @@
+{
+    "title": "Masinad",
+    "{{count}} machines running": {
+        "singular": "masinaid jooksmas: {{count}}",
+        "plural": "{{count}} masinat jooksmas"
+    }
+}
