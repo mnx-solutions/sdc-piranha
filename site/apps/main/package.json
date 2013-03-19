@@ -1,7 +1,7 @@
 {
 	"em": {
 		"route": "/",
-		"modules": ["menu","server", "machine", "login", "debug", "no-tracking"],
+		"modules": [ "localization", "menu", "server", "machine", "login", "debug", "no-tracking" ],
 		"auth": true,
 		"pre": {
 			"js": [

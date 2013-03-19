@@ -8,8 +8,11 @@
             '$filter',
             'requestContext',
             'Machines',
+            'localization',
+            '$timeout',
 
-function ($scope, $filter, requestContext, Machines) {
+function ($scope, $filter, requestContext, Machines, localization, $timeout) {
+    localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
 
     // Sorting
@@ -25,6 +28,18 @@ function ($scope, $filter, requestContext, Machines) {
     $scope.currentPage = 0;
     $scope.machines = Machines.getMachines().machines;
     $scope.machineList = Machines.getMachines();
+
+    // FIXME: Remove
+    $scope.count = 0;
+    function update() {
+        $timeout(function() {
+            $scope.count = Math.round(Math.random() * 3);
+            console.log($scope.count);
+            update();
+        }, 1000);
+    }
+
+    update();
 
     $scope.$watch('machines', function () {
         $scope.search();

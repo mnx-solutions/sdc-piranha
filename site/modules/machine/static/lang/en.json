@@ -1,0 +1,8 @@
+{
+    "title": "Machines",
+    "{{count}} machines running": {
+        "none": "nothing is running",
+        "singular": "machine running: {{count}}",
+        "plural": "{{count}} machines running"
+    }
+}

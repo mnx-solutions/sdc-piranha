@@ -7,11 +7,14 @@
             '$filter',
             'requestContext',
             'Machines',
-            "$dialog",
-            "$$track",
-            function ($scope, $filter, requestContext, Machines, $dialog, $$track) {
+            '$dialog',
+            '$$track',
+            'localization',
 
+            function ($scope, $filter, requestContext, Machines, $dialog, $$track, localization) {
+                localization.bind('machine', $scope)
                 requestContext.setUpRenderContext('machine.details', $scope);
+
                 var machineid = requestContext.getParam('machineid');
 
                 var confirm = function (question, callback) {

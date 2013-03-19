@@ -1,29 +1,33 @@
 {
-  "server": {
+    "server": {
       "port": 3000
-  },
-  "log": {
+    },
+    "log": {
       "name": "piranha",
       "level": "debug"
-  },
-	"cloudapi": {
-	},
-  "modulizer": {
+    },
+    "cloudapi": {
+    },
+    "modulizer": {
       "minify": true,
       "assetize": true
-  },
-	"static":{
-		"js": {
-			"concat": ["use-strict-rm"],
-			"cache": "all",
-			"ext": "js",
-			"transform": ["use-strict-add","uglify-js","gzip"]
-		},
-		"css": {
-			"concat":true,
-			"cache": "all",
-			"ext": "css",
-			"transform": ["less", "sqwish", "gzip"]
-		}
-	}
+    },
+    "localization": {
+        "defaultLocale": "en",
+        "locales": [ "en", "et" ]
+    },
+    "static":{
+        "js": {
+            "concat": ["use-strict-rm"],
+            "cache": "all",
+            "ext": "js",
+            "transform": ["use-strict-add","uglify-js","gzip"]
+        },
+        "css": {
+            "concat":true,
+            "cache": "all",
+            "ext": "css",
+            "transform": ["less", "sqwish", "gzip"]
+        }
+    }
 }
