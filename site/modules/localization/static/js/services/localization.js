@@ -32,12 +32,17 @@
                  * @param done
                  */
                 _load: function (done) {
-                    $http.get('/localization/translations').success(function (data, status) {
+                    if(typeof done === 'function') {
+                      $http.get('/localization/translations').success(function (data, status) {
                         translations = data;
-
+                        console.log(data);
                         $rootScope.$broadcast('localization:change');
                         done();
-                    });
+                      });
+                    } else {
+                      translations = done;
+                      $rootScope.$broadcast('localization:change');
+                    }
                 },
 
                 /**
@@ -73,10 +78,14 @@
                  * @param done
                  */
                 _init: function (done) {
-                    $http.get('/localization/locales').success(function (data, status) {
-                        locales = data;
-                        done();
-                    });
+                    if (typeof done === 'function') {
+                        $http.get('/localization/locales').success(function (data, status) {
+                            locales = data;
+                            done();
+                        });
+                    } else {
+                        locales = done;
+                    }
                 },
 
                 /**
@@ -176,11 +185,9 @@
             if (!service.getLocale()) {
                 service.setLocale($locale.id);
             }
-
-            service._init(function () {
-                service._load(function () {
-                });
-            }); // Init
+            var lang = window.JP.get('lang');
+            service._init(lang.locales); // Init
+            service._load(lang[service.getLocale()]);
 
             service.translations = translations;
             return service;

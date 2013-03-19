@@ -1,29 +1,15 @@
 'use strict';
 
-var config = require('easy-config');
-var express = require('express');
-//var assert = require('assert');
-
-var app = express();
-
 module.exports = function (scope, app, callback) {
     app.get('/locales', function (req, res, next) {
-        res.json(config.localization.locales);
+        res.json(req.scope.config.localization.locales);
     });
 
     app.get('/translations', function (req, res, next) {
-        res.locals.localizer.getLocaleDefinitions(
-            res.locals.localizer.getLocale(req),
-            function(err, defs) {
-                if (err) {
-                    res.send(500, { error: err.message });
-                    return;
-                }
-
-                res.json(defs);
-            });
+      console.log(res.locals);
+      console.log(Object.keys(res.locals));
+      res.json(res.locals.localizer.getLanguage(req));
     });
 
     setImmediate(callback);
-
 };

@@ -16,3 +16,5 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
 
     each link in js
       script(type='text/javascript',src='#{link._url}')
+    each source in jss
+          script(type='text/javascript')!= source

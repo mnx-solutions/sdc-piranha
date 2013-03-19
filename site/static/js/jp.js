@@ -3,6 +3,7 @@
 var JP = {
     _modules: {},
     _includes: [],
+    _globals: {},
     getModule: function (name) {
         return this._modules[name];
     },
@@ -20,5 +21,11 @@ var JP = {
         }
 
         this.main = window.angular.module(name, this._includes, configFn);
+    },
+    set: function (name, val) {
+      this._globals[name] = val;
+    },
+    get: function (name) {
+      return this._globals[name];
     }
 };

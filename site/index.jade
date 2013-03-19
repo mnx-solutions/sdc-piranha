@@ -15,3 +15,5 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
                         div(data-ng-switch-when='#{layout.module}', class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController') #{layout.data}
         each link in js
             script(type='text/javascript',src='#{link._url}')
+        each source in jss
+            script(type='text/javascript')!= source

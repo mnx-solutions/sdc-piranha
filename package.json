@@ -20,7 +20,7 @@
     "vasync": "1.3.x",
     "easy-config": "0.1.8",
     "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
-	"express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
+	  "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
     "mustache": "*"
   },
   "devDependencies": {

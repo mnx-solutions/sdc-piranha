@@ -8,10 +8,6 @@
     },
     "cloudapi": {
     },
-    "modulizer": {
-      "minify": true,
-      "assetize": true
-    },
     "localization": {
         "defaultLocale": "en",
         "locales": [ "en", "et" ]
