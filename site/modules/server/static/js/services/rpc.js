@@ -16,7 +16,7 @@
 
   function handleResults(data, $$track) {
 
-    if (!data) {
+    if (!data || !data.results) {
       return;
     }
 
