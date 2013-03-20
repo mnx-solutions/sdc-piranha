@@ -2,6 +2,7 @@
     "title": "Masinad",
     "{{count}} machines running": {
         "singular": "masinaid jooksmas: {{count}}",
-        "plural": "{{count}} masinat jooksmas"
+        "plural": "{{count}} masinat jooksmas",
+        "none": "ühtegi masinat ei ole jooksmas"
     }
 }

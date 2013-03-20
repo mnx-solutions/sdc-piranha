@@ -9,9 +9,8 @@
             'requestContext',
             'Machines',
             'localization',
-            '$timeout',
 
-function ($scope, $filter, requestContext, Machines, localization, $timeout) {
+function ($scope, $filter, requestContext, Machines, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
 
@@ -29,6 +28,7 @@ function ($scope, $filter, requestContext, Machines, localization, $timeout) {
     $scope.machines = Machines.getMachines().machines;
     $scope.machineList = Machines.getMachines();
 
+    //$scope.count = 1;
 
     $scope.$watch('machines', function () {
         $scope.search();

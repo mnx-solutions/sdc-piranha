@@ -27,6 +27,5 @@ Modulizer.create({
 	compiler: compiler,
 	apps: ['login','main','signup']
 }, function (err, m) {
-//  console.log(util.inspect(m.app('main').main.stack, false, 10));
 	m.run(3000);
 });

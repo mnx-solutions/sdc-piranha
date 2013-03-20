@@ -255,7 +255,7 @@ Localization.prototype.getRegisterHelpers = function() {
     req.log.debug('Registering localization helpers');
 
     res.locals.localizer = self;
-//    res.locals.translate = res.translate = self.translate.bind(self);
+    //res.locals.translate = res.translate = self.translate.bind(self);
 
     return next();
   };
@@ -269,7 +269,9 @@ Localization.prototype.compile = function () {
       '"locales": ' + JSON.stringify(self.locales) + ',' +
       '"defaultLocale": "' + self.defaultLocale + '",' +
       '"' + lng + '":' + JSON.stringify(self.translations.lng[lng]) +
-      '});'
+      '});';
+
+    console.log(src);
     self.compiled[lng] = [src];
   });
 };
