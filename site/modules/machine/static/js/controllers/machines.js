@@ -29,17 +29,6 @@ function ($scope, $filter, requestContext, Machines, localization, $timeout) {
     $scope.machines = Machines.getMachines().machines;
     $scope.machineList = Machines.getMachines();
 
-    // FIXME: Remove
-    $scope.count = 0;
-    function update() {
-        $timeout(function() {
-            $scope.count = Math.round(Math.random() * 3);
-            console.log($scope.count);
-            update();
-        }, 1000);
-    }
-
-    update();
 
     $scope.$watch('machines', function () {
         $scope.search();
@@ -208,6 +197,22 @@ function ($scope, $filter, requestContext, Machines, localization, $timeout) {
     $scope.setPage = function () {
         $scope.currentPage = this.n;
     };
+
+    $scope.startAll = function () {
+        $scope.machines.forEach(function(machine){
+            if (machine.state = 'stopped'){
+                Machines.startMachine(machine.id);
+            }
+        });
+    }
+
+    $scope.stopAll = function () {
+        $scope.machines.forEach(function(machine){
+            if (machine.state = 'started'){
+                Machines.stopMachine(machine.id);
+            }
+        });
+    }
 
 }
         ]);

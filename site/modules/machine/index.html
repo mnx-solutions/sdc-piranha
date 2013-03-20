@@ -6,6 +6,10 @@
                     <h1>Compute <small>A list of your computers and services</small><img ng-hide="machineList.job.finished" src="static/img/ajax-loader.gif"> <a href="#!/machine/add/" class="btn pull-right">Add new machine</a></h1>
                 </div>
                 <div class="container controls no-corner gray glass">
+                    <a href="#myModal" role="button" class="btn cta" ng-click="startAll();">Start all</a>
+                    <a href="#myModal" role="button" class="btn cta" ng-click="stopAll();">Stop all</a>
+
+
                     <input type="search" class="search-query pull-right" data-ng-model="query" data-ng-change="search()" placeholder="Search" name="search" id="search">
                     <select class="search-options pull-right" data-ng-model="searchable" data-ng-change="search()" data-ng-options="val as key for (key, val) in searchOptions"></select>
                 </div>
