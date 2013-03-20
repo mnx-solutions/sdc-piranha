@@ -20,14 +20,18 @@ rack.addMiddleware(app);
 
 var compiler = require('./lib/compiler')(rack, config);
 
-Modulizer.create({
-	root: 'site',
-	config: config,
-	log: bunyan.createLogger(config.log),
-	main: app,
-	extensions: config.extensions,
-	compiler: compiler,
-	apps: ['login','main','signup']
-}, function (err, m) {
-	m.run(3000);
+var opts = {
+    root: 'site',
+    config: config,
+    log: bunyan.createLogger(config.log),
+    main: app,
+    extensions: config.extensions,
+    compiler: compiler,
+    apps: ['login','main','signup']
+};
+
+var m = new Modulizer(opts);
+m.set('utils', utils);
+m.init(opts, function (err) {
+    m.run(config.server.port);
 });
