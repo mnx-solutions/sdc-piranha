@@ -1,36 +1,8 @@
 'use strict';
 
+var utils = require('../../../lib/utils');
 var smartdc = require('smartdc');
 var vasync = require('vasync');
-var crypto = require('crypto');
-var fs = require('fs');
-
-function getRequestSigner(opts) {
-    return function(date, callback) {
-        fs.readFile(opts.keyPath, function(err, data) {
-            if (err) {
-                callback(err);
-                return;
-            }
-
-            var signer = crypto.createSign('RSA-SHA256');
-            signer.update(date);
-
-            var signedData = signer.sign(data.toString(), 'base64');
-
-            if (signedData) {
-                callback(null, {
-                    user: opts.username,
-                    keyId: opts.keyId,
-                    algorithm: 'RSA-SHA256',
-                    signature: signedData
-                });
-            } else {
-                callback(new Error('Can\'t sign request data'));
-            }
-        });
-    };
-}
 
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
@@ -69,7 +41,7 @@ module.exports = function (scope, callback) {
                             scope.config.cloudapi.keyPath) {
                             client = smartdc.createClient({
                                 url: datacenters[name],
-                                sign: getRequestSigner(scope.config.cloudapi),
+                                sign: utils.getRequestSigner(scope.config.cloudapi),
                                 logger: call.log
                             });
                         }
@@ -103,6 +75,7 @@ module.exports = function (scope, callback) {
                             call.progress = response;
 
                             if (--count === 0) {
+                                // FIXME: Bad hack
                                 setTimeout(call.done, 1000);
                             }
                         });
