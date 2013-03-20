@@ -8,7 +8,6 @@ module.exports = function (scope, callback) {
 
   var middleware = function (req, res, next) {
     if (!loaded) {
-      console.log(res.locals);
       Object.keys(res.locals.lang).forEach(function(el) {
         var lang = res.locals.lang[el];
         Local.load(lang._scope.id, lang._base, lang._path);

@@ -15,8 +15,6 @@ function getRequestSigner(opts) {
 			var signer = crypto.createSign('RSA-SHA256');
 			signer.update(date);
 
-			console.log(date);
-
 			var signedData = signer.sign(data.toString(), 'base64');
 
 			if (signedData) {

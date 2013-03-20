@@ -105,7 +105,7 @@ module.exports = function (scope, callback) {
 						clearInterval(timer);
 					} else {
 						call.log.debug("machine %s state is %s, waiting for %s", machineId, machine.state, state);
-						call.progress({state: machine.state});
+						call.progress = {state: machine.state};
 					}
 				}
 			});
@@ -125,7 +125,7 @@ module.exports = function (scope, callback) {
 						clearInterval(timer);
 					} else {
 						call.log.debug("machine %s memory size is %s, waiting for %s", machineId, machine.memory, sdcpackage.memory);
-						call.progress({state: 'resizing'});
+						call.progress = {state: 'resizing'};
 					}
 				}
 			});

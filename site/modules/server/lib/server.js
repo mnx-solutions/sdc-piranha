@@ -30,7 +30,7 @@ Server.prototype.onCall = function (name, handler) {
 Server.prototype.query = function () {
   var self = this;
   return function(req, res) {
-    if (!req._session.processing) {
+    if (!req._session.processing && !req._session.readable) {
       res.send(204);
       return;
     }

@@ -6,7 +6,6 @@ function Localization(opts) {
   if (!(this instanceof Localization)) {
     return new Localization(opts);
   }
-console.log(opts);
   this.defaultLocale = opts.defaultLocale;
   this.locales = opts.locales;
 
@@ -179,15 +178,15 @@ Localization.prototype.load = function (module, lng, filePath) {
 Localization.prototype.getLocaleParser = function () {
   var self = this;
   return function parseLocale(req, res, next) {
-    req.log.debug('Parsing locale information from incoming request');
+    req.log.trace('Parsing locale information from incoming request');
 
     // Find user locale from the cookie
     if (req.cookies.hasOwnProperty('locale')) {
-      req.log.debug('Reading locale from language cookie');
+      req.log.trace('Reading locale from language cookie');
 
       var locale = Localization._parseLocaleIdentifier(req.cookies.locale);
       if (self.isSupportedLocale(locale.group)) {
-        req.log.debug('Locale found from language cookie; lang: %s',
+        req.log.trace('Locale found from language cookie; lang: %s',
                      locale.group);
 
         self.setLocale(req, locale.group);
@@ -198,13 +197,13 @@ Localization.prototype.getLocaleParser = function () {
     // Do not try to parse accept language header when
     // language is already set in a session
     if (req.session.locale) {
-      req.log.debug('Language is set, continue');
+      req.log.trace('Language is set, continue');
       return next();
     }
 
     // Find user locale from 'accept-language" header
     if (req.headers.hasOwnProperty('accept-language')) {
-      req.log.debug('Reading locale from request language header');
+      req.log.trace('Reading locale from request language header');
 
       var locales = [];
       var acceptLanguage = req.headers['accept-language'];
@@ -228,7 +227,7 @@ Localization.prototype.getLocaleParser = function () {
         // TODO: Region support
         var result = self.setLocale(req, locale.group);
         if (result) {
-          req.log.debug('Locale found from request language header;' +
+          req.log.trace('Locale found from request language header;' +
                          'lang: %s', locale.group);
         }
 
@@ -237,7 +236,7 @@ Localization.prototype.getLocaleParser = function () {
 
       return next();
     } else {
-      req.log.debug('Request did not contain any language related information');
+      req.log.trace('Request did not contain any language related information');
       return next();
     }
   };
@@ -252,7 +251,7 @@ Localization.prototype.getLocaleParser = function () {
 Localization.prototype.getRegisterHelpers = function() {
   var self = this;
   return function registerLocalizationHelpers(req, res, next) {
-    req.log.debug('Registering localization helpers');
+    req.log.trace('Registering localization helpers');
 
     res.locals.localizer = self;
 //    res.locals.translate = res.translate = self.translate.bind(self);
