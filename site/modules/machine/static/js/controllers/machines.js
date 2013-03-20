@@ -28,8 +28,6 @@ function ($scope, $filter, requestContext, Machines, localization) {
     $scope.machines = Machines.getMachines().machines;
     $scope.machineList = Machines.getMachines();
 
-    //$scope.count = 1;
-
     $scope.$watch('machines', function () {
         $scope.search();
     }, true);

@@ -16,7 +16,7 @@
     "express": "3.x",
     "less": "*",
     "jade": "*",
-    "smartdc": "*",
+    "smartdc": "git+ssh://git@github.com/kusor/node-smartdc.git#pre-v7",
     "vasync": "1.3.x",
     "easy-config": "0.1.8",
     "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
