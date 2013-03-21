@@ -255,8 +255,10 @@
                 if (!err) {
                     machine.state = result.state;
                 }
-            }, function (progress) {
-                machine.state = progress.state;
+            }, function (result, progress) {
+                if (progress.state) {
+                    machine.state = progress.state;
+                }
             });
 
             machine.job.name = "starting";
@@ -272,8 +274,10 @@
                 if (!err) {
                     machine.state = result.state;
                 }
-            }, function (progress) {
-                machine.state = progress.state;
+            }, function (result, progress) {
+                if (progress.state) {
+                    machine.state = progress.state;
+                }
             });
 
             machine.job.name = "stopping";
@@ -291,8 +295,10 @@
                 if (!err) {
                     delete machineList.machines[machineList.machines.indexOf(machine)];
                 }
-            }, function (progress) {
-                machine.state = progress.state;
+            }, function (results, progress) {
+                if (progress.state) {
+                    machine.state = progress.state;
+                }
             });
 
             machine.job.name = "deleting";
@@ -307,8 +313,10 @@
                 if (!err) {
                     machine.state = result.state;
                 }
-            }, function (progress) {
-                machine.state = progress.state;
+            }, function (results, progress) {
+                if (progress.state) {
+                    machine.state = progress.state;
+                }
             });
 
             machine.job.name = "rebooting";
@@ -329,8 +337,10 @@
                     machine.state = result.state;
                     machine.memory = result.memory;
                 }
-            }, function (progress) {
-                machine.state = progress.state;
+            }, function (results, progress) {
+                if (progress.state) {
+                    machine.state = progress.state;
+                }
             });
 
             machine.job.name = "resizing";
@@ -356,7 +366,7 @@
                     angular.copy(newMachine, machine);
                     machine.job = job;
                 }
-            }, function (results) {
+            }, function (results, progress) {
                 results.forEach(function (result) {
                     if (result.machine) {
                         console.log("adding new machine");
