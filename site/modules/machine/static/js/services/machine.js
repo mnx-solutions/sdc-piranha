@@ -23,22 +23,22 @@
 
         /* find machine by uuid */
         service.getMachine = function (uuid) {
-          if (loaded) {
-            var tmp = machines.filter(function (machine) {
-                return machine.id === uuid;
-            });
-            return tmp[0];
-          } else {
-            var deferred = $q.defer();
-            onLoad.push(function() {
+            if (loaded) {
                 var tmp = machines.filter(function (machine) {
                     return machine.id === uuid;
                 });
-                deferred.resolve(tmp[0]);
-            });
+                return tmp[0];
+            } else {
+                var deferred = $q.defer();
+                onLoad.push(function () {
+                    var tmp = machines.filter(function (machine) {
+                        return machine.id === uuid;
+                    });
+                    deferred.resolve(tmp[0]);
+                });
 
-            return deferred.promise;
-          }
+                return deferred.promise;
+            }
         };
 
         // load machines
@@ -55,7 +55,7 @@
                     //machineList.machines.push.apply(machineList.machines, result);
                 }
             }, function (data) {
-                data.forEach(function(res) {
+                data.forEach(function (res) {
                     console.log(res);
                     if (res.machines) {
                         machineList.machines.push.apply(machineList.machines, res.machines);
@@ -350,19 +350,23 @@
 
             machineList.machines.push(machine);
 
-            var job = serverCall("MachineCreate", data, function (err, newMachine) {
+            var job = serverCall("MachineCreate", data, function (err, result) {
+
                 if (!err) {
                     angular.copy(newMachine, machine);
                     machine.job = job;
                 }
-            }, function (progress) {
-                if (progress.machine){
-                    console.log("adding new machine");
-                    angular.copy(progress.machine, machine);
-                    machine.job = job;
-                }
+            }, function (results) {
+                results.forEach(function (result) {
+                    if (result.machine) {
+                        console.log("adding new machine");
+                        angular.copy(result.machine, machine);
+                        machine.job = job;
+                    }
+                });
             });
 
+            machine.job = job;
             job.name = "provisioning";
 
             return job;

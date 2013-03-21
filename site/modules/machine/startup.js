@@ -73,8 +73,9 @@ module.exports = function (scope, callback) {
                             call.progress = response;
 
                             if (--count === 0) {
-                                // FIXME: Bad hack
-                                setTimeout(call.done, 1000);
+                                call.done(null, response);
+                            } else {
+                                call.result = response;
                             }
                         });
                     });
@@ -194,7 +195,7 @@ module.exports = function (scope, callback) {
                         clearInterval(timer);
                     } else {
                         call.log.trace("machine %s state is %s, waiting for %s", machineId, machine.state, state);
-                        call.progress = {state: machine.state};
+                        call.status = {state: machine.state};
                     }
                 }
             });
@@ -214,7 +215,7 @@ module.exports = function (scope, callback) {
                         clearInterval(timer);
                     } else {
                         call.log.debug("machine %s memory size is %s, waiting for %s", machineId, machine.memory, sdcpackage.memory);
-                        call.progress = {state: 'resizing'};
+                        call.status = {state: 'resizing'};
                     }
                 }
             });
@@ -344,7 +345,7 @@ module.exports = function (scope, callback) {
             call.log.debug("Creating machine %s", call.data.name);
             call.cloud.createMachine(options, function (err, machine) {
                 if (!err) {
-                    call.progress = {machine: machine};
+                    call.result = {machine: machine};
                     pollForMachineState(call, machine.id, "running");
                 } else {
                     call.done(err);
