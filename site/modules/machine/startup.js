@@ -1,6 +1,5 @@
 'use strict';
 
-var utils = require('../../../lib/utils');
 var smartdc = require('smartdc');
 var vasync = require('vasync');
 
@@ -9,7 +8,8 @@ module.exports = function (scope, callback) {
 
     server.onCall("MachineList", function (call) {
         call.log.debug("handling machine list event");
-
+        console.log(scope.get('utils'));
+        console.log('----------------------------------');
         var datacenters = {};
 
         vasync.pipeline({
@@ -41,7 +41,7 @@ module.exports = function (scope, callback) {
                             scope.config.cloudapi.keyPath) {
                             client = smartdc.createClient({
                                 url: datacenters[name],
-                                sign: utils.getRequestSigner(scope.config.cloudapi),
+                                sign: scope.get('utils').getRequestSigner(scope.config.cloudapi),
                                 logger: call.log
                             });
                         }
