@@ -9,7 +9,6 @@
         var packageList = {job: null, packages: []};
         var datasetList = {job: null, datasets: []};
         var datacenterList = {job: null, datacenters: {}};
-        var dummyMachine = {job: null};
 
         var findMachine = function (id) {
             var filtered = machineList.machines.filter(function (machine) {
@@ -41,6 +40,7 @@
             return deferred.promise;
           }
         };
+
         // load machines
         service.updateMachines = function (callback) {
 
@@ -259,6 +259,8 @@
                 machine.state = progress.state;
             });
 
+            machine.job.name = "starting";
+
             return machine.job;
         }
 
@@ -274,6 +276,9 @@
                 machine.state = progress.state;
             });
 
+            machine.job.name = "stopping";
+
+
             return machine.job;
         }
 
@@ -281,13 +286,16 @@
             //XXX check for running jobs
             var machine = findMachine(uuid);
 
-            machine.job = serverCall("MachineDestroy", uuid, function (err, result) {
+            machine.job = serverCall("MachineDelete", uuid, function (err, result) {
+
                 if (!err) {
-                    delete machineList.machines[machine];
+                    delete machineList.machines[machineList.machines.indexOf(machine)];
                 }
             }, function (progress) {
                 machine.state = progress.state;
             });
+
+            machine.job.name = "deleting";
 
             return machine.job;
         }
@@ -302,6 +310,9 @@
             }, function (progress) {
                 machine.state = progress.state;
             });
+
+            machine.job.name = "rebooting";
+
 
             return machine.job;
         }
@@ -322,6 +333,8 @@
                 machine.state = progress.state;
             });
 
+            machine.job.name = "resizing";
+
             return machine.job;
         }
 
@@ -330,13 +343,29 @@
             data.name = name;
             data.sdcpackage = sdcpackage;
             data.dataset = dataset;
-            dummyMachine.job = serverCall("MachineCreate", data, function (err, result) {
+            var machine = {
+                state: "creating",
+                name: name
+            }
+
+            machineList.machines.push(machine);
+
+            var job = serverCall("MachineCreate", data, function (err, newMachine) {
                 if (!err) {
+                    angular.copy(newMachine, machine);
+                    machine.job = job;
                 }
             }, function (progress) {
+                if (progress.machine){
+                    console.log("adding new machine");
+                    angular.copy(progress.machine, machine);
+                    machine.job = job;
+                }
             });
 
-            return dummyMachine.job;
+            job.name = "provisioning";
+
+            return job;
         }
 
         return service;
