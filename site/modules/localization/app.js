@@ -6,9 +6,7 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/translations', function (req, res, next) {
-      console.log(res.locals);
-      console.log(Object.keys(res.locals));
-      res.json(res.locals.localizer.getLanguage(req));
+        res.json(res.locals.localizer.getLanguage(req));
     });
 
     setImmediate(callback);

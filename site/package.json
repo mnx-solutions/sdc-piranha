@@ -6,6 +6,7 @@
 				"/vendor/bootstrap/js/bootstrap.min.js",
 				"/vendor/angular/angular.js",
 				"/vendor/angular/angular-resource.js",
+                "/vendor/angular/angular-cookies.js",
 				"/js/jp.js",
 				"/js/app.js",
 				"/js/config/routes.js",

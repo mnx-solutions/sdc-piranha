@@ -46,6 +46,18 @@ module.exports = function (req, res, next) {
 		});
 		return next();
 	}
+
+    if (req.scope.config.cloudapi && req.scope.config.cloudapi.keyId && req.scope.config.cloudapi.keyPath) {
+        // if key is configured, use it.
+        req.cloud = smartdc.createClient({
+            url: cloudUrl,
+            sign: getRequestSigner(req.scope.config.cloudapi),
+            logger: logger
+        });
+
+        return next();
+    }
+
 	if (req.scope.config.cloudapi && req.scope.config.cloudapi.username && req.scope.config.cloudapi.password) {
 		// if username is in configuration, use it.
 		req.cloud = smartdc.createClient({
@@ -56,16 +68,7 @@ module.exports = function (req, res, next) {
 		});
 		return next();
 	}
-	if (req.scope.config.cloudapi && req.scope.config.cloudapi.keyId && req.scope.config.cloudapi.keyPath) {
-		// if key is configured, use it.
-		req.cloud = smartdc.createClient({
-			url: cloudUrl,
-			sign: getRequestSigner(req.scope.config.cloudapi),
-			logger: logger
-		});
 
-		return next();
-	}
 
 	return res.redirect('/login');
 };

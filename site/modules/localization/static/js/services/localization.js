@@ -32,10 +32,9 @@
                  * @param done
                  */
                 _load: function (done) {
-                    if(typeof done === 'function') {
+                    if (typeof done === 'function') {
                       $http.get('/localization/translations').success(function (data, status) {
                         translations = data;
-                        console.log(data);
                         $rootScope.$broadcast('localization:change');
                         done();
                       });
@@ -168,7 +167,7 @@
                                             return translation.plural;
                                         }
                                     } else {
-                                        return translation.plural;
+                                        return translation.none;
                                     }
                                 } else {
                                     return translation;
@@ -185,6 +184,7 @@
             if (!service.getLocale()) {
                 service.setLocale($locale.id);
             }
+
             var lang = window.JP.get('lang');
             service._init(lang.locales); // Init
             service._load(lang[service.getLocale()]);

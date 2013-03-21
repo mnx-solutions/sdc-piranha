@@ -51,11 +51,13 @@
 
             machineList.job = serverCall("MachineList", null, function (err, result) {
                 if (!err) {
-                    machineList.machines.length = 0;
-                    machineList.machines.push.apply(machineList.machines, result);
+                    //machineList.machines.length = 0;
+                    //machineList.machines.push.apply(machineList.machines, result);
                 }
             }, function (data) {
-                // handle progress
+                if (data.machines) {
+                    machineList.machines.push.apply(machineList.machines, data.machines);
+                }
             });
 
             machineList.job.addCallback(callback);

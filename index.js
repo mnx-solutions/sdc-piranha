@@ -1,5 +1,7 @@
 'use strict';
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+
 var config = require('easy-config');
 var express = require('express');
 var bunyan = require('bunyan');
@@ -27,6 +29,5 @@ Modulizer.create({
 	compiler: compiler,
 	apps: ['login','main','signup']
 }, function (err, m) {
-//  console.log(util.inspect(m.app('main').main.stack, false, 10));
 	m.run(3000);
 });
