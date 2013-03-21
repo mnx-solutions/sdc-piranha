@@ -20,7 +20,7 @@
 
 .navigation-footer .ruler {
 	height: 10px;
-	background-image: url('/signup/static/img/stripes-colorful.gif');
+	background-image: url('../img/stripes-colorful.gif');
 	background-position: 0px 0px;
 	background-repeat: repeat-x;
 	border-top: none;
