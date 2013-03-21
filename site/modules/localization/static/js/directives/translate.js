@@ -58,6 +58,8 @@
                                 onChange(scope, element, attrs, identifier, countValue);
                             });
                     }
+
+                    onChange(scope, element, attrs, identifier, countValue);
                 }
             };
     }]);
