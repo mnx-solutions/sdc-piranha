@@ -27,11 +27,13 @@ function Tab(opts) {
     self.readable = false;
     self.processing = false;
 
-    setTimeout(function () {
-        if (Tabs[self.id]) {
-            delete Tabs[self.id];
-        }
-    }, self._lifespan);
+    if (self._lifespan) {
+        setTimeout(function () {
+            if (Tabs[self.id]) {
+                delete Tabs[self.id];
+            }
+        }, self._lifespan);
+    }
 
     Tabs[self.id] = self;
 }
@@ -81,7 +83,6 @@ Tab.prototype.read = function (){
     self._changed = {};
     self.processing = Object.keys(self._calls).length > 0;
     self.readable = false;
-
     return result;
 };
 

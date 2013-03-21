@@ -73,7 +73,7 @@ function Call(opts) {
             },
             set: function(s) {
                 if (!self.finished) {
-                    self.log.debug("Progress update handled, storing result", self.name, self.id);
+                    self.log.debug("Progress result handled, storing result", self.name, self.id);
                     if (self._noemit && _result.length < 1) {
                         _result = s;
                     } else {
@@ -146,7 +146,6 @@ function Call(opts) {
                 }, "Call %s handled in %sms, storing result", self.name, self.execTime);
 
                 self.status = 'finished';
-
                 self.result = result;
                 self._noemit = false;
                 self.finished = true;
