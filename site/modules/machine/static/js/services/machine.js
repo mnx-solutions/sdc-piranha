@@ -360,8 +360,7 @@
 
             machineList.machines.push(machine);
 
-            var job = serverCall("MachineCreate", data, function (err, result) {
-
+            var job = serverCall("MachineCreate", data, function (err, newMachine) {
                 if (!err) {
                     angular.copy(newMachine, machine);
                     machine.job = job;
