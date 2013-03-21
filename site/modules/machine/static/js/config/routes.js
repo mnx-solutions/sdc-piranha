@@ -15,7 +15,7 @@ window.JP.main.config(['$routeProvider', function ($routeProvider) {
 
 window.JP.main.run(['Menu', function (Menu) {
         Menu.register({
-            name: 'Machine',
+            name: 'Compute',
             link: 'machine'
         });
     }]);

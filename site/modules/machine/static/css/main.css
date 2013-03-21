@@ -3,8 +3,12 @@
 	margin: 0 auto;
 }
 
+.details {
+    display: table;
+    margin: 0 auto;
+}
+
 .machines .container {
-	border: 1px solid #b7b7b7;
 	padding: 0;
 	margin: 0;
 }
