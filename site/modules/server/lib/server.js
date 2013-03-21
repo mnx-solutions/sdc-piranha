@@ -28,66 +28,67 @@ Server.prototype.onCall = function (name, handler) {
 };
 
 Server.prototype.query = function () {
-  var self = this;
-  return function(req, res) {
-    if (!req._session.processing && !req._session.readable) {
-      res.send(204);
-      return;
-    }
+      return function(req, res) {
+          var id = req.query.tab;
+          if (!req._session._processing(id) && !req._session._readable(id)) {
+              res.send(204);
+              return;
+          }
 
-    var timeout = null;
-    function send() {
-      if(timeout) {
-        clearTimeout(timeout);
-      }
-      res.json(200, {results:req._session.read()});
-    }
-    if(req._session.readable) {
-      send();
-    } else {
-      setTimeout(function () {
-        req._session.removeListener('readable', send);
-        res.send(200, "");
-      }, 3000);
+          var timeout = null;
+          function send() {
+              if(timeout) {
+                  clearTimeout(timeout);
+              }
+              res.json(200, {results:req._session.read(id)});
+          }
+          if(req._session._readable(id)) {
+              send();
+          } else {
+              setTimeout(function () {
+                  req._session.getTab(id).removeListener('readable', send);
+                  res.send(200, "");
+              }, 3000);
 
-      req._session.once('readable', send);
-    }
-  };
-}
+              req._session.getTab(id).once('readable', send);
+          }
+      };
+};
 
 Server.prototype.call = function () {
-  var self = this;
-  return function (req, res) {
-    var call = req.body;
+    var self = this;
+    return function (req, res) {
+        var call = req.body;
+        var id = req.query.tab;
 
-    if ("object" !== typeof call || !call.id || !call.name) {
-      req.log.warn("Invalid call format", call);
-      res.send(400, "Invalid call format");
-      return;
-    }
+        if ("object" !== typeof call || !call.id || !call.name || !id) {
+            req.log.warn("Invalid call format", call);
+            res.send(400, "Invalid call format");
+            return;
+        }
 
-    self.log.debug("Incoming RPC call ", call.name, call.id);
+        self.log.debug("Incoming RPC call ", call.name, call.id, id);
 
-    if (!self._handlers[call.name]) {
-      self.log.warn("Client tried to call unhandled call", call);
-      res.send(501, "Unhandled RPC call", call.name);
-      return;
-    }
+        if (!self._handlers[call.name]) {
+            self.log.warn("Client tried to call unhandled call", call);
+            res.send(501, "Unhandled RPC call", call.name);
+            return;
+        }
 
-    if(!self._handlers[call.name].verify(call.data)) {
-      req.warn("Invalid parameters %s provided for call %s",
-               call.data, call.name);
-      res.send(400, "Invalid parameters provided");
-      return;
-    }
-    var opts = call;
-    opts.cloud = req.cloud;
+        if(!self._handlers[call.name].verify(call.data)) {
+            req.warn("Invalid parameters %s provided for call %s",
+                     call.data, call.name);
+            res.send(400, "Invalid parameters provided");
+            return;
+        }
+        var opts = call;
+        opts.cloud = req.cloud;
 
-    var callContext = req._session.call(opts);
-    self._handlers[call.name].call(callContext);
+        var callContext = req._session.call(id, opts);
+        self._handlers[call.name].call(callContext);
 
-    res.send(200);
-  };
-}
+        res.send(200);
+    };
+};
 
 module.exports = Server;

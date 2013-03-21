@@ -7,6 +7,8 @@
 
     var calls = {};
 
+    var tab = uuid.v4();
+
     // give reference of internals for debuggin purposes
     app.factory('serverCallInternals', function () {
         return function () {
@@ -15,6 +17,7 @@
     });
 
     function handleResults(data, $$track) {
+        console.log(data);
         if (!data || !data.results) {
             return;
         }
@@ -24,10 +27,11 @@
             if (!_call || !_call.progress) {
                 return;
             }
-            if(!result.finished) {
-                _call.progress(result.status);
-            } else {
-                _call.listener(result.error, result.status);
+            if(_call.progress) {
+                _call.progress(result.result, result.status);
+            }
+            if(result.finished) {
+                _call.listener(result.error, result.result);
                 _call.job.finished = true;
                 _call.job.running = false;
                 _call.job.failed = !!result.error;
@@ -59,10 +63,14 @@
                 // TODO remove timed out calls.
                 polling = true;
                 // get call results
-                $http({timeout: 30000, method: 'get', url: '/server/call'})
-                    .success(function (data) {
-                        handleResults(data, $$track);
-                        $timeout(pollResults, 100);
+                $http({timeout: 30000, method: 'get', url: '/server/call', params: {tab: tab}})
+                    .success(function (data, code) {
+                        if (code === 200) {
+                            handleResults(data, $$track);
+                            $timeout(pollResults, 100);
+                        } else if (code === 204) {
+                            console.log('nothing processing');
+                        }
                     })
                     .error(function () {
                         // TODO handle errors.
@@ -104,7 +112,7 @@
                 job: job
             };
 
-            $http.post('/server/call', {name: name, data: data, id: _call.id})
+            $http({method:'POST', url:'/server/call', data: {name: name, data: data, id: _call.id}, params: {tab: tab}})
                 .success(function () {
                     // store call if successful
                     calls[_call.id] = _call;

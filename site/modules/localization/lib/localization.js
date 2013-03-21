@@ -3,7 +3,6 @@
 var util = require('util');
 
 function Localization(opts) {
-<<<<<<< HEAD
   if (!(this instanceof Localization)) {
     return new Localization(opts);
   }
@@ -16,21 +15,6 @@ function Localization(opts) {
   };
 
   this.compiled = {};
-=======
-    if (!(this instanceof Localization)) {
-        return new Localization(opts);
-    }
-    console.log(opts);
-    this.defaultLocale = opts.defaultLocale;
-    this.locales = opts.locales;
-
-    this.translations = {
-        lng: {},
-        mod: {}
-    };
-
-    this.compiled = {};
->>>>>>> origin/master
 }
 
 /**
@@ -192,20 +176,6 @@ Localization.prototype.load = function (module, lng, filePath) {
  * @returns {Function}
  */
 Localization.prototype.getLocaleParser = function () {
-<<<<<<< HEAD
-  var self = this;
-  return function parseLocale(req, res, next) {
-    req.log.trace('Parsing locale information from incoming request');
-
-    // Find user locale from the cookie
-    if (req.cookies.hasOwnProperty('locale')) {
-      req.log.trace('Reading locale from language cookie');
-
-      var locale = Localization._parseLocaleIdentifier(req.cookies.locale);
-      if (self.isSupportedLocale(locale.group)) {
-        req.log.trace('Locale found from language cookie; lang: %s',
-                     locale.group);
-=======
     var self = this;
     return function parseLocale(req, res, next) {
         req.log.debug('Parsing locale information from incoming request');
@@ -230,31 +200,17 @@ Localization.prototype.getLocaleParser = function () {
             req.log.debug('Language is set, continue');
             return next();
         }
->>>>>>> origin/master
 
         // Find user locale from 'accept-language" header
         if (req.headers.hasOwnProperty('accept-language')) {
             req.log.debug('Reading locale from request language header');
 
-<<<<<<< HEAD
-    // Do not try to parse accept language header when
-    // language is already set in a session
-    if (req.session.locale) {
-      req.log.trace('Language is set, continue');
-      return next();
-    }
-
-    // Find user locale from 'accept-language" header
-    if (req.headers.hasOwnProperty('accept-language')) {
-      req.log.trace('Reading locale from request language header');
-=======
             var locales = [];
             var acceptLanguage = req.headers['accept-language'];
 
             // Parse
             acceptLanguage.split(',').forEach(function (definition) {
                 var userLocale = '';
->>>>>>> origin/master
 
                 // Normalize
                 if (definition.indexOf(';') !== -1) {
@@ -277,34 +233,12 @@ Localization.prototype.getLocaleParser = function () {
 
                 return result;
             });
-
-<<<<<<< HEAD
-      // Pick first suitable language
-      locales.some(function (locale) {
-        // TODO: Region support
-        var result = self.setLocale(req, locale.group);
-        if (result) {
-          req.log.trace('Locale found from request language header;' +
-                         'lang: %s', locale.group);
-        }
-
-        return result;
-      });
-
-      return next();
-    } else {
-      req.log.trace('Request did not contain any language related information');
-      return next();
-    }
-  };
-=======
             return next();
         } else {
             req.log.debug('Request did not contain any language related information');
             return next();
         }
     };
->>>>>>> origin/master
 };
 
 /**
@@ -314,15 +248,9 @@ Localization.prototype.getLocaleParser = function () {
  * @returns {Function}
  */
 Localization.prototype.getRegisterHelpers = function() {
-<<<<<<< HEAD
-  var self = this;
-  return function registerLocalizationHelpers(req, res, next) {
-    req.log.trace('Registering localization helpers');
-=======
     var self = this;
     return function registerLocalizationHelpers(req, res, next) {
         req.log.debug('Registering localization helpers');
->>>>>>> origin/master
 
         res.locals.localizer = self;
         //res.locals.translate = res.translate = self.translate.bind(self);

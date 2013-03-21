@@ -55,9 +55,12 @@
                     //machineList.machines.push.apply(machineList.machines, result);
                 }
             }, function (data) {
-                if (data.machines) {
-                    machineList.machines.push.apply(machineList.machines, data.machines);
-                }
+                data.forEach(function(res) {
+                    console.log(res);
+                    if (res.machines) {
+                        machineList.machines.push.apply(machineList.machines, res.machines);
+                    }
+                });
             });
 
             machineList.job.addCallback(callback);
