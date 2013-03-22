@@ -54,18 +54,14 @@
                     //machineList.machines.length = 0;
                     //machineList.machines.push.apply(machineList.machines, result);
                 }
-            }, function (data) {
-                if (data.machines) {
-                    machineList.machines.push.apply(machineList.machines, data.machines);
-                }
-                /*
+            }, function (data, status) {
+
                 data.forEach(function (res) {
                     console.log(res);
                     if (res.machines) {
                         machineList.machines.push.apply(machineList.machines, res.machines);
                     }
                 });
-                */
             });
 
             machineList.job.addCallback(callback);
@@ -255,9 +251,12 @@
         service.startMachine = function (uuid) {
             //XXX check for running jobs
             var machine = findMachine(uuid);
-            console.log(machine);
+            var params = {
+                machineId: machine.id,
+                datacenter: machine.datacenter
+            };
 
-            machine.job = serverCall("MachineStart", uuid, function (err, result) {
+            machine.job = serverCall("MachineStart", params, function (err, result) {
                 if (!err) {
                     machine.state = result.state;
                 }
