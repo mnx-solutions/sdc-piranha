@@ -3,7 +3,7 @@
 <div data-ng-switch-when="index" class="row-fluid"
      data-ng-controller="MachinesController">
     <div class="row-fluid">
-        <div class="page-header">
+        <div class="page-header hidden-phone">
             <h1>Compute
                 <small>A list of your computers and services</small>
             </h1>
@@ -38,9 +38,9 @@
                     </div>
                 </div>
 
-                <div class="span6">
+                <div class="span4 offset2">
                     <div class="btn-toolbar">
-                        <input type="search" class="search-query pull-right"
+                        <input type="search" class="search-query"
                                data-ng-model="query" data-ng-change="search()"
                                placeholder="Search" name="search" id="search">
                     </div>
@@ -79,7 +79,7 @@
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
-                    <td class="sortable" data-ng-click="sortBy('created');"
+                    <td class="sortable hidden-phone" data-ng-click="sortBy('created');"
                         ng-switch on="sortIcon.created">
                         <span class="text">Created</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
@@ -104,7 +104,7 @@
                     </span>
                     </td>
                     <td>{{machine.memory}}MB</td>
-                    <td>{{machine.created | fromNow}}</td>
+                    <td class="hidden-phone">{{machine.created | fromNow}}</td>
                 </tr>
                 </tbody>
             </table>

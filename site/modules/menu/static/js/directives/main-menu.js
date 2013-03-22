@@ -18,7 +18,7 @@
             },
             template: '<div class="navbar">' +
                         '<div class="navbar-inner">' +
-                            '<a class="brand" href="#">Joyent Portal</a>' +
+                            '<a class="brand hidden-phone" href="#">Joyent Portal</a>' +
                             '<ul class="nav">' +
                             '<li data-ng-repeat="item in mainMenu"'+
                             'class="menuitem"'+
