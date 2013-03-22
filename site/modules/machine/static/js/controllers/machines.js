@@ -13,7 +13,6 @@
 function ($scope, $filter, requestContext, Machines, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
-
     // Sorting
     $scope.sortingOrder = 'created';
     $scope.reverse = true;

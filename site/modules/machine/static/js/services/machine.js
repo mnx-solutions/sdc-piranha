@@ -55,12 +55,17 @@
                     //machineList.machines.push.apply(machineList.machines, result);
                 }
             }, function (data) {
+                if (data.machines) {
+                    machineList.machines.push.apply(machineList.machines, data.machines);
+                }
+                /*
                 data.forEach(function (res) {
                     console.log(res);
                     if (res.machines) {
                         machineList.machines.push.apply(machineList.machines, res.machines);
                     }
                 });
+                */
             });
 
             machineList.job.addCallback(callback);
@@ -250,6 +255,7 @@
         service.startMachine = function (uuid) {
             //XXX check for running jobs
             var machine = findMachine(uuid);
+            console.log(machine);
 
             machine.job = serverCall("MachineStart", uuid, function (err, result) {
                 if (!err) {
@@ -269,8 +275,12 @@
         service.stopMachine = function (uuid) {
             //XXX check for running jobs
             var machine = findMachine(uuid);
+            var params = {
+                machineId: machine.id,
+                datacenter: machine.datacenter
+            };
 
-            machine.job = serverCall("MachineStop", uuid, function (err, result) {
+            machine.job = serverCall('MachineStop', params, function (err, result) {
                 if (!err) {
                     machine.state = result.state;
                 }
@@ -289,8 +299,12 @@
         service.deleteMachine = function (uuid) {
             //XXX check for running jobs
             var machine = findMachine(uuid);
+            var params = {
+                machineId: machine.id,
+                datacenter: machine.datacenter
+            };
 
-            machine.job = serverCall("MachineDelete", uuid, function (err, result) {
+            machine.job = serverCall("MachineDelete", params, function (err, result) {
 
                 if (!err) {
                     delete machineList.machines[machineList.machines.indexOf(machine)];
@@ -308,8 +322,12 @@
 
         service.rebootMachine = function (uuid) {
             var machine = findMachine(uuid);
+            var params = {
+                machineId: machine.id,
+                datacenter: machine.datacenter
+            };
 
-            machine.job = serverCall("MachineReboot", uuid, function (err, result) {
+            machine.job = serverCall("MachineReboot", params, function (err, result) {
                 if (!err) {
                     machine.state = result.state;
                 }
@@ -328,11 +346,13 @@
 
         service.resizeMachine = function (uuid, sdcpackage) {
             var machine = findMachine(uuid);
-            var data = {};
-            data.machineid = uuid;
-            data.sdcpackage = sdcpackage;
+            var params = {
+                machineId: machine.id,
+                datacenter: machine.datacenter,
+                sdcpackage: sdcpackage
+            };
 
-            machine.job = serverCall("MachineResize", data, function (err, result) {
+            machine.job = serverCall("MachineResize", params, function (err, result) {
                 if (!err) {
                     machine.state = result.state;
                     machine.memory = result.memory;
@@ -360,7 +380,7 @@
 
             machineList.machines.push(machine);
 
-            var job = serverCall("MachineCreate", data, function (err, newMachine) {
+            var job = serverCall("MachineCreate", params, function (err, newMachine) {
                 if (!err) {
                     angular.copy(newMachine, machine);
                     machine.job = job;

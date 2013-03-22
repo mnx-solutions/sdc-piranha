@@ -76,7 +76,7 @@ Server.prototype.call = function () {
         }
 
         if(!self._handlers[call.name].verify(call.data)) {
-            req.warn("Invalid parameters %s provided for call %s",
+            req.log.warn("Invalid parameters %s provided for call %s",
                      call.data, call.name);
             res.send(400, "Invalid parameters provided");
             return;

@@ -1,4 +1,5 @@
 {
+    "Are you sure you want to stop the machine": "Arvuta",
     "title": "Masinad",
     "{{count}} machines running": {
         "singular": "masinaid jooksmas: {{count}}",

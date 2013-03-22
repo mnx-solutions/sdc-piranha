@@ -1,4 +1,5 @@
 {
+    "Compute": "Computessa",
     "title": "Machines",
     "{{count}} machines running": {
         "none": "nothing is running",

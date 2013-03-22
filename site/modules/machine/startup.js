@@ -4,16 +4,17 @@ var smartdc = require('smartdc');
 var vasync = require('vasync');
 
 module.exports = function (scope, callback) {
+    var cloud = scope.get('cloud');
     var server = scope.api('Server');
 
-    server.onCall("MachineList", function (call) {
-        call.log.debug("handling machine list event");
+    server.onCall('MachineList', function (call) {
+        call.log.debug('Handling machine list event');
         var datacenters = {};
 
         vasync.pipeline({
             'funcs': [
                 function (args, next) {
-                    call.cloud.listDatacenters(function (err, dcs) {
+                    cloud.listDatacenters(function (err, dcs) {
                         if (err) {
                             next(err);
                             return;
@@ -32,29 +33,7 @@ module.exports = function (scope, callback) {
                     var count = keys.length;
 
                     keys.forEach(function (name, index) {
-                        var client = null;
-
-                        if (scope.config.cloudapi &&
-                            scope.config.cloudapi.keyId &&
-                            scope.config.cloudapi.keyPath) {
-                            client = smartdc.createClient({
-                                url: datacenters[name],
-                                sign: scope.get('utils').getRequestSigner(scope.config.cloudapi),
-                                logger: call.log
-                            });
-                        }
-
-                        if (scope.config.cloudapi &&
-                            scope.config.cloudapi.username &&
-                            scope.config.cloudapi.password) {
-                            client = smartdc.createClient({
-                                url: datacenters[name],
-                                username: scope.config.cloudapi.username,
-                                password: scope.config.cloudapi.password,
-                                logger: call.log
-                            });
-                        }
-
+                        var client = cloud.proxy({ datacenter: name });
                         client.listMachines(function (err, machines) {
                             var response = {
                                 name: name,
@@ -66,6 +45,10 @@ module.exports = function (scope, callback) {
                                 response.err = err;
                                 response.status = 'error';
                             } else {
+                                machines.forEach(function (machine) {
+                                    machine.datacenter = name;
+                                });
+
                                 response.status = 'complete';
                                 response.machines = machines;
                             }
@@ -90,10 +73,11 @@ module.exports = function (scope, callback) {
     });
 
     /* listPackages */
-    server.onCall("PackageList", function (call) {
-        call.log.debug("handling list packages event");
+    server.onCall('PackageList', function (call) {
+        call.log.debug('Handling list packages event');
 
-        call.cloud.listPackages(function (err, packages) {
+        var client = cloud.proxy();
+        client.listPackages(function (err, packages) {
             if (!err) {
                 call.done(null, packages);
             } else {
@@ -103,10 +87,11 @@ module.exports = function (scope, callback) {
     });
 
     /* listDatasets */
-    server.onCall("DatasetList", function (call) {
-        call.log.debug("handling list datasets event");
+    server.onCall('DatasetList', function (call) {
+        call.log.debug('Handling list datasets event');
 
-        call.cloud.listDatasets(function (err, datasets) {
+        var client = cloud.proxy();
+        client.listDatasets(function (err, datasets) {
             if (!err) {
                 call.done(null, datasets);
             } else {
@@ -116,10 +101,10 @@ module.exports = function (scope, callback) {
     });
 
     /* listDatasets */
-    server.onCall("DatacenterList", function (call) {
-        call.log.debug("handling list datasets event");
+    server.onCall('DatacenterList', function (call) {
+        call.log.debug('Handling list datasets event');
 
-        call.cloud.listDatacenters(function (err, datacenters) {
+        cloud.listDatacenters(function (err, datacenters) {
             if (!err) {
                 call.done(null, datacenters);
             } else {
@@ -130,14 +115,16 @@ module.exports = function (scope, callback) {
 
 
     /* listMachineTags */
-    server.onCall("MachineTags", {
+    server.onCall('MachineTags', {
         verify: function (data) {
-            return "string" === typeof data;
+            return typeof(data) === 'string';
         },
-        handler: function (call) {
-            call.log.debug("handling machine tags call");
 
-            call.cloud.listMachineTags(call.data, function (err, machine) {
+        handler: function (call) {
+            call.log.debug('Handling machine tags call');
+
+            var client = cloud.proxy();
+            client.listMachineTags(call.data, function (err, machine) {
                 if (!err) {
                     call.done(null, machine);
                 } else {
@@ -148,33 +135,17 @@ module.exports = function (scope, callback) {
     });
 
     /* GetMachine */
-    server.onCall("MachineDetails", {
+    server.onCall('MachineDetails', {
         verify: function (data) {
-            return "string" === typeof data;
+            return typeof(data) === 'string';
         },
+
         handler: function (call) {
-            call.log.debug("handling machine details call");
+            var machineId = call.data.machineId;
+            call.log.debug('Handling machine details call');
 
-            call.cloud.getMachine(call.data, function (err, machine) {
-                if (!err) {
-                    call.done(null, machine);
-                } else {
-                    call.done(err, machine);
-                }
-            });
-        }
-    });
-
-
-    /* listMachineTags */
-    server.onCall("MachineTags", {
-        verify: function (data) {
-            return "string" === typeof data;
-        },
-        handler: function (call) {
-            call.log.debug("handling machine tags call");
-
-            call.cloud.listMachineTags(call.data, function (err, machine) {
+            var client = cloud.proxy(call.data);
+            client.getMachine(machineId, function (err, machine) {
                 if (!err) {
                     call.done(null, machine);
                 } else {
@@ -186,15 +157,15 @@ module.exports = function (scope, callback) {
 
     function pollForMachineState(call, machineId, state) {
         var timer = setInterval(function () {
-            call.log.debug("Polling for machine %s to become %s", machineId, state);
-            call.cloud.getMachine(machineId, function (err, machine) {
+            call.log.debug('Polling for machine %s to become %s', machineId, state);
+            cloud.getMachine(machineId, function (err, machine) {
                 if (!err) {
                     if (state === machine.state) {
-                        call.log.debug("machine %s state is %s as expected, returing call", machineId, state);
+                        call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         call.done(null, machine);
                         clearInterval(timer);
                     } else {
-                        call.log.trace("machine %s state is %s, waiting for %s", machineId, machine.state, state);
+                        call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
                         call.status = {state: machine.state};
                     }
                 }
@@ -204,18 +175,18 @@ module.exports = function (scope, callback) {
 
     function pollForMachinePackageChange(call, sdcpackage) {
         var timer = setInterval(function () {
-            var machineId = typeof call.data === 'object' ? call.data.machineid : call.data;
+            var machineId = typeof call.data === 'object' ? call.data.machineId : call.data;
 
-            call.log.debug("Polling for machine %s to resize to %s", machineId, sdcpackage.memory);
+            call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage.memory);
             call.cloud.getMachine(machineId, function (err, machine) {
                 if (!err) {
                     if (sdcpackage.memory === machine.memory) {
-                        call.log.debug("machine %s resized to %s as expected, returing call", machineId, sdcpackage.memory);
+                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage.memory);
                         call.done(null, machine);
                         clearInterval(timer);
                     } else {
-                        call.log.debug("machine %s memory size is %s, waiting for %s", machineId, machine.memory, sdcpackage.memory);
-                        call.status = {state: 'resizing'};
+                        call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage.memory);
+                        call.status = { state: 'resizing' };
                     }
                 }
             });
@@ -223,17 +194,21 @@ module.exports = function (scope, callback) {
     }
 
     /* GetMachine */
-    server.onCall("MachineStart", {
+    server.onCall('MachineStart', {
         verify: function (data) {
-            return "string" === typeof data;
+            return typeof(data) === 'object' &&
+                data.hasOwnProperty('machineId') &&
+                data.hasOwnProperty('datacenter');
         },
-        handler: function (call) {
-            var machineId = call.data;
 
-            call.log.debug("Starting machine %s", machineId);
-            call.cloud.startMachine(machineId, function (err) {
+        handler: function (call) {
+            var machineId = call.data.machineId;
+            call.log.debug('Starting machine %s', machineId);
+
+            var client = cloud.proxy(call.data);
+            client.startMachine(machineId, function (err) {
                 if (!err) {
-                    pollForMachineState(call, machineId, "running");
+                    pollForMachineState(call, machineId, 'running');
                 } else {
                     call.done(err);
                 }
@@ -242,16 +217,19 @@ module.exports = function (scope, callback) {
     });
 
     /* GetMachine */
-    server.onCall("MachineStop", {
+    server.onCall('MachineStop', {
         verify: function (data) {
-            return "string" === typeof data;
+            return typeof(data) === 'object' &&
+                data.hasOwnProperty('machineId') &&
+                data.hasOwnProperty('datacenter');
         },
+
         handler: function (call) {
+            var machineId = call.data.machineId;
+            call.log.debug('Stopping machine %s', machineId);
 
-            var machineId = call.data;
-
-            call.log.debug("Stopping machine %s", machineId);
-            call.cloud.stopMachine(machineId, function (err) {
+            var client = cloud.proxy(call.data);
+            client.stopMachine(machineId, function (err) {
                 if (!err) {
                     pollForMachineState(call, machineId, "stopped");
                 } else {
@@ -262,17 +240,21 @@ module.exports = function (scope, callback) {
     });
 
     /* GetMachine */
-    server.onCall("MachineDelete", {
+    server.onCall('MachineDelete', {
         verify: function (data) {
-            return "string" === typeof data;
+            return typeof(data) === 'object' &&
+                data.hasOwnProperty('machineId') &&
+                data.hasOwnProperty('datacenter');
         },
-        handler: function (call) {
-            var machineId = call.data;
 
-            call.log.debug("Deleting machine %s", machineId);
-            call.cloud.deleteMachine(machineId, function (err) {
+        handler: function (call) {
+            var machineId = call.data.machineId;
+            call.log.debug('Deleting machine %s', machineId);
+
+            var client = cloud.proxy(call.data);
+            client.deleteMachine(machineId, function (err) {
                 if (!err) {
-                    pollForMachineState(call, machineId, "deleted");
+                    pollForMachineState(call, machineId, 'deleted');
                 } else {
                     call.done(err);
                 }
@@ -280,19 +262,20 @@ module.exports = function (scope, callback) {
         }
     });
 
-
-    server.onCall("MachineReboot", {
+    server.onCall('MachineReboot', {
         verify: function (data) {
-            return "string" === typeof data;
+            return typeof(data) === 'object' &&
+                data.hasOwnProperty('machineId') &&
+                data.hasOwnProperty('datacenter');
         },
         handler: function (call) {
+            var machineId = call.data.machineId;
+            call.log.debug('Rebooting machine %s', machineId);
 
-            var machineId = call.data;
-
-            call.log.debug("Rebooting machine %s", machineId);
-            call.cloud.rebootMachine(machineId, function (err, machine) {
+            var client = cloud.proxy(call.data);
+            client.rebootMachine(machineId, function (err, machine) {
                 if (!err) {
-                    pollForMachineState(call, machineId, "running");
+                    pollForMachineState(call, machineId, 'running');
                 } else {
                     call.done(err);
                 }
@@ -301,26 +284,25 @@ module.exports = function (scope, callback) {
     });
 
     /* ResizeMachine */
-    server.onCall("MachineResize", {
+    server.onCall('MachineResize', {
         verify: function (data) {
-            if ("object" === typeof data &&
-                data &&
-                data.machineId &&
-                data.sdcpackage.name) {
-                return true;
-            } else {
-                return false;
-            }
+            return typeof(data) === 'object' &&
+                data.hasOwnProperty('machineId') &&
+                data.hasOwnProperty('datacenter') &&
+                data.hasOwnProperty('sdcpackage') &&
+                data.sdcpackage.hasOwnProperty('name');
         },
+
         handler: function (call) {
+            var machineId = call.data.machineId;
+            var options = {
+                package: call.data.sdcpackage.name
+            };
 
-            var machineId = call.data.machineid;
-            var options = {};
+            call.log.debug('Resizing machine %s', machineId);
 
-            options.package = call.data.sdcpackage.name;
-
-            call.log.debug("Resizing machine %s", machineId);
-            call.cloud.resizeMachine(machineId, options, function (err) {
+            var client = cloud.proxy(call.data);
+            client.resizeMachine(machineId, options, function (err) {
                 if (!err) {
                     pollForMachinePackageChange(call, call.data.sdcpackage)
                 } else {
@@ -331,22 +313,31 @@ module.exports = function (scope, callback) {
     });
 
     /* ResizeMachine */
-    server.onCall("MachineCreate", {
+    server.onCall('MachineCreate', {
         verify: function (data) {
-            return "object" === typeof data;
+            return typeof(data) === 'object' &&
+                data.sdcpackage.hasOwnProperty('name') &&
+                data.hasOwnProperty('dataset') &&
+                data.dataset.hasOwnProperty('urn');
         },
+
         handler: function (call) {
+            var options = {
+                name: call.data.name,
+                package: call.data.sdcpackage.name,
+                dataset: call.data.dataset.urn
+            };
 
-            var options = {};
-            options.name = call.data.name;
-            options.package = call.data.sdcpackage.name;
-            options.dataset = call.data.dataset.urn;
+            call.log.debug('Creating machine %s', call.data.name);
 
-            call.log.debug("Creating machine %s", call.data.name);
-            call.cloud.createMachine(options, function (err, machine) {
+            var client = cloud.proxy();
+            client.createMachine(options, function (err, machine) {
                 if (!err) {
-                    call.result = {machine: machine};
-                    pollForMachineState(call, machine.id, "running");
+                    call.result = {
+                        machine: machine
+                    };
+
+                    pollForMachineState(call, machine.id, 'running');
                 } else {
                     call.done(err);
                 }
