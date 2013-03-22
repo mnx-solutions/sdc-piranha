@@ -304,9 +304,9 @@ module.exports = function (scope, callback) {
     server.onCall("MachineResize", {
         verify: function (data) {
             if ("object" === typeof data &&
-                call.data &&
-                call.data.machineId &&
-                call.data.sdcpackage.name) {
+                data &&
+                data.machineId &&
+                data.sdcpackage.name) {
                 return true;
             } else {
                 return false;

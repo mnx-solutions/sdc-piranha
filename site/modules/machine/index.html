@@ -1,7 +1,7 @@
 <div data-ng-switch="subview">
 <div data-ng-switch-when="index" data-ng-controller="MachinesController">
     <div class="machines">
-        <div class="container pull-left">
+        <div class="container">
             <div class="page-header">
                 <h1>Compute
                     <small>A list of your computers and services</small>
@@ -10,22 +10,24 @@
                             href="#!/machine/add/" class="btn pull-right">Add
                         new machine</a></h1>
             </div>
-            <div class="container controls no-corner gray glass">
-                <a href="#myModal" role="button" class="btn cta"
-                   ng-click="startAll();">Start all</a>
-                <a href="#myModal" role="button" class="btn cta"
-                   ng-click="stopAll();">Stop all</a>
 
+            <div class="container controls no-corner gray glass">
+                <button class="btn cta"
+                   ng-click="startAll();">Start all</button>
+                <button  class="btn cta"
+                   ng-click="stopAll();">Stop all</button>
+                
 
                 <input type="search" class="search-query pull-right"
                        data-ng-model="query" data-ng-change="search()"
                        placeholder="Search" name="search" id="search">
+
                 <select class="search-options pull-right"
                         data-ng-model="searchable" data-ng-change="search()"
                         data-ng-options="val as key for (key, val) in searchOptions"></select>
             </div>
 
-            <table class="table table-striped table-hover table-condensed small">
+            <table class="table table-striped table-hover table-condensed" id="machinelist">
                 <thead>
                 <tr>
                     <td class="sortable" data-ng-click="sortBy('state')"
@@ -259,20 +261,44 @@
 </div>
 
 
-<div data-ng-switch-when="provision" data-ng-controller="ProvisionController">
-    <div class="controls">
-        Name: <input type="text" class="span3" placeholder="Name"
-                     name="macinename" data-ng-model="machinename"><br/>
-        Datacenter: <select data-ng-model="datacenter"
-                            data-ng-options="value as key for (key, value) in datacenters"></select><br/>
-        Image (version): <select data-ng-model="dataset"
-                                 data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select><br/>
-        Package: <select data-ng-model="sdcpackage"
-                         data-ng-options="package.name for package in packages"></select><br/>
+<div data-ng-switch-when="provision" data-ng-controller="ProvisionController"
+     class="row-fluid">
 
-        <a href="#myModal" role="button" data-toggle="modal"
-           class="btn pull-left margin5right cta" ng-click="clickProvision();">Add
-            new machine</a>
+    <div class="page-header">
+        <h1>Provision
+            <small>Provision a new machine</small>
+        </h1>
+    </div>
+
+    <div class="span4">
+        <form class="form-horisontal inline-form">
+
+            <div class="controls">
+                <label class="control-label" for="machinename">Machine
+                    name:</label>
+                <input type="text" placeholder="Name"
+                       name="machinename" data-ng-model="machinename"><br/>
+
+                <label class="control-label"
+                       for="datacenter">Datacenter:</label>
+                <select name="datacenter" data-ng-model="datacenter"
+                        data-ng-options="value as key for (key, value) in datacenters"></select>
+
+                <label class="control-label" for="dataset">Image
+                    (version):</label>
+                <select name="dataset" data-ng-model="dataset"
+                        data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select>
+
+                <label class="control-label" for="package">Package:</label>
+                <select name="package" data-ng-model="sdcpackage"
+                        data-ng-options="package.name for package in packages"></select><br/>
+
+                <button href="#myModal" role="button" data-toggle="modal"
+                        class="btn btn-primary" ng-click="clickProvision();">Add
+                    new machine
+                </button>
+            </div>
+            <form>
     </div>
 </div>
 

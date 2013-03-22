@@ -8,7 +8,8 @@
             'requestContext',
             'Machines',
             "$dialog",
-            function ($scope, $filter, requestContext, Machines, $dialog) {
+            '$location',
+            function ($scope, $filter, requestContext, Machines, $dialog, $location) {
 
                 requestContext.setUpRenderContext('machine.details', $scope);
 
@@ -40,6 +41,7 @@
                 $scope.clickProvision = function () {
                     confirm("Are you sure it works?", function () {
                         $scope.retinfo = Machines.provisionMachine($scope.machinename, $scope.sdcpackage, $scope.dataset);
+                        $location.path("/machine");
                     });
                 }
 
