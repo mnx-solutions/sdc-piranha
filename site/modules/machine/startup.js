@@ -155,10 +155,10 @@ module.exports = function (scope, callback) {
         }
     });
 
-    function pollForMachineState(call, machineId, state) {
+    function pollForMachineState(client, call, machineId, state) {
         var timer = setInterval(function () {
             call.log.debug('Polling for machine %s to become %s', machineId, state);
-            cloud.getMachine(machineId, function (err, machine) {
+            client.getMachine(machineId, function (err, machine) {
                 if (!err) {
                     if (state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
@@ -173,12 +173,12 @@ module.exports = function (scope, callback) {
         }, 5000);
     }
 
-    function pollForMachinePackageChange(call, sdcpackage) {
+    function pollForMachinePackageChange(client, call, sdcpackage) {
         var timer = setInterval(function () {
             var machineId = typeof call.data === 'object' ? call.data.machineId : call.data;
 
             call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage.memory);
-            call.cloud.getMachine(machineId, function (err, machine) {
+            client.getMachine(machineId, function (err, machine) {
                 if (!err) {
                     if (sdcpackage.memory === machine.memory) {
                         call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage.memory);
@@ -208,7 +208,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.startMachine(machineId, function (err) {
                 if (!err) {
-                    pollForMachineState(call, machineId, 'running');
+                    pollForMachineState(client, call, machineId, 'running');
                 } else {
                     call.done(err);
                 }
@@ -231,7 +231,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.stopMachine(machineId, function (err) {
                 if (!err) {
-                    pollForMachineState(call, machineId, "stopped");
+                    pollForMachineState(client, call, machineId, 'stopped');
                 } else {
                     call.done(err);
                 }
@@ -254,7 +254,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.deleteMachine(machineId, function (err) {
                 if (!err) {
-                    pollForMachineState(call, machineId, 'deleted');
+                    pollForMachineState(client, call, machineId, 'deleted');
                 } else {
                     call.done(err);
                 }
@@ -275,7 +275,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.rebootMachine(machineId, function (err, machine) {
                 if (!err) {
-                    pollForMachineState(call, machineId, 'running');
+                    pollForMachineState(client, call, machineId, 'running');
                 } else {
                     call.done(err);
                 }
@@ -304,7 +304,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(call, call.data.sdcpackage)
+                    pollForMachinePackageChange(client, call, call.data.sdcpackage)
                 } else {
                     call.done(err);
                 }
@@ -337,7 +337,7 @@ module.exports = function (scope, callback) {
                         machine: machine
                     };
 
-                    pollForMachineState(call, machine.id, 'running');
+                    pollForMachineState(client, call, machine.id, 'running');
                 } else {
                     call.done(err);
                 }
