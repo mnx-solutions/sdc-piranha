@@ -383,9 +383,9 @@
 
             machineList.machines.push(machine);
 
-            var job = serverCall("MachineCreate", params, function (err, newMachine) {
+            var job = serverCall("MachineCreate", data, function (err, newMachine) {
                 if (!err) {
-                    angular.copy(newMachine, machine);
+                    angular.copy(newMachine[0], machine);
                     machine.job = job;
                 }
             }, function (results, progress) {

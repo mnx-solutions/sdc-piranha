@@ -18,13 +18,10 @@
 
                         <div class="btn-group">
                             <button class="btn btn-success btn-small"
-                                    ng-click="startAll();">Start
+                                    ng-click="startAll();">Start all
                             </button>
                             <button class="btn btn-warning btn-small"
-                                    ng-click="stopAll();">Stop
-                            </button>
-                            <button class="btn btn-warning btn-small"
-                                    ng-click="stopAll();">Restart
+                                    ng-click="stopAll();">Stop all
                             </button>
                         </div>
                         <div class="btn-group">
@@ -40,7 +37,7 @@
 
                 <div class="span4 offset2">
                     <div class="btn-toolbar">
-                        <input type="search" class="search-query"
+                        <input type="search" style="width: 100%;" class=""
                                data-ng-model="query" data-ng-change="search()"
                                placeholder="Search" name="search" id="search">
                     </div>
@@ -66,7 +63,7 @@
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
-                    <td class="sortable" data-ng-click="sortBy('type');"
+                    <td class="sortable  hidden-phone" data-ng-click="sortBy('type');"
                         ng-switch on="sortIcon.type">
                         <span class="text">Type</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
@@ -97,7 +94,7 @@
                     <td>
                         <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                     </td>
-                    <td>{{machine.type}}</td>
+                    <td class="hidden-phone">{{machine.type}}</td>
                     <td>
                     <span data-ng-repeat="ip in machine.ips">
                         {{ ip }}
