@@ -3,6 +3,31 @@
 var events = require('events');
 var util = require('util');
 
+function deepCompare(a, b) {
+    var tA = typeof a;
+    var tB = typeof b;
+    if (tA !== tB) {
+        return false;
+    }
+    if (tA === 'object') {
+        var aKeys = Object.keys(a);
+        var bKeys = Object.keys(b);
+
+        if(aKeys.length !== bKeys.length) {
+            return false;
+        }
+        var ret = true;
+        aKeys.forEach(function (k) {
+            if(!deepCompare(a[k], b[k])){
+                ret = false;
+            }
+        });
+        return ret;
+    }
+
+    return a === b;
+}
+
 function Call(opts) {
     if(!(this instanceof Call)) {
         return new Call(opts);
@@ -14,173 +39,184 @@ function Call(opts) {
 
     self.log = opts.log;
 
-    self._result = null;
-    self._error = null;
-    self._timeout = null;
-    self._noemit = false;
-    self.finished = false;
-
-    var startTime = new Date().getTime();
-    var endTime = null;
-
-    var _status = [];
-    var _result = [];
     var _index = 0;
+    var _status = 'created';
+    var _result = [];
+    var _error = [];
+    var _step = [];
+    var _chunked = false;
+    var _noEmit = false;
 
-    Object.defineProperties(self, {
+    function wrapEnum(obj) {
+        Object.keys(obj).forEach(function (k) {
+            obj[k].enumerable = true;
+        });
+        return obj;
+    }
+
+    var final = false;
+
+    function emit(event, data) {
+        if(!final && !_noEmit) {
+            self.emit(event, self.err, data);
+        }
+        if(self.finished) {
+            final = true;
+        }
+    }
+
+    Object.defineProperties(self, wrapEnum({
         id: {
-            value: opts.id,
-            enumerable: true
+            value: opts.id
         },
         name: {
-            value: opts.name,
-            enumerable: true
+            value: opts.name
         },
         data: {
-            value: opts.data,
-            enumerable: true
+            value: opts.data
         },
         cloud: {
-            value: opts.cloud,
-            enumerable: true
+            value: opts.cloud
         },
-        status: {
-            get: function() {
-                if (_status.length < 1) {
-                    return null;
+        tab: {
+            value: opts.tab
+        },
+        step: {
+            get: function () { return _step.length < 1 ? null : _step[_step.length -1]; },
+            set: function (s) {
+                var old = self.step;
+                _step.push(s);
+                if(!deepCompare(old, s)) {
+                    self.status('updated');
                 }
-                return _status[_status.length - 1];
-            },
-            set: function(s) {
-                if (!self.finished) {
-                    self.log.debug("Progress update handled, storing result", self.name, self.id);
-                    _status.push(s);
-                    if (!self._noemit) {
-                        self.emit('change');
-                    }
-                } else {
-                    self.log.warn("Progress update called after process finished", s, self.name, self.id);
-                }
-            },
-            enumerable:true
+            }
+        },
+        err: {
+            get: function () { return _error.length < 1 ? null : _error[_error.length -1]; },
+            set: function (s) { _error.push(s); }
         },
         result: {
-            get: function() {
-                if (_result.length < 1) {
-                    return null;
-                }
-                return _result[_result.length -1];
-            },
-            set: function(s) {
-                if (!self.finished) {
-                    self.log.debug("Progress result handled, storing result", self.name, self.id);
-                    if (self._noemit && _result.length < 1) {
-                        _result = s;
-                    } else {
-                        _result.push(s);
-                    }
-                    if (!self._noemit) {
-                        self.emit('change');
-                    }
+            value: function (data, done) {
+                if (done && _result.length < 1) {
+                    _result = data;
                 } else {
-                    self.log.warn("Progress result called after process finished", s, self.name, self.id);
+                    _result.push(data);
+                    _chunked = true;
                 }
-            },
-            enumerable:true
+                self.status(done ? 'finished' : 'updated');
+            }
+        },
+        chunked: {
+            get: function () { return _chunked; }
+        },
+        finished: {
+            get: function () { return _status === 'finished' || _status === 'error'; }
         },
         __read: {
-            value: function (id) {
+            value: function (index) {
 
-                if (!util.isArray(_result)) {
+                if (!_chunked) {
                     return _result;
                 }
 
-                if (_result.length < 1) {
-                    return [];
+                var i = index === undefined ? _index : index;
+                var r = _result.slice(i);
+                if (index === undefined) {
+                    _index += r.length;
                 }
-
-                if (id === '_full_') {
-                    return _result.slice(0);
-                }
-
-                var r = _result.slice(_index);
-                _index += r.length;
                 return r;
             }
         },
-        startTime: {
-            value: startTime,
-            enumerable: true
-        },
-        endTime: {
-            get: function() {
-                return endTime;
+        error: {
+            value: function(err) {
+                if (err) {
+                    self.err = err;
+                    self.status('error');
+                }
             }
         },
-        execTime: {
-            get: function() {
-                if(!endTime) {
-                    return false;
+        update: {
+            value: function(err, result, done) {
+                if(err) {
+                    return self.error(err);
                 }
-                return endTime - startTime;
-            },
-            enumerable: true
-        }
-    });
-
-    Object.defineProperties(self, {
+                self.result(result, done);
+            }
+        },
         done: {
-            value: function(err, result) {
-
-                if (self.finished && endTime) {
-                    self.log.warn('Process done called more than once');
-                    return false;
+            value: function (err, result) {
+                self.update(err, result, true);
+            }
+        },
+        start: {
+            value: function () {
+                _status = 'started';
+                opts.handler.call(self);
+                delete self.getImmediate;
+            }
+        },
+        getImmediate: {
+            value: function (done) {
+                if (done) {
+                    self.willFinish = true;
                 }
-                endTime = new Date().getTime();
-                self._noemit = true;
+                self.immediate = function (err, data) {
+                    _noEmit = true;
+                    _status = 'initialized';
+                    if (err) {
+                        self.removeAllListeners();
+                        opts.remove(self);
+                        self.error(err);
+                    }
+                    if (done) {
+                        self.result(data, done);
+                        opts.res.send(self.status());
+                    } else {
+                        opts.res.send({
+                            id: self.id,
+                            name: self.name,
+                            status: _status,
+                            finished: self.finished,
+                            error: self.err,
+                            step: self.step,
+                            data: data
+                        });
+                    }
 
-                self._error = err;
-                self.log.debug({
-                    execTime: self.execTime,
-                    err: self._error
-                }, "Call %s handled in %sms, storing result", self.name, self.execTime);
+                    _noEmit = false;
+                    self.immediate = null;
+                };
 
-                self.status = 'finished';
-                self.result = result;
-                self._noemit = false;
-                self.finished = true;
-                self.emit('change');
-
-                if(self._timeout) {
-                    clearTimeout(self._timeout);
+                return self.immediate;
+            },
+            configurable: true,
+            writeable: true
+        },
+        status: {
+            value: function(status) {
+                if (status) {
+                    _status = status;
+                    emit(status, self);
+                    return;
                 }
+                return {
+                    id: self.id,
+                    name: self.name,
+                    finished: self.finished,
+                    chunked: self.chunked,
+                    error: self.err,
+                    step: self.step,
+                    status: _status,
+                    result: self.__read()
+                };
             }
         }
-    });
+    }));
+
+    self.start();
 }
 
 util.inherits(Call, events.EventEmitter);
 
-Call.prototype.timeout = function (time) {
-    var self = this;
-
-    if(!self._timeout) {
-        self._timeout = setTimeout(function() {
-            self.done(new Error('Call timed out'));
-        }, time);
-    }
-};
-
-Call.prototype.getStatus = function () {
-    var self = this;
-    return {
-        id: self.id,
-        name: self.name,
-        finished: self.finished,
-        error: self._error,
-        status: self.status,
-        result: self.__read()
-    };
-};
 
 module.exports = Call;

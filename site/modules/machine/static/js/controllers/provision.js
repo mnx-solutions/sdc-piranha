@@ -6,14 +6,17 @@
         [   '$scope',
             '$filter',
             'requestContext',
-            'Machines',
+            'Machine',
+            'Dataset',
+            'Datacenter',
+            'Package',
             "$dialog",
-            function ($scope, $filter, requestContext, Machines, $dialog) {
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog) {
 
-                requestContext.setUpRenderContext('machine.details', $scope);
+                requestContext.setUpRenderContext('machine.provision', $scope);
 
-                Machines.updateDatasets();
-                Machines.updateDatacenters();
+                Dataset.updateDatasets();
+                Datacenter.updateDatacenters();
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
@@ -22,27 +25,30 @@
                     $dialog.messageBox(title, question, btns)
                         .open()
                         .then(function(result){
-                            if(result=='ok'){
+                            if(result === 'ok'){
                                 callback();
                             }
                         });
                 };
 
-                var packages = Machines.getPackages();
+                var packages = Package.package();
                 $scope.packages = packages;
 
-                var datasets = Machines.getDatasets();
+                var datasets = Dataset.dataset();
                 $scope.datasets = datasets;
 
-                var datacenters = Machines.getDatacenters();
+                var datacenters = Datacenter.datacenter();
                 $scope.datacenters = datacenters;
 
                 $scope.clickProvision = function () {
                     confirm("Are you sure it works?", function () {
-                        $scope.retinfo = Machines.provisionMachine($scope.machinename, $scope.sdcpackage, $scope.dataset);
+                        $scope.retinfo = Machine.provisionMachine({
+                            name: $scope.machinename,
+                            sdcpackage: $scope.sdcpackage,
+                            dataset: $scope.dataset
+                        });
                     });
-                }
-
+                };
 
             }
 

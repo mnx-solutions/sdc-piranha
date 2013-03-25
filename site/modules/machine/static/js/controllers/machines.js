@@ -7,10 +7,10 @@
             '$scope',
             '$filter',
             'requestContext',
-            'Machines',
+            'Machine',
             'localization',
 
-function ($scope, $filter, requestContext, Machines, localization) {
+function ($scope, $filter, requestContext, Machine, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
 
@@ -25,8 +25,7 @@ function ($scope, $filter, requestContext, Machines, localization) {
     $scope.pagedMachines = [];
     $scope.maxPages = 5;
     $scope.currentPage = 0;
-    $scope.machines = Machines.getMachines().machines;
-    $scope.machineList = Machines.getMachines();
+    $scope.machines = Machine.machine();
 
     $scope.$watch('machines', function () {
         $scope.search();
@@ -199,7 +198,7 @@ function ($scope, $filter, requestContext, Machines, localization) {
     $scope.startAll = function () {
         $scope.machines.forEach(function(machine){
             if (machine.state = 'stopped'){
-                Machines.startMachine(machine.id);
+                Machine.startMachine(machine.id);
             }
         });
     }
@@ -207,7 +206,7 @@ function ($scope, $filter, requestContext, Machines, localization) {
     $scope.stopAll = function () {
         $scope.machines.forEach(function(machine){
             if (machine.state = 'started'){
-                Machines.stopMachine(machine.id);
+                Machine.stopMachine(machine.id);
             }
         });
     }

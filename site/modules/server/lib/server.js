@@ -58,36 +58,39 @@ Server.prototype.query = function () {
 Server.prototype.call = function () {
     var self = this;
     return function (req, res) {
-        var call = req.body;
+        var query = req.body;
         var id = req.query.tab;
 
-        if ("object" !== typeof call || !call.id || !call.name || !id) {
-            req.log.warn("Invalid call format", call);
+        if ("object" !== typeof query || !query.id || !query.name || !id) {
+            req.log.warn("Invalid call format", query);
             res.send(400, "Invalid call format");
             return;
         }
 
-        self.log.debug("Incoming RPC call ", call.name, call.id, id);
+        self.log.debug("Incoming RPC call ", query.name, query.id, id);
 
-        if (!self._handlers[call.name]) {
-            self.log.warn("Client tried to call unhandled call", call);
-            res.send(501, "Unhandled RPC call", call.name);
+        if (!self._handlers[query.name]) {
+            self.log.warn("Client tried to call unhandled call", query);
+            res.send(501, "Unhandled RPC call", query.name);
             return;
         }
 
-        if(!self._handlers[call.name].verify(call.data)) {
-            req.warn("Invalid parameters %s provided for call %s",
-                     call.data, call.name);
+        if(!self._handlers[query.name].verify(query.data)) {
+            req.log.warn("Invalid parameters %s provided for call %s",
+                     query.data, query.name);
             res.send(400, "Invalid parameters provided");
             return;
         }
-        var opts = call;
+        var opts = query;
         opts.cloud = req.cloud;
+        opts.handler = self._handlers[query.name];
+        opts.res = res;
 
-        var callContext = req._session.call(id, opts);
-        self._handlers[call.name].call(callContext);
+        var call = req._session.call(id, opts);
 
-        res.send(200);
+        if(!call.immediate) {
+            res.send(202);
+        }
     };
 };
 

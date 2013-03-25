@@ -1,0 +1,66 @@
+'use strict';
+
+(function (app) {
+    app.factory('Dataset', ['serverTab', '$q', function (serverTab, $q) {
+
+        var service = {};
+        var datasets = {job: null, index: {}, list: [], search: {}};
+
+        service.updateDatasets = function () {
+            if (!datasets.job || datasets.job.finished) {
+                datasets.list.final = false;
+                datasets.job = serverTab.call({
+                    name:'DatasetList',
+                    done: function(err, job) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        var result = job.__read();
+                        result.forEach(function (p) {
+                            var old = null;
+                            if(datasets.index[p.name]){
+                                old = datasets.list.indexOf(datasets.index[p.name]);
+                            }
+                            datasets.index[p.name] = p;
+                            if (datasets.search[p.name]){
+                                datasets.search[p.name].resolve(p);
+                                delete datasets.search[p.name];
+                            }
+                            if (old !== null) {
+                                datasets.list[old] = p;
+                            } else {
+                                datasets.list.push(p);
+                            }
+                        });
+                        datasets.list.final = true;
+                    }
+                });
+            }
+            return datasets.job;
+        };
+
+        service.dataset = function (id) {
+            if (id === true || (!id && !datasets.job)) {
+                var job = service.updateDatasets();
+                return job.deferred;
+            }
+            if (!id){
+                return datasets.list;
+            }
+            if (!datasets.index[id]){
+                service.updateDatasets();
+                if(!datasets.search[id]){
+                    datasets.search[id] = $q.defer();
+                }
+                return datasets.search[id].promise;
+            }
+            return datasets.index[id];
+        };
+
+
+        // run updatePackages
+        service.updateDatasets();
+
+        return service;
+    }]);
+}(window.JP.getModule('Machine')));

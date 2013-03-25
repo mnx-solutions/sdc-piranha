@@ -4,14 +4,14 @@
     app.controller(
         'MachineController',
         [   '$scope',
-            '$filter',
             'requestContext',
-            'Machines',
+            'Machine',
+            'Package',
             '$dialog',
             '$$track',
             'localization',
 
-            function ($scope, $filter, requestContext, Machines, $dialog, $$track, localization) {
+            function ($scope, requestContext, Machine, Package, $dialog, $$track, localization) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.details', $scope);
 
@@ -32,51 +32,50 @@
 
                 $scope.machineid = machineid;
 
-                var selectedmachine = Machines.getMachine(machineid);
-                $scope.selectedmachine = selectedmachine;
+                $scope.selectedmachine = Machine.machine(machineid);
 
-                var packages = Machines.getPackages();
-                $scope.selectedmachine.then(function(value){
-                    $scope.package = Machines.getPackage(value.package);
-                });
+                $scope.packages = Package.package();
 
-                $scope.packages = packages;
+                if ($scope.selectedmachine.id) {
+                    $scope.package = Package.package($scope.selectedmachine.package);
+                } else {
+                    $scope.selectedmachine.then(function(value){
+                        $scope.package = Package.package(value.package);
+                    });
+                }
 
                 $scope.clickStart = function () {
                     confirm("Are you sure you want to start the machine", function () {
                         $$track.event("machine", "start");
-                        var job = Machines.startMachine(machineid);
-                        job.name = "starting";
+                        var job = Machine.startMachine(machineid);
                     });
                 };
 
                 $scope.clickStop = function () {
                     confirm("Are you sure you want to stop the machine", function () {
-                        var job = Machines.stopMachine(machineid);
+                        var job = Machine.stopMachine(machineid);
                         $$track.event("machine", "stop");
-                        job.name = "stopping";
                     });
                 };
 
                 $scope.clickReboot = function () {
                     confirm("Are you sure you want to reboot the machine", function () {
                         $$track.event("machine", "reboot");
-                        var job  = Machines.rebootMachine(machineid);
-                        job.name = "rebooting";
+                        var job  = Machine.rebootMachine(machineid);
                     });
                 };
 
                 $scope.clickResize = function () {
                     confirm("Are you sure you want to resize the machine", function () {
                         $$track.event("machine", "resize");
-                        $scope.retinfo = Machines.resizeMachine(machineid, $scope.resize);
+                        $scope.retinfo = Machine.resizeMachine(machineid, $scope.resize);
                     });
                 };
 
                 $scope.clickDelete = function () {
                     confirm("Are you sure you want to delete the machine", function () {
                         $$track.event("machine", "delete");
-                        $scope.retinfo = Machines.deleteMachine(machineid);
+                        $scope.retinfo = Machine.deleteMachine(machineid);
                     });
                 };
 
