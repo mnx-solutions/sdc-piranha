@@ -74,9 +74,9 @@
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
                     <td>Network</td>
-                    <td class="sortable" data-ng-click="sortBy('memory');"
-                        ng-switch on="sortIcon.memory">
-                        <span class="text">Memory</span>
+                    <td class="sortable" data-ng-click="sortBy('dataset');"
+                        ng-switch on="sortIcon.dataset">
+                        <span class="text">Dataset</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
@@ -92,7 +92,7 @@
                 <tbody>
                 <tr data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
                     data-ng-class-odd="odd" ng-class-even="even">
-                    <td><input type="checkbox" ng:model="checked[machine.id]" ng-click="showGroupActions();"></td>
+                    <td><input type="checkbox" ng:model="checked[machine.id]" ng-click="showGroupActions();" ng-checked="checked[machine.id]"></td>
                     <td>
                         <machine-status machine="machine"/>
                     </td>
@@ -105,7 +105,7 @@
                         {{ ip }}
                     </span>
                     </td>
-                    <td>{{machine.memory}}MB</td>
+                    <td ng-init="dset = datasetInfo(machine.dataset);pack = packageInfo(machine.memory, machine.disk);">OS: {{dset.os}} {{dset.name}}<br/>Type: {{dset.type}}<br/>Disk: {{machine.disk | sizeFormat}}<br/>Memory: {{machine.memory | sizeFormat}}<br/>VCPUs: {{pack.vcpus}}</td>
                     <td class="hidden-phone">{{machine.created | fromNow}}</td>
                 </tr>
                 </tbody>

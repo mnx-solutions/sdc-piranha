@@ -203,6 +203,7 @@ function ($scope, $filter, requestContext, Machines, localization) {
         for (var machineid in $scope.checked) {
             if ($scope.checked[machineid] === true) {
                 Machines.startMachine(machineid);
+                $scope.checked[machineid] = false;
             }
         }
     }
@@ -211,6 +212,7 @@ function ($scope, $filter, requestContext, Machines, localization) {
         for (var machineid in $scope.checked) {
             if ($scope.checked[machineid] === true) {
                 Machines.stopMachine(machineid);
+                $scope.checked[machineid] = false;
             }
         }
     }
@@ -219,6 +221,7 @@ function ($scope, $filter, requestContext, Machines, localization) {
         for (var machineid in $scope.checked) {
             if ($scope.checked[machineid] === true) {
                 Machines.rebootMachine(machineid);
+                $scope.checked[machineid] = false;
             }
         }
     }
