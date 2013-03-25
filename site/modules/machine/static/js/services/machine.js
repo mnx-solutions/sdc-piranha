@@ -55,17 +55,18 @@
                     //machineList.machines.push.apply(machineList.machines, result);
                 }
             }, function (data, status) {
-                data.forEach(function (res) {
-                    console.log(res);
-                    if (res.machines) {
-                        machineList.machines.push.apply(machineList.machines, res.machines);
+                if (data instanceof Array) {
+                    data.forEach(function (res) {
+                        console.log(res);
+                        if (res.machines) {
+                            machineList.machines.push.apply(machineList.machines, res.machines);
+                        }
+                    });
+                } else {
+                    if (data.machines) {
+                        machineList.machines.push.apply(machineList.machines, data.machines);
                     }
-                });
-                /*
-                if (data.machines) {
-                    machineList.machines.push.apply(machineList.machines, data.machines);
                 }
-                */
             });
 
             machineList.job.addCallback(callback);
