@@ -260,17 +260,19 @@
                 datacenter: machine.datacenter
             };
 
-            machine.job = serverCall("MachineStart", params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                }
-            }, function (result, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
+            if (machine.state == "stopped") {
+                machine.job = serverCall("MachineStart", params, function (err, result) {
+                    if (!err) {
+                        machine.state = result.state;
+                    }
+                }, function (result, progress) {
+                    if (progress.state) {
+                        machine.state = progress.state;
+                    }
+                });
 
-            machine.job.name = "starting";
+                machine.job.name = "starting";
+            }
 
             return machine.job;
         }
@@ -283,18 +285,19 @@
                 datacenter: machine.datacenter
             };
 
-            machine.job = serverCall('MachineStop', params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                }
-            }, function (result, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
+            if (machine.state == "running") {
+                machine.job = serverCall('MachineStop', params, function (err, result) {
+                    if (!err) {
+                        machine.state = result.state;
+                    }
+                }, function (result, progress) {
+                    if (progress.state) {
+                        machine.state = progress.state;
+                    }
+                });
 
-            machine.job.name = "stopping";
-
+                machine.job.name = "stopping";
+            }
 
             return machine.job;
         }
@@ -307,18 +310,20 @@
                 datacenter: machine.datacenter
             };
 
-            machine.job = serverCall("MachineDelete", params, function (err, result) {
+            if (machine.state == "stopped") {
+                machine.job = serverCall("MachineDelete", params, function (err, result) {
 
-                if (!err) {
-                    delete machineList.machines[machineList.machines.indexOf(machine)];
-                }
-            }, function (results, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
+                    if (!err) {
+                        delete machineList.machines[machineList.machines.indexOf(machine)];
+                    }
+                }, function (results, progress) {
+                    if (progress.state) {
+                        machine.state = progress.state;
+                    }
+                });
 
-            machine.job.name = "deleting";
+                machine.job.name = "deleting";
+            }
 
             return machine.job;
         }
@@ -330,18 +335,19 @@
                 datacenter: machine.datacenter
             };
 
-            machine.job = serverCall("MachineReboot", params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                }
-            }, function (results, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
+            if (machine.state == "running") {
+                machine.job = serverCall("MachineReboot", params, function (err, result) {
+                    if (!err) {
+                        machine.state = result.state;
+                    }
+                }, function (results, progress) {
+                    if (progress.state) {
+                        machine.state = progress.state;
+                    }
+                });
 
-            machine.job.name = "rebooting";
-
+                machine.job.name = "rebooting";
+            }
 
             return machine.job;
         }
@@ -403,6 +409,63 @@
 
             return job;
         }
+
+        var findPackageByMemoryDisk = function (memory, disk) {
+            var found = packageList.packages.filter(function (pack) {
+                if (pack.memory === memory && pack.disk === disk) {
+                    return pack;
+                }
+            });
+            if (found.length === 1) {
+                return found[0];
+            }
+            return null;
+        }
+
+        var findDataset = function (datasetUrn) {
+            var found = datasetList.datasets.filter(function (dataset) {
+                if (dataset.urn === datasetUrn) {
+                    return dataset;
+                }
+            });
+            if (found.length === 1) {
+                return found[0];
+            }
+            return null;
+        }
+
+        service.getPackageByMemoryDisk = function (memory, disk) {
+            if (packageList.packages.length) {
+                return findPackageByMemoryDisk(memory, disk);
+            }
+
+            // get the new machine list.
+            var job = service.updatePackages();
+
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(findPackageByMemoryDisk(memory, disk));
+            });
+
+            return deferred.promise;
+        }
+
+        // list datasets
+        service.getDataset = function (urn) {
+            if (datasetList.datasets.length) {
+                return findDataset(urn);
+            }
+
+            // get the new machine list.
+            var job = service.updateDatasets();
+
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(findDataset(urn));
+            });
+
+            return deferred.promise;
+        };
 
         return service;
     }]);

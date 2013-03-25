@@ -13,6 +13,7 @@
 function ($scope, $filter, requestContext, Machines, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
+
     // Sorting
     $scope.sortingOrder = 'created';
     $scope.reverse = true;
@@ -26,6 +27,9 @@ function ($scope, $filter, requestContext, Machines, localization) {
     $scope.currentPage = 0;
     $scope.machines = Machines.getMachines().machines;
     $scope.machineList = Machines.getMachines();
+
+    $scope.checked = {};
+    $scope.ischecked = false;
 
     $scope.$watch('machines', function () {
         $scope.search();
@@ -196,19 +200,44 @@ function ($scope, $filter, requestContext, Machines, localization) {
     };
 
     $scope.startAll = function () {
-        $scope.machines.forEach(function(machine){
-            if (machine.state = 'stopped'){
-                Machines.startMachine(machine.id);
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                Machines.startMachine(machineid);
             }
-        });
+        }
     }
 
     $scope.stopAll = function () {
-        $scope.machines.forEach(function(machine){
-            if (machine.state = 'started'){
-                Machines.stopMachine(machine.id);
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                Machines.stopMachine(machineid);
             }
-        });
+        }
+    }
+
+    $scope.restartAll = function () {
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                Machines.rebootMachine(machineid);
+            }
+        }
+    }
+
+    $scope.showGroupActions = function () {
+        $scope.ischecked = false;
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                $scope.ischecked = true;
+            }
+        }
+    }
+
+    Machines.updateDatasets();
+    $scope.datasetInfo = function (dataseturn) {
+        return Machines.getDataset(dataseturn);
+    }
+    $scope.packageInfo = function (memory, disk) {
+        return Machines.getPackageByMemoryDisk(memory, disk);
     }
 
 }

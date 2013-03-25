@@ -18,13 +18,13 @@
 
                         <div class="btn-group">
                             <button class="btn btn-success btn-small"
-                                    ng-click="startAll();">Start
+                                    ng-click="startAll();" data-ng-class="{disabled: !ischecked}">Start
                             </button>
                             <button class="btn btn-warning btn-small"
-                                    ng-click="stopAll();">Stop
+                                    ng-click="stopAll();" data-ng-class="{disabled: !ischecked}">Stop
                             </button>
                             <button class="btn btn-warning btn-small"
-                                    ng-click="stopAll();">Restart
+                                    ng-click="stopAll();" data-ng-class="{disabled: !ischecked}">Restart
                             </button>
                         </div>
                         <div class="btn-group">
@@ -54,6 +54,7 @@
                    id="machinelist">
                 <thead>
                 <tr>
+                    <td></td>
                     <td class="sortable" data-ng-click="sortBy('state')"
                         ng-switch on="sortIcon.state">
                         <span class="text">State</span>
@@ -91,6 +92,7 @@
                 <tbody>
                 <tr data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
                     data-ng-class-odd="odd" ng-class-even="even">
+                    <td><input type="checkbox" ng:model="checked[machine.id]" ng-click="showGroupActions();"></td>
                     <td>
                         <machine-status machine="machine"/>
                     </td>
