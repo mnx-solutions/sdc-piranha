@@ -57,6 +57,34 @@
             return packages.index[id];
         };
 
+        function findPackageByMemoryDisk(memory, disk) {
+            var found = packages.list.filter(function (pack) {
+                if (pack.memory === memory && pack.disk === disk) {
+                    return pack;
+                }
+            });
+            if (found.length === 1) {
+                return found[0];
+            }
+            return null;
+        }
+
+        service.getPackageByMemoryDisk = function (memory, disk) {
+            if (packages.list.final) {
+                return findPackageByMemoryDisk(memory, disk);
+            }
+
+            // get the new machine list.
+            var job = service.updatePackages();
+
+            var deferred = $q.defer();
+            job.done(function (err, job) {
+                deferred.resolve(findPackageByMemoryDisk(memory, disk));
+            });
+
+            return deferred.promise;
+        };
+
 
         // run updatePackages
         service.updatePackages();

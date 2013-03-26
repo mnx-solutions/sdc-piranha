@@ -55,17 +55,19 @@ Tab.prototype.call = function (opts) {
     };
     var call = new Call(opts);
 
-    function updated() {
-        self._changed[call.id] = call;
-        self._readable();
+    function updated(name) {
+        return function (err, call2) {
+            self._changed[call.id] = call;
+            self._readable();
+        };
     }
+
     if (!call.willFinish) {
+        call.on('updated', updated('updated'));
 
-        call.on('updated', updated);
+        call.on('finished', updated('finished'));
 
-        call.on('finished', updated);
-
-        call.on('error', updated);
+        call.on('error', updated('error'));
 
         self._calls[call.id] = call;
         self.processing = true;

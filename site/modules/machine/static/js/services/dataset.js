@@ -18,13 +18,13 @@
                         var result = job.__read();
                         result.forEach(function (p) {
                             var old = null;
-                            if(datasets.index[p.name]){
-                                old = datasets.list.indexOf(datasets.index[p.name]);
+                            if(datasets.index[p.urn]){
+                                old = datasets.list.indexOf(datasets.index[p.urn]);
                             }
-                            datasets.index[p.name] = p;
-                            if (datasets.search[p.name]){
-                                datasets.search[p.name].resolve(p);
-                                delete datasets.search[p.name];
+                            datasets.index[p.urn] = p;
+                            if (datasets.search[p.urn]){
+                                datasets.search[p.urn].resolve(p);
+                                delete datasets.search[p.urn];
                             }
                             if (old !== null) {
                                 datasets.list[old] = p;

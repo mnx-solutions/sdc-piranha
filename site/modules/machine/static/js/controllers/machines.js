@@ -8,9 +8,11 @@
             '$filter',
             'requestContext',
             'Machine',
+            'Dataset',
+            'Package',
             'localization',
 
-function ($scope, $filter, requestContext, Machine, localization) {
+function ($scope, $filter, requestContext, Machine, Dataset, Package, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
 
@@ -234,12 +236,12 @@ function ($scope, $filter, requestContext, Machine, localization) {
         }
     }
 
-    Machines.updateDatasets();
+    //Dataset.updateDatasets();
     $scope.datasetInfo = function (dataseturn) {
-        return Machines.getDataset(dataseturn);
+        return Dataset.dataset(dataseturn);
     }
     $scope.packageInfo = function (memory, disk) {
-        return Machines.getPackageByMemoryDisk(memory, disk);
+        return Package.getPackageByMemoryDisk(memory, disk);
     }
 
 }

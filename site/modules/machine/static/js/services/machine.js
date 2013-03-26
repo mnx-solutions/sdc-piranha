@@ -40,26 +40,8 @@
                         machines.list.final = true;
                     }
                 });
-            });
-
-            machineList.job.addCallback(callback);
-        };
-
-        // list packages
-        service.getPackages = function () {
-
-            if (packageList.packages.length) {
-                return packageList.packages;
             }
-
-            // get the new machine list.
-            var job = service.updatePackages();
-            var deferred = $q.defer();
-            job.addCallback(function () {
-                deferred.resolve(packageList.packages);
-            });
-
-            return deferred.promise;
+            return machines.job;
         };
 
         service.machine = function (id) {
@@ -91,6 +73,8 @@
                     if (!machine.job || machine.job.finished) {
                         opts.data = opts.data || {};
                         opts.data.uuid = uuid;
+                        opts.data.datacenter = machine.datacenter;
+                        console.log(machine);
                         if (!opts.progress) {
                             opts.progress = function (err, job) {
                                 var step = job.step;
@@ -130,7 +114,8 @@
                     return start();
                 }
                 var d = $q.defer();
-                machine.then(function() {
+                machine.then(function(m) {
+                    machine = m;
                     d.resolve(start());
                 });
 
@@ -204,6 +189,7 @@
                     }
                     var result = job.__read();
                     copy(result);
+                    machine.datacenter = data.datacenter; //TODO: Should be gotten from server
                 },
                 progress: function (err, job) {
                     var step = job.step;

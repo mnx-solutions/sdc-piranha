@@ -9,6 +9,12 @@ function deepCompare(a, b) {
     if (tA !== tB) {
         return false;
     }
+    if(a === null && b === null) {
+        return true;
+    }
+    if(a === null || b === null) {
+        return false;
+    }
     if (tA === 'object') {
         var aKeys = Object.keys(a);
         var bKeys = Object.keys(b);
@@ -46,6 +52,7 @@ function Call(opts) {
     var _step = [];
     var _chunked = false;
     var _noEmit = false;
+    var _bind = false;
 
     function wrapEnum(obj) {
         Object.keys(obj).forEach(function (k) {
@@ -136,11 +143,19 @@ function Call(opts) {
             }
         },
         update: {
-            value: function(err, result, done) {
-                if(err) {
-                    return self.error(err);
+            value: function(err, result, done) { // Hack to ensure that events are binded
+                function update() {
+                    if(err) {
+                        return self.error(err);
+                    }
+                    self.result(result, done);
                 }
-                self.result(result, done);
+
+                if(!_bind) {
+                    setImmediate(update);
+                } else {
+                    update();
+                }
             }
         },
         done: {
@@ -153,6 +168,7 @@ function Call(opts) {
                 _status = 'started';
                 opts.handler.call(self);
                 delete self.getImmediate;
+                _bind = true;
             }
         },
         getImmediate: {

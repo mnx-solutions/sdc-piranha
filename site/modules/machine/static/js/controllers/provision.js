@@ -46,7 +46,8 @@
                         $scope.retinfo = Machine.provisionMachine({
                             name: $scope.machinename,
                             sdcpackage: $scope.sdcpackage,
-                            dataset: $scope.dataset
+                            dataset: $scope.dataset,
+                            datacenter: $scope.datacenter
                         });
                         $location.path("/machine");
                     });
