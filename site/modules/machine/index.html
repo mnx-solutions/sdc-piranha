@@ -67,19 +67,19 @@
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
-                    <td class="sortable  hidden-phone" data-ng-click="sortBy('type');"
-                        ng-switch on="sortIcon.type">
-                        <span class="text">Type</span>
-                        <i class="icon-arrow-up" ng-switch-when="up"/>
-                        <i class="icon-arrow-down" ng-switch-when="down"/>
-                    </td>
-                    <td>Network</td>
                     <td class="sortable" data-ng-click="sortBy('dataset');"
                         ng-switch on="sortIcon.dataset">
                         <span class="text">Dataset</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
+                    <td class="sortable" data-ng-click="sortBy('memory');"
+                        ng-switch on="sortIcon.memory">
+                        <span class="text">Package</span>
+                        <i class="icon-arrow-up" ng-switch-when="up"/>
+                        <i class="icon-arrow-down" ng-switch-when="down"/>
+                    </td>
+                    <td>Network</td>
                     <td class="sortable hidden-phone" data-ng-click="sortBy('created');"
                         ng-switch on="sortIcon.created">
                         <span class="text">Created</span>
@@ -99,13 +99,13 @@
                     <td>
                         <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                     </td>
-                    <td class="hidden-phone">{{machine.type}}</td>
+                    <td ng-init="dset = datasetInfo(machine.dataset);"> {{dset.name}} ({{dset.os}})</td>
+                    <td ng-init="pack = packageInfo(machine.memory, machine.disk);"><span> Memory: {{machine.memory | sizeFormat}}</span><span> Disk: {{machine.disk | sizeFormat}}</span><span> VCPUs: {{pack.vcpus}}</span></td>
                     <td>
                     <span data-ng-repeat="ip in machine.ips">
                         {{ ip }}
                     </span>
                     </td>
-                    <td ng-init="dset = datasetInfo(machine.dataset);pack = packageInfo(machine.memory, machine.disk);">OS: {{dset.os}} {{dset.name}}<br/>Type: {{dset.type}}<br/>Disk: {{machine.disk | sizeFormat}}<br/>Memory: {{machine.memory | sizeFormat}}<br/>VCPUs: {{pack.vcpus}}</td>
                     <td class="hidden-phone">{{machine.created | fromNow}}</td>
                 </tr>
                 </tbody>
@@ -180,26 +180,21 @@
                     <small>{{selectedmachine.id}}</small>
                 </td>
             </tr>
+
             <tr>
                 <td class="key">State</td>
                 <td class="value">
                     <machine-status machine="selectedmachine"/>
                 </td>
             </tr>
+
             <tr>
-                <td class="key">Type</td>
-                <td class="value">{{selectedmachine.type}}</td>
-            </tr>
-            <tr>
-                <td class="key">IP Addresses</td>
+                <td class="key">IP(s)</td>
                 <td class="value"><span
                         data-ng-repeat="ip in selectedmachine.ips">{{ ip }} </br></span>
                 </td>
             </tr>
-            <tr>
-                <td class="key">Image</td>
-                <td class="value">{{selectedmachine.dataset}}</td>
-            </tr>
+
             <tr>
                 <td class="key">Created</td>
                 <td class="value">{{selectedmachine.created |
