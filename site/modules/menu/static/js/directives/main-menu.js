@@ -33,6 +33,8 @@
                             '</li>'+
                         '</ul>' +
                         '</div>' +
+                        '<div id="genericInfo" class="alert alert-info" data-translate style="display:none;"></div>' + //TODO: Notification system should be separate
+                        '<div id="genericError" class="alert alert-error" data-translate style="display:none;"></div>' + //TODO: Notification system should be separate
                       '</div>'
         };
     }]);

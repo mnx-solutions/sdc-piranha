@@ -6,7 +6,7 @@
         ['$scope', '$rootScope', '$route', '$routeParams', 'requestContext',
 
 function ($scope, $rootScope, $route, $routeParams, requestContext) {
-    $scope.pageTitle = 'Joyent Portal';
+    $scope.windowTitle = 'Joyent Portal';
 
     $scope.setWindowTitle = function (title) {
         $scope.windowTitle = title;
@@ -49,6 +49,14 @@ function ($scope, $rootScope, $route, $routeParams, requestContext) {
             // Announce the change in render conditions.
             $scope.$broadcast('requestContextChanged', requestContext);
     });
+
+    $rootScope.$on(
+        'forceUpdate',
+        function (){
+            console.log('broadcasting - update');
+            $scope.$broadcast('event:forceUpdate');
+        }
+    );
 
     $scope.requireLogin = function () {
         $rootScope.$broadcast('event:auth-loginRequired');

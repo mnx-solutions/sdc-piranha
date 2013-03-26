@@ -34,6 +34,16 @@
 
                 $scope.selectedmachine = Machine.machine(machineid);
 
+                $scope.$on(
+                    'event:forceUpdate',
+                    function (){
+                        Machine.updateMachines();
+                        Machine.machine(machineid).then(function(m){
+                            $scope.selectedmachine = m;
+                        });
+                    }
+                );
+
                 $scope.packages = Package.package();
 
                 if ($scope.selectedmachine.id) {

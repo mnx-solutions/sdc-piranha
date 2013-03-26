@@ -10,6 +10,7 @@
         var _calls = {};
         var _history = [];
         var polling = false;
+        var errorPollingLength = 500;
 
         Object.defineProperties(self, {
             id: {
@@ -53,13 +54,15 @@
                         polling = true;
                         // get call results
                         $http({
-                            timeout: 30000,
+                            timeout: 40000,
                             method: 'get',
                             url: 'server/call',
                             params: {tab: self.id}
                         })
                         .success(function (data, code) {
+                            eventer.$emit('polled');
                             polling = false;
+                            errorPollingLength = 500;
                             if (code === 200) {
                                 self.results(data);
                                 setTimeout(self.poll, 100);
@@ -71,10 +74,10 @@
                                 }
                             }
                         })
-                        .error(function () {
+                        .error(function() {
+                            console.log(arguments);
                             polling = false;
-                            // TODO handle errors.
-                            setTimeout(self.poll, 1000);
+                            eventer.$emit('error');
                         });
                     }
                 }
@@ -102,6 +105,40 @@
             }
         });
 
+        self.$on('polled', function() {
+            var visible = window.jQuery('#genericError').is(':visible');
+            window.jQuery('#genericError').hide();
+            errorPollingLength = 500;
+            console.log(visible);
+            if(visible === true) {
+                var timer = setTimeout(function() {
+                    window.jQuery('#genericInfo').fadeOut('slow');
+                }, 5000);
+                window.jQuery('#genericInfo').text('And we are back').show();
+                eventer.$emit(true, 'forceUpdate');
+            }
+        });
+
+        self.$on('error', function () {
+            // TODO handle errors.
+            var txt = 'Lost contact with server retrying in {x}...';
+            errorPollingLength = errorPollingLength * 2;
+            var time = errorPollingLength / 1000;
+            window.jQuery('#genericInfo').hide();
+            window.jQuery('#genericError').text(txt.replace('{x}', time)).show();
+
+            var timer = setInterval(function () {
+                time--;
+                if(time >0) {
+                    window.jQuery('#genericError').text(txt.replace('{x}', time));
+                } else {
+                    window.jQuery('#genericError').text('Retrying...');
+                    clearInterval(timer);
+                    self.poll();
+                }
+            }, 1000);
+
+        });
 
         return self;
     }]);

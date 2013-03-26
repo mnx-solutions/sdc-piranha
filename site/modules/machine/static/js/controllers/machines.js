@@ -29,6 +29,13 @@ function ($scope, $filter, requestContext, Machine, Dataset, Package, localizati
     $scope.currentPage = 0;
     $scope.machines = Machine.machine();
 
+    $scope.$on(
+        'event:forceUpdate',
+        function (){
+            $scope.machines = Machine.machine();
+        }
+    );
+
     $scope.checked = {};
     $scope.ischecked = false;
 

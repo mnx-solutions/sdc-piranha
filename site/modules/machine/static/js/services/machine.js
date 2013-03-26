@@ -45,7 +45,7 @@
         };
 
         service.machine = function (id) {
-            if (id === true || (!id && !machines.job)) {
+            if (id === true || (!id && (!machines.job || machines.job.finished))) {
                 service.updateMachines();
                 return machines.list;
             }
@@ -54,6 +54,8 @@
             }
             if (!machines.index[id]) {
                 service.updateMachines();
+            }
+            if (!machines.index[id] || (machines.job && !machines.job.finished)) {
                 if (!machines.search[id]){
                     machines.search[id] = $q.defer();
                 }

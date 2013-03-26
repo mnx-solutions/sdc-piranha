@@ -8,15 +8,41 @@ window.JP.main.service(
             '$new': function () {
                 var $s = $rootScope.$new(true);
                 var $on = $s.$on;
+                var $emit = $s.$emit;
+                var eventList = {};
 
                 $s.$on = function (event, listener) {
-                    return $on.call($s, event, function (e) {
+                    eventList[event] = eventList[event] || [];
+                    var unregister = $on.call($s, event, function (e) {
                         e.stopPropagation();
                         listener.apply($s, Array.prototype.slice.call(arguments, 1));
                     });
+                    var wrapper = function () {
+                        delete eventList[event].indexOf(wrapper);
+                        return unregister();
+                    };
+                    eventList[event].push(wrapper);
+                    return wrapper;
+                };
+                $s.$emit = function (force, arg1, arg2, arg3, arg4) {
+                    var args = [];
+                    var event = null;
+                    if (typeof force !== 'boolean') {
+                        event = force;
+                        args = [force, arg1, arg2, arg3, arg4];
+                        force = false;
+                    } else {
+                        event = arg1;
+                        args = [arg1, arg2, arg3, arg4];
+                    }
+                    if(!force && (!eventList[event] || eventList[event].length < 1)){
+                        return false;
+                    }
+                    console.log('emitting - ' + args[0]);
+                    $emit.apply($s, args);
                 };
                 return $s;
             }
-        }
+        };
     }]
 );
