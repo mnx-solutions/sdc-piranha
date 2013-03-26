@@ -7,29 +7,23 @@
             '$scope',
             '$filter',
             'requestContext',
-            'Machine',
-            'localization',
+            'Machines',
 
-function ($scope, $filter, requestContext, Machine, localization) {
-    localization.bind('machine', $scope);
+function ($scope, $filter, requestContext, Machines) {
     requestContext.setUpRenderContext('machine.index', $scope);
 
     // Sorting
     $scope.sortingOrder = 'created';
-    $scope.reverse = true;
+    $scope.reverse = false;
     $scope.sortIcon = {};
 
     // Pagination
     $scope.groupedMachines = [];
-    $scope.itemsPerPage = 10;
+    $scope.itemsPerPage = 4;
     $scope.pagedMachines = [];
     $scope.maxPages = 5;
     $scope.currentPage = 0;
-    $scope.machines = Machine.machine();
-
-    $scope.checked = {};
-    $scope.ischecked = false;
-
+    $scope.machines = Machines.getMachines();
     $scope.$watch('machines', function () {
         $scope.search();
     }, true);
@@ -197,50 +191,6 @@ function ($scope, $filter, requestContext, Machine, localization) {
     $scope.setPage = function () {
         $scope.currentPage = this.n;
     };
-
-    $scope.startAll = function () {
-        for (var machineid in $scope.checked) {
-            if ($scope.checked[machineid] === true) {
-                Machine.startMachine(machineid);
-                $scope.checked[machineid] = false;
-            }
-        }
-    }
-
-    $scope.stopAll = function () {
-        for (var machineid in $scope.checked) {
-            if ($scope.checked[machineid] === true) {
-                Machine.stopMachine(machineid);
-                $scope.checked[machineid] = false;
-            }
-        }
-    }
-
-    $scope.restartAll = function () {
-        for (var machineid in $scope.checked) {
-            if ($scope.checked[machineid] === true) {
-                Machine.rebootMachine(machineid);
-                $scope.checked[machineid] = false;
-            }
-        }
-    }
-
-    $scope.showGroupActions = function () {
-        $scope.ischecked = false;
-        for (var machineid in $scope.checked) {
-            if ($scope.checked[machineid] === true) {
-                $scope.ischecked = true;
-            }
-        }
-    }
-
-    Machines.updateDatasets();
-    $scope.datasetInfo = function (dataseturn) {
-        return Machines.getDataset(dataseturn);
-    }
-    $scope.packageInfo = function (memory, disk) {
-        return Machines.getPackageByMemoryDisk(memory, disk);
-    }
 
 }
         ]);

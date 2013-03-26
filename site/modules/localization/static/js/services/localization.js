@@ -136,15 +136,35 @@
                 },
 
                 /**
+                 * Resole registred scope
+                 *
+                 * @param scope
+                 * @returns {Object}
+                 */
+                resolveScope: function (scope) {
+                    while (scope) {
+                        if (this._find(scope) !== undefined) {
+                            break;
+                        }
+
+                        scope = scope.$parent || null;
+                    }
+
+                    return scope;
+                },
+
+                /**
                  * Translate input string
                  *
                  * @param scope origin scope
+                 * @param target target module
                  * @param identifier translation identifier
                  * @param count count value (pluralization)
                  * @returns {string}
                  */
-                translate: function (scope, identifier, count) {
-                    var module = this._find(scope);
+                translate: function (scope, target, identifier, count) {
+                    var module = target || this._find(scope);
+
                     if (translations.hasOwnProperty(module)) {
                         var table = translations[module];
 

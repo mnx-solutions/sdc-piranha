@@ -7,6 +7,7 @@ var express = require('express');
 var bunyan = require('bunyan');
 var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
+var Cloud = require('./lib/cloud');
 var util = require('util');
 var utils = require('./lib/utils');
 var app = express(); // main app
@@ -30,8 +31,15 @@ var opts = {
     apps: ['login','main','signup']
 };
 
-var m = new Modulizer(opts);
-m.set('utils', utils);
-m.init(opts, function (err) {
-    m.run(config.server.port);
+Cloud.init({
+    log: bunyan.createLogger(config.log),
+    api: config.cloudapi
+}, function (err, cloud) {
+    var m = new Modulizer(opts);
+    m.set('utils', utils);
+    m.set('cloud', cloud);
+
+    m.init(opts, function (err) {
+        m.run(config.server.port);
+    });
 });

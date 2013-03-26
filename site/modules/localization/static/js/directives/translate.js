@@ -1,8 +1,8 @@
 'use strict';
 
 (function (app) {
-    app.directive('translate', [ 'localization', '$compile',
-        function (localization, $compile) {
+    app.directive('translate', [ 'localization', '$compile', '$interpolate',
+        function (localization, $compile, $interpolate) {
 
             /**
              * Handle scope & locale changes
@@ -15,23 +15,39 @@
              * @param count items count (for pluralizing)
              */
             function onChange(scope, element, attrs, identifier, count) {
-                element.text(
-                    localization.translate(
-                        scope,
-                        identifier,
-                        count
-                    )
-                );
+                // Observer module attribute if it is not resolved
+                if (attrs.$attr.translateModule && !attrs.translateModule) {
+                    attrs.$observe(attrs.$attr.translateModule, function () {
+                        onChange(scope, element, attrs, identifier, count);
+                    });
+                } else {
+                    element.text(
+                        localization.translate(
+                            localization.resolveScope(scope),
+                            attrs.translateModule,
+                            identifier,
+                            count
+                        )
+                    );
 
-                $compile(element.contents())(scope);
+                    $compile(element.contents())(scope);
+                }
             }
 
             return {
                 priority: 10,
                 restrict: 'EA',
 
-                link: function link(scope, element, attrs, controller) {
-                    var identifier = element.text();
+                link: function link(scope, element, attrs) {
+                    var identifier = null;
+
+                    // Interpolate expression
+                    if (attrs.translateExpression) {
+                        var expression = $interpolate(element.text());
+                        identifier = expression(scope);
+                    } else {
+                        identifier = element.text();
+                    }
 
                     // For pluralizing
                     var countVariable = null;

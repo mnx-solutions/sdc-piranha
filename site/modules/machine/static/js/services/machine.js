@@ -40,8 +40,26 @@
                         machines.list.final = true;
                     }
                 });
+            });
+
+            machineList.job.addCallback(callback);
+        };
+
+        // list packages
+        service.getPackages = function () {
+
+            if (packageList.packages.length) {
+                return packageList.packages;
             }
-            return machines.job;
+
+            // get the new machine list.
+            var job = service.updatePackages();
+            var deferred = $q.defer();
+            job.addCallback(function () {
+                deferred.resolve(packageList.packages);
+            });
+
+            return deferred.promise;
         };
 
         service.machine = function (id) {

@@ -10,8 +10,9 @@
             'Dataset',
             'Datacenter',
             'Package',
-            "$dialog",
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog) {
+            '$dialog',
+            '$location',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog, $location) {
 
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
@@ -47,6 +48,7 @@
                             sdcpackage: $scope.sdcpackage,
                             dataset: $scope.dataset
                         });
+                        $location.path("/machine");
                     });
                 };
 

@@ -31,13 +31,12 @@ function ($scope, $rootScope, $route, $routeParams, requestContext) {
             $scope.subview = renderContext.getNextSection();
     });
 
-
     // Listen for route changes so that we can
     // trigger request-context change events.
     $scope.$on(
         '$routeChangeSuccess',
-//            function (event) {
         function () {
+
             // If this is a redirect directive,
             // then there's no action to be taken.
             if (!$route.current.action) {
