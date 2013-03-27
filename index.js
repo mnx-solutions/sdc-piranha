@@ -19,12 +19,13 @@ app.use(express.session({secret:"secret"}));
 var rack = new Rack();
 rack.addMiddleware(app);
 
+var log = bunyan.createLogger(config.log);
 var compiler = require('./lib/compiler')(rack, config);
 
 var opts = {
     root: 'site',
     config: config,
-    log: bunyan.createLogger(config.log),
+    log: log,
     main: app,
     extensions: config.extensions,
     compiler: compiler,
@@ -32,12 +33,17 @@ var opts = {
 };
 
 Cloud.init({
-    log: bunyan.createLogger(config.log),
+    log: log,
     api: config.cloudapi
 }, function (err, cloud) {
+    if (err) {
+        log.error(err);
+        return;
+    }
+
     var m = new Modulizer(opts);
-    m.set('utils', utils);
     m.set('cloud', cloud);
+    m.set('utils', utils);
 
     m.init(opts, function (err) {
         m.run(config.server.port);
