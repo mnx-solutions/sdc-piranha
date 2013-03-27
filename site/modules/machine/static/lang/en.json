@@ -56,5 +56,8 @@
     "Are you sure you want to reboot the machine": "Are you sure you want to reboot the machine",
     "Are you sure you want to resize the machine": "Are you sure you want to resize the machine",
     "Are you sure you want to delete the machine": "Are you sure you want to delete the machine",
-    "Are you sure it works?": "Are you sure it works?"
+    "Are you sure it works?": "Are you sure it works?",
+    "Search": "Search",
+    "Key": "Key",
+    "Value": "Value"
 }

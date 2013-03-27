@@ -42,7 +42,7 @@
                     <div class="btn-toolbar">
                         <input type="search" style="width: 100%;" class=""
                                data-ng-model="query" data-ng-change="search()"
-                               placeholder="Search" name="search" id="search">
+                               placeholder="Search" name="search" id="search" data-translate="placeholder">
                     </div>
                 </div>
             </div>
@@ -276,11 +276,11 @@
                 data-ng-repeat="(key, o) in tagcloud" data-ng-class="{error: o.conflict}">
                 <div class="controls">
                     <input type="text" class="tag-key span3" placeholder="Key"
-                           data-ng-model="o.key">
+                           data-ng-model="o.key" data-translate="placeholder">
                     <input type="text" class="tag-value span3" placeholder="Value"
                            data-ng-model="o.val">
                                 <span class="icon-trash"
-                                      style="margin-top:-5px" data-ng-click="removeTag(key)"></span>
+                                      style="margin-top:-5px" data-ng-click="removeTag(key)" data-translate="placeholder"></span>
                 </div>
             </div>
         </div>
@@ -305,7 +305,7 @@
                 <label class="control-label" for="machinename" data-translate>Machine
                     name:</label>
                 <input type="text" placeholder="Name"
-                       name="machinename" data-ng-model="machinename"><br/>
+                       name="machinename" data-ng-model="machinename" data-translate="placeholder"><br/>
 
                 <label class="control-label"
                        for="datacenter" data-translate>Datacenter:</label>

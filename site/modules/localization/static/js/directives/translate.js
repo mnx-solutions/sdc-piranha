@@ -64,6 +64,23 @@
                         }
                     }
 
+                    // for translating other attributes
+                    if(attrs.translate.length > 0) {
+                        var translateAttrs = attrs.translate.split(',');
+
+                        translateAttrs.forEach(function(attr) {
+                            attrs.$observe(attr,
+                                function(value) {
+                                    element.attr(attr, localization.translate(
+                                        localization.resolveScope(scope),
+                                        attrs.translateModule,
+                                        element.attr(attr),
+                                        0
+                                ))
+                            })
+                        })
+                    }
+
                     // When locale changes
                     scope.$on('localization:change', function () {
                         onChange(scope, element, attrs, identifier, countValue);
