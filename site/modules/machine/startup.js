@@ -8,17 +8,21 @@ module.exports = function (scope, callback) {
     var server = scope.api('Server');
 
     server.onCall('MachineList', function (call) {
-        call.log.debug('Handling machine list event');
+        call.log.info('Handling machine list event');
         var datacenters = {};
 
         vasync.pipeline({
             'funcs': [
                 function (args, next) {
+                    call.log.debug('List datacenters');
                     cloud.listDatacenters(function (err, dcs) {
                         if (err) {
+                            call.log.error(err);
                             next(err);
                             return;
                         }
+
+                        call.log.debug('Datacenters retrieved %o', dcs);
 
                         Object.keys(dcs).forEach(function (name, index) {
                             datacenters[name] = dcs[name];
@@ -34,6 +38,8 @@ module.exports = function (scope, callback) {
 
                     keys.forEach(function (name, index) {
                         var client = cloud.proxy({ datacenter: name });
+                        call.log.debug('List machines for datacenter %s', name);
+
                         client.listMachines(function (err, machines) {
                             var response = {
                                 name: name,
@@ -44,6 +50,8 @@ module.exports = function (scope, callback) {
                             if (err) {
                                 response.err = err;
                                 response.status = 'error';
+
+                                call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
                             } else {
                                 machines.forEach(function (machine) {
                                     machine.datacenter = name;
@@ -51,6 +59,8 @@ module.exports = function (scope, callback) {
 
                                 response.status = 'complete';
                                 response.machines = machines;
+
+                                call.log.debug('List machines succeeded for datacenter %s', name);
                             }
 
                             call.update(null, response, (--count === 0));
@@ -65,7 +75,7 @@ module.exports = function (scope, callback) {
 
     /* listPackages */
     server.onCall('PackageList', function (call) {
-        call.log.debug('Handling list packages event');
+        call.log.info('Handling list packages event');
 
         var client = cloud.proxy();
         client.listPackages(call.done.bind(call));
@@ -73,7 +83,7 @@ module.exports = function (scope, callback) {
 
     /* listDatasets */
     server.onCall('DatasetList', function (call) {
-        call.log.debug('Handling list datasets event');
+        call.log.info('Handling list datasets event');
 
         var client = cloud.proxy();
         client.listDatasets(call.done.bind(call));
@@ -81,7 +91,7 @@ module.exports = function (scope, callback) {
 
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
-        call.log.debug('Handling list datasets event');
+        call.log.info('Handling list datasets event');
 
         cloud.listDatacenters(call.done.bind(call));
     });
@@ -93,7 +103,7 @@ module.exports = function (scope, callback) {
             return data && "string" === typeof data.uuid;
         },
         handler: function (call) {
-            call.log.debug('Handling machine tags list call');
+            call.log.info('Handling machine tags list call');
 
             var client = cloud.proxy();
             client.listMachineTags(call.data.uuid, call.done.bind(call));
@@ -108,14 +118,16 @@ module.exports = function (scope, callback) {
                 typeof data.tags === 'object';
         },
         handler: function (call) {
-            call.log.debug('Handling machine tags call');
+            call.log.info('Handling machine tags call');
 
             var client = cloud.proxy();
             client.deleteMachineTags(call.data.uuid, function (err) {
                 if(err) {
+                    call.log.error(err);
                     call.done(err);
                     return;
                 }
+
                 client.addMachineTags(call.data.uuid, call.data.tags, function(err) {
                     call.done(err, call.data.tags); // Return saved tags
                 });
@@ -130,7 +142,7 @@ module.exports = function (scope, callback) {
         },
         handler: function (call) {
             var machineId = call.data.uuid;
-            call.log.debug('Handling machine details call');
+            call.log.info('Handling machine details call');
 
             var client = cloud.proxy(call.data);
             
@@ -171,6 +183,8 @@ module.exports = function (scope, callback) {
                         call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage.memory);
                         call.step = { state: 'resizing' };
                     }
+                } else {
+                    call.log.error(err);
                 }
             });
         }, 1000);
@@ -197,6 +211,7 @@ module.exports = function (scope, callback) {
                     if (!err) {
                         pollForMachineState(client, call, machineId, endstate);
                     } else {
+                        call.log.error(err);
                         call.done(err);
                     }
                 });
@@ -231,13 +246,14 @@ module.exports = function (scope, callback) {
                 package: call.data.sdcpackage.name
             };
 
-            call.log.debug('Resizing machine %s', machineId);
+            call.log.info('Resizing machine %s', machineId);
 
             var client = cloud.proxy(call.data);
             client.resizeMachine(machineId, options, function (err) {
                 if (!err) {
                     pollForMachinePackageChange(client, call, call.data.sdcpackage)
                 } else {
+                    call.log.error(err);
                     call.done(err);
                 }
             });
@@ -259,7 +275,7 @@ module.exports = function (scope, callback) {
                 dataset: call.data.dataset.urn
             };
 
-            call.log.debug('Creating machine %s', call.data.name);
+            call.log.info('Creating machine %s', call.data.name);
             call.getImmediate(false);
 
             var client = cloud.proxy(call.data);
@@ -268,6 +284,7 @@ module.exports = function (scope, callback) {
                     call.immediate(null, {machine: machine});
                     pollForMachineState(client, call, machine.id, 'running');
                 } else {
+                    call.log.error(err);
                     call.immediate(err);
                 }
             });
