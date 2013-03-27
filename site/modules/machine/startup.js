@@ -88,15 +88,38 @@ module.exports = function (scope, callback) {
 
 
     /* listMachineTags */
-    server.onCall('MachineTags', {
+    server.onCall('MachineTagsList', {
         verify: function (data) {
             return data && "string" === typeof data.uuid;
+        },
+        handler: function (call) {
+            call.log.debug('Handling machine tags list call');
+
+            var client = cloud.proxy();
+            client.listMachineTags(call.data.uuid, call.done.bind(call));
+        }
+    });
+
+    /* listMachineTags */
+    server.onCall('MachineTagsSave', {
+        verify: function (data) {
+            return data &&
+                typeof data.uuid === 'string' &&
+                typeof data.tags === 'object';
         },
         handler: function (call) {
             call.log.debug('Handling machine tags call');
 
             var client = cloud.proxy();
-            client.listMachineTags(call.data.uuid, call.done.bind(call));
+            client.deleteMachineTags(call.data.uuid, function (err) {
+                if(err) {
+                    call.done(err);
+                    return;
+                }
+                client.addMachineTags(call.data.uuid, call.data.tags, function(err) {
+                    call.done(err, call.data.tags); // Return saved tags
+                });
+            });
         }
     });
 
@@ -153,92 +176,45 @@ module.exports = function (scope, callback) {
         }, 1000);
     }
 
-    /* GetMachine */
-    server.onCall('MachineStart', {
-        verify: function (data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('uuid') &&
-                data.hasOwnProperty('datacenter');
-        },
-        handler: function (call) {
-            var machineId = call.data.uuid;
-            call.log.debug('Starting machine %s', machineId);
-
-            var client = cloud.proxy(call.data);
-            client.startMachine(machineId, function (err) {
-                if (!err) {
-                    pollForMachineState(client, call, machineId, 'running');
-                } else {
-                    call.done(err);
-                }
-            });
+    function changeState(func, logVerb, endstate, opts) {
+        if(!opts) {
+            opts = {};
         }
-    });
-
-    /* GetMachine */
-    server.onCall('MachineStop', {
-        verify: function (data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('uuid') &&
-                data.hasOwnProperty('datacenter');
-        },
-        handler: function (call) {
-            var machineId = call.data.uuid;
-            call.log.debug('Stopping machine %s', machineId);
-
-            var client = cloud.proxy(call.data);
-            client.stopMachine(machineId, function (err) {
-                if (!err) {
-                    pollForMachineState(client, call, machineId, 'stopped');
-                } else {
-                    call.done(err);
-                }
-            });
+        if(!opts.verify) {
+            opts.verify = function(data) {
+                return typeof data === 'object' &&
+                    data.hasOwnProperty('uuid') &&
+                    data.hasOwnProperty('datacenter');
+            };
         }
-    });
+        if(!opts.handler) {
+            opts.handler = function (call) {
+                var machineId = call.data.uuid;
+                call.log.debug(logVerb + ' machine %s', machineId);
+
+                var client = cloud.proxy(call.data);
+                client[func](machineId, function (err) {
+                    if (!err) {
+                        pollForMachineState(client, call, machineId, endstate);
+                    } else {
+                        call.done(err);
+                    }
+                });
+            };
+        }
+        return opts;
+    }
 
     /* GetMachine */
-    server.onCall('MachineDelete', {
-        verify: function (data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('uuid') &&
-                data.hasOwnProperty('datacenter');
-        },
-        handler: function (call) {
-            var machineId = call.data.uuid;
-            call.log.debug('Deleting machine %s', machineId);
+    server.onCall('MachineStart', changeState('startMachine','Starting', 'running'));
 
-            var client = cloud.proxy(call.data);
-            client.deleteMachine(machineId, function (err) {
-                if (!err) {
-                    pollForMachineState(client, call, machineId, 'deleted');
-                } else {
-                    call.done(err);
-                }
-            });
-        }
-    });
+    /* GetMachine */
+    server.onCall('MachineStop', changeState('stopMachine','Stopping', 'stopped'));
 
-    server.onCall('MachineReboot', {
-        verify: function (data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('uuid') &&
-                data.hasOwnProperty('datacenter');
-        },
-        handler: function (call) {
-            var machineId = call.data.uuid;
-            call.log.debug('Rebooting machine %s', machineId);
+    /* GetMachine */
+    server.onCall('MachineDelete', changeState('deleteMachine','Deleting', 'deleted'));
 
-            var client = cloud.proxy(call.data);
-            client.rebootMachine(machineId, function (err, machine) {
-                if (!err) {
-                    pollForMachineState(client, call, machineId, 'running');
-                } else {
-                    call.done(err);
-                }
-            });
-        }
-    });
+    server.onCall('MachineReboot', changeState('rebootMachine','Rebooting', 'running'));
 
     /* ResizeMachine */
     server.onCall('MachineResize', {

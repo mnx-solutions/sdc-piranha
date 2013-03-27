@@ -268,17 +268,20 @@
         </small>
 
 
-        <div class="control-group"
-             data-ng-repeat="(key,val) in tagcloud">
-            <div class="controls">
-                <input type="text" class="span3" placeholder="Key"
-                       value="{{key}}">
-                <input type="text" class="span3" placeholder="Value"
-                       value="{{val}}">
-                            <span class="icon-trash"
-                                  style="margin-top:-5px"></span>
+        <div id="tagcloud">
+            <div class="control-group"
+                data-ng-repeat="(key, o) in tagcloud" data-ng-class="{error: o.conflict}">
+                <div class="controls">
+                    <input type="text" class="tag-key span3" placeholder="Key"
+                           data-ng-model="o.key">
+                    <input type="text" class="tag-value span3" placeholder="Value"
+                           data-ng-model="o.val">
+                                <span class="icon-trash"
+                                      style="margin-top:-5px" data-ng-click="removeTag(key)"></span>
+                </div>
             </div>
         </div>
+        <button class="btn btn-primary" data-ng-click="clickSaveTags(selectedmachine.id)" data-translate>Save</button>
     </div>
 </div>
 

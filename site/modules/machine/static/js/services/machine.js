@@ -207,6 +207,44 @@
             return job;
         };
 
+        service.tags = function (id, data) {
+            if(!id) {
+                return false;
+            }
+            var m = service.machine(id);
+
+            function tags() {
+                if(m.tags) {
+                    return m.tags;
+                }
+                var job = serverTab.call({
+                    name: 'MachineTagsList',
+                    data: {uuid: id}
+                });
+                m.tags = job.deferred;
+                return m.tags;
+            }
+
+            function save() {
+                var job = serverTab.call({
+                    name: 'MachineTagsSave',
+                    data: {uuid: id, tags: data}
+                });
+                job.deferred.then(function (response) {
+                    m.tags = response;
+                });
+
+                return job.deferred;
+            }
+
+            var d = $q.defer();
+            $q.when(m).then(function(machine){
+                m = machine;
+                d.resolve(data ? save() : tags());
+            });
+            return d.promise;
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('Machine')));
