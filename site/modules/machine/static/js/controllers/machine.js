@@ -64,12 +64,14 @@
                 $scope.tagcloud = tagcloud();
 
                 $q.when($scope.tagcloud).then(function (){
-                    $scope.$watch('tagcloud', function(val) {
+                    $scope.$watch('tagcloud', function(val, old) {
                         var keys = Object.keys(val);
                         var map = {};
                         keys.forEach(function (k) {
                             delete val[k].conflict;
-                            if(val[k].key) {
+                            if (!val[k].key && !val[k].val && !old[k].key && !old[k].val && k != $scope.tagnr) {
+                                delete val[k];
+                            } else if (val[k].key) {
                                 if(map[val[k].key] !== undefined){
                                     val[map[val[k].key]].conflict = true;
                                     val[k].conflict = true;
