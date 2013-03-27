@@ -20,7 +20,7 @@
             },
             template: '<div class="navbar">' +
                         '<div class="navbar-inner">' +
-                            '<a class="brand hidden-phone" href="#">Joyent Portal</a>' +
+                            '<a class="brand hidden-phone" href="#" data-translate>Joyent Portal</a>' +
                             '<ul class="nav">' +
                             '<li data-ng-repeat="item in mainMenu"'+
                             'class="menuitem"'+
@@ -33,7 +33,7 @@
                             '</li>'+
                         '</ul>' +
                         '</div>' +
-                        '<div id="genericInfo" class="alert alert-info" data-translate style="display:none;"></div>' + //TODO: Notification system should be separate
+                        '<div id="genericInfo" class="alert alert-info" data-translat style="display:none;"></div>' + //TODO: Notification system should be separate
                         '<div id="genericError" class="alert alert-error" data-translate style="display:none;"></div>' + //TODO: Notification system should be separate
                       '</div>'
         };

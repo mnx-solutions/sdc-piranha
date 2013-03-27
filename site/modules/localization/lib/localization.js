@@ -3,18 +3,35 @@
 var util = require('util');
 
 function Localization(opts) {
-  if (!(this instanceof Localization)) {
-    return new Localization(opts);
-  }
-  this.defaultLocale = opts.defaultLocale;
-  this.locales = opts.locales;
+    if (!(this instanceof Localization)) {
+        return new Localization(opts);
+    }
 
-  this.translations = {
-    lng: {},
-    mod: {}
-  };
+    var self = this;
 
-  this.compiled = {};
+    this._defaultLocale = opts.defaultLocale;
+    this._locales = opts.locales;
+    this._log = opts.log || null;
+
+    this._compiled = {};
+    this._translations = {
+        lng: {},
+        mod: {}
+    };
+
+    Object.defineProperty(this, 'isCompiled', {
+        get: function () {
+            for (var i = 0, c = self._locales.length; i < c; i++) {
+                var locale = self._locales[i];
+
+                if (!self._compiled.hasOwnProperty(locale)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    });
 }
 
 /**
@@ -65,7 +82,7 @@ Localization._parseLocaleIdentifier = function (identifier) {
  * @returns {boolean} true if locale is enabled, otherwise false
  */
 Localization.prototype.isSupportedLocale = function (locale) {
-    return this.locales.indexOf(locale) !== -1;
+    return this._locales.indexOf(locale) !== -1;
 };
 
 /**
@@ -78,10 +95,16 @@ Localization.prototype.isSupportedLocale = function (locale) {
  */
 Localization.prototype.setLocale = function (req, locale) {
     if (this.isSupportedLocale(locale)) {
+        req.log.debug('Change session locale from %s to %s',
+            req.session.locale, locale);
+
         req.session.locale = locale;
         req.session.save();
         return true;
+    } else {
+        req.log.debug('Can\'t change locale to %s, unsupported', locale);
     }
+
     return false;
 };
 
@@ -92,7 +115,7 @@ Localization.prototype.setLocale = function (req, locale) {
  * @returns {string}
  */
 Localization.prototype.getLocale = function (req) {
-    return req.session.locale || this.defaultLocale;
+    return req.session.locale || this._defaultLocale;
 };
 
 /**
@@ -120,14 +143,15 @@ Localization.prototype.getLocaleDefinitions = function (module, locale) {
     }
 
     if (!locale) {
-        return this.translations.mod[module];
+        return this._translations.mod[module];
     }
 
     if (!module) {
-        return this.translations.lng[locale];
+        return this._translations.lng[locale];
     }
 
-    return this.translations.lng[locale] && this.translations.lng[locale][module];
+    return this._translations.lng[locale] &&
+        this._translations.lng[locale][module];
 
 };
 
@@ -141,8 +165,11 @@ Localization.prototype.getLocaleDefinitions = function (module, locale) {
  * @param filePath
  */
 Localization.prototype.load = function (module, lng, filePath) {
+    this._log.debug('Load localizations for module: %s; file: %s; language: %s',
+        module, filePath, lng);
 
-    if (this.translations.mod[module] && this.translations.mod[module][lng]) {
+    if (this._translations.mod[module] &&
+        this._translations.mod[module][lng]) {
         return;
     }
 
@@ -152,21 +179,25 @@ Localization.prototype.load = function (module, lng, filePath) {
     try {
         moduleTranslations = require(filePath);
     } catch (e) {
-        throw new Error('Specified filepath does not exist %s', filePath);
+        this._log.debug('Unable to load localizations for module: %s; file: %s; language: %s',
+            module, filePath, lng);
         return;
     }
 
-    if (!this.translations.mod[module]) {
-        this.translations.mod[module] = {};
+    if (!this._translations.mod[module]) {
+        this._translations.mod[module] = {};
     }
 
-    this.translations.mod[module][lng] = moduleTranslations;
+    this._translations.mod[module][lng] = moduleTranslations;
 
-    if (!this.translations.lng[lng]) {
-        this.translations.lng[lng] = {};
+    if (!this._translations.lng[lng]) {
+        this._translations.lng[lng] = {};
     }
 
-    this.translations.lng[lng][module] = moduleTranslations;
+    this._translations.lng[lng][module] = moduleTranslations;
+
+    this._log.debug('Localizations loaded for module: %s; file: %s; language: %s',
+        module, filePath, lng);
 };
 
 /**
@@ -257,33 +288,52 @@ Localization.prototype.getRegisterHelpers = function() {
 
         return next();
     };
-}
+};
 
+/**
+ * Compile language definitions
+ */
 Localization.prototype.compile = function () {
     var self = this;
 
-    Object.keys(self.translations.lng).forEach(function(lng) {
+    this._log.debug('Compile localizations');
+
+    Object.keys(self._translations.lng).forEach(function (lng) {
         var src = 'angular.extend(window.JP.get("lang"), { ' +
-            '"locales": ' + JSON.stringify(self.locales) + ',' +
-            '"defaultLocale": "' + self.defaultLocale + '",' +
-            '"' + lng + '":' + JSON.stringify(self.translations.lng[lng]) +
+            '"locales": ' + JSON.stringify(self._locales) + ',' +
+            '"defaultLocale": "' + self._defaultLocale + '",' +
+            '"' + lng + '":' + JSON.stringify(self._translations.lng[lng]) +
             '});';
 
-        console.log(src);
-        self.compiled[lng] = [src];
+        self._compiled[lng] = [src];
     });
+
+    this._log.debug('Localizations compiled');
 };
 
-Localization.prototype.getCompiled = function(req) {
+/**
+ * Get compiled language definitions
+ *
+ * @param req
+ * @returns {Array}
+ */
+Localization.prototype.getCompiled = function (req) {
     var self = this;
     var lng = self.getLocale(req);
 
     if (!lng) {
         return [];
     }
-    return self.compiled[lng] || [];
-}
 
+    return self._compiled[lng] || [];
+};
+
+/**
+ * Get compiled translations
+ *
+ * @param req
+ * @returns {Array}
+ */
 Localization.prototype.getLanguage = function (req) {
     var self = this;
     var lng = self.getLocale(req);
@@ -291,7 +341,8 @@ Localization.prototype.getLanguage = function (req) {
     if (!lng) {
         return false;
     }
-    return self.translations.lng[lng];
-}
+
+    return self._translations.lng[lng];
+};
 
 module.exports = Localization;

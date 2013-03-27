@@ -9,6 +9,8 @@ lib-cov
 *.DS_Store
 .idea
 
+config.dev.json
+
 pids
 logs
 deps

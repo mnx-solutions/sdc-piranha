@@ -15,27 +15,34 @@
                         if (err) {
                             console.log(err);
                         }
+
                         var result = job.__read();
                         result.forEach(function (p) {
                             var old = null;
-                            if(packages.index[p.name]){
+
+                            if (packages.index[p.name]) {
                                 old = packages.list.indexOf(packages.index[p.name]);
                             }
+
                             packages.index[p.name] = p;
-                            if (packages.search[p.name]){
+
+                            if (packages.search[p.name]) {
                                 packages.search[p.name].resolve(p);
                                 delete packages.search[p.name];
                             }
+
                             if (old !== null) {
                                 packages.list[old] = p;
                             } else {
                                 packages.list.push(p);
                             }
                         });
+
                         packages.list.final = true;
                     }
                 });
             }
+
             return packages.job;
         };
 
@@ -44,14 +51,18 @@
                 var job = service.updatePackages();
                 return job.deferred;
             }
-            if (!id){
+
+            if (!id) {
                 return packages.list;
             }
-            if (!packages.index[id]){
+
+            if (!packages.index[id]) {
                 service.updatePackages();
-                if(!packages.search[id]){
+
+                if (!packages.search[id]) {
                     packages.search[id] = $q.defer();
                 }
+
                 return packages.search[id].promise;
             }
             return packages.index[id];
@@ -63,9 +74,11 @@
                     return pack;
                 }
             });
+
             if (found.length === 1) {
                 return found[0];
             }
+
             return null;
         }
 
@@ -84,7 +97,6 @@
 
             return deferred.promise;
         };
-
 
         // run updatePackages
         service.updatePackages();

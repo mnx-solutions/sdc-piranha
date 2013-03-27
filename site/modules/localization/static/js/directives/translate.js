@@ -41,12 +41,15 @@
                 link: function link(scope, element, attrs) {
                     var identifier = null;
 
+                    // manipulate the element a bit and get rid of newlines + unneccessary spaces
+                    var elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
+
                     // Interpolate expression
                     if (attrs.translateExpression) {
-                        var expression = $interpolate(element.text());
+                        var expression = $interpolate(elementText);
                         identifier = expression(scope);
                     } else {
-                        identifier = element.text();
+                        identifier = elementText;
                     }
 
                     // For pluralizing
@@ -59,6 +62,23 @@
                         if (scope.hasOwnProperty(countVariable)) {
                             countValue = scope[countVariable];
                         }
+                    }
+
+                    // for translating other attributes
+                    if(attrs.translate.length > 0) {
+                        var translateAttrs = attrs.translate.split(',');
+
+                        translateAttrs.forEach(function(attr) {
+                            attrs.$observe(attr,
+                                function(value) {
+                                    element.attr(attr, localization.translate(
+                                        localization.resolveScope(scope),
+                                        attrs.translateModule,
+                                        element.attr(attr),
+                                        0
+                                ))
+                            })
+                        })
                     }
 
                     // When locale changes

@@ -15,23 +15,28 @@
                         if (err) {
                             console.log(err);
                         }
+
                         var result = job.__read();
                         result.forEach(function (p) {
                             var old = null;
-                            if(datasets.index[p.urn]){
+                            if (datasets.index[p.urn]) {
                                 old = datasets.list.indexOf(datasets.index[p.urn]);
                             }
+
                             datasets.index[p.urn] = p;
-                            if (datasets.search[p.urn]){
+
+                            if (datasets.search[p.urn]) {
                                 datasets.search[p.urn].resolve(p);
                                 delete datasets.search[p.urn];
                             }
+
                             if (old !== null) {
                                 datasets.list[old] = p;
                             } else {
                                 datasets.list.push(p);
                             }
                         });
+
                         datasets.list.final = true;
                     }
                 });
@@ -44,19 +49,23 @@
                 var job = service.updateDatasets();
                 return job.deferred;
             }
-            if (!id){
+
+            if (!id) {
                 return datasets.list;
             }
-            if (!datasets.index[id]){
+
+            if (!datasets.index[id]) {
                 service.updateDatasets();
-                if(!datasets.search[id]){
+
+                if(!datasets.search[id]) {
                     datasets.search[id] = $q.defer();
                 }
+
                 return datasets.search[id].promise;
             }
+
             return datasets.index[id];
         };
-
 
         // run updatePackages
         service.updateDatasets();
