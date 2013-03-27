@@ -2,11 +2,6 @@
 	"em": {
 		"route": "/",
 		"modules": [ "localization", "menu", "server", "machine", "login", "debug", "no-tracking" ],
-		"auth": true,
-		"pre": {
-			"js": [
-				"//raw.github.com/timrwood/moment/2.0.0/min/moment.min.js"
-			]
-		}
+		"auth": true
 	}
 }
