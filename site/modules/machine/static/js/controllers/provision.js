@@ -12,8 +12,9 @@
             'Package',
             '$dialog',
             '$location',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog, $location) {
-
+            'localization',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog, $location, localization) {
+                localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
                 Dataset.updateDatasets();
@@ -42,7 +43,7 @@
                 $scope.datacenters = datacenters;
 
                 $scope.clickProvision = function () {
-                    confirm("Are you sure it works?", function () {
+                    confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
                         $scope.retinfo = Machine.provisionMachine({
                             name: $scope.machinename,
                             sdcpackage: $scope.sdcpackage,

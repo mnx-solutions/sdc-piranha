@@ -3,7 +3,7 @@
 
 (function (ng, app) {
 
-    app.factory('serverTab', ['$http','$$track','EventBubble', 'serverCall', function ($http, $$track, EventBubble, serverCall) {
+    app.factory('serverTab', ['$http','$$track','EventBubble', 'serverCall', 'localization', function ($http, $$track, EventBubble, serverCall, localization) {
 
         var eventer = EventBubble.$new();
         var self = {};
@@ -114,14 +114,14 @@
                 var timer = setTimeout(function() {
                     window.jQuery('#genericInfo').fadeOut('slow');
                 }, 5000);
-                window.jQuery('#genericInfo').text('And we are back').show();
+                window.jQuery('#genericInfo').text(localization.translate(null, 'server', 'And we are back')).show();
                 eventer.$emit(true, 'forceUpdate');
             }
         });
 
         self.$on('error', function () {
             // TODO handle errors.
-            var txt = 'Lost contact with server retrying in {x}...';
+            var txt = localization.translate(null, 'server', 'Lost contact with server retrying in {x}...');
             errorPollingLength = errorPollingLength * 2;
             var time = errorPollingLength / 1000;
             window.jQuery('#genericInfo').hide();

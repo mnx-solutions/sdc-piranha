@@ -41,12 +41,15 @@
                 link: function link(scope, element, attrs) {
                     var identifier = null;
 
+                    // manipulate the element a bit and get rid of newlines + unneccessary spaces
+                    var elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
+
                     // Interpolate expression
                     if (attrs.translateExpression) {
-                        var expression = $interpolate(element.text());
+                        var expression = $interpolate(elementText);
                         identifier = expression(scope);
                     } else {
-                        identifier = element.text();
+                        identifier = elementText;
                     }
 
                     // For pluralizing

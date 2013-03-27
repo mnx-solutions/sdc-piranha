@@ -106,35 +106,35 @@
                 }
 
                 $scope.clickStart = function () {
-                    confirm('Are you sure you want to start the machine', function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to start the machine'), function () {
                         $$track.event('machine', 'start');
                         var job = Machine.startMachine(machineid);
                     });
                 };
 
                 $scope.clickStop = function () {
-                    confirm('Are you sure you want to stop the machine', function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to stop the machine'), function () {
                         var job = Machine.stopMachine(machineid);
                         $$track.event('machine', 'stop');
                     });
                 };
 
                 $scope.clickReboot = function () {
-                    confirm('Are you sure you want to reboot the machine', function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to reboot the machine'), function () {
                         $$track.event('machine', 'reboot');
                         var job  = Machine.rebootMachine(machineid);
                     });
                 };
 
                 $scope.clickResize = function () {
-                    confirm('Are you sure you want to resize the machine', function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to resize the machine'), function () {
                         $$track.event('machine', 'resize');
                         $scope.retinfo = Machine.resizeMachine(machineid, $scope.resize);
                     });
                 };
 
                 $scope.clickDelete = function () {
-                    confirm('Are you sure you want to delete the machine', function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to delete the machine'), function () {
                         $$track.event('machine', 'delete');
                         $scope.retinfo = Machine.deleteMachine(machineid);
                     });

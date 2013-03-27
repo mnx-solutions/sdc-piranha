@@ -4,8 +4,8 @@
      data-ng-controller="MachinesController">
     <div class="row-fluid">
         <div class="page-header hidden-phone">
-            <h1>Compute
-                <small>A list of your computers and services</small>
+            <h1><span data-translate>Compute</span>
+                <small data-translate>A list of your computers and services</small>
             </h1>
             <img ng-hide="machines.final"
                  src="static/img/ajax-loader.gif"/>
@@ -18,18 +18,18 @@
 
                         <div class="btn-group">
                             <button class="btn btn-success btn-small"
-                                    ng-click="startAll();" data-ng-class="{disabled: !ischecked}">Start
+                                    ng-click="startAll();" data-ng-class="{disabled: !ischecked}" data-translate>Start
                             </button>
                             <button class="btn btn-warning btn-small"
-                                    ng-click="stopAll();" data-ng-class="{disabled: !ischecked}">Stop
+                                    ng-click="stopAll();" data-ng-class="{disabled: !ischecked}" data-translate>Stop
                             </button>
                             <button class="btn btn-warning btn-small"
-                                    ng-click="stopAll();" data-ng-class="{disabled: !ischecked}">Restart
+                                    ng-click="stopAll();" data-ng-class="{disabled: !ischecked}" data-translate>Reboot
                             </button>
                         </div>
                         <div class="btn-group">
                             <a href="#!/machine/add/"
-                                    class="btn btn-primary btn-small">
+                                    class="btn btn-primary btn-small" data-translate>
                                 Add
                                 new machine
                             </a>
@@ -57,32 +57,32 @@
                     <td></td>
                     <td class="sortable" data-ng-click="sortBy('state')"
                         ng-switch on="sortIcon.state">
-                        <span class="text">State</span>
+                        <span class="text" data-translate>State</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
                     <td class="sortable" data-ng-click="sortBy('label')"
                         ng-switch on="sortIcon.label">
-                        <span class="text">Name</span>
+                        <span class="text" data-translate>Name</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
                     <td class="sortable" data-ng-click="sortBy('dataset');"
                         ng-switch on="sortIcon.dataset">
-                        <span class="text">Dataset</span>
+                        <span class="text" data-translate>Dataset</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
                     <td class="sortable" data-ng-click="sortBy('memory');"
                         ng-switch on="sortIcon.memory">
-                        <span class="text">Package</span>
+                        <span class="text" data-translate>Package</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
-                    <td>Network</td>
+                    <td data-translate>Network</td>
                     <td class="sortable hidden-phone" data-ng-click="sortBy('created');"
                         ng-switch on="sortIcon.created">
-                        <span class="text">Created</span>
+                        <span class="text" data-translate>Created</span>
                         <i class="icon-arrow-up" ng-switch-when="up"/>
                         <i class="icon-arrow-down" ng-switch-when="down"/>
                     </td>
@@ -100,7 +100,10 @@
                         <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                     </td>
                     <td ng-init="dset = datasetInfo(machine.dataset);"> {{dset.name}} ({{dset.os}})</td>
-                    <td ng-init="pack = packageInfo(machine.memory, machine.disk);"><span> Memory: {{machine.memory | sizeFormat}}</span><span> Disk: {{machine.disk | sizeFormat}}</span><span> VCPUs: {{pack.vcpus}}</span></td>
+                    <td ng-init="pack = packageInfo(machine.memory, machine.disk);">
+                        <span data-translate> Memory: {{machine.memory | sizeFormat}}</span>
+                        <span data-translate> Disk: {{machine.disk | sizeFormat}}</span>
+                        <span data-translate> VCPUs: {{pack.vcpus}}</span></td>
                     <td>
                     <span data-ng-repeat="ip in machine.ips">
                         {{ ip }}
@@ -116,7 +119,7 @@
             <div class="pagination pagination-small pagination-centered span12">
                 <ul>
                     <li data-ng-class="{disabled: currentPage == 0}">
-                        <a href ng-click="prevPage()">« Prev</a>
+                        <a href ng-click="prevPage()" data-translate>« Prev</a>
                     </li>
                     <li data-ng-repeat="n in range()"
                         data-ng-class="{active: n == currentPage}"
@@ -124,7 +127,7 @@
                         <a href ng-bind="n + 1">1</a>
                     </li>
                     <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
-                        <a href ng-click="nextPage()">Next »</a>
+                        <a href ng-click="nextPage()" data-translate>Next »</a>
                     </li>
                 </ul>
             </div>
@@ -135,7 +138,7 @@
 <div data-ng-switch-when="details" class="row-fluid"
      data-ng-controller="MachineController">
     <div class="page-header">
-        <h1>Machine
+        <h1><span data-translate>Machine</span>
             <small>{{selectedmachine.name}}</small>
         </h1>
     </div>
@@ -146,21 +149,21 @@
             <div class="btn-group">
                 <button ng-disabled="selectedmachine.job.running || selectedmachine.state != 'stopped'"
                         class="btn btn-primary"
-                        ng-click="clickStart(selectedmachine.id)">Start
+                        ng-click="clickStart(selectedmachine.id)" data-translate>Start
                 </button>
                 <button ng-disabled="selectedmachine.job.running || selectedmachine.state != 'running'"
                         class="btn btn-warning "
-                        ng-click="clickStop(selectedmachine.id)">Stop
+                        ng-click="clickStop(selectedmachine.id)" data-translate>Stop
                 </button>
                 <button ng-disabled="selectedmachine.job.running || !selectedmachine"
                         class="btn btn-warning"
-                        ng-click="clickReboot(selectedmachine.id);">Reboot
+                        ng-click="clickReboot(selectedmachine.id);" data-translate>Reboot
                 </button>
             </div>
             <div class="btn-group">
                 <button ng-disabled="selectedmachine.job.running || selectedmachine.state != 'stopped'"
                         class="btn btn-danger"
-                        ng-click="clickDelete(selectedmachine.id);">Delete
+                        ng-click="clickDelete(selectedmachine.id);" data-translate>Delete
                 </button>
             </div>
         </div>
@@ -168,35 +171,35 @@
 
     <div class="span6">
         <table class="table table-condensed machinedetails">
-            <caption><h4 class="pull-left">Overview</h4></caption>
+            <caption><h4 class="pull-left" data-translate>Overview</h4></caption>
 
             <tr>
-                <td class="key">Name</td>
+                <td class="key" data-translate>Name</td>
                 <td class="value">{{selectedmachine.name}}</td>
             </tr>
             <tr>
-                <td class="key">uuid</td>
+                <td class="key" data-translate>uuid</td>
                 <td class="value">
                     <small>{{selectedmachine.id}}</small>
                 </td>
             </tr>
 
             <tr>
-                <td class="key">State</td>
+                <td class="key" data-translate>State</td>
                 <td class="value">
                     <machine-status machine="selectedmachine"/>
                 </td>
             </tr>
 
             <tr>
-                <td class="key">IP(s)</td>
+                <td class="key" data-translate>IP(s)</td>
                 <td class="value"><span
                         data-ng-repeat="ip in selectedmachine.ips">{{ ip }} </br></span>
                 </td>
             </tr>
 
             <tr>
-                <td class="key">Created</td>
+                <td class="key" data-translate>Created</td>
                 <td class="value">{{selectedmachine.created |
                     date:'yyyy-MM-dd HH:mm:ss Z'}}
                 </td>
@@ -207,13 +210,13 @@
     </div>
 
     <div class="span6" ng-show="{{selectedmachine.metadata.credentials}}">
-        <h4>Credentials</h4>
+        <h4 data-translate>Credentials</h4>
         <table class="table table-striped text-medium"
                style="width:470px">
             <thead>
             <tr>
-                <th style="width:115px !important">Username</th>
-                <th style="width:155px !important">Password</th>
+                <th style="width:115px !important" data-translate>Username</th>
+                <th style="width:155px !important" data-translate>Password</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -222,25 +225,25 @@
                 <td>{{key}}</td>
                 <td><span id="label-1">************</span><span
                         id="pwd-1" class="none">{{val}}</span></td>
-                <td nowrap><a rel="1" class="show-password">[ Show ]</a></td>
+                <td nowrap><a rel="1" class="show-password" data-translate>[ Show ]</a></td>
             </tr>
             </tbody>
         </table>
     </div>
 
     <div class="span5">
-        <h4>Resize<br>
-            <small>Please note, that it may not always be
+        <h4><span data-translate>Resize</span><br>
+            <small data-translate>Please note, that it may not always be
                 possible to resize based on the constraints of
                 your current server location.
             </small>
         </h4>
 
-        <p>Current Size: {{selectedmachine.memory | sizeFormat}} of RAM</p>
+        <p data-translate>Current Size: {{selectedmachine.memory | sizeFormat}} of RAM</p>
 
         <form class="form-horisontal inline-form">
             <div class="control-group">
-                <label class="control-label" for="inputEmail">New
+                <label class="control-label" for="inputEmail" data-translate>New
                     Package</label>
 
                 <div class="controls input-append">
@@ -250,7 +253,7 @@
                             data-ng-options="package.name for package in packages"></select>
 
                     <button class="btn btn-primary" type="submit"
-                            ng-click="clickResize(selectedmachine.id)">
+                            ng-click="clickResize(selectedmachine.id)" data-translate>
                         Resize
                     </button>
 
@@ -260,9 +263,9 @@
     </div>
 
     <div class="span5" ng-show="tagcloud">
-        <h4>Tags</h4>
+        <h4 data-translate>Tags</h4>
 
-        <small>Tags are metadata stored as key-value pairs to
+        <small data-translate>Tags are metadata stored as key-value pairs to
             make it easier for you to find, sort, and identify
             your machines.
         </small>
@@ -290,8 +293,8 @@
      class="row-fluid">
 
     <div class="page-header">
-        <h1>Provision
-            <small>Provision a new machine</small>
+        <h1><span data-translate>Provision</span>
+            <small data-translate>Provision a new machine</small>
         </h1>
     </div>
 
@@ -299,28 +302,28 @@
         <form class="form-horisontal inline-form">
 
             <div class="controls">
-                <label class="control-label" for="machinename">Machine
+                <label class="control-label" for="machinename" data-translate>Machine
                     name:</label>
                 <input type="text" placeholder="Name"
                        name="machinename" data-ng-model="machinename"><br/>
 
                 <label class="control-label"
-                       for="datacenter">Datacenter:</label>
+                       for="datacenter" data-translate>Datacenter:</label>
                 <select name="datacenter" data-ng-model="datacenter"
                         data-ng-options="value as key for (key, value) in datacenters"></select>
 
-                <label class="control-label" for="dataset">Image
+                <label class="control-label" for="dataset" data-translate>Image
                     (version):</label>
                 <select name="dataset" data-ng-model="dataset"
                         data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select>
 
-                <label class="control-label" for="package">Package:</label>
+                <label class="control-label" for="package" data-translate>Package:</label>
                 <select name="package" data-ng-model="sdcpackage"
                         data-ng-options="package.name for package in packages"></select><br/>
 
                 <button href="#myModal" role="button" data-toggle="modal"
                         class="btn btn-primary"
-                        ng-click="clickProvision();">Add
+                        ng-click="clickProvision();" data-translate>Add
                     new machine
                 </button>
             </div>
