@@ -53,7 +53,10 @@ module.exports = function (scope, callback) {
                                 response.machines = machines;
                             }
 
-                            call.update(null, response, (--count === 0));
+                            call.update(null, response);
+                            if(--count === 0) {
+                                call.done();
+                            }
                         });
                     });
 

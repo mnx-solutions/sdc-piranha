@@ -107,7 +107,9 @@ function Call(opts) {
                 if (done && _result.length < 1) {
                     _result = data;
                 } else {
-                    _result.push(data);
+                    if(data) {
+                        _result.push(data);
+                    }
                     _chunked = true;
                 }
                 self.status(done ? 'finished' : 'updated');
