@@ -11,27 +11,42 @@
             if (!machines.job || machines.job.finished) {
                 machines.list.final = false;
                 machines.job = serverTab.call({
-                    name:'MachineList',
+                    name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-                        data.forEach(function(chunk) {
-                            chunk.machines.forEach(function (r) {
-                                var old = null;
-                                if(machines.index[r.id]) {
-                                    old = machines.list.indexOf(machines.index[r.id]);
-                                }
-                                machines.index[r.id] = r;
-                                if(machines.search[r.id]) {
-                                    machines.search[r.id].resolve(r);
-                                    delete machines.search[r.id];
-                                }
-                                if(old === null) {
-                                    machines.list.push(r);
-                                } else {
-                                    machines.list[old] = r;
-                                }
+
+                        function handleChunk (machine) {
+                            var old = null;
+
+                            if (machines.index[machine.id]) {
+                                old = machines.list.indexOf(machines.index[machine.id]);
+                            }
+
+                            machines.index[machine.id] = machine;
+
+                            if (machines.search[machine.id]) {
+                                machines.search[machine.id].resolve(r);
+                                delete machines.search[machine.id];
+                            }
+
+                            if (old === null) {
+                                machines.list.push(machine);
+                            } else {
+                                machines.list[old] = machine;
+                            }
+                        }
+
+                        if ((data instanceof Array)) {
+                            data.forEach(function(chunk) {
+                                chunk.machines.forEach(function (machine) {
+                                    handleChunk(machine);
+                                });
                             });
-                        });
+                        } else if (data.machines) {
+                            data.machines.forEach(function (machine) {
+                                handleChunk(machine);
+                            });
+                        }
                     },
                     done: function(err, job) {
                         if (err) {
@@ -49,18 +64,22 @@
                 service.updateMachines();
                 return machines.list;
             }
+
             if (!id){
                 return machines.list;
             }
+
             if (!machines.index[id]) {
                 service.updateMachines();
             }
+
             if (!machines.index[id] || (machines.job && !machines.job.finished)) {
                 if (!machines.search[id]){
                     machines.search[id] = $q.defer();
                 }
                 return machines.search[id].promise;
             }
+
             return machines.index[id];
         };
 
@@ -76,7 +95,7 @@
                         opts.data = opts.data || {};
                         opts.data.uuid = uuid;
                         opts.data.datacenter = machine.datacenter;
-                        console.log(machine);
+
                         if (!opts.progress) {
                             opts.progress = function (err, job) {
                                 var step = job.step;
@@ -91,6 +110,7 @@
                                 }
                             };
                         }
+
                         if (!opts.done) {
                             opts.done = function (err, job) {
                                 if (err) {
@@ -138,6 +158,7 @@
                     //TODO: Error handling
                     console.log(err);
                 }
+
                 delete machines.list[machines.list.indexOf(job.machine)];
                 delete machines.index[job.machine.id];
             }
@@ -148,6 +169,7 @@
                 name: 'MachineResize',
                 data: {sdcpackage: sdcpackage}
             });
+
             return fn(uuid);
         };
 
