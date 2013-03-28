@@ -1,7 +1,16 @@
 {
 	"em": {
 		"route": "/",
-		"modules": [ "localization", "menu", "server", "machine", "login", "debug", "no-tracking" ],
+		"modules": [
+            "localization",
+            "notification",
+            "menu",
+            "server",
+            "machine",
+            "login",
+            "debug",
+            "no-tracking"
+        ],
 		"auth": true
 	}
 }

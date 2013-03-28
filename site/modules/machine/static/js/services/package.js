@@ -13,7 +13,14 @@
                     name:'PackageList',
                     done: function(err, job) {
                         if (err) {
-                            console.log(err);
+                            notification.push(packages.job, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve packages list'
+                                )
+                            );
+
+                            return;
                         }
 
                         var result = job.__read();

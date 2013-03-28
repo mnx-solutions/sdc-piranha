@@ -13,7 +13,14 @@
                     name:'DatasetList',
                     done: function(err, job) {
                         if (err) {
-                            console.log(err);
+                            notification.push(datasets.job, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve datasets list'
+                                )
+                            );
+
+                            return;
                         }
 
                         var result = job.__read();

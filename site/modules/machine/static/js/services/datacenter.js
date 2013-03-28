@@ -11,7 +11,14 @@
                     name:'DatacenterList',
                     done: function(err, job) {
                         if (err) {
-                            console.log(err);
+                            notification.push(datacenters.job, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve datacenters list'
+                                )
+                            );
+
+                            return;
                         }
 
                         if (Object.keys(datacenters.search).length > 0) {

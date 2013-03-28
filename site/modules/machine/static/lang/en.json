@@ -59,5 +59,11 @@
     "Are you sure it works?": "Are you sure it works?",
     "Search": "Search",
     "Key": "Key",
-    "Value": "Value"
+    "Value": "Value",
+    "Unable to retrieve machines from datacenter {{name}}": "Unable to retrieve machines from datacenter {{name}}",
+    "Unable to execute command \"{{command}}\" for machine {{uuid}}": "Unable to execute command \"{{command}}\" for machine {{uuid}}",
+    "Unable to create machine {{name}}": "Unable to create machine {{name}}",
+    "Unable to retrieve packages list": "Unable to retrieve packages list",
+    "Unable to retrieve datasets list": "Unable to retrieve datasets list",
+    "Unable to retrieve datacenters list": "Unable to retrieve datacenters list"
 }

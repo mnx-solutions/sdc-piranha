@@ -103,7 +103,7 @@ module.exports = function (scope, callback) {
             return data && "string" === typeof data.uuid;
         },
         handler: function (call) {
-            call.log.info('Handling machine tags list call');
+            call.log.info('Handling machine tags list call, machine %s', call.data.uuid);
 
             var client = cloud.proxy();
             client.listMachineTags(call.data.uuid, call.done.bind(call));
@@ -118,7 +118,7 @@ module.exports = function (scope, callback) {
                 typeof data.tags === 'object';
         },
         handler: function (call) {
-            call.log.info('Handling machine tags call');
+            call.log.info('Handling machine tags save call, machine %s', call.data.uuid);
 
             var client = cloud.proxy();
             client.deleteMachineTags(call.data.uuid, function (err) {
@@ -142,7 +142,7 @@ module.exports = function (scope, callback) {
         },
         handler: function (call) {
             var machineId = call.data.uuid;
-            call.log.info('Handling machine details call');
+            call.log.info('Handling machine details call, machine %s', machineId);
 
             var client = cloud.proxy(call.data);
             

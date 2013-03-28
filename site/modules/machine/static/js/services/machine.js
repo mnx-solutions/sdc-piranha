@@ -2,9 +2,16 @@
 
 
 (function (ng, app) {
-    app.factory('Machine', ['$resource', 'serverTab', '$rootScope', '$q', function ($resource, serverTab, $rootScope, $q) {
-        var service = {};
+    app.factory('Machine', [
+        '$resource',
+        'serverTab',
+        '$rootScope',
+        '$q',
+        'localization',
+        'notification',
+        function ($resource, serverTab, $rootScope, $q, localization, notification) {
 
+        var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
 
         service.updateMachines = function () {
@@ -14,6 +21,18 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
+
+                        if (data.err) {
+                            notification.push(machines.job, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve machines from datacenter {{name}}',
+                                    { name: data.name }
+                                )
+                            );
+
+                            return;
+                        }
 
                         function handleChunk (machine) {
                             var old = null;
@@ -52,10 +71,12 @@
                         if (err) {
                             console.log(err);
                         }
+
                         machines.list.final = true;
                     }
                 });
             }
+
             return machines.job;
         };
 
@@ -65,7 +86,7 @@
                 return machines.list;
             }
 
-            if (!id){
+            if (!id) {
                 return machines.list;
             }
 
@@ -77,6 +98,7 @@
                 if (!machines.search[id]){
                     machines.search[id] = $q.defer();
                 }
+
                 return machines.search[id].promise;
             }
 
@@ -104,19 +126,26 @@
                                         job.machine[k] = step[k];
                                     });
                                 }
-                                if (err) {
-                                    //TODO: Error handling
-                                    console.log(err);
-                                }
                             };
                         }
 
                         if (!opts.done) {
                             opts.done = function (err, job) {
                                 if (err) {
-                                    //TODO: Error handling
-                                    console.log(err);
+                                    notification.push(job.machine.id, { type: 'error' },
+                                        localization.translate(null,
+                                            'machine',
+                                            'Unable to execute command "{{command}}" for machine {{uuid}}',
+                                            {
+                                                command: job.name,
+                                                uuid: job.machine.id
+                                            }
+                                        )
+                                    );
+
+                                    return;
                                 }
+
                                 var result = job.__read();
                                 if (result && typeof result === 'object') {
                                     Object.keys(result).forEach(function (k){
@@ -196,9 +225,19 @@
                 data: data,
                 initialized: function (err, job) {
                     if (err) {
-                        //TODO: Handle error
-                        console.log(err);
+                        notification.push(id, { type: 'error' },
+                            localization.translate(null,
+                                'machine',
+                                'Unable to create machine {{name}}',
+                                {
+                                    name: data.name
+                                }
+                            )
+                        );
+
+                        return;
                     }
+
                     var index = machines.list.indexOf(machine);
                     delete machines.index[id];
                     machine = job.initial.machine;
@@ -206,15 +245,27 @@
                     machines.index[machine.id] = machine;
                     machines.list[index] = machine;
                 },
+
                 done: function (err, job) {
                     if (err) {
-                        //TODO: Handle error
-                        console.log(err);
+                        notification.push(id, { type: 'error' },
+                            localization.translate(null,
+                                'machine',
+                                'Unable to create machine {{name}}',
+                                {
+                                    name: data.name
+                                }
+                            )
+                        );
+
+                        return;
                     }
+
                     var result = job.__read();
                     copy(result);
                     machine.datacenter = data.datacenter; //TODO: Should be gotten from server
                 },
+
                 progress: function (err, job) {
                     var step = job.step;
                     if (step) {
@@ -224,25 +275,28 @@
                     }
                 }
             });
-            machine.job = job.getTracker();
 
+            machine.job = job.getTracker();
             return job;
         };
 
         service.tags = function (id, data) {
-            if(!id) {
+            if (!id) {
                 return false;
             }
+
             var m = service.machine(id);
 
             function tags() {
-                if(m.tags) {
+                if (m.tags) {
                     return m.tags;
                 }
+
                 var job = serverTab.call({
                     name: 'MachineTagsList',
                     data: {uuid: id}
                 });
+
                 m.tags = job.deferred;
                 return m.tags;
             }
@@ -250,8 +304,9 @@
             function save() {
                 var job = serverTab.call({
                     name: 'MachineTagsSave',
-                    data: {uuid: id, tags: data}
+                    data: { uuid: id, tags: data }
                 });
+
                 job.deferred.then(function (response) {
                     m.tags = response;
                 });
@@ -260,10 +315,12 @@
             }
 
             var d = $q.defer();
+
             $q.when(m).then(function(machine){
                 m = machine;
                 d.resolve(data ? save() : tags());
             });
+
             return d.promise;
         };
 
