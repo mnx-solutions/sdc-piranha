@@ -3,7 +3,14 @@
 
 (function (ng, app) {
 
-    app.factory('serverTab', ['$http','$$track','EventBubble', 'serverCall', 'localization', function ($http, $$track, EventBubble, serverCall, localization) {
+    app.factory('serverTab',
+        [ '$http',
+            '$$track',
+            'EventBubble',
+            'serverCall',
+            'localization',
+            'notification',
+            function ($http, $$track, EventBubble, serverCall, localization, notification) {
 
         var eventer = EventBubble.$new();
         var self = {};
@@ -26,7 +33,6 @@
                     }
                     opts.tab = self;
                     var call = serverCall.new(opts);
-                    console.log(call);
                     _calls[call.id] = call;
 
                     return call;
@@ -84,7 +90,6 @@
             },
             results: {
                 value: function (data){
-                    console.log(data);
                     if (!data || !data.results) {
                         return;
                     }
@@ -106,38 +111,57 @@
         });
 
         self.$on('polled', function() {
-            var visible = window.jQuery('#genericError').is(':visible');
-            window.jQuery('#genericError').hide();
             errorPollingLength = 500;
-            console.log(visible);
-            if(visible === true) {
-                var timer = setTimeout(function() {
-                    window.jQuery('#genericInfo').fadeOut('slow');
-                }, 5000);
-                window.jQuery('#genericInfo').text(localization.translate(null, 'server', 'And we are back')).show();
-                eventer.$emit(true, 'forceUpdate');
+
+            if (notification.isVisible(self)) {
+                //eventer.$emit(true, 'forceUpdate');
             }
+
+            /*
+            notification.push(self, { timeout: 5000 },
+                localization.translate(null,
+                    'server',
+                    'Reconnected to polling service'
+                )
+            );
+            */
         });
 
         self.$on('error', function () {
-            // TODO handle errors.
-            var txt = localization.translate(null, 'server', 'Lost contact with server retrying in {x}...');
             errorPollingLength = errorPollingLength * 2;
             var time = errorPollingLength / 1000;
-            window.jQuery('#genericInfo').hide();
-            window.jQuery('#genericError').text(txt.replace('{x}', time)).show();
+
+            notification.push(self, { type: 'error' },
+                localization.translate(null,
+                    'server',
+                    'Lost contact with server retrying in {{seconds}}',
+                    { seconds: time }
+                )
+            );
 
             var timer = setInterval(function () {
                 time--;
-                if(time >0) {
-                    window.jQuery('#genericError').text(txt.replace('{x}', time));
+
+                if (time > 0) {
+                    notification.push(self, { type: 'error' },
+                        localization.translate(null,
+                            'server',
+                            'Lost contact with server retrying in {{seconds}}',
+                            { seconds: time }
+                        )
+                    );
                 } else {
-                    window.jQuery('#genericError').text('Retrying...');
+                    notification.push(self, { type: 'error' },
+                        localization.translate(null,
+                            'server',
+                            'Retrying...'
+                        )
+                    );
+
                     clearInterval(timer);
                     self.poll();
                 }
             }, 1000);
-
         });
 
         return self;

@@ -9,6 +9,7 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
   body()
     // div(data-debug-window)
     div(data-main-menu, class='JoyentPortal-module-menu')
+    div(data-notification, class='JoyentPortal-module-notification')
     div(data-ng-switch='subview', class='subview container-fluid ng-cloak', ng-cloak)
                 each layout in layouts
                     div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module} row-fluid',data-ng-controller='#{layout.module}.LayoutController')!= layout.data

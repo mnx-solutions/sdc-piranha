@@ -26,6 +26,7 @@
                             localization.resolveScope(scope),
                             attrs.translateModule,
                             identifier,
+                            {},
                             count
                         )
                     );
@@ -65,12 +66,12 @@
                     }
 
                     // for translating other attributes
-                    if(attrs.translate.length > 0) {
+                    if (attrs.translate.length > 0) {
                         var translateAttrs = attrs.translate.split(',');
 
-                        translateAttrs.forEach(function(attr) {
+                        translateAttrs.forEach(function (attr) {
                             attrs.$observe(attr,
-                                function(value) {
+                                function (value) {
                                     element.attr(attr, localization.translate(
                                         localization.resolveScope(scope),
                                         attrs.translateModule,
