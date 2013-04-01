@@ -31,10 +31,12 @@ module.exports = function (scope, callback) {
     };
 
     setImmediate(function () {
-        callback(null, [
-            localization.getLocaleParser(),
-            localization.getRegisterHelpers(),
-            middleware
-        ]);
+        callback(null, {
+            index: [
+                localization.getLocaleParser(),
+                localization.getRegisterHelpers(),
+                middleware
+            ]
+        });
     });
 }
