@@ -1,0 +1,5 @@
+{
+    "Reconnected to polling service": "Reconnected to polling service",
+    "Lost contact with server retrying in {{seconds}}": "Lost contact with server retrying in {{seconds}}",
+    "Retrying...": "Retrying..."
+}

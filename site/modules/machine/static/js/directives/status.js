@@ -5,27 +5,27 @@
     app.directive('machineStatus', function () {
 
         return {
-            restrict: "E",
+            restrict: 'E',
             scope: {
-                machine: "=machine"
+                machine: '=machine'
             },
             link: function (scope) {
                 scope.labelForState = function (state) {
                     switch (state) {
-                        case "running":
-                            return "label-success"
-                        case "stopped":
-                            return ""
+                        case 'running':
+                            return 'label-success';
+                        case 'stopped':
+                            return '';
                         default:
-                            return "label-info"
+                            return 'label-info';
                     }
-                }
+                };
             },
-            template: '<span class="label" ng-class="labelForState(machine.state)" ng-show="!machine.job.running && !machine.job.failed">' +
+            template: '<span class="label" ng-class="labelForState(machine.state)" ng-show="!machine.job || machine.job.finished">' +
                 '{{machine.state}}</span>' +
-                '<span class="label label-info" ng-show="machine.job.running">' +
-                '<img src="static/img/ajax-loader.gif"/>{{machine.job.name}}</span>' +
-                '<span class="label label-inverse" ng-show="!machine.job.running && machine.job.failed"><i class="icon-warning-sign icon-white"/>' +
+                '<span class="label label-info" ng-show="machine.job && !machine.job.finished">' +
+                '<img src="static/img/ajax-loader.gif"/>{{machine.job.name}}:{{machine.state}}</span>' +
+                '<span class="label label-inverse" ng-show="machine.job.err"><i class="icon-warning-sign icon-white"/>' +
                 '</span>'
         };
     });

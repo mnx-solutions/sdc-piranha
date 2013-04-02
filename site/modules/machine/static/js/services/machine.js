@@ -1,409 +1,329 @@
 'use strict';
 
 
-(function (app) {
-    app.factory('Machines', ['$resource', "serverCall", "$rootScope", "$q", function ($resource, serverCall, $rootScope, $q) {
+(function (ng, app) {
+    app.factory('Machine', [
+        '$resource',
+        'serverTab',
+        '$rootScope',
+        '$q',
+        'localization',
+        'notification',
+        function ($resource, serverTab, $rootScope, $q, localization, notification) {
+
         var service = {};
+        var machines = {job: null, index: {}, list: [], search: {}};
 
-        var machineList = {job: null, machines: []};
-        var packageList = {job: null, packages: []};
-        var datasetList = {job: null, datasets: []};
-        var datacenterList = {job: null, datacenters: {}};
+        service.updateMachines = function () {
+            if (!machines.job || machines.job.finished) {
+                machines.list.final = false;
+                machines.job = serverTab.call({
+                    name: 'MachineList',
+                    progress: function (err, job) {
+                        var data = job.__read();
 
-        var findMachine = function (id) {
-            var filtered = machineList.machines.filter(function (machine) {
-                return machine.id === id;
-            });
+                        if (data.err) {
+                            notification.push(machines.job, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve machines from datacenter {{name}}',
+                                    { name: data.name }
+                                )
+                            );
 
-            if (filtered.length == 1) {
-                return filtered[0];
-            }
-            return null;
-        }
+                            return;
+                        }
 
-        /* find machine by uuid */
-        service.getMachine = function (uuid) {
-            if (loaded) {
-                var tmp = machines.filter(function (machine) {
-                    return machine.id === uuid;
-                });
-                return tmp[0];
-            } else {
-                var deferred = $q.defer();
-                onLoad.push(function () {
-                    var tmp = machines.filter(function (machine) {
-                        return machine.id === uuid;
-                    });
-                    deferred.resolve(tmp[0]);
-                });
+                        function handleChunk (machine) {
+                            var old = null;
 
-                return deferred.promise;
-            }
-        };
+                            if (machines.index[machine.id]) {
+                                old = machines.list.indexOf(machines.index[machine.id]);
+                            }
 
-        // load machines
-        service.updateMachines = function (callback) {
+                            machines.index[machine.id] = machine;
 
-            if (machineList.job && !machineList.job.finished) {
-                machineList.job.addCallback(callback);
-                return machineList.job;
-            }
+                            if (machines.search[machine.id]) {
+                                machines.search[machine.id].resolve(r);
+                                delete machines.search[machine.id];
+                            }
 
-            machineList.job = serverCall("MachineList", null, function (err, result) {
-                if (!err) {
-                    //machineList.machines.length = 0;
-                    //machineList.machines.push.apply(machineList.machines, result);
-                }
-            }, function (data, status) {
-                data.forEach(function (res) {
-                    console.log(res);
-                    if (res.machines) {
-                        machineList.machines.push.apply(machineList.machines, res.machines);
+                            if (old === null) {
+                                machines.list.push(machine);
+                            } else {
+                                machines.list[old] = machine;
+                            }
+                        }
+
+                        if ((data instanceof Array)) {
+                            data.forEach(function(chunk) {
+                                chunk.machines.forEach(function (machine) {
+                                    handleChunk(machine);
+                                });
+                            });
+                        } else if (data.machines) {
+                            data.machines.forEach(function (machine) {
+                                handleChunk(machine);
+                            });
+                        }
+                    },
+                    done: function(err, job) {
+                        if (err) {
+                            console.log(err);
+                        }
+
+                        machines.list.final = true;
                     }
                 });
-                /*
-                if (data.machines) {
-                    machineList.machines.push.apply(machineList.machines, data.machines);
+            }
+
+            return machines.job;
+        };
+
+        service.machine = function (id) {
+            if (id === true || (!id && (!machines.job || machines.job.finished))) {
+                service.updateMachines();
+                return machines.list;
+            }
+
+            if (!id) {
+                return machines.list;
+            }
+
+            if (!machines.index[id]) {
+                service.updateMachines();
+            }
+
+            if (!machines.index[id] || (machines.job && !machines.job.finished)) {
+                if (!machines.search[id]){
+                    machines.search[id] = $q.defer();
                 }
-                */
-            });
 
-            machineList.job.addCallback(callback);
-        };
-
-        // list packages
-        service.getPackages = function () {
-
-            if (packageList.packages.length) {
-                return packageList.packages;
+                return machines.search[id].promise;
             }
 
-            // get the new machine list.
-            var job = service.updatePackages();
-            var deferred = $q.defer();
-            job.addCallback(function () {
-                deferred.resolve(packageList.packages);
-            });
-
-            return deferred.promise;
-        };
-
-        var findPackage = function (packageName) {
-            var found = packageList.packages.filter(function (pack) {
-                if (pack.name === packageName) {
-                    return pack;
-                }
-            });
-            if (found.length === 1) {
-                return found[0];
-            }
-            return null;
-        }
-
-        // list packages
-        service.getPackage = function (name) {
-
-            if (packageList.packages.length) {
-                return findPackage(name);
-            }
-
-            // get the new machine list.
-            var job = service.updatePackages();
-
-            var deferred = $q.defer();
-            job.addCallback(function () {
-                deferred.resolve(findPackage(name));
-            });
-
-            return deferred.promise;
-        };
-
-        // load packages
-        service.updatePackages = function (callback) {
-
-            if (packageList.job && !packageList.job.finished) {
-                packageList.job.addCallback(callback);
-                return packageList.job;
-            }
-
-            packageList.job = serverCall("PackageList", null, function (err, result) {
-                if (!err) {
-                    packageList.packages.length = 0;
-                    packageList.packages.push.apply(packageList.packages, result);
-                }
-            }, function (data) {
-                // handle progress
-            });
-
-            packageList.job.addCallback(callback);
-        };
-
-        // list datasets
-        service.getDatasets = function () {
-
-            if (datasetList.datasets.length) {
-                return datasetList.datasets;
-            }
-
-            // get the new machine list.
-            var job = service.updateDatasets();
-            var deferred = $q.defer();
-            job.addCallback(function () {
-                deferred.resolve(datasetList.datasets);
-            });
-
-            return deferred.promise;
-        };
-
-        // load datasets
-        service.updateDatasets = function (callback) {
-
-            if (datasetList.job && !datasetList.job.finished) {
-                datasetList.job.addCallback(callback);
-                return datasetList.job;
-            }
-
-            datasetList.job = serverCall("DatasetList", null, function (err, result) {
-                if (!err) {
-                    datasetList.datasets.length = 0;
-                    datasetList.datasets.push.apply(datasetList.datasets, result);
-                }
-            }, function (data) {
-                // handle progress
-            });
-
-            datasetList.job.addCallback(callback);
-        };
-
-        // list datacenters
-        service.getDatacenters = function () {
-
-            if (datacenterList.datacenters.length) {
-                return datacenterList.datacenters;
-            }
-
-            // get the new machine list.
-            var job = service.updateDatacenters();
-            var deferred = $q.defer();
-            job.addCallback(function () {
-                deferred.resolve(datacenterList.datacenters);
-            });
-
-            return deferred.promise;
-        };
-
-        // load datacenters
-        service.updateDatacenters = function (callback) {
-
-            if (datacenterList.job && !datacenterList.job.finished) {
-                datacenterList.job.addCallback(callback);
-                return datacenterList.job;
-            }
-
-            datacenterList.job = serverCall("DatacenterList", null, function (err, result) {
-                if (!err) {
-                    datacenterList.datacenters = {};
-                    datacenterList.datacenters = result;
-                }
-            }, function (data) {
-                // handle progress
-            });
-
-            datacenterList.job.addCallback(callback);
+            return machines.index[id];
         };
 
         // run updateMachines
         service.updateMachines();
 
-        // run updatePackages
-        service.updatePackages();
 
-        // run updateDatasets
-        //service.updateDatasets();
+        function changeState(opts) {
+            return function (uuid) {
+                var machine = service.machine(uuid);
+                function start() {
+                    if (!machine.job || machine.job.finished) {
+                        opts.data = opts.data || {};
+                        opts.data.uuid = uuid;
+                        opts.data.datacenter = machine.datacenter;
 
-        // run updateDatacenters
-        //service.updateDatacenters();
+                        if (!opts.progress) {
+                            opts.progress = function (err, job) {
+                                var step = job.step;
+                                if (step && typeof step === 'object'){
+                                    Object.keys(step).forEach(function (k) {
+                                        job.machine[k] = step[k];
+                                    });
+                                }
+                            };
+                        }
 
-        // get reference to the machines list
-        service.getMachines = function () {
-            return machineList;
-        };
+                        if (!opts.done) {
+                            opts.done = function (err, job) {
+                                if (err) {
+                                    notification.push(job.machine.id, { type: 'error' },
+                                        localization.translate(null,
+                                            'machine',
+                                            'Unable to execute command "{{command}}" for machine {{uuid}}',
+                                            {
+                                                command: job.name,
+                                                uuid: job.machine.id
+                                            }
+                                        )
+                                    );
 
-        // find machine by uuid
-        service.getMachine = function (uuid) {
-            var deferred = $q.defer();
+                                    return;
+                                }
 
-            var machine = findMachine(uuid);
+                                var result = job.__read();
+                                if (result && typeof result === 'object') {
+                                    Object.keys(result).forEach(function (k){
+                                        job.machine[k] = result[k];
+                                    });
+                                }
+                            };
+                        }
+                        var job = serverTab.call(opts);
+                        job.machine = machine;
+                        machine.job = job.getTracker();
+                    }
+                    return machine.job;
+                }
 
-            // got the machine, return machine
-            if (machine) {
-                deferred.resolve(machine);
-                return deferred.promise;
+                if (machine.id) {
+                    return start();
+                }
+                var d = $q.defer();
+                machine.then(function(m) {
+                    machine = m;
+                    d.resolve(start());
+                });
+
+                return d.promise;
+            };
+        }
+
+        service.startMachine = changeState({ name: 'MachineStart' });
+
+        service.stopMachine = changeState({ name: 'MachineStop' });
+
+        service.rebootMachine = changeState({ name: 'MachineReboot' });
+
+        service.deleteMachine = changeState({
+            name: 'MachineDelete',
+            done: function(err, job) {
+                if (err) {
+                    //TODO: Error handling
+                    console.log(err);
+                }
+
+                delete machines.list[machines.list.indexOf(job.machine)];
+                delete machines.index[job.machine.id];
             }
-
-            // get the new machine list.
-            var job = service.updateMachines();
-
-            job.addCallback(function () {
-                var machine = findMachine(uuid);
-                deferred.resolve(machine);
-            });
-
-            return deferred.promise;
-        };
-
-        service.startMachine = function (uuid) {
-            //XXX check for running jobs
-            var machine = findMachine(uuid);
-            var params = {
-                machineId: machine.id,
-                datacenter: machine.datacenter
-            };
-
-            machine.job = serverCall("MachineStart", params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                }
-            }, function (result, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
-
-            machine.job.name = "starting";
-
-            return machine.job;
-        }
-
-        service.stopMachine = function (uuid) {
-            //XXX check for running jobs
-            var machine = findMachine(uuid);
-            var params = {
-                machineId: machine.id,
-                datacenter: machine.datacenter
-            };
-
-            machine.job = serverCall('MachineStop', params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                }
-            }, function (result, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
-
-            machine.job.name = "stopping";
-
-
-            return machine.job;
-        }
-
-        service.deleteMachine = function (uuid) {
-            //XXX check for running jobs
-            var machine = findMachine(uuid);
-            var params = {
-                machineId: machine.id,
-                datacenter: machine.datacenter
-            };
-
-            machine.job = serverCall("MachineDelete", params, function (err, result) {
-
-                if (!err) {
-                    delete machineList.machines[machineList.machines.indexOf(machine)];
-                }
-            }, function (results, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
-
-            machine.job.name = "deleting";
-
-            return machine.job;
-        }
-
-        service.rebootMachine = function (uuid) {
-            var machine = findMachine(uuid);
-            var params = {
-                machineId: machine.id,
-                datacenter: machine.datacenter
-            };
-
-            machine.job = serverCall("MachineReboot", params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                }
-            }, function (results, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
-
-            machine.job.name = "rebooting";
-
-
-            return machine.job;
-        }
-
+        });
 
         service.resizeMachine = function (uuid, sdcpackage) {
-            var machine = findMachine(uuid);
-            var params = {
-                machineId: machine.id,
-                datacenter: machine.datacenter,
-                sdcpackage: sdcpackage
+            var fn = changeState({
+                name: 'MachineResize',
+                data: {sdcpackage: sdcpackage}
+            });
+
+            return fn(uuid);
+        };
+
+
+        service.provisionMachine = function (data) {
+            var id = window.uuid.v4();
+            var machine = {
+                state: 'creating',
+                name: data.name,
+                id: id
             };
 
-            machine.job = serverCall("MachineResize", params, function (err, result) {
-                if (!err) {
-                    machine.state = result.state;
-                    machine.memory = result.memory;
-                }
-            }, function (results, progress) {
-                if (progress.state) {
-                    machine.state = progress.state;
-                }
-            });
+            machines.list.push(machine);
+            machines.index[id] = machine;
 
-            machine.job.name = "resizing";
-
-            return machine.job;
-        }
-
-        service.provisionMachine = function (name, sdcpackage, dataset) {
-            var data = {};
-            data.name = name;
-            data.sdcpackage = sdcpackage;
-            data.dataset = dataset;
-            var machine = {
-                state: "creating",
-                name: name
+            function copy(data) {
+                Object.keys(data).forEach(function (k) {
+                    machine[k] = data[k];
+                });
             }
 
-            machineList.machines.push(machine);
+            var job = serverTab.call({
+                name: 'MachineCreate',
+                data: data,
+                initialized: function (err, job) {
+                    if (err) {
+                        notification.push(id, { type: 'error' },
+                            localization.translate(null,
+                                'machine',
+                                'Unable to create machine {{name}}',
+                                {
+                                    name: data.name
+                                }
+                            )
+                        );
 
-            var job = serverCall("MachineCreate", params, function (err, newMachine) {
-                if (!err) {
-                    angular.copy(newMachine, machine);
-                    machine.job = job;
-                }
-            }, function (results, progress) {
-                results.forEach(function (result) {
-                    if (result.machine) {
-                        console.log("adding new machine");
-                        angular.copy(result.machine, machine);
-                        machine.job = job;
+                        return;
                     }
-                });
+
+                    var index = machines.list.indexOf(machine);
+                    delete machines.index[id];
+                    machine = job.initial.machine;
+                    machine.job = job.getTracker();
+                    machines.index[machine.id] = machine;
+                    machines.list[index] = machine;
+                },
+
+                done: function (err, job) {
+                    if (err) {
+                        notification.push(id, { type: 'error' },
+                            localization.translate(null,
+                                'machine',
+                                'Unable to create machine {{name}}',
+                                {
+                                    name: data.name
+                                }
+                            )
+                        );
+
+                        return;
+                    }
+
+                    var result = job.__read();
+                    copy(result);
+                    machine.datacenter = data.datacenter; //TODO: Should be gotten from server
+                },
+
+                progress: function (err, job) {
+                    var step = job.step;
+                    if (step) {
+                        Object.keys(step).forEach(function (k) {
+                            machine[k] = step[k];
+                        });
+                    }
+                }
             });
 
-            machine.job = job;
-            job.name = "provisioning";
-
+            machine.job = job.getTracker();
             return job;
-        }
+        };
+
+        service.tags = function (id, data) {
+            if (!id) {
+                return false;
+            }
+
+            var m = service.machine(id);
+
+            function tags() {
+                if (m.tags) {
+                    return m.tags;
+                }
+
+                var job = serverTab.call({
+                    name: 'MachineTagsList',
+                    data: {uuid: id}
+                });
+
+                m.tags = job.deferred;
+                return m.tags;
+            }
+
+            function save() {
+                var job = serverTab.call({
+                    name: 'MachineTagsSave',
+                    data: { uuid: id, tags: data }
+                });
+
+                job.deferred.then(function (response) {
+                    m.tags = response;
+                });
+
+                return job.deferred;
+            }
+
+            var d = $q.defer();
+
+            $q.when(m).then(function(machine){
+                m = machine;
+                d.resolve(data ? save() : tags());
+            });
+
+            return d.promise;
+        };
 
         return service;
     }]);
-}(window.JP.getModule('Machine')));
+}(window.angular, window.JP.getModule('Machine')));

@@ -15,7 +15,7 @@
                 '<span class="name">running: {{call.name}}</span>' +
                 '</li>' +
                 '<li data-ng-repeat="call in oldCalls" data-ng-class="{ succeeded: !call.error}">' +
-                '<span class="name">finished: {{call.name}} in {{call.endTime-call.startTime}}ms</span>' +
+                '<span class="name">finished: {{call.name}} in {{call.execTime}}ms</span>' +
                 '</li>' +
                 '</ul></div></div>' +
                 '</div></div>'

@@ -9,6 +9,21 @@
             var translations = {};
 
             var service = {
+                _format: function (str, map) {
+                    var keys = map ? Object.keys(map) : null;
+
+                    if (!map || keys.length === 0) {
+                        return str;
+                    }
+
+                    for (var i = 0, c = keys.length; i < c; i++) {
+                        var key = keys[i];
+                        str = str.replace('{{' + key + '}}', map[key]);
+                    }
+
+                    return str;
+                },
+
                 /**
                  * Normalize locale string (en-us -> en)
                  *
@@ -136,23 +151,43 @@
                 },
 
                 /**
+                 * Resole registred scope
+                 *
+                 * @param scope
+                 * @returns {Object}
+                 */
+                resolveScope: function (scope) {
+                    while (scope) {
+                        if (this._find(scope) !== undefined) {
+                            break;
+                        }
+
+                        scope = scope.$parent || null;
+                    }
+
+                    return scope;
+                },
+
+                /**
                  * Translate input string
                  *
                  * @param scope origin scope
+                 * @param target target module
                  * @param identifier translation identifier
+                 * @param params placeholder values map
                  * @param count count value (pluralization)
                  * @returns {string}
                  */
-                translate: function (scope, identifier, count) {
-                    var module = this._find(scope);
+                translate: function (scope, target, identifier, params, count) {
+                    var module = target || this._find(scope);
+
                     if (translations.hasOwnProperty(module)) {
                         var table = translations[module];
-
                         if (table.hasOwnProperty(identifier)) {
                             var translation = table[identifier];
 
                             if (typeof(translation) === 'string') {
-                                return translation;
+                                return this._format(translation, params);
                             } else if (typeof(translation) === 'object') {
                                 if (translation.singular &&
                                     translation.plural &&
@@ -160,21 +195,23 @@
 
                                     if (count !== undefined) {
                                         if (count <= 0) {
-                                            return translation.none;
+                                            return this._format(translation.none, params);
                                         } else if (count === 1) {
-                                            return translation.singular;
+                                            return this._format(translation.singular, params);
                                         } else if (count > 1) {
-                                            return translation.plural;
+                                            return this._format(translation.plural, params);
                                         }
                                     } else {
-                                        return translation.none;
+                                        return this._format(translation.none, params);
                                     }
                                 } else {
-                                    return translation;
+                                    return this._format(translation, params);
                                 }
 
-                                return translation;
+                                return this._format(translation, params);
                             }
+                        } else {
+                            return identifier;
                         }
                     }
                 }

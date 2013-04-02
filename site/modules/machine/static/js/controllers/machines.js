@@ -7,12 +7,15 @@
             '$scope',
             '$filter',
             'requestContext',
-            'Machines',
+            'Machine',
+            'Dataset',
+            'Package',
             'localization',
 
-function ($scope, $filter, requestContext, Machines, localization) {
+function ($scope, $filter, requestContext, Machine, Dataset, Package, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
+
     // Sorting
     $scope.sortingOrder = 'created';
     $scope.reverse = true;
@@ -24,8 +27,17 @@ function ($scope, $filter, requestContext, Machines, localization) {
     $scope.pagedMachines = [];
     $scope.maxPages = 5;
     $scope.currentPage = 0;
-    $scope.machines = Machines.getMachines().machines;
-    $scope.machineList = Machines.getMachines();
+    $scope.machines = Machine.machine();
+
+    $scope.$on(
+        'event:forceUpdate',
+        function (){
+            $scope.machines = Machine.machine();
+        }
+    );
+
+    $scope.checked = {};
+    $scope.ischecked = false;
 
     $scope.$watch('machines', function () {
         $scope.search();
@@ -196,19 +208,47 @@ function ($scope, $filter, requestContext, Machines, localization) {
     };
 
     $scope.startAll = function () {
-        $scope.machines.forEach(function(machine){
-            if (machine.state = 'stopped'){
-                Machines.startMachine(machine.id);
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                Machine.startMachine(machineid);
+                $scope.checked[machineid] = false;
             }
-        });
+        }
     }
 
     $scope.stopAll = function () {
-        $scope.machines.forEach(function(machine){
-            if (machine.state = 'started'){
-                Machines.stopMachine(machine.id);
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                Machine.stopMachine(machineid);
+                $scope.checked[machineid] = false;
             }
-        });
+        }
+    }
+
+    $scope.restartAll = function () {
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                Machine.rebootMachine(machineid);
+                $scope.checked[machineid] = false;
+            }
+        }
+    }
+
+    $scope.showGroupActions = function () {
+        $scope.ischecked = false;
+        for (var machineid in $scope.checked) {
+            if ($scope.checked[machineid] === true) {
+                $scope.ischecked = true;
+            }
+        }
+    }
+
+    //Dataset.updateDatasets();
+    $scope.datasetInfo = function (dataseturn) {
+        return Dataset.dataset(dataseturn);
+    }
+    $scope.packageInfo = function (memory, disk) {
+        return Package.getPackageByMemoryDisk(memory, disk);
     }
 
 }

@@ -3,29 +3,40 @@
 var Localization = require('./lib/localization');
 
 module.exports = function (scope, callback) {
-    var Local = new Localization(scope.config.localization);
-    var loaded = false;
+    var extend = scope.get('utils').extend;
+    var localization = new Localization(extend(
+        scope.config.localization,
+        { log: scope.log }
+    ));
 
     var middleware = function (req, res, next) {
-        if (!loaded) {
+        if (!localization.isCompiled) {
             Object.keys(res.locals.lang).forEach(function(el) {
                 var lang = res.locals.lang[el];
-                Local.load(lang._scope.id, lang._base, lang._path);
+                localization.load(lang._scope.id, lang._base, lang._path);
             });
-            Local.compile();
-            loaded = true;
+
+            localization.compile();
         }
+
         if (!res.locals.jss) {
-            res.locals.jss = Local.getCompiled(req);
+            res.locals.jss = localization.getCompiled(req);
         } else {
-            Local.getCompiled(req).forEach(function (src) {
+            localization.getCompiled(req).forEach(function (src) {
                 res.locals.jss.push(src);
             });
         }
-        next();
+
+        return next();
     };
 
     setImmediate(function () {
-        callback(null, [Local.getLocaleParser(), Local.getRegisterHelpers(), middleware]);
+        callback(null, {
+            index: [
+                localization.getLocaleParser(),
+                localization.getRegisterHelpers(),
+                middleware
+            ]
+        });
     });
 }

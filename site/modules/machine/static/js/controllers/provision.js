@@ -6,15 +6,19 @@
         [   '$scope',
             '$filter',
             'requestContext',
-            'Machines',
-            "$dialog",
+            'Machine',
+            'Dataset',
+            'Datacenter',
+            'Package',
+            '$dialog',
             '$location',
-            function ($scope, $filter, requestContext, Machines, $dialog, $location) {
+            'localization',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog, $location, localization) {
+                localization.bind('machine', $scope);
+                requestContext.setUpRenderContext('machine.provision', $scope);
 
-                requestContext.setUpRenderContext('machine.details', $scope);
-
-                Machines.updateDatasets();
-                Machines.updateDatacenters();
+                Dataset.updateDatasets();
+                Datacenter.updateDatacenters();
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
@@ -23,28 +27,32 @@
                     $dialog.messageBox(title, question, btns)
                         .open()
                         .then(function(result){
-                            if(result=='ok'){
+                            if(result === 'ok'){
                                 callback();
                             }
                         });
                 };
 
-                var packages = Machines.getPackages();
+                var packages = Package.package();
                 $scope.packages = packages;
 
-                var datasets = Machines.getDatasets();
+                var datasets = Dataset.dataset();
                 $scope.datasets = datasets;
 
-                var datacenters = Machines.getDatacenters();
+                var datacenters = Datacenter.datacenter();
                 $scope.datacenters = datacenters;
 
                 $scope.clickProvision = function () {
-                    confirm("Are you sure it works?", function () {
-                        $scope.retinfo = Machines.provisionMachine($scope.machinename, $scope.sdcpackage, $scope.dataset);
+                    confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
+                        $scope.retinfo = Machine.provisionMachine({
+                            name: $scope.machinename,
+                            sdcpackage: $scope.sdcpackage,
+                            dataset: $scope.dataset,
+                            datacenter: $scope.datacenter
+                        });
                         $location.path("/machine");
                     });
-                }
-
+                };
 
             }
 

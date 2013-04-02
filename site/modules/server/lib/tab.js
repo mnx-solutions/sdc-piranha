@@ -48,15 +48,32 @@ Tab.prototype.call = function (opts) {
         return false;
     }
     opts.log = logger;
+    opts.tab = self;
+    opts.remove = function (call) {
+        self._history.push(call);
+        delete self._calls[call.id];
+    };
     var call = new Call(opts);
 
-    call.on('change', function() {
-        self._changed[call.id] = call;
-        self._readable();
-    });
+    function updated(name) {
+        return function (err, call2) {
+            self._changed[call.id] = call;
+            self._readable();
+        };
+    }
 
-    self._calls[call.id] = call;
-    self.processing = true;
+    if (!call.willFinish) {
+        call.on('updated', updated('updated'));
+
+        call.on('finished', updated('finished'));
+
+        call.on('error', updated('error'));
+
+        self._calls[call.id] = call;
+        self.processing = true;
+    } else {
+        self._history.push(call);
+    }
 
     return call;
 };
@@ -73,9 +90,10 @@ Tab.prototype.read = function (){
     var keys = Object.keys(self._changed);
     keys.forEach(function (key) {
         var call = self._calls[key];
-        result.push(call.getStatus());
+        result.push(call.status());
         if(call.finished) {
             delete self._calls[key];
+            call.removeAllListeners();
             self._history.push(call);
         }
     });
