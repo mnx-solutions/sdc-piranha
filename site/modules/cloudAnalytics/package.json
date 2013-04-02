@@ -1,0 +1,23 @@
+{
+	"em": {
+        "auth": true,
+        "pre": {
+            "js": [
+                "js/module.js",
+                "vendor/jquery/jquery-ui-1.9.2.custom.js",
+                "vendor/jquery/jquery.contextMenu.js",
+                "vendor/jquery/jquery.colorhelpers.js",
+                "vendor/jquery/jquery.dataTables.js",
+                "vendor/rickshaw/d3.v2.js",
+                "vendor/rickshaw/rickshaw.js",
+                "js/services/caBackend.js",
+                "js/directives/instrumentation.js",
+                "js/controllers/cloudAnalytics.js",
+                "js/config/routes.js"
+            ],
+            "css": [
+                "css/app.css"
+            ]
+        }
+	}
+}

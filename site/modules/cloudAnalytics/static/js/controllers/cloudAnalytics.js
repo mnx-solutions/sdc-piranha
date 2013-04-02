@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-            'cloudAnalyticsController',
+            'cloudAnalytics.LayoutController',
             ['$scope', 'requestContext', 'caBackend', '$timeout',
 
 function ($scope, requestContext, caBackend, $timeout) {
@@ -17,8 +17,19 @@ function ($scope, requestContext, caBackend, $timeout) {
         }
     }
     $scope.instrumentations = [];
-    var conf = new caBackend.conf();
 
+//    $scope.g = new caBackend.graph();
+
+    var ca = new caBackend();
+//    $scope.conf = [];
+    var conf = ca.describeCa();
+    conf.$get(function(){
+        console.log(conf);
+        $scope.conf = conf;
+        conf.metrics.forEach(labelMetrics);
+        $scope.metrics = conf.metrics;
+        $scope.fields = conf.fields;
+    });
     function labelMetrics(metric) {
         var fieldsArr = metric.fields;
         var labeledFields = [];
@@ -30,13 +41,13 @@ function ($scope, requestContext, caBackend, $timeout) {
         metric.labelHtml = moduleName + ': ' + metric.label;
         return metric;
     }
+//    $scope.conf = conf.$get(function(){
+//        console.log(conf);
+//        conf.metrics.forEach(labelMetrics);
+//        $scope.metrics = conf.metrics;
+//        $scope.fields = conf.fields;
+//    });
 
-    $scope.conf = conf.$get(function(){
-        console.log(conf);
-        conf.metrics.forEach(labelMetrics);
-        $scope.metrics = conf.metrics;
-        $scope.fields = conf.fields;
-    });
     $scope.createInstrumentation = function(){
 
         var decomp = [];
