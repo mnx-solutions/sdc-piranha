@@ -1,7 +1,13 @@
 'use strict';
 
 (function (app) {
-    app.factory('Datacenter', [ 'serverTab', '$q', function (serverTab, $q) {
+    app.factory('Datacenter', [
+        'serverTab',
+        '$q',
+        'localization',
+        'notification',
+        function (serverTab, $q, localization, notification) {
+
         var service = {};
         var datacenters = { job: null, index: {}, list: [], search: {} };
 

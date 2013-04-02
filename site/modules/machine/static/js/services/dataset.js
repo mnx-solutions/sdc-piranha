@@ -1,7 +1,12 @@
 'use strict';
 
 (function (app) {
-    app.factory('Dataset', ['serverTab', '$q', function (serverTab, $q) {
+    app.factory('Dataset', [
+        'serverTab',
+        '$q',
+        'localization',
+        'notification',
+        function (serverTab, $q, localization, notification) {
 
         var service = {};
         var datasets = {job: null, index: {}, list: [], search: {}};

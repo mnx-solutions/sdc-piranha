@@ -1,7 +1,12 @@
 'use strict';
 
 (function (app) {
-    app.factory('Package', ['serverTab', '$q', function (serverTab, $q) {
+    app.factory('Package', [
+        'serverTab',
+        '$q',
+        'localization',
+        'notification',
+        function (serverTab, $q, localization, notification) {
 
         var service = {};
         var packages = {job: null, index: {}, list: [], search: {}};
