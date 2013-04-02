@@ -63,7 +63,10 @@ module.exports = function (scope, callback) {
                                 call.log.debug('List machines succeeded for datacenter %s', name);
                             }
 
-                            call.update(null, response, (--count === 0));
+                            call.update(null, response);
+                            if(--count === 0) {
+                                call.done();
+                            }
                         });
                     });
 
