@@ -275,7 +275,7 @@ module.exports = function (scope, callback) {
             var options = {
                 name: call.data.name,
                 package: call.data.sdcpackage.name,
-                dataset: call.data.dataset.urn
+                dataset: call.data.dataset.id
             };
 
             call.log.info('Creating machine %s', call.data.name);

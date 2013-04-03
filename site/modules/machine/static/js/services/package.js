@@ -80,9 +80,9 @@
             return packages.index[id];
         };
 
-        function findPackageByMemoryDisk(memory, disk) {
+        function findPackage(packageName) {
             var found = packages.list.filter(function (pack) {
-                if (pack.memory === memory && pack.disk === disk) {
+                if (pack.name === packageName) {
                     return pack;
                 }
             });
@@ -94,9 +94,12 @@
             return null;
         }
 
-        service.getPackageByMemoryDisk = function (memory, disk) {
+        service.getPackage= function (packageName) {
+            var deferred = $q.defer();
+
             if (packages.list.final) {
-                return findPackageByMemoryDisk(memory, disk);
+                deferred.resolve(findPackage(packageName));
+                return deferred.promise;
             }
 
             // get the new machine list.
@@ -104,7 +107,7 @@
 
             var deferred = $q.defer();
             job.done(function (err, job) {
-                deferred.resolve(findPackageByMemoryDisk(memory, disk));
+                deferred.resolve(findPackage(packageName));
             });
 
             return deferred.promise;

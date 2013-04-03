@@ -99,10 +99,10 @@
                     <td>
                         <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                     </td>
-                    <td ng-init="dset = datasetInfo(machine.dataset);"> {{dset.name}} ({{dset.os}})</td>
-                    <td ng-init="pack = packageInfo(machine.memory, machine.disk);">
-                        <span data-translate> Memory: {{machine.memory | sizeFormat}}</span>
-                        <span data-translate> Disk: {{machine.disk | sizeFormat}}</span>
+                    <td ng-init="dset = datasetInfo(machine);"> {{dset.name}} ({{dset.os}})</td>
+                    <td ng-init="pack = packageInfo(machine);">
+                        <span data-translate> Memory: {{pack.memory | sizeFormat}}</span>
+                        <span data-translate> Disk: {{pack.disk | sizeFormat}}</span>
                         <span data-translate> VCPUs: {{pack.vcpus}}</span></td>
                     <td>
                     <span data-ng-repeat="ip in machine.ips">
