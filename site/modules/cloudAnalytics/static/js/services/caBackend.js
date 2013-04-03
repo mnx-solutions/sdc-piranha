@@ -43,7 +43,8 @@
             if (Object.keys(ca.instrumentations).length) {
                 if (!pending) {
                     pending = true;
-                    ca.request_time = new Date();
+                    var date = new Date();
+                    ca.request_time = Math.floor(date.getTime() / 1000);
                     ca._poll();
                 }
             }
@@ -69,7 +70,12 @@
 
         };
         service.prototype.createInstrumentation  = function(options, cb) {
-
+//            for(var i = 562; i < 573; i++){
+//                console.log(i);
+//                $http.delete('/cloudAnalytics/ca/instrumentations/'+i).success(function(res){
+//                    console.log(res);
+//                })
+//            }
             instrumentation.create({
                 createOpts: options,
                 parent:ca
