@@ -29,7 +29,7 @@ var opts = {
     main: app,
     extensions: config.extensions,
     compiler: compiler,
-    apps: ['login','main','signup']
+    apps: ['login','main','signup','landing']
 };
 
 Cloud.init({
