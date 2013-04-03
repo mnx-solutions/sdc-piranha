@@ -17,16 +17,20 @@
         var pending = false;
 
         ca._poll = function() {
-            $http.post('/cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(datapoints){
+            $http.post('/cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
                 console.log(ca.instrumentations);
-                console.log(datapoints);
+                console.log(res);
+                ca.options.last_poll_time = res.end_time;
+                var datapoints = res.dps;
                 for(var id in datapoints) {
                     ca.instrumentations[id].addValues(datapoints[id]);
                 }
 
-                ca.options.last_poll_time += ca.options.ndatapoints;
-                var now = new Date();
+                var date = new Date();
+                var now = Math.floor(date.getTime() / 1000);
+                console.log(date);
+                console.log(now);
                 var difference = now - ca.request_time;
                 ca.request_time = now;
                 ca.options.ndatapoints = difference + 1;
@@ -72,7 +76,7 @@
             }, function(err, inst){
                 ca.instrumentations[inst.id] = inst;
                 ca.options.individual[inst.id] = {
-                    start_time: Math.floor(inst.crtime /1000)
+                    crtime: Math.floor(inst.crtime /1000)
                 }
                 cb(inst);
             });

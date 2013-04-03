@@ -4,7 +4,7 @@
 module.exports = function (scope, app, callback) {
 
     var cloud = scope.get('cloud');
-    console.log(cloud);
+//    console.log(cloud);
     //convert ca call uri to cloudApi call uri
     function convertUri(uri) {
         return '/ca' + uri.substring(uri.indexOf('/instrumentations'));
@@ -58,7 +58,10 @@ module.exports = function (scope, app, callback) {
 //        console.log(arguments);
         var opts = req.body.options;
         var instrumentations = opts.individual;
-        var response = {};
+        var response = {
+            dps:{},
+            end_time:null
+        };
         var client = cloud.proxy();
         console.log(client);
         for(var instrumentationId in instrumentations) {
@@ -88,18 +91,20 @@ module.exports = function (scope, app, callback) {
 
             options.ndatapoints = opts.ndatapoints || 1;
             options.duration = 1;
-            options.start_time = opts.last_poll_time || instrumentation.start_time;
+            options.start_time = opts.last_poll_time || instrumentation.crtime;
 
             client[method](options, options, function(err, resp) {
 
                 if(!err) {
-                    response[instrumentationId] = resp;
+                    console.log(resp)
+                    response.dps[instrumentationId] = resp;
+                    response.end_time = resp[resp.length - 1].end_time;
                 } else {
-                    response[instrumentationId] = {
+                    response.dps[instrumentationId] = {
                         err: err
                     };
                 }
-                if(Object.keys(response).length === Object.keys(instrumentations).length) {
+                if(Object.keys(response.dps).length === Object.keys(instrumentations).length) {
                     console.log('responding');
                     console.log(response);
                     res.json(response);
