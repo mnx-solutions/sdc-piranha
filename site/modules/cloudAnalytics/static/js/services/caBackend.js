@@ -34,7 +34,7 @@
                                     instrumentation.buffer.unshift();
                                 }
                                 break;
-                            case 'discrete-composition':
+                            case 'discrete-decomposition':
                                 break;
                             case 'numeric-decomposition':
                                 break;
@@ -71,7 +71,7 @@
                 remote++;
             }
             local++
-            $timeout(sync, 1000);
+            $timeout(sync, 2000);
         }
         sync();
 

@@ -3,9 +3,9 @@
 (function (app) {
     app.controller(
             'cloudAnalytics.LayoutController',
-            ['$scope', 'requestContext', 'caBackend', '$timeout',
+            ['$scope', 'requestContext', 'caBackend', '$timeout', 'caInstrumentation',
 
-function ($scope, requestContext, caBackend, $timeout) {
+function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
     requestContext.setUpRenderContext('cloudAnalytics', $scope);
     $scope.counter = 0;
     $scope.current = {

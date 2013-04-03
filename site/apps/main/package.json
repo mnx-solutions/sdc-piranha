@@ -9,7 +9,8 @@
             "machine",
             "login",
             "debug",
-            "no-tracking"
+            "no-tracking",
+            "cloudAnalytics"
         ],
 		"auth": true
 	}
