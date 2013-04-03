@@ -56,7 +56,8 @@ module.exports = function (scope, app, callback) {
     app.post('/ca/getInstrumentations', function(req, res) {
         console.log('get instrumentations');
 //        console.log(arguments);
-        var instrumentations = req.body.instrumentations;
+        var opts = req.body.options;
+        var instrumentations = opts.individual;
         var response = {};
         var client = cloud.proxy();
         console.log(client);
@@ -85,10 +86,10 @@ module.exports = function (scope, app, callback) {
                     break;
             }
 
-            options.ndatapoints = instrumentation.ndatapoints || 1;
-            options.duration = instrumentation.duration || 1;
-            options.start_time = instrumentation.lastEndTime;// || Math.floor(instrumentation.crtime / 1000);
-            console.log(options);
+            options.ndatapoints = opts.ndatapoints || 1;
+            options.duration = 1;
+            options.start_time = opts.last_poll_time;// || Math.floor(instrumentation.crtime / 1000);
+
             client[method](instrumentation, options, function(err, resp) {
 
                 if(!err) {
