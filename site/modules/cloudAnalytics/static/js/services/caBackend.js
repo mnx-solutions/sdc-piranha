@@ -2,7 +2,7 @@
 
 
 (function (app) {
-    app.factory('caBackend', ['$resource', '$timeout', '$http', 'instrumentation', function ($resource, $timeout, $http, instrumentation) {
+    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation', function ($resource, $timeout, $http, instrumentation) {
 
         var ca = function(){};
         ca.options = {
@@ -19,6 +19,8 @@
         ca._poll = function() {
             $http.post('/cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(datapoints){
 
+                console.log(ca.instrumentations);
+                console.log(datapoints);
                 for(var id in datapoints) {
                     ca.instrumentations[id].addValues(datapoints[id]);
                 }
@@ -34,7 +36,7 @@
         }
 
         var sync = function(){
-            if (Object.keys(instrumentations).length) {
+            if (Object.keys(ca.instrumentations).length) {
                 if (!pending) {
                     pending = true;
                     ca.request_time = new Date();
@@ -55,20 +57,23 @@
         };
         service.prototype.describeCa = function(cb) {
             var self = this;
-            if(self.conf){
-                cb(conf);
-            } else {
-                ca.conf.then(function(conf) {
-                    self.conf = conf;
-                    cb(conf);
-                });
-            }
+
+            ca.conf.then(function(conf) {
+                self.conf = conf.data;
+                cb(conf.data);
+            });
 
         };
         service.prototype.createInstrumentation  = function(options, cb) {
-            instrumentation.create(options, function(err, inst){
+
+            instrumentation.create({
+                createOpts: options,
+                parent:ca
+            }, function(err, inst){
                 ca.instrumentations[inst.id] = inst;
-                ca.options.individual[inst.id] = {}
+                ca.options.individual[inst.id] = {
+                    start_time: Math.floor(inst.crtime /1000)
+                }
                 cb(inst);
             });
         }

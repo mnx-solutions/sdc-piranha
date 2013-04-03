@@ -22,30 +22,30 @@ function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
 
     var ca = new caBackend();
 //    $scope.conf = [];
-    var conf = ca.describeCa();
-    conf.$get(function(){
+    ca.describeCa(function (conf){
         console.log(conf);
+        console.log('h');
         $scope.conf = conf;
-        conf.metrics.forEach(labelMetrics);
-        $scope.metrics = conf.metrics;
-        $scope.fields = conf.fields;
+        $scope.conf.metrics.forEach(labelMetrics);
+        $scope.metrics = $scope.conf.metrics;
+        $scope.fields = $scope.conf.fields;
     });
     function labelMetrics(metric) {
         var fieldsArr = metric.fields;
         var labeledFields = [];
         for(var f in fieldsArr) {
-            labeledFields[fieldsArr[f]] = conf.fields[fieldsArr[f]].label;
+            labeledFields[fieldsArr[f]] = $scope.conf.fields[fieldsArr[f]].label;
         }
         metric.fields = labeledFields;
-        var moduleName = conf.modules[metric.module].label;
+        var moduleName = $scope.conf.modules[metric.module].label;
         metric.labelHtml = moduleName + ': ' + metric.label;
         return metric;
     }
-//    $scope.conf = conf.$get(function(){
+//    $scope.conf =$scope.conf.$get(function(){
 //        console.log(conf);
-//        conf.metrics.forEach(labelMetrics);
-//        $scope.metrics = conf.metrics;
-//        $scope.fields = conf.fields;
+//       $scope.conf.metrics.forEach(labelMetrics);
+//        $scope.metrics =$scope.conf.metrics;
+//        $scope.fields =$scope.conf.fields;
 //    });
 
     $scope.createInstrumentation = function(){
@@ -75,13 +75,13 @@ function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
     $scope.changeDecomposition = function(){
 
         if($scope.current.decomposition.primary) {
-            var currentType = conf.fields[$scope.current.decomposition.primary].type;
-            var currentArity = conf.types[currentType].arity;
+            var currentType =$scope.conf.fields[$scope.current.decomposition.primary].type;
+            var currentArity =$scope.conf.types[currentType].arity;
             $scope.current.decomposition.secondaryF = [];
             $scope.current.decomposition.secondary = null;
             for(var f in $scope.current.metric.fields){
-                var fieldType = conf.fields[f].type;
-                var fieldArity = conf.types[fieldType].arity;
+                var fieldType =$scope.conf.fields[f].type;
+                var fieldArity =$scope.conf.types[fieldType].arity;
                 if( fieldArity !== currentArity) {
                     $scope.current.decomposition.secondaryF[f] = $scope.current.metric.fields[f];
                 }

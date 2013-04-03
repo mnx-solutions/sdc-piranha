@@ -1,10 +1,11 @@
 'use strict';
 
+var instrumentations = {};
 
 (function (ng, app) {
     app.factory('caInstrumentation', ['$resource', '$timeout', '$http', 'MD5', function ($resource, $timeout, $http, MD5) {
         var url = 'cloudAnalytics/ca/instrumentations';
-        var instrumentations = {};
+//        var instrumentations = {};
 
         function DataSet(opts) {
             if(!(this instanceof DataSet)) {
@@ -25,12 +26,19 @@
 
         DataSet.prototype.addValue = function (value) {
             var self = this;
-            Object.keys(value.value).forEach(function(k) {
-                if(!self.map[k]) {
-                    self.map[k] = {};
+            if(value.value === +value.value) {
+                if(!self.map['default']) {
+                    self.map['default'] = {};
                 }
-                self.map[k][value.start_time] = value.value[k];
-            });
+                self.map['default'][value.start_time + ''] = value.value;
+            } else {
+                Object.keys(value.value).forEach(function(k) {
+                    if(!self.map[k]) {
+                        self.map[k] = {};
+                    }
+                    self.map[k][value.start_time + ''] = value.value[k];
+                });
+            }
         };
 
         DataSet.prototype.getValues = function (series, timeframe) {

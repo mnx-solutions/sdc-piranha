@@ -47,9 +47,9 @@
                 ca.createInstrumentation(iOptions, function(instrumentation){
                     $scope.instrumentation = instrumentation;
 
-                    $scope.$watch('instrumentation.buffer.length', function(){
-                        console.log($scope.instrumentation.buffer);
-                    })
+//                    $scope.$watch('instrumentation.buffer.length', function(){
+//                        console.log($scope.instrumentation.buffer);
+//                    })
 
                 });
 

@@ -65,7 +65,7 @@ module.exports = function (scope, app, callback) {
             var instrumentation = instrumentations[instrumentationId];
             var method;
             var options = {
-                id: instrumentation.id
+                id: instrumentationId
             };
 
             switch(instrumentation['value-arity']) {
@@ -88,14 +88,14 @@ module.exports = function (scope, app, callback) {
 
             options.ndatapoints = opts.ndatapoints || 1;
             options.duration = 1;
-            options.start_time = opts.last_poll_time;// || Math.floor(instrumentation.crtime / 1000);
+            options.start_time = opts.last_poll_time || instrumentation.start_time;
 
-            client[method](instrumentation, options, function(err, resp) {
+            client[method](options, options, function(err, resp) {
 
                 if(!err) {
-                    response[instrumentation.id] = resp;
+                    response[instrumentationId] = resp;
                 } else {
-                    response[instrumentation.id] = {
+                    response[instrumentationId] = {
                         err: err
                     };
                 }
