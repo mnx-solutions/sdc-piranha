@@ -2,7 +2,7 @@
     "Compute": "Compute",
     "title": "Machines",
     "{{count}} machines running": {
-        "none": "nothing is running",
+        "none": "nothing is running",,
         "singular": "machine running: {{count}}",
         "plural": "{{count}} machines running"
     },
@@ -18,7 +18,7 @@
     "Network": "Network",
     "Package": "Package ",
     "Memory": "Memory",
-    "Created": "Created",
+    "Created": "Created"
     "Memory: {{machine.memory | sizeFormat}}": "Memory: {{machine.memory | sizeFormat}}",
     "Disk: {{machine.disk | sizeFormat}}": "Disk: {{machine.disk | sizeFormat}}",
     "VCPUs: {{pack.vcpus}}": "VCPUs: {{pack.vcpus}}",
