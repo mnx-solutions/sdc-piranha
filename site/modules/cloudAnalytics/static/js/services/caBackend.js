@@ -30,8 +30,9 @@
                 var now = Math.floor(date.getTime() / 1000);
                 var difference = now - ca.request_time;
                 ca.request_time = now;
+
                 //if there's no difference in time (difference == 0), ask 1 datapoint;
-                ca.options.ndatapoints = difference || difference + 1;
+                ca.options.ndatapoints = difference || 1;
 
                 pending = false;
             });
