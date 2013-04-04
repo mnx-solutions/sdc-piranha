@@ -184,7 +184,7 @@
                     if (translations.hasOwnProperty(module)) {
                         var table = translations[module];
                         if (table.hasOwnProperty(identifier)) {
-                            var translation = table[identifier] +'(T)';
+                            var translation = table[identifier];
 
                             if (typeof(translation) === 'string') {
                                 return this._format(translation, params);
