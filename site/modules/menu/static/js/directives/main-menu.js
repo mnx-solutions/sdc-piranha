@@ -31,7 +31,8 @@
                             'data-translate-module="{{item.link}}" ' +
                             '>{{item.name}}</a>' +
                             '</li>'+
-                        '</ul>' +
+                            '</ul>' +
+                        '<div class="logout menu-right"><a href="/landing/forgetToken" data-translate>Logout</a></div>'+
                         '</div>' +
                         '<div id="genericInfo" class="alert alert-info" data-translat style="display:none;"></div>' + //TODO: Notification system should be separate
                         '<div id="genericError" class="alert alert-error" data-translate style="display:none;"></div>' + //TODO: Notification system should be separate
