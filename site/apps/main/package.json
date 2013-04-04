@@ -1,6 +1,6 @@
 {
 	"em": {
-		"route": "/",
+		"route": "/main",
 		"modules": [
             "localization",
             "notification",
