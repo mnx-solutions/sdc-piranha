@@ -8,12 +8,12 @@ module.exports = function (scope, app, callback) {
     var config = scope.config.sso;
 
     if(!config) {
-        scope.log.fatal('SSO config missing');
+        scope.log.warn('SSO config missing');
     }
 
 	app.post('/ssourl', function (req, res) {
         if(!config) {
-            scope.log.fatal('SSO config missing');
+            scope.log.warn('SSO config missing');
             return;
         }
 

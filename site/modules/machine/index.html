@@ -302,22 +302,22 @@
         <form class="form-horisontal inline-form">
 
             <div class="controls">
-                <label class="control-label" for="machinename" data-translate>Machine
-                    name:</label>
+                <label class="control-label" for="machinename"><span data-translate>Machine
+                    name</span>:</label>
                 <input id="machinename" type="text" placeholder="Name"
                        data-ng-model="data.name" data-translate="placeholder"><br/>
 
                 <label class="control-label"
-                       for="datacenter" data-translate>Datacenter:</label>
+                       for="datacenter"><span data-translate>Datacenter</span>:</label>
                 <select id="datacenter"  data-ng-model="data.datacenter"
                         data-ng-options="key as key for (key, value) in datacenters"></select>
 
-                <label class="control-label" for="dataset" data-translate>Image
-                    (version):</label>
+                <label class="control-label" for="dataset"><span data-translate>Image
+                    (version)</span>:</label>
                 <select id="dataset" data-ng-model="data.dataset"
                         data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select>
 
-                <label class="control-label" for="package" data-translate>Package:</label>
+                <label class="control-label" for="package"><span data-translate>Package</span>:</label>
                 <select id="package" data-ng-model="data.sdcpackage"
                         data-ng-options="package.name for package in packages"></select><br/>
 
