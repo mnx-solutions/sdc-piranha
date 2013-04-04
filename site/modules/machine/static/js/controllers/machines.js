@@ -6,13 +6,15 @@
         [
             '$scope',
             '$filter',
+            '$$track',
+            '$dialog',
             'requestContext',
             'Machine',
             'Dataset',
             'Package',
             'localization',
 
-function ($scope, $filter, requestContext, Machine, Dataset, Package, localization) {
+function ($scope, $filter, $$track, $dialog, requestContext, Machine, Dataset, Package, localization) {
     localization.bind('machine', $scope);
     requestContext.setUpRenderContext('machine.index', $scope);
 
@@ -25,9 +27,23 @@ function ($scope, $filter, requestContext, Machine, Dataset, Package, localizati
     $scope.groupedMachines = [];
     $scope.itemsPerPage = 10;
     $scope.pagedMachines = [];
+    $scope.collapsedMachines = {};
     $scope.maxPages = 5;
     $scope.currentPage = 0;
     $scope.machines = Machine.machine();
+
+    var confirm = function (question, callback) {
+        var title = 'Confirm';
+        var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
+
+        $dialog.messageBox(title, question, btns)
+            .open()
+            .then(function(result){
+                if(result ==='ok'){
+                    callback();
+                }
+            });
+    };
 
     $scope.$on(
         'event:forceUpdate',
@@ -234,6 +250,27 @@ function ($scope, $filter, requestContext, Machine, Dataset, Package, localizati
         }
     }
 
+    $scope.startMachine = function (id) {
+        confirm(localization.translate($scope, null, 'Are you sure you want to start the machine'), function () {
+            $$track.event('machine', 'start');
+            Machine.startMachine(id);
+        });
+    };
+
+    $scope.stopMachine = function (id) {
+        confirm(localization.translate($scope, null, 'Are you sure you want to stop the machine'), function () {
+            Machine.stopMachine(id);
+            $$track.event('machine', 'stop');
+        });
+    };
+
+    $scope.deleteMachine = function (id) {
+        confirm(localization.translate($scope, null, 'Are you sure you want to delete the machine'), function () {
+            $$track.event('machine', 'delete');
+            Machine.deleteMachine(id);
+        });
+    };
+
     $scope.showGroupActions = function () {
         $scope.ischecked = false;
         for (var machineid in $scope.checked) {
@@ -241,16 +278,32 @@ function ($scope, $filter, requestContext, Machine, Dataset, Package, localizati
                 $scope.ischecked = true;
             }
         }
-    }
+    };
 
-    //Dataset.updateDatasets();
+    $scope.toggleMachine = function (id) {
+        if ($scope.isCollapsed(id)) {
+            $scope.collapsedMachines[id] = false;
+        } else {
+            $scope.collapsedMachines[id] = true;
+        }
+    };
+
+    $scope.isCollapsed = function (id) {
+        return !$scope.collapsedMachines.hasOwnProperty(id) ||
+            $scope.collapsedMachines[id];
+    };
+
+    $scope.checkState = function(state) {
+        console.log(state);
+    };
+
     $scope.datasetInfo = function (dataseturn) {
         return Dataset.dataset(dataseturn);
-    }
+    };
+
     $scope.packageInfo = function (memory, disk) {
         return Package.getPackageByMemoryDisk(memory, disk);
-    }
-
+    };
 }
         ]);
 }(window.angular, window.JP.getModule('Machine')));

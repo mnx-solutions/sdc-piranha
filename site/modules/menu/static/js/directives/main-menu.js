@@ -18,23 +18,29 @@
                     });
                 });
             },
-            template: '<div class="navbar">' +
-                        '<div class="navbar-inner">' +
-                            '<a class="brand hidden-phone" href="#" data-translate>Joyent Portal</a>' +
-                            '<ul class="nav">' +
-                            '<li data-ng-repeat="item in mainMenu"'+
-                            'class="menuitem"'+
-                            'data-ng-class="{active: item.active}">' +
-                            '<a href="#!/{{item.link}}" ' +
-                            'data-translate ' +
-                            'data-translate-expression="true" ' +
-                            'data-translate-module="{{item.link}}" ' +
-                            '>{{item.name}}</a>' +
-                            '</li>'+
-                        '</ul>' +
+
+            template: '<div class="navbar-inner">' +
+                        '<div class="container">' +
+                            '<a href="/"><div class="brand pull-left"></div></a>' +
+                            '<div class="pull-right" style="margin-top:25px">' +
+                                '<div class="btn-group pull-left">' +
+                                    '<button class="btn btn-small" data-translate>Settings</button>' +
+                                    '<button class="btn btn-small dropdown-toggle" data-toggle="dropdown">' +
+                                        '<span class="caret"></span>' +
+                                    '</button>' +
+                                    '<ul class="dropdown-menu">' +
+                                        '<li data-ng-repeat="item in mainMenu">' +
+                                            '<a href="#!/{{item.link}}" ' +
+                                                'data-translate ' +
+                                                'data-translate-expression="true" ' +
+                                                'data-translate-module="{{item.link}}" ' +
+                                            '>{{item.name}}</a>' +
+                                        '</li>' +
+                                    '</ul>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div class="clearfix"></div>' +
                         '</div>' +
-                        '<div id="genericInfo" class="alert alert-info" data-translat style="display:none;"></div>' + //TODO: Notification system should be separate
-                        '<div id="genericError" class="alert alert-error" data-translate style="display:none;"></div>' + //TODO: Notification system should be separate
                       '</div>'
         };
     }]);
