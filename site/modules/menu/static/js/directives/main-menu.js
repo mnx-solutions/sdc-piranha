@@ -42,6 +42,7 @@
                             '<div class="clearfix"></div>' +
 
                         '</div>' +
+                        '<a href="/landing/forgetToken" class="logout-right" data-translate>Logout</a>'+
                       '</div>'
         };
     }]);
