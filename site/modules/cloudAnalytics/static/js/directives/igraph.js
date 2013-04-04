@@ -5,10 +5,12 @@
         return {
             restrict: "E",
             scope: {
+                instrumentations: '=',
                 graph:'=graph'
             },
             link: function ($scope){
-                console.log('graph inited');
+                $scope.series = [];
+
                 var g = false;
                 function createXAxis(graph) {
                     var axis = new Rickshaw.Graph.Axis.Time({

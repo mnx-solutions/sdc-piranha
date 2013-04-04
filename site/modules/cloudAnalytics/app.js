@@ -34,11 +34,6 @@ module.exports = function (scope, app, callback) {
         client.CreateInstrumentation(req.body, function (err, resp) {
             console.log(resp);
             if (!err) {
-
-        //            resp['uri'] = '/ca/instrumentations/' + resp.id;
-        //            for (var i = 0; i < resp['uris'].length; i++ ){
-        //                resp['uris'][i].uri = convertUri(resp['uris'][i].uri);
-        //            }
                 res.json(resp);
             }
         });
@@ -54,16 +49,15 @@ module.exports = function (scope, app, callback) {
     });
 
     app.post('/ca/getInstrumentations', function(req, res) {
-        console.log('get instrumentations');
-//        console.log(arguments);
+
         var opts = req.body.options;
         var instrumentations = opts.individual;
         var response = {
-            dps:{},
+            datapoints:{},
             end_time:null
         };
         var client = cloud.proxy();
-        console.log(client);
+
         for(var instrumentationId in instrumentations) {
             var instrumentation = instrumentations[instrumentationId];
             var method;
@@ -96,15 +90,14 @@ module.exports = function (scope, app, callback) {
             client[method](options, options, function(err, resp) {
 
                 if(!err) {
-                    console.log(resp)
-                    response.dps[instrumentationId] = resp;
+                    response.datapoints[instrumentationId] = resp;
                     response.end_time = resp[resp.length - 1].end_time;
                 } else {
-                    response.dps[instrumentationId] = {
+                    response.datapoints[instrumentationId] = {
                         err: err
                     };
                 }
-                if(Object.keys(response.dps).length === Object.keys(instrumentations).length) {
+                if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
                     console.log('responding');
                     console.log(response);
                     res.json(response);
@@ -113,76 +106,6 @@ module.exports = function (scope, app, callback) {
 
         }
     })
-//    // get instrumentation values by subject;
-//    app.get('/ca/instrumentations/value/:id', function(req, res) {
-//        var subject = req.query.subject || req.params.subject;
-//        if(!subject) {
-//            throw new Error('no subject specified');
-//        }
-//        switch (subject) {
-//            case 'raw':
-//                var options = {
-//                    id: req.params.id,
-//                    ndatapoints: req.query.ndatapoints,
-//                    duration: req.query.duration
-//                };
-//                if(req.query.start_time) {
-//                    options.start_time = req.query.start_time;
-//                }
-//                cloud.proxy().GetInstrumentationValue(options, function(err, resp) {
-//                    //expected response is an array
-//                    console.log('raw response');
-//                    console.log(resp);
-//    //                var ret = [resp];
-//                    res.json(resp);
-//                });
-//                break;
-//            case 'heatmap':
-//                var options = {
-//                    id: req.params.id,
-//                    ndatapoints: 1, //req.query.ndatapoints,
-//                    duration: 1//req.params.duration
-////                    height: parseInt(req.params.height),
-////                    width: parseInt(req.params.width)
-//                };
-//                if(req.query.start_time) {
-//                    options.start_time = req.query.start_time;
-//                }
-//                console.log('heatmap');
-//                cloud.proxy().GetInstrumentationHeatmap(parseInt(req.params.id), options, function (err, resp) {
-//                    console.log('response present object');
-//                    console.log(resp[0].present);
-//                    if (!err) {
-//                        res.json(resp[0]);
-//                    }
-//                });
-//                break;
-//            case 'heatmap.image':
-//                cloud.proxy().GetInstrumentationHeatmap(parseInt(req.params.id), req.query, function (err, resp) {
-//                    if (!err) {
-//                        res.json(resp);
-//                    }
-//                });
-//                break;
-//            case 'heatmap.details':
-//                cloud.proxy().GetInstrumentationHeatmapDetails(parseInt(req.params.id), req.query, function (err, resp) {
-//                    if (!err) {
-//                        res.json(resp);
-//                    }
-//                });
-//                break;
-//            case 'heatmap.average':
-//                cloud.proxy().GetInstrumentationHeatmap(parseInt(req.params.id), req.query, function (err, resp) {
-//                    if (!err) {
-//                        res.json(resp);
-//                    }
-//                });
-//                break;
-//            default:
-//                throw new Error('subject:' + subject + ' not found');
-//        }
-//
-//    })
 
     setImmediate(callback);
 }

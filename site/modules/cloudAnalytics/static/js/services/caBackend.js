@@ -14,32 +14,30 @@
         ca.instrumentations = {};
         ca.conf = $http.get('/cloudAnalytics/ca');
 
-        var pending = false;
 
+        // Poll all the instrumentation values.
+        var pending = false;
         ca._poll = function() {
             $http.post('/cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
-                console.log(ca.instrumentations);
-                console.log(res);
                 ca.options.last_poll_time = res.end_time;
-                var datapoints = res.dps;
+                var datapoints = res.datapoints;
                 for(var id in datapoints) {
                     ca.instrumentations[id].addValues(datapoints[id]);
                 }
 
                 var date = new Date();
                 var now = Math.floor(date.getTime() / 1000);
-                console.log(date);
-                console.log(now);
                 var difference = now - ca.request_time;
                 ca.request_time = now;
-                ca.options.ndatapoints = difference + 1;
+                //if there's no difference in time (difference == 0), ask 1 datapoint;
+                ca.options.ndatapoints = difference || difference + 1;
 
                 pending = false;
             });
         }
 
-        var sync = function(){
+        ca._sync = function(){
             if (Object.keys(ca.instrumentations).length) {
                 if (!pending) {
                     pending = true;
@@ -48,18 +46,13 @@
                     ca._poll();
                 }
             }
-            $timeout(sync, 1000);
+            $timeout(ca._sync, 1000);
         }
-        sync();
+        ca._sync();
 
-        function service() {
-            this.conf = null;//new conf();
-//            this.instrumentations = [];
-//            if(id) {
-//                this.instrumentations.push(id);
-//            }
 
-        };
+        // The part of service which will be exposed and gets instanciated
+        function service() {};
         service.prototype.describeCa = function(cb) {
             var self = this;
 
@@ -86,6 +79,16 @@
                 }
                 cb(inst);
             });
+        }
+
+        service.prototype.getSeriesById = function(id, range) {
+            ca.instrumentations[id].getValues(false, {
+
+            });
+        }
+
+        servive.prototype.getAllSeries = function(range) {
+
         }
 
         return service;
