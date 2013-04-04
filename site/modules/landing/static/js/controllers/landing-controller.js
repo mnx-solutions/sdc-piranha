@@ -7,24 +7,36 @@
             $scope.login = function() {
                 var urlOpts = {
                     'method': 'login',
-                    'redirectUrl': '/main/'
+                    'redirectUrl': '/main/#!/machine'
                 }
-                // get login url
-                Landing.getLoginUrl(urlOpts, function(data) {
-                    // redirect user to the login page retrieved from /ssourl
-                    $window.location.href = data.url;
-                })
+
+                // redirect to login url
+                $scope.redirectToSSO(urlOpts);
             };
 
             $scope.signup = function() {
                 var urlOpts = {
                     'method': 'signup',
+                    'redirectUrl': '/main/#!/machine'
+                }
+
+                // redirect to signup url
+                $scope.redirectToSSO(urlOpts);
+            }
+
+            $scope.passreset = function() {
+                var urlOpts = {
+                    'method': 'resetpassword',
                     'redirectUrl': '/'
                 }
 
-                // get signup url
-                Landing.getSignupUrl(urlOpts, function(data) {
-                    // redirect user to the signup page
+                // redirect to password reset
+                $scope.redirectToSSO(urlOpts);
+            }
+
+            $scope.redirectToSSO = function(urlOpts) {
+                // get url from our SSOurl endpoint
+                Landing.getSSOUrl(urlOpts, function(data) {
                     $window.location.href = data.url;
                 })
             }

@@ -1,20 +1,21 @@
 'use strict';
 
-var smartdc = require('smartdc');
 var vasync = require('vasync');
 
 module.exports = function (scope, callback) {
-    var cloud = scope.get('cloud');
     var server = scope.api('Server');
 
+    ;
     server.onCall('MachineList', function (call) {
         call.log.info('Handling machine list event');
-        var datacenters = {};
 
+        var cloud = call.cloud;
+        var datacenters = {};
         vasync.pipeline({
             'funcs': [
                 function (args, next) {
                     call.log.debug('List datacenters');
+                    call.log.info(this);
                     cloud.listDatacenters(function (err, dcs) {
                         if (err) {
                             call.log.error(err);
@@ -74,11 +75,13 @@ module.exports = function (scope, callback) {
             ]
         }, function (err, results) {
         });
+
     });
 
     /* listPackages */
     server.onCall('PackageList', function (call) {
         call.log.info('Handling list packages event');
+        var cloud = call.cloud;
 
         var client = cloud.proxy();
         client.listPackages(call.done.bind(call));
@@ -86,6 +89,7 @@ module.exports = function (scope, callback) {
 
     /* listDatasets */
     server.onCall('DatasetList', function (call) {
+        var cloud = call.cloud;
         call.log.info('Handling list datasets event');
 
         var client = cloud.proxy();
@@ -95,6 +99,7 @@ module.exports = function (scope, callback) {
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datasets event');
+        var cloud = call.cloud;
 
         cloud.listDatacenters(call.done.bind(call));
     });
@@ -107,6 +112,7 @@ module.exports = function (scope, callback) {
         },
         handler: function (call) {
             call.log.info('Handling machine tags list call, machine %s', call.data.uuid);
+            var cloud = call.cloud;
 
             var client = cloud.proxy();
             client.listMachineTags(call.data.uuid, call.done.bind(call));
@@ -122,6 +128,9 @@ module.exports = function (scope, callback) {
         },
         handler: function (call) {
             call.log.info('Handling machine tags save call, machine %s', call.data.uuid);
+            var cloud = call.cloud;
+
+
 
             var client = cloud.proxy();
             client.deleteMachineTags(call.data.uuid, function (err) {
@@ -144,8 +153,9 @@ module.exports = function (scope, callback) {
             return data && typeof data.uuid === 'string';
         },
         handler: function (call) {
-            var machineId = call.data.uuid;
             call.log.info('Handling machine details call, machine %s', machineId);
+            var machineId = call.data.uuid;
+            var cloud = call.cloud;
 
             var client = cloud.proxy(call.data);
             
@@ -206,6 +216,8 @@ module.exports = function (scope, callback) {
         }
         if(!opts.handler) {
             opts.handler = function (call) {
+                var cloud = call.cloud;
+
                 var machineId = call.data.uuid;
                 call.log.debug(logVerb + ' machine %s', machineId);
 
@@ -244,6 +256,7 @@ module.exports = function (scope, callback) {
                 data.sdcpackage.hasOwnProperty('name');
         },
         handler: function (call) {
+            var cloud = call.cloud;
             var machineId = call.data.uuid;
             var options = {
                 package: call.data.sdcpackage.name
@@ -254,7 +267,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(client, call, call.data.sdcpackage)
+                    pollForMachinePackageChange(client, call, call.data.sdcpackage);
                 } else {
                     call.log.error(err);
                     call.done(err);
@@ -269,9 +282,12 @@ module.exports = function (scope, callback) {
             return typeof data === 'object' &&
                 data.sdcpackage.hasOwnProperty('name') &&
                 data.hasOwnProperty('dataset') &&
+                data.hasOwnProperty('datacenter') &&
                 data.dataset.hasOwnProperty('urn');
         },
         handler: function (call) {
+            var cloud = call.cloud;
+
             var options = {
                 name: call.data.name,
                 package: call.data.sdcpackage.name,
