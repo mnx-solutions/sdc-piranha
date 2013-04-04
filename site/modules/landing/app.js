@@ -57,6 +57,13 @@ module.exports = function (scope, app, callback) {
         }
     });
 
+    app.get('/forgetToken', function(req, res) {
+        req.session.token = null;
+        req.session.save();
+
+        res.redirect('/');
+    });
+
     app.get('/saveToken/:url', function(req, res) {
 
         // redirect to this url after we're done with the token
