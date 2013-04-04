@@ -1,6 +1,5 @@
 'use strict';
 
-var smartdc = require('smartdc');
 var vasync = require('vasync');
 
 module.exports = function (scope, callback) {
@@ -268,7 +267,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(client, call, call.data.sdcpackage)
+                    pollForMachinePackageChange(client, call, call.data.sdcpackage);
                 } else {
                     call.log.error(err);
                     call.done(err);
@@ -283,6 +282,7 @@ module.exports = function (scope, callback) {
             return typeof data === 'object' &&
                 data.sdcpackage.hasOwnProperty('name') &&
                 data.hasOwnProperty('dataset') &&
+                data.hasOwnProperty('datacenter') &&
                 data.dataset.hasOwnProperty('urn');
         },
         handler: function (call) {

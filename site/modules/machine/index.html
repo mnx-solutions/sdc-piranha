@@ -304,21 +304,21 @@
             <div class="controls">
                 <label class="control-label" for="machinename" data-translate>Machine
                     name:</label>
-                <input type="text" placeholder="Name"
-                       name="machinename" data-ng-model="machinename" data-translate="placeholder"><br/>
+                <input id="machinename" type="text" placeholder="Name"
+                       data-ng-model="data.name" data-translate="placeholder"><br/>
 
                 <label class="control-label"
                        for="datacenter" data-translate>Datacenter:</label>
-                <select name="datacenter" data-ng-model="datacenter"
-                        data-ng-options="value as key for (key, value) in datacenters"></select>
+                <select id="datacenter"  data-ng-model="data.datacenter"
+                        data-ng-options="key as key for (key, value) in datacenters"></select>
 
                 <label class="control-label" for="dataset" data-translate>Image
                     (version):</label>
-                <select name="dataset" data-ng-model="dataset"
+                <select id="dataset" data-ng-model="data.dataset"
                         data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select>
 
                 <label class="control-label" for="package" data-translate>Package:</label>
-                <select name="package" data-ng-model="sdcpackage"
+                <select id="package" data-ng-model="data.sdcpackage"
                         data-ng-options="package.name for package in packages"></select><br/>
 
                 <button href="#myModal" role="button" data-toggle="modal"
