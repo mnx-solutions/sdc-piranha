@@ -254,7 +254,7 @@ module.exports = function (scope, callback) {
             var client = cloud.proxy(call.data);
             client.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(client, call, call.data.sdcpackage)
+                    pollForMachinePackageChange(client, call, call.data.sdcpackage);
                 } else {
                     call.log.error(err);
                     call.done(err);
@@ -269,6 +269,7 @@ module.exports = function (scope, callback) {
             return typeof data === 'object' &&
                 data.sdcpackage.hasOwnProperty('name') &&
                 data.hasOwnProperty('dataset') &&
+                data.hasOwnProperty('datacenter') &&
                 data.dataset.hasOwnProperty('urn');
         },
         handler: function (call) {
@@ -277,7 +278,7 @@ module.exports = function (scope, callback) {
                 package: call.data.sdcpackage.name,
                 dataset: call.data.dataset.urn
             };
-
+            console.log(call.data);
             call.log.info('Creating machine %s', call.data.name);
             call.getImmediate(false);
 

@@ -61,13 +61,16 @@ var instrumentations = {};
             if(!series) {
                 series = Object.keys(self.map);
             }
+            ret._timestamps = [];
+            var i;
+            for(i = 0; i < timeframe.nr; i++) {
+                ret._timestamps.unshift(timeframe.endTime - i);
+            }
             series.forEach(function(k) {
                 ret[k] = [];
-                var i;
-                for(i = 0; i < timeframe.nr; i++) {
-                    ret[k].push(self.map[k][timeframe.endTime - i] || 0);
-                }
-                ret[k] = ret[k].reverse();
+                ret._timestamps.forEach(function (ts){
+                    ret[k].push(self.map[k][ts] || 0);
+                });
             });
             self.ask[id] = true;
 

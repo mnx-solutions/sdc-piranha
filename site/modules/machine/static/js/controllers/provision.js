@@ -42,14 +42,11 @@
                 var datacenters = Datacenter.datacenter();
                 $scope.datacenters = datacenters;
 
+                $scope.data = {};
+
                 $scope.clickProvision = function () {
                     confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
-                        $scope.retinfo = Machine.provisionMachine({
-                            name: $scope.machinename,
-                            sdcpackage: $scope.sdcpackage,
-                            dataset: $scope.dataset,
-                            datacenter: $scope.datacenter
-                        });
+                        $scope.retinfo = Machine.provisionMachine($scope.data);
                         $location.path("/machine");
                     });
                 };
