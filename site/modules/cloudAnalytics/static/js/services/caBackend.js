@@ -29,11 +29,9 @@
 
                 var date = new Date();
                 var now = Math.floor(date.getTime() / 1000);
-                console.log(date);
-                console.log(now);
                 var difference = now - ca.request_time;
                 ca.request_time = now;
-                ca.options.ndatapoints = difference + 1;
+                ca.options.ndatapoints = difference || 1;
 
                 pending = false;
             });

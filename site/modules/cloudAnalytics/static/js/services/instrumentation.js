@@ -13,41 +13,47 @@ var instrumentations = {};
             }
             opts = opts || {};
 
-            this.startTime = opts.startTime || (new Date()).getTime();
+            this.startTime = opts.startTime || (Math.floor(Date.now()/1000));
             this.values = {};
             this.map = {};
-
+            this.ask = {};
+            this.endTime = this.startTime + 1;
         }
 
         DataSet.prototype.addValues = function (data) {
             var self = this;
             data.forEach(self.addValue.bind(self));
+            self.ask = {};
         };
 
         DataSet.prototype.addValue = function (value) {
             var self = this;
-            if(value.value === +value.value) {
-                if(!self.map['default']) {
-                    self.map['default'] = {};
-                }
-                self.map['default'][value.start_time + ''] = value.value;
-            } else {
+            if(ng.isObject(value.value)){
                 Object.keys(value.value).forEach(function(k) {
                     if(!self.map[k]) {
                         self.map[k] = {};
                     }
                     self.map[k][value.start_time + ''] = value.value[k];
+                    self.endTime = value.start_time;
                 });
+            } else if(value.value === +value.value) {
+                if(!self.map['default']) {
+                    self.map['default'] = {};
+                }
+                self.map['default'][value.start_time + ''] = value.value;
+                self.endTime = value.start_time;
+            } else {
+                console.warn(value);
             }
         };
 
-        DataSet.prototype.getValues = function (series, timeframe) {
+        DataSet.prototype.getValues = function (id, timeframe, series) {
             var self = this;
 
             if(+timeframe === timeframe) {
                 timeframe = {
                     nr: +timeframe,
-                    endTime: (new Date()).getTime()
+                    endTime: self.endTime
                 };
             }
             var ret = {};
@@ -58,12 +64,18 @@ var instrumentations = {};
             series.forEach(function(k) {
                 ret[k] = [];
                 var i;
-                for(i = 0; i++; i < timeframe.nr) {
+                for(i = 0; i < timeframe.nr; i++) {
                     ret[k].push(self.map[k][timeframe.endTime - i] || 0);
                 }
+                ret[k] = ret[k].reverse();
             });
+            self.ask[id] = true;
 
             return ret;
+        };
+
+        DataSet.prototype.hasChanged = function (id) {
+            return !this.ask[id];
         };
 
         function Instrumentation(uuid, opts) {
@@ -139,6 +151,10 @@ var instrumentations = {};
             return this._data.getValues.apply(this._data, arguments);
         };
 
+        Instrumentation.prototype.hasChanged = function (id) {
+            return this._data.hasChanged(id);
+        };
+
         Instrumentation.prototype.clone = function (opts) {
             var self = this;
 
@@ -147,8 +163,6 @@ var instrumentations = {};
         function _getUUID(opts) {
             return MD5(ng.toJson(opts.createOpts));
         }
-
-
 
         var service = {};
 
