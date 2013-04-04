@@ -57,11 +57,14 @@ var instrumentations = {};
                 };
             }
             var ret = {};
+            Object.defineProperty(ret, '_timestamps', {value: [], writable: true});
+            Object.defineProperty(ret, '_behind', {value: self.endTime - timeframe.endTime});
 
             if(!series) {
                 series = Object.keys(self.map);
             }
             ret._timestamps = [];
+
             var i;
             for(i = 0; i < timeframe.nr; i++) {
                 ret._timestamps.unshift(timeframe.endTime - i);
