@@ -31,9 +31,7 @@
                 };
 
                 $scope.machineid = machineid;
-
-                $scope.selectedmachine = Machine.machine(machineid);
-
+                $scope.machine = Machine.machine(machineid);
                 $scope.tagnr = 0;
 
                 function tagcloud(tags) {
@@ -51,7 +49,6 @@
                         Object.keys(tags).forEach(function(k) {
                             addVal(k, tags[k]);
                         });
-                        addVal('','');
                         d.resolve(cloud);
                     }
                     $q.when(tags).then(function (t) {
@@ -69,17 +66,25 @@
                         var map = {};
                         keys.forEach(function (k) {
                             delete val[k].conflict;
+
+                            if (!val[k].key.length || !val[k].val.length) {
+                                delete val[k];
+                                return;
+                            }
+
                             if (!val[k].key && !val[k].val && !old[k].key && !old[k].val && k != $scope.tagnr) {
                                 delete val[k];
                             } else if (val[k].key) {
-                                if(map[val[k].key] !== undefined){
+                                if (map[val[k].key] !== undefined){
                                     val[map[val[k].key]].conflict = true;
                                     val[k].conflict = true;
                                 }
+
                                 map[val[k].key] = k;
                             }
                         });
-                        if(val[$scope.tagnr].key || val[$scope.tagnr].val) {
+
+                        if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
                             val[++$scope.tagnr] = {key: '', val: ''};
                         }
                     }, true);
@@ -90,17 +95,17 @@
                     function (){
                         Machine.updateMachines();
                         Machine.machine(machineid).then(function(m){
-                            $scope.selectedmachine = m;
+                            $scope.machine = m;
                         });
                     }
                 );
 
                 $scope.packages = Package.package();
 
-                if ($scope.selectedmachine.id) {
-                    $scope.package = Package.package($scope.selectedmachine.package);
+                if ($scope.machine.id) {
+                    $scope.package = Package.package($scope.machine.package);
                 } else {
-                    $scope.selectedmachine.then(function(value){
+                    $scope.machine.then(function(value){
                         $scope.package = Package.package(value.package);
                     });
                 }
