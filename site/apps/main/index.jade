@@ -19,3 +19,57 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
       script(type='text/javascript',src='#{link._url}')
     each source in jss
       script(type='text/javascript')!= source
+
+    div(class='JoyentPortal-module-menu')
+        div(class="container navbar-static-bottom")
+            span(class="span2")
+                div(class="brand color")
+            div(class="pull-right")
+                span(class="span2")
+                    h5 About
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/tos", target="_blank") Terms of Service
+                        li
+                            a(href="http://joyent.com/company/policies", target="_blank") Policies
+                        li
+                            a(href="http://joyent.com/company/security-and-compliance", target="_blank") Compliance
+
+                span(class="span2")
+                    h5 Dev Center
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/developers")Overview
+                        li
+                            a(href="http://wiki.joyent.com/display/jpc2/JoyentCloud+Home", target="_blank") Joyent Cloud Docs
+                        li
+                            a(href="http://sdcdoc.joyent.com/sdcdoc/display/sdc/SmartDataCenter+Home", target="_blank") SmartDataCenter Docs
+                        li
+                            a(href="http://joyent.com/developers/support") Support
+                        li
+                            a(href="http://joyent.com/developers/support/training-services") Training
+
+                span(class="span2")
+                    h5 Technology
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/technology") Overview
+                        li
+                            a(href="http://joyent.com/technology/nodejs") Node.js
+                        li
+                            a(href="http://joyent.com/technology/smartos") SmartOS
+                span(class="span3")
+                    h5 Solution
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/solutions") Platform
+                        li
+                            a(href="http://joyent.com/solutions") Application
+                        li
+                            a(href="http://joyent.com/solutions") Data
+                        li
+                            a(href="http://joyent.com/solutions") Infrastructure
+                        li
+                            a(href="http://joyent.com/solutions") Services
+
+            div(class="clearfix")
