@@ -1,5 +1,3 @@
-
-
 .brand {
     background-image: url('../img/logo-color-duo.png');
     background-repeat:no-repeat;
@@ -11,7 +9,6 @@
 .brand.color {
     background-image: url('../img/logo-color.png');
 }
-
 
 .navbar-inner .container {
     padding:10px;
