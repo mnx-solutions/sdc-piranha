@@ -3,7 +3,9 @@
 (function (app) {
     app.controller(
         'LandingPageController',
-        ['$scope', '$window', 'Landing', function ($scope, $window, Landing) {
+        ['$scope', '$window', 'Landing', 'localization', function ($scope, $window, Landing, localization) {
+            localization.bind('landing', $scope);
+
             $scope.login = function() {
                 var urlOpts = {
                     'method': 'login',

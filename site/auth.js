@@ -1,11 +1,15 @@
 'use strict';
 
 var config = require('easy-config');
-var Cloud = require('../lib/cloud');
+var SmartCloud = require('../lib/smartcloud');
 var bunyan = require('bunyan');
 
-module.exports = function (req, res, next) {
+var smartCloud = new SmartCloud({
+    log: bunyan.createLogger(config.log),
+    api: config.cloudapi
+});
 
+module.exports = function (req, res, next) {
     if(!req.session.token) {
         // token missing, don't allow the request
         res.send(401);
@@ -14,26 +18,31 @@ module.exports = function (req, res, next) {
         // we have a token, create a new cloudapi object to the session with this
         if(!req.cloud) {
 
-            var log = bunyan.createLogger(config.log);
-
-            Cloud.init({
-                log: log,
-                token: req.session.token,
-                api: config.cloudapi
-            }, function (err, cloud) {
-                if (err) {
-                    log.error(err);
-                    return;
-                }
-
-                // save cloud into the session
-                req.cloud = cloud;
-
-                return next();
+            var _cloud = null;
+            Object.defineProperty(req, 'cloud', {
+                get: function() {
+                    if(!_cloud) {
+                        _cloud = smartCloud.cloud({ token: req.session.token });
+                    }
+                    return _cloud;
+                },
+                enumerable: true
             });
 
+            if(smartCloud.needRefresh()) {
+                smartCloud.cloud({token: req.session.token}, function (err, cloud) {
+                    if (err) {
+                        next(err);
+                        return;
+                    }
+                    _cloud = cloud;
+                    next();
+                });
+            } else {
+                next();
+            }
         } else {
-            return next();
+            next();
         }
 
     }
