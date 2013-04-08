@@ -1,50 +1,26 @@
 'use strict';
 
-(function (ng, app) {
-    app.service('account', ['$rootScope', '$resource',
+(function (app) {
+    // I provide information about the current route request.
+    app.factory('Account', ['$http','$q', 'serverTab', function ($http, $q, serverTab) {
+        var service = {};
 
-function ($rootScope, $resource) {
-    var User = $resource('/account');
-    var Key = $resource('/account/keys/:key');
+        var account = {};
+        service.getAccount = function() {
+            var deferred = $q.defer();
 
-    var user = User.get();
+            serverTab.call({
+                name: 'getAccount',
+                progress: function(err, job) {
+                },
+                done: function(err, job) {
+                    deferred.resolve(job.__read());
+                }
+            })
 
-    return {
-        getUser: function (callback) {
-            if (user) {
-                return callback ? callback(user) : user;
-            }
-            return User.get(callback);
-        },
-        updateUser: function (data) {
-            this.getUser(function (usr) {
-                new User(ng.extend(usr, data)).$save(function () {
-                    $rootScope.$broadcast('account:update');
-                });
-            });
-        },
-        getKeys: function (key) {
-            return Key.query({key: key});
-        },
-        createKey: function (data, callback) {
-            if (!data.name) {
-                callback(new Error('Key name is missing'));
-                return;
-            }
-
-            if (!data.key) {
-                callback(new Error('Key content is missing'));
-                return;
-            }
-
-            new Key(data).$save(function () {
-                $rootScope.$broadcast('account:update');
-                callback();
-            });
+            return deferred.promise;
         }
-    };
-}
 
-]);
-
-}(window.angular, window.JP.getModule('Account')));
+        return service;
+    }]);
+}(window.JP.getModule('Account')));
