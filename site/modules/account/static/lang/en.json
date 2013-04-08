@@ -1,2 +1,5 @@
 {
+    "Login: {{account.login}}": "Login: {{account.login}}",
+    "Email: {{account.email}}": "Email: {{account.email}}",
+    "Name: {{account.firstName}} {{account.lastName}}": "Name: {{account.firstName}} {{account.lastName}}"
 }

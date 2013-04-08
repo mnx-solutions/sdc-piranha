@@ -1,3 +1,7 @@
 .landing-container {
     text-align: center;
 }
+
+.forgotPassword {
+    cursor:pointer;
+}
