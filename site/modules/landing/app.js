@@ -9,13 +9,10 @@ module.exports = function (scope, app, callback) {
 
     if(!config) {
         scope.log.warn('SSO config missing');
+        process.exit();
     }
 
 	app.post('/ssourl', function (req, res) {
-        if(!config) {
-            scope.log.warn('SSO config missing');
-            return;
-        }
 
         // returnUrl will save the token and then redirect
         var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + req.body.redirectUrl).toString('base64');

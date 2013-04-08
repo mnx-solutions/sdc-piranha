@@ -44,7 +44,7 @@
                             machines.index[machine.id] = machine;
 
                             if (machines.search[machine.id]) {
-                                machines.search[machine.id].resolve(r);
+                                machines.search[machine.id].resolve(machine);
                                 delete machines.search[machine.id];
                             }
 

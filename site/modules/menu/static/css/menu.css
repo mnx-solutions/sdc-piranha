@@ -1,11 +1,13 @@
-
-
 .brand {
     background-image: url('../img/logo-color-duo.png');
     background-repeat:no-repeat;
     background-position:0px 50%;
     width:150px;
     height:70px;
+}
+
+.brand.color {
+    background-image: url('../img/logo-color.png');
 }
 
 .navbar-inner .container {
@@ -34,6 +36,19 @@
     background-image:url('../img/top-shade.png');
     background-position:30% 50%;
     background-repeat:no-repeat;
+}
+
+.navbar-static-bottom {
+    background-image: url('../img/bg-bottom.png');
+    background-repeat:no-repeat;
+    background-position:0px 50px;
+    padding:20px 20px 120px 20px;
+    color:#999;
+    text-shadow:1px 1px 1px #fff;
+    position:relative;
+    bottom:0;
+    z-index:1;
+    border-top:1px solid #ddd;
 }
 
 .navbar-static-bottom a {
