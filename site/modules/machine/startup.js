@@ -178,7 +178,7 @@ module.exports = function (scope, callback) {
                 call.cloud.__setDatacenter(call.data.datacenter);
                 call.cloud[func](machineId, function (err) {
                     if (!err) {
-                        pollForMachineState(client, call, machineId, endstate);
+                        pollForMachineState(call.cloud, call, machineId, endstate);
                     } else {
                         call.log.error(err);
                         call.done(err);
@@ -220,7 +220,7 @@ module.exports = function (scope, callback) {
             call.cloud.__setDatacenter(call.data.datacenter);
             call.cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(client, call, call.data.sdcpackage);
+                    pollForMachinePackageChange(call.cloud, call, call.data.sdcpackage);
                 } else {
                     call.log.error(err);
                     call.done(err);
@@ -253,7 +253,7 @@ module.exports = function (scope, callback) {
             call.cloud.createMachine(options, function (err, machine) {
                 if (!err) {
                     call.immediate(null, {machine: machine});
-                    pollForMachineState(client, call, machine.id, 'running');
+                    pollForMachineState(call.cloud, call, machine.id, 'running');
                 } else {
                     call.log.error(err);
                     call.immediate(err);
