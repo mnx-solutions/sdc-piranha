@@ -70,7 +70,7 @@
                                   class="summary  pull-left">&nbsp;</span>
 
                             <span class="span2 text-medium">
-                                <a href="#!/machine/details/{{machine.id}}">{{machine.id}}</a>
+                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                             </span>
 
                             <span class="span2 text-medium">
@@ -95,7 +95,7 @@
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
                             <div class="pull-left toolbox-list" style="width:535px">
                                 <span class="key span2" data-translate>Machine name</span>
-                                <span class="value span4">{{machine.label}} || {{machine.state}}</span>
+                                <span class="value span4">{{machine.label}}</span>
                                 <div class="clearfix"></div>
 
                                 <span class="key span2" data-translate>Type</span>
@@ -187,7 +187,7 @@
         <div class="container content-container-inner">
             <div class="container form-horisontal">
                 <div class="page-header">
-                    <h1>{{machine.id}}</h1>
+                    <h1>{{machine.label}}</h1>
                 </div>
 
                 <div class="pull-left span7">
