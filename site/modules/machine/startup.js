@@ -252,7 +252,7 @@ module.exports = function (scope, callback) {
                 data.sdcpackage.hasOwnProperty('name') &&
                 data.hasOwnProperty('dataset') &&
                 data.hasOwnProperty('datacenter') &&
-                data.dataset.hasOwnProperty('urn');
+                data.dataset.hasOwnProperty('id');
         },
         handler: function (call) {
 
