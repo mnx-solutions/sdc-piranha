@@ -64,12 +64,25 @@ module.exports = function (scope, app, callback) {
             var options = {
                 id: instrumentationId
             };
+            options.ndatapoints = opts.ndatapoints || 1;
+            options.duration = 1;
+
+            options.start_time = opts.last_poll_time || instrumentation.crtime;
 
             switch(instrumentation['value-arity']) {
                 case 'numeric-decomposition':
-                    options.width = instrumentation.width || 600;
-                    options.height = instrumentation.height || 250;
-                    options.nbuckets = instrumentation.nbuckets || 25;
+                    options.width = instrumentation.width || 640;
+                    options.height = instrumentation.height || 200;
+                    options.nbuckets = instrumentation.nbuckets || 50;
+                    options.duration = 60;
+                    options.hues = instrumentation.hues || 21;
+                    options.ndatapoints = 1;
+                    options.end_time = options.start_time;
+                    delete options.start_time;
+                    console.log('options');
+                    console.log(options);
+                    console.log(instrumentation.crtime);
+                    //options.start_time = options.start_time - options.duration;
                     method = 'GetInstrumentationHeatmap';
                     break;
                 case 'scalar':
@@ -83,15 +96,18 @@ module.exports = function (scope, app, callback) {
                     break;
             }
 
-            options.ndatapoints = opts.ndatapoints || 1;
-            options.duration = 1;
-            options.start_time = opts.last_poll_time || instrumentation.crtime;
+
 
             client[method](options, options, function(err, resp) {
 
                 if(!err) {
+//                    console.log('single response');
+//                    console.log(resp);
                     response.datapoints[instrumentationId] = resp;
-                    response.end_time = resp[resp.length - 1].end_time;
+                    response.end_time = resp[resp.length - 1].start_time + 1;
+                    if(instrumentation['value-arity'] === 'numeric-decomposition') {
+                        response.end_time += 60;
+                    }
                 } else {
                     response.datapoints[instrumentationId] = {
                         err: err

@@ -28,7 +28,16 @@ var instrumentations = {};
 
         DataSet.prototype.addValue = function (value) {
             var self = this;
-            if(ng.isObject(value.value)){
+
+            if(value.image) {
+                if(!self.map['default']) {
+                    self.map['default'] = {};
+                }
+//                self.map['default'][value.start_time + ''] = value.image;
+//                self.endTime = value.start_time;
+                self.map['default'][value.end_time + ''] = value.image;
+                self.endTime = value.end_time + 1;
+            } else if(ng.isObject(value.value)){
                 Object.keys(value.value).forEach(function(k) {
                     if(!self.map[k]) {
                         self.map[k] = {};
