@@ -14,7 +14,7 @@ module.exports = function (scope, callback) {
         var count = keys.length;
 
         keys.forEach(function (name) {
-            cloud.__setDatacenter(name);
+            cloud.setDatacenter(name);
 
             call.log.debug('List machines for datacenter %s', name);
 
@@ -90,16 +90,32 @@ module.exports = function (scope, callback) {
         handler: function (call) {
             call.log.info('Handling machine tags save call, machine %s', call.data.uuid);
 
-            call.cloud.deleteMachineTags(call.data.uuid, function (err) {
+            var newTags = JSON.stringify(call.data.tags);
+            var oldTags = null;
+
+            call.cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
                 if(err) {
                     call.log.error(err);
                     call.done(err);
                     return;
                 }
-
-                call.cloud.addMachineTags(call.data.uuid, call.data.tags, function(err) {
-                    call.done(err, call.data.tags); // Return saved tags
-                });
+                var timer = setInterval(function () {
+                    call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, call.data.tags);
+                    call.cloud.listMachineTags(call.data.uuid, function (err, tags) {
+                        if (!err) {
+                            var json = JSON.stringify(tags);
+                            if(json === newTags) {
+                                clearInterval(timer);
+                                call.done(null, tags);
+                            } else if(!oldTags) {
+                                oldTags = json;
+                            } else if(json !== oldTags) {
+                                clearInterval(timer);
+                                call.done(new Error('Other call changed tags'));
+                            }
+                        }
+                    });
+                }, 1000);
             });
         }
     });
@@ -113,7 +129,7 @@ module.exports = function (scope, callback) {
             var machineId = call.data.uuid;
             call.log.info('Handling machine details call, machine %s', machineId);
 
-            call.cloud.__setDatacenter(call.data.datacenter);
+            call.cloud.setDatacenter(call.data.datacenter);
             call.cloud.getMachine(machineId, call.done.bind(call));
         }
     });
@@ -175,7 +191,7 @@ module.exports = function (scope, callback) {
                 var machineId = call.data.uuid;
                 call.log.debug(logVerb + ' machine %s', machineId);
 
-                call.cloud.__setDatacenter(call.data.datacenter);
+                call.cloud.setDatacenter(call.data.datacenter);
                 call.cloud[func](machineId, function (err) {
                     if (!err) {
                         pollForMachineState(call.cloud, call, machineId, endstate);
@@ -217,7 +233,7 @@ module.exports = function (scope, callback) {
 
             call.log.info('Resizing machine %s', machineId);
 
-            call.cloud.__setDatacenter(call.data.datacenter);
+            call.cloud.setDatacenter(call.data.datacenter);
             call.cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
                     pollForMachinePackageChange(call.cloud, call, call.data.sdcpackage);
@@ -249,7 +265,7 @@ module.exports = function (scope, callback) {
             call.log.info('Creating machine %s', call.data.name);
             call.getImmediate(false);
 
-            call.cloud.__setDatacenter(call.data.datacenter);
+            call.cloud.setDatacenter(call.data.datacenter);
             call.cloud.createMachine(options, function (err, machine) {
                 if (!err) {
                     call.immediate(null, {machine: machine});

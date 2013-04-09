@@ -181,6 +181,10 @@ th {
 .key,.value {
     padding:5px 0px 5px 0px;
 }
+.key.error, .value.error {
+    border-bottom: 1px solid #b94a48;
+    color: #b94a48;
+}
 .control-group .key,.control-group .value{
     border-bottom:none;
 }

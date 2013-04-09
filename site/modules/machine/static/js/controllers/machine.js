@@ -40,15 +40,16 @@
                     }
                     var d = $q.defer();
                     var cloud = {};
-                    function addVal(k, val) {
+                    function addVal(k, val, edit) {
                         var id = ++$scope.tagnr;
-                        cloud[id] = {key: k, val: val};
+                        cloud[id] = {key: k, val: val, edit: edit};
                     }
                     function split() {
                         $scope.tagnr = -1;
                         Object.keys(tags).forEach(function(k) {
-                            addVal(k, tags[k]);
+                            addVal(k, tags[k], false);
                         });
+                        addVal('', '', true);
                         d.resolve(cloud);
                     }
                     $q.when(tags).then(function (t) {
@@ -62,30 +63,27 @@
 
                 $q.when($scope.tagcloud).then(function (){
                     $scope.$watch('tagcloud', function(val, old) {
-                        var keys = Object.keys(val);
-                        var map = {};
-                        keys.forEach(function (k) {
-                            delete val[k].conflict;
+                        if(val) {
+                            var keys = Object.keys(val);
+                            var map = {};
+                            keys.forEach(function (k) {
+                                delete val[k].conflict;
 
-                            if (!val[k].key.length || !val[k].val.length) {
-                                delete val[k];
-                                return;
-                            }
+                                if (!val[k].key && !val[k].val && old && old[k] && !old[k].key && !old[k].val && +k !== +$scope.tagnr) {
+                                    delete val[k];
+                                } else if (val[k].key) {
+                                    if (map[val[k].key] !== undefined){
+                                        val[map[val[k].key]].conflict = true;
+                                        val[k].conflict = true;
+                                    }
 
-                            if (!val[k].key && !val[k].val && !old[k].key && !old[k].val && k != $scope.tagnr) {
-                                delete val[k];
-                            } else if (val[k].key) {
-                                if (map[val[k].key] !== undefined){
-                                    val[map[val[k].key]].conflict = true;
-                                    val[k].conflict = true;
+                                    map[val[k].key] = k;
                                 }
+                            });
 
-                                map[val[k].key] = k;
+                            if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
+                                val[++$scope.tagnr] = {key: '', val: '', edit: true};
                             }
-                        });
-
-                        if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
-                            val[++$scope.tagnr] = {key: '', val: ''};
                         }
                     }, true);
                 });
@@ -159,6 +157,10 @@
                     $scope.retinfo.then(function(tags) {
                         $scope.tagcloud = tagcloud(tags);
                     });
+                };
+
+                $scope.editTag = function (k) {
+                    $scope.tagcloud.$$v[k].edit = true;
                 };
 
                 $scope.removeTag = function(k) {
