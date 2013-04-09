@@ -3,9 +3,9 @@
 (function (app) {
     app.controller(
         'MainController',
-        ['$scope', '$rootScope', '$route', '$routeParams', '$window', 'requestContext',
+        ['$scope', '$rootScope', '$route', '$routeParams', '$window', 'requestContext','$location',
 
-function ($scope, $rootScope, $route, $routeParams, $window, requestContext) {
+function ($scope, $rootScope, $route, $routeParams, $window, requestContext, $location) {
     $scope.windowTitle = 'Joyent Portal';
 
     $scope.setWindowTitle = function (title) {
@@ -64,17 +64,21 @@ function ($scope, $rootScope, $route, $routeParams, $window, requestContext) {
 
     var oldLocation;
     $scope.cancelLogin = function () {
-        $scope.subview = oldSubview;
+        $scope.subview = oldLocation;
     };
 
     $scope.$on('event:auth-loginRequired', function () {
         oldLocation = $window.location;
-        $window.location.href = '/'
+        $window.location.href = '/';
     });
 
     $scope.$on('event:auth-loginConfirmed', function () {
         $window.location.href = oldLocation;
     });
+
+    $scope.changeLocation = function(path) {
+        $location.path(path);
+    };
 }
         ]);
 }(window.JP.main));

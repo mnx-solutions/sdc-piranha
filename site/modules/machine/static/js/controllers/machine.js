@@ -34,6 +34,20 @@
                 $scope.machine = Machine.machine(machineid);
                 $scope.tagnr = 0;
 
+                function isNotPrivateIp(ip) {
+                    var parts = ip.split('.');
+                    if (+parts[0] === 10 ||
+                        (+parts[0] === 172 && (+parts[1] >= 16 && +parts[1] <= 31)) ||
+                        (+parts[0] === 192 && +parts[1] === 168)) {
+                        return false;
+                    }
+                    return true;
+                }
+                $q.when($scope.machine, function (m) {
+                    m.primaryIps = m.ips.filter(isNotPrivateIp);
+                });
+
+
                 function tagcloud(tags) {
                     if(!tags) {
                         tags = Machine.tags(machineid);

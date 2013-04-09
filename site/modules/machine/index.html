@@ -7,7 +7,7 @@
             <div class="container">
                 <div class="page-header" style="margin-top:10px">
                     <h1 class="pull-left" data-translate>Machines</h1>
-                    <button href="#!/machine/add/"
+                    <button data-ng-click="changeLocation('/machine/add/')"
                        class="btn btn-success btn-large pull-right"
                        style="margin-top:10px"
                        data-translate>Add new Machine</button>
@@ -229,6 +229,11 @@
                         <div class="container span7">
                             <span class="key span2" data-translate>Datacenter</span>
                             <span class="value span5 pull-right">{{machine.datacenter}}</span>
+                        </div>
+
+                        <div class="container span7" data-ng-show="machine.primaryIps.length">
+                            <span class="key span2" data-translate>Login</span>
+                            <span class="value span5 pull-right">ssh root@{{machine.primaryIps[0]}}</span>
                         </div>
                     </fieldset>
                     <br />
