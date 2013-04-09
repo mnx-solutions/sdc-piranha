@@ -8,7 +8,7 @@ module.exports = function (scope, callback) {
     server.onCall('getAccount', function (call) {
         var cloud = call.cloud;
 
-        var client = cloud.proxy();
+        var client = cloud;
 
         // get account using cloudapi
         client.getAccount(call.done.bind(call));

@@ -61,6 +61,10 @@ module.exports = function (scope, app, callback) {
         res.redirect('/');
     });
 
+    app.get('/changepassword/:uuid', function(req, res) {
+        res.redirect(config.url +'/changepassword/'+ req.params.uuid);
+    })
+
     app.get('/saveToken/:url', function(req, res) {
 
         // redirect to this url after we're done with the token
