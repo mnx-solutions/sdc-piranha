@@ -15,12 +15,13 @@
 <div  >
     <!--{{inst.module}}<br/>-->
     <!--{{inst.stat}}<br/>-->
-    <instrumentation data-ng-repeat="inst in instrumentations" type="raw" module="inst.module" stat="inst.stat" metric="inst.metric" decomposition="inst.decomposition"></instrumentation>
+    <!--<instrumentation data-ng-repeat="inst in instrumentations" type="raw" module="inst.module" stat="inst.stat" metric="inst.metric" decomposition="inst.decomposition"></instrumentation>-->
+    <graph data-ng-repeat="i in instrumentations" options="i.options" ca="i.ca"></graph>
 </div>
-
+    <!--<graph instrumentations="" ></graph>-->
 <button data-ng-click="createInstrumentation()">Create</button>
 <br/>
-<igraph graph="g"></igraph>
+<!--<igraph graph="g"></igraph>-->
 <br/>
 module: {{current.metric.module}}      <br/>
 stat: {{current.metric.stat}}          <br/>

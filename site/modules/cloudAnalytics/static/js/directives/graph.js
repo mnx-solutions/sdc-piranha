@@ -1,21 +1,17 @@
 'use strict';
 
 (function (app) {
-     app.directive('instrumentation', function (caBackend, $filter, $timeout) {
+     app.directive('graph', function (caBackend, $filter, $timeout) {
         return {
             restrict: "E",
             scope: {
-                module:'=module',
-                stat: '=stat',
-                type: '=type',
-                metric: '=metric',
-                decomposition: '=decomposition',
-                predicate: '=predicate'
+                options:'=',
+                ca:'='
             },
-            link: function ($scope, element, attrs){
+            link: function ($scope){
+
                 $scope.instrumentations = [];
-                // create instrumentation
-                var ca = new caBackend();
+
                 var graph = false;
                 $scope.heatmap;
 
@@ -41,13 +37,13 @@
                         graph: graph
                     });
                 }
-                function createGraph(s) {
+                function createGraph(series) {
                     var conf = {
                         element: document.querySelector("#chart"),
                         renderer: $scope.renderer,
                         width: 640,
                         height: 200,
-                        series: s
+                        series: series
                     };
                     var graph = new Rickshaw.Graph(conf);
                     graph.render();
@@ -77,26 +73,20 @@
                     }
                 });
 
-                var iOptions = {
-                    unit: $scope.metric.unit,
-                    stat: $scope.stat,
-                    module: $scope.module,
-                    decomposition: $scope.decomposition || []
-                }
-
                 var i = -1;
                 function updateGraph() {
 
-                    if(ca.hasChanged($scope.instrumentations[0])) {
-                        var series = ca.getSeries(
+                    if($scope.ca.hasAnyChanged($scope.instrumentations)) {
+
+                        var series = $scope.ca.getSeries(
                             $scope.instrumentations,
                             $scope.startTime + i
                         );
 
                         if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
-//                            console.log(ca.instrumentations[$scope.instrumentations[0].id]);
-                            $scope.heatmap = ca.heatmap;
+                            $scope.heatmap = $scope.ca.instrumentations[$scope.instrumentations[0].id].heatmap;
                         }
+
                         i++
                         if(series && series.length) {
                             if(!graph) {
@@ -113,17 +103,15 @@
                     $timeout(updateGraph, 1000);
                 }
 
-                ca.createInstrumentation(iOptions, function(instrumentation){
-
-                    $scope.instrumentations.push(instrumentation);
-                    $scope.startTime = Math.floor(instrumentation.crtime / 1000);
+                $scope.ca.createInstrumentations($scope.options, function(instrumentations){
+                    $scope.startTime = Math.floor(instrumentations[0].crtime / 1000);
+                    $scope.instrumentations = instrumentations;
                     updateGraph();
-
                 });
 
-                $scope.deleteInstrumentation = function() {
-                    ca.deleteInstrumentation($scope.instrumentations[0]);
-                }
+//                $scope.deleteInstrumentation = function() {
+//                    $scope.ca.deleteInstrumentation($scope.instrumentations[0]);
+//                }
 
 
             },

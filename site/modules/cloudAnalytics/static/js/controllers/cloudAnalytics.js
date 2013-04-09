@@ -3,11 +3,11 @@
 (function (app) {
     app.controller(
             'cloudAnalytics.LayoutController',
-            ['$scope', 'requestContext', 'caBackend', '$timeout', 'caInstrumentation',
+            ['$scope', 'requestContext', 'caBackend',
 
-function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
+function ($scope, requestContext, caBackend) {
     requestContext.setUpRenderContext('cloudAnalytics', $scope);
-    $scope.counter = 0;
+
     $scope.current = {
         metric:null,
         decomposition: {
@@ -18,19 +18,15 @@ function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
     }
     $scope.instrumentations = [];
 
-//    $scope.g = new caBackend.graph();
-
     var ca = new caBackend();
-//    $scope.conf = [];
     ca.describeCa(function (conf){
-        console.log(conf);
-        console.log('h');
         $scope.conf = conf;
-        $scope.conf.metrics.forEach(labelMetrics);
+        $scope.conf.metrics.forEach(_labelMetrics);
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
     });
-    function labelMetrics(metric) {
+
+    function _labelMetrics(metric) {
         var fieldsArr = metric.fields;
         var labeledFields = [];
         for(var f in fieldsArr) {
@@ -41,12 +37,6 @@ function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
         metric.labelHtml = moduleName + ': ' + metric.label;
         return metric;
     }
-//    $scope.conf =$scope.conf.$get(function(){
-//        console.log(conf);
-//       $scope.conf.metrics.forEach(labelMetrics);
-//        $scope.metrics =$scope.conf.metrics;
-//        $scope.fields =$scope.conf.fields;
-//    });
 
     $scope.createInstrumentation = function(){
 
@@ -56,14 +46,18 @@ function ($scope, requestContext, caBackend, $timeout, caInstrumentation) {
         if($scope.current.decomposition.secondary)
         decomp.push($scope.current.decomposition.secondary);
 
-        var obj = {
+        var options = {
             module: $scope.current.metric.module,
             metric: $scope.current.metric,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
             predicate: {}
         }
-        $scope.instrumentations.push(obj);
+
+        $scope.instrumentations.push({
+            options:[ options ],
+            ca: ca
+        });
 
     }
     $scope.changeMetric = function(){

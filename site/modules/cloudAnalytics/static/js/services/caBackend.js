@@ -36,13 +36,11 @@
                 ca.options.last_poll_time = res.end_time;
 
                 var datapoints = res.datapoints;
-
                 for(var id in datapoints) {
                     ca.instrumentations[id].addValues(datapoints[id]);
                 }
 
-                var date = new Date();
-                var now = Math.floor(date.getTime() / 1000);
+                var now = Math.floor((new Date()).getTime() / 1000);
                 var difference = now - ca.request_time;
                 ca.request_time = now;
 
@@ -56,8 +54,7 @@
             if (Object.keys(ca.instrumentations).length) {
                 if (!pending) {
                     pending = true;
-                    var date = new Date();
-                    ca.request_time = Math.floor(date.getTime() / 1000);
+                    ca.request_time = Math.floor((new Date()).getTime() / 1000);
                     ca._poll();
                 }
             }
@@ -99,7 +96,6 @@
         service.prototype.createInstrumentation  = function(createOpts, cb) {
 
             var self = this;
-
             instrumentation.create({
                 createOpts: createOpts,
                 parent:ca
@@ -127,9 +123,24 @@
                 }
                 ca.options.individual[inst.id] = options;
 
-                cb(inst);
+                cb(inst)
+
             });
+
         }
+        service.prototype.createInstrumentations = function(createOpts, cb) {
+            var insts = [];
+            var self = this;
+            for(var opt in createOpts) {
+                self.createInstrumentation(createOpts[opt], function(inst){
+                    insts.push(inst);
+                    if(createOpts.length == insts.length){
+                        cb(insts);
+                    }
+                })
+            }
+        }
+
         service.prototype.deleteInstrumentation = function(i) {
             i.delete();
         }
@@ -184,6 +195,15 @@
 
         service.prototype.hasChanged = function (inst){
             return inst.hasChanged(this.id);
+        }
+        service.prototype.hasAnyChanged = function (insts){
+            var changed = false;
+            for(var i in insts) {
+                if(insts[i].hasChanged(this.id)) {
+                    changed = true;
+                }
+            }
+            return changed;
         }
         return service;
     }]);
