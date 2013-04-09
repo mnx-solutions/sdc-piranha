@@ -64,12 +64,14 @@
                     All: [
                         'created', 'id', 'name',
                         'type', 'dataset', 'ips',
-                        'memory', 'disk', 'metadata'
+                        'memory', 'disk', 'metadata',
+                        'datacenter'
                     ],
                     Name: ['id', 'name'],
                     Type: ['type'],
                     Ip: ['ips'],
-                    Memory: ['memory']
+                    Memory: ['memory'],
+                    Datacenter: ['datacenter']
                 };
                 $scope.searchable = $scope.searchOptions.All;
                 $scope.filteredMachines = [];

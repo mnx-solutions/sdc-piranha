@@ -100,11 +100,12 @@ module.exports = function (scope, callback) {
                     return;
                 }
                 var timer = setInterval(function () {
-                    call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, call.data.tags);
+                    call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
                     call.cloud.listMachineTags(call.data.uuid, function (err, tags) {
                         if (!err) {
                             var json = JSON.stringify(tags);
                             if(json === newTags) {
+                                call.log.debug('Machine %s tags changed successfully', call.data.uuid);
                                 clearInterval(timer);
                                 call.done(null, tags);
                             } else if(!oldTags) {
@@ -114,7 +115,7 @@ module.exports = function (scope, callback) {
                                 call.done(new Error('Other call changed tags'));
                             }
                         }
-                    });
+                    }, undefined, true);
                 }, 1000);
             });
         }
@@ -156,15 +157,15 @@ module.exports = function (scope, callback) {
         var timer = setInterval(function () {
             var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
 
-            call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage.memory);
+            call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage);
             client.getMachine(machineId, function (err, machine) {
                 if (!err) {
-                    if (sdcpackage.memory === machine.memory) {
-                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage.memory);
+                    if (sdcpackage === machine.package) {
+                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
                         call.done(null, machine);
                         clearInterval(timer);
                     } else {
-                        call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage.memory);
+                        call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage);
                         call.step = { state: 'resizing' };
                     }
                 } else {
@@ -222,13 +223,12 @@ module.exports = function (scope, callback) {
             return typeof data === 'object' &&
                 data.hasOwnProperty('uuid') &&
                 data.hasOwnProperty('datacenter') &&
-                data.hasOwnProperty('sdcpackage') &&
-                data.sdcpackage.hasOwnProperty('name');
+                data.hasOwnProperty('sdcpackage');
         },
         handler: function (call) {
             var machineId = call.data.uuid;
             var options = {
-                package: call.data.sdcpackage.name
+                package: call.data.sdcpackage
             };
 
             call.log.info('Resizing machine %s', machineId);

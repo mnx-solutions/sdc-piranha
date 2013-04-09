@@ -7,10 +7,10 @@
             <div class="container">
                 <div class="page-header" style="margin-top:10px">
                     <h1 class="pull-left" data-translate>Machines</h1>
-                    <a href="#!/machine/add/"
+                    <button href="#!/machine/add/"
                        class="btn btn-success btn-large pull-right"
                        style="margin-top:10px"
-                       data-translate>Add new Machine</a>
+                       data-translate>Add new Machine</button>
                     <div class="clearfix"></div>
                 </div>
 
@@ -70,7 +70,7 @@
                                   class="summary  pull-left">&nbsp;</span>
 
                             <span class="span2 text-medium">
-                                <a href="#!/machine/details/{{machine.id}}">{{machine.id}}</a>
+                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                             </span>
 
                             <span class="span2 text-medium">
@@ -95,7 +95,7 @@
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
                             <div class="pull-left toolbox-list" style="width:535px">
                                 <span class="key span2" data-translate>Machine name</span>
-                                <span class="value span4">{{machine.label}} || {{machine.state}}</span>
+                                <span class="value span4">{{machine.label}}</span>
                                 <div class="clearfix"></div>
 
                                 <span class="key span2" data-translate>Type</span>
@@ -123,25 +123,25 @@
                                 <div class="clearfix"></div>
                             </div>
                             <div class="pull-right action-container">
-                                <a role="button"
+                                <button role="button"
                                    class="btn btn-mini"
                                    data-ng-disabled="machine.state == 'running'"
                                    data-ng-click="startMachine(machine.id)"
                                    data-toggle="modal"
-                                   data-translate>Start</a>
-                                <a role="button"
+                                   data-translate>Start</button>
+                                <button role="button"
                                    class="btn btn-mini"
                                    data-ng-disabled="machine.state == 'stopped'"
                                    data-ng-click="stopMachine(machine.id)"
-                                   data-translate>Stop</a>
-                                <a role="button"
+                                   data-translate>Stop</button>
+                                <button role="button"
                                    class="btn btn-mini"
                                    data-ng-click="deleteMachine(machine.id)"
                                    data-toggle="modal"
-                                   data-translate>Delete</a>
-                                <a href="#!/machine/details/{{machine.id}}"
+                                   data-translate>Delete</button>
+                                <button href="#!/machine/details/{{machine.id}}"
                                    class="btn btn-mini btn-primary"
-                                   data-translate>Edit</a>
+                                   data-translate>Edit</button>
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -187,7 +187,7 @@
         <div class="container content-container-inner">
             <div class="container form-horisontal">
                 <div class="page-header">
-                    <h1>{{machine.id}}</h1>
+                    <h1>{{machine.name}}</h1>
                 </div>
 
                 <div class="pull-left span7">
@@ -200,7 +200,7 @@
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Machine name</span>
-                            <span class="value span5 pull-right">{{machine.label}}</span>
+                            <span class="value span5 pull-right">{{machine.name}}</span>
                         </div>
 
                         <div class="container span7">
@@ -232,7 +232,7 @@
                         </div>
                     </fieldset>
                     <br />
-                    <fieldset>
+                    <fieldset data-ng-show="machine.metadata.credentials">
                         <legend data-translate>Credentials</legend>
 
                         <table class="table table-striped text-medium">
@@ -309,7 +309,7 @@
 
                                 <select name="resize"
                                         data-ng-model="resize"
-                                        data-ng-options="package.name for package in packages"></select>
+                                        data-ng-options="package.name as package.name for package in packages"></select>
 
                                 <button class="btn btn-primary" type="submit"
                                         ng-click="clickResize(selectedmachine.id)" data-translate>
@@ -325,24 +325,24 @@
 
                 <div class="span4 pull-right" style="margin-top:40px">
                     <div class="well shadow">
-                        <a role="button"
+                        <button role="button"
                            data-ng-disabled="machine.job.running || machine.state != 'stopped'"
                            data-ng-click="clickStart(machine.id)"
                            data-toggle="modal"
                            data-translate
-                           class="btn btn-small btn-success">Start</a>
-                        <a role="button"
+                           class="btn btn-small btn-success">Start</button>
+                        <button role="button"
                            data-ng-disabled="machine.job.running || machine.state != 'running'"
                            data-ng-click="clickStop(machine.id)"
                            data-toggle="modal"
                            data-translate
-                           class="btn btn-small">Stop</a>
-                        <a role="button"
+                           class="btn btn-small">Stop</button>
+                        <button role="button"
                            data-ng-disabled="machine.job.running || machine.state != 'stopped'"
                            data-ng-click="clickDelete(machine.id)"
                            data-translate
                            data-toggle="modal"
-                           class="btn btn-small btn-danger">Delete</a>
+                           class="btn btn-small btn-danger">Delete</button>
                     </div>
                     <div class="clearfix"></div><br />
                     <div class="alert alert-success shadow">

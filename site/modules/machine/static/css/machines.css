@@ -232,7 +232,7 @@ th {
     /*	background-color:#eee;*/
     /*	border:1px solid red;*/
 }
-.action-container a {
+.action-container button {
     display: block;
     margin-bottom:10px;
 }
