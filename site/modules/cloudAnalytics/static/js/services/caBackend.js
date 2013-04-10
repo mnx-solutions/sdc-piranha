@@ -204,7 +204,7 @@
                     self.instrumentations[id].heatmap = hms;
 
                     var gName = name;
-                    if(name === 'default') {
+                    if(name === 'default' && instrumentation.stat) {
                         gName = self.getStatLabel(instrumentation.stat);
                     }
 
