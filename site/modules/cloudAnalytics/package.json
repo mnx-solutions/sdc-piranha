@@ -1,0 +1,17 @@
+{
+	"em": {
+        "auth": true,
+        "pre": {
+            "js": [
+                "js/module.js",
+                "js/services/caBackend.js",
+                "js/directives/instrumentation.js",
+                "js/controllers/cloudAnalytics.js",
+                "js/config/routes.js"
+            ],
+            "css": [
+                "css/app.css"
+            ]
+        }
+	}
+}

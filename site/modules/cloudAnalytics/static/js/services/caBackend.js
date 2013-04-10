@@ -2,75 +2,239 @@
 
 
 (function (app) {
+    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation', function ($resource, $timeout, $http, instrumentation) {
 
-    app.factory('caBackend', ['$resource', '$timeout', function ($resource, $timeout) {
-
-        var instrumentation = $resource('/cloudAnalytics/ca/instrumentations/:id', {id:'@id'}, {
-            clone: {method:'POST', params:{clone: '@id'}}
-        });
-        var value = $resource('/cloudAnalytics/ca/instrumentations/value/:id', {id:'@id'},{
-            raw: {method: 'GET', params:{subject:'raw'}},
-            heatmap: {method: 'GET', params:{subject:'heatmap'}}
-        })
-
-        instrumentation.prototype.poll = function(method){
-            var self = this;
-            if(!self.buffer){
-                self.buffer = [];
-                self.values = [];
+        var ca = function(){};
+        ca.options = {
+            last_poll_time: null,
+            ndatapoints: 1,
+            individual: {}
+        }
+        ca.request_time = null;
+        ca.instrumentations = {};
+        ca.conf = $http.get('/cloudAnalytics/ca');
+        ca.desc = {};
+        function _labelMetrics(metric) {
+            var fieldsArr = metric.fields;
+            var labeledFields = [];
+            for(var f in fieldsArr) {
+                labeledFields[fieldsArr[f]] = ca.desc.fields[fieldsArr[f]].label;
             }
-
-            var values = value[method]({id:self.id}, function(){
-
-                self.buffer.push(values);
-
-                $timeout(self.poll.bind(self, method), 1000);
-            });
-
-
+            metric.fields = labeledFields;
+            var moduleName = ca.desc.modules[metric.module].label;
+            metric.labelHtml = moduleName + ': ' + metric.label;
+            return metric;
         }
-        instrumentation.prototype.create = function(getValue, cb) {
-            var self = this;
-            self.$save(function(){
-                if(getValue) {
-                    switch(getValue){
-                        case 'raw':
-                            self.raw(cb);
-                            break;
-                        case 'decomposed':
-                            self.raw(cb);
-                            break;
-                        case 'heatmap':
-                            self.heatmap(cb);
-                            break;
-                    }
-                } else {
-                    if(typeof cb === 'function') {
-                        cb();
-                    }
+
+
+        // manage graph colors.
+        var palette = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } );
+        ca.usedColors = {
+            'default':'steelblue'
+        };
+        ca.getColor = function(key) {
+            if(ca.usedColors[key]) {
+                return ca.usedColors[key];
+            } else {
+                ca.usedColors[key] = palette.color();
+                return ca.usedColors[key];
+            }
+        }
+
+        // Poll all the instrumentation values.
+        var pending = false;
+        ca._poll = function() {
+            $http.post('/cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
+
+                ca.options.last_poll_time = res.end_time;
+
+                var datapoints = res.datapoints;
+                for(var id in datapoints) {
+                    ca.instrumentations[id].addValues(datapoints[id]);
                 }
-            })
 
-        }
-        var conf = $resource('/cloudAnalytics/ca');
-        instrumentation.prototype.raw = function(cb) {
-            this.poll('raw');
-            if(typeof cb === 'function')
-                cb();
-        }
+                var now = Math.floor((new Date()).getTime() / 1000);
+                var difference = now - ca.request_time;
+                ca.request_time = now;
 
-        instrumentation.prototype.heatmap = function(cb) {
-            this.poll('heatmap');
-            if(typeof cb === 'function')
-                cb();
-        }
+                // if there's no difference in time, ask 1 datapoint;
+                ca.options.ndatapoints = difference || 1;
 
-        var caBackend = {
-            conf: conf,
-            instr: instrumentation
+                pending = false;
+            });
+        }
+        ca._sync = function(){
+            if (Object.keys(ca.instrumentations).length) {
+                if (!pending) {
+                    pending = true;
+                    ca.request_time = Math.floor((new Date()).getTime() / 1000);
+                    ca._poll();
+                }
+            }
+            $timeout(ca._sync, 1000);
+        }
+        ca._sync();
+
+
+        // The part of service which will be exposed and gets instanciated
+        var id = 0;
+        function service() {
+            this.id = id++;
+            this.instrumentations = {};
+
+            // view options
+            this.range = 60;
+            this.width = 640;
+            this.height = 200;
+
         };
 
-        return caBackend;
+        service.prototype.changeRange = function(range) {
+            this.range = range;
+        }
+
+        service.prototype.changeWidth = function(width) {
+            this.width = width;
+        }
+
+        service.prototype.getStatLabel = function(stat) {
+            for(var m in ca.desc.metrics) {
+                var metric = ca.desc.metrics[m];
+                if(metric.stat == stat) {
+                    return metric.label;
+                }
+            }
+            return false;
+        }
+        service.prototype.describeCa = function(cb) {
+            var self = this;
+
+            ca.conf.then(function(conf) {
+                ca.desc = conf.data;
+                conf.data.metrics.forEach(_labelMetrics);
+                cb(ca.desc);
+            });
+
+        };
+        service.prototype.createInstrumentation  = function(createOpts, cb) {
+
+            var self = this;
+            instrumentation.create({
+                createOpts: createOpts,
+                parent:ca
+            }, function(err, inst){
+
+                var heatmap = inst['value-arity'] === 'numeric-decomposition';
+
+                self.instrumentations[inst.id] = {
+                    range: self.range,
+                    'value-arity': inst['value-arity'],
+                    crtime: Math.floor(inst.crtime /1000)
+                };
+
+                ca.instrumentations[inst.id] = inst;
+
+                // set options for polling values
+                var options = {
+                    'value-arity': inst['value-arity'],
+                    crtime: Math.floor(inst.crtime /1000)
+                }
+                if(heatmap) {
+                    options.ndatapoints = self.range;
+                    options.width = self.width;
+                    options.height = self.height;
+                }
+                ca.options.individual[inst.id] = options;
+
+                cb(inst)
+
+            });
+
+        }
+        service.prototype.createInstrumentations = function(createOpts, cb) {
+            var insts = [];
+            var self = this;
+            for(var opt in createOpts) {
+                self.createInstrumentation(createOpts[opt], function(inst){
+                    insts.push(inst);
+                    if(createOpts.length == insts.length){
+                        cb(insts);
+                    }
+                })
+            }
+        }
+
+        service.prototype.deleteInstrumentation = function(i) {
+            i.delete();
+        }
+        service.prototype.getSeries = function(insts, time) {
+
+            var seriesCollection = [];
+            var self = this;
+            for(var i in insts) {
+                var instrumentation = insts[i];
+                var id = instrumentation.id;
+                var heatmap = instrumentation['value-arity'] === 'numeric-decomposition';
+
+                var series = instrumentation.getValues(self.id, {
+                    nr: self.range,
+                    endTime: time
+                });
+
+                var times = series._timestamps;
+                delete series._timestamps;
+
+                for(var name in series) {
+                    var data = [];
+                    var hms;
+                    for(var dp in series[name]) {
+
+                        var y = (heatmap ? 0 : series[name][dp]);
+
+                        if(series[name][dp] !== 0) {
+                            hms = series[name][dp];
+                        }
+
+                        data.push({
+                            x:times[dp],
+                            y:y
+                        });
+                    }
+
+                    self.instrumentations[id].heatmap = hms;
+
+                    var gName = name;
+                    if(name === 'default' && instrumentation.stat) {
+                        gName = self.getStatLabel(instrumentation.stat);
+                    }
+
+                    seriesCollection.push({
+                        name: gName,
+                        data: data,
+                        color: ca.getColor(gName)
+                    });
+
+                }
+
+            }
+            console.log(seriesCollection);
+            return seriesCollection;
+        }
+
+        service.prototype.hasChanged = function (inst){
+            return inst.hasChanged(this.id);
+        }
+        service.prototype.hasAnyChanged = function (insts){
+            var changed = false;
+            for(var i in insts) {
+                if(insts[i].hasChanged(this.id)) {
+                    changed = true;
+                }
+            }
+            return changed;
+        }
+        return service;
     }]);
+
 
 }(window.JP.getModule('cloudAnalytics')));
