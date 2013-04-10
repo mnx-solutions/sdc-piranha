@@ -18,7 +18,7 @@ module.exports = function (scope, callback) {
 
             call.log.debug('List machines for datacenter %s', name);
 
-            cloud.listMachines(function (err, machines) {
+            cloud.listMachines({'credentials': true}, function (err, machines) {
                 var response = {
                     name: name,
                     status: 'pending',
@@ -33,6 +33,7 @@ module.exports = function (scope, callback) {
                 } else {
                     machines.forEach(function (machine) {
                         machine.datacenter = name;
+                        machine.metadata.credentials = handleCredentials(machine);
                     });
 
                     response.status = 'complete';
@@ -204,6 +205,35 @@ module.exports = function (scope, callback) {
             };
         }
         return opts;
+    }
+
+    function handleCredentials(machine) {
+        var systemsToLogins = {
+            "mysql" : ["MySQL", "root"],
+            "pgsql" : ["PostgreSQL", "postgres"],
+            "virtualmin" : ["Virtualmin", "admin"]
+        }
+        var credentials = [];
+        if (machine.metadata && machine.metadata.credentials) {
+            for (var username in machine.metadata.credentials) {
+                if (systemsToLogins[username]) {
+                    var system = systemsToLogins[username][0];
+                    var login = systemsToLogins[username][1];
+                } else {
+                    var system = "Operating System";
+                    var login = username;
+                }
+
+                credentials.push(
+                    {
+                        "system" : system,
+                        "username" : login.split('_')[0],
+                        "password" : machine.metadata.credentials[username]
+                    }
+                );
+            }
+        }
+        return credentials;
     }
 
     /* GetMachine */

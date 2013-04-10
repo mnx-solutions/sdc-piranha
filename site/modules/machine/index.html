@@ -261,11 +261,16 @@
                             <th style="width:155px !important">Password</th>
                             <th>&nbsp;</th>
                             </thead>
-                            <tr data-ng-repeat="(key,val) in machine.metadata.credentials">
-                                <td>{{key}}</td>
-                                <td><span id="label-1">************</span><span
-                                        id="pwd-1" class="none">{{val}}</span></td>
-                                <td nowrap><a rel="1" class="show-password" data-translate>[ Show ]</a></td>
+                            <tr data-ng-repeat="(key,credential) in machine.metadata.credentials">
+                                <td>{{credential.system}}</td>
+                                <td>{{credential.username}}</td>
+                                <td>
+                                    <span data-ng-show="isPasswordVisible(key)">************</span>
+                                    <span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span>
+                                </td>
+                                <td nowrap>
+                                    <a class="show-password" data-translate data-ng-click="togglePassword(key)">[ Show ]</a>
+                                </td>
                             </tr>
                         </table>
                     </fieldset>
