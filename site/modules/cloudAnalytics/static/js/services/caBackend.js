@@ -13,6 +13,19 @@
         ca.request_time = null;
         ca.instrumentations = {};
         ca.conf = $http.get('/cloudAnalytics/ca');
+        ca.desc = {};
+        function _labelMetrics(metric) {
+            var fieldsArr = metric.fields;
+            var labeledFields = [];
+            for(var f in fieldsArr) {
+                labeledFields[fieldsArr[f]] = ca.desc.fields[fieldsArr[f]].label;
+            }
+            metric.fields = labeledFields;
+            var moduleName = ca.desc.modules[metric.module].label;
+            metric.labelHtml = moduleName + ': ' + metric.label;
+            return metric;
+        }
+
 
         // manage graph colors.
         var palette = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } );
@@ -84,12 +97,22 @@
             this.width = width;
         }
 
+        service.prototype.getStatLabel = function(stat) {
+            for(var m in ca.desc.metrics) {
+                var metric = ca.desc.metrics[m];
+                if(metric.stat == stat) {
+                    return metric.label;
+                }
+            }
+            return false;
+        }
         service.prototype.describeCa = function(cb) {
             var self = this;
 
             ca.conf.then(function(conf) {
-                self.conf = conf.data;
-                cb(conf.data);
+                ca.desc = conf.data;
+                conf.data.metrics.forEach(_labelMetrics);
+                cb(ca.desc);
             });
 
         };
@@ -180,16 +203,21 @@
 
                     self.instrumentations[id].heatmap = hms;
 
+                    var gName = name;
+                    if(name === 'default') {
+                        gName = self.getStatLabel(instrumentation.stat);
+                    }
+
                     seriesCollection.push({
-                        name: name,
+                        name: gName,
                         data: data,
-                        color: ca.getColor(name)
+                        color: ca.getColor(gName)
                     });
 
                 }
 
             }
-
+            console.log(seriesCollection);
             return seriesCollection;
         }
 

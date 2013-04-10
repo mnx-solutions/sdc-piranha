@@ -27,7 +27,7 @@
                         graph: graph,
                         orientation: 'left',
                         tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-                        element: document.getElementById('y_axis')
+                        element: document.getElementById('y_axis_'+$scope.$id)
                     } );
                     axis.render();
                     return axis;
@@ -39,7 +39,7 @@
                 }
                 function createGraph(series) {
                     var conf = {
-                        element: document.querySelector("#chart"),
+                        element: document.querySelector("#chart_"+$scope.$id),
                         renderer: $scope.renderer,
                         width: 640,
                         height: 200,
@@ -116,17 +116,19 @@
 
             },
             template:
-                '<select data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
-                '<div id="instrumentation"></div><div id="slider_{{instrumentation.id}}"></div> <br/><br/>' +
-                '<div class="chart_container" style="position: relative;">' +
-                    '<div id="y_axis" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
-                    '<div id="chart" style="position: relative; left: 40px;">' +
-                    '<div class="caOverlaid" >' +
-                        '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                '<div>' +
+                    '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
+                    '<br/><br/>' +
+                    '<div class="chart_container_{{$id}}" style="position: relative;">' +
+                        '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
+                        '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
+                        '<div class="caOverlaid" >' +
+                            '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                        '</div>' +
+                        '</div>' +
                     '</div>' +
-                    '</div>' +
-                '</div>' +
-                '<button data-ng-click="deleteInstrumentation()">Delete</button></div>'
+                    '<button data-ng-click="deleteInstrumentation()">Delete</button></div>' +
+                '</div>'
         };
     });
 }(window.JP.getModule('cloudAnalytics')));

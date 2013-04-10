@@ -37,26 +37,24 @@ function ($scope, requestContext, caBackend) {
         $scope.illar = [{
             options:oo,
             ca:ca
+        },{
+            options:[{
+                module:'cpu',
+                stat:'waittime',
+                decomposition:[],
+                predicate: {}
+            }],
+            ca:ca
         }
         ];
 
         $scope.conf = conf;
-        $scope.conf.metrics.forEach(_labelMetrics);
+
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
     });
 
-    function _labelMetrics(metric) {
-        var fieldsArr = metric.fields;
-        var labeledFields = [];
-        for(var f in fieldsArr) {
-            labeledFields[fieldsArr[f]] = $scope.conf.fields[fieldsArr[f]].label;
-        }
-        metric.fields = labeledFields;
-        var moduleName = $scope.conf.modules[metric.module].label;
-        metric.labelHtml = moduleName + ': ' + metric.label;
-        return metric;
-    }
+
 
     $scope.createInstrumentation = function(){
 
