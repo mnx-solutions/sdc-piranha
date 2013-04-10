@@ -118,6 +118,7 @@
  */
 .caOverlaid {
 	position: relative;
+    width: 640px;
 }
 
 .caOverlaid * {

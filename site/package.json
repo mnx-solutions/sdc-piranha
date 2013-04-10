@@ -4,7 +4,6 @@
 			"js": [
                 "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
                 "/vendor/bootstrap/js/bootstrap.min.js",
-                "/vendor/bootstrap/js/bootstrap-dropdown.js",
 				"/vendor/angular/angular.js",
 				"/vendor/angular/angular-resource.js",
                 "/vendor/angular/angular-cookies.js",

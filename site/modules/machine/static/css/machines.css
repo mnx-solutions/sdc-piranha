@@ -1,3 +1,9 @@
+.loading-medium {
+	background-image:url('../img/icon-loading-medium.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	min-height:50px;
+}
 
 h1,h2 {
     font-weight:normal;
@@ -97,6 +103,7 @@ th {
 
 .item {
     border:1px solid #ddd;
+	
     border-bottom:1px solid #ddd;
     width:100%;
     overflow:hidden;
@@ -237,8 +244,8 @@ th {
     margin-bottom:10px;
 }
 
-.btn:hover{
-}
+.btn:hover{}
+
 .affix {
     z-index:100000000 !important;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
@@ -262,4 +269,10 @@ th {
 .package-selector > div {
     padding:5px;
     margin-bottom:5px;
+}
+.container {
+/*	border:1px solid red !important;*/
+}
+.header {
+/*	border:1px solid red !important;*/
 }
