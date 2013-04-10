@@ -375,9 +375,9 @@
 </div>
 
 <div data-ng-switch-when="provision"
-     data-ng-controller="ProvisionController"
-     class="row-fluid">
+     data-ng-controller="ProvisionController">
 
+    <!--
     <div class="page-header">
         <h1><span data-translate>Provision</span>
             <small data-translate>Provision a new machine</small>
@@ -415,5 +415,168 @@
             </div>
         </form>
     </div>
+    -->
+
+    <div class="container-fluid content-container">
+        <div class="container content-container-inner">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Create New Machine
+                        <small id="counter">
+                        </small></h1>
+                </div>
+                <div class="pull-left provision">
+                <form class="form-search pull-left" method="POST" style="width:580px;padding:5px;margin-left:-0px;background-color:#eee;border:1px solid #ddd;-webkit-border-radius: 4px;">
+                    <div class="btn-group pull-left">
+                        <button class="btn">Data Center</button>
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="">SmartOS</a></li>
+                            <li><a href="">Windows</a></li>
+                            <li><a href="">Linux</a></li>
+                            <!-- dropdown menu links -->
+                        </ul>
+                    </div>
+                    <p class="pull-right none">
+                        <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
+                        <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
+                    </p>
+
+                    <div class="pull-right">
+                        <form class="navbar-form pull-left">
+                            <input type="text" name="RegistrationNo" class="span3" placeholder="Search Image">
+                        </form>
+                    </div>
+
+                    <div class="clearfix"></div>
+                </form>
+                <div id="myCarousel" class="carousel slide">
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+
+                <div class="item active" data-ng-repeat="dataset in datasets">
+
+                    <fieldset class="selector-container" id="package-selector">
+                        <div class="control-group">
+
+                            <div class="controls">
+                                <label class="radio text-small">
+                                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked />
+                                    <label class="control-label text-small">
+                                        <strong>{{dataset.name}}</strong>
+                                    </label>
+
+                                    <p>{{dataset.description}}</p>
+
+                                    <div class="clearfix"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                    </fieldset>
+
+                </div>
+                <div class="item">
+                    <!-- <div class="slide-back" id="slide-back"></div> -->
+                    <fieldset class="selector-container size" id="size-container">
+                        <div class="control-group">
+
+                            <div class="controls">
+
+                                <label class="description pull-left">
+                                    <label class="control-label text-small"><strong>Extra Small 1GB</strong></label>
+                                    <!-- <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked> -->
+                                    <p>
+                                        RAM: 512MB<br />
+                                        Disk: 1GB <br />
+                                        VCPU: 1 <br />
+                                    </p>
+                                </label>
+                                <label class="price span2 pull-right">
+                                    $0.04
+                                </label>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+                <!-- <div class="item">…</div> -->
+                </div>
+                <!-- Carousel nav -->
+                <!--
+              -->
+                </div>
+                </div>
+
+                <div class="span4 pull-right pricing shadow" id="affix-pricing-container" style="width:300px;">
+                    <div class="alert alert-muted" id="pricing" style="width:250px;">
+
+                        <h4>Configuration</h4>
+                        <!-- <div id="step-intro">
+                            <p class="text-small">Create machine with 2 easy steps</p>
+                            <ol>
+                                <li>Choose and image
+                                <li>Choose size and pricing
+                            </ol>
+                            Voila! You're all set.
+                        </div> -->
+                        <div id="selected-image" class="text-small"></div>
+                        <div id="selected-size" class="text-small"></div>
+                        <div id="step-configuration" class="text-small  none" style="margin-top:10px;margin-bottom:10px;">
+                            <h4>You're almost done.</h4>
+                            <p>Just select the size of your machine and <strong>Voila</strong>.</p>
+                            <div id="finish-configuration" class="none">
+                                <input type="text" name="machine-name" placeholder="Name of your machine">
+                                <button class="btn btn-success">Save machine</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <script>
+        $('.carousel').carousel({
+            interval:false
+        });
+        $('#slide-back').bind({
+            click:function(){
+                $('#prev').trigger("click")
+            }
+        });
+
+        $("input:radio").bind({
+            change:function(e){
+                $('#next').trigger("click")
+                $('#pricing').removeClass("alert-muted");
+                $('#pricing').addClass("alert-success");
+                $('#step-configuration').fadeIn("fast")
+                //
+                //
+                var Description = new Array(
+                        $(e.currentTarget).parent().children("label").html(),
+                        $(e.currentTarget).parent().children("p").text()
+                );
+                $('#selected-image').html(Description.join("<br >"))
+                // console.log()
+                // <label class="control-label text-small"><strong>Standard 64</strong></label>
+                // <p>A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack — such as Ruby, Apache, and MySQL — is installed and ready to use.</p>
+
+                // console.log()
+            }
+        })
+        $('#size-container').children(".control-group").bind({
+            click:function(e){
+                $('#finish-configuration').fadeIn("fast")
+                $('#selected-size').html($(e.target).text())
+            }
+        })
+
+    </script>
 </div>
 </div>

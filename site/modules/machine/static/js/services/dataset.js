@@ -49,6 +49,7 @@
                             }
                         });
 
+                        console.log(datasets);
                         datasets.list.final = true;
                     }
                 });
