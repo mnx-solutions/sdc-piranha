@@ -1,7 +1,60 @@
-.landing-container {
+/*.landing-container {
     text-align: center;
+}
+*/
+.text-small {
+	font-size:11px;
 }
 
 .forgotPassword {
     cursor:pointer;
+}
+
+.signin-container {
+	top:50%;
+	width:355px;
+}
+.signin {
+	margin-top:100px;
+	width:350px;
+}
+.signin-container .alert {
+	background: -webkit-linear-gradient(top,#fff 0,#ddd 100%);
+	background-image: -webkit-linear-gradient(top, rgb(255, 255, 255) 0px, rgb(221, 221, 221) 100%);
+	background-repeat-x: initial;
+	background-repeat-y: initial;
+	background-attachment: initial;
+	background-position-x: initial;
+	background-position-y: initial;
+	background-origin: initial;
+	background-clip: initial;
+	background-color: initial;
+	background: -moz-linear-gradient(top,#fff 0,#ddd 100%);
+	background: -ms-linear-gradient(top,#fff 0,#ddd 100%);
+	background: -o-linear-gradient(top,#fff 0,#ddd 100%);
+	background: linear-gradient(top,#fff 0,#ddd 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#dddddd',GradientType=0);
+	border: solid 1px #ddd;
+	border-bottom: solid 1px #ccc;
+	-webkit-box-shadow: 0 1px 0 rgba(0,0,0,.1);
+	-moz-box-shadow: 0 1px 0 rgba(0,0,0,.1);
+	box-shadow: 0 1px 0 rgba(0,0,0,.1);
+}
+.signin-container input {}
+.signin-container .alert h4 {
+	font-weight:normal;
+	font-size:18px;
+	color:#444;
+	text-shadow:1px 1px 1px #fff;
+}
+.signin-container .alert a,.signin-container .alert label {
+	color:#444;
+	text-shadow:1px 1px 1px #fff;
+}
+
+.signin-container .form-actions{
+	margin-left:-15px;
+	margin-right:-35px;
+	margin-bottom:-25px;
+	background-color:transparent;
 }
