@@ -13,12 +13,12 @@
         ca.request_time = null;
         ca.instrumentations = {};
         ca.conf = $http.get('/cloudAnalytics/ca');
+
+        // manage graph colors.
+        var palette = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } );
         ca.usedColors = {
             'default':'steelblue'
         };
-
-        // Reuse graph colors for same metrics;
-        var palette = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } );
         ca.getColor = function(key) {
             if(ca.usedColors[key]) {
                 return ca.usedColors[key];

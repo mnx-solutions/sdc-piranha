@@ -47,7 +47,66 @@ module.exports = function (scope, app, callback) {
             res.send(err);
         });
     });
+    function getResponses(instrumentations, instrumentationId, response, opts, res){
 
+        var instrumentation = instrumentations[instrumentationId];
+        var client = cloud.proxy();
+        var method;
+        var options = {
+            id: instrumentationId
+        };
+        options.ndatapoints = opts.ndatapoints || 1;
+        options.duration = 1;
+
+        options.start_time = opts.last_poll_time || instrumentation.crtime;
+
+        switch(instrumentation['value-arity']) {
+            case 'numeric-decomposition':
+                options.width = instrumentation.width || 640;
+                options.height = instrumentation.height || 200;
+                options.nbuckets = instrumentation.nbuckets || 50;
+                options.duration = 60;
+                options.hues = instrumentation.hues || 21;
+                options.ndatapoints = 1;
+                options.end_time = options.start_time;
+                delete options.start_time;
+                //options.start_time = options.start_time - options.duration;
+                method = 'GetInstrumentationHeatmap';
+                break;
+            case 'scalar':
+                method = 'GetInstrumentationValue';
+                break;
+            case 'discrete-decomposition':
+                method = 'GetInstrumentationValue';
+                break;
+            default:
+                method = 'GetInstrumentationValue';
+                break;
+        }
+
+        client[method](options, options, function(err, resp) {
+            console.log(resp);
+            if(!err) {
+                response.datapoints[options.id] = resp;
+                response.end_time = resp[resp.length - 1].start_time + 1;
+                if(instrumentation['value-arity'] === 'numeric-decomposition') {
+                    response.end_time += 60;
+                }
+            } else {
+                response.datapoints[options.id] = {
+                    err: err
+                };
+            }
+
+
+            if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
+                console.log('responding');
+                console.log(response);
+                res.json(response);
+            }
+        });
+
+    };
     app.post('/ca/getInstrumentations', function(req, res) {
 
         var opts = req.body.options;
@@ -56,70 +115,10 @@ module.exports = function (scope, app, callback) {
             datapoints:{},
             end_time:null
         };
-        var client = cloud.proxy();
+
 
         for(var instrumentationId in instrumentations) {
-            var instrumentation = instrumentations[instrumentationId];
-            var method;
-            var options = {
-                id: instrumentationId
-            };
-            options.ndatapoints = opts.ndatapoints || 1;
-            options.duration = 1;
-
-            options.start_time = opts.last_poll_time || instrumentation.crtime;
-
-            switch(instrumentation['value-arity']) {
-                case 'numeric-decomposition':
-                    options.width = instrumentation.width || 640;
-                    options.height = instrumentation.height || 200;
-                    options.nbuckets = instrumentation.nbuckets || 50;
-                    options.duration = 60;
-                    options.hues = instrumentation.hues || 21;
-                    options.ndatapoints = 1;
-                    options.end_time = options.start_time;
-                    delete options.start_time;
-                    console.log('options');
-                    console.log(options);
-                    console.log(instrumentation.crtime);
-                    //options.start_time = options.start_time - options.duration;
-                    method = 'GetInstrumentationHeatmap';
-                    break;
-                case 'scalar':
-                    method = 'GetInstrumentationValue';
-                    break;
-                case 'discrete-decomposition':
-                    method = 'GetInstrumentationValue';
-                    break;
-                default:
-                    method = 'GetInstrumentationValue';
-                    break;
-            }
-
-
-
-            client[method](options, options, function(err, resp) {
-
-                if(!err) {
-//                    console.log('single response');
-//                    console.log(resp);
-                    response.datapoints[instrumentationId] = resp;
-                    response.end_time = resp[resp.length - 1].start_time + 1;
-                    if(instrumentation['value-arity'] === 'numeric-decomposition') {
-                        response.end_time += 60;
-                    }
-                } else {
-                    response.datapoints[instrumentationId] = {
-                        err: err
-                    };
-                }
-                if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
-                    console.log('responding');
-                    console.log(response);
-                    res.json(response);
-                }
-            });
-
+            getResponses(instrumentations, instrumentationId, response, opts, res);
         }
     })
 

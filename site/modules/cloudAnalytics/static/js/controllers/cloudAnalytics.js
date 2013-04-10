@@ -7,7 +7,20 @@
 
 function ($scope, requestContext, caBackend) {
     requestContext.setUpRenderContext('cloudAnalytics', $scope);
-
+    var oo = [
+        {
+            module: 'cpu',
+            stat: 'thread_samples',
+            decomposition: [],
+            predicate: {}
+        },
+        {
+            module: 'cpu',
+            stat: 'thread_executions',
+            decomposition: [],
+            predicate: {}
+        }
+    ]
     $scope.current = {
         metric:null,
         decomposition: {
@@ -19,7 +32,14 @@ function ($scope, requestContext, caBackend) {
     $scope.instrumentations = [];
 
     var ca = new caBackend();
+
     ca.describeCa(function (conf){
+        $scope.illar = [{
+            options:oo,
+            ca:ca
+        }
+        ];
+
         $scope.conf = conf;
         $scope.conf.metrics.forEach(_labelMetrics);
         $scope.metrics = $scope.conf.metrics;
@@ -54,10 +74,12 @@ function ($scope, requestContext, caBackend) {
             predicate: {}
         }
 
-        $scope.instrumentations.push({
-            options:[ options ],
-            ca: ca
-        });
+        $scope.instrumentations.push(
+            {
+                options:[ options ],
+                ca: ca
+            }
+        );
 
     }
     $scope.changeMetric = function(){
