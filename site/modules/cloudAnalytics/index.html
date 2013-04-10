@@ -17,11 +17,11 @@
     <!--{{inst.stat}}<br/>-->
     <!--<instrumentation data-ng-repeat="inst in instrumentations" type="raw" module="inst.module" stat="inst.stat" metric="inst.metric" decomposition="inst.decomposition"></instrumentation>-->
     <!--<graph data-ng-repeat="i in instrumentations" options="i.options" ca="i.ca"></graph>-->
-    <graph data-ng-repeat="i in illar" options="i.options" ca="i.ca"></graph>
 </div>
 
 <button data-ng-click="createInstrumentation()">Create</button>
 <br/>
+<graph data-ng-repeat="i in defaultInstrumentations" options="i.options" ca="i.ca"></graph>
 <br/>
 module: {{current.metric.module}}      <br/>
 stat: {{current.metric.stat}}          <br/>

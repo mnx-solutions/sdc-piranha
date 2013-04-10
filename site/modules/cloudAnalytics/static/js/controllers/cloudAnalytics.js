@@ -7,20 +7,52 @@
 
 function ($scope, requestContext, caBackend) {
     requestContext.setUpRenderContext('cloudAnalytics', $scope);
+
+    /* pre-defined default intrumentations */
     var oo = [
-        {
+        [{
             module: 'cpu',
-            stat: 'thread_samples',
+            stat: 'usage',
             decomposition: [],
             predicate: {}
-        },
-        {
+        }], [{
             module: 'cpu',
-            stat: 'thread_executions',
+            stat: 'waittime',
             decomposition: [],
             predicate: {}
-        }
-    ]
+        }], [{
+            module: 'memory',
+            stat: 'rss',
+            decomposition: [],
+            predicate: {}
+        },{
+            module: 'memory',
+            stat: 'rss_limit',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'memory',
+            stat: 'reclaimed_bytes',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'zfs',
+            stat: 'dataset_unused_quota',
+            decomposition: [],
+            predicate: {}
+        }, {
+            module: 'zfs',
+            stat: 'dataset_quota',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'nic',
+            stat: 'vnic_bytes',
+            decomposition: ['zonename'],
+            predicate: {}
+        }]
+    ];
+
     $scope.current = {
         metric:null,
         decomposition: {
@@ -34,11 +66,14 @@ function ($scope, requestContext, caBackend) {
     var ca = new caBackend();
 
     ca.describeCa(function (conf){
-        $scope.illar = [{
-            options:oo,
-            ca:ca
+        $scope.defaultInstrumentations = [];
+
+        for(var opt in oo) {
+            $scope.defaultInstrumentations.push({
+                options:oo[opt],
+                ca:ca
+            })
         }
-        ];
 
         $scope.conf = conf;
         $scope.conf.metrics.forEach(_labelMetrics);
