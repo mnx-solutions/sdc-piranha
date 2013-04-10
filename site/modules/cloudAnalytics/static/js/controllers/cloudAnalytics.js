@@ -2,11 +2,12 @@
 
 (function (app) {
     app.controller(
-            'cloudAnalytics.LayoutController',
-            ['$scope', 'requestContext', 'caBackend',
+            'cloudController',
+            ['$scope', 'caBackend',
 
-function ($scope, requestContext, caBackend) {
-    requestContext.setUpRenderContext('cloudAnalytics', $scope);
+function ($scope, caBackend) {
+    //requestContext.setUpRenderContext('cloudAnalytics', $scope);
+    console.log('ca');
 
     /* pre-defined default intrumentations */
     var oo = [

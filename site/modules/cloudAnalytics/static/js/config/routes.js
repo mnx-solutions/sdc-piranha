@@ -3,7 +3,7 @@
 window.JP.main.config(['$routeProvider', function ($routeProvider) {
         $routeProvider
                 .when('/cloudAnalytics', {
-            action: 'cloudAnalytics'
+            action: 'cloudAnalytics.index'
         });
     }]);
 

@@ -217,7 +217,6 @@
                 }
 
             }
-            console.log(seriesCollection);
             return seriesCollection;
         }
 

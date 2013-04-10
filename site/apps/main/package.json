@@ -3,6 +3,7 @@
 		"route": "/main",
 		"modules": [
             "account",
+            "cloudAnalytics",
             "localization",
             "notification",
             "menu",
@@ -10,8 +11,7 @@
             "machine",
             "login",
             "debug",
-            "no-tracking",
-            "cloudAnalytics"
+            "no-tracking"
         ],
 		"auth": true
 	}
