@@ -31,15 +31,15 @@
                         var result = job.__read();
                         result.forEach(function (p) {
                             var old = null;
-                            if (datasets.index[p.urn]) {
-                                old = datasets.list.indexOf(datasets.index[p.urn]);
+                            if (datasets.index[p.id]) {
+                                old = datasets.list.indexOf(datasets.index[p.id]);
                             }
 
-                            datasets.index[p.urn] = p;
+                            datasets.index[p.id] = p;
 
-                            if (datasets.search[p.urn]) {
-                                datasets.search[p.urn].resolve(p);
-                                delete datasets.search[p.urn];
+                            if (datasets.search[p.id]) {
+                                datasets.search[p.id].resolve(p);
+                                delete datasets.search[p.id];
                             }
 
                             if (old !== null) {

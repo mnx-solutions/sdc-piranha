@@ -1,7 +1,8 @@
 {
 	"em": {
-		"route": "/",
+		"route": "/main",
 		"modules": [
+            "account",
             "localization",
             "notification",
             "menu",

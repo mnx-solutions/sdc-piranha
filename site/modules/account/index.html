@@ -1,0 +1,19 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index" data-ng-controller="AccountController">
+        <div class="container-fluid content-container">
+            <div class="container content-container-inner">
+                <div class="container">
+                    <div class="page-header" style="margin-top:10px">
+                        <h1 class="pull-left" data-translate>Account</h1>
+                        <div class="clearfix"></div>
+                    </div>
+                    <span data-translate>Login: {{account.login}}</span><br />
+                    <span data-translate>Email: {{account.email}}</span><br />
+                    <span data-translate>Name: {{account.firstName}} {{account.lastName}}</span> <br />
+                    <br />
+                    <a href="/landing/changepassword/{{account.login}}" data-translate>Change my password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

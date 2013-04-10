@@ -1,102 +1,72 @@
 'use strict';
 
-var smartdc = require('smartdc');
 var vasync = require('vasync');
 
 module.exports = function (scope, callback) {
-    var cloud = scope.get('cloud');
     var server = scope.api('Server');
 
     server.onCall('MachineList', function (call) {
         call.log.info('Handling machine list event');
-        var datacenters = {};
 
-        vasync.pipeline({
-            'funcs': [
-                function (args, next) {
-                    call.log.debug('List datacenters');
-                    cloud.listDatacenters(function (err, dcs) {
-                        if (err) {
-                            call.log.error(err);
-                            next(err);
-                            return;
-                        }
+        var cloud = call.cloud;
+        var datacenters = cloud.listDatacenters();
+        var keys = Object.keys(datacenters);
+        var count = keys.length;
 
-                        call.log.debug('Datacenters retrieved %o', dcs);
+        keys.forEach(function (name) {
+            cloud.setDatacenter(name);
 
-                        Object.keys(dcs).forEach(function (name, index) {
-                            datacenters[name] = dcs[name];
-                        });
+            call.log.debug('List machines for datacenter %s', name);
 
-                        next();
-                    });
-                },
+            cloud.listMachines({'credentials': true}, function (err, machines) {
+                var response = {
+                    name: name,
+                    status: 'pending',
+                    machines: []
+                };
 
-                function (args, next) {
-                    var keys = Object.keys(datacenters);
-                    var count = keys.length;
+                if (err) {
+                    response.err = err;
+                    response.status = 'error';
 
-                    keys.forEach(function (name, index) {
-                        var client = cloud.proxy({ datacenter: name });
-                        call.log.debug('List machines for datacenter %s', name);
-
-                        client.listMachines(function (err, machines) {
-                            var response = {
-                                name: name,
-                                status: 'pending',
-                                machines: []
-                            };
-
-                            if (err) {
-                                response.err = err;
-                                response.status = 'error';
-
-                                call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
-                            } else {
-                                machines.forEach(function (machine) {
-                                    machine.datacenter = name;
-                                });
-
-                                response.status = 'complete';
-                                response.machines = machines;
-
-                                call.log.debug('List machines succeeded for datacenter %s', name);
-                            }
-
-                            call.update(null, response);
-                            if(--count === 0) {
-                                call.done();
-                            }
-                        });
+                    call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
+                } else {
+                    machines.forEach(function (machine) {
+                        machine.datacenter = name;
+                        machine.metadata.credentials = handleCredentials(machine);
                     });
 
+                    response.status = 'complete';
+                    response.machines = machines;
+
+                    call.log.debug('List machines succeeded for datacenter %s', name);
                 }
-            ]
-        }, function (err, results) {
+
+                call.update(null, response);
+                if(--count === 0) {
+                    call.done();
+                }
+            });
         });
+
     });
 
     /* listPackages */
     server.onCall('PackageList', function (call) {
         call.log.info('Handling list packages event');
-
-        var client = cloud.proxy();
-        client.listPackages(call.done.bind(call));
+        call.cloud.listPackages(call.done.bind(call));
     });
 
     /* listDatasets */
     server.onCall('DatasetList', function (call) {
         call.log.info('Handling list datasets event');
-
-        var client = cloud.proxy();
-        client.listDatasets(call.done.bind(call));
+        call.cloud.listDatasets(call.done.bind(call));
     });
 
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datasets event');
-
-        cloud.listDatacenters(call.done.bind(call));
+        call.cloud.listDatacenters(call.done.bind(call));
     });
 
 
@@ -107,9 +77,7 @@ module.exports = function (scope, callback) {
         },
         handler: function (call) {
             call.log.info('Handling machine tags list call, machine %s', call.data.uuid);
-
-            var client = cloud.proxy();
-            client.listMachineTags(call.data.uuid, call.done.bind(call));
+            call.cloud.listMachineTags(call.data.uuid, call.done.bind(call));
         }
     });
 
@@ -123,17 +91,33 @@ module.exports = function (scope, callback) {
         handler: function (call) {
             call.log.info('Handling machine tags save call, machine %s', call.data.uuid);
 
-            var client = cloud.proxy();
-            client.deleteMachineTags(call.data.uuid, function (err) {
+            var newTags = JSON.stringify(call.data.tags);
+            var oldTags = null;
+
+            call.cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
                 if(err) {
                     call.log.error(err);
                     call.done(err);
                     return;
                 }
-
-                client.addMachineTags(call.data.uuid, call.data.tags, function(err) {
-                    call.done(err, call.data.tags); // Return saved tags
-                });
+                var timer = setInterval(function () {
+                    call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
+                    call.cloud.listMachineTags(call.data.uuid, function (err, tags) {
+                        if (!err) {
+                            var json = JSON.stringify(tags);
+                            if(json === newTags) {
+                                call.log.debug('Machine %s tags changed successfully', call.data.uuid);
+                                clearInterval(timer);
+                                call.done(null, tags);
+                            } else if(!oldTags) {
+                                oldTags = json;
+                            } else if(json !== oldTags) {
+                                clearInterval(timer);
+                                call.done(new Error('Other call changed tags'));
+                            }
+                        }
+                    }, undefined, true);
+                }, 1000);
             });
         }
     });
@@ -147,9 +131,8 @@ module.exports = function (scope, callback) {
             var machineId = call.data.uuid;
             call.log.info('Handling machine details call, machine %s', machineId);
 
-            var client = cloud.proxy(call.data);
-            
-            client.getMachine(machineId, call.done.bind(call));
+            call.cloud.setDatacenter(call.data.datacenter);
+            call.cloud.getMachine(machineId, call.done.bind(call));
         }
     });
 
@@ -175,15 +158,15 @@ module.exports = function (scope, callback) {
         var timer = setInterval(function () {
             var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
 
-            call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage.memory);
+            call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage);
             client.getMachine(machineId, function (err, machine) {
                 if (!err) {
-                    if (sdcpackage.memory === machine.memory) {
-                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage.memory);
+                    if (sdcpackage === machine.package) {
+                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
                         call.done(null, machine);
                         clearInterval(timer);
                     } else {
-                        call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage.memory);
+                        call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage);
                         call.step = { state: 'resizing' };
                     }
                 } else {
@@ -206,13 +189,14 @@ module.exports = function (scope, callback) {
         }
         if(!opts.handler) {
             opts.handler = function (call) {
+
                 var machineId = call.data.uuid;
                 call.log.debug(logVerb + ' machine %s', machineId);
 
-                var client = cloud.proxy(call.data);
-                client[func](machineId, function (err) {
+                call.cloud.setDatacenter(call.data.datacenter);
+                call.cloud[func](machineId, function (err) {
                     if (!err) {
-                        pollForMachineState(client, call, machineId, endstate);
+                        pollForMachineState(call.cloud, call, machineId, endstate);
                     } else {
                         call.log.error(err);
                         call.done(err);
@@ -221,6 +205,35 @@ module.exports = function (scope, callback) {
             };
         }
         return opts;
+    }
+
+    function handleCredentials(machine) {
+        var systemsToLogins = {
+            "mysql" : ["MySQL", "root"],
+            "pgsql" : ["PostgreSQL", "postgres"],
+            "virtualmin" : ["Virtualmin", "admin"]
+        }
+        var credentials = [];
+        if (machine.metadata && machine.metadata.credentials) {
+            for (var username in machine.metadata.credentials) {
+                if (systemsToLogins[username]) {
+                    var system = systemsToLogins[username][0];
+                    var login = systemsToLogins[username][1];
+                } else {
+                    var system = "Operating System";
+                    var login = username;
+                }
+
+                credentials.push(
+                    {
+                        "system" : system,
+                        "username" : login.split('_')[0],
+                        "password" : machine.metadata.credentials[username]
+                    }
+                );
+            }
+        }
+        return credentials;
     }
 
     /* GetMachine */
@@ -240,21 +253,20 @@ module.exports = function (scope, callback) {
             return typeof data === 'object' &&
                 data.hasOwnProperty('uuid') &&
                 data.hasOwnProperty('datacenter') &&
-                data.hasOwnProperty('sdcpackage') &&
-                data.sdcpackage.hasOwnProperty('name');
+                data.hasOwnProperty('sdcpackage');
         },
         handler: function (call) {
             var machineId = call.data.uuid;
             var options = {
-                package: call.data.sdcpackage.name
+                package: call.data.sdcpackage
             };
 
             call.log.info('Resizing machine %s', machineId);
 
-            var client = cloud.proxy(call.data);
-            client.resizeMachine(machineId, options, function (err) {
+            call.cloud.setDatacenter(call.data.datacenter);
+            call.cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(client, call, call.data.sdcpackage);
+                    pollForMachinePackageChange(call.cloud, call, call.data.sdcpackage);
                 } else {
                     call.log.error(err);
                     call.done(err);
@@ -270,23 +282,24 @@ module.exports = function (scope, callback) {
                 data.sdcpackage.hasOwnProperty('name') &&
                 data.hasOwnProperty('dataset') &&
                 data.hasOwnProperty('datacenter') &&
-                data.dataset.hasOwnProperty('urn');
+                data.dataset.hasOwnProperty('id');
         },
         handler: function (call) {
+
             var options = {
                 name: call.data.name,
                 package: call.data.sdcpackage.name,
-                dataset: call.data.dataset.urn
+                dataset: call.data.dataset.id
             };
             console.log(call.data);
             call.log.info('Creating machine %s', call.data.name);
             call.getImmediate(false);
 
-            var client = cloud.proxy(call.data);
-            client.createMachine(options, function (err, machine) {
+            call.cloud.setDatacenter(call.data.datacenter);
+            call.cloud.createMachine(options, function (err, machine) {
                 if (!err) {
                     call.immediate(null, {machine: machine});
-                    pollForMachineState(client, call, machine.id, 'running');
+                    pollForMachineState(call.cloud, call, machine.id, 'running');
                 } else {
                     call.log.error(err);
                     call.immediate(err);

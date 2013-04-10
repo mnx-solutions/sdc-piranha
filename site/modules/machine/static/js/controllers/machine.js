@@ -31,10 +31,23 @@
                 };
 
                 $scope.machineid = machineid;
-
-                $scope.selectedmachine = Machine.machine(machineid);
-
+                $scope.machine = Machine.machine(machineid);
                 $scope.tagnr = 0;
+                $scope.visiblePasswords = {};
+
+                function isNotPrivateIp(ip) {
+                    var parts = ip.split('.');
+                    if (+parts[0] === 10 ||
+                        (+parts[0] === 172 && (+parts[1] >= 16 && +parts[1] <= 31)) ||
+                        (+parts[0] === 192 && +parts[1] === 168)) {
+                        return false;
+                    }
+                    return true;
+                }
+                $q.when($scope.machine, function (m) {
+                    m.primaryIps = m.ips.filter(isNotPrivateIp);
+                });
+
 
                 function tagcloud(tags) {
                     if(!tags) {
@@ -42,16 +55,16 @@
                     }
                     var d = $q.defer();
                     var cloud = {};
-                    function addVal(k, val) {
+                    function addVal(k, val, edit) {
                         var id = ++$scope.tagnr;
-                        cloud[id] = {key: k, val: val};
+                        cloud[id] = {key: k, val: val, edit: edit};
                     }
                     function split() {
                         $scope.tagnr = -1;
                         Object.keys(tags).forEach(function(k) {
-                            addVal(k, tags[k]);
+                            addVal(k, tags[k], false);
                         });
-                        addVal('','');
+                        addVal('', '', true);
                         d.resolve(cloud);
                     }
                     $q.when(tags).then(function (t) {
@@ -65,22 +78,27 @@
 
                 $q.when($scope.tagcloud).then(function (){
                     $scope.$watch('tagcloud', function(val, old) {
-                        var keys = Object.keys(val);
-                        var map = {};
-                        keys.forEach(function (k) {
-                            delete val[k].conflict;
-                            if (!val[k].key && !val[k].val && !old[k].key && !old[k].val && k != $scope.tagnr) {
-                                delete val[k];
-                            } else if (val[k].key) {
-                                if(map[val[k].key] !== undefined){
-                                    val[map[val[k].key]].conflict = true;
-                                    val[k].conflict = true;
+                        if(val) {
+                            var keys = Object.keys(val);
+                            var map = {};
+                            keys.forEach(function (k) {
+                                delete val[k].conflict;
+
+                                if (!val[k].key && !val[k].val && old && old[k] && !old[k].key && !old[k].val && +k !== +$scope.tagnr) {
+                                    delete val[k];
+                                } else if (val[k].key) {
+                                    if (map[val[k].key] !== undefined){
+                                        val[map[val[k].key]].conflict = true;
+                                        val[k].conflict = true;
+                                    }
+
+                                    map[val[k].key] = k;
                                 }
-                                map[val[k].key] = k;
+                            });
+
+                            if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
+                                val[++$scope.tagnr] = {key: '', val: '', edit: true};
                             }
-                        });
-                        if(val[$scope.tagnr].key || val[$scope.tagnr].val) {
-                            val[++$scope.tagnr] = {key: '', val: ''};
                         }
                     }, true);
                 });
@@ -90,17 +108,17 @@
                     function (){
                         Machine.updateMachines();
                         Machine.machine(machineid).then(function(m){
-                            $scope.selectedmachine = m;
+                            $scope.machine = m;
                         });
                     }
                 );
 
                 $scope.packages = Package.package();
 
-                if ($scope.selectedmachine.id) {
-                    $scope.package = Package.package($scope.selectedmachine.package);
+                if ($scope.machine.id) {
+                    $scope.package = Package.package($scope.machine.package);
                 } else {
-                    $scope.selectedmachine.then(function(value){
+                    $scope.machine.then(function(value){
                         $scope.package = Package.package(value.package);
                     });
                 }
@@ -156,8 +174,25 @@
                     });
                 };
 
+                $scope.editTag = function (k) {
+                    $scope.tagcloud.$$v[k].edit = true;
+                };
+
                 $scope.removeTag = function(k) {
                     delete $scope.tagcloud.$$v[k];
+                };
+
+                $scope.togglePassword = function (id) {
+                    if ($scope.isPasswordVisible(id)) {
+                        $scope.visiblePasswords[id] = false;
+                    } else {
+                        $scope.visiblePasswords[id] = true;
+                    }
+                };
+
+                $scope.isPasswordVisible = function (id) {
+                    return !$scope.visiblePasswords.hasOwnProperty(id) ||
+                        $scope.visiblePasswords[id];
                 };
 
             }

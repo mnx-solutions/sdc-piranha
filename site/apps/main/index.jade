@@ -1,3 +1,4 @@
+doctype 5
 html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
   head
     meta(charset='utf-8')
@@ -11,10 +12,64 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
     div(data-main-menu, class='JoyentPortal-module-menu')
     div(data-notification, class='JoyentPortal-module-notification')
     div(data-ng-switch='subview', class='subview container-fluid ng-cloak', ng-cloak)
-                each layout in layouts
-                    div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module} row-fluid',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
+      each layout in layouts
+        div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
     each link in js
       script(type='text/javascript',src='#{link._url}')
     each source in jss
-          script(type='text/javascript')!= source
+      script(type='text/javascript')!= source
+
+    div(class='JoyentPortal-module-menu')
+        div(class="container navbar-static-bottom")
+            span(class="span2")
+                div(class="brand color")
+            div(class="pull-right")
+                span(class="span2")
+                    h5 About
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/tos", target="_blank") Terms of Service
+                        li
+                            a(href="http://joyent.com/company/policies", target="_blank") Policies
+                        li
+                            a(href="http://joyent.com/company/security-and-compliance", target="_blank") Compliance
+
+                span(class="span2")
+                    h5 Dev Center
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/developers")Overview
+                        li
+                            a(href="http://wiki.joyent.com/display/jpc2/JoyentCloud+Home", target="_blank") Joyent Cloud Docs
+                        li
+                            a(href="http://sdcdoc.joyent.com/sdcdoc/display/sdc/SmartDataCenter+Home", target="_blank") SmartDataCenter Docs
+                        li
+                            a(href="http://joyent.com/developers/support") Support
+                        li
+                            a(href="http://joyent.com/developers/support/training-services") Training
+
+                span(class="span2")
+                    h5 Technology
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/technology") Overview
+                        li
+                            a(href="http://joyent.com/technology/nodejs") Node.js
+                        li
+                            a(href="http://joyent.com/technology/smartos") SmartOS
+                span(class="span3")
+                    h5 Solution
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/solutions") Platform
+                        li
+                            a(href="http://joyent.com/solutions") Application
+                        li
+                            a(href="http://joyent.com/solutions") Data
+                        li
+                            a(href="http://joyent.com/solutions") Infrastructure
+                        li
+                            a(href="http://joyent.com/solutions") Services
+
+            div(class="clearfix")

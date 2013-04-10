@@ -1,6 +1,6 @@
 {
 	"em": {
 		"route": "/",
-		"modules": ["account"]
+		"modules": ["localization", "landing" ]
 	}
 }
