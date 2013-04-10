@@ -3,16 +3,14 @@
 
 module.exports = function (scope, app, callback) {
 
-    var cloud = scope.get('cloud');
-//    console.log(cloud);
+    //    console.log(cloud);
     //convert ca call uri to cloudApi call uri
     function convertUri(uri) {
         return '/ca' + uri.substring(uri.indexOf('/instrumentations'));
     }
 
     app.get('/ca', function (req, res) {
-        console.log(cloud);
-        cloud.proxy().DescribeAnalytics(function (err, resp) {
+        req.cloud.DescribeAnalytics(function (err, resp) {
         if (!err) {
                 res.json(resp);
             }
@@ -20,7 +18,7 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/ca/instrumentations', function (req, res) {
-        cloud.proxy().ListInstrumentations(function (err, resp) {
+        req.cloud.ListInstrumentations(function (err, resp) {
         if (!err) {
                 res.json(resp);
             }
@@ -29,9 +27,7 @@ module.exports = function (scope, app, callback) {
 
     app.post('/ca/instrumentations', function (req, res) {
         console.log('create request');
-        var client = cloud.proxy();
-        console.log(client);
-        client.CreateInstrumentation(req.body, function (err, resp) {
+        req.cloud.CreateInstrumentation(req.body, function (err, resp) {
             console.log(resp);
             if (!err) {
                 res.json(resp);
@@ -40,7 +36,7 @@ module.exports = function (scope, app, callback) {
     });
 
     app.del('/ca/instrumentations/:id', function(req, res) {
-        cloud.proxy().DeleteInstrumentation(+req.params.id, function (err, resp) {
+        req.cloud.DeleteInstrumentation(+req.params.id, function (err, resp) {
             if (!err) {
                 res.json(resp);
             }
@@ -61,7 +57,7 @@ module.exports = function (scope, app, callback) {
         for(var instrumentationId in instrumentations) {
             (function() {
                 var instrumentation = instrumentations[instrumentationId];
-                var client = cloud.proxy();
+                var client = req.cloud;
                 var method;
                 var options = {
                     id: instrumentationId
