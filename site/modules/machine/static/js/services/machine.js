@@ -9,7 +9,8 @@
         '$q',
         'localization',
         'notification',
-        function ($resource, serverTab, $rootScope, $q, localization, notification) {
+        'Dataset',
+        function ($resource, serverTab, $rootScope, $q, localization, notification, Dataset) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -37,6 +38,7 @@
                         function handleChunk (machine) {
                             var old = null;
 
+                            machine.imageObj = Dataset.dataset(machine.image);
                             if (machines.index[machine.id]) {
                                 old = machines.list.indexOf(machines.index[machine.id]);
                             }
