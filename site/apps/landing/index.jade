@@ -1,3 +1,4 @@
+doctype 5
 html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
   head
     meta(charset='utf-8')
@@ -7,9 +8,9 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
     each link in css
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body()
-    div(data-ng-switch='subview', class='subview container-fluid ng-cloak', ng-cloak)
+    div(data-ng-switch='subview', class='subview container ng-cloak', ng-cloak)
                 each layout in layouts
-                    div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module} row-fluid')!= layout.data
+                    div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}')!= layout.data
 
     each link in js
       script(type='text/javascript',src='#{link._url}')
