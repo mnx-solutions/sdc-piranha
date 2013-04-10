@@ -12,7 +12,7 @@
         }
         ca.request_time = null;
         ca.instrumentations = {};
-        ca.conf = $http.get('/cloudAnalytics/ca');
+        ca.conf = $http.get('cloudAnalytics/ca');
         ca.desc = {};
         function _labelMetrics(metric) {
             var fieldsArr = metric.fields;
@@ -44,7 +44,7 @@
         // Poll all the instrumentation values.
         var pending = false;
         ca._poll = function() {
-            $http.post('/cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
+            $http.post('cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
                 ca.options.last_poll_time = res.end_time;
 
