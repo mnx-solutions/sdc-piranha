@@ -16,7 +16,8 @@ function ($scope, caBackend) {
             stat: 'usage',
             decomposition: [],
             predicate: {}
-        }], [{
+        }]
+        , [{
             module: 'cpu',
             stat: 'waittime',
             decomposition: [],
@@ -54,6 +55,15 @@ function ($scope, caBackend) {
         }]
     ];
 
+    var ot = [
+        'CPU: aggregated CPU usage',
+        'CPU: saturation',
+        'Memory: utilization',
+        'Memory: saturation',
+        'FS: capacity',
+        'Network: utilization'
+    ]
+
     $scope.current = {
         metric:null,
         decomposition: {
@@ -73,7 +83,8 @@ function ($scope, caBackend) {
         for(var opt in oo) {
             $scope.defaultInstrumentations.push({
                 options:oo[opt],
-                ca:ca
+                ca:ca,
+                title: ot[opt]
             })
         }
 
@@ -95,7 +106,6 @@ function ($scope, caBackend) {
 
         var options = {
             module: $scope.current.metric.module,
-            metric: $scope.current.metric,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
             predicate: {}
@@ -104,11 +114,17 @@ function ($scope, caBackend) {
         $scope.instrumentations.push(
             {
                 options:[ options ],
-                ca: ca
+                ca: ca//,
+//                title: 'proov'
             }
         );
 
     }
+
+    $scope.deleteAllInstrumentations = function() {
+        ca.deleteAllInstrumentations();
+    }
+
     $scope.changeMetric = function(){
         $scope.current.decomposition.primary = null;
         $scope.current.decomposition.secondary = null;
