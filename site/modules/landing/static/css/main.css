@@ -1,3 +1,5 @@
+
+
 /*.landing-container {
     text-align: center;
 }
@@ -11,11 +13,11 @@
 }
 
 .signin-container {
-	top:50%;
+/*	top:50%;*/
 	width:355px;
 }
 .signin {
-	margin-top:100px;
+	margin-top:150px;
 	width:350px;
 }
 .signin-container .alert {

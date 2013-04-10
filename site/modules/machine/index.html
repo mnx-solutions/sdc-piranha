@@ -61,92 +61,106 @@
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
                     </div>
+					<div class="loading-medium">
+						<!--
+							@<kesiganes-implemendib>
+							senikaua kuni sisu ei kuvata, peaks olema "loading-medium" class
+							kui sisu on kuvatud/renderdatud ekraanile (ideaalis) siis eemaldatakse "loading-medium"
+							kehtib 
+								- alglaadimisel
+								- eelmine, j2rgmine leht
+								- otsimine
+							
+							juhul kui tulemuseks pole yhtegi masinat
+								- error > kuvatakse veateade. kasutage hetkel kuhuiganes veateadet kuvatakse
+								- masinaid pole - kuvatakse eraldi template/container. kogu olemasolev info (terve parent) tuleb replaceda teise sisuga (visuaalne osa tegemises @thomasm)
+						-->
+						
+	                    <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
+	                         class="item">
 
-                    <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
-                         class="item">
+	                        <span data-ng-click="toggleMachine(machine.id)">
+	                            <span data-ng-class="{'icon-chevron-down': isCollapsed(machine.id), 'icon-chevron-up': !isCollapsed(machine.id)}"
+	                                  class="summary  pull-left">&nbsp;</span>
 
-                        <span data-ng-click="toggleMachine(machine.id)">
-                            <span data-ng-class="{'icon-chevron-down': isCollapsed(machine.id), 'icon-chevron-up': !isCollapsed(machine.id)}"
-                                  class="summary  pull-left">&nbsp;</span>
+	                            <span class="span2 text-medium">
+	                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
+	                            </span>
 
-                            <span class="span2 text-medium">
-                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
-                            </span>
+	                            <span class="span2 text-medium">
+	                                <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
+	                            </span>
 
-                            <span class="span2 text-medium">
-                                <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
-                            </span>
+	                            <span class="span1 text-medium">{{machine.datacenter}}</span>
+	                            <span class="span1 text-medium align-right">{{machine.created | fromNow}}</span>
 
-                            <span class="span1 text-medium">{{machine.datacenter}}</span>
-                            <span class="span1 text-medium align-right">{{machine.created | fromNow}}</span>
+	                            <span class="span1 pull-right">
+	                                <a class="status btn btn-mini"
+	                                   data-ng-class="{'btn-success': (machine.state == 'running')}"
+	                                   >{{machine.state}}</a>
+	                            </span>
+	                        </span>
 
-                            <span class="span1 pull-right">
-                                <a class="status btn btn-mini"
-                                   data-ng-class="{'btn-success': (machine.state == 'running')}"
-                                   >{{machine.state}}</a>
-                            </span>
-                        </span>
+	                        <div class="toolbox-help"
+	                             data-ng-hide="machine.state != 'stopped'">
+	                            <span class="text-error" data-translate>Machine is stopped, but billing will continue. You have to delete machine to cancel billing</span>
+	                        </div>
 
-                        <div class="toolbox-help"
-                             data-ng-hide="machine.state != 'stopped'">
-                            <span class="text-error" data-translate>Machine is stopped, but billing will continue. You have to delete machine to cancel billing</span>
-                        </div>
+	                        <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
+	                            <div class="pull-left toolbox-list" style="width:535px">
+	                                <span class="key span2" data-translate>Machine name</span>
+	                                <span class="value span4">{{machine.label}}</span>
+	                                <div class="clearfix"></div>
 
-                        <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
-                            <div class="pull-left toolbox-list" style="width:535px">
-                                <span class="key span2" data-translate>Machine name</span>
-                                <span class="value span4">{{machine.label}}</span>
-                                <div class="clearfix"></div>
+	                                <span class="key span2" data-translate>Type</span>
+	                                <span class="value span4">{{machine.type}}</span>
+	                                <div class="clearfix"></div>
 
-                                <span class="key span2" data-translate>Type</span>
-                                <span class="value span4">{{machine.type}}</span>
-                                <div class="clearfix"></div>
+	                                <span class="key span2" data-translate>IP(s)</span>
 
-                                <span class="key span2" data-translate>IP(s)</span>
+	                                <span class="value span4">
+	                                    <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
+	                                </span>
 
-                                <span class="value span4">
-                                    <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
-                                </span>
+	                                <div class="clearfix"></div>
 
-                                <div class="clearfix"></div>
+	                                <span class="key span2 data-translate">Image</span>
+	                                <span class="value span4">{{machine.dataset}}</span>
+	                                <div class="clearfix"></div>
 
-                                <span class="key span2 data-translate">Image</span>
-                                <span class="value span4">{{machine.dataset}}</span>
-                                <div class="clearfix"></div>
+	                                <span class="key span2" data-translate>Created</span>
+	                                <span class="value span4">{{machine.created}}</span>
+	                                <div class="clearfix"></div>
 
-                                <span class="key span2" data-translate>Created</span>
-                                <span class="value span4">{{machine.created}}</span>
-                                <div class="clearfix"></div>
-
-                                <span class="key span2 noborder" data-translate>Datacenter</span>
-                                <span class="value span4 noborder">{{machine.datacenter}}</span>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="pull-right action-container">
-                                <button role="button"
-                                   class="btn btn-mini"
-                                   data-ng-disabled="machine.state == 'running'"
-                                   data-ng-click="startMachine(machine.id)"
-                                   data-toggle="modal"
-                                   data-translate>Start</button>
-                                <button role="button"
-                                   class="btn btn-mini"
-                                   data-ng-disabled="machine.state == 'stopped'"
-                                   data-ng-click="stopMachine(machine.id)"
-                                   data-translate>Stop</button>
-                                <button role="button"
-                                   class="btn btn-mini"
-                                   data-ng-click="deleteMachine(machine.id)"
-                                   data-toggle="modal"
-                                   data-translate>Delete</button>
-                                <button href="#!/machine/details/{{machine.id}}"
-                                   class="btn btn-mini btn-primary"
-                                   data-translate>Edit</button>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-
+	                                <span class="key span2 noborder" data-translate>Datacenter</span>
+	                                <span class="value span4 noborder">{{machine.datacenter}}</span>
+	                                <div class="clearfix"></div>
+	                            </div>
+	                            <div class="pull-right action-container">
+	                                <button role="button"
+	                                   class="btn btn-mini"
+	                                   data-ng-disabled="machine.state == 'running'"
+	                                   data-ng-click="startMachine(machine.id)"
+	                                   data-toggle="modal"
+	                                   data-translate>Start</button>
+	                                <button role="button"
+	                                   class="btn btn-mini"
+	                                   data-ng-disabled="machine.state == 'stopped'"
+	                                   data-ng-click="stopMachine(machine.id)"
+	                                   data-translate>Stop</button>
+	                                <button role="button"
+	                                   class="btn btn-mini"
+	                                   data-ng-click="deleteMachine(machine.id)"
+	                                   data-toggle="modal"
+	                                   data-translate>Delete</button>
+	                                <button href="#!/machine/details/{{machine.id}}"
+	                                   class="btn btn-mini btn-primary"
+	                                   data-translate>Edit</button>
+	                            </div>
+	                            <div class="clearfix"></div>
+	                        </div>
+	                    </div>
+					</div>
                     <div class="pagination pagination-small pagination-centered span8">
                         <ul>
                             <li data-ng-class="{disabled: currentPage == 0}">
