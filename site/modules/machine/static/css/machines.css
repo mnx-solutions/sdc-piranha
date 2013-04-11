@@ -313,6 +313,7 @@ h5 small {
 .text-small,.text-medium {
     font-size:11px;
 }
+
 th {
     text-align:left;
 }
@@ -332,7 +333,7 @@ th {
 }
 
 
-.item {
+.machines .item {
     border:1px solid #ddd;
     border-bottom:1px solid #ddd;
     width:100%;
@@ -345,39 +346,62 @@ th {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
 }
-.item:hover {
+
+.machines .item:hover {
     background:#f8f8f8;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.125);
     -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.125);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.125);
 }
-.item .text-medium a {
+
+.machines .item .text-medium a {
     display:block;
     text-overflow:ellipsis;
     white-space: nowrap;
     overflow:hidden;
 }
 
-.item span {
-    /*	border:1px solid red;*/
-}
-.item.header {
+.machines .item.header {
     font-weight:bold;
     white-space: nowrap;
 }
+
+.machines .item span {
+    padding:3px;
+    margin:0;
+    margin-right:1.5%;
+}
+
+.machines .item .toolbox {
+    margin:0;
+    clear:both;
+    font-size:11px;
+    border-top:1px solid #ddd;
+    padding:0;
+}
+
+.machines .toolbox-help {
+    margin:0;
+    clear:both;
+    font-size:11px;
+    border-top:1px solid #ddd;
+    padding:0;
+}
+
+.machines .toolbox-list {
+    padding:0px 0px 0px 3px;
+    border-right:1px solid #ddd;
+    background-color:#fff;
+}
+
 #package-selected p {
     width:240px;
     clear:both;
 }
 #pricing {
-    /*	position: relative;*/
-    /*	top: 300px;
-        bottom: 470px;*/
 }
 
-/*
 
-*/
 .affix { position:fixed; top:280px; bottom: auto;}
 .affix-bottom { position: fixed; top: auto; bottom: 395px;}
 
@@ -385,33 +409,6 @@ th {
     width:50px;
 }
 
-.item span {
-    padding:3px;
-    margin:0;
-    margin-right:1.5%;
-}
-.item .toolbox{
-    margin:0;
-    clear:both;
-    font-size:11px;
-    border-top:1px solid #ddd;
-    padding:0;
-}
-.toolbox-help {
-    margin:0;
-    clear:both;
-    font-size:11px;
-    border-top:1px solid #ddd;
-    padding:0;
-}
-.toolbox-list {
-    padding:0px 0px 0px 3px;
-    border-right:1px solid #ddd;
-    background-color:#fff;
-}
-
-.toolbox font {
-}
 .key{
     border-bottom:1px solid #ddd;
     color:#888;
@@ -449,6 +446,16 @@ th {
 .provision {
     width:590px;
 }
+
+.provision form {
+    width: 580px;
+    padding: 5px;
+    margin-left: -0px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+}
+
 .pricing h4 {
     margin-bottom:5px;
 }
@@ -486,14 +493,9 @@ th {
 
 .action-container button {
     display: block;
+    margin-bottom: 10px;
 }
 
-.action-container a {
-    margin-bottom:10px;
-}
-
-.btn:hover{
-}
 .affix {
     z-index:100000000 !important;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
