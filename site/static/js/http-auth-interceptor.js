@@ -69,6 +69,7 @@
                     function error(response) {
                         if (response.status === 401) {
                             var deferred = $q.defer();
+
                             authServiceProvider.pushToBuffer(
                                 response.config,
                                 deferred);
