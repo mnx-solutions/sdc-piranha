@@ -112,8 +112,10 @@
                             if (ng.isObject(attr) || ng.isArray(attr)) {
                                 var child;
                                 for (child in attr) {
-                                    if (searchMatch(attr[child], $scope.query)) {
-                                        return true;
+                                    if (ng.isString(attr[child]) || ng.isNumber(attr[child])) {
+                                        if (searchMatch(attr[child], $scope.query)) {
+                                            return true;
+                                        }
                                     }
                                 }
 
