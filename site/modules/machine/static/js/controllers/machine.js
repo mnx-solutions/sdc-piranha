@@ -195,6 +195,13 @@
                         $scope.visiblePasswords[id];
                 };
 
+                $scope.$watch('resize', function (val) {
+                    Package.getPackage(val).then(function (pkg) {
+                        if (pkg) {
+                            $scope.selectedPackage = pkg;
+                        }
+                    });
+                });
             }
 
         ]);
