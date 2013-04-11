@@ -3,12 +3,11 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend',
+            ['$scope', 'caBackend', '$routeParams',
 
-function ($scope, caBackend) {
+function ($scope, caBackend, $routeParams) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
-    console.log('ca');
-
+    var zoneId = $routeParams.machine;
     /* pre-defined default intrumentations */
     var oo = [
         [{
@@ -78,14 +77,23 @@ function ($scope, caBackend) {
 
     ca.describeCa(function (conf){
 
-        $scope.defaultInstrumentations = [];
+        $scope.hostInstrumentations = [];
+        $scope.zoneInstrumentations = [];
 
         for(var opt in oo) {
-            $scope.defaultInstrumentations.push({
+            $scope.hostInstrumentations.push({
                 options:oo[opt],
                 ca:ca,
                 title: ot[opt]
             })
+
+            if(zoneId) {
+                $scope.zoneInstrumentations.push({
+                    options:oo[opt],
+                    ca:ca,
+                    title:ot[opt]
+                })
+            }
         }
 
         $scope.conf = conf;
