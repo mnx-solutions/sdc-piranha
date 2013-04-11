@@ -117,6 +117,11 @@
 
         };
         service.prototype.createInstrumentation  = function(createOpts, cb) {
+//            for(var i= 20; i < 100; i++) {
+//                $http.delete('cloudAnalytics/ca/instrumentations/' + i).success(function(res){
+//
+//                });
+//            }
 
             var self = this;
             instrumentation.create({
@@ -218,6 +223,12 @@
 
             }
             return seriesCollection;
+        }
+
+        service.prototype.deleteAllInstrumentations = function() {
+            for( var i in ca.instrumentations ){
+                ca.instrumentations[i].delete();
+            }
         }
 
         service.prototype.hasChanged = function (inst){
