@@ -33,6 +33,7 @@
                 $scope.machineid = machineid;
                 $scope.machine = Machine.machine(machineid);
                 $scope.tagnr = 0;
+                $scope.visiblePasswords = {};
 
                 function isNotPrivateIp(ip) {
                     var parts = ip.split('.');
@@ -179,6 +180,19 @@
 
                 $scope.removeTag = function(k) {
                     delete $scope.tagcloud.$$v[k];
+                };
+
+                $scope.togglePassword = function (id) {
+                    if ($scope.isPasswordVisible(id)) {
+                        $scope.visiblePasswords[id] = false;
+                    } else {
+                        $scope.visiblePasswords[id] = true;
+                    }
+                };
+
+                $scope.isPasswordVisible = function (id) {
+                    return !$scope.visiblePasswords.hasOwnProperty(id) ||
+                        $scope.visiblePasswords[id];
                 };
 
             }

@@ -1,0 +1,38 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index" data-ng-controller="cloudController">
+
+        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics" >
+            <option value="">-- Choose Metric --</option>
+        </select>
+        <span class="nullable">
+            <select ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
+                <option value="">-- None --</option>
+            </select>
+        </span>
+        <span class="nullable">
+            <select ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
+                <option value="">-- None --</option>
+            </select>
+        </span>
+        <div>
+            <!--{{inst.module}}<br/>-->
+            <!--{{inst.stat}}<br/>-->
+            <!--<instrumentation data-ng-repeat="inst in instrumentations" type="raw" module="inst.module" stat="inst.stat" metric="inst.metric" decomposition="inst.decomposition"></instrumentation>-->
+            <!--<graph data-ng-repeat="i in instrumentations" options="i.options" ca="i.ca"></graph>-->
+        </div>
+
+        <button data-ng-click="createInstrumentation()">Create</button> <button data-ng-click="deleteAllInstrumentations()">Delete All</button>
+        <br/><br/><br/>
+        <graph data-ng-repeat="i in instrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
+        <graph data-ng-repeat="i in defaultInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
+        <br/>
+        <!--module: {{current.metric.module}}      <br/>-->
+        <!--stat: {{current.metric.stat}}          <br/>-->
+        <!--decomposition: [{{current.decomposition.primary}}] <br/>-->
+        <!--Decomposition2: [{{current.decomposition.secondary}}]     <br/>-->
+        <!--<br/><br/>-->
+        <!--{{currentDecomposition}}-->
+        <!--<instrumentation type="raw" module="cpu" stat="thread_samples"></instrumentation>-->
+
+    </div>
+</div>

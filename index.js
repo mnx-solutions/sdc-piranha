@@ -28,7 +28,7 @@ var opts = {
     main: app,
     extensions: config.extensions,
     compiler: compiler,
-    apps: ['login','main','signup','landing']
+    apps: ['main','landing']
 };
 
 

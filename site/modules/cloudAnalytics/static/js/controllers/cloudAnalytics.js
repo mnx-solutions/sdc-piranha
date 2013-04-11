@@ -2,12 +2,68 @@
 
 (function (app) {
     app.controller(
-            'cloudAnalyticsController',
-            ['$scope', 'requestContext', 'caBackend', '$timeout',
+            'cloudController',
+            ['$scope', 'caBackend',
 
-function ($scope, requestContext, caBackend, $timeout) {
-    requestContext.setUpRenderContext('cloudAnalytics', $scope);
-    $scope.counter = 0;
+function ($scope, caBackend) {
+    //requestContext.setUpRenderContext('cloudAnalytics', $scope);
+    console.log('ca');
+
+    /* pre-defined default intrumentations */
+    var oo = [
+        [{
+            module: 'cpu',
+            stat: 'usage',
+            decomposition: [],
+            predicate: {}
+        }]
+        , [{
+            module: 'cpu',
+            stat: 'waittime',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'memory',
+            stat: 'rss',
+            decomposition: [],
+            predicate: {}
+        },{
+            module: 'memory',
+            stat: 'rss_limit',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'memory',
+            stat: 'reclaimed_bytes',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'zfs',
+            stat: 'dataset_unused_quota',
+            decomposition: [],
+            predicate: {}
+        }, {
+            module: 'zfs',
+            stat: 'dataset_quota',
+            decomposition: [],
+            predicate: {}
+        }], [{
+            module: 'nic',
+            stat: 'vnic_bytes',
+            decomposition: ['zonename'],
+            predicate: {}
+        }]
+    ];
+
+    var ot = [
+        'CPU: aggregated CPU usage',
+        'CPU: saturation',
+        'Memory: utilization',
+        'Memory: saturation',
+        'FS: capacity',
+        'Network: utilization'
+    ]
+
     $scope.current = {
         metric:null,
         decomposition: {
@@ -17,26 +73,29 @@ function ($scope, requestContext, caBackend, $timeout) {
         }
     }
     $scope.instrumentations = [];
-    var conf = new caBackend.conf();
 
-    function labelMetrics(metric) {
-        var fieldsArr = metric.fields;
-        var labeledFields = [];
-        for(var f in fieldsArr) {
-            labeledFields[fieldsArr[f]] = conf.fields[fieldsArr[f]].label;
+    var ca = new caBackend();
+
+    ca.describeCa(function (conf){
+
+        $scope.defaultInstrumentations = [];
+
+        for(var opt in oo) {
+            $scope.defaultInstrumentations.push({
+                options:oo[opt],
+                ca:ca,
+                title: ot[opt]
+            })
         }
-        metric.fields = labeledFields;
-        var moduleName = conf.modules[metric.module].label;
-        metric.labelHtml = moduleName + ': ' + metric.label;
-        return metric;
-    }
 
-    $scope.conf = conf.$get(function(){
-        console.log(conf);
-        conf.metrics.forEach(labelMetrics);
-        $scope.metrics = conf.metrics;
-        $scope.fields = conf.fields;
+        $scope.conf = conf;
+
+        $scope.metrics = $scope.conf.metrics;
+        $scope.fields = $scope.conf.fields;
     });
+
+
+
     $scope.createInstrumentation = function(){
 
         var decomp = [];
@@ -45,16 +104,27 @@ function ($scope, requestContext, caBackend, $timeout) {
         if($scope.current.decomposition.secondary)
         decomp.push($scope.current.decomposition.secondary);
 
-        var obj = {
+        var options = {
             module: $scope.current.metric.module,
-            metric: $scope.current.metric,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
             predicate: {}
         }
-        $scope.instrumentations.push(obj);
+
+        $scope.instrumentations.push(
+            {
+                options:[ options ],
+                ca: ca//,
+//                title: 'proov'
+            }
+        );
 
     }
+
+    $scope.deleteAllInstrumentations = function() {
+        ca.deleteAllInstrumentations();
+    }
+
     $scope.changeMetric = function(){
         $scope.current.decomposition.primary = null;
         $scope.current.decomposition.secondary = null;
@@ -64,13 +134,13 @@ function ($scope, requestContext, caBackend, $timeout) {
     $scope.changeDecomposition = function(){
 
         if($scope.current.decomposition.primary) {
-            var currentType = conf.fields[$scope.current.decomposition.primary].type;
-            var currentArity = conf.types[currentType].arity;
+            var currentType =$scope.conf.fields[$scope.current.decomposition.primary].type;
+            var currentArity =$scope.conf.types[currentType].arity;
             $scope.current.decomposition.secondaryF = [];
             $scope.current.decomposition.secondary = null;
             for(var f in $scope.current.metric.fields){
-                var fieldType = conf.fields[f].type;
-                var fieldArity = conf.types[fieldType].arity;
+                var fieldType =$scope.conf.fields[f].type;
+                var fieldArity =$scope.conf.types[fieldType].arity;
                 if( fieldArity !== currentArity) {
                     $scope.current.decomposition.secondaryF[f] = $scope.current.metric.fields[f];
                 }

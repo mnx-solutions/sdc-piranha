@@ -1,8 +1,11 @@
-html, body {
-    color:#444;
-    height:100%;
-    min-height: 100%;
+
+.loading-medium {
+	background-image:url('../img/icon-loading-medium.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	min-height:50px;
 }
+
 h1,h2 {
     font-weight:normal;
 }
@@ -176,15 +179,10 @@ body {
 
 }
 
-
-
 .navbar-inner .container {
     padding:10px;
 }
 
-.brand {
-    /*	border:1px solid red;*/
-}
 .navbar,.navbar-inverse,.navbar-inner  {
     background-color:#375675 !important;
     border:1px solid #375675 !important;
@@ -335,6 +333,7 @@ th {
 
 .machines .item {
     border:1px solid #ddd;
+	
     border-bottom:1px solid #ddd;
     width:100%;
     overflow:hidden;
@@ -436,13 +435,7 @@ th {
 .control-group .value {
     text-align:right;
 }
-.package-selector {
-    /*	text-overflow:ellipsis;*/
-    /*	height:500px;*/
-    /*	overflow:auto;*/
-    /*	border:5px solid #ddd;*/
-    /*	padding:10px;*/
-}
+
 .provision {
     width:590px;
 }
@@ -516,6 +509,7 @@ th {
     overflow-y:auto;
     /*	padding:10px;*/
 }
+
 .provision {
     /*	border:1px solid red;*/
     /*	padding:10px 0px 10px 10px;*/
@@ -607,4 +601,16 @@ div .disabled{
     font-size:30px;
     padding:35px 0px 10px 0px;
     text-align:right;
+}
+
+.package-selector > div {
+    padding:5px;
+    margin-bottom:5px;
+}
+.container {
+/*	border:1px solid red !important;*/
+}
+
+.header {
+/*	border:1px solid red !important;*/
 }

@@ -3,6 +3,7 @@
 		"route": "/main",
 		"modules": [
             "account",
+            "cloudAnalytics",
             "localization",
             "notification",
             "menu",

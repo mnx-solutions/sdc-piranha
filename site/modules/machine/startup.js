@@ -5,6 +5,30 @@ var vasync = require('vasync');
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
 
+    function handleCredentials(machine) {
+        var systemsToLogins = {
+            "mysql" : ["MySQL", "root"],
+            "pgsql" : ["PostgreSQL", "postgres"],
+            "virtualmin" : ["Virtualmin", "admin"]
+        };
+        var credentials = [];
+        if (machine.metadata && machine.metadata.credentials) {
+            Object.keys(machine.metadata.credentials).forEach(function (username) {
+                var system = systemsToLogins[username] ? systemsToLogins[username][0] : "Operating System";
+                var login = systemsToLogins[username] ? systemsToLogins[username][1] : username;
+
+                credentials.push(
+                    {
+                        "system" : system,
+                        "username" : login.split('_')[0],
+                        "password" : machine.metadata.credentials[username]
+                    }
+                );
+            });
+        }
+        return credentials;
+    }
+
     server.onCall('MachineList', function (call) {
         call.log.info('Handling machine list event');
 
@@ -18,7 +42,7 @@ module.exports = function (scope, callback) {
 
             call.log.debug('List machines for datacenter %s', name);
 
-            cloud.listMachines(function (err, machines) {
+            cloud.listMachines({'credentials': true}, function (err, machines) {
                 var response = {
                     name: name,
                     status: 'pending',
@@ -33,6 +57,7 @@ module.exports = function (scope, callback) {
                 } else {
                     machines.forEach(function (machine) {
                         machine.datacenter = name;
+                        machine.metadata.credentials = handleCredentials(machine);
                     });
 
                     response.status = 'complete';
@@ -114,6 +139,8 @@ module.exports = function (scope, callback) {
                                 clearInterval(timer);
                                 call.done(new Error('Other call changed tags'));
                             }
+                        } else {
+                            call.log.error('Cloud polling failed %o', err);
                         }
                     }, undefined, true);
                 }, 1000);
@@ -144,13 +171,22 @@ module.exports = function (scope, callback) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         call.done(null, machine);
                         clearInterval(timer);
+                        clearTimeout(timer2);
                     } else {
                         call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
                         call.step = {state: machine.state};
                     }
+                } else {
+                    call.log.error('Cloud polling failed %o', err);
                 }
             });
         }, 5000);
+
+        var timer2 = setTimeout(function () {
+            call.log.error('Operation timed out');
+            clearInterval(timer);
+            call.done(new Error('Operation timed out'));
+        }, 5 * 60 * 1000);
     }
 
     function pollForMachinePackageChange(client, call, sdcpackage) {
@@ -163,6 +199,7 @@ module.exports = function (scope, callback) {
                     if (sdcpackage === machine.package) {
                         call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
                         call.done(null, machine);
+                        clearTimeout(timer2);
                         clearInterval(timer);
                     } else {
                         call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage);
@@ -173,6 +210,12 @@ module.exports = function (scope, callback) {
                 }
             });
         }, 1000);
+
+        var timer2 = setTimeout(function () {
+            call.log.error('Operation timed out');
+            clearInterval(timer);
+            call.done(new Error('Operation timed out'));
+        }, 5 * 60 * 1000);
     }
 
     function changeState(func, logVerb, endstate, opts) {
@@ -261,7 +304,7 @@ module.exports = function (scope, callback) {
                 package: call.data.package,
                 dataset: call.data.dataset
             };
-
+            console.log(call.data);
             call.log.info('Creating machine %s', call.data.name);
             call.getImmediate(false);
 
