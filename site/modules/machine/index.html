@@ -96,9 +96,12 @@
 	                            <span class="span1 text-medium align-right">{{machine.created | fromNow}}</span>
 
 	                            <span class="span1 pull-right">
+                                    <!--
 	                                <a class="status btn btn-mini"
 	                                   data-ng-class="{'btn-success': (machine.state == 'running')}"
 	                                   >{{machine.state}}</a>
+	                                -->
+                                    <machine-status machine="machine"></machine-status>
 	                            </span>
 	                        </span>
 
@@ -230,6 +233,16 @@
                         </div>
 
                         <div class="container span7">
+                            <span class="key span2" data-translate>Memory</span>
+                            <span class="value span5 pull-right">{{machine.memory | sizeFormat}}</span>
+                        </div>
+
+                        <div class="container span7">
+                            <span class="key span2" data-translate>Disk</span>
+                            <span class="value span5 pull-right">{{machine.disk | sizeFormat}}</span>
+                        </div>
+
+                        <div class="container span7">
                             <span class="key span2" data-translate>IP addresses</span>
                             <span class="value span5 pull-right">
                                 <span data-ng-repeat="ip in machine.ips">{{ip}} <br /></span>
@@ -328,6 +341,15 @@
                         </p>
                         <p data-translate>Current Size: {{machine.memory | sizeFormat}} of RAM</p>
 
+                        <p>
+                            <span data-translate>Memory</span>:
+                            <span data-translate>{{selectedPackage.memory | sizeFormat}}</span><br />
+                            <span data-translate>Disk</span>:
+                            <span data-translate>{{selectedPackage.disk | sizeFormat}}</span><br />
+                            <span data-translate>vCPUs</span>:
+                            <span data-translate>{{selectedPackage.vcpus}}</span>
+                        </p>
+
                         <div class="control-group">
                             <label class="control-label" data-translate>New Package</label>
 
@@ -384,7 +406,7 @@
                     <div class="alert shadow">
                         <h4 data-translate>Analytics</h4>
                         <p data-translate>Check out this machines analytics.</p>
-                        <a href="<?php print Glry::$Config['WebPath']?>/machine3/analytics/"><img src="analytics.png" hspace="10" vspace="20" border="0" /></a>
+                        <a href="#"><img src="analytics.png" hspace="10" vspace="20" border="0"></a>
                     </div>
                     <div class="clearfix"></div>
                 </div>
