@@ -16,6 +16,7 @@
 				"/js/values/render-context.js"
 			],
 			"css": [
+                "/vendor/bootstrap/css/bootstrap-responsive.css",
 				"/vendor/bootstrap/css/bootstrap.css"
 			]
 		}

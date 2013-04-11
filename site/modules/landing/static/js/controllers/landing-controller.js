@@ -1,15 +1,19 @@
 'use strict';
 
+// get the old hasban for returnUrl
+window.JP.set('urlHashbang', window.location.hash);
+
 (function (app) {
     app.controller(
         'LandingPageController',
-        ['$scope', '$window', 'Landing', 'localization', function ($scope, $window, Landing, localization) {
+        ['$scope', '$window', 'Landing', 'localization', '$location', function ($scope, $window, Landing, localization, $location) {
             localization.bind('landing', $scope);
 
+            var oldHashbang = window.JP.get('urlHashbang');
             $scope.login = function() {
                 var urlOpts = {
                     'method': 'login',
-                    'redirectUrl': '/main/#!/machine'
+                    'redirectUrl': '/main/'+ oldHashbang
                 }
 
                 // redirect to login url
@@ -19,7 +23,7 @@
             $scope.signup = function() {
                 var urlOpts = {
                     'method': 'signup',
-                    'redirectUrl': '/main/#!/machine'
+                    'redirectUrl': '/main/'+ oldHashbang
                 }
 
                 // redirect to signup url

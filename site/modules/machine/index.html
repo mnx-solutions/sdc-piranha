@@ -4,13 +4,13 @@
      data-ng-controller="MachinesController">
     <div class="container-fluid content-container">
         <div class="container content-container-inner">
-            <div class="container">
+            <div class="machines container">
                 <div class="page-header" style="margin-top:10px">
                     <h1 class="pull-left" data-translate>Machines</h1>
                     <button data-ng-click="changeLocation('/machine/add/')"
-                       class="btn btn-success btn-large pull-right"
-                       style="margin-top:10px"
-                       data-translate>Add new Machine</button>
+                            class="btn btn-success btn-large pull-right"
+                            style="margin-top:10px"
+                            data-translate>Add new Machine</button>
                     <div class="clearfix"></div>
                 </div>
 
@@ -61,6 +61,7 @@
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
                     </div>
+
 					<div class="loading-medium">
 						<!--
 							@<kesiganes-implemendib>
@@ -161,6 +162,7 @@
 	                        </div>
 	                    </div>
 					</div>
+
                     <div class="pagination pagination-small pagination-centered span8">
                         <ul>
                             <li data-ng-class="{disabled: currentPage == 0}">
@@ -306,8 +308,8 @@
                                            class="input-large span3"
                                            placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
                                     <span class="icon-trash pull-right"
-                                           data-ng-click="removeTag(key)"
-                                           style="margin-top:5px;margin-left:30px"></span>
+                                          data-ng-click="removeTag(key)"
+                                          style="margin-top:5px;margin-left:30px"></span>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -350,23 +352,23 @@
                 <div class="span4 pull-right" style="margin-top:40px">
                     <div class="well shadow">
                         <button role="button"
-                           data-ng-disabled="machine.job.running || machine.state != 'stopped'"
-                           data-ng-click="clickStart(machine.id)"
-                           data-toggle="modal"
-                           data-translate
-                           class="btn btn-small btn-success">Start</button>
+                                data-ng-disabled="machine.job.running || machine.state != 'stopped'"
+                                data-ng-click="clickStart(machine.id)"
+                                data-toggle="modal"
+                                data-translate
+                                class="btn btn-small btn-success">Start</button>
                         <button role="button"
-                           data-ng-disabled="machine.job.running || machine.state != 'running'"
-                           data-ng-click="clickStop(machine.id)"
-                           data-toggle="modal"
-                           data-translate
-                           class="btn btn-small">Stop</button>
+                                data-ng-disabled="machine.job.running || machine.state != 'running'"
+                                data-ng-click="clickStop(machine.id)"
+                                data-toggle="modal"
+                                data-translate
+                                class="btn btn-small">Stop</button>
                         <button role="button"
-                           data-ng-disabled="machine.job.running || machine.state != 'stopped'"
-                           data-ng-click="clickDelete(machine.id)"
-                           data-translate
-                           data-toggle="modal"
-                           class="btn btn-small btn-danger">Delete</button>
+                                data-ng-disabled="machine.job.running || machine.state != 'stopped'"
+                                data-ng-click="clickDelete(machine.id)"
+                                data-translate
+                                data-toggle="modal"
+                                class="btn btn-small btn-danger">Delete</button>
                     </div>
                     <div class="clearfix"></div><br />
                     <div class="alert alert-success shadow">
@@ -394,45 +396,128 @@
 </div>
 
 <div data-ng-switch-when="provision"
-     data-ng-controller="ProvisionController"
-     class="row-fluid">
+     data-ng-controller="ProvisionController">
 
-    <div class="page-header">
-        <h1><span data-translate>Provision</span>
-            <small data-translate>Provision a new machine</small>
-        </h1>
-    </div>
+    <div class="container-fluid content-container">
+        <div class="container content-container-inner">
+            <div class="container">
+                <div class="page-header">
+                    <h1 data-translate>Create new machine</h1>
+                </div>
 
-    <div class="span4">
-        <form class="form-horisontal inline-form">
+                <div class="pull-left provision">
+                    <form class="form-search pull-left">
+                        <div class="btn-group pull-left">
+                            <button class="btn" data-translate>Datacenters</button>
+                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li data-ng-repeat="(name, url) in datacenters">
+                                    <a data-ng-click="selectDatacenter(name)">{{name}}</a>
+                                </li>
+                            </ul>
+                        </div>
 
-            <div class="controls">
-                <label class="control-label" for="machinename"><span data-translate>Machine
-                    name</span>:</label>
-                <input id="machinename" type="text" placeholder="Name"
-                       data-ng-model="data.name" data-translate="placeholder"><br/>
+                        <p class="pull-right none">
+                            <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
+                            <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
+                        </p>
 
-                <label class="control-label"
-                       for="datacenter"><span data-translate>Datacenter</span>:</label>
-                <select id="datacenter"  data-ng-model="data.datacenter"
-                        data-ng-options="key as key for (key, value) in datacenters"></select>
+                        <div class="pull-right">
+                            <form class="navbar-form pull-left">
+                                <input type="text"
+                                       class="span3"
+                                       placeholder="Search image"
+                                       data-ng-model="searchText"
+                                       data-translate="placeholder" />
+                            </form>
+                        </div>
 
-                <label class="control-label" for="dataset"><span data-translate>Image
-                    (version)</span>:</label>
-                <select id="dataset" data-ng-model="data.dataset"
-                        data-ng-options="dataset.name+' ('+dataset.version+')' group by dataset.name for dataset in datasets"></select>
+                        <div class="clearfix"></div>
+                    </form>
 
-                <label class="control-label" for="package"><span data-translate>Package</span>:</label>
-                <select id="package" data-ng-model="data.sdcpackage"
-                        data-ng-options="package.name for package in packages"></select><br/>
+                    <div id="myCarousel" class="carousel slide">
+                        <!-- Carousel items -->
+                        <div class="carousel-inner">
+                            <div class="item active">
+                                <fieldset class="selector-container" id="package-selector">
+                                    <div class="control-group" data-ng-repeat="dataset in datasets | filter:searchText">
+                                        <div class="controls">
+                                            <label class="radio text-small">
+                                                <input type="radio"
+                                                       name="dataset"
+                                                       value="{{dataset.id}}"
+                                                       data-ng-model="selectedDataset"
+                                                       data-ng-change="selectDataset(dataset.id)" />
+                                                <label class="control-label text-small">
+                                                    <strong>{{dataset.name}}</strong>
+                                                </label>
 
-                <button href="#myModal" role="button" data-toggle="modal"
-                        class="btn btn-primary"
-                        ng-click="clickProvision();" data-translate>Add
-                    new machine
-                </button>
+                                                <p data-translate="value">{{dataset.description}}</p>
+                                                <div class="clearfix"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                            <div class="item">
+                                <fieldset class="selector-container size" id="size-container">
+                                    <div class="control-group"
+                                         data-ng-click="selectPackage(package.id)"
+                                         data-ng-repeat="package in packages | filter:searchText">
+
+                                        <div class="controls">
+
+                                            <label class="description pull-left">
+                                                <label class="control-label text-small">
+                                                    <strong>{{package.name}}</strong>
+                                                </label>
+                                                <p>
+                                                    <span data-translate>RAM</span>: {{package.memory}}MB<br />
+                                                    <span data-translate>Disk</span>: {{package.disk}}MB<br />
+                                                    <span data-translate>vCPUs</span>: {{package.vcpus}}
+                                                </p>
+                                            </label>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span4 pull-right pricing shadow" id="affix-pricing-container" style="width:300px;">
+                    <div class="alert alert-muted" id="pricing" style="width:250px;">
+
+                        <h4 data-translate>Configuration</h4>
+                        <div id="selected-image" class="text-small"></div>
+                        <div id="selected-size" class="text-small"></div>
+                        <div id="step-configuration" class="text-small  none" style="margin-top:10px;margin-bottom:10px;">
+                            <h4 data-translate>You're almost done.</h4>
+                            <p>
+                                <span data-translate>Just select the size of your machine and</span>
+                                <strong data-translate>Voila</strong>.
+                            </p>
+                            <div id="finish-configuration" class="none">
+                                <input type="text"
+                                       placeholder="Name of your machine"
+                                       data-ng-model="data.name" />
+                                <button class="btn btn-success"
+                                        data-ng-click="clickProvision()"
+                                        data-translate>Save machine</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </form>
+            <div class="clearfix"></div>
+        </div>
     </div>
 </div>
+
 </div>

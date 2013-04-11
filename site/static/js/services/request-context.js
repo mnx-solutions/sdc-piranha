@@ -201,7 +201,6 @@ function (RenderContext) {
 
     // I set the new request context conditions.
     function setContext(newAction, newRouteParams) {
-        console.log(arguments);
         // Copy the current action and params into the previous snapshots.
         previousAction = action;
         previousParams = params;

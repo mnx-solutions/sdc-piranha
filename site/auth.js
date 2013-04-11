@@ -12,10 +12,11 @@ var smartCloud = new SmartCloud({
 module.exports = function (req, res, next) {
     if(!req.session.token) {
         // token missing, don't allow the request
+
         res.send(401);
     } else {
         //return res.redirect('/login');
-        // we have a token, create a new cloudapi object to the session with this
+        // we have a token, create a new cloudapi object with this
         if(!req.cloud) {
 
             var _cloud = null;

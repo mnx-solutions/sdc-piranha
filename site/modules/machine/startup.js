@@ -329,17 +329,17 @@ module.exports = function (scope, callback) {
     server.onCall('MachineCreate', {
         verify: function (data) {
             return typeof data === 'object' &&
-                data.sdcpackage.hasOwnProperty('name') &&
+                data.hasOwnProperty('name') &&
+                data.hasOwnProperty('package') &&
                 data.hasOwnProperty('dataset') &&
-                data.hasOwnProperty('datacenter') &&
-                data.dataset.hasOwnProperty('id');
+                data.hasOwnProperty('datacenter');
         },
         handler: function (call) {
 
             var options = {
                 name: call.data.name,
-                package: call.data.sdcpackage.name,
-                dataset: call.data.dataset.id
+                package: call.data.package,
+                dataset: call.data.dataset
             };
             console.log(call.data);
             call.log.info('Creating machine %s', call.data.name);

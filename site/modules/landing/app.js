@@ -54,6 +54,11 @@ module.exports = function (scope, app, callback) {
         }
     });
 
+    app.get('/saveUrl/', function(req, res) {
+        req.saveUrl = req.query.returnUrl;
+        res.redirect('/');
+    })
+
     app.get('/forgetToken', function(req, res) {
         req.session.token = null;
         req.session.save();
