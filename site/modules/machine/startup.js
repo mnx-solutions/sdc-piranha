@@ -5,6 +5,32 @@ var vasync = require('vasync');
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
 
+    var utils = scope.get('utils');
+    // Machine images info overwrite
+    var imagesInfo = require('./lib/images.json');
+    var langs = {};
+    scope.config.localization.locales.forEach(function (lng) {
+        langs[lng] = {};
+    });
+    Object.keys(imagesInfo).forEach(function(id) {
+        if(!imagesInfo[id].description) {
+            return;
+        }
+        if(typeof imagesInfo[id].description === 'string') {
+            langs[scope.config.localization.defaultLocale][id] = imagesInfo[id].description;
+        } else {
+            Object.keys(imagesInfo[id].description).forEach(function (lng) {
+                langs[lng][id] = imagesInfo[id].description[lng];
+            });
+        }
+        imagesInfo[id].description = id;
+    });
+
+    Object.keys(langs).forEach(function (lng) {
+        var m = require('./static/lang/' + lng + '.json');
+        utils.extend(m, langs[lng], true);
+    });
+
     function handleCredentials(machine) {
         var systemsToLogins = {
             "mysql" : ["MySQL", "root"],
@@ -84,7 +110,18 @@ module.exports = function (scope, callback) {
     /* listDatasets */
     server.onCall('DatasetList', function (call) {
         call.log.info('Handling list datasets event');
-        call.cloud.listDatasets(call.done.bind(call));
+        call.cloud.listDatasets(function (err, data) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+            data.forEach(function (img, i) {
+                if(imagesInfo[img.id]) {
+                    data[i] = utils.extend(img, imagesInfo[img.id]);
+                }
+            });
+            call.done(null, data);
+        });
     });
 
     /* listDatasets */

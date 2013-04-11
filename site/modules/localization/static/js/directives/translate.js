@@ -38,65 +38,71 @@
             return {
                 priority: 10,
                 restrict: 'EA',
+                compile: function compile(tElement, tAttrs, transclude) {
+                    return function link(scope, element, attrs) {
+                        var identifier = null;
 
-                link: function link(scope, element, attrs) {
-                    var identifier = null;
-
-                    // manipulate the element a bit and get rid of newlines + unneccessary spaces
-                    var elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
-
-                    // Interpolate expression
-                    if (attrs.translateExpression) {
-                        var expression = $interpolate(elementText);
-                        identifier = expression(scope);
-                    } else {
-                        identifier = elementText;
-                    }
-
-                    // For pluralizing
-                    var countVariable = null;
-                    var countValue = 0;
-
-                    if (attrs.hasOwnProperty('count')) {
-                        countVariable = attrs.count;
-
-                        if (scope.hasOwnProperty(countVariable)) {
-                            countValue = scope[countVariable];
+                        var elementText = null;
+                        if(attrs.translate === 'value') {
+                            elementText = $interpolate(element.text())(scope);
+                        } else {
+                            // manipulate the element a bit and get rid of newlines + unneccessary spaces
+                            elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
                         }
-                    }
 
-                    // for translating other attributes
-                    if (attrs.translate.length > 0) {
-                        var translateAttrs = attrs.translate.split(',');
+                        // Interpolate expression
+                        if (attrs.translateExpression) {
+                            var expression = $interpolate(elementText);
+                            identifier = expression(scope);
+                        } else {
+                            identifier = elementText;
+                        }
 
-                        translateAttrs.forEach(function (attr) {
-                            attrs.$observe(attr,
-                                function (value) {
-                                    element.attr(attr, localization.translate(
-                                        localization.resolveScope(scope),
-                                        attrs.translateModule,
-                                        element.attr(attr),
-                                        0
-                                ))
-                            })
-                        })
-                    }
+                        // For pluralizing
+                        var countVariable = null;
+                        var countValue = 0;
 
-                    // When locale changes
-                    scope.$on('localization:change', function () {
-                        onChange(scope, element, attrs, identifier, countValue);
-                    });
+                        if (attrs.hasOwnProperty('count')) {
+                            countVariable = attrs.count;
 
-                    // Watch for count variable changes
-                    if (countVariable) {
-                        scope.$watch(countVariable,
-                            function (newValue, oldValue, scope) {
-                                countValue = newValue;
-                                onChange(scope, element, attrs, identifier, countValue);
+                            if (scope.hasOwnProperty(countVariable)) {
+                                countValue = scope[countVariable];
+                            }
+                        }
+
+                        // for translating other attributes
+                        if (attrs.translate.length > 0) {
+                            var translateAttrs = attrs.translate.split(',');
+
+                            translateAttrs.forEach(function (attr) {
+                                attrs.$observe(attr,
+                                    function (value) {
+                                        element.attr(attr, localization.translate(
+                                            localization.resolveScope(scope),
+                                            attrs.translateModule,
+                                            element.attr(attr),
+                                            0
+                                        ));
+                                    });
                             });
-                    }
+                        }
 
-                    onChange(scope, element, attrs, identifier, countValue);
+                        // When locale changes
+                        scope.$on('localization:change', function () {
+                            onChange(scope, element, attrs, identifier, countValue);
+                        });
+
+                        // Watch for count variable changes
+                        if (countVariable) {
+                            scope.$watch(countVariable,
+                                         function (newValue, oldValue, scope) {
+                                             countValue = newValue;
+                                             onChange(scope, element, attrs, identifier, countValue);
+                                         });
+                        }
+
+                        onChange(scope, element, attrs, identifier, countValue);
+                    };
                 }
             };
     }]);
