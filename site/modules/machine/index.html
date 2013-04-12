@@ -6,29 +6,20 @@
         <div class="container content-container-inner">
             <div class="machines container">
 				<ul class="breadcrumb">
-					<li class="active"><a href="#!/machine/">Dashboard</a></li>
+					<li class="active">Dashboard</li>
 				</ul>
                 <div class="page-header" style="margin-top:10px">
                     <h1 class="pull-left" data-translate>Machines</h1>
-                    <button data-ng-click="changeLocation('/machine/add/')"
-                            class="btn btn-success btn-large pull-right"
-                            style="margin-top:10px"
-                            data-translate>Add new Machine</button>
+                    <form class="form-search pull-right">
+						<input type="search" class="input-large"
+							data-ng-model="query" data-ng-change="search()"
+							placeholder="Search machines" name="search" id="search" data-translate="placeholder" />
+					</form>
+							
                     <div class="clearfix"></div>
                 </div>
 
                 <div class="pull-left">
-                    <form class="form-search pull-left span9" style="margin-left:-0px">
-                        <div class="pull-right">
-                            <form class="navbar-form pull-left">
-                                <input type="search" class="input-large"
-                                       data-ng-model="query" data-ng-change="search()"
-                                       placeholder="Search machines" name="search" id="search" data-translate="placeholder" />
-                            </form>
-                        </div>
-                        <div class="clearfix"></div>
-                    </form>
-
                     <div class="btn-group pull-right"></div>
                     <div class="clearfix"></div>
 
@@ -185,7 +176,13 @@
                         </ul>
                     </div>
                 </div>
-                <div class="span3 pull-right" style="margin:50px 0px 0px 0px">
+                <div class="span3 pull-right" style="margin:40px 0px 0px 0px;">
+	                <button data-ng-click="changeLocation('/machine/add/')"
+                            class="btn btn-success btn-large"
+                            style="margin-top:10px;width:220px"
+                            data-translate>Add new Machine</button>
+    				<div class="clearfix"></div>
+<br />
                     <div class="alert alert-success shadow">
                         <h4 data-translate>Need help?</h4>
                         <p class="text-medium" data-translate>Help will open in new window</p>

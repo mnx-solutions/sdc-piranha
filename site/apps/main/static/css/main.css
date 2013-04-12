@@ -244,7 +244,7 @@ h4 {
 }
 
 
-s.border {
+.border {
     border:1px solid red !important;
 }
 .text-small {
@@ -626,4 +626,13 @@ div .disabled{
 .btn-mini {
 	width:50px !important;
 	padding: 0 6px !important;
+}
+.page-header {
+/*	border:1px solid red;
+	padding:0px;
+*/}
+.page-header form {
+	padding-top:20px;
+	padding-bottom:0px;
+	margin:0px;
 }
