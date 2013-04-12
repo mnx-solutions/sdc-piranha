@@ -12,17 +12,23 @@
         }
         ca.request_time = null;
         ca.instrumentations = {};
-        ca.conf = $http.get('cloudAnalytics/ca');
+        ca.conf = null;
         ca.desc = {};
+
         function _labelMetrics(metric) {
+            console.log('METRIC FIELDARR', metric.fields)
+
             var fieldsArr = metric.fields;
             var labeledFields = [];
             for(var f in fieldsArr) {
+
+                console.log('FIELDSARR', fieldsArr, fieldsArr[f]);
                 labeledFields[fieldsArr[f]] = ca.desc.fields[fieldsArr[f]].label;
             }
             metric.fields = labeledFields;
             var moduleName = ca.desc.modules[metric.module].label;
             metric.labelHtml = moduleName + ': ' + metric.label;
+
             return metric;
         }
 
@@ -108,6 +114,8 @@
         }
         service.prototype.describeCa = function(cb) {
             var self = this;
+
+            ca.conf = $http.get('cloudAnalytics/ca');
 
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;

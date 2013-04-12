@@ -1,6 +1,10 @@
 <div data-ng-switch="subview">
     <div data-ng-switch-when="index" data-ng-controller="cloudController">
 
+        <span ng-show="zoneId">
+            <span data-translate>Currently selected zone id</span>: {{zoneId}}
+        <br />
+        <br />
         <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics" >
             <option value="">-- Choose Metric --</option>
         </select>
@@ -22,12 +26,14 @@
         </div>
 
         <button data-ng-click="createInstrumentation()">Create</button> <button data-ng-click="deleteAllInstrumentations()">Delete All</button>
+        </span>
+        <span ng-hide="zoneId">
+            <span>No zoneId selected. Showing previously created instrumentations if any</span>
+        </span>
+
         <br/><br/><br/>
         <graph data-ng-repeat="i in instrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
-        <div class="">
-            <graph data-ng-repeat="i in hostInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
-        </div>
-
+      
         <div class="">
             <graph data-ng-repeat="i in zoneInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
         </div>

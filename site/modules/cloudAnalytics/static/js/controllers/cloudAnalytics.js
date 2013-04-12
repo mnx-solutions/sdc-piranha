@@ -8,58 +8,18 @@
 function ($scope, caBackend, $routeParams) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = $routeParams.machine;
+    $scope.zoneId = zoneId;
     /* pre-defined default intrumentations */
     var oo = [
         [{
-            module: 'cpu',
-            stat: 'usage',
-            decomposition: [],
-            predicate: {}
-        }]
-        , [{
-            module: 'cpu',
-            stat: 'waittime',
-            decomposition: [],
-            predicate: {}
-        }], [{
-            module: 'memory',
-            stat: 'rss',
-            decomposition: [],
-            predicate: {}
-        },{
-            module: 'memory',
-            stat: 'rss_limit',
-            decomposition: [],
-            predicate: {}
-        }], [{
-            module: 'memory',
-            stat: 'reclaimed_bytes',
-            decomposition: [],
-            predicate: {}
-        }], [{
-            module: 'zfs',
-            stat: 'dataset_unused_quota',
-            decomposition: [],
-            predicate: {}
-        }, {
-            module: 'zfs',
-            stat: 'dataset_quota',
-            decomposition: [],
-            predicate: {}
-        }], [{
             module: 'nic',
             stat: 'vnic_bytes',
             decomposition: ['zonename'],
-            predicate: {}
+            predicate: { "eq": ["zonename", zoneId ]}
         }]
     ];
 
     var ot = [
-        'CPU: aggregated CPU usage',
-        'CPU: saturation',
-        'Memory: utilization',
-        'Memory: saturation',
-        'FS: capacity',
         'Network: utilization'
     ]
 
@@ -74,29 +34,24 @@ function ($scope, caBackend, $routeParams) {
     $scope.instrumentations = [];
 
     var ca = new caBackend();
-
     ca.describeCa(function (conf){
 
         $scope.hostInstrumentations = [];
         $scope.zoneInstrumentations = [];
 
         for(var opt in oo) {
+            if(zoneId) {
+                oo[opt].predicate = { "eq": ["zonename", zoneId] }
+            }
             $scope.hostInstrumentations.push({
                 options:oo[opt],
                 ca:ca,
                 title: ot[opt]
             })
-
-            if(zoneId) {
-                $scope.zoneInstrumentations.push({
-                    options:oo[opt],
-                    ca:ca,
-                    title:ot[opt]
-                })
-            }
         }
 
         $scope.conf = conf;
+
 
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
@@ -116,7 +71,7 @@ function ($scope, caBackend, $routeParams) {
             module: $scope.current.metric.module,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: {}
+            predicate: { "eq": ["zonename", zoneId ]}
         }
 
         $scope.instrumentations.push(
