@@ -15,12 +15,12 @@
                 </div>
 
                 <div class="pull-left">
-                    <form class="form-search pull-left span8" style="margin-left:-0px">
+                    <form class="form-search pull-left span9" style="margin-left:-0px">
                         <div class="pull-right">
                             <form class="navbar-form pull-left">
-                                <input type="search" class="input-medium"
+                                <input type="search" class="input-large"
                                        data-ng-model="query" data-ng-change="search()"
-                                       placeholder="Search" name="search" id="search" data-translate="placeholder" />
+                                       placeholder="Search machines" name="search" id="search" data-translate="placeholder" />
                             </form>
                         </div>
                         <div class="clearfix"></div>
@@ -46,7 +46,7 @@
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
-                        <span class="span1 text-medium align-right"
+                        <span class="span2 text-medium align-right"
                               data-ng-click="sortBy('created')"
                               data-ng-switch on="sortIcon.created">
                             <span data-translate>Created</span>
@@ -93,9 +93,9 @@
 	                            </span>
 
 	                            <span class="span1 text-medium">{{machine.datacenter}}</span>
-	                            <span class="span1 text-medium align-right">{{machine.created | fromNow}}</span>
+	                            <span class="span2 text-medium align-right">{{machine.created | fromNow}}</span>
 
-	                            <span class="span1 pull-right">
+	                            <span class="span1 pull-right state">
                                     <!--
 	                                <a class="status btn btn-mini"
 	                                   data-ng-class="{'btn-success': (machine.state == 'running')}"
@@ -182,13 +182,13 @@
                         </ul>
                     </div>
                 </div>
-                <div class="span4 pull-right" style="margin:50px 0px 0px 0px">
+                <div class="span3 pull-right" style="margin:50px 0px 0px 0px">
                     <div class="alert alert-success shadow">
                         <h4 data-translate>Need help?</h4>
-                        <p data-translate>Help will open in new window</p>
+                        <p class="text-medium" data-translate>Help will open in new window</p>
                         <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
                             <div class="input-append">
-                                <input type="text" name="q" class="span2 search-query" placeholder="Search" data-translate="placeholder">
+                                <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
                                 <button type="submit" class="btn" data-translate>Search</button>
                             </div>
                         </form>

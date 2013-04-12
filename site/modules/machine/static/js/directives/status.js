@@ -13,19 +13,19 @@
                 scope.labelForState = function (state) {
                     switch (state) {
                         case 'running':
-                            return 'label-success';
+                            return 'btn-success';
                         case 'stopped':
                             return '';
                         default:
-                            return 'label-info';
+                            return 'btn-danger';
                     }
                 };
             },
-            template: '<span class="label" ng-class="labelForState(machine.state)" ng-show="!machine.job || machine.job.finished">' +
+            template: '<span class="status btn btn-mini" ng-class="labelForState(machine.state)" ng-show="!machine.job || machine.job.finished">' +
                 '{{machine.state}}</span>' +
-                '<span class="label label-info" ng-show="machine.job && !machine.job.finished">' +
+                '<span class="status btn btn-mini" ng-show="machine.job && !machine.job.finished">' +
                 '<img src="/static/img/ajax-loader.gif"/>{{machine.job.name}}:{{machine.state}}</span>' +
-                '<span class="label label-inverse" ng-show="machine.job.err"><i class="icon-warning-sign icon-white"/>' +
+                '<span class="status btn btn-mini" ng-show="machine.job.err"><i class="icon-warning-sign icon-white border"/>' +
                 '</span>'
         };
     });
