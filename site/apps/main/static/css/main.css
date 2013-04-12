@@ -416,7 +416,7 @@ th {
 
 .key,.value {
     padding:3px 0px 3px 0px;
-	margin:0px;
+/*	margin:0px;*/
 /*	border:1px solid red;*/
 	float:left;
 }
