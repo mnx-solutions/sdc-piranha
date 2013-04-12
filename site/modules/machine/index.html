@@ -209,60 +209,60 @@
                     <h1>{{machine.name}}</h1>
                 </div>
 
-                <div class="pull-left span7">
+                <div class="pull-left span7 listing">
                     <fieldset>
                         <legend data-translate>Overview</legend>
                         <div class="container span7">
                             <span class="key span2" data-translate>UUID</span>
-                            <span class="value span5 pull-right">{{machine.id}}</span>
+                            <span class="value span5 pull-right">{{machine.id}}&nbsp;</span>
                         </div>
 
                         <div data-ng-show="machine.name" class="container span7">
                             <span class="key span2" data-translate>Machine name</span>
-                            <span class="value span5 pull-right">{{machine.name}}</span>
+                            <span class="value span5 pull-right">{{machine.name}}&nbsp;</span>
                         </div>
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Type</span>
-                            <span class="value span5 pull-right">{{machine.type}}</span>
+                            <span class="value span5 pull-right">{{machine.type}}&nbsp;</span>
                         </div>
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Image</span>
-                            <span class="value span5 pull-right">{{machine.dataset}}</span>
+                            <span class="value span5 pull-right">{{machine.dataset}}&nbsp;</span>
                         </div>
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Memory</span>
-                            <span class="value span5 pull-right">{{machine.memory | sizeFormat}}</span>
+                            <span class="value span5 pull-right">{{machine.memory | sizeFormat}}&nbsp;</span>
                         </div>
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Disk</span>
-                            <span class="value span5 pull-right">{{machine.disk | sizeFormat}}</span>
+                            <span class="value span5 pull-right">{{machine.disk | sizeFormat}}&nbsp;</span>
                         </div>
 
                         <div class="container span7">
                             <span class="key span2" data-translate>IP addresses</span>
                             <span class="value span5 pull-right">
-                                <span data-ng-repeat="ip in machine.ips">{{ip}} <br /></span>
+                                <span data-ng-repeat="ip in machine.ips">{{ip}}&nbsp;</span>
                             </span>
                         </div>
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Created</span>
                             <span class="value span5 pull-right">
-                                {{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}
+                                {{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}&nbsp;
                             </span>
                         </div>
                         <div class="container span7">
                             <span class="key span2" data-translate>Datacenter</span>
-                            <span class="value span5 pull-right">{{machine.datacenter}}</span>
+                            <span class="value span5 pull-right">{{machine.datacenter}}&nbsp;</span>
                         </div>
 
                         <div class="container span7" data-ng-show="machine.primaryIps.length">
                             <span class="key span2" data-translate>Login</span>
-                            <span class="value span5 pull-right">ssh root@{{machine.primaryIps[0]}}</span>
+                            <span class="value span5 pull-right">ssh root@{{machine.primaryIps[0]}}&nbsp;</span>
                         </div>
                     </fieldset>
                     <br />
@@ -330,7 +330,9 @@
                             <div class="clearfix"></div>
                         </div>
                         <div class="clearfix"></div>
-                        <button class="btn btn-primary" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>
+						<div class="controls control-group" style="margin-right:80px	">
+                        	<button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>
+						</div>
                     </fieldset>
                     <br />
 
@@ -405,7 +407,7 @@
                     <div class="alert shadow">
                         <h4 data-translate>Analytics</h4>
                         <p data-translate>Check out this machines analytics.</p>
-                        <a href="#!/cloudAnalytics/{{machine.id}}"><img src="analytics.png" hspace="10" vspace="20" border="0"></a>
+                        <a href="#!/cloudAnalytics/{{machine.id}}"><img src="/static/img/analytics.png" hspace="10" vspace="20" border="0"></a>
                     </div>
                     <div class="clearfix"></div>
                 </div>
