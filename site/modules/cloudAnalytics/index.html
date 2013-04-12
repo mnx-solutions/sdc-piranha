@@ -1,14 +1,22 @@
 <div class="container-fluid content-container">
     <div class="container content-container-inner">
         <div class="container">
-            <div class="page-header">
-                <h1 data-translate>Machine analytics {{zoneId}}</h1>
-            </div>
-		<div data-ng-switch="subview">
-		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
 
+		<div data-ng-switch="subview">
+			
+		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
+				<ul class="breadcrumb">
+					<li><a href="#!/machine/">Dashboard</a> <span class="divider">/</span></li>
+					<li><a href="#!/machine/details/{{zoneId}}">Machine details</a> <span class="divider">/</span></li>
+					<li class="active">Machine analytics</li>
+				</ul>
+
+	            <div class="page-header">
+
+	                <h1>Machine analytics <small>{{zoneId}}</small></h1>
+	            </div>
 		        <span ng-show="zoneId">
-		            <span data-translate>Currently selected zone id</span>: {{zoneId}}
+		            <!-- <span data-translate>Currently selected zone id</span>: {{zoneId}} -->
 		        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics" >
 		            <option value="">-- Choose Metric --</option>
 		        </select>
