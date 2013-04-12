@@ -47,17 +47,17 @@ h4 {
     background-repeat:no-repeat;
 }
 .navbar-static-bottom {
-    background-image: url('../img/bg-bottom.png');
+    background-image: url('/static/img/bg-bottom.png');
     background-repeat:no-repeat;
     background-position:0px 50px;
     padding:20px 20px 120px 20px;
     color:#999;
     text-shadow:1px 1px 1px #fff;
     position:relative;
+	min-height:240px;
     bottom:0;
     z-index:1;
     border-top:1px solid #ddd;
-
 }
 .navbar-static-bottom a {
     color:#999;
