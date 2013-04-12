@@ -16,13 +16,9 @@
         ca.desc = {};
 
         function _labelMetrics(metric) {
-            console.log('METRIC FIELDARR', metric.fields)
-
             var fieldsArr = metric.fields;
             var labeledFields = [];
             for(var f in fieldsArr) {
-
-                console.log('FIELDSARR', fieldsArr, fieldsArr[f]);
                 labeledFields[fieldsArr[f]] = ca.desc.fields[fieldsArr[f]].label;
             }
             metric.fields = labeledFields;
@@ -116,6 +112,10 @@
             var self = this;
 
             ca.conf = $http.get('cloudAnalytics/ca');
+
+            // get already existing instrumentations
+            var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
+            console.log('Insts:', instrumentations);
 
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;

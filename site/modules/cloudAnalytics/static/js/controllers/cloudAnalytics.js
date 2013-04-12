@@ -3,19 +3,27 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams',
+            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q',
 
-function ($scope, caBackend, $routeParams) {
+function ($scope, caBackend, $routeParams, Machine, $q) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
-    var zoneId = $routeParams.machine;
+    var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
+
     $scope.zoneId = zoneId;
+
+    $scope.zones = Machine.machine();
+
+    $scope.$watch('zones.final', function(zone) {
+        console.log($scope.zones);
+    })
+
     /* pre-defined default intrumentations */
     var oo = [
         [{
             module: 'nic',
             stat: 'vnic_bytes',
             decomposition: ['zonename'],
-            predicate: { "eq": ["zonename", zoneId ]}
+            predicate: { "eq": ["zonename", $scope.zoneId ]}
         }]
     ];
 
@@ -40,8 +48,8 @@ function ($scope, caBackend, $routeParams) {
         $scope.zoneInstrumentations = [];
 
         for(var opt in oo) {
-            if(zoneId) {
-                oo[opt].predicate = { "eq": ["zonename", zoneId] }
+            if($scope.zoneId) {
+                oo[opt].predicate = { "eq": ["zonename", $scope.zoneId] }
             }
             $scope.hostInstrumentations.push({
                 options:oo[opt],
@@ -71,7 +79,7 @@ function ($scope, caBackend, $routeParams) {
             module: $scope.current.metric.module,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: { "eq": ["zonename", zoneId ]}
+            predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
         $scope.instrumentations.push(
