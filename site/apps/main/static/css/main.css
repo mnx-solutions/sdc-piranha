@@ -244,7 +244,7 @@ h4 {
 }
 
 
-s.border {
+.border {
     border:1px solid red !important;
 }
 .text-small {
@@ -337,6 +337,50 @@ th {
     background-color:#fff;
 }
 
+/*
+	toolbox
+*/
+
+.item .toolbox{
+	margin:0;
+	clear:both;
+	font-size:11px;
+	border-top:1px solid #ddd;
+	padding:0;
+}
+.toolbox-help {
+	margin:0;
+	clear:both;
+	font-size:11px;
+	border-top:1px solid #ddd;
+	padding:0;
+}
+.toolbox-list {
+	padding:0px 0px 0px 3px;
+	border-right:1px solid #ddd;
+	background-color:#fff;
+}
+
+.toolbox font {
+}
+.action-container {
+	text-align:right;
+	padding-top:10px;
+/*	border:1px solid red !important;*/
+}
+.action-container a {
+	margin-bottom:10px;
+}
+.action-container .btn, .action-container .btn-mini {
+	width:64px !important;
+	margin-right:-3px;
+}
+
+/*
+	end toolbox
+*/
+
+
 #package-selected p {
     width:240px;
     clear:both;
@@ -359,16 +403,23 @@ th {
 }
 .value{
     text-align:left !important;
-    /*	margin-left:10px;*/
     border-bottom:1px solid #ddd;
     min-width:300px;
 }
-.key,.value {
-    padding:5px 0px 5px 0px;
-}
+
 .key.error, .value.error {
     border-bottom: 1px solid #b94a48;
     color: #b94a48;
+}
+
+.key,.value {
+    padding:3px 0px 3px 0px;
+	margin:0px;
+/*	border:1px solid red;*/
+	float:left;
+}
+.listing span2,.listing span5, .listing .container{
+	padding:0px;
 }
 .control-group .key,.control-group .value{
     border-bottom:none;
@@ -575,4 +626,13 @@ div .disabled{
 .btn-mini {
 	width:50px !important;
 	padding: 0 6px !important;
+}
+.page-header {
+/*	border:1px solid red;
+	padding:0px;
+*/}
+.page-header form {
+	padding-top:20px;
+	padding-bottom:0px;
+	margin:0px;
 }

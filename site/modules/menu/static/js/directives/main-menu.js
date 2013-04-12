@@ -21,7 +21,7 @@
 
             template: '<div class="navbar-inner">' +
                         '<div class="container">' +
-                            '<a href="/main/#!/machine"><div class="brand pull-left"></div></a>' +
+                            '<a href="https://www.google.ee"><div class="brand pull-left"></div></a>' +
                             '<div class="pull-right" style="margin-top:25px">' +
                                 '<div class="btn-group pull-left">' +
                                     '<button class="btn btn-small" data-translate>Settings</button>' +
