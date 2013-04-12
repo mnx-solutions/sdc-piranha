@@ -13,10 +13,6 @@ function ($scope, caBackend, $routeParams, Machine, $q) {
 
     $scope.zones = Machine.machine();
 
-    $scope.$watch('zones.final', function(zone) {
-        console.log($scope.zones);
-    })
-
     /* pre-defined default intrumentations */
     var oo = [
         [{
