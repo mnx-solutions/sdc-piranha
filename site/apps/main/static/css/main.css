@@ -1,6 +1,25 @@
 
+body {
+    background-color:#fff;
+}
+.content-container > div {
+    min-height: 100%;
+    /*	border:1px solid red;*/
+}
+.brand {
+    background-image: url('/static/img/logo-color-duo.png');
+    background-repeat:no-repeat;
+    background-position:0px 50%;
+    width:150px;
+    height:70px;
+	border:1px solid red !important;
+}
+.brand.color {
+    background-image: url('/static/img/logo-color.png');
+}
+
 .loading-medium {
-	background-image:url('../img/icon-loading-medium.gif');
+	background-image:url('/static/img/icon-loading-medium.gif');
 	background-position:50% 50%;
 	background-repeat:no-repeat;
 	min-height:50px;
@@ -11,13 +30,6 @@ h1,h2 {
 }
 h4 {
     padding-top:5px;
-}
-body {
-    background-color:#fff;
-}
-.content-container > div {
-    min-height: 100%;
-    /*	border:1px solid red;*/
 }
 .content-container {
     padding-bottom:50px;
@@ -30,7 +42,36 @@ body {
     min-height: 100%;
     height: 100%;
 }
+.navbar-inner {
+    background-image:url('/static/img/top-shade.png');
+    background-position:30% 50%;
+    background-repeat:no-repeat;
+}
+.navbar-static-bottom {
+    background-image: url('../img/bg-bottom.png');
+    background-repeat:no-repeat;
+    background-position:0px 50px;
+    padding:20px 20px 120px 20px;
+    color:#999;
+    text-shadow:1px 1px 1px #fff;
+    position:relative;
+    bottom:0;
+    z-index:1;
+    border-top:1px solid #ddd;
 
+}
+.navbar-static-bottom a {
+    color:#999;
+    background-color:transparent !important;
+}
+.navbar-static-bottom .span3:hover,.navbar-static-bottom .span3:hover a {
+    color:#777;
+    background-color:transparent !important;
+}
+.navbar-static-bottom .nav:hover a:hover {
+    color:#111;
+    background-color:transparent !important;
+}
 
 .settings {
     padding:20px;
@@ -42,7 +83,7 @@ body {
 
 .popover-content {
     border-top:none;
-    background-image:url('../img/stripes-colorful.gif');
+    background-image:url('/static/img/stripes-colorful.gif');
     background-position:0px 0px;
     background-repeat:repeat-x;
     background-size:100% 2px;
@@ -50,15 +91,6 @@ body {
 #image-version {
 }
 
-.settings {
-    font-size:22px;
-    margin-top:15px;
-    padding:7px 20px 20px 60px;
-    background-image:url('../img/icon-settings.png');
-    background-position:0px 0px;
-    background-repeat:no-repeat;
-
-}
 .summary {
     cursor:pointer;
     margin-top:7px !important;
@@ -81,7 +113,7 @@ body {
     /*	background-color:#ddd;*/
 }
 .summary-container-footer {
-    background-image:url('../img/stripes-colorful.gif');
+    background-image:url('/static/img/stripes-colorful.gif');
     background-position:0px 0px;
     background-repeat:repeat-x;
     background-size:100% 2px;
@@ -108,44 +140,6 @@ body {
 }
 
 
-.brand {
-    background-image: url('../img/logo-color-duo.png');
-    background-repeat:no-repeat;
-    background-position:0px 50%;
-    width:150px;
-    height:70px;
-}
-.brand.color {
-    background-image: url('../img/logo-color.png');
-}
-
-.os {
-    border:1px solid #fff;
-    background-repeat:no-repeat;
-    background-position:50% 50%;
-    width:50px;
-    height:50px;
-    display:inline-block;
-    background-size:contain;
-    margin-right:5px;
-    margin-bottom:20px;
-}
-.os:hover,
-.os:active {
-    border:1px solid #ddd;
-    cursor:pointer;
-    /*	background-color:#eee;*/
-}
-.os.smartos {
-    background-image: url('../img/os-smartos.png');
-}
-.os.linux {
-    background-image: url('../img/os-linux.png');
-
-}
-.os.windows {
-    background-image: url('../img/os-windows.png');
-}
 .package-selector .control-group {
     border-bottom:1px solid #ddd;
 }
@@ -183,7 +177,7 @@ body {
 }
 .guest-container {
     background-color:#375675 !important;
-    background-image:url('../img/top-shade.png');
+    background-image:url('/static/img/top-shade.png');
     background-position:50% 50%;
     background-repeat:no-repeat;
 }
@@ -237,24 +231,6 @@ body {
     background-color:transparent;
 }
 
-/*.navbar-inner {
-    background-image:url('../img/top-shade.png');
-    background-position:30% 50%;
-    background-repeat:no-repeat;
-}
-.navbar-static-bottom {
-    background-image: url('../img/bg-bottom.png');
-    background-repeat:no-repeat;
-    background-position:0px 50px;
-    padding:20px 20px 120px 20px;
-    color:#999;
-    text-shadow:1px 1px 1px #fff;
-    position:relative;
-    bottom:0;
-    z-index:1;
-    border-top:1px solid #ddd;
-
-}*/
 .navbar-static-bottom a {
     color:#999;
     background-color:transparent !important;
