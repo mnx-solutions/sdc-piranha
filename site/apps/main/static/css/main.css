@@ -642,3 +642,6 @@ div .disabled{
 	padding-bottom:0px;
 	margin:0px;
 }
+.sortable {
+	cursor:pointer;
+}
