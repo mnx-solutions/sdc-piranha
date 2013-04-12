@@ -12,7 +12,6 @@ body {
     background-position:0px 50%;
     width:150px;
     height:70px;
-	border:1px solid red !important;
 }
 .brand.color {
     background-image: url('/static/img/logo-color.png');
