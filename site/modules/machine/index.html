@@ -305,7 +305,7 @@
                             and identify your machines.
                         </p>
                         <div class="clearfix"></div>
-						<div data-ng-class="{'loading-medium': (!tagcloud || tagsave)}">
+						<div data-ng-class="{'loading-medium behind': (!tagcloud || tagsave)}">
 	                        <div class="container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
 	                            <div data-ng-show="!o.edit">
 	                                <span class="key span3" data-ng-class="{error: o.conflict}">{{o.key}}</span>
@@ -401,7 +401,7 @@
                                 data-toggle="modal"
                                 class="btn btn-small btn-danger">Delete</button>
                     </div>
-                    <div class="clearfix"></div><br />
+                    <div class="clearfix"></div>
                     <div class="alert alert-success shadow">
                         <h4 data-translate>Need help?</h4>
                         <p data-translate>Help will open in new window</p>

@@ -23,6 +23,10 @@ body {
 	background-repeat:no-repeat;
 	min-height:50px;
 }
+.loading-medium.behind {
+	opacity: 0.65;
+    filter: alpha(opacity=65);    
+}
 
 h1,h2 {
     font-weight:normal;
