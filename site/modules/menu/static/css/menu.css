@@ -1,16 +1,16 @@
-.brand {
+/*.brand {
     background-image: url('../img/logo-color-duo.png');
     background-repeat:no-repeat;
     background-position:0px 50%;
     width:150px;
     height:70px;
 }
-
-.brand.color {
+*/
+/*.brand.color {
     background-image: url('../img/logo-color.png');
 }
 
-.navbar-inner .container {
+*/.navbar-inner .container {
     padding:10px;
 }
 

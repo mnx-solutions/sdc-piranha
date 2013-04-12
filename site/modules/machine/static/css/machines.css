@@ -54,7 +54,7 @@ body {
     font-size:22px;
     margin-top:15px;
     padding:7px 20px 20px 60px;
-    background-image:url('../../Graphics/Guest/icon-settings.png');
+    background-image:url('../img/icon-settings.png');
     background-position:0px 0px;
     background-repeat:no-repeat;
 
@@ -81,7 +81,7 @@ body {
     /*	background-color:#ddd;*/
 }
 .summary-container-footer {
-    background-image:url('../../Graphics/Guest/stripes-colorful.gif');
+    background-image:url('../img/stripes-colorful.gif');
     background-position:0px 0px;
     background-repeat:repeat-x;
     background-size:100% 2px;
@@ -107,15 +107,16 @@ body {
     padding-top:65px;
 }
 
+
 .brand {
-    background-image: url('../../Graphics/Guest/logo-color-duo.png');
+    background-image: url('../img/logo-color-duo.png');
     background-repeat:no-repeat;
     background-position:0px 50%;
     width:150px;
     height:70px;
 }
 .brand.color {
-    background-image: url('../../Graphics/Guest/logo-color.png');
+    background-image: url('../img/logo-color.png');
 }
 
 .os {
@@ -136,14 +137,14 @@ body {
     /*	background-color:#eee;*/
 }
 .os.smartos {
-    background-image: url('../../Graphics/Guest/os-smartos.png');
+    background-image: url('../img/os-smartos.png');
 }
 .os.linux {
-    background-image: url('../../Graphics/Guest/os-linux.png');
+    background-image: url('../img/os-linux.png');
 
 }
 .os.windows {
-    background-image: url('../../Graphics/Guest/os-windows.png');
+    background-image: url('../img/os-windows.png');
 }
 .package-selector .control-group {
     border-bottom:1px solid #ddd;
@@ -182,7 +183,7 @@ body {
 }
 .guest-container {
     background-color:#375675 !important;
-    background-image:url('../../Graphics/Guest/top-shade.png');
+    background-image:url('../img/top-shade.png');
     background-position:50% 50%;
     background-repeat:no-repeat;
 }
@@ -236,13 +237,13 @@ body {
     background-color:transparent;
 }
 
-.navbar-inner {
-    background-image:url('../../Graphics/Guest/top-shade.png');
+/*.navbar-inner {
+    background-image:url('../img/top-shade.png');
     background-position:30% 50%;
     background-repeat:no-repeat;
 }
 .navbar-static-bottom {
-    background-image: url('../../Graphics/Guest/bg-bottom.png');
+    background-image: url('../img/bg-bottom.png');
     background-repeat:no-repeat;
     background-position:0px 50px;
     padding:20px 20px 120px 20px;
@@ -252,10 +253,8 @@ body {
     bottom:0;
     z-index:1;
     border-top:1px solid #ddd;
-    /*	border:;*/
-    /*	background-color:#ededed;*/
-    /*	width:100%;*/
-}
+
+}*/
 .navbar-static-bottom a {
     color:#999;
     background-color:transparent !important;
