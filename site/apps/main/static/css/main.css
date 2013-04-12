@@ -312,7 +312,9 @@ th {
     padding:3px;
 /*    margin:0;*/
 /*    margin-right:1.5%;*/
-/*	border:1px solid red;*/
+}
+.machines .item > span {
+	float:left;
 }
 
 .machines .item .toolbox {
