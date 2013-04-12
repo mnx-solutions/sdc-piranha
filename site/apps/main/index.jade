@@ -5,6 +5,7 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
     meta(name='fragment',content='!')
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title(data-ng-bind='windowTitle') MAIN
+    style(type='text/css') @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}
     each link in css
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body()
