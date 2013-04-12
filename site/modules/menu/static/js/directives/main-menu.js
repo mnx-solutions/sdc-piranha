@@ -36,13 +36,13 @@
                                                 'data-translate-module="{{item.link}}" ' +
                                             '>{{item.name}}</a>' +
                                         '</li>' +
+										'<li><a href="/landing/forgetToken" data-translate>Logout</a></li>'+
                                     '</ul>' +
                                 '</div>' +
                             '</div>' +
                             '<div class="clearfix"></div>' +
 
                         '</div>' +
-                        '<a href="/landing/forgetToken" class="logout-right" data-translate>Logout</a>'+
                       '</div>'
         };
     }]);
