@@ -3,12 +3,15 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams',
+            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q',
 
-function ($scope, caBackend, $routeParams) {
+function ($scope, caBackend, $routeParams, Machine, $q) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = $routeParams.machine;
     $scope.zoneId = zoneId;
+
+    $scope.zones = Machine.machine();
+
     /* pre-defined default intrumentations */
     var oo = [
         [{
@@ -71,7 +74,7 @@ function ($scope, caBackend, $routeParams) {
             module: $scope.current.metric.module,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: { "eq": ["zonename", zoneId ]}
+            predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
         $scope.instrumentations.push(

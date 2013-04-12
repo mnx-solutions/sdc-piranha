@@ -5,6 +5,9 @@
             <span data-translate>Currently selected zone id</span>: {{zoneId}}
         <br />
         <br />
+        <select ng-show="true" data-ng-model="zoneId" data-ng-options="zone.id as zone.name for zone in zones">
+            <option value="">-- Choose machine</option>
+        </select>
         <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics" >
             <option value="">-- Choose Metric --</option>
         </select>
@@ -33,7 +36,7 @@
 
         <br/><br/><br/>
         <graph data-ng-repeat="i in instrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
-      
+
         <div class="">
             <graph data-ng-repeat="i in zoneInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
         </div>

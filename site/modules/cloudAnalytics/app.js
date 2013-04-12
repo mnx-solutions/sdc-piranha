@@ -20,6 +20,7 @@ module.exports = function (scope, app, callback) {
     app.get('/ca/instrumentations', function (req, res) {
         req.cloud.ListInstrumentations(function (err, resp) {
         if (!err) {
+                console.log(err);
                 res.json(resp);
             }
         });

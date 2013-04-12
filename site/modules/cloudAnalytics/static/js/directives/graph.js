@@ -154,6 +154,7 @@
 
             },
             template:
+                '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
                     '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
                     '<br/>' +
