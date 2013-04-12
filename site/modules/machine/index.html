@@ -305,35 +305,38 @@
                             and identify your machines.
                         </p>
                         <div class="clearfix"></div>
-                        <div class="container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
-                            <div data-ng-show="!o.edit">
-                                <span class="key span3" data-ng-class="{error: o.conflict}">{{o.key}}</span>
-                                <span class="value span4 pull-left" data-ng-class="{error: o.conflict}">
-                                    {{o.val}}
-                                    <span class="icon-trash pull-right"
-                                          data-ng-click="removeTag(key)"
-                                          style="margin-top:5px;margin-left:30px"></span>
-                                    <div class="clearfix"></div>
-                                </span>
-                            </div>
+						<div data-ng-class="{'loading-medium': (!tagcloud || tagsave)}">
+	                        <div class="container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
+	                            <div data-ng-show="!o.edit">
+	                                <span class="key span3" data-ng-class="{error: o.conflict}">{{o.key}}</span>
+	                                <span class="value span4" data-ng-class="{error: o.conflict}">
+	                                    {{o.val}}
+	                                    <span class="icon-trash pull-right"
+	                                          data-ng-click="removeTag(key)"
+	                                          style="margin-top:5px;margin-left:30px"></span>
+	                                    <div class="clearfix"></div>
+	                                </span>
+	                            </div>
 
-                            <div class="muted clearfix" style="margin-top:10px" data-ng-show="o.edit">
-                                <div class="controls control-group" data-ng-class="{error: o.conflict}">
-                                    <input type="text"
-                                           class="input-large"
-                                           placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
-                                    <input type="text"
-                                           class="input-large span3"
-                                           placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
-                                    <span class="icon-trash pull-right"
-                                          data-ng-click="removeTag(key)"
-                                          style="margin-top:5px;margin-left:30px"></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
+	                            <div class="muted clearfix" style="margin-top:10px" data-ng-show="o.edit">
+	                                <div class="controls control-group" data-ng-class="{error: o.conflict}">
+	                                    <input type="text"
+	                                           class="input-large"
+	                                           placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
+	                                    <input type="text"
+	                                           class="input-large span3"
+	                                           placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
+	                                    <span class="icon-trash pull-right"
+	                                          data-ng-click="removeTag(key)"
+	                                          style="margin-top:5px;margin-left:30px"></span>
+	                                    <div class="clearfix"></div>
+	                                </div>
+	                                <div class="clearfix"></div>
+	                            </div>
+	                            <div class="clearfix"></div>
+	                        </div>
+							<div class="clearfix"></div>
+						</div>
                         <div class="clearfix"></div>
 						<div class="controls control-group" style="margin-right:80px	">
                         	<button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>

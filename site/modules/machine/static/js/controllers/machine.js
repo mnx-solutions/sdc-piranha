@@ -168,9 +168,11 @@
                             data[tags[i].key] = tags[i].val;
                         }
                     }
+                    $scope.tagsave = true;
                     $scope.retinfo = Machine.tags(machineid, data);
                     $scope.retinfo.then(function(tags) {
                         $scope.tagcloud = tagcloud(tags);
+                        $scope.tagsave = false;
                     });
                 };
 
