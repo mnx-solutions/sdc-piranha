@@ -235,15 +235,15 @@
 
 
         service.prototype.deleteAllInstrumentations = function() {
+            ca.options.individual = {};
+            ca.options.last_poll_time = null;
+            ca.options.ndatapoints = 1;
+
             for(var i in ca.instrumentations) {
                 (function(i) {
                     ca.instrumentations[i].delete(function() {
-                        delete(ca.options.individual[ca.instrumentations[i].id]);
                         delete(ca.instrumentations[i]);
                     });
-
-                    ca.options.last_poll_time = null;
-                    ca.options.ndatapoints = 1;
                 })(i);
             }
         }
