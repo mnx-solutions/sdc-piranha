@@ -113,10 +113,6 @@
 
             ca.conf = $http.get('cloudAnalytics/ca');
 
-            // get already existing instrumentations
-            var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
-            console.log('Insts:', instrumentations);
-
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;
                 conf.data.metrics.forEach(_labelMetrics);
@@ -130,10 +126,14 @@
 //
 //                });
 //            }
+            if(!createOpts.init) {
+                createOpts.init = null;
+            }
 
             var self = this;
             instrumentation.create({
                 createOpts: createOpts,
+                init: createOpts.init,
                 parent:ca
             }, function(err, inst){
 
@@ -233,10 +233,19 @@
             return seriesCollection;
         }
 
+
         service.prototype.deleteAllInstrumentations = function() {
             for( var i in ca.instrumentations ){
                 ca.instrumentations[i].delete();
             }
+        }
+
+        service.prototype.listAllInstrumentations = function(cb) {
+            var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
+
+            instrumentations.then(function(insts) {
+                cb(insts);
+            });
         }
 
         service.prototype.hasChanged = function (inst){
