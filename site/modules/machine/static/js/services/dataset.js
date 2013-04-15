@@ -62,25 +62,39 @@
                 return job.deferred;
             }
 
-            if (!id) {
-                return datasets.list;
-            }
+            var ret = $q.defer();
+            if(!id) {
+                setTimeout(function(){
+                    if(datasets.list.final) {
+                        ret.resolve(datasets.list);
+                    } else {
+                        datasets.job.deferred.then(function(value){
+                            ret.resolve(value);
+                        });
+                    }
+                },1);
+            } else {
+                if (!datasets.index[id]) {
+                    service.updateDatasets();
 
-            if (!datasets.index[id]) {
-                service.updateDatasets();
-
-                if(!datasets.search[id]) {
-                    datasets.search[id] = $q.defer();
+                    if(!datasets.search[id]) {
+                        datasets.search[id] = ret;
+                    }
+                } else {
+                    setTimeout(function () {
+                        ret.resolve(datasets.index[id]);
+                    },1);
                 }
 
-                return datasets.search[id].promise;
             }
 
-            return datasets.index[id];
+            return ret.promise;
         };
 
-        // run updatePackages
-        service.updateDatasets();
+        if(!datasets.job) {
+            // run updatePackages
+            service.updateDatasets();
+        }
 
         return service;
     }]);

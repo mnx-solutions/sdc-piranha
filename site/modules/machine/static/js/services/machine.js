@@ -81,7 +81,7 @@
         };
 
         service.machine = function (id) {
-            if (id === true || (!id && (!machines.job || machines.job.finished))) {
+            if (id === true || (!id && !machines.job)) {
                 service.updateMachines();
                 return machines.list;
             }
@@ -105,8 +105,10 @@
             return machines.index[id];
         };
 
-        // run updateMachines
-        service.updateMachines();
+        if(!machines.job) {
+            // run updateMachines
+            service.updateMachines();
+        }
 
 
         function changeState(opts) {

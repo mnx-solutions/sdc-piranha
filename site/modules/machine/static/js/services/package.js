@@ -1,5 +1,4 @@
 'use strict';
-
 (function (app) {
     app.factory('Package', [
         'serverTab',
@@ -32,15 +31,15 @@
                         result.forEach(function (p) {
                             var old = null;
 
-                            if (packages.index[p.id]) {
-                                old = packages.list.indexOf(packages.index[p.id]);
+                            if (packages.index[p.name]) {
+                                old = packages.list.indexOf(packages.index[p.name]);
                             }
 
-                            packages.index[p.id] = p;
+                            packages.index[p.name] = p;
 
-                            if (packages.search[p.id]) {
-                                packages.search[p.id].resolve(p);
-                                delete packages.search[p.id];
+                            if (packages.search[p.name]) {
+                                packages.search[p.name].resolve(p);
+                                delete packages.search[p.name];
                             }
 
                             if (old !== null) {
@@ -64,20 +63,33 @@
                 return job.deferred;
             }
 
-            if (!id) {
-                return packages.list;
-            }
+            var ret = $q.defer();
+            if(!id) {
+                setTimeout(function(){
+                    if(packages.list.final) {
+                        ret.resolve(packages.list);
+                    } else {
+                        packages.job.deferred.then(function(value){
+                            ret.resolve(value);
+                        });
+                    }
+                },1);
+            } else {
+                if (!packages.index[id]) {
+                    service.updatePackages();
 
-            if (!packages.index[id]) {
-                service.updatePackages();
-
-                if (!packages.search[id]) {
-                    packages.search[id] = $q.defer();
+                    if(!packages.search[id]) {
+                        packages.search[id] = ret;
+                    }
+                } else {
+                    setTimeout(function () {
+                        ret.resolve(packages.index[id]);
+                    },1);
                 }
 
-                return packages.search[id].promise;
             }
-            return packages.index[id];
+
+            return ret.promise;
         };
 
         function findPackage(packageName) {

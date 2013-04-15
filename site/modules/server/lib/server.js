@@ -45,9 +45,9 @@ Server.prototype.query = function () {
           if(req._session._readable(id)) {
               send();
           } else {
-              setTimeout(function () {
+              timeout = setTimeout(function () {
                   req._session.getTab(id).removeListener('readable', send);
-                  res.send(200, "");
+                  res.send(200, '');
               }, 30000);
 
               req._session.getTab(id).once('readable', send);
