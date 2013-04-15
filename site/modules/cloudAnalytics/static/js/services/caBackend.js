@@ -52,7 +52,6 @@
 
                 var datapoints = res.datapoints;
                 for(var id in datapoints) {
-                    console.log('error here', id, datapoints);
                     ca.instrumentations[id].addValues(datapoints[id]);
                 }
 
