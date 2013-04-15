@@ -1,5 +1,10 @@
 {
 	"em": {
         "auth": true
-	}
+	},
+    "pre": {
+        "js": [
+            "https://apisandbox.zuora.com/apps/Hosted/postmessage.js"
+        ]
+    }
 }

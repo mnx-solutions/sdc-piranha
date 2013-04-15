@@ -56,21 +56,27 @@
                 return datacenters.index;
             }
 
+
+            var ret = $q.defer();
             if (!datacenters.index[id]){
                 service.updateDatacenters();
 
                 if(!datacenters.search[id]){
-                    datacenters.search[id] = $q.defer();
+                    datacenters.search[id] = ret;
                 }
-                return datacenters.search[id].promise;
+            } else {
+                setTimeout(function () {
+                    ret.resolve(datacenters.index[id]);
+                },1);
             }
 
-            return datacenters.index[id];
+            return ret.promise;
         };
 
-
-        // run updatePackages
-        service.updateDatacenters();
+        if(!datacenters.job) {
+            // run updatePackages
+            service.updateDatacenters();
+        }
 
         return service;
     }]);
