@@ -135,6 +135,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
     }
 
     $scope.deleteAllInstrumentations = function() {
+        $scope.instrumentations = [];
         ca.deleteAllInstrumentations();
     }
 

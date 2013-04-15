@@ -52,6 +52,7 @@
 
                 var datapoints = res.datapoints;
                 for(var id in datapoints) {
+                    console.log('error here', id, datapoints);
                     ca.instrumentations[id].addValues(datapoints[id]);
                 }
 
@@ -235,8 +236,16 @@
 
 
         service.prototype.deleteAllInstrumentations = function() {
-            for( var i in ca.instrumentations ){
-                ca.instrumentations[i].delete();
+            for(var i in ca.instrumentations) {
+                (function(i) {
+                    ca.instrumentations[i].delete(function() {
+                        delete(ca.options.individual[ca.instrumentations[i].id]);
+                        delete(ca.instrumentations[i]);
+                    });
+
+                    ca.options.last_poll_time = null;
+                    ca.options.ndatapoints = 1;
+                })(i);
             }
         }
 
