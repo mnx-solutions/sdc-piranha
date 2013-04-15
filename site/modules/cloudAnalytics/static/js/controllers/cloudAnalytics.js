@@ -78,13 +78,40 @@ function ($scope, caBackend, $routeParams, Machine, $q) {
             predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
-        $scope.instrumentations.push(
-            {
-                options:[ options ],
-                ca: ca//,
-//                title: 'proov'
-            }
-        );
+//        $scope.instrumentations.push(
+//            {
+//                options:[ options ],
+//                ca: ca
+//            }
+//        );
+
+        ca.createInstrumentations([ options ], function(instrumentations){
+
+//            if(!$scope.title) {
+//                $scope.options;
+//                var opt = options[0];
+//                var title = opt.module + ' ' +  opt.stat
+//                if(opt.decomposition.length > 0){
+//                    title += ' decomposed by ' + opt.decomposition[0]
+//                }
+//                if(opt.decomposition.length == 2) {
+//                    title += ' and' + opt.decomposition[1];
+//                }
+//
+//                //$scope.title = title;
+//            }
+            var title = 'title';
+//            $scope.startTime = Math.floor(instrumentations[0].crtime / 1000);
+            $scope.instrumentations.push({
+                instrumentations: instrumentations,
+                ca: ca,
+                title: title
+            });
+
+
+
+//            updateGraph();
+        });
 
     }
 
