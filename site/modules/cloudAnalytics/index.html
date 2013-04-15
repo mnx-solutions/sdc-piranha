@@ -15,9 +15,11 @@
 
 	                <h1>Machine analytics <small>{{zoneId}}</small></h1>
 	            </div>
-		        <span ng-show="zoneId">
+                <select ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
+                    <option value="">-- Choose Machine --</option>
+                </select>
 		            <!-- <span data-translate>Currently selected zone id</span>: {{zoneId}} -->
-		        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics" >
+		        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
 		            <option value="">-- Choose Metric --</option>
 		        </select>
 		        <span class="nullable">
@@ -38,16 +40,12 @@
 		        </div>
 
 		        <button data-ng-click="createInstrumentation()">Create</button> <button data-ng-click="deleteAllInstrumentations()">Delete All</button>
-		        </span>
-		        <span ng-hide="zoneId">
-		            <span>No zoneId selected. Showing previously created instrumentations if any</span>
-		        </span>
 
 		        <br/><br/><br/>
-		        <graph data-ng-repeat="i in instrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
+		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" graphtitle="i.title" ca="i.ca"></graph>
       
 		        <div class="">
-		            <graph data-ng-repeat="i in zoneInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>
+		            <!--<graph data-ng-repeat="i in zoneInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>-->
 		        </div>
 		        <br/>
 		        <!--module: {{current.metric.module}}      <br/>-->

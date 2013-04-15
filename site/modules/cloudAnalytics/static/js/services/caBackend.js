@@ -16,13 +16,9 @@
         ca.desc = {};
 
         function _labelMetrics(metric) {
-            console.log('METRIC FIELDARR', metric.fields)
-
             var fieldsArr = metric.fields;
             var labeledFields = [];
             for(var f in fieldsArr) {
-
-                console.log('FIELDSARR', fieldsArr, fieldsArr[f]);
                 labeledFields[fieldsArr[f]] = ca.desc.fields[fieldsArr[f]].label;
             }
             metric.fields = labeledFields;
@@ -130,10 +126,14 @@
 //
 //                });
 //            }
+            if(!createOpts.init) {
+                createOpts.init = null;
+            }
 
             var self = this;
             instrumentation.create({
                 createOpts: createOpts,
+                init: createOpts.init,
                 parent:ca
             }, function(err, inst){
 
@@ -233,10 +233,19 @@
             return seriesCollection;
         }
 
+
         service.prototype.deleteAllInstrumentations = function() {
             for( var i in ca.instrumentations ){
                 ca.instrumentations[i].delete();
             }
+        }
+
+        service.prototype.listAllInstrumentations = function(cb) {
+            var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
+
+            instrumentations.then(function(insts) {
+                cb(insts);
+            });
         }
 
         service.prototype.hasChanged = function (inst){

@@ -3,19 +3,23 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams',
+            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', 'caInstrumentation',
 
-function ($scope, caBackend, $routeParams) {
+function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
-    var zoneId = $routeParams.machine;
+    var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
+
     $scope.zoneId = zoneId;
+
+    $scope.zones = Machine.machine();
+
     /* pre-defined default intrumentations */
     var oo = [
         [{
             module: 'nic',
             stat: 'vnic_bytes',
             decomposition: ['zonename'],
-            predicate: { "eq": ["zonename", zoneId ]}
+            predicate: { "eq": ["zonename", $scope.zoneId ]}
         }]
     ];
 
@@ -40,8 +44,8 @@ function ($scope, caBackend, $routeParams) {
         $scope.zoneInstrumentations = [];
 
         for(var opt in oo) {
-            if(zoneId) {
-                oo[opt].predicate = { "eq": ["zonename", zoneId] }
+            if($scope.zoneId) {
+                oo[opt].predicate = { "eq": ["zonename", $scope.zoneId] }
             }
             $scope.hostInstrumentations.push({
                 options:oo[opt],
@@ -55,6 +59,25 @@ function ($scope, caBackend, $routeParams) {
 
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
+
+        ca.listAllInstrumentations(function(insts) {
+
+
+            for(var i in insts.data) {
+
+                ca.createInstrumentation({
+                    init: insts.data[i]
+                }, function(inst) {
+                    $scope.instrumentations.push({
+                        instrumentations: [inst],
+                        ca: ca,
+                        title: 'title'
+                    });
+                });
+
+            }
+
+        })
     });
 
 
@@ -71,16 +94,43 @@ function ($scope, caBackend, $routeParams) {
             module: $scope.current.metric.module,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: { "eq": ["zonename", zoneId ]}
+            predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
-        $scope.instrumentations.push(
-            {
-                options:[ options ],
-                ca: ca//,
-//                title: 'proov'
-            }
-        );
+//        $scope.instrumentations.push(
+//            {
+//                options:[ options ],
+//                ca: ca
+//            }
+//        );
+
+        ca.createInstrumentations([ options ], function(instrumentations){
+
+//            if(!$scope.title) {
+//                $scope.options;
+//                var opt = options[0];
+//                var title = opt.module + ' ' +  opt.stat
+//                if(opt.decomposition.length > 0){
+//                    title += ' decomposed by ' + opt.decomposition[0]
+//                }
+//                if(opt.decomposition.length == 2) {
+//                    title += ' and' + opt.decomposition[1];
+//                }
+//
+//                //$scope.title = title;
+//            }
+            var title = 'title';
+//            $scope.startTime = Math.floor(instrumentations[0].crtime / 1000);
+            $scope.instrumentations.push({
+                instrumentations: instrumentations,
+                ca: ca,
+                title: title
+            });
+
+
+
+//            updateGraph();
+        });
 
     }
 

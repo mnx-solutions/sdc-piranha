@@ -5,14 +5,14 @@
         return {
             restrict: "E",
             scope: {
-                options:'=',
+                instrumentations:'=',
                 ca:'=',
-                title: '='
+                graphtitle: '='
             },
             link: function ($scope){
 
-                $scope.instrumentations = [];
-
+//                $scope.instrumentations = instrumentations;
+                $scope.startTime = Math.floor($scope.instrumentations[0].crtime / 1000);
                 var graph = false;
                 $scope.heatmap;
 
@@ -93,6 +93,7 @@
                 });
                 $scope.ready = false;
                 var i = -1;
+
                 function updateGraph() {
 
                     if($scope.ca.hasAnyChanged($scope.instrumentations)) {
@@ -116,36 +117,14 @@
                                 graph.series.push.apply(graph.series, series);
                                 graph.render();
                             }
-
                         }
                     }
 
                     $timeout(updateGraph, 1000);
                 }
 
-                $scope.ca.createInstrumentations($scope.options, function(instrumentations){
+                updateGraph();
 
-                    if(!$scope.title) {
-                        $scope.options;
-                        var opt = $scope.options[0];
-                        var title = opt.module + ' ' +  opt.stat
-                        if(opt.decomposition.length > 0){
-                            title += ' decomposed by ' + opt.decomposition[0]
-                        }
-                        if(opt.decomposition.length == 2) {
-                            title += ' and' + opt.decomposition[1];
-                        }
-
-                        $scope.title = title;
-                    }
-
-                    $scope.startTime = Math.floor(instrumentations[0].crtime / 1000);
-                    $scope.instrumentations = instrumentations;
-
-
-
-                    updateGraph();
-                });
 
 //                $scope.deleteInstrumentation = function() {
 //                    $scope.ca.deleteInstrumentation($scope.instrumentations[0]);
@@ -154,10 +133,11 @@
 
             },
             template:
+                '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
                     '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
                     '<br/>' +
-                    '<div>{{title}}</div>' +
+                    '<div>{{graphtitle}}</div>' +
                     '<br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
