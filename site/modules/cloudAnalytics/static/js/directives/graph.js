@@ -89,7 +89,6 @@
                     }
                 });
                 $scope.ready = false;
-//                var i = -1;
 
                 function updateGraph() {
 

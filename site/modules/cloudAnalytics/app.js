@@ -18,10 +18,34 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/ca/instrumentations', function (req, res) {
+
         req.cloud.ListInstrumentations(function (err, resp) {
-        if (!err) {
+            if (!err) {
                 console.log(err);
-                res.json(resp);
+
+                if(resp.length) {
+                    var id = resp[0].id;
+
+                    // poll the most recent value to sync with ca time.
+                    req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
+                        if(!err2) {
+                            console.log('value');
+                            console.log(value);
+                            res.json({
+                                time: value.start_time,
+                                instrumentations: resp
+                            });
+                        }
+                    })
+
+                } else {
+                    res.json({
+                        time:null,
+                        instrumentations:[]
+                    })
+                }
+
+
             }
         });
     });
