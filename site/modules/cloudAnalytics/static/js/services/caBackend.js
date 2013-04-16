@@ -91,14 +91,6 @@
 
         };
 
-        service.prototype.changeRange = function(range) {
-            this.range = range;
-        }
-
-        service.prototype.changeWidth = function(width) {
-            this.width = width;
-        }
-
         service.prototype.getStatLabel = function(stat) {
             for(var m in ca.desc.metrics) {
                 var metric = ca.desc.metrics[m];
@@ -125,22 +117,17 @@
 
         };
         service.prototype.createInstrumentation  = function(createOpts, cb) {
-//            for(var i= 20; i < 100; i++) {
-//                $http.delete('cloudAnalytics/ca/instrumentations/' + i).success(function(res){
-//
-//                });
-//            }
 
             var self = this;
             instrumentation.create({
                 createOpts: createOpts,
-                parent:ca
+                parent: ca
             }, function(err, inst){
 
                 var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
                 self.instrumentations[inst.id] = {
-                    range: self.range,
+                    range: createOpts.range || self.range,
                     'value-arity': inst['value-arity'],
                     crtime: Math.floor(inst.crtime /1000)
                 };
@@ -153,7 +140,7 @@
                     crtime: Math.floor(inst.crtime /1000)
                 }
                 if(heatmap) {
-                    options.ndatapoints = self.range;
+                    options.ndatapoints = createOpts.range || self.range;
                     options.width = self.width;
                     options.height = self.height;
                 }
@@ -162,8 +149,8 @@
                 cb(inst)
 
             });
-
         }
+
         service.prototype.createInstrumentations = function(createOpts, cb) {
             var insts = [];
             var self = this;
@@ -190,7 +177,7 @@
                 var heatmap = instrumentation['value-arity'] === 'numeric-decomposition';
 
                 var series = instrumentation.getValues(self.id, {
-                    nr: self.range,
+                    nr: self.instrumentations[id].range || self.range,
                     endTime: time
                 });
 

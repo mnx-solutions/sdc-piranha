@@ -7,12 +7,13 @@
             scope: {
                 instrumentations:'=',
                 ca:'=',
+                endtime:'=',
+                frozen:'=',
+                range:'=',
                 graphtitle: '='
             },
             link: function ($scope){
 
-//                $scope.instrumentations = instrumentations;
-                $scope.startTime = Math.floor($scope.instrumentations[0].crtime / 1000);
                 var graph = false;
                 $scope.heatmap;
 
@@ -21,10 +22,6 @@
                         graph: graph,
                         element: document.querySelector('#legend_' + $scope.$id)
                     });
-//                    var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
-//                        graph: graph,
-//                        legend: legend
-//                    });
                 }
 
                 function createXAxis(graph) {
@@ -56,13 +53,13 @@
                     var conf = {
                         element: document.querySelector("#chart_" + $scope.$id),
                         renderer: $scope.renderer,
-                        width: 640,
-                        height: 200,
+                        width: $scope.width || 640,
+                        height: $scope.height || 200,
                         series: series
                     };
                     var graph = new Rickshaw.Graph(conf);
                     graph.render();
-//                    createRange(graph);
+
                     if(!$scope.heatmap) {
                         createLegend(graph);
                     }
@@ -92,22 +89,19 @@
                     }
                 });
                 $scope.ready = false;
-                var i = -1;
+//                var i = -1;
 
                 function updateGraph() {
 
-                    if($scope.ca.hasAnyChanged($scope.instrumentations)) {
-
                         var series = $scope.ca.getSeries(
                             $scope.instrumentations,
-                            $scope.startTime + i
+                            $scope.endtime
                         );
 
                         if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
                             $scope.heatmap = $scope.ca.instrumentations[$scope.instrumentations[0].id].heatmap;
                         }
 
-                        i++
                         if(series && series.length) {
                             if(!graph) {
                                 graph = createGraph(series);
@@ -118,18 +112,23 @@
                                 graph.render();
                             }
                         }
-                    }
-
-                    $timeout(updateGraph, 1000);
                 }
 
-                updateGraph();
 
+                $scope.$watch('range', function(newVal) {
+                    if(newVal){
+                        $scope.ca.instrumentations[$scope.instrumentations[0].id].range = $scope.range;
+                    }
+                });
 
-//                $scope.deleteInstrumentation = function() {
-//                    $scope.ca.deleteInstrumentation($scope.instrumentations[0]);
-//                }
+                $scope.$watch('endtime', function(newVal) {
+                    if(newVal){
+                        if(!$scope.frozen) {
+                            updateGraph();
+                        }
 
+                    }
+                });
 
             },
             template:

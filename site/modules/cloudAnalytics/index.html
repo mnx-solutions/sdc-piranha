@@ -32,29 +32,19 @@
 		                <option value="">-- None --</option>
 		            </select>
 		        </span>
-		        <div>
-		            <!--{{inst.module}}<br/>-->
-		            <!--{{inst.stat}}<br/>-->
-		            <!--<instrumentation data-ng-repeat="inst in instrumentations" type="raw" module="inst.module" stat="inst.stat" metric="inst.metric" decomposition="inst.decomposition"></instrumentation>-->
-		            <!--<graph data-ng-repeat="i in instrumentations" options="i.options" ca="i.ca"></graph>-->
-		        </div>
-
+                <br/>
+                Graph range:
+                <select data-ng-model="currentRange" data-ng-options="val as val for (key, val) in ranges">
+                    <option value="">-- Choose Range --</option>
+                </select>
+                <br/>
+                Frozen:
+                <input type="checkbox" data-ng-model="frozen">
+                <br/><br/>
 		        <button data-ng-click="createInstrumentation()">Create</button> <button data-ng-click="deleteAllInstrumentations()">Delete All</button>
 
 		        <br/><br/><br/>
-		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" graphtitle="i.title" ca="i.ca"></graph>
-      
-		        <div class="">
-		            <!--<graph data-ng-repeat="i in zoneInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>-->
-		        </div>
-		        <br/>
-		        <!--module: {{current.metric.module}}      <br/>-->
-		        <!--stat: {{current.metric.stat}}          <br/>-->
-		        <!--decomposition: [{{current.decomposition.primary}}] <br/>-->
-		        <!--Decomposition2: [{{current.decomposition.secondary}}]     <br/>-->
-		        <!--<br/><br/>-->
-		        <!--{{currentDecomposition}}-->
-		        <!--<instrumentation type="raw" module="cpu" stat="thread_samples"></instrumentation>-->
+		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
 
 		    </div>
 		</div>
