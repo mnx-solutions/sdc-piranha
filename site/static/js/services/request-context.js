@@ -4,7 +4,7 @@
     // I provide information about the current route request.
     app.service(
         'requestContext',
-        ['RenderContext',
+        [ 'RenderContext',
 
 function (RenderContext) {
 
@@ -23,7 +23,7 @@ function (RenderContext) {
     // a comparison from one route change to the next.
     var previousAction = '';
     var previousParams = {};
-
+    var navigation = [];
 
     // ---------------------------------------------- //
 
@@ -104,10 +104,8 @@ function (RenderContext) {
 
     }
 
-    function setUpRenderContext(requestActionLocation, scope) {
-        var self = this;
-        var renderContext = self.getRenderContext(requestActionLocation);
-
+    function setUpRenderContext(requestActionLocation, scope, opts) {
+        var renderContext = this.getRenderContext(requestActionLocation);
         scope.subview = renderContext.getNextSection();
 
         // --- Bind To Scope Events. ------------------------ //

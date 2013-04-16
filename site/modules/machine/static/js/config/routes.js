@@ -1,14 +1,16 @@
 'use strict';
 
-window.JP.main.config(['$routeProvider', function ($routeProvider) {
-        $routeProvider
-                .when('/machine', {
+window.JP.main.config([
+    'routeProvider',
+    function (routeProvider) {
+        routeProvider.when('/machine', {
+            title: 'Machines',
             action: 'machine.index'
-        })
-                .when('/machine/details/:machineid', {
+        }).when('/machine/details/:machineid', {
+            title: 'Machine details',
             action: 'machine.details'
-        })
-                .when('/machine/add', {
+        }).when('/machine/add', {
+            title: 'Create new machine',
             action: 'machine.provision'
         });
     }]);

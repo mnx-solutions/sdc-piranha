@@ -1,11 +1,13 @@
 'use strict';
 
-window.JP.main.config(['$routeProvider', function ($routeProvider) {
-    $routeProvider
+window.JP.main.config(['routeProvider', function (routeProvider) {
+    routeProvider
         .when('/account', {
+            title: 'Account',
             action: 'account.index'
         })
         .when('/account/payment', {
+            title: 'Payment info',
             action: 'account.payment'
         });
 }]);
