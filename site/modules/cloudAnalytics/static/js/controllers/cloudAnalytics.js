@@ -113,14 +113,22 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
 
-        ca.listAllInstrumentations(function(insts) {
+        ca.listAllInstrumentations(function(time, insts) {
+
+            if(!$scope.endtime && time) {
+
+                $scope.endtime = time;
+                tick();
+            }
 
 
-            for(var i in insts.data) {
+            for(var i in insts) {
 
                 ca.createInstrumentation({
-                    init: insts.data[i]
+                    init: insts[i],
+                    pollingstart: time
                 }, function(inst) {
+
                     $scope.instrumentations.push({
                         instrumentations: [inst],
                         ca: ca,
