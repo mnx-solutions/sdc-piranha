@@ -118,13 +118,7 @@ window.JP.main.provider('route', [
         };
 
         Provider.prototype.resolveNavigation = function (action) {
-            //console.log(this._navigation);
             var currentContext = this._findNavigationContext(action);
-
-            //console.log(action);
-            //console.log(currentContext);
-            //console.log('------------');
-
             if (currentContext) {
                 return this._buildNavigationPath(currentContext.action);
             }

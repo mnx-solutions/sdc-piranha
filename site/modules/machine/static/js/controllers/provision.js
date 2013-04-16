@@ -53,7 +53,7 @@
                     }
 
                     if (!$scope.data.datacenter) {
-                        Datacenter.datacenter().then(function(datacenters) {
+                        Datacenter.datacenter().then(function (datacenters) {
                             var keys = Object.keys(datacenters);
                             if (keys.length > 0) {
                                 $scope.data.datacenter = keys[0];
@@ -71,32 +71,30 @@
                     $scope.data.datacenter = name;
                 };
 
-                $scope.selectDataset = function (name) {
-                    var dataset = Dataset.dataset(name);
+                $scope.selectDataset = function (id) {
+                    Dataset.dataset(id).then(function (dataset) {
+                        angular.element('#next').trigger('click');
+                        angular.element('#step-configuration').fadeIn('fast');
+                        angular.element('#selected-image').html(dataset.description);
+                        angular.element('#pricing').removeClass('alert-muted');
+                        angular.element('#pricing').addClass('alert-success');
 
-                    angular.element('#next').trigger('click');
-                    angular.element('#step-configuration').fadeIn('fast');
-                    angular.element('#selected-image').html(dataset.description);
-                    angular.element('#pricing').removeClass('alert-muted');
-                    angular.element('#pricing').addClass('alert-success');
-
-                    $scope.data.dataset = dataset.id;
-                    $scope.searchText = '';
+                        $scope.data.dataset = dataset.id;
+                        $scope.searchText = '';
+                    });
                 };
 
-                $scope.selectPackage = function (name) {
-                    var pkg = Package.package(name);
+                $scope.selectPackage = function (id) {
+                    Package.package(id).then(function (pkg) {
+                        angular.element('#finish-configuration').fadeIn('fast');
+                        angular.element('#selected-size').html([
+                            localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
+                            localization.translate($scope, 'machine', 'Disk') + ': ' + pkg.disk + 'MB',
+                            localization.translate($scope, 'machine', 'vCPUs') + ': ' + pkg.vcpus
+                        ].join('<br />'));
 
-                    console.log('MEM ' + localization.translate($scope, 'machine', 'Memory'));
-
-                    angular.element('#finish-configuration').fadeIn('fast');
-                    angular.element('#selected-size').html([
-                        localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
-                        localization.translate($scope, 'machine', 'Disk') + ': ' + pkg.disk + 'MB',
-                        localization.translate($scope, 'machine', 'vCPUs') + ': ' + pkg.vcpus
-                    ].join('<br />'));
-
-                    $scope.data.package = pkg.name;
+                        $scope.data.package = pkg.id;
+                    });
                 };
 
                 angular.element('.carousel').carousel({
