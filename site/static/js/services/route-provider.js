@@ -7,40 +7,38 @@ window.JP.main.provider('route', [
             this._navigation = [];
         }
 
-        Provider.prototype._findNavigationContext = function (navigationPath, context) {
-            context = context ? context : this._navigation[0];
+        Provider.prototype._findNavigationContext = function (action, context) {
+            context = context ? context : null;
 
-            if (context.action === navigationPath) {
-                return context;
-            }
+            if (!context) {
+                for (var i = 0, c = this._navigation.length; i < c; i++) {
+                    // Direct resolve
+                    if (this._navigation[i].action === action) {
+                        context = this._navigation[i];
+                        break;
+                    }
 
-            for (var a = 0, c = context.children.length; a < c; a++) {
-                var childContext = this._findNavigationContext(navigationPath, context.children[a]);
-                if (childContext) {
-                    return childContext;
+                    // Resolve by module prefix
+                    var p1 = this._navigation[i].action.split('.');
+                    var p2 = action.split('.');
+
+                    if (p1[0] === p2[0]) {
+                        context = this._navigation[i];
+                        break;
+                    }
                 }
             }
 
-            return null;
-        };
+            if (context) {
+                if (context.action === action) {
+                    return context;
+                }
 
-        Provider.prototype._findNavigationAction = function (action, context) {
-            context = context ? context : this._navigation[0];
-
-            //console.log(context.action);
-            //console.log(action);
-            //console.log('------------');
-
-            if (context.action === action) {
-                return context;
-            }
-
-            //console.log(context.children);
-            for (var a = 0, c = context.children.length; a < c; a++) {
-                var childContext = this._findNavigationAction(action, context.children[a]);
-                if (childContext) {
-
-                    return childContext;
+                for (var i = 0, c = context.children.length; i < c; i++) {
+                    var childContext = this._findNavigationContext(action, context.children[i]);
+                    if (childContext) {
+                        return childContext;
+                    }
                 }
             }
 
@@ -49,23 +47,44 @@ window.JP.main.provider('route', [
 
         Provider.prototype._buildNavigationPath = function (action, context) {
             var navigationPath = [];
-            context = context ? context : this._navigation[0];
+            context = context ? context : null;
 
-            if (context.children.length > 0 || context.action === action) {
-                navigationPath.push({
-                    title: context.title,
-                    path: context.path
-                });
+            if (!context) {
+                for (var i = 0, c = this._navigation.length; i < c; i++) {
+                    // Direct resolve
+                    if (this._navigation[i].action === action) {
+                        context = this._navigation[i];
+                        break;
+                    }
+
+                    // Resolve by module prefix
+                    var p1 = this._navigation[i].action.split('.');
+                    var p2 = action.split('.');
+
+                    if (p1[0] === p2[0]) {
+                        context = this._navigation[i];
+                        break;
+                    }
+                }
             }
 
-            if (context.action === action) {
-                return navigationPath;
-            }
+            if (context) {
+                if (context.children.length > 0 || context.action === action) {
+                    navigationPath.push({
+                        title: context.title,
+                        path: context.path
+                    });
+                }
 
-            for (var a = 0, c = context.children.length; a < c; a++) {
-                var childContext = this._buildNavigationPath(action, context.children[a]);
-                if (childContext) {
-                    navigationPath = navigationPath.concat(childContext);
+                if (context.action === action) {
+                    return navigationPath;
+                }
+
+                for (var a = 0, c = context.children.length; a < c; a++) {
+                    var childContext = this._buildNavigationPath(action, context.children[a]);
+                    if (childContext) {
+                        navigationPath = navigationPath.concat(childContext);
+                    }
                 }
             }
 
@@ -74,6 +93,7 @@ window.JP.main.provider('route', [
 
         Provider.prototype.registerNavigation = function (path, action, title) {
             var navigationPath = action.split('.');
+
             if (navigationPath.length > 0) {
                 var context = {};
                 context.title = title;
@@ -85,17 +105,31 @@ window.JP.main.provider('route', [
                     this._navigation.push(context);
                 } else {
                     var parentPath = navigationPath.slice(0, navigationPath.length - 1).join('.');
-                    var parentContext = this._findNavigationContext(parentPath) || this._navigation[0];
-                    parentContext.children.push(context);
+                    var parentContext = this._findNavigationContext(parentPath) || 
+                        this._findNavigationContext(parentPath + '.index');
+
+                    if (parentContext) {
+                        parentContext.children.push(context);
+                    } else {
+                        this._navigation.push(context);
+                    }
                 }
             }
         };
 
-        Provider.prototype.resolveNavigation = function (action, context) {
-            var currentContext = this._findNavigationAction(action) ||
-                (this._navigation.length > 0 ? this._navigation[0] : null);
+        Provider.prototype.resolveNavigation = function (action) {
+            //console.log(this._navigation);
+            var currentContext = this._findNavigationContext(action);
 
-            return this._buildNavigationPath(currentContext.action);
+            //console.log(action);
+            //console.log(currentContext);
+            //console.log('------------');
+
+            if (currentContext) {
+                return this._buildNavigationPath(currentContext.action);
+            }
+
+            return [];
         };
 
         var provider = new Provider();
