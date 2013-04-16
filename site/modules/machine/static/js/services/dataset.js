@@ -81,9 +81,7 @@
                         datasets.search[id] = ret;
                     }
                 } else {
-                    setTimeout(function () {
-                        ret.resolve(datasets.index[id]);
-                    },1);
+                    ret.resolve(datasets.index[id]);
                 }
 
             }
