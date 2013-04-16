@@ -125,7 +125,7 @@
                 init: createOpts.init,
                 parent:ca
             }, function(err, inst){
-                console.log(inst);
+                console.log('ERROR', err);
                 var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
                 self.instrumentations[inst.id] = {
