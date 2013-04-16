@@ -5,6 +5,9 @@ window.JP.main.config(['$routeProvider', function ($routeProvider) {
         .when('/account', {
             action: 'account.index'
         })
+        .when('/account/payment', {
+            action: 'account.payment'
+        });
 }]);
 
 window.JP.main.run(['Menu', function (Menu) {

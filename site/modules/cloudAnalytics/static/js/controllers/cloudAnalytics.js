@@ -3,15 +3,21 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q',
+            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
 
-function ($scope, caBackend, $routeParams, Machine, $q) {
+function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeout) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
 
     $scope.zoneId = zoneId;
 
     $scope.zones = Machine.machine();
+
+    $scope.ranges = [10, 30, 60, 90, 120];
+    $scope.currentRange = 60;
+
+    $scope.endtime = null;
+    $scope.frozen = false;
 
     /* pre-defined default intrumentations */
     var oo = [
@@ -59,6 +65,25 @@ function ($scope, caBackend, $routeParams, Machine, $q) {
 
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
+
+        ca.listAllInstrumentations(function(insts) {
+
+
+            for(var i in insts.data) {
+
+                ca.createInstrumentation({
+                    init: insts.data[i]
+                }, function(inst) {
+                    $scope.instrumentations.push({
+                        instrumentations: [inst],
+                        ca: ca,
+                        title: 'title'
+                    });
+                });
+
+            }
+
+        })
     });
 
 
@@ -78,17 +103,26 @@ function ($scope, caBackend, $routeParams, Machine, $q) {
             predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
-        $scope.instrumentations.push(
-            {
-                options:[ options ],
-                ca: ca//,
-//                title: 'proov'
+        ca.createInstrumentations([ options ], function(instrumentations){
+            if(!$scope.endtime) {
+                // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
+                tick();
             }
-        );
+            var title = 'title';
+            $scope.instrumentations.push({
+                instrumentations: instrumentations,
+                ca: ca,
+                title: title
+
+            });
+
+        });
 
     }
 
     $scope.deleteAllInstrumentations = function() {
+        $scope.instrumentations = [];
         ca.deleteAllInstrumentations();
     }
 
@@ -118,6 +152,13 @@ function ($scope, caBackend, $routeParams, Machine, $q) {
             $scope.current.decomposition.secondary = null;
         }
 
+    }
+
+    function tick(){
+
+        $scope.endtime++;
+
+        $timeout(tick, 1000);
     }
 
 }

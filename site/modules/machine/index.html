@@ -8,7 +8,7 @@
                 <data-breadcrumb></data-breadcrumb>
 
                 <div class="page-header" style="margin-top:10px">
-                    <h1 class="pull-left" data-translate>Machines</h1>
+                    <h1 class="pull-left" data-translate>Machines</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
                     <form class="form-search pull-right">
 						<input type="search" class="input-large"
 							data-ng-model="query" data-ng-change="search()"
@@ -55,7 +55,7 @@
                         </span>
                     </div>
 
-					<div class="loading-medium">
+					<div>
 						<!--
 							@<kesiganes-implemendib>
 							senikaua kuni sisu ei kuvata, peaks olema "loading-medium" class
