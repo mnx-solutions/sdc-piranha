@@ -28,81 +28,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         }
     }
     $scope.instrumentations = [];
-
     $scope.defaultZoneInstrumentations = [];
-
-
-    $scope.createDefaultInstrumentations = function() {
-
-        /* pre-defined default intrumentations */
-        var oo = [
-            [{
-                module: 'cpu',
-                stat: 'usage',
-                decomposition: [],
-                predicate: {}
-            }], [{
-                module: 'cpu',
-                stat: 'waittime',
-                decomposition: [],
-                predicate: {}
-            }], [{
-                module: 'memory',
-                stat: 'rss',
-                decomposition: [],
-                predicate: {}
-            },{
-                module: 'memory',
-                stat: 'rss_limit',
-                decomposition: [],
-                predicate: {}
-            }], [{
-                module: 'memory',
-                stat: 'reclaimed_bytes',
-                decomposition: [],
-                predicate: {}
-            }], [{
-                module: 'zfs',
-                stat: 'dataset_unused_quota',
-                decomposition: [],
-                predicate: {}
-            }, {
-                module: 'zfs',
-                stat: 'dataset_quota',
-                decomposition: [],
-                predicate: {}
-            }], [{
-                module: 'nic',
-                stat: 'vnic_bytes',
-                decomposition: ['zonename'],
-                predicate: {}
-            }]
-        ];
-
-        var ot = [
-            'CPU: useage',
-            'CPU: waittime',
-            'Memory: resident set size vs max resident size',
-            'Memory: excess memory reclaimed',
-            'ZFS: used space vs unused quote',
-            'Network: utilization'
-        ]
-
-        $scope.defaultZoneInstrumentation = [];
-
-        for(var opt in oo) {
-            oo[opt].predicate = { "eq": ["zonename", $scope.zoneId] }
-
-            ca.createInstrumentation(oo[opt], function(inst) {
-                $scope.instrumentations.push({
-                    instrumentations: [inst],
-                    ca: ca,
-                    title: ot[opt]
-                });
-            });
-
-        }
-    }
 
     var ca = new caBackend();
     ca.describeCa(function (conf){
@@ -140,6 +66,81 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
 
         })
     });
+
+    $scope.createDefaultInstrumentations = function() {
+
+        /* pre-defined default intrumentations */
+        var oo = [
+            [{
+                module: 'cpu',
+                stat: 'usage',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'cpu',
+                stat: 'waittime',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'memory',
+                stat: 'rss',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            },{
+                module: 'memory',
+                stat: 'rss_limit',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'memory',
+                stat: 'reclaimed_bytes',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'zfs',
+                stat: 'dataset_unused_quota',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }, {
+                module: 'zfs',
+                stat: 'dataset_quota',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'nic',
+                stat: 'vnic_bytes',
+                decomposition: ['zonename'],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }]
+        ];
+
+        var ot = [
+            'CPU: useage',
+            'CPU: waittime',
+            'Memory: resident set size vs max resident size',
+            'Memory: excess memory reclaimed',
+            'ZFS: used space vs unused quote',
+            'Network: utilization'
+        ]
+
+        $scope.defaultZoneInstrumentations = [];
+
+        for(var opt in oo) {
+            ca.createInstrumentations(oo[opt], function(inst) {
+                if(!$scope.endtime) {
+                    // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                    $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
+                    tick();
+                }
+                $scope.instrumentations.push({
+                    instrumentations: inst,
+                    ca: ca,
+                    title: ot[opt]
+                });
+            });
+
+        }
+    }
 
 
 
