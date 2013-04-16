@@ -19,20 +19,6 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     $scope.endtime = null;
     $scope.frozen = false;
 
-    /* pre-defined default intrumentations */
-    var oo = [
-        [{
-            module: 'nic',
-            stat: 'vnic_bytes',
-            decomposition: ['zonename'],
-            predicate: { "eq": ["zonename", $scope.zoneId ]}
-        }]
-    ];
-
-    var ot = [
-        'Network: utilization'
-    ]
-
     $scope.current = {
         metric:null,
         decomposition: {
@@ -43,22 +29,83 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     }
     $scope.instrumentations = [];
 
-    var ca = new caBackend();
-    ca.describeCa(function (conf){
+    $scope.defaultZoneInstrumentations = [];
 
-        $scope.hostInstrumentations = [];
-        $scope.zoneInstrumentations = [];
+
+    $scope.createDefaultInstrumentations = function() {
+
+        /* pre-defined default intrumentations */
+        var oo = [
+            [{
+                module: 'cpu',
+                stat: 'usage',
+                decomposition: [],
+                predicate: {}
+            }], [{
+                module: 'cpu',
+                stat: 'waittime',
+                decomposition: [],
+                predicate: {}
+            }], [{
+                module: 'memory',
+                stat: 'rss',
+                decomposition: [],
+                predicate: {}
+            },{
+                module: 'memory',
+                stat: 'rss_limit',
+                decomposition: [],
+                predicate: {}
+            }], [{
+                module: 'memory',
+                stat: 'reclaimed_bytes',
+                decomposition: [],
+                predicate: {}
+            }], [{
+                module: 'zfs',
+                stat: 'dataset_unused_quota',
+                decomposition: [],
+                predicate: {}
+            }, {
+                module: 'zfs',
+                stat: 'dataset_quota',
+                decomposition: [],
+                predicate: {}
+            }], [{
+                module: 'nic',
+                stat: 'vnic_bytes',
+                decomposition: ['zonename'],
+                predicate: {}
+            }]
+        ];
+
+        var ot = [
+            'CPU: useage',
+            'CPU: waittime',
+            'Memory: resident set size vs max resident size',
+            'Memory: excess memory reclaimed',
+            'ZFS: used space vs unused quote',
+            'Network: utilization'
+        ]
+
+        $scope.defaultZoneInstrumentation = [];
 
         for(var opt in oo) {
-            if($scope.zoneId) {
-                oo[opt].predicate = { "eq": ["zonename", $scope.zoneId] }
-            }
-            $scope.hostInstrumentations.push({
-                options:oo[opt],
-                ca:ca,
-                title: ot[opt]
-            })
+            oo[opt].predicate = { "eq": ["zonename", $scope.zoneId] }
+
+            ca.createInstrumentation(oo[opt], function(inst) {
+                $scope.instrumentations.push({
+                    instrumentations: [inst],
+                    ca: ca,
+                    title: ot[opt]
+                });
+            });
+
         }
+    }
+
+    var ca = new caBackend();
+    ca.describeCa(function (conf){
 
         $scope.conf = conf;
 
