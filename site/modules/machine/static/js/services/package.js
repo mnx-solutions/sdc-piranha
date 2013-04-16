@@ -31,15 +31,15 @@
                         result.forEach(function (p) {
                             var old = null;
 
-                            if (packages.index[p.name]) {
-                                old = packages.list.indexOf(packages.index[p.name]);
+                            if (packages.index[p.id]) {
+                                old = packages.list.indexOf(packages.index[p.id]);
                             }
 
-                            packages.index[p.name] = p;
+                            packages.index[p.id] = p;
 
-                            if (packages.search[p.name]) {
-                                packages.search[p.name].resolve(p);
-                                delete packages.search[p.name];
+                            if (packages.search[p.id]) {
+                                packages.search[p.id].resolve(p);
+                                delete packages.search[p.id];
                             }
 
                             if (old !== null) {
