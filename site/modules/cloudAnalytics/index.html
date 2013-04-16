@@ -37,13 +37,11 @@
                 Frozen:
                 <input type="checkbox" data-ng-model="frozen">
                 <br/><br/>
-		        <button data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> <button data-ng-click="deleteAllInstrumentations()">Delete All</button>
+		        <button data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> <button data-ng-click="deleteAllInstrumentations()" data-ng-disabled="instrumentations.length == 0">Delete All</button>
                 <button data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create default instrumentations</button>
 
 		        <br/><br/><br/>
 		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
-
-                <graph data-ng-repeat="i in defaultZoneInstrumentations" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
 		    </div>
 		</div>
 	</div>

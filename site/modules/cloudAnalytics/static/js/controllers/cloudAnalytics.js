@@ -28,7 +28,6 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         }
     }
     $scope.instrumentations = [];
-    $scope.defaultZoneInstrumentations = [];
 
     var ca = new caBackend();
     ca.describeCa(function (conf){
@@ -122,8 +121,6 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
             'ZFS: used space vs unused quote',
             'Network: utilization'
         ]
-
-        $scope.defaultZoneInstrumentations = [];
 
         for(var opt in oo) {
             ca.createInstrumentations(oo[opt], function(inst) {
