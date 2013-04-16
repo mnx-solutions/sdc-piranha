@@ -2,7 +2,8 @@
 
 
 (function (app) {
-    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation', function ($resource, $timeout, $http, instrumentation) {
+    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation',
+        function ($resource, $timeout, $http, instrumentation) {
 
         var ca = function(){};
         ca.options = {
@@ -105,10 +106,6 @@
 
             ca.conf = $http.get('cloudAnalytics/ca');
 
-            // get already existing instrumentations
-            var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
-            console.log('Insts:', instrumentations);
-
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;
                 conf.data.metrics.forEach(_labelMetrics);
@@ -118,10 +115,15 @@
         };
         service.prototype.createInstrumentation  = function(createOpts, cb) {
 
+            if(!createOpts.init) {
+                createOpts.init = null;
+            }
+
             var self = this;
             instrumentation.create({
                 createOpts: createOpts,
-                parent: ca
+                init: createOpts.init,
+                parent:ca
             }, function(err, inst){
 
                 var heatmap = inst['value-arity'] === 'numeric-decomposition';
@@ -220,10 +222,27 @@
             return seriesCollection;
         }
 
+
         service.prototype.deleteAllInstrumentations = function() {
-            for( var i in ca.instrumentations ){
-                ca.instrumentations[i].delete();
+            ca.options.individual = {};
+            ca.options.last_poll_time = null;
+            ca.options.ndatapoints = 1;
+
+            for(var i in ca.instrumentations) {
+                (function(i) {
+                    ca.instrumentations[i].delete(function() {
+                        delete(ca.instrumentations[i]);
+                    });
+                })(i);
             }
+        }
+
+        service.prototype.listAllInstrumentations = function(cb) {
+            var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
+
+            instrumentations.then(function(insts) {
+                cb(insts);
+            });
         }
 
         service.prototype.hasChanged = function (inst){

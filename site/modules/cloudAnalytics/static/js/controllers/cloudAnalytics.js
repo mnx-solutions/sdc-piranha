@@ -3,9 +3,9 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', '$timeout',
+            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
 
-function ($scope, caBackend, $routeParams, Machine, $q, $timeout) {
+function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeout) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
 
@@ -65,6 +65,25 @@ function ($scope, caBackend, $routeParams, Machine, $q, $timeout) {
 
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
+
+        ca.listAllInstrumentations(function(insts) {
+
+
+            for(var i in insts.data) {
+
+                ca.createInstrumentation({
+                    init: insts.data[i]
+                }, function(inst) {
+                    $scope.instrumentations.push({
+                        instrumentations: [inst],
+                        ca: ca,
+                        title: 'title'
+                    });
+                });
+
+            }
+
+        })
     });
 
 
@@ -103,6 +122,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, $timeout) {
     }
 
     $scope.deleteAllInstrumentations = function() {
+        $scope.instrumentations = [];
         ca.deleteAllInstrumentations();
     }
 

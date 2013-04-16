@@ -28,6 +28,16 @@ body {
     filter: alpha(opacity=65);    
 }
 
+.loading-medium-after-h1 {
+    background-image:url('/static/img/icon-loading-medium.gif');
+    background-position:50% 50%;
+    background-repeat:no-repeat;
+    width:25px;
+    height:60px;
+    padding-left:15px;
+    float:left;
+}
+
 h1,h2 {
     font-weight:normal;
 }

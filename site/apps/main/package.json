@@ -12,6 +12,7 @@
             "debug",
             "no-tracking"
         ],
-		"auth": true
+		"auth": true,
+        "compress": true
 	}
 }

@@ -148,11 +148,11 @@ var instrumentations = {};
             var self = this;
             $http({ method: 'DELETE', url: self.getUrl() })
                 .success(function() {
-                    console.log('success');
+                    console.log('delete success');
                     callback();
                 })
                 .error(function() {
-                    console.log('error');
+                    console.log('delete error');
                     callback();
                 });
 
