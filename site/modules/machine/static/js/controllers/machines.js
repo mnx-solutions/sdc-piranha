@@ -31,6 +31,7 @@
                 $scope.maxPages = 5;
                 $scope.currentPage = 0;
                 $scope.machines = Machine.machine();
+                $scope.packages = Package.package();
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
