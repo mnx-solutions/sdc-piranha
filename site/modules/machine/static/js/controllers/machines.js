@@ -276,6 +276,15 @@
                     });
                 };
 
+                $scope.rebootMachine = function (id) {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to reboot the machine'), function() {
+                        $$track.event('machine', 'reboot');
+                        Machine.rebootMachine(id);
+                    });
+                };
+
+
+
                 $scope.showGroupActions = function () {
                     $scope.ischecked = false;
                     for (var machineid in $scope.checked) {

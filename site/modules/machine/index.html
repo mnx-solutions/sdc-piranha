@@ -147,9 +147,16 @@
 	                                   data-translate>Stop</button>
 	                                <button role="button"
 	                                   class="btn btn-mini"
+                                       data-ng-disabled="machine.state != 'stopped'"
 	                                   data-ng-click="deleteMachine(machine.id)"
 	                                   data-toggle="modal"
 	                                   data-translate>Delete</button>
+                                    <button role="button"
+                                       class="btn btn-mini"
+                                       data-ng-disabled="machine.state != 'running'"
+                                       data-ng-click="rebootMachine(machine.id)"
+                                       data-toggle="modal"
+                                       data-translate>Reboot</button>
 	                                <a href="#!/machine/details/{{machine.id}}"><button
 	                                   class="btn btn-mini btn-primary"
 	                                   data-translate>Edit</button>
@@ -391,6 +398,12 @@
                                 data-toggle="modal"
                                 data-translate
                                 class="btn btn-small">Stop</button>
+                        <button role="button"
+                                data-ng-disabled="machine.job.running || machine.state != 'running'"
+                                data-ng-click="clickReboot(machine.id)"
+                                data-toggle="modal"
+                                data-translate
+                                class="btn btn-small">Reboot</button>
                         <button role="button"
                                 data-ng-disabled="machine.job.running || machine.state != 'stopped'"
                                 data-ng-click="clickDelete(machine.id)"
