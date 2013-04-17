@@ -21,7 +21,8 @@
     "easy-config": "0.1.8",
     "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
     "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
-    "mustache": "*"
+    "mustache": "*",
+    "connect-redis": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",

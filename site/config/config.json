@@ -12,6 +12,11 @@
         "defaultLocale": "en",
         "locales": [ "en", "et" ]
     },
+    "redis": {
+        "host": "redis-gtint.piranha.ee",
+        "port": 6379,
+        "db": 1
+    },
     "static":{
         "js": {
             "concat": ["use-strict-rm"],

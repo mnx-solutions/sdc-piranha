@@ -136,7 +136,6 @@ var instrumentations = {};
                     callback();
                 })
                 .error(function (err) {
-                    console.log('error');
                     self._err = err;
                     callback(err);
                 });
