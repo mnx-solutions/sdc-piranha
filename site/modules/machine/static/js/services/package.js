@@ -82,7 +82,9 @@
                         packages.search[id] = ret;
                     }
                 } else {
-                    ret.resolve(packages.index[id]);
+                    setTimeout(function () {
+                        ret.resolve(packages.index[id]);
+                    }, 0);
                 }
 
             }
