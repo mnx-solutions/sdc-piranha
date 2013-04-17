@@ -84,7 +84,7 @@
                 } else {
                     setTimeout(function () {
                         ret.resolve(packages.index[id]);
-                    },1);
+                    }, 0);
                 }
 
             }
