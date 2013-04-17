@@ -2,7 +2,8 @@
 
 
 (function (app) {
-    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation', function ($resource, $timeout, $http, instrumentation) {
+    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation',
+        function ($resource, $timeout, $http, instrumentation) {
 
         var ca = function(){};
         ca.options = {
@@ -91,14 +92,6 @@
 
         };
 
-        service.prototype.changeRange = function(range) {
-            this.range = range;
-        }
-
-        service.prototype.changeWidth = function(width) {
-            this.width = width;
-        }
-
         service.prototype.getStatLabel = function(stat) {
             for(var m in ca.desc.metrics) {
                 var metric = ca.desc.metrics[m];
@@ -121,26 +114,22 @@
 
         };
         service.prototype.createInstrumentation  = function(createOpts, cb) {
-//            for(var i= 20; i < 100; i++) {
-//                $http.delete('cloudAnalytics/ca/instrumentations/' + i).success(function(res){
-//
-//                });
-//            }
+
             if(!createOpts.init) {
                 createOpts.init = null;
             }
-
+            console.log(createOpts);
             var self = this;
             instrumentation.create({
                 createOpts: createOpts,
                 init: createOpts.init,
                 parent:ca
             }, function(err, inst){
-
+                console.log(inst);
                 var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
                 self.instrumentations[inst.id] = {
-                    range: self.range,
+                    range: createOpts.range || self.range,
                     'value-arity': inst['value-arity'],
                     crtime: Math.floor(inst.crtime /1000)
                 };
@@ -150,10 +139,10 @@
                 // set options for polling values
                 var options = {
                     'value-arity': inst['value-arity'],
-                    crtime: Math.floor(inst.crtime /1000)
+                    crtime: createOpts.pollingstart || Math.floor(inst.crtime /1000)
                 }
                 if(heatmap) {
-                    options.ndatapoints = self.range;
+                    options.ndatapoints = createOpts.range || self.range;
                     options.width = self.width;
                     options.height = self.height;
                 }
@@ -162,8 +151,8 @@
                 cb(inst)
 
             });
-
         }
+
         service.prototype.createInstrumentations = function(createOpts, cb) {
             var insts = [];
             var self = this;
@@ -190,7 +179,7 @@
                 var heatmap = instrumentation['value-arity'] === 'numeric-decomposition';
 
                 var series = instrumentation.getValues(self.id, {
-                    nr: self.range,
+                    nr: self.instrumentations[id].range || self.range,
                     endTime: time
                 });
 
@@ -249,10 +238,12 @@
         }
 
         service.prototype.listAllInstrumentations = function(cb) {
+            console.log('listing')
             var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
 
-            instrumentations.then(function(insts) {
-                cb(insts);
+            instrumentations.then(function(response) {
+                console.log(response);
+                cb(response.data.time, response.data.instrumentations);
             });
         }
 

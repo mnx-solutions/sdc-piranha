@@ -3,9 +3,14 @@
 (function (app) {
     app.controller(
             'machine.LayoutController',
-            ['$scope', 'requestContext',
-                function ($scope, requestContext) {
-                    requestContext.setUpRenderContext('machine', $scope);
+            ['$scope', 'requestContext', 'localization',
+                function ($scope, requestContext, localization) {
+                    requestContext.setUpRenderContext('machine',
+                        $scope,
+                        {
+                            title: localization.translate(null, 'machine', 'Machines')
+                        }
+                    );
                 }
             ]);
 }(window.JP.getModule('Machine')));

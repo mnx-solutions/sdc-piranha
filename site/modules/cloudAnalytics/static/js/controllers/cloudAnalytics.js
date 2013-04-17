@@ -3,9 +3,9 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', 'caInstrumentation',
+            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
 
-function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
+function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeout) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
 
@@ -13,19 +13,11 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
 
     $scope.zones = Machine.machine();
 
-    /* pre-defined default intrumentations */
-    var oo = [
-        [{
-            module: 'nic',
-            stat: 'vnic_bytes',
-            decomposition: ['zonename'],
-            predicate: { "eq": ["zonename", $scope.zoneId ]}
-        }]
-    ];
+    $scope.ranges = [10, 30, 60, 90, 120];
+    $scope.currentRange = 60;
 
-    var ot = [
-        'Network: utilization'
-    ]
+    $scope.endtime = null;
+    $scope.frozen = false;
 
     $scope.current = {
         metric:null,
@@ -40,34 +32,28 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
     var ca = new caBackend();
     ca.describeCa(function (conf){
 
-        $scope.hostInstrumentations = [];
-        $scope.zoneInstrumentations = [];
-
-        for(var opt in oo) {
-            if($scope.zoneId) {
-                oo[opt].predicate = { "eq": ["zonename", $scope.zoneId] }
-            }
-            $scope.hostInstrumentations.push({
-                options:oo[opt],
-                ca:ca,
-                title: ot[opt]
-            })
-        }
-
         $scope.conf = conf;
 
 
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
 
-        ca.listAllInstrumentations(function(insts) {
+        ca.listAllInstrumentations(function(time, insts) {
+
+            if(!$scope.endtime && time) {
+
+                $scope.endtime = time;
+                tick();
+            }
 
 
-            for(var i in insts.data) {
+            for(var i in insts) {
 
                 ca.createInstrumentation({
-                    init: insts.data[i]
+                    init: insts[i],
+                    pollingstart: time
                 }, function(inst) {
+
                     $scope.instrumentations.push({
                         instrumentations: [inst],
                         ca: ca,
@@ -79,6 +65,79 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
 
         })
     });
+
+    $scope.createDefaultInstrumentations = function() {
+
+        /* pre-defined default intrumentations */
+        var oo = [
+            [{
+                module: 'cpu',
+                stat: 'usage',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'cpu',
+                stat: 'waittime',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'memory',
+                stat: 'rss',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            },{
+                module: 'memory',
+                stat: 'rss_limit',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'memory',
+                stat: 'reclaimed_bytes',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'zfs',
+                stat: 'dataset_unused_quota',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }, {
+                module: 'zfs',
+                stat: 'dataset_quota',
+                decomposition: [],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }], [{
+                module: 'nic',
+                stat: 'vnic_bytes',
+                decomposition: ['zonename'],
+                predicate: { "eq": ["zonename", $scope.zoneId] }
+            }]
+        ];
+
+        var ot = [
+            'CPU: useage',
+            'CPU: waittime',
+            'Memory: resident set size vs max resident size',
+            'Memory: excess memory reclaimed',
+            'ZFS: used space vs unused quote',
+            'Network: utilization'
+        ]
+
+        for(var opt in oo) {
+            ca.createInstrumentations(oo[opt], function(inst) {
+                if(!$scope.endtime) {
+                    // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                    $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
+                    tick();
+                }
+                $scope.instrumentations.push({
+                    instrumentations: inst,
+                    ca: ca,
+                    title: ot[opt]
+                });
+            });
+
+        }
+    }
 
 
 
@@ -97,39 +156,20 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
             predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
-//        $scope.instrumentations.push(
-//            {
-//                options:[ options ],
-//                ca: ca
-//            }
-//        );
-
         ca.createInstrumentations([ options ], function(instrumentations){
-
-//            if(!$scope.title) {
-//                $scope.options;
-//                var opt = options[0];
-//                var title = opt.module + ' ' +  opt.stat
-//                if(opt.decomposition.length > 0){
-//                    title += ' decomposed by ' + opt.decomposition[0]
-//                }
-//                if(opt.decomposition.length == 2) {
-//                    title += ' and' + opt.decomposition[1];
-//                }
-//
-//                //$scope.title = title;
-//            }
+            if(!$scope.endtime) {
+                // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
+                tick();
+            }
             var title = 'title';
-//            $scope.startTime = Math.floor(instrumentations[0].crtime / 1000);
             $scope.instrumentations.push({
                 instrumentations: instrumentations,
                 ca: ca,
                 title: title
+
             });
 
-
-
-//            updateGraph();
         });
 
     }
@@ -165,6 +205,13 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation) {
             $scope.current.decomposition.secondary = null;
         }
 
+    }
+
+    function tick(){
+
+        $scope.endtime++;
+
+        $timeout(tick, 1000);
     }
 
 }

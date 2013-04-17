@@ -18,10 +18,32 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/ca/instrumentations', function (req, res) {
+
         req.cloud.ListInstrumentations(function (err, resp) {
-        if (!err) {
+            if (!err) {
                 console.log(err);
-                res.json(resp);
+
+                if(resp.length) {
+                    var id = resp[0].id;
+
+                    // poll the most recent value to sync with ca time.
+                    req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
+                        if(!err2) {
+                            res.json({
+                                time: value.start_time,
+                                instrumentations: resp
+                            });
+                        }
+                    })
+
+                } else {
+                    res.json({
+                        time:null,
+                        instrumentations:[]
+                    })
+                }
+
+
             }
         });
     });
@@ -93,7 +115,6 @@ module.exports = function (scope, app, callback) {
                 }
 
                 client[method](options, options, function(err, resp) {
-                    console.log(resp);
                     if(!err) {
                         response.datapoints[options.id] = resp;
                         response.end_time = resp[resp.length - 1].start_time + 1;
@@ -108,8 +129,6 @@ module.exports = function (scope, app, callback) {
 
 
                     if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
-                        console.log('responding');
-                        console.log(response);
                         res.json(response);
                     }
                 });

@@ -5,11 +5,10 @@
     <div class="container-fluid content-container">
         <div class="container content-container-inner">
             <div class="machines container">
-				<ul class="breadcrumb">
-					<li class="active">Dashboard</li>
-				</ul>
+                <data-breadcrumb></data-breadcrumb>
+
                 <div class="page-header" style="margin-top:10px">
-                    <h1 class="pull-left" data-translate>Machines</h1>
+                    <h1 class="pull-left" data-translate>Machines</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
                     <form class="form-search pull-right">
 						<input type="search" class="input-large"
 							data-ng-model="query" data-ng-change="search()"
@@ -56,7 +55,7 @@
                         </span>
                     </div>
 
-					<div class="loading-medium">
+					<div>
 						<!--
 							@<kesiganes-implemendib>
 							senikaua kuni sisu ei kuvata, peaks olema "loading-medium" class
@@ -205,11 +204,8 @@
     <div class="container-fluid content-container">
         <div class="container content-container-inner">
             <div class="container form-horisontal">
-				<ul class="breadcrumb">
-					<li><a href="#!/machine/">Dashboard</a> <span class="divider">/</span></li>
-					<li class="active">Machine details</li>
-				</ul>
-	
+                <data-breadcrumb></data-breadcrumb>
+
                 <div class="page-header">
                     <h1>{{machine.name}}</h1>
                 </div>
@@ -432,6 +428,7 @@
     <div class="container-fluid content-container">
         <div class="container content-container-inner">
             <div class="container">
+                <data-breadcrumb></data-breadcrumb>
                 <div class="page-header">
                     <h1 data-translate>Create new machine</h1>
                 </div>

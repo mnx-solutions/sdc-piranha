@@ -1,11 +1,13 @@
 'use strict';
 
-window.JP.main.config(['$routeProvider', function ($routeProvider) {
-        $routeProvider
+window.JP.main.config(['routeProvider', function (routeProvider) {
+        routeProvider
                 .when('/cloudAnalytics', {
+            title: 'Cloud analytics',
             action: 'cloudAnalytics.index'
             })
                 .when('/cloudAnalytics/:machine', {
+                title: 'Machine analytics',
             action: 'cloudAnalytics.index'
             });
     }]);

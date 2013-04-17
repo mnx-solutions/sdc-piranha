@@ -5,11 +5,7 @@
 		<div data-ng-switch="subview">
 			
 		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
-				<ul class="breadcrumb">
-					<li><a href="#!/machine/">Dashboard</a> <span class="divider">/</span></li>
-					<li><a href="#!/machine/details/{{zoneId}}">Machine details</a> <span class="divider">/</span></li>
-					<li class="active">Machine analytics</li>
-				</ul>
+				<data-breadcrumb></data-breadcrumb>
 
 	            <div class="page-header">
 
@@ -32,30 +28,20 @@
 		                <option value="">-- None --</option>
 		            </select>
 		        </span>
-		        <div>
-		            <!--{{inst.module}}<br/>-->
-		            <!--{{inst.stat}}<br/>-->
-		            <!--<instrumentation data-ng-repeat="inst in instrumentations" type="raw" module="inst.module" stat="inst.stat" metric="inst.metric" decomposition="inst.decomposition"></instrumentation>-->
-		            <!--<graph data-ng-repeat="i in instrumentations" options="i.options" ca="i.ca"></graph>-->
-		        </div>
-
-		        <button data-ng-click="createInstrumentation()">Create</button> <button data-ng-click="deleteAllInstrumentations()">Delete All</button>
+                <br/>
+                Graph range:
+                <select data-ng-model="currentRange" data-ng-options="val as val for (key, val) in ranges">
+                    <option value="">-- Choose Range --</option>
+                </select>
+                <br/>
+                Frozen:
+                <input type="checkbox" data-ng-model="frozen">
+                <br/><br/>
+		        <button data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> <button data-ng-click="deleteAllInstrumentations()" data-ng-disabled="instrumentations.length == 0">Delete All</button>
+                <button data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create default instrumentations</button>
 
 		        <br/><br/><br/>
-		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" graphtitle="i.title" ca="i.ca"></graph>
-      
-		        <div class="">
-		            <!--<graph data-ng-repeat="i in zoneInstrumentations" options="i.options" title="i.title" ca="i.ca"></graph>-->
-		        </div>
-		        <br/>
-		        <!--module: {{current.metric.module}}      <br/>-->
-		        <!--stat: {{current.metric.stat}}          <br/>-->
-		        <!--decomposition: [{{current.decomposition.primary}}] <br/>-->
-		        <!--Decomposition2: [{{current.decomposition.secondary}}]     <br/>-->
-		        <!--<br/><br/>-->
-		        <!--{{currentDecomposition}}-->
-		        <!--<instrumentation type="raw" module="cpu" stat="thread_samples"></instrumentation>-->
-
+		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
 		    </div>
 		</div>
 	</div>

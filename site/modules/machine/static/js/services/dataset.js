@@ -83,7 +83,7 @@
                 } else {
                     setTimeout(function () {
                         ret.resolve(datasets.index[id]);
-                    },1);
+                    }, 0);
                 }
 
             }
