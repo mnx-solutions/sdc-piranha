@@ -65,15 +65,13 @@
 
             var ret = $q.defer();
             if(!id) {
-                setTimeout(function(){
-                    if(packages.list.final) {
-                        ret.resolve(packages.list);
-                    } else {
-                        packages.job.deferred.then(function(value){
-                            ret.resolve(value);
-                        });
-                    }
-                },1);
+                if(packages.list.final) {
+                    ret.resolve(packages.list);
+                } else {
+                    packages.job.deferred.then(function(value){
+                        ret.resolve(value);
+                    });
+                }
             } else {
                 if (!packages.index[id]) {
                     service.updatePackages();
@@ -82,9 +80,7 @@
                         packages.search[id] = ret;
                     }
                 } else {
-                    setTimeout(function () {
-                        ret.resolve(packages.index[id]);
-                    }, 0);
+                    ret.resolve(packages.index[id]);
                 }
 
             }

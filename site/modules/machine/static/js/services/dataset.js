@@ -64,15 +64,13 @@
 
             var ret = $q.defer();
             if(!id) {
-                setTimeout(function(){
-                    if(datasets.list.final) {
-                        ret.resolve(datasets.list);
-                    } else {
-                        datasets.job.deferred.then(function(value){
-                            ret.resolve(value);
-                        });
-                    }
-                },1);
+                if(datasets.list.final) {
+                    ret.resolve(datasets.list);
+                } else {
+                    datasets.job.deferred.then(function(value){
+                        ret.resolve(value);
+                    });
+                }
             } else {
                 if (!datasets.index[id]) {
                     service.updateDatasets();
@@ -81,9 +79,7 @@
                         datasets.search[id] = ret;
                     }
                 } else {
-                    setTimeout(function () {
-                        ret.resolve(datasets.index[id]);
-                    }, 0);
+                    ret.resolve(datasets.index[id]);
                 }
 
             }
