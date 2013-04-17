@@ -13,7 +13,7 @@
                     <span data-translate>Name: {{account.firstName}} {{account.lastName}}</span> <br />
                     <br />
                     <a href="/landing/changepassword/{{account.login}}" data-translate>Change my password</a>
-                    <a href="/account/payment" data-translate>Add payment info</a>
+                    <a href="#!/account/payment" data-translate>Add payment info</a>
                 </div>
             </div>
         </div>
@@ -22,5 +22,6 @@
         <div class="container-fluid content-container">
             <div data-hosted-payment></div>
         </div>
+        <button class="btn btn-primary" data-ng-click="submitForm()">Submit</button>
     </div>
 </div>

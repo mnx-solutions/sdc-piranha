@@ -1,10 +1,13 @@
 'use strict';
 
 var crypto = require('crypto');
-var pageID = '2c92c0f83dfa51fe013e0c9fbd4c4396';
-var apiKey = '8yKf8GRr0Q4G7TshWckelil1eS_BFEUIye_mG_AWZvQ=';
+var conf = require('easy-config');
+
+var pageID = conf.zuora.pageID;
+var apiKey = conf.zuora.apiKey;
+var tenantID = conf.zuora.tenantID;
 var host = 'https://apisandbox.zuora.com/apps/PublicHostedPaymentMethodPage.do?method=requestPage&';
-var tenantID = '11111';
+var action = 'https://apisandbox.zuora.com/apps/PublicHostedPaymentMethodPage.do';
 
 function createToken() {
     var lib = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -20,7 +23,8 @@ function createToken() {
 function createSignature(path) {
     var hash = crypto.createHash('md5');
     hash.update(path);
-    var sig = hash.digest('base64');
+    var hex = hash.digest('hex');
+    var sig = new Buffer(hex).toString('base64');
     var urlsafe = sig.replace(/\+/g,'-').replace(/\//g,'_');
     return urlsafe;
 }
@@ -31,10 +35,30 @@ module.exports = function (scope, app, callback) {
         var path = 'id=' + pageID +
             '&tenantId=' + tenantID +
             '&timestamp=' + Date.now() +
-            '&token=' + createToken() + apiKey;
+            '&token=' + createToken();
 
-        var url = host + path + '&signature=' + createSignature(path);
-        res.redirect(url);
+        var url = host + path + '&signature=' + createSignature(path + apiKey);
+        res.send(url);
+    });
+
+    app.get('/form', function (req, res, next) {
+        var form = {
+            action: action,
+            fields: {
+                id: pageID,
+                tenantID: tenantID,
+                timestamp: Date.now(),
+                token: createToken(),
+                field_accountId: 'AccountID'
+            }
+        };
+        var path = 'id=' + pageID +
+            '&tenantId=' + tenantID +
+            '&timestamp=' + form.fields.timestamp +
+            '&token=' + form.fields.token;
+
+        form.fields.signature = createSignature(path + apiKey);
+        res.json(form);
     });
 
     setImmediate(callback);

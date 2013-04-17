@@ -29,8 +29,6 @@ module.exports = function (scope, app, callback) {
                     // poll the most recent value to sync with ca time.
                     req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
                         if(!err2) {
-                            console.log('value');
-                            console.log(value);
                             res.json({
                                 time: value.start_time,
                                 instrumentations: resp
@@ -117,7 +115,6 @@ module.exports = function (scope, app, callback) {
                 }
 
                 client[method](options, options, function(err, resp) {
-                    console.log(resp);
                     if(!err) {
                         response.datapoints[options.id] = resp;
                         response.end_time = resp[resp.length - 1].start_time + 1;
@@ -132,8 +129,6 @@ module.exports = function (scope, app, callback) {
 
 
                     if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
-                        console.log('responding');
-                        console.log(response);
                         res.json(response);
                     }
                 });
