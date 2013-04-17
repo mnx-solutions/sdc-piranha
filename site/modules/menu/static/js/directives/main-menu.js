@@ -9,8 +9,10 @@
                 scope.mainMenu = Menu.getMenu();
             },
 
-            controller: function ($scope, requestContext, localization) {
+            controller: function ($scope, requestContext, localization, Account) {
                 localization.bind('menu', $scope);
+
+                $scope.account = Account.getAccount();
 
                 $scope.$on('requestContextChanged', function () {
                     $scope.mainMenu.forEach(function (item) {
@@ -39,6 +41,7 @@
 										'<li><a href="/landing/forgetToken" data-translate>Logout</a></li>'+
                                     '</ul>' +
                                 '</div>' +
+                                '<div class="logged-in-as">Logged in as: {{account.login}}</div>'+
                             '</div>' +
                             '<div class="clearfix"></div>' +
 
