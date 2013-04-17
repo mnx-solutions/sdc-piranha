@@ -51,8 +51,8 @@ module.exports = function (scope, app, callback) {
     });
 
     app.post('/ca/instrumentations', function (req, res) {
-        console.log('create request');
         req.cloud.CreateInstrumentation(req.body, function (err, resp) {
+            // !TODO: Error handling
             console.log(resp);
             if (!err) {
                 res.json(resp);

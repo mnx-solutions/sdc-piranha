@@ -176,6 +176,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
 
     $scope.deleteAllInstrumentations = function() {
         $scope.instrumentations = [];
+
         ca.deleteAllInstrumentations();
     }
 
