@@ -8,7 +8,7 @@
         function (serverTab, $q, localization, notification) {
 
         var service = {};
-        var packages = {job: null, index: {}, list: [], search: {}};
+        var packages = {job: null, index: {}, nameIndex: {}, list: [], search: {}};
 
         service.updatePackages = function () {
             if (!packages.job || packages.job.finished) {
@@ -42,6 +42,13 @@
                                 delete packages.search[p.id];
                             }
 
+                            packages.nameIndex[p.name] = p;
+
+                            if (packages.search[p.name]) {
+                                packages.search[p.name].resolve(p);
+                                delete packages.search[p.name];
+                            }
+
                             if (old !== null) {
                                 packages.list[old] = p;
                             } else {
@@ -73,14 +80,14 @@
                     });
                 }
             } else {
-                if (!packages.index[id]) {
+                if (!packages.index[id] && !packages.nameIndex[id]) {
                     service.updatePackages();
 
                     if(!packages.search[id]) {
                         packages.search[id] = ret;
                     }
                 } else {
-                    ret.resolve(packages.index[id]);
+                    ret.resolve(packages.index[id] || packages.nameIndex[id]);
                 }
 
             }

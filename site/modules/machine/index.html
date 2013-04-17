@@ -369,11 +369,11 @@
                             <div class="controls input-append">
 
                                 <select name="resize"
-                                        data-ng-model="resize"
-                                        data-ng-options="package.name as package.name for package in packages"></select>
+                                        data-ng-model="selectedPackage"
+                                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in packages"></select>
                                 <br /><br />
                                 <button class="btn btn-primary" type="submit"
-                                        ng-click="clickResize(selectedmachine.id)" data-translate>
+                                        ng-click="clickResize()" data-translate>
                                     Resize
                                 </button>
 
