@@ -116,7 +116,7 @@
 
                 $scope.$watch('range', function(newVal) {
                     if(newVal){
-                        $scope.ca.instrumentations[$scope.instrumentations[0].id].range = $scope.range;
+                        $scope.ca.changeRange([$scope.instrumentations[0].id], $scope.range);
                     }
                 });
 

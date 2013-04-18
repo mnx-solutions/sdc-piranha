@@ -21,7 +21,7 @@
 
             if (!datasets.job[datacenter]) {
                 datasets.job[datacenter] = serverTab.call({
-                    data: { datacenter: datacenter },
+                    data: { datacenter: datacenter === 'all' ? null : datacenter },
                     name:'DatasetList',
                     done: function(err, job) {
                         datasets.job.finished = true;

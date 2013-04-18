@@ -243,7 +243,7 @@ module.exports = function (scope, callback) {
                         clearTimeout(timer2);
                         clearInterval(timer);
                     } else {
-                        call.log.debug('Machine %s memory size is %s, waiting for %s', machineId, machine.memory, sdcpackage);
+                        call.log.debug('Machine %s package is %s, waiting for %s', machineId, machine.package, sdcpackage);
                         call.step = { state: 'resizing' };
                     }
                 } else {
@@ -318,9 +318,10 @@ module.exports = function (scope, callback) {
             call.log.info('Resizing machine %s', machineId);
 
             call.cloud.setDatacenter(call.data.datacenter);
+
             call.cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(call.cloud, call, call.data.sdcpackage);
+                    pollForMachinePackageChange(call.cloud, call, options.package);
                 } else {
                     call.log.error(err);
                     call.done(err);

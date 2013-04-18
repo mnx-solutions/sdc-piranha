@@ -136,7 +136,6 @@ var instrumentations = {};
                     callback();
                 })
                 .error(function (err) {
-                    console.log('error');
                     self._err = err;
                     callback(err);
                 });
@@ -144,6 +143,7 @@ var instrumentations = {};
         };
 
         Instrumentation.prototype.delete = function (callback) {
+            delete(instrumentations[this._uuid]);
             callback = (callback || ng.noop);
             var self = this;
             $http({ method: 'DELETE', url: self.getUrl() })

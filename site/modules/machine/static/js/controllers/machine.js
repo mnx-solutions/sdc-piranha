@@ -115,13 +115,10 @@
 
                 $scope.packages = Package.package();
 
-                if ($scope.machine.id) {
-                    $scope.package = Package.package($scope.machine.package);
-                } else {
-                    $scope.machine.then(function(value){
-                        $scope.package = Package.package(value.package);
-                    });
-                }
+                $q.when($scope.machine, function (m){
+                    $scope.package = Package.package(m.package);
+                    $scope.selectedPackage = Package.package(m.package);
+                });
 
                 $scope.clickStart = function () {
                     confirm(localization.translate($scope, null, 'Are you sure you want to start the machine'), function () {
@@ -147,7 +144,7 @@
                 $scope.clickResize = function () {
                     confirm(localization.translate($scope, null, 'Are you sure you want to resize the machine'), function () {
                         $$track.event('machine', 'resize');
-                        $scope.retinfo = Machine.resizeMachine(machineid, $scope.resize);
+                        $scope.retinfo = Machine.resizeMachine(machineid, $scope.selectedPackage);
                     });
                 };
 
@@ -196,14 +193,6 @@
                     return !$scope.visiblePasswords.hasOwnProperty(id) ||
                         $scope.visiblePasswords[id];
                 };
-
-                $scope.$watch('resize', function (val) {
-                    Package.getPackage(val).then(function (pkg) {
-                        if (pkg) {
-                            $scope.selectedPackage = pkg;
-                        }
-                    });
-                });
             }
 
         ]);

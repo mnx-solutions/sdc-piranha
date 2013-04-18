@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (app, ng) {
     app.controller(
         'ProvisionController',
         [   '$scope',
@@ -73,11 +73,11 @@
 
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
-                        angular.element('#next').trigger('click');
-                        angular.element('#step-configuration').fadeIn('fast');
-                        angular.element('#selected-image').html(dataset.description);
-                        angular.element('#pricing').removeClass('alert-muted');
-                        angular.element('#pricing').addClass('alert-success');
+                        ng.element('#next').trigger('click');
+                        ng.element('#step-configuration').fadeIn('fast');
+                        ng.element('#selected-image').html(dataset.description);
+                        ng.element('#pricing').removeClass('alert-muted');
+                        ng.element('#pricing').addClass('alert-success');
 
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
@@ -98,8 +98,8 @@
 
                 $scope.selectPackage = function (id) {
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
-                        angular.element('#finish-configuration').fadeIn('fast');
-                        angular.element('#selected-size').html([
+                        ng.element('#finish-configuration').fadeIn('fast');
+                        ng.element('#selected-size').html([
                             localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
                             localization.translate($scope, 'machine', 'Disk') + ': ' + pkg.disk + 'MB',
                             localization.translate($scope, 'machine', 'vCPUs') + ': ' + pkg.vcpus
@@ -123,7 +123,6 @@
 
                 // Watch datacenter change
                 $scope.$watch('data.datacenter', function (newVal, oldVal) {
-                    console.log('Datancenter change: ' + newVal);
                     if (newVal && (newVal !== oldVal)) {
                         Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
                             $scope.datasets = datasets;
@@ -139,10 +138,10 @@
                     $scope.selectDatacenter();
                 }
 
-                angular.element('.carousel').carousel({
+                ng.element('.carousel').carousel({
                     interval:false
                 });
             }
 
         ]);
-}(window.JP.getModule('Machine')));
+}(window.JP.getModule('Machine'), window.angular));

@@ -8,12 +8,13 @@
         function (serverTab, $q, localization, notification) {
 
         var service = {};
-        var packages = { job: {}, index: {}, list: {}, search: {}};
+        var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};
 
         service.updatePackages = function (datacenter) {
             datacenter = datacenter ? datacenter : 'all';
             if (!packages.index[datacenter]) {
                 packages.index[datacenter] = {};
+                packages.nameIndex[datacenter] = {};
                 packages.list[datacenter] = [];
                 packages.search[datacenter] = {};
             }
@@ -22,7 +23,7 @@
                 packages.list[datacenter].final = false;
                 packages.job[datacenter] = serverTab.call({
                     name:'PackageList',
-                    data: { datacenter: datacenter },
+                    data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
                             notification.push(packages.job, { type: 'error' },
@@ -48,6 +49,13 @@
                             if (packages.search[datacenter][p.id]) {
                                 packages.search[datacenter][p.id].resolve(p);
                                 delete packages.search[datacenter][p.id];
+                            }
+
+                            packages.nameIndex[datacenter][p.name] = p;
+
+                            if (packages.search[p.name]) {
+                                packages.search[p.name].resolve(p);
+                                delete packages.search[p.name];
                             }
 
                             if (old !== null) {
@@ -85,19 +93,21 @@
                 if (packages.list[params.datacenter].final) {
                     ret.resolve(packages.list[params.datacenter]);
                 } else {
-                    packages.job[params.datacenter].deferred.then(function(value){
+                    packages.job[params.datacenter].deferred.then(function (value) {
                         ret.resolve(value);
                     });
                 }
             } else {
-                if (!packages.index[params.datacenter][params.id]) {
-                    service.updatePackages(params.datacenter);
+                if (!packages.index[params.datacenter][params.id] &&
+                    !packages.nameIndex[params.datacenter][params.id]) {
 
+                    service.updatePackages(params.datacenter);
                     if (!packages.search[params.datacenter][params.id]) {
                         packages.search[params.datacenter][params.id] = ret;
                     }
                 } else {
-                    ret.resolve(packages.index[params.datacenter][params.id]);
+                    ret.resolve(packages.index[params.datacenter][params.id] ||
+                        packages.nameIndex[params.datacenter][params.id]);
                 }
 
             }

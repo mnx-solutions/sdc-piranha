@@ -47,13 +47,16 @@
         // Poll all the instrumentation values.
         var pending = false;
         ca._poll = function() {
+            var instCount = Object.keys(ca.instrumentations).length;
             $http.post('cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
                 ca.options.last_poll_time = res.end_time;
 
                 var datapoints = res.datapoints;
                 for(var id in datapoints) {
-                    ca.instrumentations[id].addValues(datapoints[id]);
+                    if(ca.instrumentations[id]) {
+                        ca.instrumentations[id].addValues(datapoints[id]);
+                    }
                 }
 
                 var now = Math.floor((new Date()).getTime() / 1000);
@@ -92,6 +95,14 @@
 
         };
 
+        service.prototype.changeRange = function(ids, range) {
+            if(this.instrumentations[ids[0]].heatmap) {
+                ca.options.individual[ids[0]].duration = range;
+            }
+            this.instrumentations[ids[0]].range = range;
+
+        }
+
         service.prototype.getStatLabel = function(stat) {
             for(var m in ca.desc.metrics) {
                 var metric = ca.desc.metrics[m];
@@ -109,46 +120,75 @@
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;
                 conf.data.metrics.forEach(_labelMetrics);
+                console.log(conf);
                 cb(ca.desc);
             });
 
         };
+        service.prototype.getDecompLabels = function (decomps) {
+            var response = [];
+            for(var d in decomps) {
+                var decomposition = decomps[d];
+                response.push(ca.desc.fields[decomposition].label);
+            }
+            console.log(response);
+            return response;
+        }
+        service.prototype.getMetricLabel = function (mod, stat) {
+            for( var m in ca.desc.metrics) {
+                var metric = ca.desc.metrics[m];
+                if(metric.module === mod && metric.stat === stat) {
+                    return metric.labelHtml;
+                }
+            }
+            return false;
+        }
         service.prototype.createInstrumentation  = function(createOpts, cb) {
 
             if(!createOpts.init) {
                 createOpts.init = null;
             }
-            console.log(createOpts);
             var self = this;
             instrumentation.create({
                 createOpts: createOpts,
                 init: createOpts.init,
                 parent:ca
             }, function(err, inst){
-                console.log(inst);
-                var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
-                self.instrumentations[inst.id] = {
-                    range: createOpts.range || self.range,
-                    'value-arity': inst['value-arity'],
-                    crtime: Math.floor(inst.crtime /1000)
-                };
+                if(!err) {
+                    var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
-                ca.instrumentations[inst.id] = inst;
+                    var graphtitle = self.getMetricLabel(inst.module, inst.stat);
 
-                // set options for polling values
-                var options = {
-                    'value-arity': inst['value-arity'],
-                    crtime: createOpts.pollingstart || Math.floor(inst.crtime /1000)
+                    if(inst.decomposition) {
+                        graphtitle += ' decomposed by ';
+                        graphtitle += self.getDecompLabels(inst.decomposition).join(' and ');
+                    }
+
+                    self.instrumentations[inst.id] = {
+                        graphtitle: graphtitle,
+                        range: createOpts.range || self.range,
+                        'value-arity': inst['value-arity'],
+                        crtime: Math.floor(inst.crtime /1000)
+                    };
+
+                    ca.instrumentations[inst.id] = inst;
+
+                    // set options for polling values
+                    var options = {
+                        'value-arity': inst['value-arity'],
+                        crtime: createOpts.pollingstart || Math.floor(inst.crtime /1000)
+                    }
+                    if(heatmap) {
+                        options.ndatapoints = createOpts.range || self.range;
+                        options.width = self.width;
+                        options.height = self.height;
+                    }
+                    ca.options.individual[inst.id] = options;
+
+                    cb(inst)
+
                 }
-                if(heatmap) {
-                    options.ndatapoints = createOpts.range || self.range;
-                    options.width = self.width;
-                    options.height = self.height;
-                }
-                ca.options.individual[inst.id] = options;
-
-                cb(inst)
 
             });
         }
@@ -238,11 +278,9 @@
         }
 
         service.prototype.listAllInstrumentations = function(cb) {
-            console.log('listing')
             var instrumentations = $http.get('cloudAnalytics/ca/instrumentations');
 
             instrumentations.then(function(response) {
-                console.log(response);
                 cb(response.data.time, response.data.instrumentations);
             });
         }
