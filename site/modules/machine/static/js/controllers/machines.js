@@ -8,13 +8,14 @@
             '$filter',
             '$$track',
             '$dialog',
+            '$q',
             'requestContext',
             'Machine',
             'Dataset',
             'Package',
             'localization',
 
-            function ($scope, $filter, $$track, $dialog, requestContext, Machine, Dataset, Package, localization) {
+            function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.index', $scope);
 
@@ -56,7 +57,13 @@
                 $scope.checked = {};
                 $scope.ischecked = false;
 
-                $scope.$watch('machines', function () {
+                $scope.$watch('machines', function (machines) {
+                    machines.forEach(function (machine) {
+                        Dataset.dataset(machine.image).then(function (dataset) {
+                            machine.dataset = dataset;
+                        });
+                    });
+
                     $scope.search();
                 }, true);
 
