@@ -104,12 +104,16 @@ module.exports = function (scope, callback) {
     /* listPackages */
     server.onCall('PackageList', function (call) {
         call.log.info('Handling list packages event');
+
+        call.cloud.setDatacenter(call.data.datacenter);
         call.cloud.listPackages(call.done.bind(call));
     });
 
     /* listDatasets */
     server.onCall('DatasetList', function (call) {
         call.log.info('Handling list datasets event');
+
+        call.cloud.setDatacenter(call.data.datacenter);
         call.cloud.listDatasets(function (err, data) {
             if(err) {
                 call.done(err);
@@ -342,7 +346,7 @@ module.exports = function (scope, callback) {
                 package: call.data.package,
                 dataset: call.data.dataset
             };
-            console.log(call.data);
+
             call.log.info('Creating machine %s', call.data.name);
             call.getImmediate(false);
 

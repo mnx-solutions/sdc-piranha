@@ -27,20 +27,37 @@
                             return;
                         }
 
-                        if (Object.keys(datacenters.search).length > 0) {
-                            var result = job.__read();
+                        var result = job.__read();
 
-                            Object.keys(result).forEach(function (k) {
-                                if (datacenters.search[k]) {
-                                    datacenters.search[k].resolve(result[k]);
-                                    delete datacenters.search[k];
-                                }
-                            });
-                        }
+                        Object.keys(result).forEach(function (key) {
+                            var datacenter = {
+                                name: key,
+                                url: result[key]
+                            };
+
+                            var old = null;
+
+                            if (datacenters.index[key]) {
+                                old = datacenters.list.indexOf(datacenters.index[key]);
+                            }
+
+                            datacenters.index[key] = datacenter;
+
+                            if (datacenters.search[key]) {
+                                datacenters.search[key].resolve(p);
+                                delete datacenters.search[key];
+                            }
+
+                            if (old !== null) {
+                                datacenters.list[old] = datacenter;
+                            } else {
+                                datacenters.list.push(datacenter);
+                            }
+                        });
+
+                        datacenters.list.final = true;
                     }
                 });
-
-                datacenters.index = datacenters.job.deferred;
             }
 
             return datacenters.job;
@@ -48,29 +65,37 @@
 
         service.datacenter = function (id) {
             if (id === true || (!id && !datacenters.job)) {
-                var job = service.updateDatacenters();
+                var job = service.updateDatasets();
                 return job.deferred;
             }
 
-            if (!id){
-                return datacenters.index;
-            }
-
-
             var ret = $q.defer();
-            if (!datacenters.index[id]){
-                service.updateDatacenters();
-
-                if(!datacenters.search[id]){
-                    datacenters.search[id] = ret;
+            if (!id) {
+                if (datacenters.list.final) {
+                    ret.resolve(datacenters.list);
+                } else {
+                    datacenters.job.deferred.then(function () {
+                        ret.resolve(datacenters.list);
+                    });
                 }
             } else {
-                setTimeout(function () {
+                if (!datacenters.index[id]) {
+                    service.updateDatacenters();
+
+                    if(!datacenters.search[id]) {
+                        datacenters.search[id] = ret;
+                    }
+                } else {
                     ret.resolve(datacenters.index[id]);
-                },1);
+                }
+
             }
 
             return ret.promise;
+        };
+
+        service.datacenters = function () {
+            return datacenters.list.length > 0 ? datacenters.list : null;
         };
 
         if(!datacenters.job) {
