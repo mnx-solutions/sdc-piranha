@@ -9,14 +9,23 @@
         function (serverTab, $q, localization, notification) {
 
         var service = {};
-        var datasets = {job: null, index: {}, list: [], search: {}};
+        var datasets = { job: {}, index: {}, list: {}, search: {}};
 
-        service.updateDatasets = function () {
-            if (!datasets.job || datasets.job.finished) {
-                datasets.list.final = false;
-                datasets.job = serverTab.call({
+        service.updateDatasets = function (datacenter) {
+            datacenter = datacenter ? datacenter : 'all';
+            if (!datasets.index[datacenter]) {
+                datasets.index[datacenter] = {};
+                datasets.list[datacenter] = [];
+                datasets.search[datacenter] = {};
+            }
+
+            if (!datasets.job[datacenter]) {
+                datasets.job[datacenter] = serverTab.call({
+                    data: { datacenter: datacenter },
                     name:'DatasetList',
                     done: function(err, job) {
+                        datasets.job.finished = true;
+
                         if (err) {
                             notification.push(datasets.job, { type: 'error' },
                                 localization.translate(null,
@@ -31,55 +40,65 @@
                         var result = job.__read();
                         result.forEach(function (p) {
                             var old = null;
-                            if (datasets.index[p.id]) {
-                                old = datasets.list.indexOf(datasets.index[p.id]);
+                            if (datasets.index[datacenter][p.id]) {
+                                old = datasets.list[datacenter].indexOf(datasets.index[datacenter][p.id]);
                             }
 
-                            datasets.index[p.id] = p;
+                            datasets.index[datacenter][p.id] = p;
 
-                            if (datasets.search[p.id]) {
-                                datasets.search[p.id].resolve(p);
-                                delete datasets.search[p.id];
+                            if (datasets.search[datacenter][p.id]) {
+                                datasets.search[datacenter][p.id].resolve(p);
+                                delete datasets.search[datacenter][p.id];
                             }
 
                             if (old !== null) {
-                                datasets.list[old] = p;
+                                datasets.list[datacenter][old] = p;
                             } else {
-                                datasets.list.push(p);
+                                datasets.list[datacenter].push(p);
                             }
                         });
 
-                        datasets.list.final = true;
+                        datasets.list[datacenter].final = true;
                     }
                 });
             }
-            return datasets.job;
+
+            return datasets.job[datacenter];
         };
 
-        service.dataset = function (id) {
-            if (id === true || (!id && !datasets.job)) {
-                var job = service.updateDatasets();
+        service.dataset = function (params) {
+            if (typeof(params) === 'string') {
+                params = { id: params };
+            }
+
+            params = params ? params : {};
+            if (!params.datacenter) {
+                params.datacenter = 'all';
+            }
+
+            if (params.id === true || (!params.id && !datasets.job[params.datacenter])) {
+                var job = service.updateDatasets(params.datacenter);
                 return job.deferred;
             }
 
             var ret = $q.defer();
-            if(!id) {
-                if(datasets.list.final) {
-                    ret.resolve(datasets.list);
+            if (!params.id) {
+                if (datasets.list[params.datacenter].final) {
+                    ret.resolve(datasets.list[params.datacenter]);
                 } else {
-                    datasets.job.deferred.then(function(value){
+                    datasets.job[datacenter].deferred.then(function (value) {
                         ret.resolve(value);
                     });
                 }
             } else {
-                if (!datasets.index[id]) {
-                    service.updateDatasets();
+                if (!datasets.index[params.datacenter][params.id]) {
+                    service.updateDatasets(params.datacenter);
 
-                    if(!datasets.search[id]) {
-                        datasets.search[id] = ret;
+                    if (!datasets.search[params.datacenter][params.id]) {
+                        datasets.search[params.datacenter][params.id] = ret;
                     }
                 } else {
-                    ret.resolve(datasets.index[id]);
+                    ret.resolve(datasets.index[params.datacenter][params.id]);
                 }
 
             }
@@ -87,7 +106,7 @@
             return ret.promise;
         };
 
-        if(!datasets.job) {
+        if (!datasets.job['all']) {
             // run updatePackages
             service.updateDatasets();
         }

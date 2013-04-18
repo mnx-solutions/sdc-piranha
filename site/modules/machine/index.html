@@ -436,13 +436,14 @@
                 <div class="pull-left provision">
                     <form class="form-search pull-left">
                         <div class="btn-group pull-left">
-                            <button class="btn" data-translate>Datacenters</button>
+                            <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
+                            <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
                             <button class="btn dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li data-ng-repeat="(name, url) in datacenters">
-                                    <a data-ng-click="selectDatacenter(name)">{{name}}</a>
+                                <li data-ng-repeat="datacenter in datacenters">
+                                    <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
                                 </li>
                             </ul>
                         </div>
@@ -470,7 +471,7 @@
                         <div class="carousel-inner">
                             <div class="item active">
                                 <fieldset class="selector-container" id="package-selector">
-                                    <div class="control-group" data-ng-repeat="dataset in datasets | filter:searchText">
+                                    <div class="control-group" data-ng-repeat="dataset in datasets | filter:filterDatasets">
                                         <div class="controls">
                                             <label class="radio text-small">
                                                 <input type="radio"
@@ -494,7 +495,7 @@
                                 <fieldset class="selector-container size" id="size-container">
                                     <div class="control-group"
                                          data-ng-click="selectPackage(package.id)"
-                                         data-ng-repeat="package in packages | filter:searchText">
+                                         data-ng-repeat="package in packages | filter:filterPackages">
 
                                         <div class="controls">
 

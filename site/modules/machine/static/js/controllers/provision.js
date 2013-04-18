@@ -17,8 +17,8 @@
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
-                Dataset.updateDatasets();
-                Datacenter.updateDatacenters();
+                var datacenters = Datacenter.datacenter();
+                $scope.datacenters = datacenters;
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
@@ -32,15 +32,6 @@
                             }
                         });
                 };
-
-                var packages = Package.package();
-                $scope.packages = packages;
-
-                var datasets = Dataset.dataset();
-                $scope.datasets = datasets;
-
-                var datacenters = Datacenter.datacenter();
-                $scope.datacenters = datacenters;
 
                 $scope.data = {};
 
@@ -68,11 +59,20 @@
                 };
 
                 $scope.selectDatacenter = function (name) {
-                    $scope.data.datacenter = name;
+                    if (!name && !$scope.data.datacenter) {
+                        Datacenter.datacenter().then(function (datacenters) {
+                            if (datacenters.length > 0) {
+                                $scope.data.datacenter = datacenters[0].name;
+                            }
+                        });
+                    } else if (name && (name !== $scope.data.datacenter)) {
+                        $scope.data.datacenter = name;
+                    }
+
                 };
 
                 $scope.selectDataset = function (id) {
-                    Dataset.dataset(id).then(function (dataset) {
+                    Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
                         angular.element('#next').trigger('click');
                         angular.element('#step-configuration').fadeIn('fast');
                         angular.element('#selected-image').html(dataset.description);
@@ -84,8 +84,20 @@
                     });
                 };
 
+                $scope.filterDatasets = function (item) {
+                    var props = [ 'name', 'description' ];
+                    for (var i = 0, c = props.length; i < c; i++) {
+                        var val = item[props[i]];
+                        if (val.match($scope.searchText)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                };
+
                 $scope.selectPackage = function (id) {
-                    Package.package(id).then(function (pkg) {
+                    Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         angular.element('#finish-configuration').fadeIn('fast');
                         angular.element('#selected-size').html([
                             localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
@@ -96,6 +108,36 @@
                         $scope.data.package = pkg.id;
                     });
                 };
+
+                $scope.filterPackages = function (item) {
+                    var props = [ 'name', 'memory', 'disk', 'vcpus' ];
+                    for (var i = 0, c = props.length; i < c; i++) {
+                        var val = item[props[i]];
+                        if (val.match($scope.searchText)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                };
+
+                // Watch datacenter change
+                $scope.$watch('data.datacenter', function (newVal, oldVal) {
+                    console.log('Datancenter change: ' + newVal);
+                    if (newVal && (newVal !== oldVal)) {
+                        Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
+                            $scope.datasets = datasets;
+                        });
+
+                        Package.package({ datacenter: newVal }).then(function (packages) {
+                            $scope.packages = packages;
+                        });
+                    }
+                });
+
+                if (!$scope.data.datacenter) {
+                    $scope.selectDatacenter();
+                }
 
                 angular.element('.carousel').carousel({
                     interval:false
