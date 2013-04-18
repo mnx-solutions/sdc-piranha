@@ -13,7 +13,7 @@
                 graphtitle: '='
             },
             link: function ($scope){
-
+                var ticktime = null;
                 var graph = false;
                 $scope.heatmap;
 
@@ -94,7 +94,7 @@
 
                         var series = $scope.ca.getSeries(
                             $scope.instrumentations,
-                            $scope.endtime
+                            ticktime
                         );
 
                         if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
@@ -121,9 +121,22 @@
                 });
 
                 $scope.$watch('endtime', function(newVal) {
+
                     if(newVal){
+                        if(!ticktime) {
+                            ticktime = $scope.endtime
+                        }
+
                         if(!$scope.frozen) {
-                            updateGraph();
+                            if(graph && $scope.ca.polltime() > ticktime) {
+
+                                updateGraph();
+                                ticktime++;
+                            } else if (!graph){
+                                updateGraph();
+                            }
+                        } else {
+                            ticktime++;
                         }
 
                     }

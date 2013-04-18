@@ -160,7 +160,7 @@
 
                     var graphtitle = self.getMetricLabel(inst.module, inst.stat);
 
-                    if(inst.decomposition) {
+                    if(inst.decomposition && inst.decomposition.length) {
                         graphtitle += ' decomposed by ';
                         graphtitle += self.getDecompLabels(inst.decomposition).join(' and ');
                     }
@@ -262,7 +262,9 @@
             return seriesCollection;
         }
 
-
+        service.prototype.polltime = function() {
+            return ca.options.last_poll_time;
+        }
         service.prototype.deleteAllInstrumentations = function() {
             ca.options.individual = {};
             ca.options.last_poll_time = null;
