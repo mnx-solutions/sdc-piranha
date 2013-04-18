@@ -95,6 +95,14 @@
 
         };
 
+        service.prototype.changeRange = function(ids, range) {
+            if(this.instrumentations[ids[0]].heatmap) {
+                ca.options.individual[ids[0]].duration = range;
+            }
+            this.instrumentations[ids[0]].range = range;
+
+        }
+
         service.prototype.getStatLabel = function(stat) {
             for(var m in ca.desc.metrics) {
                 var metric = ca.desc.metrics[m];
@@ -112,10 +120,29 @@
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;
                 conf.data.metrics.forEach(_labelMetrics);
+                console.log(conf);
                 cb(ca.desc);
             });
 
         };
+        service.prototype.getDecompLabels = function (decomps) {
+            var response = [];
+            for(var d in decomps) {
+                var decomposition = decomps[d];
+                response.push(ca.desc.fields[decomposition].label);
+            }
+            console.log(response);
+            return response;
+        }
+        service.prototype.getMetricLabel = function (mod, stat) {
+            for( var m in ca.desc.metrics) {
+                var metric = ca.desc.metrics[m];
+                if(metric.module === mod && metric.stat === stat) {
+                    return metric.labelHtml;
+                }
+            }
+            return false;
+        }
         service.prototype.createInstrumentation  = function(createOpts, cb) {
 
             if(!createOpts.init) {
@@ -131,7 +158,15 @@
                 if(!err) {
                     var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
+                    var graphtitle = self.getMetricLabel(inst.module, inst.stat);
+
+                    if(inst.decomposition) {
+                        graphtitle += ' decomposed by ';
+                        graphtitle += self.getDecompLabels(inst.decomposition).join(' and ');
+                    }
+
                     self.instrumentations[inst.id] = {
+                        graphtitle: graphtitle,
                         range: createOpts.range || self.range,
                         'value-arity': inst['value-arity'],
                         crtime: Math.floor(inst.crtime /1000)

@@ -95,7 +95,7 @@ module.exports = function (scope, app, callback) {
                         options.width = instrumentation.width || 640;
                         options.height = instrumentation.height || 200;
                         options.nbuckets = instrumentation.nbuckets || 50;
-                        options.duration = 60;
+                        options.duration = instrumentation.duration || 60;
                         options.hues = instrumentation.hues || 21;
                         options.ndatapoints = 1;
                         options.end_time = options.start_time;
@@ -119,7 +119,7 @@ module.exports = function (scope, app, callback) {
                         response.datapoints[options.id] = resp;
                         response.end_time = resp[resp.length - 1].start_time + 1;
                         if(instrumentation['value-arity'] === 'numeric-decomposition') {
-                            response.end_time += 60;
+                            response.end_time += instrumentation.duration || 60;
                         }
                     } else {
                         response.datapoints[options.id] = {

@@ -57,7 +57,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
                     $scope.instrumentations.push({
                         instrumentations: [inst],
                         ca: ca,
-                        title: 'title'
+                        title: ca.instrumentations[inst.id].graphtitle
                     });
                 });
 
@@ -162,7 +162,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
                 $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
                 tick();
             }
-            var title = 'title';
+            var title = ca.instrumentations[instrumentations[0].id].graphtitle;
             $scope.instrumentations.push({
                 instrumentations: instrumentations,
                 ca: ca,
