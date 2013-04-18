@@ -8,13 +8,22 @@
         function (serverTab, $q, localization, notification) {
 
         var service = {};
-        var packages = {job: null, index: {}, nameIndex: {}, list: [], search: {}};
+        var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};
 
-        service.updatePackages = function () {
-            if (!packages.job || packages.job.finished) {
-                packages.list.final = false;
-                packages.job = serverTab.call({
+        service.updatePackages = function (datacenter) {
+            datacenter = datacenter ? datacenter : 'all';
+            if (!packages.index[datacenter]) {
+                packages.index[datacenter] = {};
+                packages.nameIndex[datacenter] = {};
+                packages.list[datacenter] = [];
+                packages.search[datacenter] = {};
+            }
+
+            if (!packages.job[datacenter]) {
+                packages.list[datacenter].final = false;
+                packages.job[datacenter] = serverTab.call({
                     name:'PackageList',
+                    data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
                             notification.push(packages.job, { type: 'error' },
@@ -31,18 +40,18 @@
                         result.forEach(function (p) {
                             var old = null;
 
-                            if (packages.index[p.id]) {
-                                old = packages.list.indexOf(packages.index[p.id]);
+                            if (packages.index[datacenter][p.id]) {
+                                old = packages.list.indexOf(packages.index[datacenter][p.id]);
                             }
 
-                            packages.index[p.id] = p;
+                            packages.index[datacenter][p.id] = p;
 
-                            if (packages.search[p.id]) {
-                                packages.search[p.id].resolve(p);
-                                delete packages.search[p.id];
+                            if (packages.search[datacenter][p.id]) {
+                                packages.search[datacenter][p.id].resolve(p);
+                                delete packages.search[datacenter][p.id];
                             }
 
-                            packages.nameIndex[p.name] = p;
+                            packages.nameIndex[datacenter][p.name] = p;
 
                             if (packages.search[p.name]) {
                                 packages.search[p.name].resolve(p);
@@ -50,9 +59,9 @@
                             }
 
                             if (old !== null) {
-                                packages.list[old] = p;
+                                packages.list[datacenter][old] = p;
                             } else {
-                                packages.list.push(p);
+                                packages.list[datacenter].push(p);
                             }
                         });
 
@@ -61,33 +70,44 @@
                 });
             }
 
-            return packages.job;
+            return packages.job[datacenter];
         };
 
-        service.package = function (id) {
-            if (id === true || (!id && !packages.job)) {
-                var job = service.updatePackages();
+        service.package = function (params) {
+            if (typeof(params) === 'string') {
+                params = { id: params };
+            }
+
+            params = params ? params : {};
+            if (!params.datacenter) {
+                params.datacenter = 'all';
+            }
+
+            if (params.id === true || (!params.id && !packages.job[params.datacenter])) {
+                var job = service.updatePackages(params.datacenter);
                 return job.deferred;
             }
 
             var ret = $q.defer();
-            if(!id) {
-                if(packages.list.final) {
-                    ret.resolve(packages.list);
+            if (!params.id) {
+                if (packages.list[params.datacenter].final) {
+                    ret.resolve(packages.list[params.datacenter]);
                 } else {
-                    packages.job.deferred.then(function(value){
+                    packages.job[params.datacenter].deferred.then(function (value) {
                         ret.resolve(value);
                     });
                 }
             } else {
-                if (!packages.index[id] && !packages.nameIndex[id]) {
-                    service.updatePackages();
+                if (!packages.index[params.datacenter][params.id] &&
+                    !packages.nameIndex[params.datacenter][params.id]) {
 
-                    if(!packages.search[id]) {
-                        packages.search[id] = ret;
+                    service.updatePackages(params.datacenter);
+                    if (!packages.search[params.datacenter][params.id]) {
+                        packages.search[params.datacenter][params.id] = ret;
                     }
                 } else {
-                    ret.resolve(packages.index[id] || packages.nameIndex[id]);
+                    ret.resolve(packages.index[params.datacenter][params.id] ||
+                        packages.nameIndex[params.datacenter][params.id]);
                 }
 
             }
