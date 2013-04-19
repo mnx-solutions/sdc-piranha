@@ -40,15 +40,10 @@
                 restrict: 'EA',
                 compile: function compile(tElement, tAttrs, transclude) {
                     return function link(scope, element, attrs) {
+                        var countVariable = null;
+                        var countValue = 0;
                         var identifier = null;
-
-                        var elementText = null;
-                        if(attrs.translate === 'value') {
-                            elementText = $interpolate(element.text())(scope);
-                        } else {
-                            // manipulate the element a bit and get rid of newlines + unneccessary spaces
-                            elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
-                        }
+                        var elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
 
                         // Interpolate expression
                         if (attrs.translateExpression) {
@@ -57,10 +52,6 @@
                         } else {
                             identifier = elementText;
                         }
-
-                        // For pluralizing
-                        var countVariable = null;
-                        var countValue = 0;
 
                         if (attrs.hasOwnProperty('count')) {
                             countVariable = attrs.count;
