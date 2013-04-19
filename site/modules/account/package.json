@@ -3,7 +3,7 @@
         "auth": true,
         "pre": {
             "js": [
-                "https://apisandbox.zuora.c om/apps/Hosted/postmessage.js"
+                "https://apisandbox.zuora.com/apps/Hosted/postmessage.js"
             ]
         }
 	}
