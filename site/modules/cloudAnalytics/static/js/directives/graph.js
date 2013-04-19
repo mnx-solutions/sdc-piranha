@@ -155,7 +155,7 @@
             template:
                 '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
-                    '<i style="float:right" data-ng-click="deleteGraph()" class="icon-remove-circle" ></i>' +
+//                    '<i style="float:right" data-ng-click="deleteGraph()" class="icon-remove-circle" ></i>' +
 //                    '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
                     '<br/>' +
                     '<div>{{graphtitle}}</div>' +
