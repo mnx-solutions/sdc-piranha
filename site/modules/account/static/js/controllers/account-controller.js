@@ -9,6 +9,7 @@
             $scope.account = Account.getAccount();
             $scope.sshKeys = Account.getKeys();
 
+            $scope.userPlatform = $window.navigator.platform;
 
             $scope.newKey = {}
 
