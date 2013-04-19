@@ -25,6 +25,7 @@
                 '{{machine.state}}</span>' +
                 '<span class="status btn btn-mini" ng-show="machine.job && !machine.job.finished">' +
                 '<img src="/static/img/ajax-loader.gif"/>' +
+                '<span data-ng-show="machine.job.name == \'MachineCreate\'" data-translate>Provisioning</span>' +
                 '<span data-ng-show="machine.job.name == \'MachineStart\'" data-translate>Starting</span>' +
                 '<span data-ng-show="machine.job.name == \'MachineStop\'" data-translate>Stopping</span>' +
                 '<span data-ng-show="machine.job.name == \'MachineResize\'" data-translate>Resizing</span>' +
