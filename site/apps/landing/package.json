@@ -1,6 +1,6 @@
 {
 	"em": {
 		"route": "/",
-		"modules": ["localization", "landing" ]
+		"modules": ["localization", "landing", "tracking" ]
 	}
 }

@@ -2,7 +2,7 @@
 
 (function (app) {
     // I provide information about the current route request.
-    app.factory('Account', ['$http','$q', 'serverTab', function ($http, $q, serverTab) {
+    app.factory('Account', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
         var account = {};
@@ -14,7 +14,9 @@
                 progress: function(err, job) {
                 },
                 done: function(err, job) {
-                    deferred.resolve(job.__read());
+                    var resolver = job.__read();
+                    deferred.resolve(resolver);
+                    $$track.marketing_lead(resolver);
                 }
             })
 
