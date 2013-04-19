@@ -64,6 +64,9 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
             }
 
         })
+        $scope.$watch('ca.instrumentations.length', function(){
+
+        })
     });
 
     $scope.createDefaultInstrumentations = function() {
@@ -185,7 +188,28 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         $scope.current.decomposition.secondary = null;
         $scope.current.decomposition.secondaryF = null;
     }
+    $scope.pause = function() {
+        $scope.frozen = true;
+    }
+    $scope.run = function() {
+        $scope.frozen = false;
+    }
+    $scope.zoomIn = function() {
+        var index = $scope.ranges.indexOf($scope.currentRange);
 
+        if(index+1 < $scope.ranges.length){
+            index++;
+            $scope.currentRange = $scope.ranges[index];
+        }
+    }
+    $scope.zoomOut = function() {
+        var index = $scope.ranges.indexOf($scope.currentRange);
+
+        if(index-1 >= 0){
+            index--;
+            $scope.currentRange = $scope.ranges[index];
+        }
+    }
     $scope.changeDecomposition = function(){
 
         if($scope.current.decomposition.primary) {
