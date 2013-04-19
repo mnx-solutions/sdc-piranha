@@ -31,6 +31,8 @@
                                         '<span class="caret"></span>' +
                                     '</button>' +
                                     '<ul class="dropdown-menu">' +
+										'<li><a href="#!/account" data-translate><b>{{account.login}}</b></a></li>'+
+
                                         '<li data-ng-repeat="item in mainMenu">' +
                                             '<a href="#!/{{item.link}}" ' +
                                                 'data-translate ' +
@@ -38,10 +40,11 @@
                                                 'data-translate-module="{{item.link}}" ' +
                                             '>{{item.name}}</a>' +
                                         '</li>' +
+										'<li class="divider"></li>' +
 										'<li><a href="/landing/forgetToken" data-translate>Logout</a></li>'+
                                     '</ul>' +
                                 '</div>' +
-                                '<div class="logged-in-as">Logged in as: {{account.login}}</div>'+
+                                // '<div class="logged-in-as">Logged in as: </div>'+
                             '</div>' +
                             '<div class="clearfix"></div>' +
 

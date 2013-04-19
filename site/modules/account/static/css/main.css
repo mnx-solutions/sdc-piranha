@@ -5,3 +5,11 @@ h1,h2 {
 .container {
     padding-bottom: 30px;
 }
+
+.sshkey {
+    cursor: pointer;
+}
+
+.sshkey-details {
+    color:#999;
+}
