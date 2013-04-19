@@ -5,12 +5,40 @@
                 <div class="container">
                     <data-breadcrumb></data-breadcrumb>
                     <div class="page-header" style="margin-top:10px">
-                        <h1 class="pull-left" data-translate>Account</h1><div ng-show="!account" class="loading-medium-after-h1"></div>
+                        <h1 class="pull-left" data-translate>My Account</h1><div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
                         <div class="clearfix"></div>
                     </div>
                     <span data-translate>Login: {{account.login}}</span><br />
                     <span data-translate>Email: {{account.email}}</span><br />
                     <span data-translate>Name: {{account.firstName}} {{account.lastName}}</span> <br />
+                    <span data-translate>Platform: {{userPlatform}}</span><br />
+                    <br />
+                    <span>SSH keys:</span>
+                    <div data-ng-repeat="key in sshKeys">
+                        <span data-ng-click="setOpenDetails($index);" class="sshkey">Key name: {{key.name}}</span>
+                        <div data-ng-show="openKeyDetails == $index" class="sshkey-details">
+                            <span ng->Fingerpint: {{key.fingerprint}}</span>
+                            <br />
+
+                            <span>------------------------------------------------</span>
+                            <br />
+                            <span class="sshkey-data">{{key.key}}</span>
+                            <br />
+                            <span>------------------------------------------------</span>
+                        </div>
+                    </div>
+                    <br />
+                    <button data-ng-click="addsshKey=!addsshKey">Add new SSH key</button>
+                    <div data-ng-show="addsshKey">
+                        Name:<br />
+                        <input data-ng-model="newKey.name" placeholder="ssh key name" /><br />
+                        <br />
+                        Key:<br />
+                        <textarea data-ng-model="newKey.data"></textarea><br />
+                        <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
+                        <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
+                        <div class="loading-medium" data-ng-show="createPending"></div>
+                    </div>
                     <br />
                     <a href="/landing/changepassword/{{account.login}}" data-translate>Change my password</a>
                     <a href="#!/account/payment" data-translate>Add payment info</a>

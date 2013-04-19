@@ -28,17 +28,24 @@
 		                <option value="">-- None --</option>
 		            </select>
 		        </span>
-                <br/>
-                Graph range:
-                <select data-ng-model="currentRange" data-ng-options="val as val for (key, val) in ranges">
-                    <option value="">-- Choose Range --</option>
-                </select>
-                <br/>
-                Frozen:
-                <input type="checkbox" data-ng-model="frozen">
+                <!--<br/>-->
+                <!--Graph range:-->
+                <!--<select data-ng-model="currentRange" data-ng-options="val as val for (key, val) in ranges">-->
+                    <!--<option value="">-- Choose Range --</option>-->
+                <!--</select>-->
+                <!--<br/>-->
+                <!--Frozen:-->
+                <!--<input type="checkbox" data-ng-model="frozen">-->
+
                 <br/><br/>
-		        <button data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> <button data-ng-click="deleteAllInstrumentations()" data-ng-disabled="instrumentations.length == 0">Delete All</button>
-                <button data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create default instrumentations</button>
+                <i class="icon-zoom-in" data-ng-click="zoomIn()" ></i>
+                <i class="icon-zoom-out" data-ng-click="zoomOut()" ></i>
+                <i class="icon-pause" data-ng-click="pause()" ></i>
+                <i class="icon-play" data-ng-click="run()" ></i>
+                <br/><br/>
+		        <button class="btn" data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> 
+				<button class="btn" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="instrumentations.length == 0">Delete All</button>
+                <button class="btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create default instrumentations</button>
 
 		        <br/><br/><br/>
 		        <graph data-ng-repeat="i in instrumentations" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>

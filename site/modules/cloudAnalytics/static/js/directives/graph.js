@@ -74,8 +74,8 @@
                 $scope.renderer = 'bar';
                 $scope.renderers = [
                     'area',
-                    'stack',
-                    'scatterplot',
+//                    'stack',
+//                    'scatterplot',
                     'bar',
                     'line'
                 ];
@@ -88,6 +88,15 @@
                         graph.render();
                     }
                 });
+
+                $scope.deleteGraph = function () {
+                    $scope.ca.deleteInstrumentations($scope.instrumentations)
+                }
+
+                $scope.changeRenderer = function (renderer) {
+                    $scope.renderer = renderer;
+                }
+
                 $scope.ready = false;
 
                 function updateGraph() {
@@ -146,10 +155,13 @@
             template:
                 '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
-                    '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
+//                    '<i style="float:right" data-ng-click="deleteGraph()" class="icon-remove-circle" ></i>' +
+//                    '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
                     '<br/>' +
                     '<div>{{graphtitle}}</div>' +
                     '<br/>' +
+                    '<button data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                    '<br/><br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
                         '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
@@ -159,7 +171,6 @@
                         '</div>' +
                     '</div><br/>' +
                     '<div id="legend_{{$id}}" style="width:680px;" ></div><br/>' +
-//                    '<button data-ng-click="deleteInstrumentation()">Delete</button></div>' +
                 '</div><br/><br/>'
         };
     });
