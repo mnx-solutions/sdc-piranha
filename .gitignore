@@ -17,5 +17,6 @@ deps
 results
 node_modules
 nbproject
+site/modules/cms/data/old/*
 
 npm-debug.log

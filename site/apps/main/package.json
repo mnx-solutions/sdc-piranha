@@ -2,6 +2,7 @@
 	"em": {
 		"route": "/main",
 		"modules": [
+            "cms",
             "account",
             "cloudAnalytics",
             "localization",

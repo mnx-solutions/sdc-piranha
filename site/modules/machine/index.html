@@ -370,7 +370,7 @@
 
                                 <select name="resize"
                                         data-ng-model="selectedPackage"
-                                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in packages"></select>
+                                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in (packages | orderBy:'sequence')"></select>
                                 <br /><br />
                                 <button class="btn btn-primary" type="submit"
                                         ng-click="clickResize()" data-translate>
@@ -509,7 +509,7 @@
                                 <fieldset class="selector-container size" id="size-container">
                                     <div class="control-group"
                                          data-ng-click="selectPackage(package.id)"
-                                         data-ng-repeat="package in packages | filter:filterPackages">
+                                         data-ng-repeat="package in (packages | orderBy:'sequence') | filter:filterPackages">
 
                                         <div class="controls">
 

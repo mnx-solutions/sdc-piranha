@@ -5,31 +5,50 @@ var vasync = require('vasync');
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
 
+    var info = scope.api('Info');
+
     var utils = scope.get('utils');
-    // Machine images info overwrite
-    var imagesInfo = require('./lib/images.json');
+
     var langs = {};
+    var oldLangs = {};
     scope.config.localization.locales.forEach(function (lng) {
         langs[lng] = {};
     });
-    Object.keys(imagesInfo).forEach(function(id) {
-        if(!imagesInfo[id].description) {
-            return;
-        }
-        if(typeof imagesInfo[id].description === 'string') {
-            langs[scope.config.localization.defaultLocale][id] = imagesInfo[id].description;
-        } else {
-            Object.keys(imagesInfo[id].description).forEach(function (lng) {
-                langs[lng][id] = imagesInfo[id].description[lng];
-            });
-        }
-        imagesInfo[id].description = id;
-    });
+    function mapImageInfo() {
+        Object.keys(info.images.data).forEach(function(id) {
+            if(!info.images.data[id].description) {
+                return;
+            }
+            if(typeof info.images.data[id].description === 'string') {
+                langs[scope.config.localization.defaultLocale][id] = info.images.data[id].description;
+            } else {
+                Object.keys(info.images.data[id].description).forEach(function (lng) {
+                    langs[lng][id] = info.images.data[id].description[lng];
+                });
+            }
+            info.images.data[id].description = id;
+        });
 
-    Object.keys(langs).forEach(function (lng) {
-        var m = require('./static/lang/' + lng + '.json');
-        utils.extend(m, langs[lng], true);
-    });
+        Object.keys(langs).forEach(function (lng) {
+            var m = require('./static/lang/' + lng + '.json');
+            if(!oldLangs[lng]) {
+                oldLangs[lng] = utils.clone(m);
+            } else {
+                Object.keys(m).forEach(function (k) {
+                    delete m[k];
+                });
+                Object.keys(oldLangs[lng]).forEach(function (k) {
+                    m[k] = utils.clone(oldLangs[lng][k]);
+                });
+            }
+
+            utils.extend(m, langs[lng], true);
+        });
+    }
+
+    mapImageInfo();
+    info.images.pointer.__listen('change', mapImageInfo);
+    info.images.pointer.__startWatch();
 
     function handleCredentials(machine) {
         var systemsToLogins = {
@@ -106,7 +125,18 @@ module.exports = function (scope, callback) {
         call.log.info('Handling list packages event');
 
         call.cloud.setDatacenter(call.data.datacenter);
-        call.cloud.listPackages(call.done.bind(call));
+        call.cloud.listPackages(function (err, data) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+            data.forEach(function (p, i) {
+                if(info.packages.data[p.id]) {
+                    data[i] = utils.extend(p, info.packages.data[p.id]);
+                }
+            });
+            call.done(null, data);
+        });
     });
 
     /* listDatasets */
@@ -120,8 +150,8 @@ module.exports = function (scope, callback) {
                 return;
             }
             data.forEach(function (img, i) {
-                if(imagesInfo[img.id]) {
-                    data[i] = utils.extend(img, imagesInfo[img.id]);
+                if(info.images.data[img.id]) {
+                    data[i] = utils.extend(img, info.images.data[img.id]);
                 }
             });
             call.done(null, data);
