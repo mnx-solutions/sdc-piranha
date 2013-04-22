@@ -27,10 +27,27 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
             secondaryF: []
         }
     }
-    $scope.instrumentations = [];
+    $scope.graphs = [];
 
-    var ca = new caBackend();
-    ca.describeCa(function (conf){
+    $scope.ca = new caBackend();
+
+    $scope.$watch('ca.deletequeue.length', function(newvalue){
+        if(newvalue) {
+            var id = $scope.ca.deletequeue[0];
+            for( var g in $scope.graphs ) {
+                var graph = $scope.graphs[g];
+                for(var i in graph.instrumentations) {
+                    if( graph.instrumentations[i].id == id) {
+                        $scope.graphs.splice(g, 1);
+                        $scope.ca.deletequeue.splice(0, 1);
+                    }
+                }
+
+            }
+        }
+    })
+
+    $scope.ca.describeCa(function (conf){
 
         $scope.conf = conf;
 
@@ -38,7 +55,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
 
-        ca.listAllInstrumentations(function(time, insts) {
+        $scope.ca.listAllInstrumentations(function(time, insts) {
 
             if(!$scope.endtime && time) {
 
@@ -49,24 +66,36 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
 
             for(var i in insts) {
 
-                ca.createInstrumentation({
+                $scope.ca.createInstrumentation({
                     init: insts[i],
                     pollingstart: time
                 }, function(inst) {
 
-                    $scope.instrumentations.push({
+                    $scope.graphs.push({
                         instrumentations: [inst],
-                        ca: ca,
-                        title: ca.instrumentations[inst.id].graphtitle
+                        ca: $scope.ca,
+                        title: $scope.ca.instrumentations[inst.id].graphtitle
                     });
                 });
 
             }
 
-        })
-        $scope.$watch('ca.instrumentations.length', function(){
-
-        })
+        });
+//        console.log('ca.instrumentations', ca.instrumentations);
+//        $scope.$watch('ca.instrumentations.length', function(){
+//            console.log('watching instrumentations');
+//            for(var g in $scope.graphs) {
+//                var graph = $scope.graphs[g];
+//                for(var i in graph.instrumentations) {
+//                    var inst = graph.instrumentations[i];
+//                    if(!ca.instrumentations[inst.id]){
+//                        console.log('deleting', $scope.graphs);
+//                        delete($scope.graphs[g]);
+//                        console.log($scope.graphs);
+//                    }
+//                }
+//            }
+//        });
     });
 
     $scope.createDefaultInstrumentations = function() {
@@ -126,15 +155,15 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         ]
 
         for(var opt in oo) {
-            ca.createInstrumentations(oo[opt], function(inst) {
+            $scope.ca.createInstrumentations(oo[opt], function(inst) {
                 if(!$scope.endtime) {
                     // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
                     $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
                     tick();
                 }
-                $scope.instrumentations.push({
+                $scope.graphs.push({
                     instrumentations: inst,
-                    ca: ca,
+                    ca: $scope.ca,
                     title: ot[opt]
                 });
             });
@@ -159,16 +188,16 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
             predicate: { "eq": ["zonename", $scope.zoneId ]}
         }
 
-        ca.createInstrumentations([ options ], function(instrumentations){
+        $scope.ca.createInstrumentations([ options ], function(instrumentations){
             if(!$scope.endtime) {
                 // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
                 $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
                 tick();
             }
-            var title = ca.instrumentations[instrumentations[0].id].graphtitle;
-            $scope.instrumentations.push({
+            var title = $scope.ca.instrumentations[instrumentations[0].id].graphtitle;
+            $scope.graphs.push({
                 instrumentations: instrumentations,
-                ca: ca,
+                ca: $scope.ca,
                 title: title
 
             });
@@ -178,9 +207,9 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     }
 
     $scope.deleteAllInstrumentations = function() {
-        $scope.instrumentations = [];
+        $scope.graphs = [];
 
-        ca.deleteAllInstrumentations();
+        $scope.ca.deleteAllInstrumentations();
     }
 
     $scope.changeMetric = function(){
@@ -223,7 +252,6 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
                 if( fieldArity !== currentArity) {
                     $scope.current.decomposition.secondaryF[f] = $scope.current.metric.fields[f];
                 }
-
             }
         } else {
             $scope.current.decomposition.secondaryF = [];

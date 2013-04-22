@@ -90,7 +90,8 @@
                 });
 
                 $scope.deleteGraph = function () {
-                    $scope.ca.deleteInstrumentations($scope.instrumentations)
+                    $scope.ca.deletequeue.push($scope.instrumentations[0].id);
+                    $scope.ca.deleteInstrumentations($scope.instrumentations);
                 }
 
                 $scope.changeRenderer = function (renderer) {
@@ -155,12 +156,11 @@
             template:
                 '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
-//                    '<i style="float:right" data-ng-click="deleteGraph()" class="icon-remove-circle" ></i>' +
-//                    '<select data-ng-hide="heatmap" data-ng-model="renderer" data-ng-options="val as val for (key, val) in renderers"></select>' +
+                    '<i style="float:right" data-ng-click="deleteGraph()" class="icon-remove-circle" ></i>' +
                     '<br/>' +
                     '<div>{{graphtitle}}</div>' +
                     '<br/>' +
-                    '<button data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                    '<button  data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
                     '<br/><br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +

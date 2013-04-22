@@ -93,6 +93,7 @@
             this.width = 640;
             this.height = 200;
 
+            this.deletequeue = []
         };
 
         service.prototype.changeRange = function(ids, range) {
