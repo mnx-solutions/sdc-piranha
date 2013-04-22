@@ -5,22 +5,44 @@
     app.factory('Account', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
+        var account = null;
         service.getAccount = function() {
             var deferred = $q.defer();
 
+            if(!account) {
+                serverTab.call({
+                    name: 'getAccount',
+                    progress: function(err, job) {
+                    },
+                    done: function(err, job) {
+                        account = job.__read();
+                        deferred.resolve(account);
+                        $$track.marketing_lead(account);
+                    }
+                });
+            } else {
+                deferred.resolve(account);
+            }
+
+            return deferred.promise;
+        };
+
+        service.updateAccount = function(data) {
+            var deferred = $q.defer();
+
             serverTab.call({
-                name: 'getAccount',
+                name: 'updateAccount',
+                data: data.$$v,
                 progress: function(err, job) {
                 },
                 done: function(err, job) {
                     var resolver = job.__read();
                     deferred.resolve(resolver);
-                    $$track.marketing_lead(resolver);
                 }
-            })
+            });
 
             return deferred.promise;
-        }
+        };
 
         service.createKey = function(name, keyData) {
             var deferred = $q.defer();
@@ -41,10 +63,10 @@
                         deferred.resolve(job.__read());
                     }
                 }
-            })
+            });
 
             return deferred.promise;
-        }
+        };
 
         service.getKeys = function(noCache) {
             if(!noCache)
@@ -61,10 +83,10 @@
                     deferred.resolve(job.__read());
                 }
 
-            })
+            });
 
             return deferred.promise;
-        }
+        };
 
         service.deleteKey = function(fingerprint) {
             var deferred = $q.defer();
@@ -77,10 +99,10 @@
                 done: function(err, job) {
                     deferred.resolve(job.__read());
                 }
-            })
+            });
 
             return deferred;
-        }
+        };
 
         return service;
     }]);

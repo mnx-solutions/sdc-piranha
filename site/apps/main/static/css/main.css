@@ -284,6 +284,14 @@ th {
     text-align:left;
 }
 
+.item.list {
+    border-bottom:1px solid #ddd;
+    width:100%;
+    overflow:hidden;
+    margin-bottom:10px;
+	padding:3px;
+
+}
 
 .machines .item {
     border:1px solid #ddd;
@@ -630,7 +638,7 @@ div .disabled{
 }
 [class^="icon-"],
 [class*=" icon-"] {
-  background-image: url("/static/img/glyphicons-halflings.png");
+	background-image: url("/static/img/glyphicons-halflings.png");
 }
 
 .btn {
@@ -646,12 +654,26 @@ div .disabled{
 .page-header {
 /*	border:1px solid red;
 	padding:0px;
-*/}
+*/
+}
 .page-header form {
 	padding-top:20px;
 	padding-bottom:0px;
 	margin:0px;
 }
-.sortable {
+.sortable,.pointer {
 	cursor:pointer;
+}
+
+.wrap {
+	display: block;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.item.ssh:hover{
+	background-color:#fefefe;
+}
+.b {
+	font-weight:bold;
 }

@@ -21,6 +21,7 @@
             };
 
             $scope.account = Account.getAccount();
+            $scope.updateable = ['email','firstName','lastName','companyName','address','postalCode','city','state','country','phone'];
             $scope.sshKeys = Account.getKeys();
 
             $scope.userPlatform = $window.navigator.platform;
@@ -29,12 +30,12 @@
 
             $scope.openKeyDetails = null;
             $scope.setOpenDetails = function(id) {
-                if(id == $scope.openKeyDetails) {
+                if(id === $scope.openKeyDetails) {
                     $scope.openKeyDetails = null;
                 } else {
                     $scope.openKeyDetails = id;
                 }
-            }
+            };
 
             /* SSH key creating */
             $scope.createPending = false;
@@ -51,7 +52,25 @@
                         $scope.newKey = {};
                     }
                     $scope.createPending = false;
-                })
+                });
+            };
+
+            $scope.saving = false;
+
+            $scope.updateAccount = function () {
+                console.log('here');
+                $scope.saving = true;
+                Account.updateAccount($scope.account).then(function (newAccount) {
+                    $scope.account = newAccount;
+                    $scope.saving = false;
+                }, function (err) {
+                    $scope.saving = false;
+                });
+
+            };
+
+            function refreshKeyList() {
+                $scope.sshKeys = Account.getKeys(true);
             }
 
             /* SSH key deleting */
@@ -63,7 +82,7 @@
                         refreshKeyList();
                     });
                 });
-            }
+            };
 
             $scope.showKeygenDownload = function() {
                 // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
@@ -74,11 +93,7 @@
                 } else {
                     return false;
                 }
-            }
+            };
 
-
-            function refreshKeyList() {
-                $scope.sshKeys = Account.getKeys(true);
-            }
         }]);
 }(window.JP.getModule('Account')));

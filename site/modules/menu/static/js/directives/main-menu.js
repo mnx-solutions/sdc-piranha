@@ -32,7 +32,7 @@
                                     '</button>' +
                                     '<ul class="dropdown-menu">' +
 										'<li><a href="#!/account" data-translate><b>{{account.login}}</b></a></li>'+
-
+										'<li class="divider"></li>' +
                                         '<li data-ng-repeat="item in mainMenu">' +
                                             '<a href="#!/{{item.link}}" ' +
                                                 'data-translate ' +
@@ -40,6 +40,7 @@
                                                 'data-translate-module="{{item.link}}" ' +
                                             '>{{item.name}}</a>' +
                                         '</li>' +
+										'<li><a href="#!/account/payment" data-translate>Credit Card Info</a></li>' +
 										'<li class="divider"></li>' +
 										'<li><a href="/landing/forgetToken" data-translate>Logout</a></li>'+
                                     '</ul>' +
