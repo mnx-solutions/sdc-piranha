@@ -11,7 +11,8 @@
             "server",
             "machine",
             "debug",
-            "no-tracking"
+            "tracking",
+            "marketo"
         ],
 		"auth": true,
         "compress": true

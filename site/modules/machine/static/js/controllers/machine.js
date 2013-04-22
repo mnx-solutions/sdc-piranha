@@ -5,13 +5,14 @@
         'MachineController',
         [   '$scope',
             'requestContext',
+            'Dataset',
             'Machine',
             'Package',
             '$dialog',
             '$$track',
             'localization',
             '$q',
-            function ($scope, requestContext, Machine, Package, $dialog, $$track, localization, $q) {
+            function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.details', $scope);
 
@@ -115,7 +116,8 @@
 
                 $scope.packages = Package.package();
 
-                $q.when($scope.machine, function (m){
+                $q.when($scope.machine, function (m) {
+                    $scope.dataset = Dataset.dataset(m.image);
                     $scope.package = Package.package(m.package);
                     $scope.selectedPackage = Package.package(m.package);
                 });

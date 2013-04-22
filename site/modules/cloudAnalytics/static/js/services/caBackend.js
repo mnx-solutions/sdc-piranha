@@ -207,7 +207,18 @@
         }
 
         service.prototype.deleteInstrumentation = function(i) {
-            i.delete();
+
+            delete(ca.options.individual[i.id]);
+            ca.instrumentations[i.id].delete(function() {
+                delete(ca.instrumentations[i.id]);
+            });
+//            i.delete();
+        }
+        service.prototype.deleteInstrumentations = function(is) {
+            var self = this;
+            for(var i in is) {
+                self.deleteInstrumentation(is[i]);
+            }
         }
         service.prototype.getSeries = function(insts, time) {
 

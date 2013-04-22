@@ -1,3 +1,5 @@
+Munchkin.init('140-PAV-202');
+
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-39227360-1']); // XXX hardcoded
 _gaq.push(['_trackPageview']);

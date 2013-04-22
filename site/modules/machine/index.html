@@ -89,11 +89,6 @@
 	                            <span class="span2 text-medium align-right">{{machine.created | fromNow}}</span>
 
 	                            <span class="span1 pull-right state">
-                                    <!--
-	                                <a class="status btn btn-mini"
-	                                   data-ng-class="{'btn-success': (machine.state == 'running')}"
-	                                   >{{machine.state}}</a>
-	                                -->
                                     <machine-status machine="machine"></machine-status>
 	                            </span>
 	                        </span>
@@ -122,7 +117,7 @@
 	                                <div class="clearfix"></div>
 
 	                                <span class="key span2 data-translate">Image</span>
-	                                <span class="value span4">{{machine.dataset}}</span>
+	                                <span class="value span4">{{machine.dataset.name}}</span>
 	                                <div class="clearfix"></div>
 
 	                                <span class="key span2" data-translate>Created</span>
@@ -218,7 +213,7 @@
                     <h1>{{machine.name}}</h1>
                 </div>
 
-                <div class="pull-left span7 listing">
+                <div class="pull-left span7 listing text-medium">
                     <fieldset>
                         <legend data-translate>Overview</legend>
                         <div class="container span7">
@@ -238,7 +233,7 @@
 
                         <div class="container span7">
                             <span class="key span2" data-translate>Image</span>
-                            <span class="value span5 pull-right">{{machine.dataset}}&nbsp;</span>
+                            <span class="value span5 pull-right">{{dataset.name}}&nbsp;</span>
                         </div>
 
                         <div class="container span7">
