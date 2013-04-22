@@ -7,20 +7,21 @@
             localization.bind('account', $scope);
 
             $scope.account = Account.getAccount();
+            $scope.updateable = ['email','firstName','lastName','companyName','address','postalCode','city','state','country','phone'];
             $scope.sshKeys = Account.getKeys();
 
             $scope.userPlatform = $window.navigator.platform;
 
-            $scope.newKey = {}
+            $scope.newKey = {};
 
             $scope.openKeyDetails = null;
             $scope.setOpenDetails = function(id) {
-                if(id == $scope.openKeyDetails) {
+                if(id === $scope.openKeyDetails) {
                     $scope.openKeyDetails = null;
                 } else {
                     $scope.openKeyDetails = id;
                 }
-            }
+            };
 
             $scope.createPending = false;
             $scope.addNewKey = function() {
@@ -36,7 +37,21 @@
                         $scope.newKey = {};
                     }
                     $scope.createPending = false;
-                })
-            }
+                });
+            };
+
+            $scope.saving = false;
+
+            $scope.updateAccount = function () {
+                console.log('here');
+                $scope.saving = true;
+                Account.updateAccount($scope.account).then(function (newAccount) {
+                    $scope.account = newAccount;
+                    $scope.saving = false;
+                }, function (err) {
+                    $scope.saving = false;
+                });
+
+            };
         }]);
 }(window.JP.getModule('Account')));

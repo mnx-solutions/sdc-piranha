@@ -9,9 +9,17 @@
                         <div class="clearfix"></div>
                     </div>
                     <span data-translate>Login: {{account.login}}</span><br />
-                    <span data-translate>Email: {{account.email}}</span><br />
-                    <span data-translate>Name: {{account.firstName}} {{account.lastName}}</span> <br />
                     <span data-translate>Platform: {{userPlatform}}</span><br />
+
+                    <form data-ng-class="{saving: 'loading-medium'}">
+                        <div class="control-group" data-ng-repeat="k in updateable">
+                            <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
+                            <div class="controls">
+                                <input type="text" id="account_{{k}}" data-ng-model="account[k]" />
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" data-ng-click="updateAccount()" data-ng-disabled="saving" data-translate>Save</button>
+                    </form>
                     <br />
                     <span>SSH keys:</span>
                     <div data-ng-repeat="key in sshKeys">
