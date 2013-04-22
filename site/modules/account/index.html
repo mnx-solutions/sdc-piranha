@@ -25,6 +25,8 @@
                             <span class="sshkey-data">{{key.key}}</span>
                             <br />
                             <span>------------------------------------------------</span>
+                            <br />
+                            <button data-ng-click="deleteKey(key.name, key.fingerprint)">Delete this key</button>
                         </div>
                     </div>
                     <br />

@@ -5,7 +5,6 @@
     app.factory('Account', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
-        var account = {};
         service.getAccount = function() {
             var deferred = $q.defer();
 
@@ -28,7 +27,7 @@
 
             serverTab.call({
                 name: 'createKey',
-                data: {'name': name, 'key': keyData},
+                data: {name: name, key: keyData},
                 progress: function(err, job) {
                     console.log('Error on progress', err);
                     if(err) {
@@ -47,11 +46,15 @@
             return deferred.promise;
         }
 
-        service.getKeys = function() {
+        service.getKeys = function(noCache) {
+            if(!noCache)
+                noCache = false;
+
             var deferred = $q.defer();
 
             serverTab.call({
                 name: 'listKeys',
+                data: {noCache: noCache},
                 progress: function(err, job) {
                 },
                 done: function(err, job) {
@@ -61,6 +64,22 @@
             })
 
             return deferred.promise;
+        }
+
+        service.deleteKey = function(fingerprint) {
+            var deferred = $q.defer();
+            serverTab.call({
+                name: 'deleteKey',
+                data: {fingerprint: fingerprint},
+                progress: function(err, job) {
+
+                },
+                done: function(err, job) {
+                    deferred.resolve(job.__read());
+                }
+            })
+
+            return deferred;
         }
 
         return service;
