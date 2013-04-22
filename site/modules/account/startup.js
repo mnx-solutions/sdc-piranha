@@ -33,7 +33,13 @@ module.exports = function (scope, callback) {
 
     server.onCall('listKeys', function(call) {
         // get account ssh keys
-        call.cloud.listKeys(call.done.bind(call));
+
+        if(call.data.noCache) {
+            console.log('no cache refresh');
+            call.cloud.listKeys({login: 'my'}, call.done.bind(call), call.data.noCache);
+        } else {
+            call.cloud.listKeys(call.done.bind(call));
+        }
     });
 
     server.onCall('createKey', function(call) {
@@ -41,5 +47,10 @@ module.exports = function (scope, callback) {
         call.cloud.createKey({name: call.data.name, key: call.data.key}, call.done.bind(call));
     });
 
+    server.onCall('deleteKey', function(call) {
+        // delete ssh key
+        console.log('server call, delete key:', call.data.fingerprint);
+        call.cloud.deleteKey(call.data.fingerprint, call.done.bind(call));
+    })
     setImmediate(callback);
 }

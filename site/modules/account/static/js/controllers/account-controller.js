@@ -3,8 +3,22 @@
 (function (app) {
     app.controller(
         'AccountController',
-        ['$scope', '$window', '$q', 'Account', 'localization', 'requestContext', function ($scope, $window, $q, Account, localization, requestContext) {
+        ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', function ($scope, $window, $q, $dialog, Account, localization, requestContext) {
             localization.bind('account', $scope);
+
+            /* taken from the machines controller. Should be made globally available */
+            var confirm = function (question, callback) {
+                var title = 'Confirm';
+                var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
+
+                $dialog.messageBox(title, question, btns)
+                    .open()
+                    .then(function(result){
+                        if(result ==='ok'){
+                            callback();
+                        }
+                    });
+            };
 
             $scope.account = Account.getAccount();
             $scope.updateable = ['email','firstName','lastName','companyName','address','postalCode','city','state','country','phone'];
@@ -23,6 +37,7 @@
                 }
             };
 
+            /* SSH key creating */
             $scope.createPending = false;
             $scope.addNewKey = function() {
                 $scope.createPending = true;
@@ -31,7 +46,7 @@
 
                     if(key.name && key.fingerprint && key.key) {
                         // successful add
-                        $scope.sshKeys = Account.getKeys();
+                        refreshKeyList();
                         $scope.addsshKey = false;
 
                         $scope.newKey = {};
@@ -53,5 +68,21 @@
                 });
 
             };
+
+            function refreshKeyList() {
+                $scope.sshKeys = Account.getKeys(true);
+            }
+
+            /* SSH key deleting */
+            $scope.deleteKey = function(name, fingerprint) {
+                confirm(localization.translate($scope, null, 'Are you sure you want to delete "'+ name +'" SSH key'), function () {
+                    var deleteKey = Account.deleteKey(fingerprint);
+
+                    $q.when(deleteKey, function(data) {
+                        refreshKeyList();
+                    });
+                });
+            };
+
         }]);
 }(window.JP.getModule('Account')));
