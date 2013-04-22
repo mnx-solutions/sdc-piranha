@@ -65,6 +65,17 @@
                 });
             }
 
+            $scope.showKeygenDownload = function() {
+                // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
+                var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
+
+                if(supportedPlatforms.indexOf($scope.userPlatform) >= 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
 
             function refreshKeyList() {
                 $scope.sshKeys = Account.getKeys(true);

@@ -2,6 +2,7 @@
 
 var crypto = require('crypto');
 var conf = require('easy-config');
+var fs = require('fs');
 
 var pageID = conf.zuora.pageID;
 var apiKey = conf.zuora.apiKey;
@@ -30,6 +31,12 @@ function createSignature(path) {
 }
 
 module.exports = function (scope, app, callback) {
+
+    app.get('/keygenerator', function(req, res, next) {
+        var generator = fs.readFileSync(__dirname +'/dats/key-generator.sh');
+
+        res.send(generator);
+    })
 
     app.get('/iframe', function (req, res, next) {
         var path = 'id=' + pageID +
