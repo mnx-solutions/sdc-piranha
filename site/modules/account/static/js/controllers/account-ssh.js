@@ -2,8 +2,10 @@
 
 (function (app) {
     app.controller(
-        'AccountController',
+        'AccountSSHController',
         ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', function ($scope, $window, $q, $dialog, Account, localization, requestContext) {
+
+            requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
             /* taken from the machines controller. Should be made globally available */
@@ -20,11 +22,7 @@
                     });
             };
 
-            $scope.account = Account.getAccount();
-            $scope.updateable = ['email','firstName','lastName','companyName','address','postalCode','city','state','country','phone'];
             $scope.sshKeys = Account.getKeys();
-
-            $scope.userPlatform = $window.navigator.platform;
 
             $scope.newKey = {};
 
@@ -53,20 +51,6 @@
                     }
                     $scope.createPending = false;
                 });
-            };
-
-            $scope.saving = false;
-
-            $scope.updateAccount = function () {
-                console.log('here');
-                $scope.saving = true;
-                Account.updateAccount($scope.account).then(function (newAccount) {
-                    $scope.account = newAccount;
-                    $scope.saving = false;
-                }, function (err) {
-                    $scope.saving = false;
-                });
-
             };
 
             function refreshKeyList() {
