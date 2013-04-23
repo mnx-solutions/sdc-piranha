@@ -314,14 +314,22 @@ th {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.125);
 }
 
-.machines .item .text-medium a {
+/*.machines .item .text-medium a {
     display:block;
     text-overflow:ellipsis;
     white-space: nowrap;
     overflow:hidden;
 }
-
+*/
+.crop {
+	display:block;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow:hidden;
+    
+}
 .machines .item.header,.machines .item.header:hover {
+	text-align:left;
     font-weight:bold;
     white-space: nowrap;
     background-color:#f8f8f8;
@@ -329,14 +337,22 @@ th {
     -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 }
+.machines .item.header > span,.machines .item.header > span > span {
+/*	border:1px solid red;*/
+	padding:2px 0px 2px 2px;
+}
+
 
 .machines .item span {
-    padding:3px;
-/*    margin:0;*/
-/*    margin-right:1.5%;*/
+    padding:2px;
 }
-.machines .item > span {
+.machines .item > span > span {
 	float:left;
+/*	margin-left:5px !important;*/
+}
+
+.machines .item .icon-chevron-down{
+	margin-top:5px !important;
 }
 
 .machines .item .toolbox {
@@ -345,6 +361,7 @@ th {
     font-size:11px;
     border-top:1px solid #ddd;
     padding:0;
+	
 }
 
 .machines .toolbox-help {
@@ -356,9 +373,10 @@ th {
 }
 
 .machines .toolbox-list {
-    padding:0px 0px 0px 3px;
+    padding:5px 0px 0px 3px;
     border-right:1px solid #ddd;
     background-color:#fff;
+	min-height:140px;
 }
 
 /*
@@ -390,6 +408,7 @@ th {
 .action-container {
 	text-align:right;
 	padding-top:10px;
+	margin-right:14px;
 /*	border:1px solid red !important;*/
 }
 .action-container a {
@@ -630,9 +649,6 @@ div .disabled{
 /*	border:1px solid red !important;*/
 }
 
-.header {
-/*	border:1px solid red !important;*/
-}
 .modal  {
 	z-index:100000000;
 }
@@ -661,7 +677,7 @@ div .disabled{
 	padding-bottom:0px;
 	margin:0px;
 }
-.sortable,.pointer {
+.sortable, .pointer {
 	cursor:pointer;
 }
 

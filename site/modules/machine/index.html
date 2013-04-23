@@ -26,50 +26,40 @@
                         <span class="summary pull-left">&nbsp;</span>
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
-                              data-ng-switch on="sortIcon.id">
-                            <span data-translate>Name</span>
+                              data-ng-switch on="sortIcon.id" data-translate>
+							Name
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
-                        <span class="span2 text-medium" data-translate>IP</span>
+                        
                         <span class="span1 text-medium sortable"
                               data-ng-click="sortBy('datacenter')"
-                              data-ng-switch on="sortIcon.datacenter">
-                            <span data-translate>Datacenter</span>
+                              data-ng-switch on="sortIcon.datacenter" data-translate>
+							Datacenter
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
-                        <span class="span2 text-medium align-right sortable"
+						
+                        <span class="span1 text-medium sortable"
                               data-ng-click="sortBy('created')"
-                              data-ng-switch on="sortIcon.created">
-                            <span data-translate>Created</span>
+                              data-ng-switch on="sortIcon.created" data-translate>
+							Created
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
+
+						<span class="span2 text-medium" data-translate>IP</span>
+
                         <span class="span1 text-medium pull-right sortable"
                               data-ng-click="sortBy('state')"
-                              data-ng-switch on="sortIcon.state">
-                            <span data-translate>State</span>
+                              data-ng-switch on="sortIcon.state" data-translate>
+							State
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
                     </div>
 
 					<div>
-						<!--
-							@<kesiganes-implemendib>
-							senikaua kuni sisu ei kuvata, peaks olema "loading-medium" class
-							kui sisu on kuvatud/renderdatud ekraanile (ideaalis) siis eemaldatakse "loading-medium"
-							kehtib 
-								- alglaadimisel
-								- eelmine, j2rgmine leht
-								- otsimine
-							
-							juhul kui tulemuseks pole yhtegi masinat
-								- error > kuvatakse veateade. kasutage hetkel kuhuiganes veateadet kuvatakse
-								- masinaid pole - kuvatakse eraldi template/container. kogu olemasolev info (terve parent) tuleb replaceda teise sisuga (visuaalne osa tegemises @thomasm)
-						-->
-						
 	                    <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
 	                         class="item">
 
@@ -77,17 +67,18 @@
 	                            <span data-ng-class="{'icon-chevron-down': isCollapsed(machine.id), 'icon-chevron-up': !isCollapsed(machine.id)}"
 	                                  class="summary  pull-left">&nbsp;</span>
 
-	                            <span class="span2 text-medium">
+	                            <span class="span2 text-medium crop">
 	                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
 	                            </span>
 
-	                            <span class="span2 text-medium">
+	                            <span class="span1 text-medium">{{machine.datacenter}}</span>
+	                            <span class="span1 text-medium crop" alt="{{machine.created | fromNow}}" title="{{machine.created | fromNow}}">{{machine.created | fromNow}}</span>
+								
+								<span class="span2 text-medium crop">
 	                                <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
 	                            </span>
-
-	                            <span class="span1 text-medium">{{machine.datacenter}}</span>
-	                            <span class="span2 text-medium align-right">{{machine.created | fromNow}}</span>
-
+	                            
+								
 	                            <span class="span1 pull-right state">
                                     <machine-status machine="machine"></machine-status>
 	                            </span>
@@ -99,7 +90,7 @@
 	                        </div>
 
 	                        <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
-	                            <div class="pull-left toolbox-list" style="width:575px">
+	                            <div class="pull-left toolbox-list" style="padding-left:38px">
 	                                <span class="key span2" data-translate>Machine name</span>
 	                                <span class="value span4">{{machine.label}}</span>
 	                                <div class="clearfix"></div>
@@ -120,9 +111,9 @@
 	                                <span class="value span4">{{machine.dataset.name}}</span>
 	                                <div class="clearfix"></div>
 
-	                                <span class="key span2" data-translate>Created</span>
+	                                <!-- <span class="key span2" data-translate>Created</span>
 	                                <span class="value span4">{{machine.created}}</span>
-	                                <div class="clearfix"></div>
+	                                <div class="clearfix"></div> -->
 
 	                                <span class="key span2 noborder" data-translate>Datacenter</span>
 	                                <span class="value span4 noborder">{{machine.datacenter}}</span>
@@ -152,10 +143,10 @@
                                        data-ng-click="rebootMachine(machine.id)"
                                        data-toggle="modal"
                                        data-translate>Reboot</button>
-	                                <a href="#!/machine/details/{{machine.id}}"><button
+	                                <!-- <a href="#!/machine/details/{{machine.id}}"><button
 	                                   class="btn btn-mini btn-primary"
 	                                   data-translate>Edit</button>
-                                    </a>
+                                    </a> -->
 	                            </div>
 	                            <div class="clearfix"></div>
 	                        </div>
@@ -178,10 +169,10 @@
                         </ul>
                     </div>
                 </div>
-                <div class="pull-right" style="width:219px">
+                <div class="pull-right span4">
 	                <button data-ng-click="changeLocation('/machine/add/')"
                             class="btn btn-success btn-large"
-                            style="width:219px"
+
                             data-translate>Add new Machine</button>
     				<div class="clearfix"></div>
 					<br />
@@ -190,7 +181,7 @@
                         <p class="text-medium" data-translate>Help will open in new window</p>
                         <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
                             <div class="input-append">
-                                <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
+                                <input type="text" name="q" class="input-medium search-query" placeholder="Search help" data-translate="placeholder">
                                 <button type="submit" class="btn" data-translate>Search</button>
                             </div>
                         </form>
