@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-        'AccountSSHController',
+        'Account.SSHController',
         ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', function ($scope, $window, $q, $dialog, Account, localization, requestContext) {
 
             requestContext.setUpRenderContext('account.ssh', $scope);

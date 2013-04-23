@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-        'AccountEditController',
+        'Account.EditController',
         ['$scope', '$window', 'Account', 'localization', 'requestContext', function ($scope, $window, Account, localization, requestContext) {
             requestContext.setUpRenderContext('account.edit', $scope);
             localization.bind('account', $scope);
