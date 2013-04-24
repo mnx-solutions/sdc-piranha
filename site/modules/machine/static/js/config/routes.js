@@ -16,8 +16,8 @@ window.JP.main.config([
     }]);
 
 window.JP.main.run(['Menu', function (Menu) {
-        Menu.register({
-            name: 'Compute',
-            link: 'machine'
-        });
+        // Menu.register({
+        //     name: 'Compute',
+        //     link: 'machine'
+        // });
     }]);

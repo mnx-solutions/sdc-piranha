@@ -6,10 +6,10 @@
 			
 		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
 				<data-breadcrumb></data-breadcrumb>
-
 	            <div class="page-header">
 
-	                <h1>Machine analytics <small>{{zoneId}}</small></h1>
+	                <h1 class="pull-left">Machine analytics <small>{{zoneId}}</small></h1>
+					<div class="clearfix"></div>
 	            </div>
                 <select ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
                     <option value="">-- Choose Machine --</option>
