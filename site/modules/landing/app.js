@@ -82,12 +82,12 @@ module.exports = function (scope, app, callback) {
         res.redirect(redirectUrl);
     });
 
-    fs.readFile(function(err, data) {
+    fs.readFile(config.keyPath, function(err, data) {
         if(err) {
             scope.log.fatal('Failed to read private key', err);
             process.exit();
         }
         privateKey = data;
         callback();
-    });
+    } );
 }
