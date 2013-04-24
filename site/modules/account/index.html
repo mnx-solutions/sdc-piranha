@@ -61,6 +61,9 @@
 	                        Key:<br />
 	                        <textarea data-ng-model="newKey.data"></textarea><br />
 	                        <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
+                            <!--<div data-ng-show="showKeygenDownload()">
+                                <a href="">Download SSH keygen script for your platform</a>
+                            </div>-->
 	                        <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
 	                        <div class="loading-medium" data-ng-show="createPending"></div>
 	                    </div>
