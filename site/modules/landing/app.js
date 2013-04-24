@@ -9,7 +9,7 @@ module.exports = function (scope, app, callback) {
     var privateKey = null;
 
     if(!config) {
-        scope.log.warn('SSO config missing');
+        scope.log.fatal('SSO config missing');
         process.exit();
     }
 
@@ -46,7 +46,7 @@ module.exports = function (scope, app, callback) {
                 'sig': signature
             };
 
-            res.json({url: ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj))})
+            res.json({url: ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj))});
         } else {
             res.json({url: ssoUrl +'?'+ querystring});
         }
@@ -76,13 +76,13 @@ module.exports = function (scope, app, callback) {
         // as sso passes token using ?token=
         var token = req.query.token;
 
-        req.session.token = token;;
+        req.session.token = token;
         req.session.save();
 
         res.redirect(redirectUrl);
     });
 
-    fs.readFile(function(err, data) {
+    fs.readFile(config.keyPath,function(err, data) {
         if(err) {
             scope.log.fatal('Failed to read private key', err);
             process.exit();
