@@ -20,7 +20,7 @@
                 requestContext.setUpRenderContext('machine.index', $scope);
 
                 // Sorting
-                $scope.sortingOrder = 'created';
+                $scope.sortingOrder = null;
                 $scope.reverse = true;
                 $scope.sortIcon = {};
 
@@ -143,13 +143,7 @@
                 // Sorting
                 // change sorting order
                 $scope.sortBy = function (newSortingOrder) {
-
-                    if ($scope.sortingOrder === newSortingOrder) {
-                        $scope.reverse = !$scope.reverse;
-                    } else {
-                        $scope.reverse = false;
-                    }
-
+                    $scope.reverse = !$scope.reverse;
                     $scope.sortingOrder = newSortingOrder;
                     $scope.search();
                     $scope.sortIcon = {};
@@ -317,6 +311,11 @@
                 $scope.checkState = function(state) {
                     console.log(state);
                 };
+
+                if (!$scope.sortingOrder) {
+                    $scope.reverse = false;
+                    $scope.sortBy('created');
+                }
             }
 
         ]);
