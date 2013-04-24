@@ -6,6 +6,7 @@ var fs = require("fs");
 module.exports = function (scope, app, callback) {
 
     var config = scope.config.sso;
+    var privateKey = null;
 
     if(!config) {
         scope.log.warn('SSO config missing');
@@ -18,9 +19,6 @@ module.exports = function (scope, app, callback) {
         var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + req.body.redirectUrl).toString('base64');
         var returnUrl =   req.protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
         var ssoUrl = config.url +'/'+ req.body.method;
-
-        // get the developer private key
-        var privateKey = fs.readFileSync(config.keyPath);
 
         var date = new Date().toUTCString();
         var nonce = Math.random().toString(36).substring(7);
@@ -38,7 +36,7 @@ module.exports = function (scope, app, callback) {
         querystring += "&sig=" + encodeURIComponent(signature);
 
         // with signup mehtod, the url looks somewhat different
-        if(req.body.method == 'signup') {
+        if(req.body.method === 'signup') {
             var queryObj = {
                 'keyid': config.keyId,
                 'nonce': nonce,
@@ -46,7 +44,7 @@ module.exports = function (scope, app, callback) {
                 'permissions': JSON.stringify({"cloudapi": ["/my/*"]}),
                 'returnto': returnUrl,
                 'sig': signature
-            }
+            };
 
             res.json({url: ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj))})
         } else {
@@ -57,7 +55,7 @@ module.exports = function (scope, app, callback) {
     app.get('/saveUrl/', function(req, res) {
         req.saveUrl = req.query.returnUrl;
         res.redirect('/');
-    })
+    });
 
     app.get('/forgetToken', function(req, res) {
         req.session.token = null;
@@ -68,7 +66,7 @@ module.exports = function (scope, app, callback) {
 
     app.get('/changepassword/:uuid', function(req, res) {
         res.redirect(config.url +'/changepassword/'+ req.params.uuid);
-    })
+    });
 
     app.get('/saveToken/:url', function(req, res) {
 
@@ -84,5 +82,12 @@ module.exports = function (scope, app, callback) {
         res.redirect(redirectUrl);
     });
 
-	setImmediate(callback);
+    fs.readFile(function(err, data) {
+        if(err) {
+            scope.log.fatal('Failed to read private key', err);
+            process.exit();
+        }
+        privateKey = data;
+        callback();
+    });
 }
