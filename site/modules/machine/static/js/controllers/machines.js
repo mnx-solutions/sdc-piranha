@@ -14,8 +14,9 @@
             'Dataset',
             'Package',
             'localization',
+            'util',
 
-            function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization) {
+            function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.index', $scope);
 
@@ -310,6 +311,10 @@
 
                 $scope.checkState = function(state) {
                     console.log(state);
+                };
+
+                $scope.isPrivateIP = function (ip) {
+                    return util.isPrivateIP(ip);
                 };
 
                 if (!$scope.sortingOrder) {
