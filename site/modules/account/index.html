@@ -91,9 +91,7 @@
                         <h1 class="pull-left" data-translate>My keys</h1><div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
                         <div class="clearfix"></div>
                     </div>
-                    <br />
-                    <div class="pull-left span7 listing">
-                        <!-- <span>SSH keys:</span> -->
+                    <div class="pull-left span7 listing container">
                         <div data-ng-repeat="key in sshKeys">
                             <div data-ng-click="setOpenDetails($index);" class="item text-medium list pointer ssh">
                                 <span class="b">Key name</span>
@@ -120,38 +118,19 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                        <br />
-                        <button data-ng-click="addNewKey()">Add new SSH key</button>
 
                         <div data-ng-show="addsshKey">
                             <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
                             <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
                             <div class="loading-medium" data-ng-show="createPending"></div>
                         </div>
-                        <br />
                     </div>
                     <div class="span4 pull-right">
-                        <div class="alert alert-success shadow">
-                            <h4 data-translate>Your credentials</h4><br />
-                            <div class="text-small">
-                                <span class="b span1" data-translate>Login</span><span class="span2">{{account.login}}</span>
-                                <div class="clearfix"></div>
-                                <span class="b span1" data-translate>Email</span><span class="span2">{{account.email}}</span>
-                                <div class="clearfix"></div>
-                                <span class="b span1" data-translate>Name</span><span class="span2">{{account.firstName}} {{account.lastName}}</span>
-                                <div class="clearfix"></div>
-                                <span class="b span1" data-translate>Platform</span><span class="span2">{{userPlatform}}</span>
-                                <div class="clearfix"></div>
-                                <a class="note" href="/landing/changepassword/{{account.login}}" data-translate>Change my password</a>
-                            </div>
-                        </div>
-                        <div class="alert alert-success shadow">
-                            <h4 data-translate>Payment information</h4><br />
-                            <div class="text-small">
-                                <a href="#!/account/payment" data-translate>Add payment info</a>
-
-                            </div>
-                        </div>
+                        <!-- <div class="alert alert-success shadow"> -->
+                            <!-- <h4 data-translate>New SSH Key</h4><br /> -->
+							<button class="btn btn-success span3 btn-large" data-ng-click="addNewKey()">Add new SSH key</button>
+							<div class="clearfix"></div>
+                        <!-- </div> -->
                     </div>
                 </div>
             </div>
