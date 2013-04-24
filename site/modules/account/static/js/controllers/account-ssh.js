@@ -22,6 +22,22 @@
                     });
             };
 
+            /* ssh key creating popup with custom template */
+            var newKeyPopup = function(question, callback) {
+              var title = 'Add new ssh key';
+              var btns = [{result:'cancel', label:'Cancel'}, {result:'add', label:'Add', cssClass: 'btn-primary'}];
+              var templateUrl = 'account/static/template/dialog/message.html';
+
+              $dialog.messageBox(title, question, btns, templateUrl)
+                .open()
+                .then(function(result) {
+                  console.log(result.data);
+                  if(result.value === 'add') {
+                    callback(result.data);
+                  }
+                })
+            }
+
             $scope.sshKeys = Account.getKeys();
 
             $scope.newKey = {};
@@ -38,19 +54,24 @@
             /* SSH key creating */
             $scope.createPending = false;
             $scope.addNewKey = function() {
+              newKeyPopup('', function(keyData) {
+                $scope.newKey.name = keyData.keyName;
+                $scope.newKey.data = keyData.keyData;
+
                 $scope.createPending = true;
                 $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
                 $q.when($scope.addedKey, function(key) {
 
-                    if(key.name && key.fingerprint && key.key) {
-                        // successful add
-                        refreshKeyList();
-                        $scope.addsshKey = false;
+                  if(key.name && key.fingerprint && key.key) {
+                    // successful add
+                    refreshKeyList();
+                    $scope.addsshKey = false;
 
-                        $scope.newKey = {};
-                    }
-                    $scope.createPending = false;
+                    $scope.newKey = {};
+                  }
+                  $scope.createPending = false;
                 });
+              })
             };
 
             function refreshKeyList() {

@@ -6,8 +6,9 @@ dialogModule.controller('MessageBoxController', ['$scope', 'dialog', 'model', fu
   $scope.title = model.title;
   $scope.message = model.message;
   $scope.buttons = model.buttons;
+  $scope.data = {};
   $scope.close = function(res){
-    dialog.close(res);
+    dialog.close(res,$scope.data);
   };
 }]);
 
@@ -143,7 +144,7 @@ dialogModule.provider("$dialog", function(){
     };
 
     // closes the dialog and resolves the promise returned by the `open` method with the specified result.
-    Dialog.prototype.close = function(result){
+    Dialog.prototype.close = function(result, data){
       var self = this;
       var fadingElements = this._getFadingElements();
 
@@ -155,7 +156,7 @@ dialogModule.provider("$dialog", function(){
         return;
       }
 
-      this._onCloseComplete(result);
+      this._onCloseComplete(result, data);
 
       function removeTriggerClass(el){
         el.removeClass(self.options.triggerClass);
@@ -163,7 +164,7 @@ dialogModule.provider("$dialog", function(){
 
       function onCloseComplete(){
         if(self._open){
-          self._onCloseComplete(result);
+          self._onCloseComplete(result, data);
         }
       }
     };
@@ -190,9 +191,16 @@ dialogModule.provider("$dialog", function(){
       if(this.options.backdrop && this.options.backdropClick){ this.backdropEl.unbind('click', this.handleBackDropClick); }
     };
 
-    Dialog.prototype._onCloseComplete = function(result) {
+    Dialog.prototype._onCloseComplete = function(result, data) {
       this._removeElementsFromDom();
       this._unbindEvents();
+
+      if(Object.keys(data).length > 0) {
+        var buttonResult = result;
+        result = {};
+        result.value = buttonResult;
+        result.data = data;
+      }
 
       this.deferred.resolve(result);
     };
@@ -260,19 +268,20 @@ dialogModule.provider("$dialog", function(){
       // creates a new `Dialog` tied to the default message box template and controller.
       //
       // Arguments `title` and `message` are rendered in the modal header and body sections respectively.
-      // The `buttons` array holds an object with the following members for each button to include in the
+      // Template URL can be used to change the dialog template. The `buttons` array holds an object with the following members for each button to include in the
       // modal footer section:
       //
       // * `result`: the result to pass to the `close` method of the dialog when the button is clicked
       // * `label`: the label of the button
       // * `cssClass`: additional css class(es) to apply to the button for styling
-      messageBox: function(title, message, buttons){
-        return new Dialog({templateUrl: 'machine/static/template/dialog/message.html', controller: 'MessageBoxController', resolve:
+      messageBox: function(title, message, buttons, templateUrl){
+        return new Dialog({templateUrl: (templateUrl || 'machine/static/template/dialog/message.html'), controller: 'MessageBoxController', resolve:
           {model: function() {
             return {
               title: title,
               message: message,
-              buttons: buttons
+              buttons: buttons,
+              templateUrl: templateUrl
             };
           }
         }});

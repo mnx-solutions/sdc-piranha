@@ -17,6 +17,18 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
       each layout in layouts
         div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
+    script(type='text/javascript')
+        if (typeof(Zenbox) !== "undefined") {
+          Zenbox.init({
+            dropboxID:   "20174747",
+            url:         "https://zetazoft.zendesk.com",
+            tabTooltip:  "Support",
+            tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support.png",
+            tabColor:    "#375675",
+            tabPosition: "Left"
+          });
+        }
+
     div(class='JoyentPortal-module-menu')
         div(class="container navbar-static-bottom")
             span(class="span2")
