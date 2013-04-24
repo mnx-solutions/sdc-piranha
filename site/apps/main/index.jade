@@ -17,11 +17,6 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
       each layout in layouts
         div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
-    each link in js
-      script(type='text/javascript',src='#{link._url}')
-    each source in jss
-      script(type='text/javascript')!= source
-
     div(class='JoyentPortal-module-menu')
         div(class="container navbar-static-bottom")
             span(class="span2")
@@ -75,3 +70,10 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
                             a(href="http://joyent.com/solutions") Services
 
             div(class="clearfix")
+
+    each link in js
+        script(type='text/javascript',src='#{link._url}')
+    each source in jss
+        script(type='text/javascript')!= source
+    each partial in partials
+        script(type='text/ng-template',id='#{partial._id}')!= partial._content
