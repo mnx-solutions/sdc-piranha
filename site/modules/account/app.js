@@ -10,6 +10,8 @@ var tenantID = conf.zuora.tenantID;
 var host = 'https://apisandbox.zuora.com/apps/PublicHostedPaymentMethodPage.do?method=requestPage&';
 var action = 'https://apisandbox.zuora.com/apps/PublicHostedPaymentMethodPage.do';
 
+var createdTokens = {};
+
 function createToken() {
     var lib = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     var libArr = lib.split('');
@@ -18,6 +20,15 @@ function createToken() {
     for(i = 0; i < 32; i++) {
         token += libArr[Math.round(Math.random() * lib.length) -1];
     }
+    if(createdTokens[token]) {
+        return createToken();
+    }
+
+    createdTokens[token] = true;
+    setTimeout(function () {
+        delete createdTokens[token];
+    }, (2 * 24 * 60 * 60 * 1000));
+
     return token;
 }
 
@@ -33,10 +44,14 @@ function createSignature(path) {
 module.exports = function (scope, app, callback) {
 
     app.get('/keygenerator', function(req, res, next) {
-        var generator = fs.readFileSync(__dirname +'/dats/key-generator.sh');
-
-        res.send(generator);
-    })
+        fs.readFile(__dirname +'/dats/key-generator.sh','utf8', function (err, data) {
+            if(err) {
+                res.error(err);
+                return;
+            }
+            res.send(data);
+        });
+    });
 
     app.get('/iframe', function (req, res, next) {
         var path = 'id=' + pageID +
@@ -53,7 +68,7 @@ module.exports = function (scope, app, callback) {
             action: action,
             fields: {
                 id: pageID,
-                tenantID: tenantID,
+                tenantId: tenantID,
                 timestamp: Date.now(),
                 token: createToken(),
                 field_accountId: 'AccountID'

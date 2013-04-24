@@ -74,6 +74,15 @@ module.exports = function (scope, callback) {
         return credentials;
     }
 
+    function filterFields(machine) {
+        ['user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw'].forEach(function (f) {
+            if(machine.metadata[f]) {
+                machine.metadata[f] = '__cleaned';
+            }
+        });
+        return machine;
+    }
+
     server.onCall('MachineList', function (call) {
         call.log.info('Handling machine list event');
 
@@ -100,9 +109,14 @@ module.exports = function (scope, callback) {
 
                     call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
                 } else {
-                    machines.forEach(function (machine) {
+                    machines = machines.filter(function (el) {
+                        return el.state !== 'failed';
+                    });
+
+                    machines.forEach(function (machine, i) {
                         machine.datacenter = name;
                         machine.metadata.credentials = handleCredentials(machine);
+                        machines[i] = filterFields(machine);
                     });
 
                     response.status = 'complete';
@@ -237,7 +251,13 @@ module.exports = function (scope, callback) {
         var timer = setInterval(function () {
             call.log.debug('Polling for machine %s to become %s', machineId, state);
             client.getMachine(machineId, function (err, machine) {
-                if (!err) {
+                if (err) {
+                    call.log.error('Cloud polling failed %o', err);
+                } else if (machine.state === 'failed') {
+                    call.done(new Error('Machine fell into failed state'));
+                    clearInterval(timer);
+                    clearTimeout(timer2);
+                } else {
                     if (state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         call.done(null, machine);
@@ -247,8 +267,6 @@ module.exports = function (scope, callback) {
                         call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
                         call.step = {state: machine.state};
                     }
-                } else {
-                    call.log.error('Cloud polling failed %o', err);
                 }
             });
         }, 5000);

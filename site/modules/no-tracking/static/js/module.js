@@ -1,3 +1,3 @@
 'use strict';
 
-window.JP.createModule('Tracking');
+window.JP.createModule('No-Tracking');

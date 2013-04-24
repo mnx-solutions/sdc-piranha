@@ -13,4 +13,4 @@
         }
     }]);
 
-}(window.JP.getModule('Tracking')));
+}(window.JP.getModule('No-Tracking')));

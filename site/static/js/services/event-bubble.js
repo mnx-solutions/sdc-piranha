@@ -18,7 +18,7 @@ window.JP.main.service(
                         listener.apply($s, Array.prototype.slice.call(arguments, 1));
                     });
                     var wrapper = function () {
-                        delete eventList[event].indexOf(wrapper);
+                        delete eventList[event][eventList[event].indexOf(wrapper)];
                         return unregister();
                     };
                     eventList[event].push(wrapper);

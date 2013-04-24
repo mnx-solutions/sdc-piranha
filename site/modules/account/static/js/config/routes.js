@@ -6,6 +6,14 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Account',
             action: 'account.index'
         })
+        .when('/account/edit', {
+            title: 'Account edit',
+            action: 'account.edit'
+        })
+        .when('/account/ssh', {
+            title: 'SSH keys',
+            action: 'account.ssh'
+        })
         .when('/account/payment', {
             title: 'Payment info',
             action: 'account.payment'

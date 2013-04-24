@@ -22,6 +22,18 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
     each source in jss
       script(type='text/javascript')!= source
 
+    script(type='text/javascript')
+        if (typeof(Zenbox) !== "undefined") {
+          Zenbox.init({
+            dropboxID:   "20174747",
+            url:         "https://zetazoft.zendesk.com",
+            tabTooltip:  "Support",
+            tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support.png",
+            tabColor:    "black",
+            tabPosition: "Left"
+          });
+        }
+
     div(class='JoyentPortal-module-menu')
         div(class="container navbar-static-bottom")
             span(class="span2")

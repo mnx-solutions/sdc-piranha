@@ -2,8 +2,10 @@
 
 (function (app) {
     app.controller(
-        'AccountController',
+        'Account.SSHController',
         ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', function ($scope, $window, $q, $dialog, Account, localization, requestContext) {
+
+            requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
             /* taken from the machines controller. Should be made globally available */
@@ -20,11 +22,7 @@
                     });
             };
 
-            $scope.account = Account.getAccount();
-            $scope.updateable = ['email','firstName','lastName','companyName','address','postalCode','city','state','country','phone'];
             $scope.sshKeys = Account.getKeys();
-
-            $scope.userPlatform = $window.navigator.platform;
 
             $scope.newKey = {};
 
@@ -55,20 +53,6 @@
                 });
             };
 
-            $scope.saving = false;
-
-            $scope.updateAccount = function () {
-                console.log('here');
-                $scope.saving = true;
-                Account.updateAccount($scope.account).then(function (newAccount) {
-                    $scope.account = newAccount;
-                    $scope.saving = false;
-                }, function (err) {
-                    $scope.saving = false;
-                });
-
-            };
-
             function refreshKeyList() {
                 $scope.sshKeys = Account.getKeys(true);
             }
@@ -87,12 +71,7 @@
             $scope.showKeygenDownload = function() {
                 // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
                 var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
-
-                if(supportedPlatforms.indexOf($scope.userPlatform) >= 0) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
             };
 
         }]);
