@@ -72,8 +72,9 @@
 
                     $scope.newKey = {};
                   } else {
+                    console.log(key);
                     notification.push(null, {type: 'error'},
-                      localization.translate($scope, null, 'Failed to add new key'));
+                      localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
                   }
                   $scope.createPending = false;
                 });
