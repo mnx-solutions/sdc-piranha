@@ -100,14 +100,9 @@
                             <div class="clearfix"></div>
                         </div>
                         <br />
-                        <button data-ng-click="addsshKey=!addsshKey">Add new SSH key</button>
+                        <button data-ng-click="addNewKey()">Add new SSH key</button>
 
                         <div data-ng-show="addsshKey">
-                            Name:<br />
-                            <input data-ng-model="newKey.name" placeholder="ssh key name" /><br />
-                            <br />
-                            Key:<br />
-                            <textarea data-ng-model="newKey.data"></textarea><br />
                             <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
                             <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
                             <div class="loading-medium" data-ng-show="createPending"></div>

@@ -1,0 +1,16 @@
+<div>
+    <div class="modal-header">
+        <h1>{{ title }}</h1>
+        Name:<br />
+        <input data-ng-model="data.keyName" placeholder="ssh key name" /><br />
+    </div>
+    <div class="modal-body">
+        <p>{{ message }}</p>
+        Key:<br />
+        <textarea data-ng-model="data.keyData"></textarea><br />
+
+    </div>
+    <div class="modal-footer">
+        <button ng-repeat="btn in buttons" ng-click="close(btn.result)" class=btn ng-class="btn.cssClass">{{ btn.label }}</button>
+    </div>
+</div>
