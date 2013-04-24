@@ -31,8 +31,8 @@
                                         '<span class="caret"></span>' +
                                     '</button>' +
                                     '<ul class="dropdown-menu">' +
-										'<li><a href="#!/account" data-translate><b>{{account.login}}</b></a></li>'+
-										'<li class="divider"></li>' +
+										// '<li><a href="#!/account" data-translate><b>{{account.login}}</b></a></li>'+
+										// '<li class="divider"></li>' +
                                         '<li data-ng-repeat="item in mainMenu">' +
                                             '<a href="#!/{{item.link}}" ' +
                                                 'data-translate ' +
