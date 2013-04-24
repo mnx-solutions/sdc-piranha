@@ -1,0 +1,226 @@
+
+<div class="container-fluid content-container">
+<div class="container content-container-inner">
+<div class="container form-horisontal">
+<data-breadcrumb></data-breadcrumb>
+
+<div class="page-header">
+    <h1>{{machine.name}}</h1>
+</div>
+
+<div class="pull-left span7 listing text-medium">
+    <fieldset>
+        <legend data-translate>Overview</legend>
+        <div class="container span7">
+            <span class="key span2" data-translate>UUID</span>
+            <span class="value span5 pull-right">{{machine.id}}&nbsp;</span>
+        </div>
+
+        <div data-ng-show="machine.name" class="container span7">
+            <span class="key span2" data-translate>Machine name</span>
+            <span class="value span5 pull-right">{{machine.name}}&nbsp;</span>
+        </div>
+
+        <div class="container span7">
+            <span class="key span2" data-translate>Type</span>
+            <span class="value span5 pull-right">{{machine.type}}&nbsp;</span>
+        </div>
+
+        <div class="container span7">
+            <span class="key span2" data-translate>Image</span>
+            <span class="value span5 pull-right">{{dataset.name}}&nbsp;</span>
+        </div>
+
+        <div class="container span7">
+            <span class="key span2" data-translate>Memory</span>
+            <span class="value span5 pull-right">{{machine.memory | sizeFormat}}&nbsp;</span>
+        </div>
+
+        <div class="container span7">
+            <span class="key span2" data-translate>Disk</span>
+            <span class="value span5 pull-right">{{machine.disk | sizeFormat}}&nbsp;</span>
+        </div>
+
+        <div class="container span7">
+            <span class="key span2" data-translate>IP addresses</span>
+                            <span class="value span5 pull-right">
+                                <span data-ng-repeat="ip in machine.ips">{{ip}}&nbsp;</span>
+                            </span>
+        </div>
+
+        <div class="container span7">
+            <span class="key span2" data-translate>Created</span>
+                            <span class="value span5 pull-right">
+                                {{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}&nbsp;
+                            </span>
+        </div>
+        <div class="container span7">
+            <span class="key span2" data-translate>Datacenter</span>
+            <span class="value span5 pull-right">{{machine.datacenter}}&nbsp;</span>
+        </div>
+
+        <div class="container span7" data-ng-show="machine.primaryIps.length">
+            <span class="key span2" data-translate>Login</span>
+            <span class="value span5 pull-right">ssh root@{{machine.primaryIps[0]}}&nbsp;</span>
+        </div>
+    </fieldset>
+    <br />
+    <fieldset data-ng-show="machine.metadata.credentials">
+        <legend data-translate>Credentials</legend>
+
+        <table class="table table-striped text-medium">
+            <thead>
+            <th style="width:115px !important">System</th>
+            <th style="width:115px !important">Username</th>
+            <th style="width:155px !important">Password</th>
+            <th>&nbsp;</th>
+            </thead>
+            <tr data-ng-repeat="(key,credential) in machine.metadata.credentials">
+                <td>{{credential.system}}</td>
+                <td>{{credential.username}}</td>
+                <td>
+                    <span data-ng-show="isPasswordVisible(key)">************</span>
+                    <span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span>
+                </td>
+                <td nowrap>
+                    <a class="show-password" data-translate data-ng-click="togglePassword(key)">[ Show ]</a>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <br />
+    <fieldset>
+        <legend>
+            <span data-translate>Tags</span>
+            <small data-translate>Add tags for convenient searching</small>
+        </legend>
+        <p class="text-small muted" data-translate>
+            Tags are metadata stored as key-value pairs to make it easier for you to find, sort,
+            and identify your machines.
+        </p>
+        <div class="clearfix"></div>
+        <div data-ng-class="{'loading-medium behind': (!tagcloud || tagsave)}">
+            <div class="container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
+                <div data-ng-show="!o.edit">
+                    <span class="key span3" data-ng-class="{error: o.conflict}">{{o.key}}</span>
+	                                <span class="value span4" data-ng-class="{error: o.conflict}">
+	                                    {{o.val}}
+	                                    <span class="icon-trash pull-right"
+                                              data-ng-click="removeTag(key)"
+                                              style="margin-top:5px;margin-left:30px"></span>
+	                                    <div class="clearfix"></div>
+	                                </span>
+                </div>
+
+                <div class="muted clearfix" style="margin-top:10px" data-ng-show="o.edit">
+                    <div class="controls control-group" data-ng-class="{error: o.conflict}">
+                        <input type="text"
+                               class="input-large"
+                               placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
+                        <input type="text"
+                               class="input-large span3"
+                               placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
+	                                    <span class="icon-trash pull-right"
+                                              data-ng-click="removeTag(key)"
+                                              style="margin-top:5px;margin-left:30px"></span>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="controls control-group" style="margin-right:80px	">
+            <button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>
+        </div>
+    </fieldset>
+    <br />
+
+    <fieldset>
+        <legend data-translate>Resize machine</legend>
+        <p class="text-small muted" data-translate>
+            It may not always be possible to resize based on the constraints of your current server location.
+        </p>
+
+        <p data-ng-show="selectedPackage">
+            <span data-translate>Memory</span>:
+            <span data-translate>{{selectedPackage.memory | sizeFormat}}</span><br />
+            <span data-translate>Disk</span>:
+            <span data-translate>{{selectedPackage.disk | sizeFormat}}</span><br />
+            <span data-translate>vCPUs</span>:
+            <span data-translate>{{selectedPackage.vcpus}}</span>
+        </p>
+
+        <div class="control-group">
+            <label class="control-label" data-translate>New Package</label>
+
+            <div class="controls input-append">
+
+                <select name="resize"
+                        data-ng-model="selectedPackage"
+                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in (packages | orderBy:'sequence')"></select>
+                <br /><br />
+                <button class="btn btn-primary" type="submit"
+                        ng-click="clickResize()" data-translate>
+                    Resize
+                </button>
+
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="clearfix"></div>
+</div>
+
+<div class="span4 pull-right" style="margin-top:40px">
+    <div class="well shadow">
+        <button role="button"
+                data-ng-disabled="machine.job.running || machine.state != 'stopped'"
+                data-ng-click="clickStart(machine.id)"
+                data-toggle="modal"
+                data-translate
+                class="btn btn-small btn-success">Start</button>
+        <button role="button"
+                data-ng-disabled="machine.job.running || machine.state != 'running'"
+                data-ng-click="clickStop(machine.id)"
+                data-toggle="modal"
+                data-translate
+                class="btn btn-small">Stop</button>
+        <button role="button"
+                data-ng-disabled="machine.job.running || machine.state != 'running'"
+                data-ng-click="clickReboot(machine.id)"
+                data-toggle="modal"
+                data-translate
+                class="btn btn-small">Reboot</button>
+        <button role="button"
+                data-ng-disabled="machine.job.running || machine.state != 'stopped'"
+                data-ng-click="clickDelete(machine.id)"
+                data-translate
+                data-toggle="modal"
+                class="btn btn-small btn-danger">Delete</button>
+    </div>
+    <div class="clearfix"></div>
+    <div class="alert alert-success shadow">
+        <h4 data-translate>Need help?</h4>
+        <p data-translate>Help will open in new window</p>
+        <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
+            <div class="input-append">
+                <input type="text" name="q" class="span2 search-query" placeholder="Search">
+                <button type="submit" class="btn" data-translate>Search</button>
+            </div>
+        </form>
+    </div>
+    <div class="alert shadow">
+        <h4 data-translate>Analytics</h4>
+        <p data-translate>Check out this machines analytics.</p>
+        <a href="#!/cloudAnalytics/{{machine.id}}"><img src="/static/img/analytics.png" hspace="10" vspace="20" border="0"></a>
+    </div>
+    <div class="clearfix"></div>
+</div>
+<div class="clearfix"></div>
+</div>
+</div>
+<div class="clearfix"></div>
+</div>
