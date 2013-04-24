@@ -3,7 +3,8 @@
 (function (app) {
     app.controller(
         'Account.SSHController',
-        ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', function ($scope, $window, $q, $dialog, Account, localization, requestContext) {
+        ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', 'notification',
+          function ($scope, $window, $q, $dialog, Account, localization, requestContext, notification) {
 
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
@@ -66,8 +67,13 @@
                     // successful add
                     refreshKeyList();
                     $scope.addsshKey = false;
+                    notification.push(null, {type: 'notification'},
+                      localization.translate($scope, null, 'New key successfully added'));
 
                     $scope.newKey = {};
+                  } else {
+                    notification.push(null, {type: 'error'},
+                      localization.translate($scope, null, 'Failed to add new key'));
                   }
                   $scope.createPending = false;
                 });
@@ -84,6 +90,7 @@
                     var deleteKey = Account.deleteKey(fingerprint);
 
                     $q.when(deleteKey, function(data) {
+                        notification.push(null, {type: 'notification'}, localization.translate($scope, null, 'Key successfully deleted'));
                         refreshKeyList();
                     });
                 });
