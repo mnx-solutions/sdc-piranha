@@ -3,7 +3,14 @@
     <div class="container content-container-inner">
         <div class="machines container">
             <data-breadcrumb></data-breadcrumb>
-
+			<div class="alert alert-error alert-global">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<h4>Found some errors!</h4>
+				<div>Error #1</div>
+				<div>Error #2</div>
+				<div>Error #3 (errors will be pushed into this.parent [only 1 (one) container ] not N times containers)</div>
+			</div>
+			
             <div class="page-header">
                 <h1 class="pull-left" data-translate>Machines</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
                 <form class="form-search pull-right">
