@@ -43,12 +43,16 @@ function createSignature(path) {
 
 module.exports = function (scope, app, callback) {
 
-    app.get('/keygenerator', function(req, res, next) {
-        fs.readFile(__dirname +'/dats/key-generator.sh','utf8', function (err, data) {
+    app.get('/key-generator.sh', function(req, res, next) {
+        fs.readFile(__dirname +'/data/key-generator.sh','utf8', function (err, data) {
             if(err) {
-                res.error(err);
+                scope.log.error(err);
                 return;
             }
+            // replace username in the script with correct one
+            data = data.replace('{{username}}', 'admin');
+
+            res.set('Content-type', 'application/x-sh');
             res.send(data);
         });
     });

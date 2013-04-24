@@ -31,15 +31,15 @@
               $dialog.messageBox(title, question, btns, templateUrl)
                 .open()
                 .then(function(result) {
-                  console.log(result.data);
                   if(result.value === 'add') {
                     callback(result.data);
                   }
                 })
-            }
+            };
 
             $scope.sshKeys = Account.getKeys();
 
+            $scope.userPlatform = $window.navigator.platform;
             $scope.newKey = {};
 
             $scope.openKeyDetails = null;
@@ -93,6 +93,10 @@
                 // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
                 var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
                 return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
+            };
+
+            $scope.clickKeygenDownload = function() {
+              window.location.href = '/main/account/key-generator.sh';
             };
 
         }]);

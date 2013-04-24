@@ -9,7 +9,7 @@ echo
 
 TRIES=0
 STATUS_CODE=201
-USER="admin"
+USER="{{username}}"
 
 while [  $TRIES -lt 3 ]; do
 
