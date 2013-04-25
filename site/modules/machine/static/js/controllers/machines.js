@@ -155,7 +155,7 @@
                         $scope.sortIcon[newSortingOrder] = 'up';
                     }
                 };
-
+                $scope.initializing = true;
                 // Searching
                 $scope.search = function () {
                     // filter by search term
@@ -170,6 +170,13 @@
                     }
                     $scope.currentPage = 0;
                     $scope.groupToPages();
+
+                    $q.when($scope.machines, function(machines) {
+                        if(machines.final && $scope.initializing) {
+                            $scope.initializing = false;
+                        }
+
+                    });
                 };
 
                 // Pagination

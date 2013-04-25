@@ -22,7 +22,7 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="pull-left">
+            <div class="pull-left" data-ng-show="pagedMachines.length" >
                 <div class="btn-group pull-right"></div>
                 <div class="clearfix"></div>
 
@@ -148,6 +148,7 @@
                             <div class="clearfix"></div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="pagination pagination-small pagination-centered span8">
@@ -165,6 +166,9 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+            <div class="pull-left" data-ng-hide="(pagedMachines.length || initializing)">
+                NO MACHINES VIEW
             </div>
             <div class="pull-right span4">
                 <button data-ng-click="changeLocation('/machine/add/')"
