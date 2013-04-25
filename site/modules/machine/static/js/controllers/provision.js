@@ -2,7 +2,7 @@
 
 (function (app, ng) {
     app.controller(
-        'ProvisionController',
+        'Machine.ProvisionController',
         [   '$scope',
             '$filter',
             'requestContext',

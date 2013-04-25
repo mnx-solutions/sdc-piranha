@@ -2,7 +2,7 @@
 
 (function (ng, app) {
     app.controller(
-        'MachinesController',
+        'Machine.IndexController',
         [
             '$scope',
             '$filter',
