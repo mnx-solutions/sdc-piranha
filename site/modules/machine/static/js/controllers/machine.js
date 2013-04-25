@@ -12,7 +12,8 @@
             '$$track',
             'localization',
             '$q',
-            function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q) {
+            'util',
+            function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.details', $scope);
 
@@ -36,17 +37,10 @@
                 $scope.tagnr = 0;
                 $scope.visiblePasswords = {};
 
-                function isNotPrivateIp(ip) {
-                    var parts = ip.split('.');
-                    if (+parts[0] === 10 ||
-                        (+parts[0] === 172 && (+parts[1] >= 16 && +parts[1] <= 31)) ||
-                        (+parts[0] === 192 && +parts[1] === 168)) {
-                        return false;
-                    }
-                    return true;
-                }
                 $q.when($scope.machine, function (m) {
-                    m.primaryIps = m.ips.filter(isNotPrivateIp);
+                    m.primaryIps = m.ips.filter(function (ip) {
+                        return !util.isPrivateIP(ip);
+                    });
                 });
 
 

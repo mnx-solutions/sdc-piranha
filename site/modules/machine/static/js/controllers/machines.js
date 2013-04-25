@@ -14,13 +14,14 @@
             'Dataset',
             'Package',
             'localization',
+            'util',
 
-            function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization) {
+            function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.index', $scope);
 
                 // Sorting
-                $scope.sortingOrder = 'created';
+                $scope.sortingOrder = null;
                 $scope.reverse = true;
                 $scope.sortIcon = {};
 
@@ -143,13 +144,7 @@
                 // Sorting
                 // change sorting order
                 $scope.sortBy = function (newSortingOrder) {
-
-                    if ($scope.sortingOrder === newSortingOrder) {
-                        $scope.reverse = !$scope.reverse;
-                    } else {
-                        $scope.reverse = false;
-                    }
-
+                    $scope.reverse = !$scope.reverse;
                     $scope.sortingOrder = newSortingOrder;
                     $scope.search();
                     $scope.sortIcon = {};
@@ -160,7 +155,7 @@
                         $scope.sortIcon[newSortingOrder] = 'up';
                     }
                 };
-
+                $scope.initializing = true;
                 // Searching
                 $scope.search = function () {
                     // filter by search term
@@ -175,6 +170,13 @@
                     }
                     $scope.currentPage = 0;
                     $scope.groupToPages();
+
+                    $q.when($scope.machines, function(machines) {
+                        if(machines.final && $scope.initializing) {
+                            $scope.initializing = false;
+                        }
+
+                    });
                 };
 
                 // Pagination
@@ -317,6 +319,15 @@
                 $scope.checkState = function(state) {
                     console.log(state);
                 };
+
+                $scope.isPrivateIP = function (ip) {
+                    return util.isPrivateIP(ip);
+                };
+
+                if (!$scope.sortingOrder) {
+                    $scope.reverse = false;
+                    $scope.sortBy('created');
+                }
             }
 
         ]);

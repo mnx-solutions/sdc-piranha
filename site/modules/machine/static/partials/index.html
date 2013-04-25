@@ -22,7 +22,7 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="pull-left">
+            <div class="pull-left" data-ng-show="pagedMachines.length" >
                 <div class="btn-group pull-right"></div>
                 <div class="clearfix"></div>
 
@@ -95,55 +95,48 @@
 
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
                             <div class="pull-left toolbox-list" style="padding-left:38px">
-                                <span class="key span2" data-translate>Machine name</span>
-                                <span class="value span4">{{machine.label}}</span>
+                                <span class="key span2 data-translate">Memory</span>
+                                <span class="value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
                                 <div class="clearfix"></div>
 
-                                <span class="key span2" data-translate>Type</span>
-                                <span class="value span4">{{machine.type}}</span>
-                                <div class="clearfix"></div>
-
-                                <span class="key span2" data-translate>IP(s)</span>
-
-	                                <span class="value span4">
-	                                    <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
-	                                </span>
-
+                                <span class="key span2 data-translate">Disk</span>
+                                <span class="value span4">{{machine.disk | sizeFormat}}&nbsp;</span>
                                 <div class="clearfix"></div>
 
                                 <span class="key span2 data-translate">Image</span>
                                 <span class="value span4">{{machine.dataset.name}}</span>
                                 <div class="clearfix"></div>
 
-                                <!-- <span class="key span2" data-translate>Created</span>
-                                <span class="value span4">{{machine.created}}</span>
-                                <div class="clearfix"></div> -->
-
-                                <span class="key span2 noborder" data-translate>Datacenter</span>
-                                <span class="value span4 noborder">{{machine.datacenter}}</span>
+                                <span class="key span2" data-translate>IP(s)</span>
+                                <span class="value span4">
+                                    <span data-ng-repeat="ip in machine.ips">
+                                        <!-- TODO: !isPrivateIP -->
+                                        <span data-ng-show="isPrivateIP(ip)">{{ip}}</span>
+                                    </span>
+                                </span>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="pull-right action-container">
                                 <button role="button"
                                         class="btn btn-mini"
-                                        data-ng-disabled="machine.state == 'running'"
+                                        data-ng-disabled="machine.state == 'running' || (machine.job && !machine.job.finished)"
                                         data-ng-click="startMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Start</button>
                                 <button role="button"
                                         class="btn btn-mini"
-                                        data-ng-disabled="machine.state == 'stopped'"
+                                        data-ng-disabled="machine.state == 'stopped' || (machine.job && !machine.job.finished)"
                                         data-ng-click="stopMachine(machine.id)"
                                         data-translate>Stop</button>
                                 <button role="button"
                                         class="btn btn-mini"
-                                        data-ng-disabled="machine.state != 'stopped'"
+                                        data-ng-disabled="machine.state != 'stopped' || (machine.job && !machine.job.finished)"
                                         data-ng-click="deleteMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Delete</button>
                                 <button role="button"
                                         class="btn btn-mini"
-                                        data-ng-disabled="machine.state != 'running'"
+                                        data-ng-disabled="machine.state != 'running' || (machine.job && !machine.job.finished)"
                                         data-ng-click="rebootMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Reboot</button>
@@ -155,6 +148,7 @@
                             <div class="clearfix"></div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="pagination pagination-small pagination-centered span8">
@@ -172,6 +166,9 @@
                         </li>
                     </ul>
                 </div>
+            </div>
+            <div class="pull-left" data-ng-hide="(pagedMachines.length || initializing)">
+                NO MACHINES VIEW
             </div>
             <div class="pull-right span4">
                 <button data-ng-click="changeLocation('/machine/add/')"
