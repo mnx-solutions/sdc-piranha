@@ -110,6 +110,7 @@
                                 <span class="key span2" data-translate>IP(s)</span>
                                 <span class="value span4">
                                     <span data-ng-repeat="ip in machine.ips">
+                                        <!-- TODO: !isPrivateIP -->
                                         <span data-ng-show="isPrivateIP(ip)">{{ip}}</span>
                                     </span>
                                 </span>

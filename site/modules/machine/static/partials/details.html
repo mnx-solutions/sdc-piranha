@@ -177,25 +177,25 @@
 <div class="span4 pull-right" style="margin-top:40px">
     <div class="well shadow">
         <button role="button"
-                data-ng-disabled="machine.job.running || machine.state != 'stopped'"
+                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
                 data-ng-click="clickStart(machine.id)"
                 data-toggle="modal"
                 data-translate
                 class="btn btn-small btn-success">Start</button>
         <button role="button"
-                data-ng-disabled="machine.job.running || machine.state != 'running'"
+                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
                 data-ng-click="clickStop(machine.id)"
                 data-toggle="modal"
                 data-translate
                 class="btn btn-small">Stop</button>
         <button role="button"
-                data-ng-disabled="machine.job.running || machine.state != 'running'"
+                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
                 data-ng-click="clickReboot(machine.id)"
                 data-toggle="modal"
                 data-translate
                 class="btn btn-small">Reboot</button>
         <button role="button"
-                data-ng-disabled="machine.job.running || machine.state != 'stopped'"
+                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
                 data-ng-click="clickDelete(machine.id)"
                 data-translate
                 data-toggle="modal"
