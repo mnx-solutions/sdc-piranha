@@ -1,0 +1,7 @@
+{
+	"em": {
+        "auth":true,
+		"route": "/signup",
+		"modules": ["localization", "tracking", "signup", "menu" ]
+	}
+}

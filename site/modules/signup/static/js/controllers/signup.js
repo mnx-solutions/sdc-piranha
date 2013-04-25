@@ -8,6 +8,9 @@
 function ($scope, requestContext, navigation) {
     requestContext.setUpRenderContext('signup.index', $scope);
 
+    console.log('here');
+    console.log($('#signupStep').val());
+
     // Build navigation stack
     navigation.add({
         id: 'step-1',

@@ -1,0 +1,19 @@
+doctype 5
+html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
+  head
+    meta(charset='utf-8')
+    meta(name='fragment',content='!')
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title(data-ng-bind='windowTitle') MAIN
+    each link in css
+        link(rel='stylesheet',href='#{link._url}',type='text/css')
+  body()
+    div(data-ng-switch='subview', class='subview container ng-cloak', ng-cloak)
+                each layout in layouts
+                    div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}')!= layout.data
+
+    each link in js
+      script(type='text/javascript',src='#{link._url}')
+    each source in jss
+          script(type='text/javascript')!= source
+    input#signupStep(type='hidden',value='#{signupStep}')

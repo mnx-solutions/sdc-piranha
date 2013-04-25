@@ -1,0 +1,16 @@
+body {
+	background-color:#375675 !important;
+	background-image:url('/static/img/top-shade.png');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+}
+.brand {
+	background-image: url('/static/img/logo-color-duo.png');
+	background-repeat:no-repeat;
+	background-position:0px 50%;
+	width:150px;
+	height:70px;
+}
+h3 {
+	color:#333 !important;
+}
