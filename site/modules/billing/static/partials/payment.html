@@ -1,0 +1,36 @@
+
+<div class="container-fluid content-container">
+    <div class="container content-container-inner">
+        <div class="container">
+            <data-breadcrumb></data-breadcrumb>
+            <div class="page-header">
+                <h1 class="pull-left" data-translate>Credit card details</h1>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="pull-left span7 listing">
+            <div data-hosted-payment></div>
+            <div class="clearfix"></div>
+            <div class="span5 align-right">
+                <button class="btn btn-primary" data-ng-click="submitForm()">Submit</button>
+            </div>
+        </div>
+        <div class="span4 pull-right">
+            <div class="alert alert-success shadow">
+                <h4 data-translate>Current Information</h4><br />
+                <div class="text-small">
+                    <span class="b span1" data-translate>Card Type</span><span class="span2">{{account.login}}</span>
+                    <div class="clearfix"></div>
+
+                    <span class="b span1" data-translate>Card No.:</span><span class="span2">{{account.login}}</span>
+                    <div class="clearfix"></div>
+                    <span class="b span1" data-translate>Expiry date</span><span class="span2">{{account.email}}</span>
+                    <div class="clearfix"></div>
+                    <span class="b span1" data-translate>Name</span><span class="span2">{{account.firstName}} {{account.lastName}}</span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 
 <div class="container-fluid content-container">
     <div class="container content-container-inner">
-        <div class="machines container">
+        <div class="machines container" data-ng-show="pagedMachines.length">
             <data-breadcrumb></data-breadcrumb>
 			<div class="alert alert-error alert-global">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -22,7 +22,7 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="pull-left" data-ng-show="pagedMachines.length" >
+            <div class="pull-left" >
                 <div class="btn-group pull-right"></div>
                 <div class="clearfix"></div>
 
@@ -167,9 +167,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="pull-left" data-ng-hide="(pagedMachines.length || initializing)">
-                NO MACHINES VIEW
-            </div>
+
             <div class="pull-right span4">
                 <button data-ng-click="changeLocation('/machine/add/')"
                         class="btn btn-success btn-large"
@@ -188,6 +186,9 @@
                     </form>
                 </div>
             </div>
+        </div>
+        <div class="machines container" data-ng-hide="(pagedMachines.length || initializing)">
+            NO MACHINES VIEW
         </div>
         <div class="clearfix"></div>
     </div>

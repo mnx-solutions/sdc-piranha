@@ -171,12 +171,11 @@
                     $scope.currentPage = 0;
                     $scope.groupToPages();
 
-                    $q.when($scope.machines, function(machines) {
-                        if(machines.final && $scope.initializing) {
+                    $scope.$watch('machines.final', function(newval) {
+                        if(newval && $scope.initializing) {
                             $scope.initializing = false;
                         }
-
-                    });
+                    })
                 };
 
                 // Pagination
