@@ -487,6 +487,14 @@ th {
     -webkit-border-radius: 4px;
 }
 
+.gray {
+    background-color: #eee;
+    border: 1px solid #ddd;	
+}
+.round {
+	-webkit-border-radius: 4px;
+}
+
 .pricing h4 {
     margin-bottom:5px;
 }
