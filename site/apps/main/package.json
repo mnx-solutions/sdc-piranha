@@ -12,8 +12,7 @@
             "machine",
             "debug",
             "tracking",
-            "marketo",
-            "support"
+            "marketo"
         ],
 		"auth": true,
         "compress": true

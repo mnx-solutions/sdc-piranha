@@ -157,14 +157,19 @@
         </div>
 		<div class="border span3 pull-right">
 			<h6 class="control-label" data-translate>Resize Package</h6>
+            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width: 200px">
+                <option data-ng-repeat="package in packages"
+                        value="{{package.name}}">
+                    M: {{package.memory | sizeFormat}}
+                    D: {{package.disk | sizeFormat}}
+                    V: {{package.vcpus}}
+                </option>
+            </select>
+
+            <div class="clearfix"></div>
+            <br />
 	        <div class="control-group">
-	            <div class="controls input-append">
-	                <select name="resize"
-	                        data-ng-model="selectedPackage"
-	                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in (packages | orderBy:'sequence')"></select>
-					<div class="clear"></div>
-	                <button class="btn btn-primary" type="submit" ng-click="clickResize()" data-translate>Resize</button>
-	            </div>
+	            <button class="btn btn-primary" type="submit" ng-click="clickResize()" data-translate>Resize</button>
 	        </div>
 		</div>
     </fieldset>

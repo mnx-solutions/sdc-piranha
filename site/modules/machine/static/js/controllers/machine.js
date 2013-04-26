@@ -113,7 +113,18 @@
                 $q.when($scope.machine, function (m) {
                     $scope.dataset = Dataset.dataset(m.image);
                     $scope.package = Package.package(m.package);
-                    $scope.selectedPackage = Package.package(m.package);
+
+                    Package.package(m.package).then(function (pkg) {
+                        $scope.selectedPackageName = pkg.name;
+                        $scope.selectedPackage = pkg;
+                    });
+                });
+
+                $scope.$watch('selectedPackageName', function (pkgName) {
+                    Package.package(pkgName).then(function (pkg) {
+                        $scope.selectedPackageName = pkg.name;
+                        $scope.selectedPackage = pkg;
+                    });
                 });
 
                 $scope.clickStart = function () {

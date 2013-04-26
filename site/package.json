@@ -2,7 +2,6 @@
 	"em": {
 		"pre": {
 			"js": [
-                "//assets.zendesk.com/external/zenbox/v2.6/zenbox.js",
                 "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
                 "/vendor/bootstrap/js/bootstrap.min.js",
 				"/vendor/angular/angular.js",
@@ -17,7 +16,6 @@
 				"/js/values/render-context.js"
 			],
 			"css": [
-                "//assets.zendesk.com/external/zenbox/v2.6/zenbox.css",
                 "/vendor/bootstrap/css/bootstrap-responsive.css",
 				"/vendor/bootstrap/css/bootstrap.css"
 			]
