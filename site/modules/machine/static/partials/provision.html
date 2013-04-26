@@ -1,4 +1,4 @@
-<div class="container-fluid content-container">
+<div class="container-fluid content-container" data-ng-controller="Machine.ProvisionController">
     <div class="container content-container-inner">
         <div class="container">
             <data-breadcrumb></data-breadcrumb>
@@ -7,7 +7,7 @@
             </div>
 
             <div class="pull-left provision">
-                <form class="form-search pull-left">
+                <form name="provision" class="form-search pull-left">
                     <div class="btn-group pull-left">
                         <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
                         <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
@@ -105,12 +105,18 @@
                             <strong data-translate>Voila</strong>.
                         </p>
                         <div id="finish-configuration" class="none">
-                            <input type="text"
-                                   placeholder="Name of your machine"
-                                   data-ng-model="data.name" />
-                            <button class="btn btn-success"
-                                    data-ng-click="clickProvision()"
-                                    data-translate>Save machine</button>
+                            <form name="provision">
+                                VAlid: {{provison['data.name'].$error}}
+                                <span ng-show="provison.data.name.$error">This is not a valid float number!</span>
+                                <input name="machineName"
+                                       type="text"
+                                       placeholder="Name of your machine"
+                                       data-ng-model="data.name" data-machine-name />
+                                <button class="btn btn-success"
+                                        data-ng-disabled="!provision.$valid"
+                                        data-ng-click="clickProvision()"
+                                        data-translate>Save machine</button>
+                            </form>
                         </div>
                     </div>
 

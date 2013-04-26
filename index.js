@@ -29,7 +29,7 @@ var opts = {
     main: app,
     extensions: config.extensions,
     compiler: compiler,
-    apps: ['main','landing']
+    apps: ['main','landing','signup']
 };
 
 

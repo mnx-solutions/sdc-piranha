@@ -4,6 +4,12 @@
         "pre": {
             "js": [
             ]
+        },
+        "redis":{
+            "db":5
+        },
+        "pages" :{
+            "default": "/signup"
         }
 	}
 }

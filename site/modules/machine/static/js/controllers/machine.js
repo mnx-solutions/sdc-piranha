@@ -2,7 +2,7 @@
 
 (function (app, $) {
     app.controller(
-        'MachineController',
+        'Machine.DetailsController',
         [   '$scope',
             'requestContext',
             'Dataset',

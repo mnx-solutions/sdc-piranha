@@ -1,5 +1,4 @@
-
-<div class="container-fluid content-container">
+<div class="container-fluid content-container" data-ng-controller="Machine.DetailsController">
 <div class="container content-container-inner">
 <div class="container form-horisontal">
 <data-breadcrumb></data-breadcrumb>
@@ -112,17 +111,14 @@
 	                                </span>
                 </div>
 
-                <div class="muted clearfix" style="margin-top:10px" data-ng-show="o.edit">
-                    <div class="controls control-group" data-ng-class="{error: o.conflict}">
-                        <input type="text"
-                               class="input-large"
-                               placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
-                        <input type="text"
-                               class="input-large span3"
-                               placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
-	                                    <span class="icon-trash pull-right"
-                                              data-ng-click="removeTag(key)"
-                                              style="margin-top:5px;margin-left:30px"></span>
+                <div class="muted" style="margin-top:10px;" data-ng-show="o.edit">
+                    <div data-ng-class="{error: o.conflict}" class="controls control-group" > 
+	<!--
+		
+	-->
+                        <input type="text" class="input-large" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
+                        <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
+						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px"></span>
                         <div class="clearfix"></div>
                     </div>
                     <div class="clearfix"></div>
@@ -132,7 +128,7 @@
             <div class="clearfix"></div>
         </div>
         <div class="clearfix"></div>
-        <div class="controls control-group" style="margin-right:80px	">
+        <div class="controls control-group clearfix" style="margin-right:80px">
             <button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>
         </div>
     </fieldset>
@@ -144,31 +140,30 @@
             It may not always be possible to resize based on the constraints of your current server location.
         </p>
 
-        <p data-ng-show="selectedPackage">
-            <span data-translate>Memory</span>:
-            <span data-translate>{{selectedPackage.memory | sizeFormat}}</span><br />
-            <span data-translate>Disk</span>:
-            <span data-translate>{{selectedPackage.disk | sizeFormat}}</span><br />
-            <span data-translate>vCPUs</span>:
-            <span data-translate>{{selectedPackage.vcpus}}</span>
-        </p>
-
-        <div class="control-group">
-            <label class="control-label" data-translate>New Package</label>
-
-            <div class="controls input-append">
-
-                <select name="resize"
-                        data-ng-model="selectedPackage"
-                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in (packages | orderBy:'sequence')"></select>
-                <br /><br />
-                <button class="btn btn-primary" type="submit"
-                        ng-click="clickResize()" data-translate>
-                    Resize
-                </button>
-
-            </div>
+        <div data-ng-show="selectedPackage">
+			
+			<div class="border span3 container">
+				<h6>Current package</h6>
+	            <span data-translate>Memory</span>:
+	            <span data-translate>{{selectedPackage.memory | sizeFormat}}</span><br />
+	            <span data-translate>Disk</span>:
+	            <span data-translate>{{selectedPackage.disk | sizeFormat}}</span><br />
+	            <span data-translate>vCPUs</span>:
+	            <span data-translate>{{selectedPackage.vcpus}}</span>
+			</div>
         </div>
+		<div class="border span3 pull-right">
+			<h6 class="control-label" data-translate>Resize Package</h6>
+	        <div class="control-group">
+	            <div class="controls input-append">
+	                <select name="resize"
+	                        data-ng-model="selectedPackage"
+	                        data-ng-options="package as ('M:' + (package.memory | sizeFormat) + ' D:' + (package.disk | sizeFormat) + ' V:' + package.vcpus) for package in (packages | orderBy:'sequence')"></select>
+					<div class="clear"></div>
+	                <button class="btn btn-primary" type="submit" ng-click="clickResize()" data-translate>Resize</button>
+	            </div>
+	        </div>
+		</div>
     </fieldset>
 
     <div class="clearfix"></div>

@@ -2,14 +2,7 @@
 
 window.JP.main.config(['$routeProvider', function ($routeProvider) {
         $routeProvider
-                .when('/signup', {
+                .when('/', {
             action: 'signup.index'
         });
     }]);
-
-window.JP.main.run(function (Menu) {
-    Menu.register({
-        name: 'Signup',
-        link: 'signup'
-    });
-});
