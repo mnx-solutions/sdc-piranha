@@ -32,6 +32,25 @@
                         enc_email
                     );
                 });
+            },
+            marketo_pageview: function () {
+                //NO http(s):// in the url, use relative paths to the current domain!
+                mktoMunchkinFunction(
+                    'visitWebPage',
+                    {
+                        url: $location.path(),
+                        params: ''
+                    }
+                );
+            },
+            marketo_clicklink: function () {
+                //NO http(s):// in the link, use relative paths to the current domain!
+                mktoMunchkinFunction(
+                    'clickLink',
+                    {
+                        href: $location.path()
+                    }
+                );
             }
         }
     }]);
