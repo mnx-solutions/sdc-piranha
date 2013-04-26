@@ -1,0 +1,6 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index" data-ng-controller="AccountController" data-ng-include="'account/static/partials/index.html'"></div>
+    <div data-ng-switch-when="edit" data-ng-controller="Account.EditController" data-ng-include="'account/static/partials/edit.html'"></div>
+    <div data-ng-switch-when="ssh" data-ng-controller="Account.SSHController" data-ng-include="'account/static/partials/ssh.html'"></div>
+    <div data-ng-switch-when="payment" data-ng-controller="Account.PaymentController" data-ng-include="'account/static/partials/payment.html'"></div>
+</div>

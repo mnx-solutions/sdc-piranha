@@ -21,7 +21,7 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-
+                        console.log(data);
                         if (data.err) {
                             notification.push(machines.job, { type: 'error' },
                                 localization.translate(null,
@@ -68,6 +68,7 @@
                         }
                     },
                     done: function(err, job) {
+                        console.log('done')
                         if (err) {
                             console.log(err);
                         }
