@@ -189,7 +189,14 @@
             </div>
         </div>
         <div class="machines container" data-ng-hide="(pagedMachines.length || initializing)">
-            NO MACHINES VIEW
+            <div class="alert alert-info alert-global">
+				<div class="pull-left">
+					<h4>Hello there!</h4>
+					<div>I see you have no machines configured.</div>
+				</div>
+				<a class="btn btn-success pull-right alert-global" href="#!/machine/add">Create a machine</a>
+				<div class="clearfix"></div>
+			</div>
         </div>
         <div class="clearfix"></div>
     </div>
