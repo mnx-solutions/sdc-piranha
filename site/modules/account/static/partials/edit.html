@@ -6,31 +6,32 @@
                 <h1 class="pull-left" data-translate>My Account <small>{{account.login}}</small></h1> <div ng-show="!account" class="loading-medium-after-h1"></div>
                 <div class="clearfix"></div>
             </div>
-            <!-- <span data-translate>Login: {{account.login}}</span><br />
-            <span data-translate>Platform: {{userPlatform}}</span><br /> -->
-
-            <form data-ng-class="{saving: 'loading-medium'}" class="form-horisontal row pull-left">
-                <div class="span4 pull-left">
-                    <div class="control-group" data-ng-repeat="k in updateable">
-                        <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
-                        <div class="controls">
-                            <input type="text" id="account_{{k}}" data-ng-model="account[k]" />
-                        </div>
-                    </div>
-                </div>
-                <div class="span4 pull-left">
-                    <div class="control-group" data-ng-repeat="k in updateable2">
-                        <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
-                        <div class="controls">
-                            <input type="text" id="account_{{k}}" data-ng-model="account[k]" />
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="span7">
-                    <button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving" data-translate>Save changes</button>
-                </div>
-                <div class="clearfix"></div>
+            <form data-ng-class="{saving: 'loading-medium'}" class="span8 row">
+				<fieldset class="row">
+					<legend class="span8">Edit profile</legend>
+				
+	                <div class="span4 row">
+	                    <div class="control-group" data-ng-repeat="k in updateable">
+	                        <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
+	                        <div class="controls">
+	                            <input type="text" id="account_{{k}}" data-ng-model="account[k]" />
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="pull-left span4">
+	                    <div class="control-group" data-ng-repeat="k in updateable2">
+	                        <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
+	                        <div class="controls">
+	                            <input type="text" id="account_{{k}}" data-ng-model="account[k]" />
+	                        </div>
+	                    </div>
+	                </div>
+	                <div class="clearfix"></div>
+	                <div class="span7">
+	                    <button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving" data-translate>Save changes</button>
+	                </div>
+	                <div class="clearfix"></div>
+				</fieldset>
             </form>
 
             <div account-right-menu></div>
