@@ -9,7 +9,8 @@
         '$q',
         'localization',
         'notification',
-        function ($resource, serverTab, $rootScope, $q, localization, notification) {
+        'errorContext',
+        function ($resource, serverTab, $rootScope, $q, localization, notification, errorContext) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -68,7 +69,6 @@
                         }
                     },
                     done: function(err, job) {
-                        console.log('done')
                         if (err) {
                             console.log(err);
                         }

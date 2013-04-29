@@ -2,6 +2,7 @@
 	"em": {
 		"route": "/main",
 		"modules": [
+            "error",
             "cms",
             "account",
             "cloudAnalytics",
