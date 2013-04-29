@@ -15,7 +15,16 @@
                 <button class="btn btn-primary" data-ng-click="submitForm()">Submit</button>
             </div>
         </div>
-        <div class="span4 pull-right">
+		<div class="pull-right">
+			<div class="tabbable tabs-right">
+				<ul class="nav nav-tabs span3">
+					<li><a>siia navigatsioon - tseki koodist</a></li>
+					<li data-ng-repeat="(k, v) in pages"><a href="{{v.url}}" data-translate="value">{{v.name}}</a></li>
+				</ul>
+			</div>
+        </div>
+
+        <!-- <div class="span4 pull-right">
             <div class="alert alert-success shadow">
                 <h4 data-translate>Current Information</h4><br />
                 <div class="text-small">
@@ -30,6 +39,6 @@
                     <div class="clearfix"></div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
