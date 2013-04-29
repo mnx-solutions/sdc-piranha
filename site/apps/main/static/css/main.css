@@ -704,3 +704,7 @@ div .disabled{
 .alert-global {
 	margin-top:10px;
 }
+
+.status {
+    padding: 5px;
+}
