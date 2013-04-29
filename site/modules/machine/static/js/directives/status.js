@@ -21,9 +21,9 @@
                     }
                 };
             },
-            template: '<span class="status btn btn-mini" ng-class="labelForState(machine.state)" ng-show="!machine.job || machine.job.finished">' +
+            template: '<span class="status label label-info" ng-class="labelForState(machine.state)" ng-show="!machine.job || machine.job.finished">' +
                 '{{machine.state}}</span>' +
-                '<span class="status btn btn-mini" ng-show="machine.job && !machine.job.finished">' +
+                '<span class="status label" ng-show="machine.job && !machine.job.finished">' +
                 '<img src="/static/img/ajax-loader.gif"/>' +
                 '<span data-ng-show="machine.job.name == \'MachineCreate\'" data-translate>Provisioning</span>' +
                 '<span data-ng-show="machine.job.name == \'MachineStart\'" data-translate>Starting</span>' +
@@ -32,7 +32,7 @@
                 '<span data-ng-show="machine.job.name == \'MachineReboot\'" data-translate>Rebooting</span>' +
                 '<span data-ng-show="machine.job.name == \'MachineDelete\'" data-translate>Deleting</span>' +
                 '</span>' +
-                '<span class="status btn btn-mini" ng-show="machine.job.err"><i class="icon-warning-sign icon-white border"/>' +
+                '<span class="status label label-important" ng-show="machine.job.err"><i class="icon-warning-sign icon-white border"/>' +
                 '</span>'
         };
     });

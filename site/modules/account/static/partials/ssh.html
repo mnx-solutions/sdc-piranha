@@ -7,7 +7,8 @@
                 <h1 class="pull-left" data-translate>My keys</h1><div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
                 <div class="clearfix"></div>
             </div>
-            <div class="pull-left span7 listing container">
+
+            <div class="pull-left span7 listing container border">
                 <div data-ng-repeat="key in sshKeys">
                     <div data-ng-click="setOpenDetails($index);" class="item text-medium list pointer ssh">
                         <span class="b">Key name</span>
@@ -41,11 +42,20 @@
                     <div class="loading-medium" data-ng-show="createPending"></div>
                 </div>
             </div>
-            <div class="span4 pull-right">
-                <!-- <div class="alert alert-success shadow"> -->
+            <div class="span3 pull-right">
+
+                <div account-right-menu></div>
+	
+                <!--  -->
                 <!-- <h4 data-translate>New SSH Key</h4><br /> -->
-                <button class="btn btn-success span3 btn-large" data-ng-click="addNewKey()">Add new SSH key</button>
-                <button class="btn btn-success span3 btn-large" data-ng-show="showKeygenDownload()" data-ng-click="clickKeygenDownload()">Download SSH keygen script</button>
+                <button class="btn btn-success" data-ng-click="addNewKey()">Add new SSH key</button>
+				<div class="clearfix"></div><br />
+				<div class="alert alert-success shadow">
+					<h4 data-translate>SSH Key generator</h4>
+					<p class="text-medium">Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
+                	<button class="btn btn-success" data-ng-show="showKeygenDownload()" data-ng-click="clickKeygenDownload()">Download script</button>	
+					<div class="clearfix"></div>
+				</div>
                 <div class="clearfix"></div>
                 <!-- </div> -->
             </div>

@@ -160,6 +160,7 @@
                             data-ng-class="{active: n == currentPage}"
                             data-ng-click="setPage()">
                             <a href ng-bind="n + 1">1</a>
+                            <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
                         </li>
                         <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
                             <a href ng-click="nextPage()" data-translate>Next »</a>
@@ -188,7 +189,14 @@
             </div>
         </div>
         <div class="machines container" data-ng-hide="(pagedMachines.length || initializing)">
-            NO MACHINES VIEW
+            <div class="alert alert-info alert-global">
+				<div class="pull-left">
+					<h4>Hello there!</h4>
+					<div>I see you have no machines configured.</div>
+				</div>
+				<a class="btn btn-success pull-right alert-global" href="#!/machine/add">Create a machine</a>
+				<div class="clearfix"></div>
+			</div>
         </div>
         <div class="clearfix"></div>
     </div>

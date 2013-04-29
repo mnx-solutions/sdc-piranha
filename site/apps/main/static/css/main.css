@@ -37,6 +37,29 @@ body {
     padding-left:15px;
     float:left;
 }
+.nav-tabs > li {
+	border:none;
+}
+.nav-tabs > li:hover,.nav-tabs > li a:hover {
+	background-color:#fff;
+	border:none;
+}
+.nav-tabs > li a:hover,.nav-tabs > li.active {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+	border-bottom:1px solid #ddd;
+	border-left:1px solid #ddd;
+	border-top:1px solid #fff !important;
+}
+
+.nav-tabs > li.active a {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+/*	border:none;*/
+	background-color:#eee;
+}
 
 h1,h2 {
     font-weight:normal;
@@ -703,4 +726,8 @@ div .disabled{
 }
 .alert-global {
 	margin-top:10px;
+}
+
+.status {
+    padding: 5px;
 }

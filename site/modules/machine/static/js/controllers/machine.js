@@ -37,6 +37,8 @@
                 $scope.tagnr = 0;
                 $scope.visiblePasswords = {};
 
+                $scope.jobRunning = '';
+
                 $q.when($scope.machine, function (m) {
                     m.primaryIps = m.ips.filter(function (ip) {
                         return !util.isPrivateIP(ip);

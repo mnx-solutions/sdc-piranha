@@ -5,13 +5,12 @@
             <div class="page-header">
                 <h1 class="pull-left" data-translate>My Account <small>{{account.login}}</small></h1> <div ng-show="!account" class="loading-medium-after-h1"></div>
                 <div class="clearfix"></div>
-                <a data-ng-repeat="(k, v) in pages" href="{{v.url}}" class="btn btn-info" data-translate="value">{{v.name}}</a>
             </div>
             <!-- <span data-translate>Login: {{account.login}}</span><br />
             <span data-translate>Platform: {{userPlatform}}</span><br /> -->
 
-            <form data-ng-class="{saving: 'loading-medium'}" class="form-horisontal row">
-                <div class="span5 pull-left">
+            <form data-ng-class="{saving: 'loading-medium'}" class="form-horisontal row pull-left">
+                <div class="span4 pull-left">
                     <div class="control-group" data-ng-repeat="k in updateable">
                         <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
                         <div class="controls">
@@ -19,7 +18,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="span5 pull-left">
+                <div class="span4 pull-left">
                     <div class="control-group" data-ng-repeat="k in updateable2">
                         <label class="control-label" for="account_{{k}}" data-translate="value">{{k}}</label>
                         <div class="controls">
@@ -28,11 +27,14 @@
                     </div>
                 </div>
                 <div class="clearfix"></div>
-                <div class="span8">
+                <div class="span7">
                     <button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving" data-translate>Save changes</button>
                 </div>
                 <div class="clearfix"></div>
             </form>
+
+            <div account-right-menu></div>
+
         </div>
 
     </div>
