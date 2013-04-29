@@ -214,9 +214,18 @@
                         }
                     }
                     var i;
+
+                    // add first page
+                    ret.push(0);
                     for (i = start; i < end; i++) {
-                        ret.push(i);
+                        // don't duplicate first or last page
+                        if(i != 0 && i != $scope.pagedMachines.length-1)
+                          ret.push(i);
                     }
+
+                    // add last page
+                    ret.push($scope.pagedMachines.length-1);
+
                     return ret;
                 };
 
