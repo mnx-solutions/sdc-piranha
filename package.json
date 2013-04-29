@@ -23,7 +23,9 @@
     "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
     "mustache": "*",
     "connect-redis": "*",
-    "foldermap": "0.3.x"
+    "foldermap": "0.3.x",
+    "redis": "*",
+    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",

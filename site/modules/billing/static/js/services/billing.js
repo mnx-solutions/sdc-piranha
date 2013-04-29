@@ -2,13 +2,32 @@
 
 (function (app) {
     // I provide information about the current route request.
-    app.factory('Account', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
+    app.factory('BillingService', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
         service.changeCreditCard = function (){
             return true;
-        }
+        };
+
+        service.getPaymentMethods = function () {
+            var call = serverTab.call({
+                name: 'listPaymentMethods',
+                data: {},
+                done: function (err, job) {
+
+                }
+            });
+            return call.deferred;
+        };
+
+        service.addPaymentMethod = function (data, callback) {
+            var call = serverTab.call({
+                name: 'addPaymentMethod',
+                data: data,
+                done: callback
+            });
+        };
 
         return service;
     }]);
-}(window.JP.getModule('Account')));
+}(window.JP.getModule('Billing')));

@@ -4,6 +4,7 @@
 		"modules": [
             "cms",
             "account",
+            "billing",
             "cloudAnalytics",
             "localization",
             "notification",

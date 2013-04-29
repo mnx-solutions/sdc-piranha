@@ -1,5 +1,7 @@
 'use strict';
 
+var config = require('easy-config');
+
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
 
@@ -17,6 +19,8 @@ module.exports = function (scope, callback) {
             accountFields.forEach(function (field) {
                 response[field] = data[field] || '';
             });
+            call.req.session.userId = data.id;
+            call.req.session.save();
             call.done(null, response);
         });
     });
@@ -27,7 +31,28 @@ module.exports = function (scope, callback) {
         updateable.forEach(function (f) {
             data[f] = call.data[f] || '';
         });
-        console.log(data);
+        scope.log.debug('Updating account with', data);
+
+//        call.cloud.getAccount(function (err, user) {
+//            if(err) {
+//                call.done(err);
+//                return;
+//            }
+//            zuora.account.update(user.id, composeZuora(data), function (err, acc) {
+//                if(err && acc) { // No previous account
+//                    zuora.account.create(composeZuora(data, user.id), function (err2, acc) {
+//                        console.log(arguments);
+//                        console.log(acc.reasons);
+//                        if(err2) {
+//                            call.done(err2);
+//                            return;
+//                        }
+//                        call.cloud.updateAccount(data, call.done.bind(call));
+//                    });
+//                    return;
+//                }
+//            });
+//        });
         call.cloud.updateAccount(data, call.done.bind(call));
     });
 
@@ -35,7 +60,6 @@ module.exports = function (scope, callback) {
         // get account ssh keys
 
         if(call.data.noCache) {
-            console.log('no cache refresh');
             call.cloud.listKeys({login: 'my'}, call.done.bind(call), call.data.noCache);
         } else {
             call.cloud.listKeys(call.done.bind(call));
@@ -49,8 +73,9 @@ module.exports = function (scope, callback) {
 
     server.onCall('deleteKey', function(call) {
         // delete ssh key
-        console.log('server call, delete key:', call.data.fingerprint);
+        scope.log.debug('server call, delete key:', call.data.fingerprint);
         call.cloud.deleteKey(call.data.fingerprint, call.done.bind(call));
-    })
+    });
+
     setImmediate(callback);
 }

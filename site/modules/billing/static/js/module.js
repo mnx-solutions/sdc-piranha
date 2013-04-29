@@ -1,3 +1,3 @@
 'use strict';
 
-window.JP.createModule('Account');
+window.JP.createModule('Billing');

@@ -85,6 +85,7 @@ Server.prototype.call = function () {
         opts.cloud = req.cloud;
         opts.handler = self._handlers[query.name];
         opts.res = res;
+        opts.req = req;
 
         var call = req._session.call(id, opts);
 

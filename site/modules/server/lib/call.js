@@ -88,6 +88,12 @@ function Call(opts) {
         tab: {
             value: opts.tab
         },
+        req: {
+            value: opts.req
+        },
+        res: {
+            value: opts.res
+        },
         step: {
             get: function () { return _step.length < 1 ? null : _step[_step.length -1]; },
             set: function (s) {

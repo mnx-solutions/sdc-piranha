@@ -35,7 +35,11 @@
     "zuora": {
         "pageID": "2c92c0f83dfa51fe013e0c9fbd4c4396",
         "apiKey": "8yKf8GRr0Q4G7TshWckelil1eS_BFEUIye_mG_AWZvQ=",
-        "tenantID": "11333"
+        "tenantID": "11333",
+        "account": {
+            "user": "piranha-api@joyent.com",
+            "password": "904WeugM6Uw6hRW"
+        }
     },
     "marketo": {
         "apikey": "CatsLikeSandboxes"
