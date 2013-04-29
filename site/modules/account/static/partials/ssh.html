@@ -8,7 +8,44 @@
                 <div class="clearfix"></div>
             </div>
             <div class="ssh-container-empty" data-ng-show="sshKeys.length <= 0">
-                You have no ssh keys
+				<fieldset class="pull-left">
+						<div class="control-group">
+				            <label class="control-label">Name</label>
+				            <div class="controls">
+				                <input type="text" class="span6" data-ng-model="data.keyName" placeholder="ssh key name" />
+				            </div>
+				        </div>
+
+						<div class="control-group">
+							<label class="control-label">SSH Key</label>
+							<div class="controls">
+				        		<textarea class="span6" rows="10" data-ng-model="data.keyData"></textarea><br />
+							</div>
+						</div>
+				    <div class="align-right">
+				        <button class="btn btn-success">Add SSH key</button>
+				    </div>
+				</fieldset>
+				<div class="span3 pull-right">
+                    <div class="pull-right">
+                        <div class="tabbable tabs-right">
+                            <ul class="nav nav-tabs span3">
+                                <li><a>siia nav -tseki koodist</a></li>
+                                <li data-ng-repeat="(k, v) in pages"><a href="{{v.url}}" data-translate="value">{{v.name}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div><br />
+                    <div class="alert alert-success shadow">
+                        <h4 data-translate>SSH Key generator</h4>
+                        <p class="text-medium">Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
+                        <button class="btn btn-success" data-ng-show="showKeygenDownload()" data-ng-click="clickKeygenDownload()">Download script</button>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <!-- </div> -->
+                </div>
+                
             </div>
             <div class="ssh-container" data-ng-show="sshKeys.length > 0">
                 <div class="pull-left span7 listing container border">
