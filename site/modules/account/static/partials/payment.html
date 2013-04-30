@@ -11,6 +11,98 @@
         <div class="pull-left listing">
             <pre style="width:500px;">{{creditCardJSON}}</pre>
             <div data-credit-card></div>
+            <form id="paymentForm" class="row">
+				<fieldset class="span4">
+					<legend>Credit card information</legend>
+	                <div class="control-group">
+	                <label class="control-label" for="creditCardType">Card Type</label>
+	                <div class="controls">
+	                    <select data-ng-model="form.creditCardType" id="creditCardType">
+	                        <option value="{{k}}" data-ng-repeat="(k, v) in cards">{{v}}</option>
+	                        </select>
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                <label class="control-label" for="creditCardNumber">Card Number</label>
+	                <div class="controls">
+	                    <input type="text" id="creditCardNumber" placeholder="Card Number" data-ng-model="form.creditCardNumber"  maxlength="16" size="40">
+	                    </div>
+	                </div>
+					<div class="row">
+		                <div class="control-group pull-left span1">
+		                	<label class="control-label" for="expirationMonth">Month</label>
+		                	<div class="controls">
+		                    	<input type="text" class="span1 align-right" id="expirationMonth" placeholder="00" data-ng-model="form.expirationMonth" >
+		                    </div>
+		                </div>
+		                <div class="control-group pull-left span2">
+		                	<label class="control-label" for="expirationYear">Year</label>
+		                	<div class="controls">
+		                    	<input type="text" class="span2 align-right" id="expirationYear" placeholder="0000" data-ng-model="form.expirationYear" >
+		                    </div>
+		                </div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="clearfix"></div>
+	                <div class="control-group">
+	                <label class="control-label" for="securityCode">CVV</label>
+	                <div class="controls">
+	                    <input type="text" id="securityCode" data-ng-model="form.securityCode" >
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <label class="control-label" for="cardHolderName">Holder Name</label>
+	                    <div class="controls">
+	                       <input type="text" id="cardHolderName" placeholder="Name" data-ng-model="form.cardHolderInfo.cardHolderName"  size="50">
+	                    </div>
+	                </div>
+				</fieldset>
+				<fieldset class="span4">
+					<legend>Billing	 information</legend>
+				
+	                <div class="control-group">
+	                    <label class="control-label" for="addressLine1">Address line 1</label>
+	                    <div class="controls">
+	                        <input type="text" id="addressLine1" data-ng-model="form.cardHolderInfo.addressLine1" size="255">
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <label class="control-label" for="addressLine2">Address line 2</label>
+	                    <div class="controls">
+	                        <input type="text" id="addressLine2" data-ng-model="form.cardHolderInfo.addressLine2" size="255">
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <label class="control-label" for="city">City</label>
+	                    <div class="controls">
+	                        <input type="text" id="city" placeholder="City" data-ng-model="form.cardHolderInfo.city" size="40">
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <label class="control-label" for="state">State</label>
+	                    <div class="controls">
+	                        <input type="text" id="state" placeholder="State" data-ng-model="form.cardHolderInfo.state" size="2">
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <label class="control-label" for="zipCode">Zip Code</label>
+	                    <div class="controls">
+	                        <input type="text" id="zipCode" placeholder="Zip" data-ng-model="form.cardHolderInfo.zipCode" size="10">
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <label class="control-label" for="country">Country</label>
+	                    <div class="controls">
+	                        <input type="text" id="country" placeholder="Country" data-ng-model="form.cardHolderInfo.country" size="50">
+	                    </div>
+	                </div>	
+				</fieldset>
+				<div class="clearfix"></div>
+	            <div class="span7 align-right">
+	                <button class="btn btn-success" data-ng-click="submitForm()">Submit</button>
+	            </div>
+				
+            </form>
             <div class="clearfix"></div>
         </div>
 
