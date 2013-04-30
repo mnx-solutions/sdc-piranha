@@ -10,18 +10,22 @@
                 <input type="text" id="creditCardNumber" placeholder="Card Number" data-ng-model="form.creditCardNumber"  maxlength="16" size="40">
             </div>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="expirationMonth">Month</label>
-            <div class="controls">
-                <input type="text" id="expirationMonth" placeholder="00" data-ng-model="form.expirationMonth" >
+		<div class="row">
+            <div class="control-group pull-left span1">
+            	<label class="control-label" for="expirationMonth">Month</label>
+            	<div class="controls">
+                	<input type="text" class="span1 align-right" id="expirationMonth" placeholder="00" data-ng-model="form.expirationMonth" >
+                </div>
             </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="expirationYear">Year</label>
-            <div class="controls">
-                <input type="text" id="expirationYear" placeholder="0000" data-ng-model="form.expirationYear" >
+            <div class="control-group pull-left span2">
+            	<label class="control-label" for="expirationYear">Year</label>
+            	<div class="controls">
+                	<input type="text" class="span2 align-right" id="expirationYear" placeholder="0000" data-ng-model="form.expirationYear" >
+                </div>
             </div>
-        </div>
+			<div class="clearfix"></div>
+		</div>
+		<div class="clearfix"></div>
         <div class="control-group">
             <label class="control-label" for="securityCode">CVV</label>
             <div class="controls">
