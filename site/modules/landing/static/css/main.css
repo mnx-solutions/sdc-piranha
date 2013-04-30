@@ -62,14 +62,14 @@
 }
 
 .landingTOS {
-    float: left;
-    width: 100%;
-    color:#ccc;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+	display:block;
+	margin-top:-15px;
+    color:#609ad4;
 }
-
+.landingTOS {
+/*	border:1px solid red;*/
+}
 .landingTOS:hover {
-    color:#fff;
+    color:#b2d7fd;
+	
 }
