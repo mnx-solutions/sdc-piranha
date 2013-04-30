@@ -5,13 +5,20 @@
     app.factory('BillingService', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
-        service.changeCreditCard = function (){
-            return true;
-        };
-
         service.getPaymentMethods = function () {
             var call = serverTab.call({
                 name: 'listPaymentMethods',
+                data: {},
+                done: function (err, job) {
+
+                }
+            });
+            return call.deferred;
+        };
+
+        service.getDefaultCreditCard = function () {
+            var call = serverTab.call({
+                name: 'defaultCreditCard',
                 data: {},
                 done: function (err, job) {
 

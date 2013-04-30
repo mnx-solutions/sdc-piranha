@@ -56,46 +56,74 @@ module.exports = function (scope, callback) {
         });
     }
 
-
-    server.onCall('listPaymentMethods', function (call) {
-        getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
+    function getPaymentMethods(call, cb){
+        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
             zuora.payment.get(id, function (err, pms) {
                 if(err) {
                     if(pms.reasons && pms.reasons.length === 1 && pms.reasons[0].split.category === '40') {
-                        call.done(null, []);
+                        cb(null, []);
                         return;
                     }
-                    call.done(err);
+                    cb(err);
                     return;
                 }
-                call.done(null, pms);
+
+                cb(null, pms);
             });
         }));
+    }
+
+
+    server.onCall('listPaymentMethods', function (call) {
+        getPaymentMethods(call, call.done.bind(call));
+    });
+
+    server.onCall('defaultCreditCard', function (call) {
+        getPaymentMethods(call, function (err, pms) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+            var def = {};
+            if(pms.creditCards) {
+                pms.creditCards.some(function (d) {
+                    if(d.defaultPaymentMethod) {
+                        def = d;
+                        return true;
+                    }
+                });
+            }
+            call.done(null, def);
+        });
     });
 
     server.onCall('addPaymentMethod', function (call) {
         getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
             var data = {
-                accountKey: id
+                accountKey: id,
+                defaultPaymentMethod: true
             };
             Object.keys(call.data).forEach(function (k) {
                 data[k] = call.data[k];
             });
-
+            console.log(data);
             zuora.payment.create(data, function (err, resp) {
                 console.log(arguments);
+                console.log(resp.reasons);
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
-                            obj.billToContact.country = obj.billToContact.country || call.data.cardHolderInfo.country;
                             obj.creditCard = {};
                             Object.keys(call.data).forEach(function (k) {
                                 var key = ((k === 'creditCardType' && 'cardType') || (k === 'creditCardNumber' && 'cardNumber') || k);
                                 obj.creditCard[key] = call.data[k];
                             });
+                            Object.keys(call.data.cardHolderInfo).forEach(function (k) {
+                                var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
+                                obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
+                            });
                             console.log(obj);
                             zuora.account.create(obj, function (err, resp) {
-                                console.log(arguments);
                                 if(resp.reasons) {
                                     resp.reasons.forEach(function(r) {
                                         console.log(r);
@@ -110,6 +138,7 @@ module.exports = function (scope, callback) {
                         }));
                         return;
                     }
+                    scope.log.error('Failed to save to zuora', err, resp.reasons);
                     call.done(err);
                     return;
                 }

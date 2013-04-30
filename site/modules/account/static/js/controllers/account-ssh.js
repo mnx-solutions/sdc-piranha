@@ -35,10 +35,8 @@
                   if(result.value === 'add') {
                     callback(result.data);
                   }
-                })
+                });
             };
-
-            $scope.sshKeys = Account.getKeys();
 
             $scope.userPlatform = $window.navigator.platform;
             $scope.newKey = {};
@@ -78,7 +76,7 @@
                   }
                   $scope.createPending = false;
                 });
-              })
+              });
             };
 
             function refreshKeyList() {
