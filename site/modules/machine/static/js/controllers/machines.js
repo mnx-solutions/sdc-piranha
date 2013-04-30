@@ -15,7 +15,6 @@
             'Package',
             'localization',
             'util',
-
             function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.index', $scope);
@@ -34,6 +33,7 @@
                 $scope.currentPage = 0;
                 $scope.machines = Machine.machine();
                 $scope.packages = Package.package();
+
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
@@ -87,7 +87,7 @@
 
                 var searchMatch = function (haystack, needle) {
                     if (!needle) {
-                        return (true);
+                        return true;
                     }
                     var helper = haystack;
                     if (ng.isNumber(haystack)) {
@@ -145,8 +145,9 @@
                 // change sorting order
                 $scope.sortBy = function (newSortingOrder) {
                     $scope.reverse = !$scope.reverse;
+                    var oldSortingOrder = $scope.sortingOrder;
                     $scope.sortingOrder = newSortingOrder;
-                    $scope.search();
+                    $scope.search((oldSortingOrder != newSortingOrder));
                     $scope.sortIcon = {};
 
                     if ($scope.reverse) {
@@ -157,8 +158,9 @@
                 };
                 $scope.initializing = true;
                 // Searching
-                $scope.search = function () {
+                $scope.search = function (changePage) {
                     // filter by search term
+                    var oldMachineCount = $scope.filteredMachines.length;
                     $scope.filteredMachines = _filter($scope.machines);
 
                     // take care of the sorting order
@@ -168,7 +170,10 @@
                             $scope.sortingOrder,
                             $scope.reverse);
                     }
-                    $scope.currentPage = 0;
+
+                    if(changePage || oldMachineCount != $scope.filteredMachines.length)
+                      $scope.currentPage = 0;
+
                     $scope.groupToPages();
 
                     $scope.$watch('machines.final', function(newval) {
