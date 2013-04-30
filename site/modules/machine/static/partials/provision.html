@@ -5,7 +5,13 @@
             <div class="page-header">
                 <h1 data-translate>Create new machine</h1>
             </div>
-
+			<!--
+				<p class="pull-right">
+                    <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
+                    <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
+                </p>
+                
+			-->
             <div class="pull-left provision">
                 <form name="provision" class="form-search pull-left">
                     <div class="btn-group pull-left">
@@ -21,11 +27,6 @@
                         </ul>
                     </div>
 
-                    <p class="pull-right none">
-                        <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
-                        <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
-                    </p>
-
                     <div class="pull-right">
                         <form class="navbar-form pull-left">
                             <input type="text"
@@ -40,6 +41,9 @@
                 </form>
 
                 <div id="myCarousel" class="carousel slide">
+					<div>aaa</div>
+					<div class="divider"></div>
+					
                     <!-- Carousel items -->
                     <div class="carousel-inner">
                         <div class="item active">
@@ -47,16 +51,10 @@
                                 <div class="control-group" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
                                     <div class="controls">
                                         <label class="radio text-small">
-                                            <input type="radio"
-                                                   name="dataset"
-                                                   value="{{dataset.id}}"
-                                                   data-ng-model="selectedDataset"
-                                                   data-ng-change="selectDataset(dataset.id)" />
-                                            <label class="control-label text-small">
-                                                <strong>{{dataset.name}}</strong>
-                                            </label>
-
-                                            <p data-translate="value">{{dataset.description}}</p>
+                                            <input type="radio" name="dataset" value="{{dataset.id}}" data-ng-model="selectedDataset" data-ng-change="selectDataset(dataset.id)" />
+                                            <label class="control-label text-small"><strong>{{dataset.name}}</strong>
+										</label>
+										<p data-translate="value">{{dataset.description}}</p>
                                             <div class="clearfix"></div>
                                         </label>
                                     </div>

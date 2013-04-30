@@ -769,3 +769,13 @@ div .disabled{
 .status {
     padding: 5px;
 }
+
+.divider.dark {
+	*width: 100%;
+	height: 1px;
+	margin: 9px 1px;
+	*margin: -5px 0 5px;
+	overflow: hidden;
+	background-color: #eee;
+	border-bottom: 1px solid #ccc;
+}
