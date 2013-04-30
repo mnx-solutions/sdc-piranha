@@ -160,7 +160,7 @@
                     '<br/>' +
                     '<div>{{graphtitle}}</div>' +
                     '<br/>' +
-                    '<button  data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                    '<button data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
                     '<br/><br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +

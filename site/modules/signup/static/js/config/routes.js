@@ -2,7 +2,7 @@
 
 window.JP.main.config(['$routeProvider', function ($routeProvider) {
         $routeProvider
-                .when('/', {
+                .when('/start', {
             action: 'signup.index'
         });
     }]);

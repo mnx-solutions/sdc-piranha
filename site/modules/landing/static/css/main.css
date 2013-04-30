@@ -41,6 +41,7 @@
 	-webkit-box-shadow: 0 1px 0 rgba(0,0,0,.1);
 	-moz-box-shadow: 0 1px 0 rgba(0,0,0,.1);
 	box-shadow: 0 1px 0 rgba(0,0,0,.1);
+	padding:15px;
 }
 .signin-container input {}
 .signin-container .alert h4 {
@@ -62,14 +63,23 @@
 }
 
 .landingTOS {
-    float: left;
-    width: 100%;
-    color:#ccc;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+	display:block;
+	margin-top:-15px;
+    color:#609ad4;
 }
-
+.divider.dark {
+	*width: 100%;
+	height: 1px;
+	margin: 9px 1px;
+	*margin: -5px 0 5px;
+	overflow: hidden;
+	background-color: #eee;
+	border-bottom: 1px solid #ccc;
+}
+.landingTOS {
+/*	border:1px solid red;*/
+}
 .landingTOS:hover {
-    color:#fff;
+    color:#b2d7fd;
+	
 }
