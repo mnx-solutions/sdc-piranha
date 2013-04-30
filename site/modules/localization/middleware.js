@@ -22,8 +22,9 @@ module.exports = function (scope, callback) {
         if (!res.locals.jss) {
             res.locals.jss = localization.getCompiled(req);
         } else {
-            localization.getCompiled(req).forEach(function (src) {
-                res.locals.jss.push(src);
+            var comp = localization.getCompiled(req);
+            Object.keys(comp).forEach(function (key) {
+                res.locals.jss[key] = comp[key];
             });
         }
 

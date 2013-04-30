@@ -1,6 +1,7 @@
 {
 	"em": {
 		"route": "/main",
+        "defaultHash": "#!/machine",
 		"modules": [
             "error",
             "cms",

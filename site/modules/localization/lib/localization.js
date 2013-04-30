@@ -305,7 +305,9 @@ Localization.prototype.compile = function () {
             '"' + lng + '":' + JSON.stringify(self._translations.lng[lng]) +
             '});';
 
-        self._compiled[lng] = [src];
+        var obj = {};
+        obj['lng-' + lng] = src;
+        self._compiled[lng] = obj;
     });
 
     this._log.debug('Localizations compiled');
@@ -322,10 +324,10 @@ Localization.prototype.getCompiled = function (req) {
     var lng = self.getLocale(req);
 
     if (!lng) {
-        return [];
+        return {};
     }
 
-    return self._compiled[lng] || [];
+    return self._compiled[lng] || {};
 };
 
 /**
