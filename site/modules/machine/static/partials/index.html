@@ -1,7 +1,7 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
 	<div class="loading-medium" data-ng-show="initializing" style="height:60px;width:100%"></div>
     <div class="container content-container-inner">
-        <div class="machines container" data-ng-show="pagedMachines.length">
+        <div class="machines container" data-ng-show="machines.length">
             <data-breadcrumb></data-breadcrumb>
 			<div class="alert alert-error alert-global">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -188,7 +188,7 @@
                 </div>
             </div>
         </div>
-        <div class="machines container" data-ng-hide="(pagedMachines.length || initializing)">
+        <div class="machines container" data-ng-hide="(machines.length || initializing)">
             <div class="alert alert-info alert-global">
 				<div class="pull-left">
 					<h4>Hello there!</h4>
