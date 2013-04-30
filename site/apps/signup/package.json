@@ -2,6 +2,7 @@
 	"em": {
         "auth":true,
 		"route": "/signup",
+        "defaultHash": "#!/start",
 		"modules": ["localization", "tracking", "signup", "menu" ]
 	}
 }
