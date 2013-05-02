@@ -143,6 +143,7 @@
                 });
 
                 $scope.slideCarousel = function() {
+                  ng.element('.carousel-inner').scrollTop(0);
                   ng.element('.carousel').carousel('next');
                 }
             }
