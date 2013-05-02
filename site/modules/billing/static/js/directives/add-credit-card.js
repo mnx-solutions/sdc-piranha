@@ -2,7 +2,7 @@
 
 (function (app) {
 
-    app.directive('creditCard',['BillingService', '$q', function (BillingService, $q) {
+    app.directive('addCreditCard',['BillingService', '$q', function (BillingService, $q) {
 
         return {
             restrict: 'A',
