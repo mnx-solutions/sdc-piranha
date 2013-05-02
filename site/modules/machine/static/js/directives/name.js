@@ -9,7 +9,7 @@
 
                 ctrl.$parsers.unshift(function(viewValue) {
                     if (/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(viewValue)) {
-                        if(machines.some(function (m) { return m.name === viewValue; })) {
+                        if(!machines.some(function (m) { return m.name === viewValue; })) {
                             ctrl.$setValidity('machineName', true);
                             return viewValue;
                         }
