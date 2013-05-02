@@ -13,8 +13,12 @@ window.JP.main.service(
 
                 $s.$on = function (event, listener) {
                     eventList[event] = eventList[event] || [];
+                    var count = 0;
                     var unregister = $on.call($s, event, function (e) {
-                        e.stopPropagation();
+                        if(++count === eventList[event].length) {
+                            e.stopPropagation();
+                            count = 0;
+                        }
                         listener.apply($s, Array.prototype.slice.call(arguments, 1));
                     });
                     var wrapper = function () {
