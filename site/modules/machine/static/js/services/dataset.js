@@ -26,7 +26,7 @@
                     name:'DatasetList',
                     done: function(err, job) {
                         datasets.job.finished = true;
-                        err = {};
+                        //err = {};
                         if (err) {
                             /*
                             notification.push(datasets.job, { type: 'error' },
