@@ -15,7 +15,6 @@
             'Package',
             'localization',
             'util',
-
             function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.index', $scope);
@@ -33,7 +32,7 @@
                 $scope.maxPages = 5;
                 $scope.currentPage = 0;
                 $scope.machines = Machine.machine();
-                $scope.packages = Package.package()
+                $scope.packages = Package.package();
 
 
                 var confirm = function (question, callback) {
@@ -88,7 +87,7 @@
 
                 var searchMatch = function (haystack, needle) {
                     if (!needle) {
-                        return (true);
+                        return true;
                     }
                     var helper = haystack;
                     if (ng.isNumber(haystack)) {
