@@ -41,14 +41,13 @@
                 </form>
 
                 <div id="myCarousel" class="carousel slide">
-					<div>aaa</div>
 					<div class="divider"></div>
-					
+
                     <!-- Carousel items -->
                     <div class="carousel-inner">
                         <div class="item active">
                             <fieldset class="selector-container" id="package-selector">
-                                <div class="control-group" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
+                                <div class="control-group" data-ng-click="slideCarousel()" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
                                     <div class="controls">
                                         <label class="radio text-small">
                                             <input type="radio" name="dataset" value="{{dataset.id}}" data-ng-model="selectedDataset" data-ng-change="selectDataset(dataset.id)" />

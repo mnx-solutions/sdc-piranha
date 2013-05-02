@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', function ($scope, requestContext) {
-                console.log('signup layout');
+        ['$scope', 'requestContext',
+            function ($scope, requestContext) {
                 requestContext.setUpRenderContext('signup', $scope);
 
             }

@@ -9,8 +9,7 @@
         '$q',
         'localization',
         'notification',
-        'errorContext',
-        function ($resource, serverTab, $rootScope, $q, localization, notification, errorContext) {
+        function ($resource, serverTab, $rootScope, $q, localization, notification) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};

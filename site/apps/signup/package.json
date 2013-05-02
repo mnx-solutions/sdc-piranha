@@ -3,6 +3,6 @@
         "auth":true,
 		"route": "/signup",
         "defaultHash": "#!/start",
-		"modules": ["localization", "tracking", "signup", "menu" ]
+		"modules": ["localization", "server", "notification", "tracking", "signup", "menu", "billing" ]
 	}
 }
