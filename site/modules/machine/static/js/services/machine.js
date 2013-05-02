@@ -23,6 +23,7 @@
                         var data = job.__read();
 
                         if (data.err) {
+                            /*
                             notification.push(machines.job, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
@@ -30,7 +31,13 @@
                                     { name: data.name }
                                 )
                             );
+                            */
 
+                            errorContext.emit(new Error(localization.translate(null,
+                                'machine',
+                                'Unable to retrieve machines from datacenter {{name}}',
+                                { name: data.name }
+                            )));
                             return;
                         }
 

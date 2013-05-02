@@ -50,12 +50,10 @@ function ($scope, $rootScope, $route, $routeParams, $window, requestContext, $lo
             $scope.$broadcast('requestContextChanged', requestContext);
     });
 
-    /*
     $scope.$on('errorContextChanged', function (scope, context) {
         requestContext.setContext('error.index', $routeParams);
         $scope.subview = renderContext.getNextSection();
     });
-    */
 
     $rootScope.$on(
         'forceUpdate',
