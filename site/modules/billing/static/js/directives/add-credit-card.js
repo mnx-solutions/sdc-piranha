@@ -56,7 +56,7 @@
                     });
                 };
             },
-            templateUrl: 'billing/static/partials/credit-card.html'
+            templateUrl: 'billing/static/partials/add-credit-card.html'
         };
     }]);
 }(window.JP.getModule('Billing')));
