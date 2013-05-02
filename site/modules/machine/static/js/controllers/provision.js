@@ -141,6 +141,10 @@
                 ng.element('.carousel').carousel({
                     interval:false
                 });
+
+                $scope.slideCarousel = function() {
+                  ng.element('.carousel').carousel('next');
+                }
             }
 
         ]);
