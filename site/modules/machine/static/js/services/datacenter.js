@@ -6,7 +6,9 @@
         '$q',
         'localization',
         'notification',
-        function (serverTab, $q, localization, notification) {
+        'errorContext',
+
+        function (serverTab, $q, localization, notification, errorContext) {
 
         var service = {};
         var datacenters = { job: null, index: {}, list: [], search: {} };
@@ -17,13 +19,19 @@
                     name:'DatacenterList',
                     done: function(err, job) {
                         if (err) {
+                            /*
                             notification.push(datacenters.job, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
                                     'Unable to retrieve datacenters list'
                                 )
                             );
+                            */
 
+                            errorContext.emit(new Error(localization.translate(null,
+                                'machine',
+                                'Unable to retrieve datacenters list'
+                            )));
                             return;
                         }
 

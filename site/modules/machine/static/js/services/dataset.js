@@ -6,7 +6,8 @@
         '$q',
         'localization',
         'notification',
-        function (serverTab, $q, localization, notification) {
+        'errorContext',
+        function (serverTab, $q, localization, notification, errorContext) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}};
@@ -25,15 +26,21 @@
                     name:'DatasetList',
                     done: function(err, job) {
                         datasets.job.finished = true;
-
+                        err = {};
                         if (err) {
+                            /*
                             notification.push(datasets.job, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
                                     'Unable to retrieve datasets list'
                                 )
                             );
+                            */
 
+                            errorContext.emit(new Error(localization.translate(null,
+                                'machine',
+                                'Unable to retrieve datasets list'
+                            )));
                             return;
                         }
 
