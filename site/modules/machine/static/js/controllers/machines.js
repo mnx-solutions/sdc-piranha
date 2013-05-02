@@ -229,7 +229,8 @@
                     }
 
                     // add last page
-                    ret.push($scope.pagedMachines.length-1);
+                    if($scope.pagedMachines.length > 1)
+                      ret.push($scope.pagedMachines.length-1);
 
                     return ret;
                 };

@@ -9,8 +9,7 @@
         '$q',
         'localization',
         'notification',
-        'errorContext',
-        function ($resource, serverTab, $rootScope, $q, localization, notification, errorContext) {
+        function ($resource, serverTab, $rootScope, $q, localization, notification) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -22,7 +21,7 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-                        console.log(data);
+
                         if (data.err) {
                             notification.push(machines.job, { type: 'error' },
                                 localization.translate(null,
