@@ -2,12 +2,12 @@
 	"em": {
 		"pre": {
 			"js": [
-                "//assets.zendesk.com/external/zenbox/v2.6/zenbox.js",
                 "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
                 "/vendor/bootstrap/js/bootstrap.min.js",
 				"/vendor/angular/angular.js",
 				"/vendor/angular/angular-resource.js",
                 "/vendor/angular/angular-cookies.js",
+                "/vendor/zendesk/zenbox.js",
 				"/js/jp.js",
 				"/js/app.js",
 				"/js/config/routes.js",
@@ -17,9 +17,8 @@
 				"/js/values/render-context.js"
 			],
 			"css": [
-                "//assets.zendesk.com/external/zenbox/v2.6/zenbox.css",
-                "/vendor/bootstrap/css/bootstrap-responsive.css",
-				"/vendor/bootstrap/css/bootstrap.css"
+				"/vendor/bootstrap/css/bootstrap.css",
+                "/vendor/zendesk/zenbox.css"
 			]
 		}
 	}
