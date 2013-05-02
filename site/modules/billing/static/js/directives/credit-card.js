@@ -59,4 +59,4 @@
             templateUrl: 'billing/static/partials/credit-card.html'
         };
     }]);
-}(window.JP.getModule('Machine')));
+}(window.JP.getModule('Billing')));
