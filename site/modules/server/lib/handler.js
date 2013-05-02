@@ -16,7 +16,7 @@ function Handler(opts) {
     this._handler = opts.handler;
     this._timeout = opts.timeout;
   }
-};
+}
 
 Handler.prototype.verify = function (data) {
   if(!this._verify) {
@@ -31,6 +31,6 @@ Handler.prototype.call = function (context) {
     context.timeout(self._timeout);
   }
   this._handler(context);
-}
+};
 
 module.exports = Handler;

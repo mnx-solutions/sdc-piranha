@@ -211,8 +211,8 @@ module.exports = function (scope, callback) {
                 }
                 var timer = setInterval(function () {
                     call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
-                    call.cloud.listMachineTags(call.data.uuid, function (err, tags) {
-                        if (!err) {
+                    call.cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
+                        if (!tagsErr) {
                             var json = JSON.stringify(tags);
                             if(json === newTags) {
                                 call.log.debug('Machine %s tags changed successfully', call.data.uuid);
@@ -225,7 +225,7 @@ module.exports = function (scope, callback) {
                                 call.done(new Error('Other call changed tags'));
                             }
                         } else {
-                            call.log.error('Cloud polling failed %o', err);
+                            call.log.error('Cloud polling failed %o', tagsErr);
                         }
                     }, undefined, true);
                 }, 1000);
@@ -412,4 +412,4 @@ module.exports = function (scope, callback) {
     });
 
     setImmediate(callback);
-}
+};

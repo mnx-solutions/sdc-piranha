@@ -34,13 +34,13 @@ module.exports = function (scope, app, callback) {
                                 instrumentations: resp
                             });
                         }
-                    })
+                    });
 
                 } else {
                     res.json({
                         time:null,
                         instrumentations:[]
-                    })
+                    });
                 }
 
 
@@ -134,7 +134,7 @@ module.exports = function (scope, app, callback) {
                 });
             })();
         }
-    })
+    });
 
     setImmediate(callback);
-}
+};

@@ -90,4 +90,4 @@ module.exports = function (scope, app, callback) {
         privateKey = data;
         callback();
     });
-}
+};

@@ -123,17 +123,17 @@ module.exports = function (scope, callback) {
                                 obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
                             });
                             console.log(obj);
-                            zuora.account.create(obj, function (err, resp) {
-                                if(resp.reasons) {
-                                    resp.reasons.forEach(function(r) {
+                            zuora.account.create(obj, function (accErr, accResp) {
+                                if(accResp.reasons) {
+                                    accResp.reasons.forEach(function(r) {
                                         console.log(r);
                                     });
                                 }
-                                if(err) {
-                                    call.done(err);
+                                if(accErr) {
+                                    call.done(accErr);
                                     return;
                                 }
-                                call.done(null, resp);
+                                call.done(null, accResp);
                             });
                         }));
                         return;
@@ -148,4 +148,4 @@ module.exports = function (scope, callback) {
     });
 
     setImmediate(callback);
-}
+};

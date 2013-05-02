@@ -15,4 +15,4 @@ module.exports = function (scope, app, callback) {
     });
 
     setImmediate(callback);
-}
+};
