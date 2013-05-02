@@ -268,7 +268,7 @@ module.exports = function (scope, callback) {
                         call.step = {state: machine.state};
                     }
                 }
-            });
+            }, null, null, true);
         }, 5000);
 
         var timer2 = setTimeout(function () {
@@ -297,7 +297,7 @@ module.exports = function (scope, callback) {
                 } else {
                     call.log.error(err);
                 }
-            });
+            }, null, null, true);
         }, 1000);
 
         var timer2 = setTimeout(function () {
