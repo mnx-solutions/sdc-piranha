@@ -5,11 +5,11 @@ var config = require('easy-config');
 
 module.exports = function (scope, callback) {
 
-//    var SignupProgress = scope.api('SignupProgress');
+    var SignupProgress = scope.api('SignupProgress');
 
-    function returnPage(req, res, next, step, dontSave) {
+    function returnPage(req, res, next, step) {
 
-        if(!dontSave) {
+        if(req.session.signupStep !== step) {
             req.session.signupStep = step;
             req.session.save();
         }
@@ -18,44 +18,26 @@ module.exports = function (scope, callback) {
             return next();
         }
 
-        return res.redirect('/signup');
+        return res.redirect('/signup/');
     }
 
-//    var middleware = function (req, res, next) {
-//
-//        //TODO: when signup is ready, remove this
-//        next();
-//        return;
-//
-//        if(req.session.signupStep) {
-//            return returnPage(req, res, next, req.session.signupStep, true);
-//        }
-//
-//        SignupProgress.getTokenVal(req.session.token, function (err, val) {
-//            if(err) {
-//                return next(err);
-//            }
-//            if(val) {
-//                return returnPage(req, res, next, val);
-//            }
-//            SignupProgress.getAccountVal(req.cloud, function (err, value) {
-//                if(err) {
-//                    return next(err);
-//                }
-//                if(!value) {
-//                    //TODO: Wheres your god now?
-//                    value = 'start';
-//                }
-//                SignupProgress.setTokenVal(req.session.token, value, true, function (err) {
-//                    if(err) {
-//                        return next(err);
-//                    }
-//                    return returnPage(req, res, next, value);
-//                });
-//            });
-//        });
-//    };
+    var middleware = function (req, res, next) {
 
-    setImmediate(callback);
+        if(/^\/signup/.test(req.originalUrl)) {
+            next();
+            return;
+        }
+        SignupProgress.getSignupStep(req, function(err, step) {
+            if(err) {
+                next(err);
+                return;
+            }
+            returnPage(req, res, next, step);
+        });
+    };
+
+    setImmediate(function () {
+        callback(null, middleware);
+    });
 
 };

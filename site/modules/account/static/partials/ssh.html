@@ -12,18 +12,18 @@
 						<div class="control-group">
 				            <label class="control-label">Name</label>
 				            <div class="controls">
-				                <input type="text" class="span6" data-ng-model="data.keyName" placeholder="ssh key name" />
+				                <input type="text" class="span6" data-ng-model="newKey.name" placeholder="ssh key name" />
 				            </div>
 				        </div>
 
 						<div class="control-group">
 							<label class="control-label">SSH Key</label>
 							<div class="controls">
-				        		<textarea class="span6" rows="10" data-ng-model="data.keyData"></textarea><br />
+				        		<textarea class="span6" rows="10" data-ng-model="newKey.data"></textarea><br />
 							</div>
 						</div>
 				    <div class="align-right">
-				        <button class="btn btn-success">Add SSH key</button>
+				        <button class="btn btn-success" data-ng-click="createNewKey()">Add SSH key</button>
 				    </div>
 				</fieldset>
                 
