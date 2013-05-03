@@ -1,41 +1,41 @@
 {
-    "author": "TBD",
-    "name": "piranha",
-    "description": "SDC7 Client Portal",
-    "version": "0.0.1",
-    "repository": {
-        "type": "git",
-        "url": "git@github.com/joyent/piranha.git"
-    },
-    "main": "site/index.js",
-    "dependencies": {
-        "send": "*",
-        "bunyan": "*",
-        "uglify-js":"*",
-        "sqwish":"*",
-        "express": "3.x",
-        "less": "*",
-        "jade": "*",
-        "smartdc": "git+ssh://git@github.com/kusor/node-smartdc.git#pre-v7",
-        "vasync": "1.3.x",
-        "easy-config": "0.1.8",
-        "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
-        "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
-        "mustache": "*",
-        "connect-redis": "*",
-        "foldermap": "0.3.x",
-        "file-pointer": "0.0.x",
-        "redis": "*",
-        "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git"
-    },
-    "devDependencies": {
-        "grunt": ">=0.4.0",
-        "grunt-contrib-jasmine":"*",
-        "jasmine-node": "*"
-    },
-    "optionalDependencies": {},
-    "engines": {
-        "node": ">=0.10.0"
-    },
-    "private": true
+  "author": "TBD",
+  "name": "piranha",
+  "description": "SDC7 Client Portal",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/joyent/piranha.git"
+  },
+  "main": "site/index.js",
+  "dependencies": {
+    "send": "*",
+    "bunyan": "*",
+    "uglify-js":"*",
+    "sqwish":"*",
+    "express": "3.x",
+    "less": "*",
+    "jade": "*",
+    "smartdc": "git+ssh://git@github.com/kusor/node-smartdc.git#pre-v7",
+    "vasync": "1.3.x",
+    "easy-config": "0.1.8",
+    "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
+    "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
+    "connect-redis": "*",
+    "file-pointer": "0.0.x",
+    "foldermap": "0.3.x",
+    "redis": "*",
+    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
+    "moment": "*"
+  },
+  "devDependencies": {
+    "grunt": ">=0.4.0",
+    "grunt-contrib-jasmine":"*",
+    "jasmine-node": "*"
+  },
+  "optionalDependencies": {},
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "private": true
 }

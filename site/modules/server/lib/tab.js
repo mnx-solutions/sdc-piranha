@@ -78,7 +78,7 @@ Tab.prototype.call = function (opts) {
     return call;
 };
 
-Tab.prototype.read = function (){
+Tab.prototype.read = function (req){
     var self = this;
 
     if (!self.readable) {
@@ -92,6 +92,10 @@ Tab.prototype.read = function (){
         var call = self._calls[key];
         result.push(call.status());
         if(call.finished) {
+            var fn = call.session();
+            if(fn) {
+                fn(req);
+            }
             delete self._calls[key];
             call.removeAllListeners();
             self._history.push(call);

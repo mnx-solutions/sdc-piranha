@@ -37,8 +37,8 @@ Session.prototype.call = function (id, opts) {
     return this.getTab(id).call(opts);
 };
 
-Session.prototype.read = function (id){
-    return this.getTab(id).read();
+Session.prototype.read = function (req, id){
+    return this.getTab(id).read(req);
 };
 
 Session.prototype._processing = function (id) {
