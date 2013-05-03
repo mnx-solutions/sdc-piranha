@@ -1,6 +1,7 @@
 'use strict';
 
 var config = require('easy-config');
+var moment = require('moment');
 var zuora = require('zuora').create(config.zuora.account);
 
 module.exports = function (scope, callback) {
@@ -26,22 +27,44 @@ module.exports = function (scope, callback) {
                 cb(err);
                 return;
             }
-
-            var obj = {
-                accountNumber: data.id,
-                currency: 'USD',
-                paymentTerm: 'Due Upon Receipt',
-                Category__c: 'Credit Card',
-                billCycleDay: 0,
-                name: data.firstName + ' ' + data.lastName,
-                billToContact: {
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    country: data.country || null
+            zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
+                if(err2) {
+                    cb(err2);
+                    return;
                 }
-            };
+                if(arr.length < 1) {
+                    cb(new Error('Unable to find necessary product'));
+                    return;
+                }
 
-            cb(null, obj);
+                var ratePlans = {};
+                arr[0].productRatePlans.forEach(function (ratePlan) {
+                    ratePlans[ratePlan.name] = ratePlan.id;
+                });
+
+                var obj = {
+                    accountNumber: data.id,
+                    currency: 'USD',
+                    paymentTerm: 'Due Upon Receipt',
+                    Category__c: 'Credit Card',
+                    billCycleDay: 0,
+                    name: data.firstName + ' ' + data.lastName,
+                    billToContact: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        country: data.country || null
+                    },
+                    subscription: {
+                        termType: 'EVERGREEN',
+                        contractEffectiveDate: moment().format('YYYY-MM-DD'),
+                        subscribeToRatePlans: [{
+                            productRatePlanId: ratePlans['Free Trial']
+                        }]
+                    },
+                    invoiceCollect: false
+                };
+                cb(null, obj);
+            });
         });
     }
     function getAccountId(call, cb) {
@@ -106,7 +129,6 @@ module.exports = function (scope, callback) {
             Object.keys(call.data).forEach(function (k) {
                 data[k] = call.data[k];
             });
-            console.log(data);
             zuora.payment.create(data, function (err, resp) {
                 console.log(arguments);
                 console.log(resp.reasons);

@@ -25,7 +25,8 @@
     "connect-redis": "*",
     "foldermap": "0.3.x",
     "redis": "*",
-    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git"
+    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
+    "moment": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
