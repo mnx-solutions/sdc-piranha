@@ -17,6 +17,10 @@
             _find: function (prop, value) {
                 var contextNotifications = [];
 
+                if (!value || value === null) {
+                    return contextNotifications;
+                }
+
                 for (var i = 0, c = notifications.length; i < c; i++) {
                     var notification = notifications[i];
                     if (notification.hasOwnProperty(prop) &&
@@ -67,12 +71,25 @@
              * @returns {Object}
              */
             getNotifications: function () {
-                return notifications.map(function (notification) {
-                    return {
-                        type: notification.opts.type,
-                        message: notification.message
-                    };
-                });
+                var groups = {};
+
+                // Group by context
+                for (var i = 0, c = notifications.length; i < c; i++) {
+                    var n = notifications[i];
+                    var ctx = (n.ctx && typeof n.ctx === 'object' ? JSON.stringify(n.ctx) : n.ctx || 'default');
+
+                    if (!groups[ctx]) {
+                        groups[ctx] = {};
+                    }
+
+                    if (!groups[ctx][n.opts.type]) {
+                        groups[ctx][n.opts.type] = [];
+                    }
+
+                    groups[ctx][n.opts.type].push(n);
+                }
+
+                return groups;
             },
 
             /**
@@ -88,7 +105,8 @@
                 var defaultOpts = {
                     type: 'success',
                     force: false,
-                    timeout: 5000
+                    timeout: 10000,
+                    group: true
                 };
 
                 if (message === undefined) {
@@ -109,12 +127,18 @@
                 if (opts.timeout && opts.timeout !== -1) {
                     var self = this;
 
-                    $timeout(function () {
-                        var notifications = self._findById(id);
-                        if (notifications.length !== 0) {
-                            self.dismiss(notifications[0].ctx);
-                        }
-                    }, parseInt(opts.timeout));
+                    (function(id, group) {
+                        $timeout(function () {
+                            if (group) {
+                                self.dismiss(null, id);
+                            } else {
+                                var notifications = self._findById(id);
+                                if (notifications.length !== 0) {
+                                    self.dismiss(notifications[0].ctx);
+                                }
+                            }
+                        }, parseInt(opts.timeout));
+                    })(id, opts.group);
                 }
 
                 notifications.unshift({
@@ -134,17 +158,27 @@
              * @event notification:change
              * @param ctx notification context
              */
-            dismiss: function (ctx) {
+            dismiss: function (ctx, id) {
                 var contextNotifications =
                     ctx ? this._findByContext(ctx) : notifications;
 
-                notifications = notifications.filter(function (notification) {
-                    if (contextNotifications.indexOf(notification) !== -1) {
-                        return false;
-                    }
+                if (id) {
+                    notifications = notifications.filter(function (notification) {
+                        if (id && notification.id === id) {
+                            return false;
+                        }
 
-                    return true;
-                });
+                        return true;
+                    });
+                } else {
+                    notifications = notifications.filter(function (notification) {
+                        if (contextNotifications.indexOf(notification) !== -1) {
+                            return false;
+                        }
+
+                        return true;
+                    });
+                }
 
                 $rootScope.$broadcast('notification:change');
             },
@@ -161,6 +195,16 @@
                     notifications.splice(index, 1);
                     $rootScope.$broadcast('notification:change');
                 }
+            },
+
+            dismissNotifications: function (_notifications) {
+                _notifications.forEach(function (n1) {
+                    notifications.forEach(function (n2, index) {
+                        if (n1.id === n2.id) {
+                            delete notifications[index];
+                        }
+                    })
+                })
             }
         };
     }]);

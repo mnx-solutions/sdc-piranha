@@ -5,7 +5,9 @@
         '$q',
         'localization',
         'notification',
-        function (serverTab, $q, localization, notification) {
+        'errorContext',
+
+        function (serverTab, $q, localization, notification, errorContext) {
 
         var service = {};
         var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};

@@ -9,7 +9,9 @@
         '$q',
         'localization',
         'notification',
-        function ($resource, serverTab, $rootScope, $q, localization, notification) {
+        'errorContext',
+
+        function ($resource, serverTab, $rootScope, $q, localization, notification, errorContext) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -22,17 +24,27 @@
                     progress: function (err, job) {
                         var data = job.__read();
 
-                        if (data.err) {
-                            /*
-                            notification.push(machines.job, { type: 'error' },
+                        /*
+                        notification.push({ id: 1 }, { type: 'error' },
+                            localization.translate(null,
+                                'machine',
+                                'Unable to retrieve machines from datacenter {{name}}',
+                                { name: data.name }
+                            )
+                        );
+
+                        for (var i = 0, c = 5; i < c; i++) {
+                            notification.push(null, { type: 'error', timeout: (i + 1) * 1000 },
                                 localization.translate(null,
                                     'machine',
                                     'Unable to retrieve machines from datacenter {{name}}',
                                     { name: data.name }
                                 )
                             );
-                            */
+                        }
+                        */
 
+                        if (data.err) {
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
                                 'Unable to retrieve machines from datacenter {{name}}',
