@@ -13,4 +13,4 @@ module.exports = function (scope, app, callback) {
     app.post('/call', server.call());
 
     setImmediate(callback);
-}
+};

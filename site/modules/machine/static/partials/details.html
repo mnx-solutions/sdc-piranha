@@ -140,16 +140,16 @@
             It may not always be possible to resize based on the constraints of your current server location.
         </p>
 		
-		<div class="well" style="padding:10px 20px 10px 20px">
+		<div class="well" style="padding:10px 20px 10px 20px" data-ng-class="{'loading-medium': isResizing}">
 	        <div data-ng-show="selectedPackage">
 				<div class="span3 container arrow-to">
-					<h6>Current package</h6>
+					<h6 data-translate>Current package</h6>
 		            <span data-translate>Memory</span>:
-		            <span data-translate>{{selectedPackage.memory | sizeFormat}}</span><br />
+		            <span data-translate>{{currentPackage.memory | sizeFormat}}</span><br />
 		            <span data-translate>Disk</span>:
-		            <span data-translate>{{selectedPackage.disk | sizeFormat}}</span><br />
+		            <span data-translate>{{currentPackage.disk | sizeFormat}}</span><br />
 		            <span data-translate>vCPUs</span>:
-		            <span data-translate>{{selectedPackage.vcpus}}</span>
+		            <span data-translate>{{currentPackage.vcpus}}</span>
 				</div>
 	        </div>
 			<div class="span3 pull-right">
@@ -166,7 +166,7 @@
 	            <div class="clearfix"></div>
 	            <br />
 		        <div class="control-group align-right ">
-		            <button class="btn btn-success" type="submit" ng-click="clickResize()" data-translate>Resize</button>
+		            <button class="btn btn-success" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
 		        </div>
 			</div>
 			<div class="clearfix"></div>

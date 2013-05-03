@@ -24,4 +24,4 @@ module.exports = function (scope, app, callback) {
         keyGen = data;
         callback();
     });
-}
+};

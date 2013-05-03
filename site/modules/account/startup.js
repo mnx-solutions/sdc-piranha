@@ -78,4 +78,4 @@ module.exports = function (scope, callback) {
     });
 
     setImmediate(callback);
-}
+};

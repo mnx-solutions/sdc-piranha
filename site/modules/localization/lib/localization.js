@@ -47,7 +47,7 @@ Localization._resolve = function (str, params) {
     return str.replace(/\{\{(\w+)\}\}/g, function (match, key) {
         return params.hasOwnProperty(key) ? params[key] : '';
     });
-}
+};
 
 /**
  * Parse language identifiers

@@ -17,8 +17,7 @@
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
-                var datacenters = Datacenter.datacenter();
-                $scope.datacenters = datacenters;
+                $scope.datacenters = Datacenter.datacenter();
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
@@ -59,6 +58,7 @@
                 };
 
                 $scope.selectDatacenter = function (name) {
+
                     if (!name && !$scope.data.datacenter) {
                         Datacenter.datacenter().then(function (datacenters) {
                             if (datacenters.length > 0) {
@@ -123,7 +123,7 @@
 
                 // Watch datacenter change
                 $scope.$watch('data.datacenter', function (newVal, oldVal) {
-                    if (newVal && (newVal !== oldVal)) {
+                    if (newVal) {
                         Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
                             $scope.datasets = datasets;
                         });
@@ -143,6 +143,7 @@
                 });
 
                 $scope.slideCarousel = function() {
+                  ng.element('.carousel-inner').scrollTop(0);
                   ng.element('.carousel').carousel('next');
                 }
             }

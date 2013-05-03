@@ -207,10 +207,7 @@
                                 get: function() { return self[k]; }
                             };
                         });
-
-                        obj.getJob = function() {
-                            return self;
-                        };
+                        obj.getJob = {value: function () { return self; }};
 
                         Object.defineProperties(jobTracker, wrapEnum(obj));
                         return jobTracker;

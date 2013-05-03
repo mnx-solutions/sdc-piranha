@@ -49,9 +49,9 @@ Tab.prototype.call = function (opts) {
     }
     opts.log = logger;
     opts.tab = self;
-    opts.remove = function (call) {
-        self._history.push(call);
-        delete self._calls[call.id];
+    opts.remove = function (c) {
+        self._history.push(c);
+        delete self._calls[c.id];
     };
     var call = new Call(opts);
 
