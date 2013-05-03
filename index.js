@@ -14,7 +14,15 @@ var app = express(); // main app
 
 app.use(express.bodyParser());
 app.use(express.cookieParser());
-app.use(express.session({store: new redisStore({host: config.redis.host, port: config.redis.port, db: config.redis.db}), secret:"secret"}));
+
+app.use(express.session({
+    store: new redisStore({
+        host: config.redis.host,
+        port: config.redis.port,
+        db: config.redis.db
+    }),
+    secret: 'secret'
+}));
 
 var rack = new Rack();
 rack.addMiddleware(app);

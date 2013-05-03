@@ -18,6 +18,7 @@
             "marketo"
         ],
 		"auth": true,
+        "error": true,
         "compress": true
 	}
 }
