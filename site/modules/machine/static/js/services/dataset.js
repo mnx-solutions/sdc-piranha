@@ -26,17 +26,8 @@
                     name:'DatasetList',
                     done: function(err, job) {
                         datasets.job.finished = true;
-                        //err = {};
-                        if (err) {
-                            /*
-                            notification.push(datasets.job, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve datasets list'
-                                )
-                            );
-                            */
 
+                        if (err) {
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
                                 'Unable to retrieve datasets list'

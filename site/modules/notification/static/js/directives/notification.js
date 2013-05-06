@@ -3,22 +3,31 @@
 (function (app) {
     app.directive('notification', [ 'notification', function (notification) {
         return {
+            restrict: 'EA',
+
             link: function (scope) {
             },
 
             controller: function ($scope, requestContext, localization) {
                 localization.bind('notification', $scope);
 
-                $scope.close = function (index) {
-                    notification.dismissAtIndex(index);
+                $scope.close = function (ctx, type) {
+                    if ($scope.notifications[ctx][type]) {
+                        notification.dismissNotifications($scope.notifications[ctx][type]);
+                    }
                 };
 
                 $scope.$on('notification:change', function (scope) {
                     $scope.notifications = notification.getNotifications();
                 });
             },
-            template: '<div class="notification-wrapper"><alert ng-repeat="notification in notifications" ' +
-                'type="notification.type" close="close($index)">{{notification.message}}</alert></div>'
+            template: '<div class="JoyentPortal-module-notification notification-wrapper">' +
+                '<div data-ng-repeat="(ctx, groups) in notifications">' +
+                '<alert data-ng-repeat="(type, group) in groups" type="type" close="close(ctx, type)">' +
+                '<div data-ng-repeat="notification in group">{{notification.message}}</div>' +
+                '</alert>' +
+                '</div>' +
+                '</div>'
         };
     }]);
 }(window.JP.getModule('notification')));

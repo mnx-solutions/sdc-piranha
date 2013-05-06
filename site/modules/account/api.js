@@ -5,7 +5,13 @@ var config = require('easy-config');
 
 module.exports = function (scope, register, callback) {
     var api = {};
-    api.client = redis.createClient({host: config.redis.host, port: config.redis.port});
+
+    api.client = redis.createClient(config.redis.port, config.redis.host);
+    api.client.on('error', function (err) {
+
+    });
+
+    var steps = ['start', 'billing', 'ssh'];
 
     if(!config.redis.signupDB) {
         scope.log.fatal('Redis config missing');
@@ -28,7 +34,8 @@ module.exports = function (scope, register, callback) {
         cloud.getAccount(function (accErr, account) {
             if(accErr) {
                 scope.log.error('Failed to get info from cloudApi', accErr);
-                return cb(accErr);
+                cb(accErr);
+                return;
             }
             api.getTokenVal(account.login, function (err2, data) {
                 if(err2) {
@@ -41,7 +48,7 @@ module.exports = function (scope, register, callback) {
                     return;
                 }
                 data = 'start';
-                api.setTokenVal(account.login, data, function (setErr) {
+                api.setAccountVal(account.login, data, function (setErr) {
                     if(setErr) {
                         scope.log.error('Failed to set value in db', setErr);
                     }
@@ -52,29 +59,107 @@ module.exports = function (scope, register, callback) {
         return;
     };
 
+    api.setAccountVal = function (cloud, value, cb) {
+        if(typeof cloud === 'string') {
+            api.setTokenVal(cloud, value, cb);
+            return;
+        }
+        cloud.getAccount(function (accErr, account) {
+            if(accErr) {
+                scope.log.error('Failed to get info from cloudApi', accErr);
+                cb(accErr);
+                return;
+            }
+            api.setTokenVal(account.login, value, cb);
+        });
+    };
+
     api.setTokenVal = function (token, val, expires, cb) {
         if (!cb) {
             cb = expires;
             expires = false;
         }
 
+        if(expires) {
+            api.client.setex(token, (24*60*60), val, function (setexErr) {
+                if(setexErr) {
+                    scope.log.error('Failed to setex for value', setexErr);
+                }
+                cb();
+            });
+            return;
+        }
         api.client.set(token, val, function (err) {
             if(err) {
                 scope.log.error('Failed to set value in db', err);
                 cb(err);
                 return;
             }
-            if(!expires) {
+            cb();
+        });
+    };
+
+    api.getSignupStep = function (req, cb) {
+
+        if(req.session.signupStep) {
+            cb(null, req.session.signupStep);
+            return;
+        }
+
+        api.getTokenVal(req.session.token, function (err, val) {
+            if(err) {
+                cb(err);
+                return;
+            }
+            if(val) {
+                cb(null, val);
+                return;
+            }
+            api.getAccountVal(req.cloud, function (err, value) {
+                if(err) {
+                    cb(err);
+                    return;
+                }
+                api.setTokenVal(req.session.token, value, true, function (err) {
+                    if(err) {
+                        cb(err);
+                        return;
+                    }
+                    cb(null, value);
+                    return;
+                });
+            });
+        });
+    };
+
+    api.setSignupStep = function (req, step, cb) {
+        var count = 2;
+        var errs = [];
+
+        function end(err) {
+            if(err) {
+                errs.push(err);
+            }
+            if(--count === 0) {
+                cb((errs.length < 1 ? null : errs));
+            }
+        }
+
+        api.setTokenVal(req.session.token, step, true, end);
+        api.setAccountVal(req.cloud, step, end);
+    };
+
+    api.setMinProgress = function (req, step, cb) {
+        api.getSignupStep(req, function (err, oldStep) {
+            if(err) {
+                cb(err);
+                return;
+            }
+            if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep)) {
                 cb();
                 return;
             }
-            api.client.setex(token, (24*60*60), function (setexErr) {
-                if(setexErr) {
-                    scope.log.error('Failed to setex for value', setexErr);
-                }
-                cb();
-                return;
-            });
+            api.setSignupStep(req, step, cb);
         });
     };
 

@@ -1,12 +1,13 @@
 'use strict';
 
 var config = require('easy-config');
+var moment = require('moment');
 var zuora = require('zuora').create(config.zuora.account);
 
 module.exports = function (scope, callback) {
+
     var server = scope.api('Server');
-
-
+    var SignupProgress = scope.api('SignupProgress');
 
     function getAccount(call, cb) {
         call.cloud.getAccount(function (err, data) {
@@ -26,22 +27,44 @@ module.exports = function (scope, callback) {
                 cb(err);
                 return;
             }
-
-            var obj = {
-                accountNumber: data.id,
-                currency: 'USD',
-                paymentTerm: 'Due Upon Receipt',
-                Category__c: 'Credit Card',
-                billCycleDay: 0,
-                name: data.firstName + ' ' + data.lastName,
-                billToContact: {
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    country: data.country || null
+            zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
+                if(err2) {
+                    cb(err2);
+                    return;
                 }
-            };
+                if(arr.length < 1) {
+                    cb(new Error('Unable to find necessary product'));
+                    return;
+                }
 
-            cb(null, obj);
+                var ratePlans = {};
+                arr[0].productRatePlans.forEach(function (ratePlan) {
+                    ratePlans[ratePlan.name] = ratePlan.id;
+                });
+
+                var obj = {
+                    accountNumber: data.id,
+                    currency: 'USD',
+                    paymentTerm: 'Due Upon Receipt',
+                    Category__c: 'Credit Card',
+                    billCycleDay: 0,
+                    name: data.firstName + ' ' + data.lastName,
+                    billToContact: {
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        country: data.country || null
+                    },
+                    subscription: {
+                        termType: 'EVERGREEN',
+                        contractEffectiveDate: moment().format('YYYY-MM-DD'),
+                        subscribeToRatePlans: [{
+                            productRatePlanId: ratePlans['Free Trial']
+                        }]
+                    },
+                    invoiceCollect: false
+                };
+                cb(null, obj);
+            });
         });
     }
     function getAccountId(call, cb) {
@@ -98,6 +121,20 @@ module.exports = function (scope, callback) {
     });
 
     server.onCall('addPaymentMethod', function (call) {
+
+        function setProgress(resp) {
+            SignupProgress.setMinProgress(call.req, 'billing', function (err) {
+                if(err) {
+                    scope.log.error(err);
+                }
+                call.session(function (req) {
+                    req.session.signupStep = 'billing';
+                    req.session.save();
+                });
+                call.done(null, resp);
+            });
+        }
+
         getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
             var data = {
                 accountKey: id,
@@ -106,10 +143,7 @@ module.exports = function (scope, callback) {
             Object.keys(call.data).forEach(function (k) {
                 data[k] = call.data[k];
             });
-            console.log(data);
             zuora.payment.create(data, function (err, resp) {
-                console.log(arguments);
-                console.log(resp.reasons);
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
@@ -122,7 +156,6 @@ module.exports = function (scope, callback) {
                                 var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
                                 obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
                             });
-                            console.log(obj);
                             zuora.account.create(obj, function (accErr, accResp) {
                                 if(accResp.reasons) {
                                     accResp.reasons.forEach(function(r) {
@@ -133,13 +166,17 @@ module.exports = function (scope, callback) {
                                     call.done(accErr);
                                     return;
                                 }
-                                call.done(null, accResp);
+                                setProgress(accResp);
                             });
                         }));
                         return;
                     }
                     scope.log.error('Failed to save to zuora', err, resp.reasons);
                     call.done(err);
+                    return;
+                }
+                if(!call.req.session.signupStep || call.req.session.signupStep !== 'complete') {
+                    setProgress(resp);
                     return;
                 }
                 call.done(null, resp);

@@ -25,6 +25,7 @@
     "Disk": "Disk",
     "vCPUs": "vCPUs",
     "Created": "Created",
+    "Create a machine": "Create a machine",
     "Memory: {{machine.memory | sizeFormat}}": "Memory: {{machine.memory | sizeFormat}}",
     "Disk: {{machine.disk | sizeFormat}}": "Disk: {{machine.disk | sizeFormat}}",
     "VCPUs: {{pack.vcpus}}": "VCPUs: {{pack.vcpus}}",

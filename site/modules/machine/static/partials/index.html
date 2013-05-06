@@ -3,14 +3,8 @@
     <div class="container content-container-inner">
         <div class="machines container" data-ng-show="machines.length">
             <data-breadcrumb></data-breadcrumb>
-			<div class="alert alert-error alert-global">
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
-				<h4>Found some errors!</h4>
-				<div>Error #1</div>
-				<div>Error #2</div>
-				<div>Error #3 (errors will be pushed into this.parent [only 1 (one) container ] not N times containers)</div>
-			</div>
-			
+            <data-notification></data-notification>
+
             <div class="page-header">
                 <h1 class="pull-left" data-translate>Machines</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
                 <form class="form-search pull-right">
@@ -22,18 +16,14 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="pull-left" >
-                <div class="btn-group pull-right"></div>
-                <div class="clearfix"></div>
-
-                <div class="item header sortable" style="margin-bottom: -1px">
-                    <span class="summary pull-left">&nbsp;</span>
+            <div class="span9 item-list-container container">
+                <div class="item header">
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
                               data-ng-switch on="sortIcon.id" data-translate>
 							Name
-                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
                         
                         <span class="span1 text-medium sortable"
@@ -44,12 +34,12 @@
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
 						
-                        <span class="span1 text-medium sortable"
+                        <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('created')"
                               data-ng-switch on="sortIcon.created" data-translate>
 							Created
-                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
 
                     <span class="span2 text-medium" data-translate>IP</span>
@@ -58,43 +48,38 @@
                               data-ng-click="sortBy('state')"
                               data-ng-switch on="sortIcon.state" data-translate>
 							State
-                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
+					<div class="clearfix"></div>
                 </div>
 
-                <div>
                     <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
                          class="item">
-
-	                        <span data-ng-click="toggleMachine(machine.id)">
-	                            <span data-ng-class="{'icon-chevron-down': isCollapsed(machine.id), 'icon-chevron-up': !isCollapsed(machine.id)}"
-                                      class="summary  pull-left">&nbsp;</span>
 
 	                            <span class="span2 text-medium crop">
 	                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
 	                            </span>
 
 	                            <span class="span1 text-medium">{{machine.datacenter}}</span>
-	                            <span class="span1 text-medium crop" alt="{{machine.created | fromNow}}" title="{{machine.created | fromNow}}">{{machine.created | fromNow}}</span>
+	                            <span class="span2 text-medium crop" alt="{{machine.created | fromNow}}" title="{{machine.created | fromNow}}">{{machine.created | fromNow}}</span>
 								
 								<span class="span2 text-medium crop">
 	                                <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
 	                            </span>
 	                            
 								
-	                            <span class="span1 pull-right state">
+	                            <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
                                     <machine-status machine="machine"></machine-status>
 	                            </span>
-	                        </span>
-
-                        <div class="toolbox-help"
+						<div class="clearfix"></div>
+                        <div class="toolbox-help text-medium span8"
                              data-ng-hide="machine.state != 'stopped'">
                             <span class="text-error" data-translate>Machine is stopped, but billing will continue. You have to delete machine to cancel billing</span>
                         </div>
 
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
-                            <div class="pull-left toolbox-list" style="padding-left:38px">
+                            <div class="span6 toolbox-list text-medium">
                                 <span class="key span2 data-translate">Memory</span>
                                 <span class="value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
                                 <div class="clearfix"></div>
@@ -107,8 +92,8 @@
                                 <span class="value span4">{{machine.dataset.name}}</span>
                                 <div class="clearfix"></div>
 
-                                <span class="key span2" data-translate>IP(s)</span>
-                                <span class="value span4">
+                                <span class="key span2 last" data-translate>IP(s)</span>
+                                <span class="value span4 last">
                                     <span data-ng-repeat="ip in machine.ips">
                                         <!-- TODO: !isPrivateIP -->
                                         <span data-ng-show="isPrivateIP(ip)">{{ip}}</span>
@@ -140,16 +125,12 @@
                                         data-ng-click="rebootMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Reboot</button>
-                                <!-- <a href="#!/machine/details/{{machine.id}}"><button
-                                   class="btn btn-mini btn-primary"
-                                   data-translate>Edit</button>
-                                </a> -->
+
                             </div>
                             <div class="clearfix"></div>
                         </div>
                     </div>
 
-                </div>
 
                 <div class="pagination pagination-small pagination-centered span8">
                     <ul>
@@ -169,19 +150,18 @@
                 </div>
             </div>
 
-            <div class="pull-right span4">
+            <div class="pull-right span3 container">
                 <button data-ng-click="changeLocation('/machine/add/')"
-                        class="btn btn-success btn-large"
-
+                        class="btn btn-success btn-large" style="width:100%"
                         data-translate>Add new Machine</button>
                 <div class="clearfix"></div>
                 <br />
-                <div class="alert alert-success shadow">
+                <div class="alert alert-success">
                     <h4 data-translate>Need help?</h4>
                     <p class="text-medium" data-translate>Help will open in new window</p>
                     <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
                         <div class="input-append">
-                            <input type="text" name="q" class="input-medium search-query" placeholder="Search help" data-translate="placeholder">
+                            <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
                             <button type="submit" class="btn" data-translate>Search</button>
                         </div>
                     </form>
@@ -194,7 +174,7 @@
 					<h4>Hello there!</h4>
 					<div>I see you have no machines configured.</div>
 				</div>
-				<a class="btn btn-success pull-right alert-global" href="#!/machine/add">Create a machine</a>
+				<a class="btn btn-success pull-right alert-global" href="#!/machine/add" data-translate>Create a machine</a>
 				<div class="clearfix"></div>
 			</div>
         </div>

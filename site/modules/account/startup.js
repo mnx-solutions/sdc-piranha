@@ -4,6 +4,7 @@ var config = require('easy-config');
 
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
+    var SignupProgress = scope.api('SignupProgress');
 
     var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
     var updateable = ['email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
@@ -68,7 +69,18 @@ module.exports = function (scope, callback) {
 
     server.onCall('createKey', function(call) {
         // create new ssh key for this account
-        call.cloud.createKey({name: call.data.name, key: call.data.key}, call.done.bind(call));
+        call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+            SignupProgress.setMinProgress(call.req, 'ssh', function (err2) {
+                if(err2) {
+                    scope.log.error(err2);
+                }
+                call.done(null, resp);
+            });
+        });
     });
 
     server.onCall('deleteKey', function(call) {

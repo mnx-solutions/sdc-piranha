@@ -40,7 +40,7 @@ Server.prototype.query = function () {
               if(timeout) {
                   clearTimeout(timeout);
               }
-              res.json(200, {results:req._session.read(id)});
+              res.json(200, {results:req._session.read(req, id)});
           }
           if(req._session._readable(id)) {
               send();

@@ -9,7 +9,9 @@
         '$q',
         'localization',
         'notification',
-        function ($resource, serverTab, $rootScope, $q, localization, notification) {
+        'errorContext',
+
+        function ($resource, serverTab, $rootScope, $q, localization, notification, errorContext) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -23,16 +25,6 @@
                         var data = job.__read();
 
                         if (data.err) {
-                            /*
-                            notification.push(machines.job, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve machines from datacenter {{name}}',
-                                    { name: data.name }
-                                )
-                            );
-                            */
-
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
                                 'Unable to retrieve machines from datacenter {{name}}',
@@ -193,8 +185,18 @@
             name: 'MachineDelete',
             done: function(err, job) {
                 if (err) {
-                    //TODO: Error handling
-                    console.log(err);
+                    notification.push(job.machine.id, { type: 'error' },
+                        localization.translate(null,
+                            'machine',
+                            'Unable to execute command "{{command}}" for machine {{uuid}}',
+                            {
+                                command: job.name,
+                                uuid: job.machine.id
+                            }
+                        )
+                    );
+
+                    return;
                 }
 
                 delete machines.list[machines.list.indexOf(job.machine)];

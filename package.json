@@ -21,11 +21,12 @@
     "easy-config": "0.1.8",
     "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
     "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
-    "mustache": "*",
     "connect-redis": "*",
+    "file-pointer": "0.0.x",
     "foldermap": "0.3.x",
     "redis": "*",
-    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git"
+    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
+    "moment": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",

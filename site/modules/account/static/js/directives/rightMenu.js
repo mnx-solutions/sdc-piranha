@@ -41,4 +41,4 @@
             '</div>'
         };
     }]);
-}(window.JP.getModule('Machine')));
+}(window.JP.getModule('Account')));

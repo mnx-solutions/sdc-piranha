@@ -1,10 +1,3 @@
 <div data-ng-controller="SignupController">
-    Steps:
-    <select data-ng-model="step" data-ng-options="value for value in steps">
-        <!--<option value="">-- None --</option>-->
-    </select>
-    <div data-ng-switch="step">
-        <div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>
-        <div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>
-    </div>
+    <button class="btn btn-success" data-ng-click="nextStep()">Next</button>
 </div>

@@ -53,6 +53,7 @@ function Call(opts) {
     var _chunked = false;
     var _noEmit = false;
     var _bind = false;
+    var _session = [];
 
     function wrapEnum(obj) {
         Object.keys(obj).forEach(function (k) {
@@ -93,6 +94,22 @@ function Call(opts) {
         },
         res: {
             value: opts.res
+        },
+        session: {
+            value: function (fn) {
+                if(fn) {
+                    _session.push(fn);
+                    return;
+                }
+                if(_session.length < 1) {
+                    return false;
+                }
+                return function (req) {
+                    _session.forEach(function (fn) {
+                        fn(req);
+                    });
+                };
+            }
         },
         step: {
             get: function () { return _step.length < 1 ? null : _step[_step.length -1]; },
