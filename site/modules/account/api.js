@@ -5,8 +5,12 @@ var config = require('easy-config');
 
 module.exports = function (scope, register, callback) {
     var api = {};
-    api.client = redis.createClient({host: config.redis.host, port: config.redis.port});
 
+    api.client = redis.createClient(config.redis.port, config.redis.host);
+    api.client.on('error', function (err) {
+
+    });
+    
     var steps = ['start', 'billing', 'ssh'];
 
     if(!config.redis.signupDB) {
