@@ -10,7 +10,7 @@
 			<div class="pull-left hero-unit span3">
 				<h2>Instances</h2>
 				<p>X/Y</p>
-				<p><a href="#" class="btn btn-primary btn-large">Go to machines list »</a></p>
+				<p><a href="/#!/machines" class="btn btn-primary btn-large">Go to machines list »</a></p>
 			</div>
 			<div class="pull-left hero-unit span3">
 				<h2>Storage</h2>
@@ -29,7 +29,12 @@
 			<div class="span4">
 				<hr />
 				<h2>Joyent blog</h2>
-				<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <table>
+                    <tr data-ng-repeat="entry in rssentries">
+                        <td>{{entry.publishedDate}}</td>
+                        <td><a href="{{entry.link}}">{{entry.title}}</a></td>
+                    </tr>
+                </table>
 				<p><a class="btn" href="#">More »</a></p>
 			</div>
 			<div class="span4">

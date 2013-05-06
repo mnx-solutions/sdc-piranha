@@ -18,6 +18,10 @@
 
                 $scope.account = Account.getAccount();
 
+                parseRSS('http://joyent.com/blog/feed', function(response) {
+                    $scope.rssentries = response.entries;
+                });
+
             }
 
         ]);
