@@ -24,26 +24,6 @@
                     progress: function (err, job) {
                         var data = job.__read();
 
-                        /*
-                        notification.push({ id: 1 }, { type: 'error' },
-                            localization.translate(null,
-                                'machine',
-                                'Unable to retrieve machines from datacenter {{name}}',
-                                { name: data.name }
-                            )
-                        );
-
-                        for (var i = 0, c = 5; i < c; i++) {
-                            notification.push(null, { type: 'error', timeout: (i + 1) * 1000 },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve machines from datacenter {{name}}',
-                                    { name: data.name }
-                                )
-                            );
-                        }
-                        */
-
                         if (data.err) {
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
@@ -205,8 +185,18 @@
             name: 'MachineDelete',
             done: function(err, job) {
                 if (err) {
-                    //TODO: Error handling
-                    console.log(err);
+                    notification.push(job.machine.id, { type: 'error' },
+                        localization.translate(null,
+                            'machine',
+                            'Unable to execute command "{{command}}" for machine {{uuid}}',
+                            {
+                                command: job.name,
+                                uuid: job.machine.id
+                            }
+                        )
+                    );
+
+                    return;
                 }
 
                 delete machines.list[machines.list.indexOf(job.machine)];

@@ -28,15 +28,6 @@
                     data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
-                            /*
-                            notification.push(packages.job, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve packages list'
-                                )
-                            );
-                            */
-
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
                                 'Unable to retrieve packages list'

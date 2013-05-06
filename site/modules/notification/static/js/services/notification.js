@@ -105,7 +105,7 @@
                 var defaultOpts = {
                     type: 'success',
                     force: false,
-                    timeout: 10000,
+                    timeout: -1,
                     group: true
                 };
 
@@ -197,14 +197,27 @@
                 }
             },
 
+            /**
+             * Dismiss given notifications
+             *
+             * @public
+             * @param _notifications
+             */
             dismissNotifications: function (_notifications) {
+                var changed = false;
+
                 _notifications.forEach(function (n1) {
                     notifications.forEach(function (n2, index) {
                         if (n1.id === n2.id) {
-                            delete notifications[index];
+                            changed = true;
+                            notifications.splice(index, 1);
                         }
                     })
-                })
+                });
+
+                if (changed) {
+                    $rootScope.$broadcast('notification:change');
+                }
             }
         };
     }]);
