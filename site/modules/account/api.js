@@ -10,7 +10,7 @@ module.exports = function (scope, register, callback) {
     api.client.on('error', function (err) {
 
     });
-    
+
     var steps = ['start', 'billing', 'ssh'];
 
     if(!config.redis.signupDB) {
