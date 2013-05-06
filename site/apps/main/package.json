@@ -1,7 +1,7 @@
 {
 	"em": {
 		"route": "/main",
-        "defaultHash": "#!/machine",
+        "defaultHash": "#!/dashboard",
 		"modules": [
             "error",
             "cms",
@@ -15,7 +15,8 @@
             "machine",
             "debug",
             "tracking",
-            "marketo"
+            "marketo",
+            "dashboard"
         ],
 		"auth": true,
         "compress": true
