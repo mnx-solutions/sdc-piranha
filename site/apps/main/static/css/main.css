@@ -150,20 +150,6 @@ h4 {
 }
 
 
-.package-selector .control-group {
-    border-bottom:1px solid #ddd;
-}
-.package-selector .control-group:hover,
-.package-selector .control-group.active {
-    background-color:#eee;
-}
-.pricing-selector .control-group.row {
-}
-.pricing-selector .control-group.row label{
-    /*	border:1px solid red;*/
-    padding:0;
-}
-
 .navbar-inner {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
@@ -443,7 +429,7 @@ th {
     margin-bottom:5px;
 }
 .pricing {
-    line-height:1.2em;
+    line-height:1.1em;
 }
 .alert-muted {
     color: #666;
@@ -510,9 +496,7 @@ th {
 }
 #affix-pricing-container #pricing{
     position:fixed;
-    /*	float:right;*/
     z-index:10;
-    /*	bottom:auto;*/
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
     -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
@@ -558,7 +542,7 @@ div .disabled{
 	margin-right:5px !important;
 }
 .btn-mini {
-	width:50px !important;
+/*	width:50px !important;*/
 	padding: 0 6px !important;
 }
 .page-header {}
