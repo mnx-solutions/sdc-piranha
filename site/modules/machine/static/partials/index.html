@@ -16,11 +16,11 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="pull-left" >
+            <div class="span8 item-list-container container">
                 <div class="btn-group pull-right"></div>
                 <div class="clearfix"></div>
 
-                <div class="item header sortable" style="margin-bottom: -1px">
+                <div class="item header sortable">
                     <span class="summary pull-left">&nbsp;</span>
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
@@ -57,13 +57,8 @@
                         </span>
                 </div>
 
-                <div>
                     <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
                          class="item">
-
-	                        <span data-ng-click="toggleMachine(machine.id)">
-	                            <span data-ng-class="{'icon-chevron-down': isCollapsed(machine.id), 'icon-chevron-up': !isCollapsed(machine.id)}"
-                                      class="summary  pull-left">&nbsp;</span>
 
 	                            <span class="span2 text-medium crop">
 	                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
@@ -77,18 +72,17 @@
 	                            </span>
 	                            
 								
-	                            <span class="span1 pull-right state">
+	                            <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
                                     <machine-status machine="machine"></machine-status>
 	                            </span>
-	                        </span>
-
-                        <div class="toolbox-help"
+						<div class="clearfix"></div>
+                        <div class="toolbox-help text-medium span8"
                              data-ng-hide="machine.state != 'stopped'">
                             <span class="text-error" data-translate>Machine is stopped, but billing will continue. You have to delete machine to cancel billing</span>
                         </div>
 
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
-                            <div class="pull-left toolbox-list" style="padding-left:38px">
+                            <div class="span6 toolbox-list text-medium">
                                 <span class="key span2 data-translate">Memory</span>
                                 <span class="value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
                                 <div class="clearfix"></div>
@@ -101,8 +95,8 @@
                                 <span class="value span4">{{machine.dataset.name}}</span>
                                 <div class="clearfix"></div>
 
-                                <span class="key span2" data-translate>IP(s)</span>
-                                <span class="value span4">
+                                <span class="key span2 last" data-translate>IP(s)</span>
+                                <span class="value span4 last">
                                     <span data-ng-repeat="ip in machine.ips">
                                         <!-- TODO: !isPrivateIP -->
                                         <span data-ng-show="isPrivateIP(ip)">{{ip}}</span>
@@ -134,16 +128,12 @@
                                         data-ng-click="rebootMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Reboot</button>
-                                <!-- <a href="#!/machine/details/{{machine.id}}"><button
-                                   class="btn btn-mini btn-primary"
-                                   data-translate>Edit</button>
-                                </a> -->
+
                             </div>
                             <div class="clearfix"></div>
                         </div>
                     </div>
 
-                </div>
 
                 <div class="pagination pagination-small pagination-centered span8">
                     <ul>
@@ -163,10 +153,9 @@
                 </div>
             </div>
 
-            <div class="pull-right span4">
+            <div class="pull-right span3">
                 <button data-ng-click="changeLocation('/machine/add/')"
-                        class="btn btn-success btn-large"
-
+                        class="btn btn-success btn-large" style="width:100%"
                         data-translate>Add new Machine</button>
                 <div class="clearfix"></div>
                 <br />
@@ -175,7 +164,7 @@
                     <p class="text-medium" data-translate>Help will open in new window</p>
                     <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
                         <div class="input-append">
-                            <input type="text" name="q" class="input-medium search-query" placeholder="Search help" data-translate="placeholder">
+                            <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
                             <button type="submit" class="btn" data-translate>Search</button>
                         </div>
                     </form>
