@@ -13,7 +13,7 @@
                     $scope.logIn = function () {
                         Login.try($scope.login, function (result) {
                             if (result.success) {
-                                $window.location.href = '/#!/machine';
+                                $window.location.href = '/#!/dashboard';
                             }
                         });
                     };

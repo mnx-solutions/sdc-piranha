@@ -22,7 +22,7 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                       '</ul>',
 
             controller: function ($scope, $routeParams, route, localization) {
-                localization.bind('machine', $scope);
+                localization.bind('dashboard', $scope);
 
                 function updateItems() {
                     $scope.navigationPath = route.resolveNavigation();
