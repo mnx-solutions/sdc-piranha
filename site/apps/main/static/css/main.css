@@ -580,7 +580,10 @@ div .disabled{
 .last {
 	border:none;
 }
-
+.hero-unit {
+	padding:30px;
+	margin-right:20px;
+}
 .fixed {
 	position:fixed;
 }
