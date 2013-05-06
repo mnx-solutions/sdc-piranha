@@ -98,27 +98,23 @@ h4 {
 .navbar-static-bottom {
     background-image: url('/static/img/bg-bottom.png');
     background-repeat:no-repeat;
-    background-position:0px 50px;
-    padding:20px 20px 120px 20px;
+    background-position:100% 70px;
+    padding:20px 20px 100px 0px;
     color:#999;
     text-shadow:1px 1px 1px #fff;
-    position:relative;
 	min-height:240px;
     bottom:0;
     z-index:1;
     border-top:1px solid #ddd;
+	text-align:left;
 }
 .navbar-static-bottom a {
     color:#999;
     background-color:transparent !important;
+	padding-right:20px;
 }
-.navbar-static-bottom .span3:hover,.navbar-static-bottom .span3:hover a {
-    color:#777;
-    background-color:transparent !important;
-}
-.navbar-static-bottom .nav:hover a:hover {
-    color:#111;
-    background-color:transparent !important;
+.navbar-static-bottom li {
+	float:left;
 }
 
 .settings {
