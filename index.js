@@ -19,7 +19,9 @@ app.use(express.session({
     store: new redisStore({
         host: config.redis.host,
         port: config.redis.port,
-        db: config.redis.db
+        db: config.redis.db,
+        retry_max_delay: 1000,
+        connect_timeout: 1000
     }),
     secret: 'secret'
 }));
