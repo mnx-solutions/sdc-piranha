@@ -1,69 +1,66 @@
+
+<!-- <fieldset class="selector-container" id="package-selector"> -->
+	<!--
+		<p class="pull-right">
+            <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
+            <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
+        </p>
+        
+	-->
+	
 <div class="container-fluid content-container" data-ng-controller="Machine.ProvisionController">
     <div class="container content-container-inner">
         <div class="container">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
-
             <div class="page-header">
-                <h1 data-translate>Create new machine</h1>
+                <h1 class="pull-left"  data-translate>Create new machine</h1>
+				<div class="clearfix"></div>
             </div>
-			<!--
-				<p class="pull-right">
-                    <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
-                    <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
-                </p>
-                
-			-->
-            <div class="pull-left provision">
-                <form name="provision" class="form-search pull-left">
-                    <div class="btn-group pull-left">
-                        <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
-                        <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="datacenter in datacenters">
-                                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <div class="pull-right">
-                        <form class="navbar-form pull-left">
-                            <input type="text"
-                                   class="span3"
-                                   placeholder="Search image"
-                                   data-ng-model="searchText"
-                                   data-translate="placeholder" />
-                        </form>
-                    </div>
+            <div class="span8 container">
+                <div id="myCarousel" class="slide">
+					
+                    <div class="carousel-inner item-list-container">
+						<div class="active text-medium">
+							<div class="item header">
+								<form>
+								    <div class="btn-group pull-left">
+								        <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
+								        <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
+								        <button class="btn dropdown-toggle" data-toggle="dropdown">
+								            <span class="caret"></span>
+								        </button>
+								        <ul class="dropdown-menu">
+								            <li data-ng-repeat="datacenter in datacenters">
+								                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+								            </li>
+								        </ul>
+								    </div>
 
-                    <div class="clearfix"></div>
-                </form>
+								    <div class="pull-right">
+								        <form class="navbar-form pull-left">
+								            <input type="text"
+								                   class="span3"
+								                   placeholder="Search image"
+								                   data-ng-model="searchText"
+								                   data-translate="placeholder" />
+								        </form>
+								    </div>
 
-                <div id="myCarousel" class="carousel slide">
-					<div class="divider"></div>
-
-                    <!-- Carousel items -->
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <fieldset class="selector-container" id="package-selector">
-                                <div class="control-group" data-ng-click="slideCarousel()" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
-                                    <div class="controls">
-                                        <label class="radio text-small">
-                                            <input type="radio" name="dataset" value="{{dataset.id}}" data-ng-model="selectedDataset" data-ng-change="selectDataset(dataset.id)" />
-                                            <label class="control-label text-small"><strong>{{dataset.name}}</strong>
-										</label>
-										<p data-translate="value">{{dataset.description}}</p>
-                                            <div class="clearfix"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
+								    <div class="clearfix"></div>
+								</form>
+							</div>
+							
+							<div class="item" data-ng-click="slideCarousel()" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
+								<span class="span1 border"><input type="radio" name="dataset" value="{{dataset.id}}" data-ng-model="selectedDataset" data-ng-change="selectDataset(dataset.id)" /></span>
+								<span class="span5 b">{{dataset.name}}</span>
+								<div class="clearfix"></div>
+							</div>
                         </div>
 
-                        <div class="item">
+<!--                         
+						<div class="item">
                             <fieldset class="selector-container size" id="size-container">
                                 <div class="control-group"
                                      data-ng-click="selectPackage(package.id)"
@@ -86,13 +83,15 @@
                                 </div>
 
                             </fieldset>
-                        </div>
+                        </div> 
+-->
+
                     </div>
                 </div>
             </div>
 
-            <div class="span4 pull-right pricing shadow" id="affix-pricing-container" style="width:300px;">
-                <div class="alert alert-muted" id="pricing" style="width:250px;">
+            <div class="span4 pull-right" id="affix-pricing-container">
+                <div class="alert alert-muted span3" id="pricing">
 
                     <h4 data-translate>Configuration</h4>
                     <div id="selected-image" class="text-small"></div>
