@@ -35,7 +35,7 @@
                 <table>
                     <tr data-ng-repeat="entry in rssentries">
                         <td class="text-small text-gray" valign="top" style="width:60px">{{entry.publishedDate | date}}</td>
-                        <td valign="top" style="padding-bottom:10px"><a href="{{entry.link}}">{{entry.title}}</a></td>
+                        <td valign="top" style="padding-bottom:10px"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></td>
                     </tr>
                 </table>
 				<div>
@@ -51,7 +51,7 @@
                 <table cellspacing="0" cellpadding="0" border="0">
                     <tr data-ng-repeat="forum in forums">
                         <td>
-							<a href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a><br/>
+							<a  target="_blank" href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a><br/>
                         	<p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>
 						</td>
                     </tr>
