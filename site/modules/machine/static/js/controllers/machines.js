@@ -279,28 +279,28 @@
                 }
 
                 $scope.startMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to start the machine'), function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to start the instance'), function () {
                         $$track.event('machine', 'start');
                         Machine.startMachine(id);
                     });
                 };
 
                 $scope.stopMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to stop the machine'), function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to stop the instance'), function () {
                         Machine.stopMachine(id);
                         $$track.event('machine', 'stop');
                     });
                 };
 
                 $scope.deleteMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to delete the machine'), function () {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to delete the instance'), function () {
                         $$track.event('machine', 'delete');
                         Machine.deleteMachine(id);
                     });
                 };
 
                 $scope.rebootMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to reboot the machine'), function() {
+                    confirm(localization.translate($scope, null, 'Are you sure you want to reboot the instance'), function() {
                         $$track.event('machine', 'reboot');
                         Machine.rebootMachine(id);
                     });

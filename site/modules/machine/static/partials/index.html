@@ -21,10 +21,13 @@
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
                               data-ng-switch on="sortIcon.id" data-translate>
-							Name
-                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
+							<span class="pull-left border">Name</span>
+
+							<span class="icon-arrow-up pull-right" data-ng-switch-when="up"></span>
+	                        <span class="icon-arrow-down pull-right" data-ng-switch-when="down"></span>
+	                        <div class="clearfix"></div>
                         </span>
+
                         
                         <span class="span1 text-medium sortable"
                               data-ng-click="sortBy('datacenter')"
