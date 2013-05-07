@@ -1,124 +1,126 @@
+
+<!-- <fieldset class="selector-container" id="package-selector"> -->
+	<!--
+
+        
+	-->
+	
 <div class="container-fluid content-container" data-ng-controller="Machine.ProvisionController">
     <div class="container content-container-inner">
         <div class="container">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
-
             <div class="page-header">
-                <h1 data-translate>Create new machine</h1>
+                <h1 class="pull-left"  data-translate>Create new instance</h1>
+				<div class="clearfix"></div>
             </div>
-			<!--
-				<p class="pull-right">
-                    <a class="btn left" href="#myCarousel" id="prev" data-slide="prev">&lsaquo;</a>
-                    <a class="btn right" href="#myCarousel" id="next" data-slide="next">&rsaquo;</a>
-                </p>
-                
-			-->
-            <div class="pull-left provision">
-                <form name="provision" class="form-search pull-left">
-                    <div class="btn-group pull-left">
-                        <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
-                        <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
-                        <button class="btn dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li data-ng-repeat="datacenter in datacenters">
-                                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <div class="pull-right">
-                        <form class="navbar-form pull-left">
-                            <input type="text"
-                                   class="span3"
-                                   placeholder="Search image"
-                                   data-ng-model="searchText"
-                                   data-translate="placeholder" />
-                        </form>
-                    </div>
-
-                    <div class="clearfix"></div>
-                </form>
-
+            <div class="span8 container">
                 <div id="myCarousel" class="carousel slide">
-					<div class="divider"></div>
+					
+                    <div class="carousel-inner item-list-container">
+						<div class="active item">
+							<div class="item header">
+								    <div class="btn-group pull-left">
+								        <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
+								        <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
+								        <button class="btn dropdown-toggle" data-toggle="dropdown">
+								            <span class="caret"></span>
+								        </button>
+								        <ul class="dropdown-menu">
+								            <li data-ng-repeat="datacenter in datacenters">
+								                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+								            </li>
+								        </ul>
+								    </div>
 
-                    <!-- Carousel items -->
-                    <div class="carousel-inner">
-                        <div class="item active">
-                            <fieldset class="selector-container" id="package-selector">
-                                <div class="control-group" data-ng-click="slideCarousel()" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
-                                    <div class="controls">
-                                        <label class="radio text-small">
-                                            <input type="radio" name="dataset" value="{{dataset.id}}" data-ng-model="selectedDataset" data-ng-change="selectDataset(dataset.id)" />
-                                            <label class="control-label text-small"><strong>{{dataset.name}}</strong>
-										</label>
-										<p data-translate="value">{{dataset.description}}</p>
-                                            <div class="clearfix"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </fieldset>
+								    <div class="pull-right">
+								        <form class="navbar-form pull-left">
+								            <input type="text" class="span3" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+								        </form>
+								    </div>
+								<div class="clearfix"></div>
+							</div>
+							
+							<div class="item" data-ng-click="slideCarousel()" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
+								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" name="dataset" value="{{dataset.id}}" data-ng-model="selectedDataset" data-ng-change="selectDataset(dataset.id)" />
+								<label for="dataset-{{dataset.id}}" class="span7 text-medium">
+									<strong>{{dataset.name}}</strong><br />
+									{{dataset.description}}
+								</label>
+							</div>
+							<div class="clearfix"></div>
                         </div>
 
-                        <div class="item">
-                            <fieldset class="selector-container size" id="size-container">
-                                <div class="control-group"
-                                     data-ng-click="selectPackage(package.id)"
-                                     data-ng-repeat="package in (packages | orderBy:'sequence') | filter:filterPackages">
-
-                                    <div class="controls">
-
-                                        <label class="description pull-left">
-                                            <label class="control-label text-small">
-                                                <strong>{{package.name}}</strong>
-                                            </label>
-                                            <p>
-                                                <span data-translate>RAM</span>: {{package.memory}}MB<br />
-                                                <span data-translate>Disk</span>: {{package.disk}}MB<br />
-                                                <span data-translate>vCPUs</span>: {{package.vcpus}}
-                                            </p>
-                                        </label>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-
-                            </fieldset>
-                        </div>
+                        
+						<div class="item">
+							<div class="item header">
+								    <div class="btn-group pull-left">
+								        <button class="btn" data-translate>High CPU</button>
+								        <button class="btn dropdown-toggle" data-toggle="dropdown">
+								            <span class="caret"></span>
+								        </button>
+								        <ul class="dropdown-menu">
+								            <li data-ng-repeat="datacenter in datacenters">
+								                <a>High CPU</a>
+								            </li>
+								        </ul>
+								    </div>
+								<div class="clearfix"></div>
+							</div>
+							<div class="item pointer" data-ng-click="selectPackage(package.id)" data-ng-repeat="package in (packages | orderBy:'sequence') | filter:filterPackages">
+								<input class="pull-left" type="radio" name="tmp" id="package-{{package.id}}" />
+								<label for="package-{{package.id}}">
+									<span class="span5 text-medium"><strong>{{package.name}}</strong><br />
+										<span data-translate>RAM</span>: {{package.memory}}MB, 
+										<span data-translate>Disk</span>: {{package.disk}}MB, 
+										<span data-translate>vCPUs</span>: {{package.vcpus}}
+									</span>
+									<span class="span2 text-medium align-right" style="padding-top:5px">
+										<font class="b" size="4">$0.05</font><br />
+										<font class="text-gray">per day</font>
+									</span>
+									
+								</label>
+							</div>
+                        </div> 
                     </div>
                 </div>
             </div>
 
-            <div class="span4 pull-right pricing shadow" id="affix-pricing-container" style="width:300px;">
-                <div class="alert alert-muted" id="pricing" style="width:250px;">
+            <div class="span4 pull-right">
+	<!--
+		 id="affix-pricing-container"
+	-->
+                <div class="alert alert-muted span3" id="pricing" style="padding-bottom:10px !important;">
 
-                    <h4 data-translate>Configuration</h4>
+                    <h4 data-translate>Selected configuration</h4>
                     <div id="selected-image" class="text-small"></div>
                     <div id="selected-size" class="text-small"></div>
-                    <div id="step-configuration" class="text-small  none" style="margin-top:10px;margin-bottom:10px;">
+					<div class="clearfix"></div><br />
+					<a class="btn btn-mini btn-success pull-left" href="#myCarousel" id="prev" data-slide="prev">Reconfigure</a>
+					<div class="clearfix"></div>
+                    <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
                         <h4 data-translate>You're almost done.</h4>
-                        <p>
-                            <span data-translate>Just select the size of your machine and</span>
-                            <strong data-translate>Voila</strong>.
-                        </p>
+                            <span data-translate>A few more things are needed or go back</span>						        
+						<div class="clearfix"></div><br />
                         <div id="finish-configuration" class="none">
                             <form name="provision">
-                                VAlid: {{provison['data.name'].$error}}
+                                Valis: {{provison['data.name'].$error}}
                                 <span ng-show="provison.data.name.$error">This is not a valid float number!</span>
                                 <input name="machineName"
                                        type="text"
-                                       placeholder="Name of your machine"
+                                       placeholder="Name of your instance"
                                        data-ng-model="data.name" data-machine-name />
                                 <button class="btn btn-success"
                                         data-ng-disabled="!provision.$valid"
                                         data-ng-click="clickProvision()"
-                                        data-translate>Save machine</button>
+                                        data-translate>Create instance</button>
                             </form>
                         </div>
                     </div>
-
+					
+					<div class="clearfix"></div>
                 </div>
             </div>
         </div>

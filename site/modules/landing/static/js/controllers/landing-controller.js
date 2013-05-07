@@ -12,7 +12,7 @@ window.JP.set('urlHashbang', window.location.hash);
             var oldHashbang = window.JP.get('urlHashbang');
 
             if(oldHashbang == '#!/' || !oldHashbang || oldHashbang == '') {
-                oldHashbang = '#!/machine';
+                oldHashbang = '#!/dashboard';
             }
             $scope.login = function() {
                 var urlOpts = {

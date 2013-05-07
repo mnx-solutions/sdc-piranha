@@ -6,28 +6,24 @@
             <data-notification></data-notification>
 
             <div class="page-header">
-                <h1 class="pull-left" data-translate>Machines</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
+                <h1 class="pull-left" data-translate>Instance</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
                 <form class="form-search pull-right">
                     <input type="search" class="input-large"
                            data-ng-model="query" data-ng-change="search()"
-                           placeholder="Search machines" name="search" id="search" data-translate="placeholder" />
+                           placeholder="Search instances" name="search" id="search" data-translate="placeholder" />
                 </form>
 
                 <div class="clearfix"></div>
             </div>
 
-            <div class="span8 item-list-container container">
-                <div class="btn-group pull-right"></div>
-                <div class="clearfix"></div>
-
+            <div class="span9 item-list-container container">
                 <div class="item header">
-                    <span class="summary pull-left">&nbsp;</span>
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
                               data-ng-switch on="sortIcon.id" data-translate>
 							Name
-                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
                         
                         <span class="span1 text-medium sortable"
@@ -38,12 +34,12 @@
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
 						
-                        <span class="span1 text-medium sortable"
+                        <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('created')"
                               data-ng-switch on="sortIcon.created" data-translate>
 							Created
-                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
 
                     <span class="span2 text-medium" data-translate>IP</span>
@@ -52,9 +48,10 @@
                               data-ng-click="sortBy('state')"
                               data-ng-switch on="sortIcon.state" data-translate>
 							State
-                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
+					<div class="clearfix"></div>
                 </div>
 
                     <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
@@ -65,7 +62,7 @@
 	                            </span>
 
 	                            <span class="span1 text-medium">{{machine.datacenter}}</span>
-	                            <span class="span1 text-medium crop" alt="{{machine.created | fromNow}}" title="{{machine.created | fromNow}}">{{machine.created | fromNow}}</span>
+	                            <span class="span2 text-medium crop" alt="{{machine.created | fromNow}}" title="{{machine.created | fromNow}}">{{machine.created | fromNow}}</span>
 								
 								<span class="span2 text-medium crop">
 	                                <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
@@ -153,13 +150,13 @@
                 </div>
             </div>
 
-            <div class="pull-right span3">
+            <div class="pull-right span3 container">
                 <button data-ng-click="changeLocation('/machine/add/')"
                         class="btn btn-success btn-large" style="width:100%"
-                        data-translate>Add new Machine</button>
+                        data-translate>Add new instance</button>
                 <div class="clearfix"></div>
                 <br />
-                <div class="alert alert-success shadow">
+                <div class="alert alert-success">
                     <h4 data-translate>Need help?</h4>
                     <p class="text-medium" data-translate>Help will open in new window</p>
                     <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
@@ -175,9 +172,9 @@
             <div class="alert alert-info alert-global">
 				<div class="pull-left">
 					<h4>Hello there!</h4>
-					<div>I see you have no machines configured.</div>
+					<div>I see you have no instances configured.</div>
 				</div>
-				<a class="btn btn-success pull-right alert-global" href="#!/machine/add" data-translate>Create a machine</a>
+				<a class="btn btn-success pull-right alert-global" href="#!/machine/add" data-translate>Create an instance</a>
 				<div class="clearfix"></div>
 			</div>
         </div>

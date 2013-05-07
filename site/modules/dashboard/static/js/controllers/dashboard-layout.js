@@ -2,15 +2,15 @@
 
 (function (app) {
     app.controller(
-            'machine.LayoutController',
+            'dashboard.LayoutController',
             ['$scope', 'requestContext', 'localization',
                 function ($scope, requestContext, localization) {
-                    requestContext.setUpRenderContext('machine',
+                    requestContext.setUpRenderContext('dashboard',
                         $scope,
                         {
-                            title: localization.translate(null, 'machine', 'Instances')
+                            title: localization.translate(null, 'dashboard', 'Dashboard')
                         }
                     );
                 }
             ]);
-}(window.JP.getModule('Machine')));
+}(window.JP.getModule('Dashboard')));

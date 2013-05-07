@@ -18,11 +18,11 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                               ' {{item.title}}' +
                           '</span>' +
                         '</li>' +
-						'<li class="pull-right"><a class="add-machine" href="#!/machine/add">Add Machine </a><i class="icon-plus-sign"></i></li>' +
+						'<li class="pull-right"><a class="add-machine" href="#!/machine/add">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>' +
                       '</ul>',
 
             controller: function ($scope, $routeParams, route, localization) {
-                localization.bind('machine', $scope);
+                localization.bind('dashboard', $scope);
 
                 function updateItems() {
                     $scope.navigationPath = route.resolveNavigation();
