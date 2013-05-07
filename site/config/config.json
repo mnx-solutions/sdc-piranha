@@ -41,11 +41,11 @@
             "password": "904WeugM6Uw6hRW"
         }
     },
-    "marketo": {
+    "zendesk": {
         "account": "jaan.oras@joyent.com/token",
         "token": "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ"
     },
-    "zendesk": {
+    "marketo": {
         "apikey": "CatsLikeSandboxes"
     }
 }
