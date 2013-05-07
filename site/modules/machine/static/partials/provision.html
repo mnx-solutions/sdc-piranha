@@ -1,15 +1,9 @@
-
-<!-- <fieldset class="selector-container" id="package-selector"> -->
-	<!--
-
-        
-	-->
-	
 <div class="container-fluid content-container" data-ng-controller="Machine.ProvisionController">
     <div class="container content-container-inner">
-        <div class="container">
+        <div class="container" data-ng-show="keys.length">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
+
             <div class="page-header">
                 <h1 class="pull-left"  data-translate>Create new instance</h1>
 				<div class="clearfix"></div>
@@ -89,9 +83,6 @@
             </div>
 
             <div class="span4 pull-right">
-	<!--
-		 id="affix-pricing-container"
-	-->
                 <div class="alert alert-muted span3" id="pricing" style="padding-bottom:10px !important;">
 
                     <h4 data-translate>Selected configuration</h4>
@@ -123,7 +114,20 @@
 					<div class="clearfix"></div>
                 </div>
             </div>
+            <div class="clearfix"></div>
         </div>
+
+        <div class="container" data-ng-show="keys.length == 0">
+            <div class="alert alert-info alert-global">
+                <div class="pull-left">
+                    <h4>Hello there!</h4>
+                    <div>I see you have no SSH keys configured.</div>
+                </div>
+                <a class="btn btn-success pull-right alert-global" href="#!/account/ssh" data-translate>Add a SSH key</a>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+
         <div class="clearfix"></div>
     </div>
 </div>

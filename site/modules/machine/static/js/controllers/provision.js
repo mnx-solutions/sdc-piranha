@@ -10,13 +10,15 @@
             'Dataset',
             'Datacenter',
             'Package',
+            'Account',
             '$dialog',
             '$location',
             'localization',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, $dialog, $location, localization) {
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
+                $scope.keys = Account.getKeys();
                 $scope.datacenters = Datacenter.datacenter();
 
                 var confirm = function (question, callback) {
