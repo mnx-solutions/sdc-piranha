@@ -27,7 +27,7 @@
                         if (data.err) {
                             errorContext.emit(new Error(localization.translate(null,
                                 'machine',
-                                'Unable to retrieve machines from datacenter {{name}}',
+                                'Unable to retrieve instances from datacenter {{name}}',
                                 { name: data.name }
                             )));
                             return;
@@ -136,7 +136,7 @@
                                     notification.push(job.machine.id, { type: 'error' },
                                         localization.translate(null,
                                             'machine',
-                                            'Unable to execute command "{{command}}" for machine {{uuid}}',
+                                            'Unable to execute command "{{command}}" for instance {{uuid}}',
                                             {
                                                 command: job.name,
                                                 uuid: job.machine.id
@@ -188,7 +188,7 @@
                     notification.push(job.machine.id, { type: 'error' },
                         localization.translate(null,
                             'machine',
-                            'Unable to execute command "{{command}}" for machine {{uuid}}',
+                            'Unable to execute command "{{command}}" for instance {{uuid}}',
                             {
                                 command: job.name,
                                 uuid: job.machine.id
@@ -239,7 +239,7 @@
                         notification.push(id, { type: 'error' },
                             localization.translate(null,
                                 'machine',
-                                'Unable to create machine {{name}}',
+                                'Unable to create instance {{name}}',
                                 {
                                     name: data.name
                                 }
@@ -262,13 +262,15 @@
                         notification.push(id, { type: 'error' },
                             localization.translate(null,
                                 'machine',
-                                'Unable to create machine {{name}}',
+                                'Unable to create instance {{name}}',
                                 {
                                     name: data.name
                                 }
                             )
                         );
 
+                        delete machines.list.splice(machines.list.indexOf(machine), 1);
+                        delete machines.index[id];
                         return;
                     }
 
