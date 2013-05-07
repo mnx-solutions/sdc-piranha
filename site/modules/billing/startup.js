@@ -171,7 +171,7 @@ module.exports = function (scope, callback) {
                         }));
                         return;
                     }
-                    scope.log.error('Failed to save to zuora', err, resp.reasons);
+                    scope.log.error('Failed to save to zuora', err, resp && resp.reasons);
                     call.done(err);
                     return;
                 }
