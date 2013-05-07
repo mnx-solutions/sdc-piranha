@@ -1,6 +1,7 @@
 'use strict';
 
 var https = require('https');
+var config = require('easy-config');
 
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
@@ -18,8 +19,7 @@ module.exports = function (scope, callback) {
             hostname: 'help.joyent.com',
             path: '/api/v2/categories/20066858/forums.json',
             method: 'GET',
-            auth: 'jaan.oras@joyent.com/token:fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ',
-
+            auth: config.zendesk.account + ':' + config.zendesk.token
         };
         var body = '';
         var req = https.request(options,  function(res) {
@@ -29,7 +29,8 @@ module.exports = function (scope, callback) {
             });
 
             res.on('end', function(){
-                call.done(null, body);
+                var JSONbody = JSON.parse(body);
+                call.done(null, JSONbody['forums']);
                 return;
             });
 
