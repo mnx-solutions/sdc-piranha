@@ -76,13 +76,17 @@
                         'memory', 'disk', 'metadata',
                         'datacenter'
                     ],
+                    Visible: [
+                        'created', 'id', 'name',
+                        'ips', 'datacenter'
+                    ],
                     Name: ['id', 'name'],
                     Type: ['type'],
                     Ip: ['ips'],
                     Memory: ['memory'],
                     Datacenter: ['datacenter']
                 };
-                $scope.searchable = $scope.searchOptions.All;
+                $scope.searchable = $scope.searchOptions.Visible;
                 $scope.filteredMachines = [];
 
                 var searchMatch = function (haystack, needle) {
