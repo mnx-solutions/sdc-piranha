@@ -34,7 +34,7 @@
 				<h2>Joyent blog</h2>
                 <table>
                     <tr data-ng-repeat="entry in rssentries">
-                        <td>{{entry.publishedDate}}</td>
+                        <td>{{entry.publishedDate | date}}</td>
                         <td><a href="{{entry.link}}">{{entry.title}}</a></td>
                     </tr>
                 </table>
