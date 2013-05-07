@@ -34,21 +34,34 @@
 				<h2>Joyent blog</h2>
                 <table>
                     <tr data-ng-repeat="entry in rssentries">
-                        <td>{{entry.publishedDate | date}}</td>
-                        <td><a href="{{entry.link}}">{{entry.title}}</a></td>
+                        <td class="text-small text-gray" valign="top" style="width:60px">{{entry.publishedDate | date}}</td>
+                        <td valign="top" style="padding-bottom:10px"><a href="{{entry.link}}">{{entry.title}}</a></td>
                     </tr>
                 </table>
-				<p><a class="btn" href="#">More »</a></p>
+				<div>
+					<hr />
+					<a class="pull-right" href="http://joyent.com/blog" target="_blank">Read more from your blog »</a>
+					<div class="clearfix"></div>
+				</div>
+				
 			</div>
 			<div class="span4">
 				<hr />
 				<h2>Support FAQ</h2>
-                <table>
+                <table cellspacing="0" cellpadding="0" border="0">
                     <tr data-ng-repeat="forum in forums">
-                        <td>{{forum.name}}<br/>
-                        <a href="https://help.joyent.com/forums/{{forum.id}}">{{forum.description || forum.name}}</a></td>
+                        <td>
+							<a href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a><br/>
+                        	<p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>
+						</td>
                     </tr>
                 </table>
+				<div>
+					<hr />
+					<a class="pull-right" href="http://joyent.com/blog" target="_blank">Go to Support page »</a>
+					<div class="clearfix"></div>
+				</div>
+				
 			</div>
 			<div class="span4">
 				<hr />
