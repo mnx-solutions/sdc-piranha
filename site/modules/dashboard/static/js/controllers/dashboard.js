@@ -10,9 +10,10 @@
             '$q',
             'requestContext',
             'Account',
+            'Zendesk',
             'localization',
             'util',
-            function ($scope, $$track, $dialog, $q, requestContext, Account, localization, util) {
+            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, localization, util) {
                 localization.bind('dashboard', $scope);
                 requestContext.setUpRenderContext('dashboard.index', $scope);
 
@@ -22,6 +23,7 @@
                     $scope.rssentries = response.entries;
                 });
 
+                $scope.forums = Zendesk.getForumsList();
             }
 
         ]);

@@ -21,10 +21,15 @@ app.use(express.session({
         port: config.redis.port,
         db: config.redis.db,
         retry_max_delay: 1000,
-        connect_timeout: 1000
+        connect_timeout: 1000,
+        debug_mode: true
     }),
     secret: 'secret'
 }));
+
+app.use(function (err, res, req, next) {
+    require('./lib/error')(err, res, req, next);
+});
 
 var rack = new Rack();
 rack.addMiddleware(app);

@@ -8,7 +8,7 @@
                     requestContext.setUpRenderContext('machine',
                         $scope,
                         {
-                            title: localization.translate(null, 'machine', 'Machines')
+                            title: localization.translate(null, 'machine', 'Instances')
                         }
                     );
                 }
