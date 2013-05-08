@@ -47,7 +47,7 @@
                     $scope.years.push(i);
                 }
                 $http.get('billing/countries').success(function (data) {
-                    $scope.countries = data.obj;
+                    $scope.countries = data;
                 });
                 $http.get('billing/states').success(function (data) {
                     $scope.allStates = data;
