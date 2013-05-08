@@ -7,7 +7,7 @@
             function ($scope, requestContext, $location) {
                 requestContext.setUpRenderContext('signup', $scope);
 
-                $scope.steps = ['start','billing','ssh'];
+                $scope.steps = ['start', 'accountInfo', 'tropo', 'billing','ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.setStep = function (step) {

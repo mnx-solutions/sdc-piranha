@@ -6,12 +6,16 @@
         var service = {};
 
         var account = null;
-        service.getAccount = function() {
+        service.getAccount = function(noCache) {
+            if(!noCache)
+              noCache = false;
+
             var deferred = $q.defer();
 
             if(!account) {
                 serverTab.call({
                     name: 'getAccount',
+                  data: {noCache: noCache},
                     progress: function(err, job) {
                     },
                     done: function(err, job) {
@@ -28,12 +32,14 @@
         };
 
         service.updateAccount = function(data) {
+          console.log('UPDATE ACC:', data);
             var deferred = $q.defer();
 
             serverTab.call({
                 name: 'updateAccount',
                 data: data.$$v,
                 progress: function(err, job) {
+                  console.log('progress', job.__read());
                 },
                 done: function(err, job) {
                     var resolver = job.__read();

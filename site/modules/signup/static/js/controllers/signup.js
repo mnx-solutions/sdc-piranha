@@ -11,10 +11,12 @@ function ($scope, requestContext) {
     console.log('here');
 
     $scope.steps = [
+        'accountInfo',
+        'tropo',
         'billing',
         'ssh'
     ];
-    $scope.step = 'billing';
+    $scope.step = 'accountInfo';
 
 
     /**
