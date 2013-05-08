@@ -2,7 +2,7 @@
 
 var config = require('easy-config');
 var moment = require('moment');
-var zuora = require('zuora').create(config.zuora.account);
+var zuora = require('zuora').create(config.zuora.api);
 
 module.exports = function (scope, callback) {
 
@@ -47,16 +47,16 @@ module.exports = function (scope, callback) {
                     currency: 'USD',
                     paymentTerm: 'Due Upon Receipt',
                     Category__c: 'Credit Card',
-                    billCycleDay: 0,
-                    name: data.firstName + ' ' + data.lastName,
+                    billCycleDay: 1,
+                    name: data.company || data.firstName + ' ' + data.lastName,
                     billToContact: {
-                        firstName: data.firstName,
-                        lastName: data.lastName,
+                        firstName: call.data.firstName,
+                        lastName: call.data.lastName,
                         country: data.country || null
                     },
                     subscription: {
                         termType: 'EVERGREEN',
-                        contractEffectiveDate: moment().format('YYYY-MM-DD'),
+                        contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
                         subscribeToRatePlans: [{
                             productRatePlanId: ratePlans['Free Trial']
                         }]
@@ -141,23 +141,36 @@ module.exports = function (scope, callback) {
                 defaultPaymentMethod: true
             };
             Object.keys(call.data).forEach(function (k) {
-                data[k] = call.data[k];
+                if(k !== 'firstName' && k !== 'lastName'){
+                    data[k] = call.data[k];
+                }
             });
+            data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
+
+            console.log(data);
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
                             obj.creditCard = {};
                             Object.keys(call.data).forEach(function (k) {
+                                if(k === 'firstName' || k === 'lastName') {
+                                    return;
+                                }
                                 var key = ((k === 'creditCardType' && 'cardType') || (k === 'creditCardNumber' && 'cardNumber') || k);
                                 obj.creditCard[key] = call.data[k];
                             });
                             Object.keys(call.data.cardHolderInfo).forEach(function (k) {
+                                if(k === 'cardHolderName') {
+                                    return;
+                                }
                                 var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
                                 obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
                             });
+                            console.log(obj);
                             zuora.account.create(obj, function (accErr, accResp) {
-                                if(accResp.reasons) {
+                                console.log(arguments);
+                                if(accResp && accResp.reasons) {
                                     accResp.reasons.forEach(function(r) {
                                         console.log(r);
                                     });

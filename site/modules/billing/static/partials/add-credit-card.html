@@ -4,20 +4,20 @@
         <div class="control-group">
             <label class="control-label" for="creditCardNumber">Card Number</label>
             <div class="controls">
-                <input type="text" id="creditCardNumber" data-ng-class="{error: errs.creditCardNumber}" placeholder="Card Number" data-ng-model="form.creditCardNumber"  maxlength="16" size="40">
+                <input type="text" id="creditCardNumber" data-ng-class="{error: errs.creditCardNumber}" placeholder="Card Number" data-ng-model="form.creditCardNumber"  maxlength="16" size="40" required>
             </div>
         </div>
 		<div class="row">
             <div class="control-group pull-left span1">
             	<label class="control-label" for="expirationMonth">Month</label>
             	<div class="controls">
-                    <select data-ng-model="form.expirationMonth" data-ng-class="{error: errs.expirationMonth}" id="expirationMonth" data-ng-options="value for value in months"></select>
+                    <select data-ng-model="form.expirationMonth" data-ng-class="{error: errs.expirationMonth || errs['creditCard.expirationMonth']}" id="expirationMonth" data-ng-options="value for value in months" required></select>
                 </div>
             </div>
             <div class="control-group pull-left span2">
             	<label class="control-label" for="expirationYear">Year</label>
             	<div class="controls">
-                    <select data-ng-model="form.expirationYear" data-ng-class="{error: errs.expirationMonth}" id="expirationYear" data-ng-options="value for value in years"></select>
+                    <select data-ng-model="form.expirationYear" data-ng-class="{error: errs.expirationMonth || errs['creditCard.expirationMonth']}" id="expirationYear" data-ng-options="value for value in years" required></select>
                 </div>
             </div>
 			<div class="clearfix"></div>
@@ -26,13 +26,19 @@
         <div class="control-group">
             <label class="control-label" for="securityCode">CVV</label>
             <div class="controls">
-                <input type="text" id="securityCode" data-ng-class="{error: errs.securityCode}" data-ng-model="form.securityCode" >
+                <input type="text" id="securityCode" data-ng-class="{error: errs.securityCode}" data-ng-model="form.securityCode" required>
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="cardHolderName">Holder Name</label>
+            <label class="control-label" for="cardHolderName-firstName">First name</label>
             <div class="controls">
-                <input type="text" id="cardHolderName" data-ng-class="{error: errs.cardHolderName}" placeholder="Name" data-ng-model="form.cardHolderInfo.cardHolderName"  size="50">
+                <input type="text" id="cardHolderName-firstName" data-ng-class="{error: errs.cardHolderName || errs['billToContact.firstName']}" placeholder="First name" data-ng-model="form.firstName"  size="50" required>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="cardHolderName-lastName">Last Name</label>
+            <div class="controls">
+                <input type="text" id="cardHolderName-lastName" data-ng-class="{error: errs.cardHolderName || errs['billToContact.lastName']}" placeholder="Last name" data-ng-model="form.lastName"  size="50" required>
             </div>
         </div>
     </fieldset>
@@ -52,23 +58,21 @@
             </div>
         </div>
         <div class="control-group">
-            <label class="control-label" for="country">Country</label>
+            <label class="control-label" for="country" required>Country</label>
             <div class="controls">
-                <select  data-ng-class="{error: errs.country}" data-ng-model="form.cardHolderInfo.country" id="country">
-                    <option data-ng-repeat="(k, v) in countries" value="{{k}}">{{v}}</option>
-                </select>
+                <select  data-ng-class="{error: errs.country}" data-ng-model="form.cardHolderInfo.country" id="country" required data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"></select>
             </div>
         </div>
         <div class="control-group" data-ng-show="!stateSel">
             <label class="control-label" for="state">State</label>
             <div class="controls">
-                <input type="text" id="state" data-ng-class="{error: errs.state}" placeholder="State" data-ng-model="form.cardHolderInfo.state">
+                <input type="text" id="state" data-ng-class="{error: errs.state}" placeholder="State" data-ng-model="form.cardHolderInfo.state" required>
             </div>
         </div>
         <div class="control-group" data-ng-show="stateSel">
             <label class="control-label" for="stateSel">State</label>
             <div class="controls">
-                <select data-ng-class="{error: errs.state}" id="stateSel" data-ng-model="form.cardHolderInfo.state">
+                <select data-ng-class="{error: errs.state}" id="stateSel" data-ng-model="form.cardHolderInfo.state" required>
                     <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
                 </select>
             </div>
@@ -76,13 +80,13 @@
         <div class="control-group">
             <label class="control-label" for="city">City</label>
             <div class="controls">
-                <input type="text" id="city" data-ng-class="{error: errs.city}" placeholder="City" data-ng-model="form.cardHolderInfo.city" size="40">
+                <input type="text" id="city" data-ng-class="{error: errs.city}" placeholder="City" data-ng-model="form.cardHolderInfo.city" size="40" required>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="zipCode">Zip Code</label>
             <div class="controls">
-                <input type="text" id="zipCode" data-ng-class="{error: errs.zipcode}" placeholder="Zip" data-ng-model="form.cardHolderInfo.zipCode" size="10">
+                <input type="text" id="zipCode" data-ng-class="{error: errs.zipCode}" placeholder="Zip" data-ng-model="form.cardHolderInfo.zipCode" size="10" required>
             </div>
         </div>
     </fieldset>
