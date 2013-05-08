@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'account.LayoutController',
-        ['$scope', 'requestContext', 'Account', 'BillingService', '$q',
-            function ($scope, requestContext, Account, BillingService, $q) {
+        ['$scope', 'requestContext', 'Account', 'BillingService',
+            function ($scope, requestContext, Account, BillingService) {
                 requestContext.setUpRenderContext('account', $scope);
 
                 $scope.account = Account.getAccount();
@@ -17,14 +17,11 @@
                     $scope.sshKeys = sshs;
                 };
 
-                $scope.creditCard = BillingService.getDefaultCreditCard();
-                $q.when($scope.creditCard, function (cc) {
-                    $scope.creditCardJSON = JSON.stringify(cc, null, 2);
-                });
-                $scope.setCreditCard = function (cc) {
+                $scope.$on('creditCardUpdate', function (event, cc) {
                     $scope.creditCard = cc;
-                    $scope.creditCardJSON = JSON.stringify(cc, null, 2);
-                };
+                });
+
+                $scope.creditCard = BillingService.getDefaultCreditCard();
 
             }
         ]);

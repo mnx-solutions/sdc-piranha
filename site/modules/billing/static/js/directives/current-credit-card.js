@@ -2,7 +2,7 @@
 
 (function (app) {
 
-    app.directive('currentCreditCard',['BillingService', '$q', function (BillingService, $q) {
+    app.directive('currentCreditCard',['BillingService', function (BillingService) {
 
         return {
             restrict: 'A',
@@ -11,13 +11,9 @@
             link: function ($scope) {
 
                 $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
-                $q.when($scope.creditCard, function (cc) {
-                    $scope.creditCardJSON = JSON.stringify(cc, null, 2);
-                });
 
-                $scope.$on('creditCardUpdate', function (cc) {
+                $scope.$on('creditCardUpdate', function (event, cc) {
                     $scope.creditCard = cc;
-                    $scope.creditCardJSON = JSON.stringify(cc, null, 2);
                 });
             },
             templateUrl: 'billing/static/partials/current-credit-card.html'

@@ -145,9 +145,20 @@ module.exports = function (scope, callback) {
                     data[k] = call.data[k];
                 }
             });
-            data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
+            var preErr = null;
+            if(!call.data.firstName || call.data.firstName.trim() === ''){
+                preErr = {
+                    firstName: 'String is empty'
+                };
+            }
+            if (!call.data.lastName || call.data.lastName.trim() === '') {
+                preErr = preErr || {};
+                preErr.lastName = 'String is empty';
+            }
+            if (!preErr) {
+                data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
+            }
 
-            console.log(data);
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
@@ -183,6 +194,12 @@ module.exports = function (scope, callback) {
                             });
                         }));
                         return;
+                    }
+                    if(preErr) {
+                        Object.keys(preErr).forEach(function (k) {
+                            err[k] = preErr[k];
+                        });
+                        delete err['cardHolderInfo.cardHolderName'];
                     }
                     scope.log.error('Failed to save to zuora', err, resp && resp.reasons);
                     call.done(err);

@@ -6,10 +6,6 @@
         ['$scope', 'requestContext', '$http', 'BillingService', function ($scope, requestContext, $http, BillingService) {
             requestContext.setUpRenderContext('account.payment', $scope);
 
-            $scope.$on('creditCardUpdate', function (cc) {
-                $scope.setCreditCard(cc);
-            });
-
             $scope.paymentMethods = BillingService.getPaymentMethods();
 
         }]);

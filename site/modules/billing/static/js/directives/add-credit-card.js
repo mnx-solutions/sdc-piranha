@@ -2,7 +2,7 @@
 
 (function (app) {
 
-    app.directive('addCreditCard',['BillingService', '$q','$http', function (BillingService, $q, $http) {
+    app.directive('addCreditCard',['BillingService', '$q','$http', '$rootScope', function (BillingService, $q, $http, $rootScope) {
 
         return {
             restrict: 'A',
@@ -75,14 +75,12 @@
                     BillingService.addPaymentMethod($scope.form, function (errs, job) {
                         if(errs) {
                             $scope.errs = errs;
-                            console.log(errs);
-                            console.log($scope.form.creditCardNumber);
                         } else {
                             $scope.errs = null;
                             var cc = BillingService.getDefaultCreditCard();
                             $q.when(cc, function (credit) {
                                 $scope.isSaving = false;
-                                $scope.$emit('creditCardUpdate', credit);
+                                $rootScope.$broadcast('creditCardUpdate', credit);
                             });
                         }
                     });
