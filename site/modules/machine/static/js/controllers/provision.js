@@ -35,6 +35,9 @@
                 };
 
                 $scope.data = {};
+                $scope.selectedDataset = null;
+                $scope.selectedPackage = null;
+                $scope.previousPos = 0;
 
                 $scope.clickProvision = function () {
                     function provision() {
@@ -73,17 +76,30 @@
 
                 };
 
+                $scope.reconfigure = function () {
+
+                    $scope.selectedDataset = null;
+                    $scope.selectedPackage = null;
+                    $scope.selectedPackageInfo = null;
+                    $scope.data = {};
+
+                    ng.element('.carousel-inner').scrollTop($scope.previousPos);
+                };
+
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
+
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
-                        ng.element('#selected-image').html(dataset.description);
+
+                        $scope.selectedDataset = dataset;
                         ng.element('#pricing').removeClass('alert-muted');
                         ng.element('#pricing').addClass('alert-success');
 
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
                     });
+
                 };
 
                 $scope.filterDatasets = function (item) {
@@ -99,13 +115,16 @@
                 };
 
                 $scope.selectPackage = function (id) {
+
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
-                        ng.element('#selected-size').html([
-                            localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
-                            localization.translate($scope, 'machine', 'Disk') + ': ' + pkg.disk + 'MB',
-                            localization.translate($scope, 'machine', 'vCPUs') + ': ' + pkg.vcpus
-                        ].join('<br />'));
+
+                        $scope.selectedPackage = id;
+                        $scope.selectedPackageInfo = {
+                            memory: localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
+                            disk: localization.translate($scope, 'machine', 'Disk') + ': ' + pkg.disk + 'MB',
+                            vcpus: localization.translate($scope, 'machine', 'vCPUs') + ': ' + pkg.vcpus
+                        };
 
                         $scope.data.package = pkg.id;
                     });
@@ -125,6 +144,7 @@
 
                 // Watch datacenter change
                 $scope.$watch('data.datacenter', function (newVal, oldVal) {
+
                     if (newVal) {
                         Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
                             $scope.datasets = datasets;
@@ -145,6 +165,7 @@
                 });
 
                 $scope.slideCarousel = function() {
+                  $scope.previousPos = ng.element('.carousel-inner').scrollTop();
                   ng.element('.carousel-inner').scrollTop(0);
                   ng.element('.carousel').carousel('next');
                 }
