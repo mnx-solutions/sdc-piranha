@@ -90,11 +90,14 @@ module.exports = function(grunt) {
                 src: [
                     "site/static/vendor/angular/angular.js",
                     "site/static/vendor/angular/angular-resource.js",
+                    "site/static/vendor/angular/angular-cookies.js",
                     "test/angular-mocks.js",
+                    "site/static/js/jp.js",
                     "site/static/js/*.js",
                     "site/static/js/**/*.js",
                     "site/modules/**/static/js/module.js",
-                                       "site/modules/**/static/js/**/*.js",
+                    "site/modules/**/static/js/**/*.js",
+                    "site/modules/**/static/vendor/**/*.js",
                     "**/modules/machine/**/test/mock/*.js"
                 ],
                 options: {
@@ -116,11 +119,11 @@ module.exports = function(grunt) {
             // if jsLint, we need to install it
             if (self.target === 'jsLint') {
                 exec('make install',
-                        {cwd: self.data.path},
-                function(err, stdoutInstall, stderrInstall) {
-                    console.log(stdoutInstall);
-                    done();
-                });
+                    {cwd: self.data.path},
+                    function(err, stdoutInstall, stderrInstall) {
+                        console.log(stdoutInstall);
+                        done();
+                    });
 
             } else {
                 done();
@@ -165,30 +168,30 @@ module.exports = function(grunt) {
 
     // task for running jasmine-node with tap reporter
     grunt.registerTask('jasmineNode',
-            'jasmine testing for node',
-            function() {
+        'jasmine testing for node',
+        function() {
 
-                var done = this.async();
-                var dir = grunt.config('jasmineNode.directory');
-                var command = 'node ./test/jasmine-wrapper.js ' + dir + ' --verbose';
+            var done = this.async();
+            var dir = grunt.config('jasmineNode.directory');
+            var command = 'node ./test/jasmine-wrapper.js ' + dir + ' --verbose';
 
-                exec(command, function(testError, stdout, stderr) {
-                    if (stderr) {
-                        throw new Error(stderr);
-                    }
+            exec(command, function(testError, stdout, stderr) {
+                if (stderr) {
+                    throw new Error(stderr);
+                }
 
-                    grunt.log.writeln(stdout);
+                grunt.log.writeln(stdout);
 
-                    if (testError) {
-                        grunt.warn('fix issues before continuing');
-                    } else {
-                        grunt.log.ok('All tests passed!');
-                    }
+                if (testError) {
+                    grunt.warn('fix issues before continuing');
+                } else {
+                    grunt.log.ok('All tests passed!');
+                }
 
-                    done();
-                });
-
+                done();
             });
+
+        });
 
     function getErrors(stdout, useStrictErr) {
         var messages = stdout[stdout.length - 2].split(', ');
@@ -230,27 +233,27 @@ module.exports = function(grunt) {
             }
 
             var errors = false;
-            
+
             var stdoutList = stdout.split('\n');
             var newStd = stdoutList.filter(useStrictFilter);
             var useStrictErr = stdoutList.length - newStd.length;
 
             var output = newStd.slice(0, newStd.length - 2).join('\n');
-                grunt.log.writeln(output);
+            grunt.log.writeln(output);
 
             if (lintError) {
                 errors = getErrors(newStd, useStrictErr);
             }
-                if (errors) {
-                        grunt.log.error(errors);
+            if (errors) {
+                grunt.log.error(errors);
                 grunt.warn('fix Lint issues before continuing');
             } else {
                 if (useStrictErr) {
                     grunt.log.writeln('>> ' + useStrictErr + ' use strict warning(s)');
                 }
                 grunt.log.ok(files.length +
-                        ' file' + (files.length === 1 ? '' : 's') +
-                        ' without fatal warnings/errors.');
+                    ' file' + (files.length === 1 ? '' : 's') +
+                    ' without fatal warnings/errors.');
             }
 
             done();
@@ -280,8 +283,8 @@ module.exports = function(grunt) {
                 grunt.warn('fix Style issues before continuing');
             } else {
                 grunt.log.ok(files.length +
-                        ' file' + (files.length === 1 ? '' : 's') +
-                        ' without fatal warnings/errors.');
+                    ' file' + (files.length === 1 ? '' : 's') +
+                    ' without fatal warnings/errors.');
             }
 
             done();
