@@ -26,7 +26,9 @@
     "foldermap": "0.3.x",
     "redis": "*",
     "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
-    "moment": "*"
+    "moment": "*",
+    "xml2js": "*",
+    "tropo-webapi-node": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",

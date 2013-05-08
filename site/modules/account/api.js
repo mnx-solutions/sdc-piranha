@@ -11,7 +11,7 @@ module.exports = function (scope, register, callback) {
 
     });
 
-    var steps = ['start', 'billing', 'ssh'];
+    var steps = ['start', 'accountInfo', 'tropo', 'billing', 'ssh'];
 
     if(!config.redis.signupDB) {
         scope.log.fatal('Redis config missing');

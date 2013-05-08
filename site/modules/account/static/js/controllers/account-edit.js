@@ -7,7 +7,7 @@
             requestContext.setUpRenderContext('account.edit', $scope);
             localization.bind('account', $scope);
 
-			$scope.updateable = ['email','firstName','lastName','phone'];
+			      $scope.updateable = ['email','firstName','lastName','phone'];
             $scope.updateable2 = ['companyName','address','postalCode','city','state','country'];
 			
 

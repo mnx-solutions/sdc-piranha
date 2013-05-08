@@ -54,7 +54,16 @@ module.exports = function (scope, callback) {
 //                }
 //            });
 //        });
-        call.cloud.updateAccount(data, call.done.bind(call));
+        call.cloud.updateAccount(data, function(err, res) {
+          if(!err) {
+            SignupProgress.setMinProgress(call.req, 'accountInfo', function() {
+              call.done(err, res);
+            });
+            return;
+          }
+
+          call.done(err, res);
+        });
     });
 
     server.onCall('listKeys', function(call) {
