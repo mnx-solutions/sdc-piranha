@@ -51,7 +51,9 @@ module.exports = function (scope, app, callback) {
     var say = new Say("Please enter your four digit number");
     var choices = new Choices("[4 DIGITS]");
 
-    tropo.call("+"+ req.body.session.parameters.randomNumber);
+    console.log('tropo calling to +'+ req.body.session.parameters.numberToDial);
+
+    tropo.call("+"+ req.body.session.parameters.numberToDial);
     tropo.ask(choices, null, null, null, "digit", null, null, say, 60, null);
 
     tropo.on("continue", null, "/continue?randomNumber="+ req.body.session.parameters.randomNumber, true);
