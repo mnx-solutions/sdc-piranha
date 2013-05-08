@@ -47,7 +47,7 @@ module.exports = function (scope, callback) {
                     currency: 'USD',
                     paymentTerm: 'Due Upon Receipt',
                     Category__c: 'Credit Card',
-                    billCycleDay: 0,
+                    billCycleDay: 1,
                     name: data.company || data.firstName + ' ' + data.lastName,
                     billToContact: {
                         firstName: call.data.firstName,
@@ -147,6 +147,7 @@ module.exports = function (scope, callback) {
             });
             data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
 
+            console.log(data);
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
@@ -166,8 +167,10 @@ module.exports = function (scope, callback) {
                                 var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
                                 obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
                             });
+                            console.log(obj);
                             zuora.account.create(obj, function (accErr, accResp) {
-                                if(accResp.reasons) {
+                                console.log(arguments);
+                                if(accResp && accResp.reasons) {
                                     accResp.reasons.forEach(function(r) {
                                         console.log(r);
                                     });

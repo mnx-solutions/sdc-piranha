@@ -11,13 +11,13 @@
             <div class="control-group pull-left span1">
             	<label class="control-label" for="expirationMonth">Month</label>
             	<div class="controls">
-                    <select data-ng-model="form.expirationMonth" data-ng-class="{error: errs.expirationMonth}" id="expirationMonth" data-ng-options="value for value in months" required></select>
+                    <select data-ng-model="form.expirationMonth" data-ng-class="{error: errs.expirationMonth || errs['creditCard.expirationMonth']}" id="expirationMonth" data-ng-options="value for value in months" required></select>
                 </div>
             </div>
             <div class="control-group pull-left span2">
             	<label class="control-label" for="expirationYear">Year</label>
             	<div class="controls">
-                    <select data-ng-model="form.expirationYear" data-ng-class="{error: errs.expirationMonth}" id="expirationYear" data-ng-options="value for value in years" required></select>
+                    <select data-ng-model="form.expirationYear" data-ng-class="{error: errs.expirationMonth || errs['creditCard.expirationMonth']}" id="expirationYear" data-ng-options="value for value in years" required></select>
                 </div>
             </div>
 			<div class="clearfix"></div>
@@ -32,13 +32,13 @@
         <div class="control-group">
             <label class="control-label" for="cardHolderName-firstName">First name</label>
             <div class="controls">
-                <input type="text" id="cardHolderName-firstName" data-ng-class="{error: errs.cardHolderName}" placeholder="Name" data-ng-model="form.firstName"  size="50" required>
+                <input type="text" id="cardHolderName-firstName" data-ng-class="{error: errs.cardHolderName || errs['billToContact.firstName']}" placeholder="First name" data-ng-model="form.firstName"  size="50" required>
             </div>
         </div>
         <div class="control-group">
             <label class="control-label" for="cardHolderName-lastName">Last Name</label>
             <div class="controls">
-                <input type="text" id="cardHolderName-lastName" data-ng-class="{error: errs.cardHolderName}" placeholder="Name" data-ng-model="form.lastName"  size="50" required>
+                <input type="text" id="cardHolderName-lastName" data-ng-class="{error: errs.cardHolderName || errs['billToContact.lastName']}" placeholder="Last name" data-ng-model="form.lastName"  size="50" required>
             </div>
         </div>
     </fieldset>
@@ -86,7 +86,7 @@
         <div class="control-group">
             <label class="control-label" for="zipCode">Zip Code</label>
             <div class="controls">
-                <input type="text" id="zipCode" data-ng-class="{error: errs.zipcode}" placeholder="Zip" data-ng-model="form.cardHolderInfo.zipCode" size="10" required>
+                <input type="text" id="zipCode" data-ng-class="{error: errs.zipCode}" placeholder="Zip" data-ng-model="form.cardHolderInfo.zipCode" size="10" required>
             </div>
         </div>
     </fieldset>
