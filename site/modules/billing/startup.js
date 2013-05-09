@@ -52,7 +52,7 @@ module.exports = function (scope, callback) {
                     billToContact: {
                         firstName: call.data.firstName,
                         lastName: call.data.lastName,
-                        country: data.country || null
+                        country: call.data.cardHolderInfo.country || data.country || null
                     },
                     subscription: {
                         termType: 'EVERGREEN',
@@ -183,6 +183,7 @@ module.exports = function (scope, callback) {
                                     });
                                 }
                                 if(accErr) {
+                                    accErr.zuora = accResp;
                                     call.done(accErr);
                                     return;
                                 }
@@ -198,6 +199,7 @@ module.exports = function (scope, callback) {
                         delete err['cardHolderInfo.cardHolderName'];
                     }
                     scope.log.error('Failed to save to zuora', err, resp && resp.reasons);
+                    err.zuora = resp;
                     call.done(err);
                     return;
                 }
@@ -210,17 +212,33 @@ module.exports = function (scope, callback) {
         }));
     });
 
-    server.onCall('listInvoices', function (call) {
-        getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
-            zuora.transaction.getInvoices(id, function (err, resp) {
-                if(err) {
-                    call.done(err);
-                    return;
-                }
-                call.done(null, resp.invoices);
-            });
+    function getInvoiceList(call, cb) {
+        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
+            zuora.transaction.getInvoices(id, cb);
         }));
+    }
+
+    server.onCall('listInvoices', function (call) {
+        getInvoiceList(call, function (err, resp) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+            call.done(null, resp.invoices);
+        });
     });
+
+    server.onCall('getLastInvoice', function (call) {
+        getInvoiceList(call, function (err, resp) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+
+        });
+    });
+
+
 
     setImmediate(callback);
 };

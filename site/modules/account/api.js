@@ -11,7 +11,7 @@ module.exports = function (scope, register, callback) {
 
     });
 
-    var steps = ['start', 'accountInfo', 'tropo', 'billing', 'ssh'];
+    var steps = ['start', 'accountInfo', 'tropo', 'billing','ssh'];
 
     if(!config.redis.signupDB) {
         scope.log.fatal('Redis config missing');
@@ -100,8 +100,14 @@ module.exports = function (scope, register, callback) {
     };
 
     api.getSignupStep = function (req, cb) {
+        function end(step) {
+            if(steps.indexOf(step) === (steps.length -1)) {
+                step = 'completed';
+            }
+            cb(null, step);
+        }
         if(req.session.signupStep) {
-            cb(null, req.session.signupStep);
+            end(req.session.signupStep);
             return;
         }
 
@@ -111,7 +117,7 @@ module.exports = function (scope, register, callback) {
                 return;
             }
             if(val) {
-                cb(null, val);
+                end(val);
                 return;
             }
             api.getAccountVal(req.cloud, function (err, value) {
@@ -124,7 +130,7 @@ module.exports = function (scope, register, callback) {
                         cb(err);
                         return;
                     }
-                    cb(null, value);
+                    end(value);
                     return;
                 });
             });
@@ -154,16 +160,25 @@ module.exports = function (scope, register, callback) {
 
     api.setMinProgress = function (call, step, cb) {
         if(!call.req && !call.done) { // Not a call, but request
-            call = {req: call};
+            var req = call;
+            call = {
+                req: req,
+                session: function (fn) {
+                    fn(req);
+                }
+            };
         }
         api.getSignupStep(call.req, function (err, oldStep) {
             if(err) {
                 cb(err);
                 return;
             }
-            if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
+            if(oldStep === 'completed' || oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
                 cb();
                 return;
+            }
+            if(steps.indexOf(step) === (steps.length -1)) { // Last step
+                step = 'completed';
             }
             api.setSignupStep(call, step, cb);
         });

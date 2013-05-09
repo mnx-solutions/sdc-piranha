@@ -17,7 +17,7 @@
       $scope.account.then(function(account) {
 
         if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
-          $http.get('/tropo/tropo/'+ account['phone']).success(function(data) {
+          $http.get('/tropo/tropo/'+ account.phone).success(function(data) {
             if(!data.success) {
               $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
             } else {
@@ -25,8 +25,9 @@
 
               var interval = setInterval(function() {
                 $scope.tropoPoll++;
-                $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
+                $http.get('account/tropo/'+ data.tropoId).success(function(data) {
                   if(data.status === 'passed') {
+
                     clearInterval(interval);
                     $scope.nextStep();
                   }

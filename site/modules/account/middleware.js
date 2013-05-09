@@ -13,7 +13,7 @@ module.exports = function (scope, callback) {
             req.session.save();
         }
 
-        if(step === 'completed') {
+        if(step === 'completed' || step === 'complete') {
             return next();
         }
 
