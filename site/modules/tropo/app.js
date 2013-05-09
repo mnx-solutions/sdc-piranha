@@ -18,6 +18,7 @@ module.exports = function (scope, app, callback) {
   app.get('/:number', function(req, res) {
     var randomNumber = Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9);
 
+
     var options = {
       host:'api.tropo.com',
       path: '/1.0/sessions?action=create&token=1ce9e601654a6d459eecdf26eaabf7cb85a9f31031451a0aa3c1afc72c135d73c5398c473e1f150b77ece954&numberToDial='+ req.params.number +'&randomNumber='+ randomNumber
@@ -35,6 +36,8 @@ module.exports = function (scope, app, callback) {
         console.log('answer: ', resultBody.toString());
         parseXml(resultBody.toString(), {trim: true}, function(err, result) {
           console.log('XML ', result.session.id[0]);
+
+          console.log('RANDOM NUMBER', randomNumber);
           response.json({randomNumber: randomNumber, tropoId: result.session.id[0]});
         })
       })
@@ -55,7 +58,7 @@ module.exports = function (scope, app, callback) {
     console.log('tropo calling to +'+ req.body.session.parameters.numberToDial);
 
     tropo.call("+"+ req.body.session.parameters.numberToDial);
-    tropo.ask(choices, null, null, null, "digit", null, null, say, 60, null);
+    tropo.ask(choices, null, true, null, "digit", null, null, say, 60, null);
 
     tropo.on("continue", null, "/tropo/tropo/continue?randomNumber="+ req.body.session.parameters.randomNumber, true);
     tropo.on("hangup", null, "/tropo/tropo/fail", true);
