@@ -33,20 +33,16 @@ module.exports = function (scope, app, callback) {
       });
 
       res.on('end', function() {
-        console.log('answer: ', resultBody.toString());
         parseXml(resultBody.toString(), {trim: true}, function(err, result) {
-          console.log('XML ', result.session.id[0]);
-
-          console.log('RANDOM NUMBER', randomNumber);
           response.json({randomNumber: randomNumber, tropoId: result.session.id[0]});
         })
-      })
+      });
 
     }).on('error', function(e) {
         console.log("Got error: " + e.message);
       });
 
-  })
+  });
 
   app.post('/', function(req, res){
 
@@ -76,11 +72,10 @@ module.exports = function (scope, app, callback) {
   });
 
   app.post('/fail', function(req, res) {
-    console.log('fail', req.body);
     redisClient.set(req.body.result.sessionId, 'failed');
 
     res.send(200);
-  })
+  });
 
   app.post('/continue', function(req, res){
 
@@ -95,17 +90,13 @@ module.exports = function (scope, app, callback) {
   });
 
   app.post('/finish', function(req, res) {
-    console.log('FINISH', req.body.result.sessionId);
-
     if(req.query.randomNumber == req.query.answer) {
-      console.log('PASSED');
       redisClient.set(req.body.result.sessionId, 'passed');
     } else {
-      console.log('FAILED');
       redisClient.set(req.body.result.sessionId, 'failed');
     }
     res.send(200);
-  })
+  });
 
 	setImmediate(callback);
 };
