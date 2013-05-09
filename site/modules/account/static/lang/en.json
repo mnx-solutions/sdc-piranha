@@ -4,5 +4,16 @@
     "Name: {{account.firstName}} {{account.lastName}}": "Name: {{account.firstName}} {{account.lastName}}",
     "Change password": "Change password",
     "Change my password": "Change my password",
-	"companyName": "Firma nimi"
+	"Edit profile": "Edit profile"
+    "Email": "Email",
+    "First name": "First name",
+    "Last name": "Last name",
+    "Phone": "Phone",
+    "Company name": "Company name",
+    "Address": "Address",
+    "Postal code": "Postal code",
+    "City": "City",
+    "State": "State",
+    "Country": "Country",
+    "Please fill all the required fields": "Please fill all the required fields"
 }
