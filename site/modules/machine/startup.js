@@ -14,6 +14,8 @@ module.exports = function (scope, callback) {
     scope.config.localization.locales.forEach(function (lng) {
         langs[lng] = {};
     });
+
+
     function mapImageInfo() {
         Object.keys(info.images.data).forEach(function(id) {
             if(!info.images.data[id].description) {
@@ -145,8 +147,8 @@ module.exports = function (scope, callback) {
                 return;
             }
             data.forEach(function (p, i) {
-                if(info.packages.data[p.id]) {
-                    data[i] = utils.extend(p, info.packages.data[p.id]);
+                if(info.packages.data[p.name]) {
+                    data[i] = utils.extend(p, info.packages.data[p.name]);
                 }
             });
             call.done(null, data);
@@ -228,7 +230,7 @@ module.exports = function (scope, callback) {
                             call.log.error('Cloud polling failed %o', tagsErr);
                         }
                     }, undefined, true);
-                }, 1000);
+                }, 5000);
             });
         }
     });

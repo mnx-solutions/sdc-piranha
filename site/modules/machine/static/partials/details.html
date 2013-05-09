@@ -113,10 +113,7 @@
                 </div>
 
                 <div class="muted" style="margin-top:10px;" data-ng-show="o.edit">
-                    <div data-ng-class="{error: o.conflict}" class="controls control-group" > 
-	<!--
-		
-	-->
+                    <div data-ng-class="{error: o.conflict}" class="controls control-group" >
                         <input type="text" class="input-large" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
                         <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
 						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px"></span>
@@ -145,7 +142,10 @@
 	        <div data-ng-show="selectedPackage">
 				<div class="span3 container arrow-to">
 					<h6 data-translate>Current package</h6>
-		            <span data-translate>Memory</span>:
+                    <span>{{currentPackage.description}}</span><br />
+                    <span data-translate>Type</span>:
+                    <span>{{currentPackage.group}}</span><br />
+                    <span data-translate>Memory</span>:
 		            <span data-translate>{{currentPackage.memory | sizeFormat}}</span><br />
 		            <span data-translate>Disk</span>:
 		            <span data-translate>{{currentPackage.disk | sizeFormat}}</span><br />
@@ -153,6 +153,7 @@
 		            <span data-translate>{{currentPackage.vcpus}}</span>
 				</div>
 	        </div>
+
 			<div class="span3 pull-right">
 				<h6 class="control-label" data-translate>Resize Package</h6>
 	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:220px">
