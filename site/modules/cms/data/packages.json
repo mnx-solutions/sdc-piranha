@@ -1,854 +1,998 @@
 {
- "t1-micro-0.25-smartos": {
-  "group": "Micro",
-  "description": "Micro 0.25 GB RAM 0.125 vCPUs 16 GB Disk",
-  "price": "0.008",
-  "price_month": "5.84"
- },
- "t1-micro-0.5-smartos": {
-  "group": "Micro",
-  "description": "Micro 0.5 GB RAM 0.125 vCPUs 16 GB Disk",
-  "price": "0.016",
-  "price_month": "11.68"
- },
- "m1-small-0.625-smartos": {
-  "group": "Micro",
-  "description": "Micro 0.6 GB RAM 0.15 vCPUs 20 GB Disk",
-  "price": "0.020",
-  "price_month": "14.60"
- },
- "m1-small-1-smartos": {
-  "group": "Standard",
-  "description": "Standard 1 GB RAM 0.25 vCPUs 33 GB Disk",
-  "price": "0.032",
-  "price_month": "23.36"
- },
- "m1-small-1.75-smartos": {
-  "group": "Standard",
-  "description": "Standard 1.7 GB RAM 1 vCPUs 56 GB Disk",
-  "price": "0.056",
-  "price_month": "40.88"
- },
- "m1-small-2-smartos": {
-  "group": "Standard",
-  "description": "Standard 2 GB RAM 1 vCPUs 66 GB Disk",
-  "price": "0.064",
-  "price_month": "46.72"
- },
- "m1-medium-3.75-smartos": {
-  "group": "Standard",
-  "description": "Standard 3.75 GB RAM 1 vCPUs 123 GB Disk",
-  "price": "0.120",
-  "price_month": "87.60"
- },
- "m1-medium-4-smartos": {
-  "group": "Standard",
-  "description": "Standard 4 GB RAM 1 vCPUs 131 GB Disk",
-  "price": "0.128",
-  "price_month": "93.44"
- },
- "m1-large-7.5-smartos": {
-  "group": "Standard",
-  "description": "Standard 7.5 GB RAM 2 vCPUs 738 GB Disk",
-  "price": "0.240",
-  "price_month": "175.20"
- },
- "m1-large-8-smartos": {
-  "group": "Standard",
-  "description": "Standard 8 GB RAM 2 vCPUs 789 GB Disk",
-  "price": "0.256",
-  "price_month": "186.88"
- },
- "m1-xlarge-15-smartos": {
-  "group": "Standard",
-  "description": "Standard 15 GB RAM 4 vCPUs 1467 GB Disk",
-  "price": "0.480",
-  "price_month": "350.40"
- },
- "m1-xlarge-16-smartos": {
-  "group": "Standard",
-  "description": "Standard 16 GB RAM 4 vCPUs 1575 GB Disk",
-  "price": "0.512",
-  "price_month": "373.76"
- },
- "m1-xlarge-17.125-smartos": {
-  "group": "Standard",
-  "description": "Standard 17.1 GB RAM 5 vCPUs 1683 GB Disk",
-  "price": "0.548",
-  "price_month": "400.04"
- },
- "m1-2xlarge-30-smartos": {
-  "group": "Standard",
-  "description": "Standard 30 GB RAM 8 vCPUs 1683 GB Disk",
-  "price": "0.960",
-  "price_month": "700.80"
- },
- "m1-2xlarge-32-smartos": {
-  "group": "Standard",
-  "description": "Standard 32 GB RAM 8 vCPUs 1683 GB Disk",
-  "price": "1.024",
-  "price_month": "747.52"
- },
- "m1-2xlarge-40-smartos": {
-  "group": "Standard",
-  "description": "Standard 40 GB RAM 10 vCPUs 1683 GB Disk",
-  "price": "1.280",
-  "price_month": "934.40"
- },
- "m1-2xlarge-48-smartos": {
-  "group": "Standard",
-  "description": "Standard 48 GB RAM 12 vCPUs 1683 GB Disk",
-  "price": "1.536",
-  "price_month": "1,121.28"
- },
- "m1-2xlarge-56-smartos": {
-  "group": "Standard",
-  "description": "Standard 56 GB RAM 14 vCPUs 1838 GB Disk",
-  "price": "1.792",
-  "price_month": "1,308.16"
- },
- "m1-2xlarge-64-smartos": {
-  "group": "Standard",
-  "description": "Standard 64 GB RAM 16 vCPUs 2100 GB Disk",
-  "price": "2.048",
-  "price_month": "1,495.04"
- },
- "m1-2xlarge-72-smartos": {
-  "group": "Standard",
-  "description": "Standard 72 GB RAM 18 vCPUs 2363 GB Disk",
-  "price": "2.304",
-  "price_month": "1,681.92"
- },
- "m1-2xlarge-80-smartos": {
-  "group": "Standard",
-  "description": "Standard 80 GB RAM 20 vCPUs 2625 GB Disk",
-  "price": "2.560",
-  "price_month": "1,868.80"
- },
- "m1-2xlarge-88-smartos": {
-  "group": "Standard",
-  "description": "Standard 88 GB RAM 22 vCPUs 2888 GB Disk",
-  "price": "2.816",
-  "price_month": "2,055.68"
- },
- "m1-2xlarge-96-smartos": {
-  "group": "Standard",
-  "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk",
-  "price": "3.072",
-  "price_month": "2,242.56"
- },
- "m1-2xlarge-104-smartos": {
-  "group": "Standard",
-  "description": "Standard 104 GB RAM 26 vCPUs 3413 GB Disk",
-  "price": "3.328",
-  "price_month": "2,429.44"
- },
- "m1-2xlarge-112-smartos": {
-  "group": "Standard",
-  "description": "Standard 112 GB RAM 28 vCPUs 3675 GB Disk",
-  "price": "3.584",
-  "price_month": "2,616.32"
- },
- "m1-2xlarge-120-smartos": {
-  "group": "Standard",
-  "description": "Standard 120 GB RAM 30 vCPUs 3938 GB Disk",
-  "price": "3.840",
-  "price_month": "2,803.20"
- },
- "cc1-2xlarge-128-smartos": {
-  "group": "Standard-CC",
-  "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk",
-  "price": "4.096",
-  "price_month": "2,990.08"
- },
- "m2-xlarge-17.125-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 17.1 GB RAM 2 vCPUs 420 GB Disk",
-  "price": "0.409",
-  "price_month": "298.57"
- },
- "m2-2xlarge-34.25-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 34.2 GB RAM 4 vCPUs 843 GB Disk",
-  "price": "0.817",
-  "price_month": "596.41"
- },
- "m2-2xlarge-48-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 48 GB RAM 6 vCPUs 843 GB Disk",
-  "price": "1.145",
-  "price_month": "835.85"
- },
- "m2-4xlarge-68.375-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 68.4 GB RAM 8 vCPUs 1122 GB Disk",
-  "price": "1.630",
-  "price_month": "1,189.90"
- },
- "m2-4xlarge-80-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 80 GB RAM 10 vCPUs 1313 GB Disk",
-  "price": "1.907",
-  "price_month": "1,392.11"
- },
- "m2-4xlarge-96-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 96 GB RAM 12 vCPUs 1575 GB Disk",
-  "price": "2.289",
-  "price_month": "1,670.97"
- },
- "m2-4xlarge-112-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 112 GB RAM 14 vCPUs 1838 GB Disk",
-  "price": "2.670",
-  "price_month": "1,949.10"
- },
- "m2-4xlarge-128-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 128 GB RAM 16 vCPUs 2100 GB Disk",
-  "price": "3.051",
-  "price_month": "2,227.23"
- },
- "m2-4xlarge-144-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk",
-  "price": "3.433",
-  "price_month": "2,506.09"
- },
- "m2-4xlarge-160-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 160 GB RAM 20 vCPUs 2625 GB Disk",
-  "price": "3.814",
-  "price_month": "2,784.22"
- },
- "m2-4xlarge-176-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 176 GB RAM 22 vCPUs 2888 GB Disk",
-  "price": "4.196",
-  "price_month": "3,063.08"
- },
- "m2-4xlarge-192-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 192 GB RAM 24 vCPUs 3150 GB Disk",
-  "price": "4.577",
-  "price_month": "3,341.21"
- },
- "m2-4xlarge-208-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 208 GB RAM 26 vCPUs 3413 GB Disk",
-  "price": "4.958",
-  "price_month": "3,619.34"
- },
- "m2-4xlarge-224-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 224 GB RAM 28 vCPUs 3675 GB Disk",
-  "price": "5.340",
-  "price_month": "3,898.20"
- },
- "m2-4xlarge-240-smartos": {
-  "group": "High Memory",
-  "description": "High Memory 240 GB RAM 30 vCPUs 3938 GB Disk",
-  "price": "5.721",
-  "price_month": "4,176.33"
- },
- "cr2-4xlarge-256-smartos": {
-  "group": "High Memory-CC",
-  "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk",
-  "price": "6.102",
-  "price_month": "4,454.46"
- },
- "c1-medium-1.75-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 1.7 GB RAM 2 vCPUs 336 GB Disk",
-  "price": "0.127",
-  "price_month": "92.71"
- },
- "c1-medium-4-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 4 GB RAM 4 vCPUs 789 GB Disk",
-  "price": "0.290",
-  "price_month": "211.70"
- },
- "c1-xlarge-7-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 7 GB RAM 7 vCPUs 1377 GB Disk",
-  "price": "0.508",
-  "price_month": "370.84"
- },
- "c1-xlarge-8-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 8 GB RAM 8 vCPUs 1377 GB Disk",
-  "price": "0.580",
-  "price_month": "423.40"
- },
- "c1-2xlarge-10-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 10 GB RAM 10 vCPUs 1377 GB Disk",
-  "price": "0.725",
-  "price_month": "529.25"
- },
- "c1-2xlarge-12-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 12 GB RAM 12 vCPUs 1377 GB Disk",
-  "price": "0.870",
-  "price_month": "635.10"
- },
- "c1-2xlarge-14-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 14 GB RAM 14 vCPUs 1377 GB Disk",
-  "price": "1.015",
-  "price_month": "740.95"
- },
- "c1-2xlarge-16-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 16 GB RAM 16 vCPUs 1377 GB Disk",
-  "price": "1.160",
-  "price_month": "846.80"
- },
- "c1-2xlarge-18-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 18 GB RAM 18 vCPUs 1377 GB Disk",
-  "price": "1.304",
-  "price_month": "951.92"
- },
- "c1-2xlarge-20-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 20 GB RAM 20 vCPUs 1377 GB Disk",
-  "price": "1.449",
-  "price_month": "1,057.77"
- },
- "c1-2xlarge-22-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 22 GB RAM 22 vCPUs 1444 GB Disk",
-  "price": "1.594",
-  "price_month": "1,163.62"
- },
- "c1-2xlarge-24-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 24 GB RAM 24 vCPUs 1575 GB Disk",
-  "price": "1.739",
-  "price_month": "1,269.47"
- },
- "c1-2xlarge-26-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 26 GB RAM 26 vCPUs 1706 GB Disk",
-  "price": "1.884",
-  "price_month": "1,375.32"
- },
- "c1-2xlarge-28-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 28 GB RAM 28 vCPUs 1838 GB Disk",
-  "price": "2.029",
-  "price_month": "1,481.17"
- },
- "c1-2xlarge-30-smartos": {
-  "group": "High CPU",
-  "description": "High CPU 30 GB RAM 30 vCPUs 1969 GB Disk",
-  "price": "2.174",
-  "price_month": "1,587.02"
- },
- "cc1-2xlarge-32-smartos": {
-  "group": "High CPU-CC",
-  "description": "High CPU-CC 32 GB RAM 32 vCPUs 2100 GB Disk",
-  "price": "2.319",
-  "price_month": "1,692.87"
- },
- "hs1-4xlarge-64-smartos": {
-  "group": "High Storage",
-  "description": "High Storage 64 GB RAM 8 vCPUs 7680 GB Disk",
-  "price": "0.863",
-  "price_month": "629.99"
- },
- "hs1-4xlarge-96-smartos": {
-  "group": "High Storage",
-  "description": "High Storage 96 GB RAM 12 vCPUs 11520 GB Disk",
-  "price": "1.295",
-  "price_month": "945.35"
- },
- "hs1-4xlarge-128-smartos": {
-  "group": "High Storage",
-  "description": "High Storage 128 GB RAM 16 vCPUs 15360 GB Disk",
-  "price": "1.726",
-  "price_month": "1,259.98"
- },
- "hs1-8xlarge-192-smartos": {
-  "group": "High Storage",
-  "description": "High Storage 192 GB RAM 24 vCPUs 23040 GB Disk",
-  "price": "2.589",
-  "price_month": "1,889.97"
- },
- "hs1-8xlarge-256-smartos": {
-  "group": "High Storage",
-  "description": "High Storage 256 GB RAM 32 vCPUs 30720 GB Disk",
-  "price": "3.451",
-  "price_month": "2,519.23"
- },
- "hi1-4xlarge-60.5-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk",
-  "price": "3.067",
-  "price_month": "2,238.91"
- },
- "hi1-4xlarge-96-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 96 GB RAM 12 vCPUs 2304 GB Disk",
-  "price": "4.866",
-  "price_month": "3,552.18"
- },
- "hi1-4xlarge-128-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk",
-  "price": "6.488",
-  "price_month": "4,736.24"
- },
- "hi1-8xlarge-160-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 160 GB RAM 20 vCPUs 3840 GB Disk",
-  "price": "8.110",
-  "price_month": "5,920.30"
- },
- "hi1-8xlarge-192-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 192 GB RAM 24 vCPUs 4608 GB Disk",
-  "price": "9.732",
-  "price_month": "7,104.36"
- },
- "hi1-8xlarge-224-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 224 GB RAM 28 vCPUs 5376 GB Disk",
-  "price": "11.354",
-  "price_month": "8,288.42"
- },
- "hi1-8xlarge-256-smartos": {
-  "group": "High I/O",
-  "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk",
-  "price": "12.976",
-  "price_month": "9,472.48"
- },
- "t1-micro-0.25-kvm": {
-  "group": "Micro",
-  "description": "Micro 0.25 GB RAM 0.125 vCPUs 16 GB Disk",
-  "price": "0.008",
-  "price_month": "5.84"
- },
- "t1-micro-0.5-kvm": {
-  "group": "Micro",
-  "description": "Micro 0.5 GB RAM 0.125 vCPUs 16 GB Disk",
-  "price": "0.016",
-  "price_month": "11.68"
- },
- "m1-small-0.625-kvm": {
-  "group": "Standard",
-  "description": "Standard 0.6 GB RAM 0.15 vCPUs 20 GB Disk",
-  "price": "0.020",
-  "price_month": "14.60"
- },
- "m1-small-1-kvm": {
-  "group": "Standard",
-  "description": "Standard 1 GB RAM 0.25 vCPUs 33 GB Disk",
-  "price": "0.032",
-  "price_month": "23.36"
- },
- "m1-small-1.75-kvm": {
-  "group": "Standard",
-  "description": "Standard 1.7 GB RAM 1 vCPUs 56 GB Disk",
-  "price": "0.056",
-  "price_month": "40.88"
- },
- "m1-small-2-kvm": {
-  "group": "Standard",
-  "description": "Standard 2 GB RAM 1 vCPUs 66 GB Disk",
-  "price": "0.064",
-  "price_month": "46.72"
- },
- "m1-medium-3.75-kvm": {
-  "group": "Standard",
-  "description": "Standard 3.75 GB RAM 1 vCPUs 123 GB Disk",
-  "price": "0.120",
-  "price_month": "87.60"
- },
- "m1-medium-4-kvm": {
-  "group": "Standard",
-  "description": "Standard 4 GB RAM 1 vCPUs 131 GB Disk",
-  "price": "0.128",
-  "price_month": "93.44"
- },
- "m1-large-7.5-kvm": {
-  "group": "Standard",
-  "description": "Standard 7.5 GB RAM 2 vCPUs 738 GB Disk",
-  "price": "0.240",
-  "price_month": "175.20"
- },
- "m1-large-8-kvm": {
-  "group": "Standard",
-  "description": "Standard 8 GB RAM 2 vCPUs 789 GB Disk",
-  "price": "0.256",
-  "price_month": "186.88"
- },
- "m1-xlarge-15-kvm": {
-  "group": "Standard",
-  "description": "Standard 15 GB RAM 4 vCPUs 1467 GB Disk",
-  "price": "0.480",
-  "price_month": "350.40"
- },
- "m1-xlarge-16-kvm": {
-  "group": "Standard",
-  "description": "Standard 16 GB RAM 4 vCPUs 1575 GB Disk",
-  "price": "0.512",
-  "price_month": "373.76"
- },
- "m1-xlarge-17.125-kvm": {
-  "group": "Standard",
-  "description": "Standard 17.1 GB RAM 5 vCPUs 1683 GB Disk",
-  "price": "0.548",
-  "price_month": "400.04"
- },
- "m1-2xlarge-30-kvm": {
-  "group": "Standard",
-  "description": "Standard 30 GB RAM 8 vCPUs 1683 GB Disk",
-  "price": "0.960",
-  "price_month": "700.80"
- },
- "m1-2xlarge-32-kvm": {
-  "group": "Standard",
-  "description": "Standard 32 GB RAM 8 vCPUs 1683 GB Disk",
-  "price": "1.024",
-  "price_month": "747.52"
- },
- "m1-2xlarge-40-kvm": {
-  "group": "Standard",
-  "description": "Standard 40 GB RAM 10 vCPUs 1683 GB Disk",
-  "price": "1.280",
-  "price_month": "934.40"
- },
- "m1-2xlarge-48-kvm": {
-  "group": "Standard",
-  "description": "Standard 48 GB RAM 12 vCPUs 1683 GB Disk",
-  "price": "1.536",
-  "price_month": "1,121.28"
- },
- "m1-2xlarge-56-kvm": {
-  "group": "Standard",
-  "description": "Standard 56 GB RAM 14 vCPUs 1838 GB Disk",
-  "price": "1.792",
-  "price_month": "1,308.16"
- },
- "m1-2xlarge-64-kvm": {
-  "group": "Standard",
-  "description": "Standard 64 GB RAM 16 vCPUs 2100 GB Disk",
-  "price": "2.048",
-  "price_month": "1,495.04"
- },
- "m1-2xlarge-72-kvm": {
-  "group": "Standard",
-  "description": "Standard 72 GB RAM 18 vCPUs 2363 GB Disk",
-  "price": "2.304",
-  "price_month": "1,681.92"
- },
- "m1-2xlarge-80-kvm": {
-  "group": "Standard",
-  "description": "Standard 80 GB RAM 20 vCPUs 2625 GB Disk",
-  "price": "2.560",
-  "price_month": "1,868.80"
- },
- "m1-2xlarge-88-kvm": {
-  "group": "Standard",
-  "description": "Standard 88 GB RAM 22 vCPUs 2888 GB Disk",
-  "price": "2.816",
-  "price_month": "2,055.68"
- },
- "m1-2xlarge-96-kvm": {
-  "group": "Standard",
-  "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk",
-  "price": "3.072",
-  "price_month": "2,242.56"
- },
- "m1-2xlarge-104-kvm": {
-  "group": "Standard",
-  "description": "Standard 104 GB RAM 26 vCPUs 3413 GB Disk",
-  "price": "3.328",
-  "price_month": "2,429.44"
- },
- "m1-2xlarge-112-kvm": {
-  "group": "Standard",
-  "description": "Standard 112 GB RAM 28 vCPUs 3675 GB Disk",
-  "price": "3.584",
-  "price_month": "2,616.32"
- },
- "m1-2xlarge-120-kvm": {
-  "group": "Standard",
-  "description": "Standard 120 GB RAM 30 vCPUs 3938 GB Disk",
-  "price": "3.840",
-  "price_month": "2,803.20"
- },
- "cc1-2xlarge-128-kvm": {
-  "group": "Standard-CC",
-  "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk",
-  "price": "4.096",
-  "price_month": "2,990.08"
- },
- "m2-xlarge-17.125-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 17.1 GB RAM 2 vCPUs 420 GB Disk",
-  "price": "0.409",
-  "price_month": "298.57"
- },
- "m2-2xlarge-34.25-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 34.2 GB RAM 4 vCPUs 843 GB Disk",
-  "price": "0.817",
-  "price_month": "596.41"
- },
- "m2-2xlarge-48-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 48 GB RAM 6 vCPUs 843 GB Disk",
-  "price": "1.145",
-  "price_month": "835.85"
- },
- "m2-4xlarge-68.375-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 68.4 GB RAM 8 vCPUs 1122 GB Disk",
-  "price": "1.630",
-  "price_month": "1,189.90"
- },
- "m2-4xlarge-80-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 80 GB RAM 10 vCPUs 1313 GB Disk",
-  "price": "1.907",
-  "price_month": "1,392.11"
- },
- "m2-4xlarge-96-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 96 GB RAM 12 vCPUs 1575 GB Disk",
-  "price": "2.289",
-  "price_month": "1,670.97"
- },
- "m2-4xlarge-112-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 112 GB RAM 14 vCPUs 1838 GB Disk",
-  "price": "2.670",
-  "price_month": "1,949.10"
- },
- "m2-4xlarge-128-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 128 GB RAM 16 vCPUs 2100 GB Disk",
-  "price": "3.051",
-  "price_month": "2,227.23"
- },
- "m2-4xlarge-144-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk",
-  "price": "3.433",
-  "price_month": "2,506.09"
- },
- "m2-4xlarge-160-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 160 GB RAM 20 vCPUs 2625 GB Disk",
-  "price": "3.814",
-  "price_month": "2,784.22"
- },
- "m2-4xlarge-176-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 176 GB RAM 22 vCPUs 2888 GB Disk",
-  "price": "4.196",
-  "price_month": "3,063.08"
- },
- "m2-4xlarge-192-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 192 GB RAM 24 vCPUs 3150 GB Disk",
-  "price": "4.577",
-  "price_month": "3,341.21"
- },
- "m2-4xlarge-208-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 208 GB RAM 26 vCPUs 3413 GB Disk",
-  "price": "4.958",
-  "price_month": "3,619.34"
- },
- "m2-4xlarge-224-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 224 GB RAM 28 vCPUs 3675 GB Disk",
-  "price": "5.340",
-  "price_month": "3,898.20"
- },
- "m2-4xlarge-240-kvm": {
-  "group": "High Memory",
-  "description": "High Memory 240 GB RAM 30 vCPUs 3938 GB Disk",
-  "price": "5.721",
-  "price_month": "4,176.33"
- },
- "cr2-4xlarge-256-kvm": {
-  "group": "High Memory-CC",
-  "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk",
-  "price": "6.102",
-  "price_month": "4,454.46"
- },
- "c1-medium-1.75-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 1.7 GB RAM 2 vCPUs 336 GB Disk",
-  "price": "0.127",
-  "price_month": "92.71"
- },
- "c1-medium-4-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 4 GB RAM 4 vCPUs 789 GB Disk",
-  "price": "0.290",
-  "price_month": "211.70"
- },
- "c1-xlarge-7-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 7 GB RAM 7 vCPUs 1377 GB Disk",
-  "price": "0.508",
-  "price_month": "370.84"
- },
- "c1-xlarge-8-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 8 GB RAM 8 vCPUs 1377 GB Disk",
-  "price": "0.580",
-  "price_month": "423.40"
- },
- "c1-2xlarge-10-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 10 GB RAM 10 vCPUs 1377 GB Disk",
-  "price": "0.725",
-  "price_month": "529.25"
- },
- "c1-2xlarge-12-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 12 GB RAM 12 vCPUs 1377 GB Disk",
-  "price": "0.870",
-  "price_month": "635.10"
- },
- "c1-2xlarge-14-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 14 GB RAM 14 vCPUs 1377 GB Disk",
-  "price": "1.015",
-  "price_month": "740.95"
- },
- "c1-2xlarge-16-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 16 GB RAM 16 vCPUs 1377 GB Disk",
-  "price": "1.160",
-  "price_month": "846.80"
- },
- "c1-2xlarge-18-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 18 GB RAM 18 vCPUs 1377 GB Disk",
-  "price": "1.304",
-  "price_month": "951.92"
- },
- "c1-2xlarge-20-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 20 GB RAM 20 vCPUs 1377 GB Disk",
-  "price": "1.449",
-  "price_month": "1,057.77"
- },
- "c1-2xlarge-22-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 22 GB RAM 22 vCPUs 1444 GB Disk",
-  "price": "1.594",
-  "price_month": "1,163.62"
- },
- "c1-2xlarge-24-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 24 GB RAM 24 vCPUs 1575 GB Disk",
-  "price": "1.739",
-  "price_month": "1,269.47"
- },
- "c1-2xlarge-26-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 26 GB RAM 26 vCPUs 1706 GB Disk",
-  "price": "1.884",
-  "price_month": "1,375.32"
- },
- "c1-2xlarge-28-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 28 GB RAM 28 vCPUs 1838 GB Disk",
-  "price": "2.029",
-  "price_month": "1,481.17"
- },
- "c1-2xlarge-30-kvm": {
-  "group": "High CPU",
-  "description": "High CPU 30 GB RAM 30 vCPUs 1969 GB Disk",
-  "price": "2.174",
-  "price_month": "1,587.02"
- },
- "cc1-2xlarge-32-kvm": {
-  "group": "High CPU-CC",
-  "description": "High CPU-CC 32 GB RAM 32 vCPUs 2100 GB Disk",
-  "price": "2.319",
-  "price_month": "1,692.87"
- },
- "hs1-4xlarge-64-kvm": {
-  "group": "High Storage",
-  "description": "High Storage 64 GB RAM 8 vCPUs 7680 GB Disk",
-  "price": "0.863",
-  "price_month": "629.99"
- },
- "hs1-4xlarge-96-kvm": {
-  "group": "High Storage",
-  "description": "High Storage 96 GB RAM 12 vCPUs 11520 GB Disk",
-  "price": "1.295",
-  "price_month": "945.35"
- },
- "hs1-4xlarge-128-kvm": {
-  "group": "High Storage",
-  "description": "High Storage 128 GB RAM 16 vCPUs 15360 GB Disk",
-  "price": "1.726",
-  "price_month": "1,259.98"
- },
- "hs1-8xlarge-192-kvm": {
-  "group": "High Storage",
-  "description": "High Storage 192 GB RAM 24 vCPUs 23040 GB Disk",
-  "price": "2.589",
-  "price_month": "1,889.97"
- },
- "hs1-8xlarge-256-kvm": {
-  "group": "High Storage",
-  "description": "High Storage 256 GB RAM 32 vCPUs 30720 GB Disk",
-  "price": "3.451",
-  "price_month": "2,519.23"
- },
- "hi1-4xlarge-60.5-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk",
-  "price": "3.067",
-  "price_month": "2,238.91"
- },
- "hi1-4xlarge-96-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 96 GB RAM 12 vCPUs 2304 GB Disk",
-  "price": "4.866",
-  "price_month": "3,552.18"
- },
- "hi1-4xlarge-128-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk",
-  "price": "6.488",
-  "price_month": "4,736.24"
- },
- "hi1-8xlarge-160-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 160 GB RAM 20 vCPUs 3840 GB Disk",
-  "price": "8.110",
-  "price_month": "5,920.30"
- },
- "hi1-8xlarge-192-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 192 GB RAM 24 vCPUs 4608 GB Disk",
-  "price": "9.732",
-  "price_month": "7,104.36"
- },
- "hi1-8xlarge-224-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 224 GB RAM 28 vCPUs 5376 GB Disk",
-  "price": "11.354",
-  "price_month": "8,288.42"
- },
- "hi1-8xlarge-256-kvm": {
-  "group": "High I/O",
-  "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk",
-  "price": "12.976",
-  "price_month": "9,472.48"
- }
+    "all":{
+        "t1-micro-0.25-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Micro 0.25 GB RAM 0.125 vCPUs 16 GB Disk",
+            "price": "0.008",
+            "price_month": "5.84"
+        },
+        "t1-micro-0.5-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Micro 0.5 GB RAM 0.125 vCPUs 16 GB Disk",
+            "price": "0.016",
+            "price_month": "11.68"
+        },
+        "m1-small-0.625-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Micro 0.6 GB RAM 0.15 vCPUs 20 GB Disk",
+            "price": "0.02",
+            "price_month": "14.6"
+        },
+        "m1-small-1-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 1 GB RAM 0.25 vCPUs 33 GB Disk",
+            "price": "0.032",
+            "price_month": "23.36"
+        },
+        "m1-small-1.75-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 1.7 GB RAM 1 vCPUs 56 GB Disk",
+            "price": "0.056",
+            "price_month": "40.88"
+        },
+        "m1-small-2-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 2 GB RAM 1 vCPUs 66 GB Disk",
+            "price": "0.064",
+            "price_month": "46.72"
+        },
+        "m1-medium-3.75-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 3.75 GB RAM 1 vCPUs 123 GB Disk",
+            "price": "0.12",
+            "price_month": "87.6"
+        },
+        "m1-medium-4-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 4 GB RAM 1 vCPUs 131 GB Disk",
+            "price": "0.128",
+            "price_month": "93.44"
+        },
+        "m1-large-7.5-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 7.5 GB RAM 2 vCPUs 738 GB Disk",
+            "price": "0.24",
+            "price_month": "175.2"
+        },
+        "m1-large-8-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 8 GB RAM 2 vCPUs 789 GB Disk",
+            "price": "0.256",
+            "price_month": "186.88"
+        },
+        "m1-xlarge-15-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 15 GB RAM 4 vCPUs 1467 GB Disk",
+            "price": "0.48",
+            "price_month": "350.4"
+        },
+        "m1-xlarge-16-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 16 GB RAM 4 vCPUs 1575 GB Disk",
+            "price": "0.512",
+            "price_month": "373.76"
+        },
+        "m1-xlarge-17.125-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 17.1 GB RAM 5 vCPUs 1683 GB Disk",
+            "price": "0.548",
+            "price_month": "400.04"
+        },
+        "m1-2xlarge-30-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 30 GB RAM 8 vCPUs 1683 GB Disk",
+            "price": "0.96",
+            "price_month": "700.8"
+        },
+        "m1-2xlarge-32-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 32 GB RAM 8 vCPUs 1683 GB Disk",
+            "price": "1.024",
+            "price_month": "747.52"
+        },
+        "m1-2xlarge-40-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 40 GB RAM 10 vCPUs 1683 GB Disk",
+            "price": "1.28",
+            "price_month": "934.4"
+        },
+        "m1-2xlarge-48-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 48 GB RAM 12 vCPUs 1683 GB Disk",
+            "price": "1.536",
+            "price_month": "1,121.28"
+        },
+        "m1-2xlarge-56-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 56 GB RAM 14 vCPUs 1838 GB Disk",
+            "price": "1.792",
+            "price_month": "1,308.16"
+        },
+        "m1-2xlarge-64-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 64 GB RAM 16 vCPUs 2100 GB Disk",
+            "price": "2.048",
+            "price_month": "1,495.04"
+        },
+        "m1-2xlarge-72-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 72 GB RAM 18 vCPUs 2363 GB Disk",
+            "price": "2.304",
+            "price_month": "1,681.92"
+        },
+        "m1-2xlarge-80-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 80 GB RAM 20 vCPUs 2625 GB Disk",
+            "price": "2.56",
+            "price_month": "1,868.80"
+        },
+        "m1-2xlarge-88-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 88 GB RAM 22 vCPUs 2888 GB Disk",
+            "price": "2.816",
+            "price_month": "2,055.68"
+        },
+        "m1-2xlarge-96-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk",
+            "price": "3.072",
+            "price_month": "2,242.56"
+        },
+        "m1-2xlarge-104-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 104 GB RAM 26 vCPUs 3413 GB Disk",
+            "price": "3.328",
+            "price_month": "2,429.44"
+        },
+        "m1-2xlarge-112-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 112 GB RAM 28 vCPUs 3675 GB Disk",
+            "price": "3.584",
+            "price_month": "2,616.32"
+        },
+        "m1-2xlarge-120-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard 120 GB RAM 30 vCPUs 3938 GB Disk",
+            "price": "3.84",
+            "price_month": "2,803.20"
+        },
+        "cc1-2xlarge-128-smartos": {
+            "type": "smartos",
+            "group": "Standard",
+            "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk",
+            "price": "4.096",
+            "price_month": "2,990.08"
+        },
+        "m2-xlarge-17.125-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 17.1 GB RAM 2 vCPUs 420 GB Disk",
+            "price": "0.409",
+            "price_month": "298.57"
+        },
+        "m2-2xlarge-34.25-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 34.2 GB RAM 4 vCPUs 843 GB Disk",
+            "price": "0.817",
+            "price_month": "596.41"
+        },
+        "m2-2xlarge-48-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 48 GB RAM 6 vCPUs 843 GB Disk",
+            "price": "1.145",
+            "price_month": "835.85"
+        },
+        "m2-4xlarge-68.375-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 68.4 GB RAM 8 vCPUs 1122 GB Disk",
+            "price": "1.63",
+            "price_month": "1,189.90"
+        },
+        "m2-4xlarge-80-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 80 GB RAM 10 vCPUs 1313 GB Disk",
+            "price": "1.907",
+            "price_month": "1,392.11"
+        },
+        "m2-4xlarge-96-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 96 GB RAM 12 vCPUs 1575 GB Disk",
+            "price": "2.289",
+            "price_month": "1,670.97"
+        },
+        "m2-4xlarge-112-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 112 GB RAM 14 vCPUs 1838 GB Disk",
+            "price": "2.67",
+            "price_month": "1,949.10"
+        },
+        "m2-4xlarge-128-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 128 GB RAM 16 vCPUs 2100 GB Disk",
+            "price": "3.051",
+            "price_month": "2,227.23"
+        },
+        "m2-4xlarge-144-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk",
+            "price": "3.433",
+            "price_month": "2,506.09"
+        },
+        "m2-4xlarge-160-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 160 GB RAM 20 vCPUs 2625 GB Disk",
+            "price": "3.814",
+            "price_month": "2,784.22"
+        },
+        "m2-4xlarge-176-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 176 GB RAM 22 vCPUs 2888 GB Disk",
+            "price": "4.196",
+            "price_month": "3,063.08"
+        },
+        "m2-4xlarge-192-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 192 GB RAM 24 vCPUs 3150 GB Disk",
+            "price": "4.577",
+            "price_month": "3,341.21"
+        },
+        "m2-4xlarge-208-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 208 GB RAM 26 vCPUs 3413 GB Disk",
+            "price": "4.958",
+            "price_month": "3,619.34"
+        },
+        "m2-4xlarge-224-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 224 GB RAM 28 vCPUs 3675 GB Disk",
+            "price": "5.34",
+            "price_month": "3,898.20"
+        },
+        "m2-4xlarge-240-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory 240 GB RAM 30 vCPUs 3938 GB Disk",
+            "price": "5.721",
+            "price_month": "4,176.33"
+        },
+        "cr2-4xlarge-256-smartos": {
+            "type": "smartos",
+            "group": "High Memory",
+            "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk",
+            "price": "6.102",
+            "price_month": "4,454.46"
+        },
+        "c1-medium-1.75-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 1.7 GB RAM 2 vCPUs 336 GB Disk",
+            "price": "0.127",
+            "price_month": "92.71"
+        },
+        "c1-medium-4-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 4 GB RAM 4 vCPUs 789 GB Disk",
+            "price": "0.29",
+            "price_month": "211.7"
+        },
+        "c1-xlarge-7-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 7 GB RAM 7 vCPUs 1377 GB Disk",
+            "price": "0.508",
+            "price_month": "370.84"
+        },
+        "c1-xlarge-8-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 8 GB RAM 8 vCPUs 1377 GB Disk",
+            "price": "0.58",
+            "price_month": "423.4"
+        },
+        "c1-2xlarge-10-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 10 GB RAM 10 vCPUs 1377 GB Disk",
+            "price": "0.725",
+            "price_month": "529.25"
+        },
+        "c1-2xlarge-12-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 12 GB RAM 12 vCPUs 1377 GB Disk",
+            "price": "0.87",
+            "price_month": "635.1"
+        },
+        "c1-2xlarge-14-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 14 GB RAM 14 vCPUs 1377 GB Disk",
+            "price": "1.015",
+            "price_month": "740.95"
+        },
+        "c1-2xlarge-16-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 16 GB RAM 16 vCPUs 1377 GB Disk",
+            "price": "1.16",
+            "price_month": "846.8"
+        },
+        "c1-2xlarge-18-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 18 GB RAM 18 vCPUs 1377 GB Disk",
+            "price": "1.304",
+            "price_month": "951.92"
+        },
+        "c1-2xlarge-20-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 20 GB RAM 20 vCPUs 1377 GB Disk",
+            "price": "1.449",
+            "price_month": "1,057.77"
+        },
+        "c1-2xlarge-22-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 22 GB RAM 22 vCPUs 1444 GB Disk",
+            "price": "1.594",
+            "price_month": "1,163.62"
+        },
+        "c1-2xlarge-24-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 24 GB RAM 24 vCPUs 1575 GB Disk",
+            "price": "1.739",
+            "price_month": "1,269.47"
+        },
+        "c1-2xlarge-26-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 26 GB RAM 26 vCPUs 1706 GB Disk",
+            "price": "1.884",
+            "price_month": "1,375.32"
+        },
+        "c1-2xlarge-28-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 28 GB RAM 28 vCPUs 1838 GB Disk",
+            "price": "2.029",
+            "price_month": "1,481.17"
+        },
+        "c1-2xlarge-30-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU 30 GB RAM 30 vCPUs 1969 GB Disk",
+            "price": "2.174",
+            "price_month": "1,587.02"
+        },
+        "cc1-2xlarge-32-smartos": {
+            "type": "smartos",
+            "group": "High CPU",
+            "description": "High CPU-CC 32 GB RAM 32 vCPUs 2100 GB Disk",
+            "price": "2.319",
+            "price_month": "1,692.87"
+        },
+        "hs1-4xlarge-64-smartos": {
+            "type": "smartos",
+            "group": "High Storage",
+            "description": "High Storage 64 GB RAM 8 vCPUs 7680 GB Disk",
+            "price": "0.863",
+            "price_month": "629.99"
+        },
+        "hs1-4xlarge-96-smartos": {
+            "type": "smartos",
+            "group": "High Storage",
+            "description": "High Storage 96 GB RAM 12 vCPUs 11520 GB Disk",
+            "price": "1.295",
+            "price_month": "945.35"
+        },
+        "hs1-4xlarge-128-smartos": {
+            "type": "smartos",
+            "group": "High Storage",
+            "description": "High Storage 128 GB RAM 16 vCPUs 15360 GB Disk",
+            "price": "1.726",
+            "price_month": "1,259.98"
+        },
+        "hs1-8xlarge-192-smartos": {
+            "type": "smartos",
+            "group": "High Storage",
+            "description": "High Storage 192 GB RAM 24 vCPUs 23040 GB Disk",
+            "price": "2.589",
+            "price_month": "1,889.97"
+        },
+        "hs1-8xlarge-256-smartos": {
+            "type": "smartos",
+            "group": "High Storage",
+            "description": "High Storage 256 GB RAM 32 vCPUs 30720 GB Disk",
+            "price": "3.451",
+            "price_month": "2,519.23"
+        },
+        "hi1-4xlarge-60.5-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk",
+            "price": "3.067",
+            "price_month": "2,238.91"
+        },
+        "hi1-4xlarge-96-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 96 GB RAM 12 vCPUs 2304 GB Disk",
+            "price": "4.866",
+            "price_month": "3,552.18"
+        },
+        "hi1-4xlarge-128-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk",
+            "price": "6.488",
+            "price_month": "4,736.24"
+        },
+        "hi1-8xlarge-160-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 160 GB RAM 20 vCPUs 3840 GB Disk",
+            "price": "8.11",
+            "price_month": "5,920.30"
+        },
+        "hi1-8xlarge-192-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 192 GB RAM 24 vCPUs 4608 GB Disk",
+            "price": "9.732",
+            "price_month": "7,104.36"
+        },
+        "hi1-8xlarge-224-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 224 GB RAM 28 vCPUs 5376 GB Disk",
+            "price": "11.354",
+            "price_month": "8,288.42"
+        },
+        "hi1-8xlarge-256-smartos": {
+            "type": "smartos",
+            "group": "High I/O SSD",
+            "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk",
+            "price": "12.976",
+            "price_month": "9,472.48"
+        },
+        "t1-micro-0.25-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Micro 0.25 GB RAM 0.125 vCPUs 16 GB Disk",
+            "price": "0.008",
+            "price_month": "5.84"
+        },
+        "t1-micro-0.5-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Micro 0.5 GB RAM 0.125 vCPUs 16 GB Disk",
+            "price": "0.016",
+            "price_month": "11.68"
+        },
+        "m1-small-0.625-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 0.6 GB RAM 0.15 vCPUs 20 GB Disk",
+            "price": "0.02",
+            "price_month": "14.6"
+        },
+        "m1-small-1-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 1 GB RAM 0.25 vCPUs 33 GB Disk",
+            "price": "0.032",
+            "price_month": "23.36"
+        },
+        "m1-small-1.75-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 1.7 GB RAM 1 vCPUs 56 GB Disk",
+            "price": "0.056",
+            "price_month": "40.88"
+        },
+        "m1-small-2-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 2 GB RAM 1 vCPUs 66 GB Disk",
+            "price": "0.064",
+            "price_month": "46.72"
+        },
+        "m1-medium-3.75-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 3.75 GB RAM 1 vCPUs 123 GB Disk",
+            "price": "0.12",
+            "price_month": "87.6"
+        },
+        "m1-medium-4-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 4 GB RAM 1 vCPUs 131 GB Disk",
+            "price": "0.128",
+            "price_month": "93.44"
+        },
+        "m1-large-7.5-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 7.5 GB RAM 2 vCPUs 738 GB Disk",
+            "price": "0.24",
+            "price_month": "175.2"
+        },
+        "m1-large-8-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 8 GB RAM 2 vCPUs 789 GB Disk",
+            "price": "0.256",
+            "price_month": "186.88"
+        },
+        "m1-xlarge-15-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 15 GB RAM 4 vCPUs 1467 GB Disk",
+            "price": "0.48",
+            "price_month": "350.4"
+        },
+        "m1-xlarge-16-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 16 GB RAM 4 vCPUs 1575 GB Disk",
+            "price": "0.512",
+            "price_month": "373.76"
+        },
+        "m1-xlarge-17.125-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 17.1 GB RAM 5 vCPUs 1683 GB Disk",
+            "price": "0.548",
+            "price_month": "400.04"
+        },
+        "m1-2xlarge-30-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 30 GB RAM 8 vCPUs 1683 GB Disk",
+            "price": "0.96",
+            "price_month": "700.8"
+        },
+        "m1-2xlarge-32-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 32 GB RAM 8 vCPUs 1683 GB Disk",
+            "price": "1.024",
+            "price_month": "747.52"
+        },
+        "m1-2xlarge-40-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 40 GB RAM 10 vCPUs 1683 GB Disk",
+            "price": "1.28",
+            "price_month": "934.4"
+        },
+        "m1-2xlarge-48-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 48 GB RAM 12 vCPUs 1683 GB Disk",
+            "price": "1.536",
+            "price_month": "1,121.28"
+        },
+        "m1-2xlarge-56-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 56 GB RAM 14 vCPUs 1838 GB Disk",
+            "price": "1.792",
+            "price_month": "1,308.16"
+        },
+        "m1-2xlarge-64-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 64 GB RAM 16 vCPUs 2100 GB Disk",
+            "price": "2.048",
+            "price_month": "1,495.04"
+        },
+        "m1-2xlarge-72-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 72 GB RAM 18 vCPUs 2363 GB Disk",
+            "price": "2.304",
+            "price_month": "1,681.92"
+        },
+        "m1-2xlarge-80-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 80 GB RAM 20 vCPUs 2625 GB Disk",
+            "price": "2.56",
+            "price_month": "1,868.80"
+        },
+        "m1-2xlarge-88-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 88 GB RAM 22 vCPUs 2888 GB Disk",
+            "price": "2.816",
+            "price_month": "2,055.68"
+        },
+        "m1-2xlarge-96-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk",
+            "price": "3.072",
+            "price_month": "2,242.56"
+        },
+        "m1-2xlarge-104-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 104 GB RAM 26 vCPUs 3413 GB Disk",
+            "price": "3.328",
+            "price_month": "2,429.44"
+        },
+        "m1-2xlarge-112-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 112 GB RAM 28 vCPUs 3675 GB Disk",
+            "price": "3.584",
+            "price_month": "2,616.32"
+        },
+        "m1-2xlarge-120-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard 120 GB RAM 30 vCPUs 3938 GB Disk",
+            "price": "3.84",
+            "price_month": "2,803.20"
+        },
+        "cc1-2xlarge-128-kvm": {
+            "type": "kvm",
+            "group": "Standard",
+            "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk",
+            "price": "4.096",
+            "price_month": "2,990.08"
+        },
+        "m2-xlarge-17.125-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 17.1 GB RAM 2 vCPUs 420 GB Disk",
+            "price": "0.409",
+            "price_month": "298.57"
+        },
+        "m2-2xlarge-34.25-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 34.2 GB RAM 4 vCPUs 843 GB Disk",
+            "price": "0.817",
+            "price_month": "596.41"
+        },
+        "m2-2xlarge-48-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 48 GB RAM 6 vCPUs 843 GB Disk",
+            "price": "1.145",
+            "price_month": "835.85"
+        },
+        "m2-4xlarge-68.375-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 68.4 GB RAM 8 vCPUs 1122 GB Disk",
+            "price": "1.63",
+            "price_month": "1,189.90"
+        },
+        "m2-4xlarge-80-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 80 GB RAM 10 vCPUs 1313 GB Disk",
+            "price": "1.907",
+            "price_month": "1,392.11"
+        },
+        "m2-4xlarge-96-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 96 GB RAM 12 vCPUs 1575 GB Disk",
+            "price": "2.289",
+            "price_month": "1,670.97"
+        },
+        "m2-4xlarge-112-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 112 GB RAM 14 vCPUs 1838 GB Disk",
+            "price": "2.67",
+            "price_month": "1,949.10"
+        },
+        "m2-4xlarge-128-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 128 GB RAM 16 vCPUs 2100 GB Disk",
+            "price": "3.051",
+            "price_month": "2,227.23"
+        },
+        "m2-4xlarge-144-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk",
+            "price": "3.433",
+            "price_month": "2,506.09"
+        },
+        "m2-4xlarge-160-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 160 GB RAM 20 vCPUs 2625 GB Disk",
+            "price": "3.814",
+            "price_month": "2,784.22"
+        },
+        "m2-4xlarge-176-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 176 GB RAM 22 vCPUs 2888 GB Disk",
+            "price": "4.196",
+            "price_month": "3,063.08"
+        },
+        "m2-4xlarge-192-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 192 GB RAM 24 vCPUs 3150 GB Disk",
+            "price": "4.577",
+            "price_month": "3,341.21"
+        },
+        "m2-4xlarge-208-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 208 GB RAM 26 vCPUs 3413 GB Disk",
+            "price": "4.958",
+            "price_month": "3,619.34"
+        },
+        "m2-4xlarge-224-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 224 GB RAM 28 vCPUs 3675 GB Disk",
+            "price": "5.34",
+            "price_month": "3,898.20"
+        },
+        "m2-4xlarge-240-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory 240 GB RAM 30 vCPUs 3938 GB Disk",
+            "price": "5.721",
+            "price_month": "4,176.33"
+        },
+        "cr2-4xlarge-256-kvm": {
+            "type": "kvm",
+            "group": "High Memory",
+            "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk",
+            "price": "6.102",
+            "price_month": "4,454.46"
+        },
+        "c1-medium-1.75-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 1.7 GB RAM 2 vCPUs 336 GB Disk",
+            "price": "0.127",
+            "price_month": "92.71"
+        },
+        "c1-medium-4-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 4 GB RAM 4 vCPUs 789 GB Disk",
+            "price": "0.29",
+            "price_month": "211.7"
+        },
+        "c1-xlarge-7-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 7 GB RAM 7 vCPUs 1377 GB Disk",
+            "price": "0.508",
+            "price_month": "370.84"
+        },
+        "c1-xlarge-8-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 8 GB RAM 8 vCPUs 1377 GB Disk",
+            "price": "0.58",
+            "price_month": "423.4"
+        },
+        "c1-2xlarge-10-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 10 GB RAM 10 vCPUs 1377 GB Disk",
+            "price": "0.725",
+            "price_month": "529.25"
+        },
+        "c1-2xlarge-12-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 12 GB RAM 12 vCPUs 1377 GB Disk",
+            "price": "0.87",
+            "price_month": "635.1"
+        },
+        "c1-2xlarge-14-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 14 GB RAM 14 vCPUs 1377 GB Disk",
+            "price": "1.015",
+            "price_month": "740.95"
+        },
+        "c1-2xlarge-16-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 16 GB RAM 16 vCPUs 1377 GB Disk",
+            "price": "1.16",
+            "price_month": "846.8"
+        },
+        "c1-2xlarge-18-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 18 GB RAM 18 vCPUs 1377 GB Disk",
+            "price": "1.304",
+            "price_month": "951.92"
+        },
+        "c1-2xlarge-20-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 20 GB RAM 20 vCPUs 1377 GB Disk",
+            "price": "1.449",
+            "price_month": "1,057.77"
+        },
+        "c1-2xlarge-22-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 22 GB RAM 22 vCPUs 1444 GB Disk",
+            "price": "1.594",
+            "price_month": "1,163.62"
+        },
+        "c1-2xlarge-24-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 24 GB RAM 24 vCPUs 1575 GB Disk",
+            "price": "1.739",
+            "price_month": "1,269.47"
+        },
+        "c1-2xlarge-26-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 26 GB RAM 26 vCPUs 1706 GB Disk",
+            "price": "1.884",
+            "price_month": "1,375.32"
+        },
+        "c1-2xlarge-28-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 28 GB RAM 28 vCPUs 1838 GB Disk",
+            "price": "2.029",
+            "price_month": "1,481.17"
+        },
+        "c1-2xlarge-30-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU 30 GB RAM 30 vCPUs 1969 GB Disk",
+            "price": "2.174",
+            "price_month": "1,587.02"
+        },
+        "cc1-2xlarge-32-kvm": {
+            "type": "kvm",
+            "group": "High CPU",
+            "description": "High CPU-CC 32 GB RAM 32 vCPUs 2100 GB Disk",
+            "price": "2.319",
+            "price_month": "1,692.87"
+        },
+        "hs1-4xlarge-64-kvm": {
+            "type": "kvm",
+            "group": "High Storage",
+            "description": "High Storage 64 GB RAM 8 vCPUs 7680 GB Disk",
+            "price": "0.863",
+            "price_month": "629.99"
+        },
+        "hs1-4xlarge-96-kvm": {
+            "type": "kvm",
+            "group": "High Storage",
+            "description": "High Storage 96 GB RAM 12 vCPUs 11520 GB Disk",
+            "price": "1.295",
+            "price_month": "945.35"
+        },
+        "hs1-4xlarge-128-kvm": {
+            "type": "kvm",
+            "group": "High Storage",
+            "description": "High Storage 128 GB RAM 16 vCPUs 15360 GB Disk",
+            "price": "1.726",
+            "price_month": "1,259.98"
+        },
+        "hs1-8xlarge-192-kvm": {
+            "type": "kvm",
+            "group": "High Storage",
+            "description": "High Storage 192 GB RAM 24 vCPUs 23040 GB Disk",
+            "price": "2.589",
+            "price_month": "1,889.97"
+        },
+        "hs1-8xlarge-256-kvm": {
+            "type": "kvm",
+            "group": "High Storage",
+            "description": "High Storage 256 GB RAM 32 vCPUs 30720 GB Disk",
+            "price": "3.451",
+            "price_month": "2,519.23"
+        },
+        "hi1-4xlarge-60.5-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk",
+            "price": "3.067",
+            "price_month": "2,238.91"
+        },
+        "hi1-4xlarge-96-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 96 GB RAM 12 vCPUs 2304 GB Disk",
+            "price": "4.866",
+            "price_month": "3,552.18"
+        },
+        "hi1-4xlarge-128-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk",
+            "price": "6.488",
+            "price_month": "4,736.24"
+        },
+        "hi1-8xlarge-160-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 160 GB RAM 20 vCPUs 3840 GB Disk",
+            "price": "8.11",
+            "price_month": "5,920.30"
+        },
+        "hi1-8xlarge-192-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 192 GB RAM 24 vCPUs 4608 GB Disk",
+            "price": "9.732",
+            "price_month": "7,104.36"
+        },
+        "hi1-8xlarge-224-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 224 GB RAM 28 vCPUs 5376 GB Disk",
+            "price": "11.354",
+            "price_month": "8,288.42"
+        },
+        "hi1-8xlarge-256-kvm": {
+            "type": "kvm",
+            "group": "High I/O SSD",
+            "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk",
+            "price": "12.976",
+            "price_month": "9,472.48"
+        }
+    }
 }
