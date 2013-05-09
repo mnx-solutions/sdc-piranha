@@ -12,6 +12,7 @@ var utils = require('./lib/utils');
 var redisStore = require('connect-redis')(express);
 var app = express(); // main app
 
+app.use(app.router);
 app.use(express.bodyParser());
 app.use(express.cookieParser());
 
@@ -26,10 +27,6 @@ app.use(express.session({
     }),
     secret: 'secret'
 }));
-
-app.use(function (err, res, req, next) {
-    require('./lib/error')(err, res, req, next);
-});
 
 var rack = new Rack();
 rack.addMiddleware(app);
@@ -52,5 +49,13 @@ var m = new Modulizer(opts);
 m.set('utils', utils);
 
 m.init(opts, function (err) {
+    app.use(function (err, res, req, next) {
+        require('./lib/error')(err, res, req, next);
+    });
+
+    app.all('*', function (err, res, req, next) {
+        require('./lib/error')(err, res, req, next);
+    });
+
     m.run(config.server.port);
 });

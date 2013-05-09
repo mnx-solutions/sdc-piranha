@@ -95,12 +95,17 @@ Localization.prototype.isSupportedLocale = function (locale) {
  */
 Localization.prototype.setLocale = function (req, locale) {
     if (this.isSupportedLocale(locale)) {
-        req.log.debug('Change session locale from %s to %s',
-            req.session.locale, locale);
+        if (req.session) {
+            req.log.debug('Change session locale from %s to %s',
+                req.session.locale, locale);
 
-        req.session.locale = locale;
-        req.session.save();
-        return true;
+            req.session.locale = locale;
+            req.session.save();
+            return true;
+        } else {
+            req.log.debug('Can\'t change locale to %s, session is not present', locale);
+            return false;
+        }
     } else {
         req.log.debug('Can\'t change locale to %s, unsupported', locale);
     }
@@ -115,7 +120,7 @@ Localization.prototype.setLocale = function (req, locale) {
  * @returns {string}
  */
 Localization.prototype.getLocale = function (req) {
-    return req.session.locale || this._defaultLocale;
+    return (req.session && req.session.locale) || this._defaultLocale;
 };
 
 /**
@@ -227,7 +232,7 @@ Localization.prototype.getLocaleParser = function () {
 
         // Do not try to parse accept language header when
         // language is already set in a session
-        if (req.session.locale) {
+        if (req.session && req.session.locale) {
             req.log.debug('Language is set, continue');
             return next();
         }

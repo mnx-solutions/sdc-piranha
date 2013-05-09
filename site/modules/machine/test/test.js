@@ -4,7 +4,7 @@ describe("Machine module", function () {
     var $scope;
     beforeEach(function () {
         // load module
-        module('JoyentPortal', 'Machine', 'mocks.Machines');
+        module('JoyentPortal', 'Machine');
 
 
         inject(function ($controller, $rootScope) {
