@@ -14,12 +14,12 @@ module.exports = function (scope, app, callback) {
 
     app.get('/tropo/:tropoid', function(req, res) {
         redisClient.get(req.params.tropoid, function(err, result) {
-//            if(result === 'PASSED') {
+            if(result === 'PASSED') {
                 SignupProgress.setMinProgress(req, 'tropo', function () {
                     res.json({sessionId: req.params.tropoid, status: result});
                 });
                 return;
-//            }
+            }
 
             res.json({sessionId: req.params.tropoid, status: result});
         });
