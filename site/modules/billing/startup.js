@@ -183,6 +183,7 @@ module.exports = function (scope, callback) {
                                     });
                                 }
                                 if(accErr) {
+                                    accErr.zuora = accResp;
                                     call.done(accErr);
                                     return;
                                 }
@@ -198,6 +199,7 @@ module.exports = function (scope, callback) {
                         delete err['cardHolderInfo.cardHolderName'];
                     }
                     scope.log.error('Failed to save to zuora', err, resp && resp.reasons);
+                    err.zuora = resp;
                     call.done(err);
                     return;
                 }
