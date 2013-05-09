@@ -84,6 +84,8 @@
                     $scope.data = {};
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
+					ng.element('#finish-configuration').fadeOut('fast');
+					// ng.element('#finish-configuration').addClass('none');
                 };
 
                 $scope.selectDataset = function (id) {
@@ -93,7 +95,7 @@
                         
                         $scope.selectedDataset = dataset;
                         ng.element('#pricing').removeClass('alert-muted');
-                        ng.element('#pricing').addClass('alert-success');
+                        ng.element('#pricing').addClass('alert-info');
                         
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
