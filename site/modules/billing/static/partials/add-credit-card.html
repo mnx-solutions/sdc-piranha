@@ -4,7 +4,7 @@
         <div class="control-group">
             <label class="control-label" for="creditCardNumber">Card Number</label>
             <div class="controls">
-                <input type="text" id="creditCardNumber" data-ng-class="{error: errs.creditCardNumber}" placeholder="Card Number" data-ng-model="form.creditCardNumber"  maxlength="16" size="40" required>
+                <input type="text" id="creditCardNumber" data-ng-class="{error: errs.creditCardNumber || errs['creditCard.cardNumber']}" placeholder="Card Number" data-ng-model="form.creditCardNumber"  maxlength="16" size="40" required>
             </div>
         </div>
 		<div class="row">
@@ -92,7 +92,7 @@
     </fieldset>
     <div class="clearfix"></div>
     <div class="span7 align-right">
-        <button class="btn btn-success" data-ng-click="submitForm()">Submit</button>
+        <button class="btn btn-success" data-ng-click="submitForm()" data-ng-disabled="isSaving">Submit</button>
     </div>
 
 </form>
