@@ -9,23 +9,14 @@ var parseXml = require('xml2js').parseString;
 
 module.exports = function (scope, app, callback) {
 
-  var SignupProgress = scope.api('SignupProgress');
-
-    app.get('/status/:tropoid', function(req, res) {
-        redisClient.get(req.params.tropoid, function(err, result) {
-            if(result === 'PASSED') {
-                SignupProgress.setMinProgress(req, 'tropo', function (err){
-                    res.json({sessionId: req.params.tropoid, status: result});
-                });
-            return;
-            }
-
-            res.json({sessionId: req.params.tropoid, status: result});
-        });
-    });
-
   app.get('/:number', function(req, res) {
-    var randomNumber = Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9);
+    var randomNumber = Math.floor(Math.random() * 10000);
+    if(randomNumber === 0) {
+        randomNumber = '0000';
+    }
+    if(randomNumber === 10000) {
+        randomNumber = '9999';
+    }
 
 
     var options = {
@@ -44,7 +35,7 @@ module.exports = function (scope, app, callback) {
       res.on('end', function() {
         parseXml(resultBody.toString(), {trim: true}, function(err, result) {
           response.json({randomNumber: randomNumber, tropoId: result.session.id[0], success: true});
-        })
+        });
       });
 
     }).on('error', function(e) {
