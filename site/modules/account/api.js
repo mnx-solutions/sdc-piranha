@@ -11,7 +11,7 @@ module.exports = function (scope, register, callback) {
 
     });
 
-    var steps = ['start', 'accountInfo', 'tropo', 'billing', 'ssh'];
+    var steps = ['start', 'accountInfo', 'tropo', 'billing','ssh'];
 
     if(!config.redis.signupDB) {
         scope.log.fatal('Redis config missing');
@@ -170,6 +170,9 @@ module.exports = function (scope, register, callback) {
             if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
                 cb();
                 return;
+            }
+            if(steps.indexOf(step) === (steps.length -1)) { // Last step
+                step = 'complete';
             }
             api.setSignupStep(call, step, cb);
         });
