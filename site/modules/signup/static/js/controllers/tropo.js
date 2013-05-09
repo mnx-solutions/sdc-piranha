@@ -17,7 +17,7 @@
           setInterval(function() {
             $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
               console.log(data);
-              if(data.status === 'PASSED') {
+              if(data.status === 'passed') {
                 $scope.nextStep();
               }
             });
