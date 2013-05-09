@@ -100,8 +100,14 @@ module.exports = function (scope, register, callback) {
     };
 
     api.getSignupStep = function (req, cb) {
+        function end(step) {
+            if(steps.indexOf(step) === (steps.length -1)) {
+                step = 'complete';
+            }
+            cb(null, step);
+        }
         if(req.session.signupStep) {
-            cb(null, req.session.signupStep);
+            end(req.session.signupStep);
             return;
         }
 
@@ -111,7 +117,7 @@ module.exports = function (scope, register, callback) {
                 return;
             }
             if(val) {
-                cb(null, val);
+                end(val);
                 return;
             }
             api.getAccountVal(req.cloud, function (err, value) {
@@ -124,7 +130,7 @@ module.exports = function (scope, register, callback) {
                         cb(err);
                         return;
                     }
-                    cb(null, value);
+                    end(value);
                     return;
                 });
             });
