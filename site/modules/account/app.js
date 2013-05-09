@@ -2,10 +2,28 @@
 
 var crypto = require('crypto');
 var conf = require('easy-config');
+var redis = require('redis');
+var config = require('easy-config');
+var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var fs = require('fs');
 
 module.exports = function (scope, app, callback) {
     var keyGen = null;
+
+    var SignupProgress = scope.api('SignupProgress');
+
+    app.get('/tropo/:tropoid', function(req, res) {
+        redisClient.get(req.params.tropoid, function(err, result) {
+            if(result === 'passed') {
+                SignupProgress.setMinProgress(req, 'tropo', function () {
+                    res.json({sessionId: req.params.tropoid, status: result});
+                });
+                return;
+            }
+
+            res.json({sessionId: req.params.tropoid, status: result});
+        });
+    });
 
     app.get('/key-generator.sh', function(req, res, next) {
         // replace username in the script with correct one

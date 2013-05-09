@@ -1,0 +1,61 @@
+<div class="container-fluid content-container" data-ng-controller="Account.InvoicesController" >
+    <div class="container content-container-inner">
+        <div class="container">
+            <data-breadcrumb></data-breadcrumb>
+            <div class="page-header">
+                <h1 class="pull-left" data-translate>Invoices</h1>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="pull-left listing">
+            <div class="container item-list-container span8">
+                <div class="item header">
+                    <span class="span7 text-medium">Date / Amount</span>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="item" data-ng-repeat="invoice in invoices">
+                    <span class="span7 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceDate}} / {{invoice.amount}} USD</span>
+                    <div class="clearfix"></div>
+                    <div data-ng-show="openDetails == $index" class="toolbox ">
+                        <div class="span6 pull-left text-medium">
+                            <span class="b key span2">InvoiceItems:</span>
+                            <span class="value span4">
+                                <div class="key span4" data-ng-repeat="item in invoice.invoiceItems">
+                                    <div class="value span4" style="border-bottom: 0px;">Product: {{item.productName}}</div>
+                                    <div class="value span4" style="border-bottom: 0px;">Charge: {{item.chargeName}}</div>
+                                    <div class="value span4" style="border-bottom: 0px;">Quantity: {{item.quantity}}</div>
+                                    <div class="value span4" style="border-bottom: 0px;">Start: {{item.serviceStartDate}}</div>
+                                    <div class="value span4" style="border-bottom: 0px;">End: {{item.serviceEndDate}}</div>
+                                    <div class="value span4" style="border-bottom: 0px;">Amount: {{item.chargeAmount}}</div>
+                                </div>
+                            </span>
+
+                            <div class="clearfix"></div>
+
+                            <span class="b key span2 last">Total</span>
+                            <span class="value span4 last" style="word-wrap:break-word">{{invoice.amount}}</span>
+                            <div class="clearfix"></div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div data-ng-show="addsshKey">
+                    <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
+                    <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
+                    <div class="loading-medium" data-ng-show="createPending"></div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+		<div class="span3 pull-right">
+        	<div account-right-menu></div>
+			<div class="clearfix"></div>
+			<div data-current-credit-card></div>
+			<div class="clearfix"></div>
+		</div>
+    </div>
+</div>

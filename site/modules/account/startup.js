@@ -55,12 +55,12 @@ module.exports = function (scope, callback) {
 //            });
 //        });
         call.cloud.updateAccount(data, function(err, res) {
-          if(!err) {
-            SignupProgress.setMinProgress(call.req, 'accountInfo', function() {
-              call.done(err, res);
-            });
-            return;
-          }
+            if(!err) {
+                SignupProgress.setMinProgress(call, 'accountInfo', function() {
+                    call.done(err, res);
+                });
+                return;
+            }
 
           call.done(err, res);
         });
@@ -83,7 +83,7 @@ module.exports = function (scope, callback) {
                 call.done(err);
                 return;
             }
-            SignupProgress.setMinProgress(call.req, 'ssh', function (err2) {
+            SignupProgress.setMinProgress(call, 'ssh', function (err2) {
                 if(err2) {
                     scope.log.error(err2);
                 }

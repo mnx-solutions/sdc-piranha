@@ -53,39 +53,39 @@
             /* SSH key creating */
             $scope.createPending = false;
             $scope.addNewKey = function() {
-              newKeyPopup('', function(keyData) {
-                $scope.newKey.name = keyData.keyName;
-                $scope.newKey.data = keyData.keyData;
+                newKeyPopup('', function(keyData) {
+                    $scope.newKey.name = keyData.keyName;
+                    $scope.newKey.data = keyData.keyData;
 
-                $scope.createNewKey();
-              });
+                    $scope.createNewKey();
+                });
             };
-
-            $scope.createNewKey = function() {
-              $scope.createPending = true;
-              $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
-              $q.when($scope.addedKey, function(key) {
-
-                if(key.name && key.fingerprint && key.key) {
-                  // successful add
-                  refreshKeyList();
-                  $scope.addsshKey = false;
-                  notification.push(null, {type: 'notification'},
-                    localization.translate($scope, null, 'New key successfully added'));
-
-                  $scope.newKey = {};
-                } else {
-                  console.log(key);
-                  notification.push(null, {type: 'error'},
-                    localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
-                }
-                $scope.createPending = false;
-              });
-            }
 
             function refreshKeyList() {
                 $scope.sshKeys = Account.getKeys(true);
             }
+
+            $scope.createNewKey = function() {
+                $scope.createPending = true;
+                $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
+                $q.when($scope.addedKey, function(key) {
+
+                    if(key.name && key.fingerprint && key.key) {
+                        // successful add
+                        refreshKeyList();
+                        $scope.addsshKey = false;
+                        notification.push(null, {type: 'notification'},
+                        localization.translate($scope, null, 'New key successfully added'));
+
+                        $scope.newKey = {};
+                    } else {
+                        console.log(key);
+                        notification.push(null, {type: 'error'},
+                        localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
+                    }
+                    $scope.createPending = false;
+                });
+            };
 
             /* SSH key deleting */
             $scope.deleteKey = function(name, fingerprint) {
@@ -106,7 +106,7 @@
             };
 
             $scope.clickKeygenDownload = function() {
-              window.location.href = '/main/account/key-generator.sh';
+                window.location.href = '/main/account/key-generator.sh';
             };
 
         }]);

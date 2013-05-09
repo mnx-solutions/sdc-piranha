@@ -11,7 +11,7 @@ module.exports = function (scope, register, callback) {
 
     });
 
-    var steps = ['start', 'accountInfo', 'tropo', 'billing', 'ssh'];
+    var steps = ['start', 'accountInfo', 'tropo', 'billing','ssh'];
 
     if(!config.redis.signupDB) {
         scope.log.fatal('Redis config missing');
@@ -100,9 +100,14 @@ module.exports = function (scope, register, callback) {
     };
 
     api.getSignupStep = function (req, cb) {
-
+        function end(step) {
+            if(steps.indexOf(step) === (steps.length -1)) {
+                step = 'completed';
+            }
+            cb(null, step);
+        }
         if(req.session.signupStep) {
-            cb(null, req.session.signupStep);
+            end(req.session.signupStep);
             return;
         }
 
@@ -112,7 +117,7 @@ module.exports = function (scope, register, callback) {
                 return;
             }
             if(val) {
-                cb(null, val);
+                end(val);
                 return;
             }
             api.getAccountVal(req.cloud, function (err, value) {
@@ -125,14 +130,14 @@ module.exports = function (scope, register, callback) {
                         cb(err);
                         return;
                     }
-                    cb(null, value);
+                    end(value);
                     return;
                 });
             });
         });
     };
 
-    api.setSignupStep = function (req, step, cb) {
+    api.setSignupStep = function (call, step, cb) {
         var count = 2;
         var errs = [];
 
@@ -141,25 +146,41 @@ module.exports = function (scope, register, callback) {
                 errs.push(err);
             }
             if(--count === 0) {
+                call.session(function (req) {
+                    req.session.signupStep = step;
+                    req.session.save();
+                });
                 cb((errs.length < 1 ? null : errs));
             }
         }
 
-        api.setTokenVal(req.session.token, step, true, end);
-        api.setAccountVal(req.cloud, step, end);
+        api.setTokenVal(call.req.session.token, step, true, end);
+        api.setAccountVal(call.req.cloud, step, end);
     };
 
-    api.setMinProgress = function (req, step, cb) {
-        api.getSignupStep(req, function (err, oldStep) {
+    api.setMinProgress = function (call, step, cb) {
+        if(!call.req && !call.done) { // Not a call, but request
+            var req = call;
+            call = {
+                req: req,
+                session: function (fn) {
+                    fn(req);
+                }
+            };
+        }
+        api.getSignupStep(call.req, function (err, oldStep) {
             if(err) {
                 cb(err);
                 return;
             }
-            if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep)) {
+            if(oldStep === 'completed' || oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
                 cb();
                 return;
             }
-            api.setSignupStep(req, step, cb);
+            if(steps.indexOf(step) === (steps.length -1)) { // Last step
+                step = 'completed';
+            }
+            api.setSignupStep(call, step, cb);
         });
     };
 

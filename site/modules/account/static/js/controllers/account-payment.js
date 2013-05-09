@@ -7,6 +7,5 @@
             requestContext.setUpRenderContext('account.payment', $scope);
 
             $scope.paymentMethods = BillingService.getPaymentMethods();
-
         }]);
 }(window.JP.getModule('Account')));

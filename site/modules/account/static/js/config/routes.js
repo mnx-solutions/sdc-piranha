@@ -17,6 +17,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         .when('/account/payment', {
             title: 'Payment info',
             action: 'account.payment'
+        })
+        .when('/account/invoices', {
+            title: 'Invoices',
+            action: 'account.invoices'
         });
 }]);
 

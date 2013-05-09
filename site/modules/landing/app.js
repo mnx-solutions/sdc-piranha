@@ -16,8 +16,9 @@ module.exports = function (scope, app, callback) {
 	app.post('/ssourl', function (req, res) {
 
         // returnUrl will save the token and then redirect
-        var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + req.body.redirectUrl).toString('base64');
-        var returnUrl =   req.protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
+        var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup' : req.body.redirectUrl)).toString('base64');
+
+        var returnUrl = req.protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
         var ssoUrl = config.url +'/'+ req.body.method;
 
         var date = new Date().toUTCString();
@@ -58,10 +59,9 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/forgetToken', function(req, res) {
-        req.session.token = null;
-        req.session.save();
-
-        res.redirect('/');
+        req.session.destroy(function (err) {
+            res.redirect('/');
+        });
     });
 
     app.get('/changepassword/:uuid', function(req, res) {
@@ -75,7 +75,7 @@ module.exports = function (scope, app, callback) {
 
         // as sso passes token using ?token=
         var token = req.query.token;
-
+        console.log(req.session);
         req.session.token = token;
         req.session.save();
 

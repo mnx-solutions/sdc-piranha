@@ -33,6 +33,25 @@
                 data: data,
                 done: callback
             });
+            return call;
+        };
+
+        service.getInvoices = function (data, callback) {
+            var call = serverTab.call({
+                name: 'listInvoices',
+                data: data,
+                done: callback
+            });
+            return call.deferred;
+        };
+
+        service.getLastInvoice = function (data, callback) {
+            var call = serverTab.call({
+                name: 'getLastInvoice',
+                data: data,
+                done: callback
+            });
+            return call.deferred;
         };
 
         return service;

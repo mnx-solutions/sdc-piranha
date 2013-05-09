@@ -9,14 +9,15 @@ var parseXml = require('xml2js').parseString;
 
 module.exports = function (scope, app, callback) {
 
-  app.get('/status/:tropoid', function(req, res) {
-    redisClient.get(req.params.tropoid, function(err, result) {
-      res.json({sessionId: req.params.tropoid, status: result});
-    })
-  });
-
   app.get('/:number', function(req, res) {
-    var randomNumber = Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9);
+    var randomNumber = Math.floor(Math.random() * 10000);
+    if(randomNumber === 0) {
+        randomNumber = '0000';
+    }
+    if(randomNumber === 10000) {
+        randomNumber = '9999';
+    }
+
 
     var options = {
       host:'api.tropo.com',
@@ -32,18 +33,16 @@ module.exports = function (scope, app, callback) {
       });
 
       res.on('end', function() {
-        console.log('answer: ', resultBody.toString());
         parseXml(resultBody.toString(), {trim: true}, function(err, result) {
-          console.log('XML ', result.session.id[0]);
-          response.json({randomNumber: randomNumber, tropoId: result.session.id[0]});
-        })
-      })
-
-    }).on('error', function(e) {
-        console.log("Got error: " + e.message);
+          response.json({randomNumber: randomNumber, tropoId: result.session.id[0], success: true});
+        });
       });
 
-  })
+    }).on('error', function(e) {
+          response.json({success: false});
+    });
+
+  });
 
   app.post('/', function(req, res){
 
@@ -55,11 +54,11 @@ module.exports = function (scope, app, callback) {
     console.log('tropo calling to +'+ req.body.session.parameters.numberToDial);
 
     tropo.call("+"+ req.body.session.parameters.numberToDial);
-    tropo.ask(choices, null, null, null, "digit", null, null, say, 60, null);
+    tropo.ask(choices, null, true, null, "digit", null, null, say, 60, null);
 
-    tropo.on("continue", null, "/continue?randomNumber="+ req.body.session.parameters.randomNumber, true);
-    tropo.on("hangup", null, "/fail", true);
-    tropo.on("incomplete", null, "/fail", true);
+    tropo.on("continue", null, "/tropo/tropo/continue?randomNumber="+ req.body.session.parameters.randomNumber, true);
+    tropo.on("hangup", null, "/tropo/tropo/fail", true);
+    tropo.on("incomplete", null, "/tropo/tropo/fail", true);
 
     console.log('tropo id: ', req.body.session.id);
 
@@ -73,11 +72,10 @@ module.exports = function (scope, app, callback) {
   });
 
   app.post('/fail', function(req, res) {
-    console.log('fail', req.body);
     redisClient.set(req.body.result.sessionId, 'failed');
 
     res.send(200);
-  })
+  });
 
   app.post('/continue', function(req, res){
 
@@ -86,23 +84,19 @@ module.exports = function (scope, app, callback) {
     var answer = req.body['result']['actions']['value'];
 
     tropo.say("You said " + answer);
-    tropo.on("continue", null, "/finish?randomNumber="+ req.query.randomNumber +"&answer="+ answer, true);
+    tropo.on("continue", null, "/tropo/tropo/finish?randomNumber="+ req.query.randomNumber +"&answer="+ answer, true);
 
     res.send(TropoJSON(tropo));
   });
 
   app.post('/finish', function(req, res) {
-    console.log('FINISH', req.body.result.sessionId);
-
     if(req.query.randomNumber == req.query.answer) {
-      console.log('PASSED');
       redisClient.set(req.body.result.sessionId, 'passed');
     } else {
-      console.log('FAILED');
       redisClient.set(req.body.result.sessionId, 'failed');
     }
     res.send(200);
-  })
+  });
 
 	setImmediate(callback);
 };

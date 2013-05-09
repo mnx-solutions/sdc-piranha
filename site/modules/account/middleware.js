@@ -8,13 +8,12 @@ module.exports = function (scope, callback) {
     var SignupProgress = scope.api('SignupProgress');
 
     function returnPage(req, res, next, step) {
-
         if(req.session.signupStep !== step) {
             req.session.signupStep = step;
             req.session.save();
         }
 
-        if(step === 'completed') {
+        if(step === 'completed' || step === 'complete') {
             return next();
         }
 
@@ -23,7 +22,7 @@ module.exports = function (scope, callback) {
 
     var middleware = function (req, res, next) {
 
-        if(/^\/signup/.test(req.originalUrl) || 1) {
+        if(/^\/signup/.test(req.originalUrl)) {
             next();
             return;
         }

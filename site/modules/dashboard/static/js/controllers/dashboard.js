@@ -14,7 +14,8 @@
             'Machine',
             'localization',
             'util',
-            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util) {
+            'BillingService',
+            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService) {
                 localization.bind('dashboard', $scope);
                 requestContext.setUpRenderContext('dashboard.index', $scope);
 
@@ -45,6 +46,7 @@
 
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
+                $scope.lastInvoice = BillingService.getLastInvoice();
             }
 
         ]);
