@@ -212,17 +212,33 @@ module.exports = function (scope, callback) {
         }));
     });
 
-    server.onCall('listInvoices', function (call) {
-        getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
-            zuora.transaction.getInvoices(id, function (err, resp) {
-                if(err) {
-                    call.done(err);
-                    return;
-                }
-                call.done(null, resp.invoices);
-            });
+    function getInvoiceList(call, cb) {
+        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
+            zuora.transaction.getInvoices(id, cb);
         }));
+    }
+
+    server.onCall('listInvoices', function (call) {
+        getInvoiceList(call, function (err, resp) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+            call.done(null, resp.invoices);
+        });
     });
+
+    server.onCall('getLastInvoice', function (call) {
+        getInvoiceList(call, function (err, resp) {
+            if(err) {
+                call.done(err);
+                return;
+            }
+
+        });
+    });
+
+
 
     setImmediate(callback);
 };
