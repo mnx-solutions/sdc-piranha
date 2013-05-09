@@ -173,7 +173,7 @@ module.exports = function (scope, register, callback) {
                 cb(err);
                 return;
             }
-            if(oldStep === 'completed' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
+            if(oldStep === 'completed' || oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
                 cb();
                 return;
             }
