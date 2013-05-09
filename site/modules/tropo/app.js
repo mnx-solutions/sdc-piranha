@@ -9,8 +9,14 @@ var parseXml = require('xml2js').parseString;
 
 module.exports = function (scope, app, callback) {
 
+  var SignupProgress = scope.api('SignupProgress');
+
   app.get('/status/:tropoid', function(req, res) {
     redisClient.get(req.params.tropoid, function(err, result) {
+      if(result === 'PASSED') {
+        SignupProgress.setMinProgress(req, 'tropo');
+      }
+
       res.json({sessionId: req.params.tropoid, status: result});
     })
   });
