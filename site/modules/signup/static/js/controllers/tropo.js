@@ -14,11 +14,17 @@
       $scope.account.then(function(account) {
         $http.get('/tropo/tropo/'+ account['phone']).success(function(data) {
           $scope.randomNumber = data.randomNumber;
-          setInterval(function() {
+          var interval = setInterval(function() {
             $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
               console.log(data);
               if(data.status === 'passed') {
+                clearInterval(interval);
                 $scope.nextStep();
+              }
+
+              if(data.status === 'failed') {
+                // TODO: Fail handling
+                clearInterval(interval);
               }
             });
           }, 1000);
