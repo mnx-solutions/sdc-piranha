@@ -1,0 +1,43 @@
+'use strict';
+
+(function (app) {
+
+  app.directive('accountAddSshKey',
+    ['Account', 'localization', '$q',
+      function (Account, localization, $q) {
+
+        return {
+          restrict: 'A',
+          replace: true,
+          scope: true,
+          link: function ($scope) {
+
+            $scope.newKey = {};
+
+            $scope.createNewKey = function() {
+              $scope.createPending = true;
+              $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
+
+              $q.when($scope.addedKey, function(key) {
+
+                if(key.name && key.fingerprint && key.key) {
+                  // successful add
+                  $scope.addsshKey = false;
+                  $scope.newKey = {};
+
+                  if ($scope.nextStep) {
+                    $scope.nextStep();
+                  }
+                } else {
+                  $scope.error = 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '');
+
+                }
+                $scope.createPending = false;
+              });
+            }
+
+          },
+          templateUrl: 'account/static/partials/account-add-ssh-key.html'
+        };
+      }]);
+}(window.JP.getModule('Account')));
