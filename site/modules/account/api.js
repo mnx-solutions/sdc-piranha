@@ -102,7 +102,7 @@ module.exports = function (scope, register, callback) {
     api.getSignupStep = function (req, cb) {
         function end(step) {
             if(steps.indexOf(step) === (steps.length -1)) {
-                step = 'complete';
+                step = 'completed';
             }
             cb(null, step);
         }
@@ -173,12 +173,12 @@ module.exports = function (scope, register, callback) {
                 cb(err);
                 return;
             }
-            if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
+            if(oldStep === 'completed' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
                 cb();
                 return;
             }
             if(steps.indexOf(step) === (steps.length -1)) { // Last step
-                step = 'complete';
+                step = 'completed';
             }
             api.setSignupStep(call, step, cb);
         });
