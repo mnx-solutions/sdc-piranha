@@ -1,4 +1,4 @@
-<div class="signin-flow-container span9">
+<div class="signin-flow-container span9" data-ng-controller="Signup.SSHController">
 		<div class="brand pull-left"></div>
 		<div class="clearfix"></div>
 		<div class="alert">
@@ -20,7 +20,7 @@
 							</div>
 						</div>
 				    <div class="align-right">
-				        <button class="btn btn-success">Add SSH key</button>
+				        <button class="btn btn-success" data-ng-click="addKey()">Add SSH key</button>
 				    </div>
 				</fieldset>
 				<div class="clearfix"></div>

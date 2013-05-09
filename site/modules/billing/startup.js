@@ -123,14 +123,10 @@ module.exports = function (scope, callback) {
     server.onCall('addPaymentMethod', function (call) {
 
         function setProgress(resp) {
-            SignupProgress.setMinProgress(call.req, 'billing', function (err) {
+            SignupProgress.setMinProgress(call, 'billing', function (err) {
                 if(err) {
                     scope.log.error(err);
                 }
-                call.session(function (req) {
-                    req.session.signupStep = 'billing';
-                    req.session.save();
-                });
                 call.done(null, resp);
             });
         }
@@ -210,6 +206,18 @@ module.exports = function (scope, callback) {
                     return;
                 }
                 call.done(null, resp);
+            });
+        }));
+    });
+
+    server.onCall('listInvoices', function (call) {
+        getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
+            zuora.transaction.getInvoices(id, function (err, resp) {
+                if(err) {
+                    call.done(err);
+                    return;
+                }
+                call.done(null, resp.invoices);
             });
         }));
     });

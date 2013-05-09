@@ -100,7 +100,6 @@ module.exports = function (scope, register, callback) {
     };
 
     api.getSignupStep = function (req, cb) {
-
         if(req.session.signupStep) {
             cb(null, req.session.signupStep);
             return;
@@ -132,7 +131,7 @@ module.exports = function (scope, register, callback) {
         });
     };
 
-    api.setSignupStep = function (req, step, cb) {
+    api.setSignupStep = function (call, step, cb) {
         var count = 2;
         var errs = [];
 
@@ -141,25 +140,29 @@ module.exports = function (scope, register, callback) {
                 errs.push(err);
             }
             if(--count === 0) {
+                call.session(function (req) {
+                    req.session.signupStep = step;
+                    req.session.save();
+                });
                 cb((errs.length < 1 ? null : errs));
             }
         }
 
-        api.setTokenVal(req.session.token, step, true, end);
-        api.setAccountVal(req.cloud, step, end);
+        api.setTokenVal(call.req.session.token, step, true, end);
+        api.setAccountVal(call.req.cloud, step, end);
     };
 
-    api.setMinProgress = function (req, step, cb) {
-        api.getSignupStep(req, function (err, oldStep) {
+    api.setMinProgress = function (call, step, cb) {
+        api.getSignupStep(call.req, function (err, oldStep) {
             if(err) {
                 cb(err);
                 return;
             }
-            if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep)) {
+            if(oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
                 cb();
                 return;
             }
-            api.setSignupStep(req, step, cb);
+            api.setSignupStep(call, step, cb);
         });
     };
 
