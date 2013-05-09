@@ -52,7 +52,7 @@ module.exports = function (scope, callback) {
                     billToContact: {
                         firstName: call.data.firstName,
                         lastName: call.data.lastName,
-                        country: data.country || null
+                        country: call.data.cardHolderInfo.country || data.country || null
                     },
                     subscription: {
                         termType: 'EVERGREEN',
