@@ -316,7 +316,7 @@ th {
 	border:1px solid #ddd;
 	border-top:none;
 	padding:5px;
-    overflow:hidden;
+/*    overflow:hidden;*/
     font-size:12px;
 }
 .item-list-container .item.header {
@@ -326,6 +326,21 @@ th {
 .item-list-container .item:hover {
     background:#f8f8f8;
 }
+
+.item.selected {
+    background:#f8f8f8;
+}
+
+.item-select {
+	text-align:center;
+	font-size:44px;
+	color:#ccc;
+	padding-top:10px;
+}
+.item-select:hover {
+	color:#555;
+}
+
 .carousel-inner .item:hover {
     background:#fff;
 }

@@ -2,7 +2,8 @@
 
 var tropo_webapi = require('tropo-webapi-node');
 var redis = require('redis');
-var redisClient = redis.createClient();
+var config = require('easy-config');
+var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var http = require('http');
 var parseXml = require('xml2js').parseString;
 

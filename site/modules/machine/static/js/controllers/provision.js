@@ -88,14 +88,13 @@
 
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
-
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
-
+                        
                         $scope.selectedDataset = dataset;
                         ng.element('#pricing').removeClass('alert-muted');
                         ng.element('#pricing').addClass('alert-success');
-
+                        
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
                     });

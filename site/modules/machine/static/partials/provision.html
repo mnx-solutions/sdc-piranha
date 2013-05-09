@@ -37,11 +37,29 @@
 							</div>
 							
 							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
-								<input class="pull-left" data-ng-click="selectDataset(dataset.id); slideCarousel()" type="radio" id="dataset-{{dataset.id}}" name="dataset" value="{{dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
-								<label for="dataset-{{dataset.id}}" class="span7 text-medium">
+								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" name="dataset" value="{{dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
+								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
 									<strong>{{dataset.name}}</strong><br />
 									{{dataset.description}}
+									<div class="image-container">
+										<span class="span2" style="margin-left:0px"><strong>Choose image version</strong></span>
+										<div class="btn-group">
+											<button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">
+												1.0.3
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu">
+												<li><a tabindex="-1">1.0.3</a></li>
+												<li><a tabindex="-1">1.0.1</a></li>
+											</ul>
+										</div>
+									</div>
 								</label>
+								<span class="span1 item-select pointer" data-ng-click="selectDataset(dataset.id); slideCarousel()" >
+									&raquo;
+								</span>
+								
+								<div class="clearfix"></div>
 							</div>
 							<div class="clearfix"></div>
                         </div>
@@ -76,6 +94,7 @@
 									</span>
 									
 								</label>
+								<div class="clearfix"></div>
 							</div>
                         </div> 
                     </div>
