@@ -153,6 +153,9 @@ module.exports = function (scope, register, callback) {
     };
 
     api.setMinProgress = function (call, step, cb) {
+        if(!call.req && !call.done) { // Not a call, but request
+            call = {req: call};
+        }
         api.getSignupStep(call.req, function (err, oldStep) {
             if(err) {
                 cb(err);
