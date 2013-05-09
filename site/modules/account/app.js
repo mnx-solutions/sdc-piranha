@@ -25,6 +25,12 @@ module.exports = function (scope, app, callback) {
         });
     });
 
+    app.get('/signup/:step', function (req, res) {
+        SignupProgress.setMinProgress(req, req.params.step, function () {
+            res.send(200);
+        });
+    });
+
     app.get('/key-generator.sh', function(req, res, next) {
         // replace username in the script with correct one
         var data = keyGen.replace('{{username}}', 'admin');
