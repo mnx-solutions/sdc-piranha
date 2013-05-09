@@ -116,13 +116,15 @@
                     <a class="btn btn-mini btn-success pull-left" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Reconfigure</a>
 					<div class="clearfix"></div>
                     <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
-                        <h4 data-translate>You're almost done.</h4>
-                            <span data-translate>A few more things are needed or go back</span>						        
 						<div class="clearfix"></div><br />
                         <div id="finish-configuration" class="none">
                             <form name="provision">
-                                Valis: {{provison['data.name'].$error}}
-                                <span ng-show="provison.data.name.$error">This is not a valid float number!</span>
+                                {{provison['data.name'].$error}}
+								<span ng-show="provison.data.name.$error">This is not a valid float number!</span>
+		                        <h4 data-translate>You're almost done.</h4>
+								<span data-translate>Give your instance a name and you are all done.</span>						        
+
+                                
                                 <input name="machineName"
                                        type="text"
                                        placeholder="Name of your instance"
