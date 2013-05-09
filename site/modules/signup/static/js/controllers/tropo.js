@@ -12,10 +12,10 @@
       $scope.account = Account.getAccount();
 
       $scope.account.then(function(account) {
-        $http.get('/signup/tropo/'+ account['phone']).success(function(data) {
+        $http.get('/tropo/tropo/'+ account['phone']).success(function(data) {
           $scope.randomNumber = data.randomNumber;
           setInterval(function() {
-            $http.get('/signup/tropo/status/'+ data.tropoId).success(function(data) {
+            $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
               console.log(data);
               if(data.status === 'PASSED') {
                 $scope.nextStep();

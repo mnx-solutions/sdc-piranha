@@ -57,9 +57,9 @@ module.exports = function (scope, app, callback) {
     tropo.call("+"+ req.body.session.parameters.numberToDial);
     tropo.ask(choices, null, null, null, "digit", null, null, say, 60, null);
 
-    tropo.on("continue", null, "/continue?randomNumber="+ req.body.session.parameters.randomNumber, true);
-    tropo.on("hangup", null, "/fail", true);
-    tropo.on("incomplete", null, "/fail", true);
+    tropo.on("continue", null, "/tropo/tropo/continue?randomNumber="+ req.body.session.parameters.randomNumber, true);
+    tropo.on("hangup", null, "/tropo/tropo/fail", true);
+    tropo.on("incomplete", null, "/tropo/tropo/fail", true);
 
     console.log('tropo id: ', req.body.session.id);
 
@@ -86,7 +86,7 @@ module.exports = function (scope, app, callback) {
     var answer = req.body['result']['actions']['value'];
 
     tropo.say("You said " + answer);
-    tropo.on("continue", null, "/finish?randomNumber="+ req.query.randomNumber +"&answer="+ answer, true);
+    tropo.on("continue", null, "/tropo/tropo/finish?randomNumber="+ req.query.randomNumber +"&answer="+ answer, true);
 
     res.send(TropoJSON(tropo));
   });
