@@ -49,7 +49,7 @@ module.exports = function (scope, app, callback) {
     var tropo = new TropoWebAPI();
 
     var say = new Say("Please enter your four digit number");
-    var choices = new Choices("[4 DIGITS]", "dtfm");
+    var choices = new Choices("[4 DIGITS]");
 
     console.log('tropo calling to +'+ req.body.session.parameters.numberToDial);
 
