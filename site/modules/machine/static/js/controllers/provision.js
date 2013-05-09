@@ -93,7 +93,7 @@
                         
                         $scope.selectedDataset = dataset;
                         ng.element('#pricing').removeClass('alert-muted');
-                        ng.element('#pricing').addClass('alert-success');
+                        ng.element('#pricing').addClass('alert-info');
                         
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
