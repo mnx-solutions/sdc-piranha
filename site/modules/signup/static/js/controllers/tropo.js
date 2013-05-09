@@ -18,27 +18,32 @@
 
         if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
           $http.get('/tropo/tropo/'+ account['phone']).success(function(data) {
-            $scope.randomNumber = data.randomNumber;
-            var interval = setInterval(function() {
-              $scope.tropoPoll++;
-              $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
-                if(data.status === 'passed') {
-                  clearInterval(interval);
-                  $scope.nextStep();
-                }
+            if(!data.success) {
+              $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+            } else {
+              $scope.randomNumber = data.randomNumber;
 
-                if(data.status === 'failed') {
-                  // TODO: Fail handling
-                  clearInterval(interval);
-                  $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
-                }
+              var interval = setInterval(function() {
+                $scope.tropoPoll++;
+                $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
+                  if(data.status === 'passed') {
+                    clearInterval(interval);
+                    $scope.nextStep();
+                  }
 
-                if($scope.tropoPoll == 60) {
-                  clearInterval(interval);
-                  $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
-                }
-              });
-            }, 1000);
+                  if(data.status === 'failed') {
+                    // TODO: Fail handling
+                    clearInterval(interval);
+                    $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                  }
+
+                  if($scope.tropoPoll == 60) {
+                    clearInterval(interval);
+                    $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                  }
+                });
+              }, 1000);
+            }
           });
         }
 

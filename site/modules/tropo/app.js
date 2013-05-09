@@ -34,13 +34,13 @@ module.exports = function (scope, app, callback) {
 
       res.on('end', function() {
         parseXml(resultBody.toString(), {trim: true}, function(err, result) {
-          response.json({randomNumber: randomNumber, tropoId: result.session.id[0]});
+          response.json({randomNumber: randomNumber, tropoId: result.session.id[0], success: true});
         })
       });
 
     }).on('error', function(e) {
-        console.log("Got error: " + e.message);
-      });
+          response.json({success: false});
+    });
 
   });
 
