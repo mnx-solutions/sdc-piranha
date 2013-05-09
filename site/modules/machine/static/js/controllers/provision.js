@@ -84,6 +84,8 @@
                     $scope.data = {};
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
+					ng.element('#finish-configuration').fadeOut('fast');
+					// ng.element('#finish-configuration').addClass('none');
                 };
 
                 $scope.selectDataset = function (id) {
