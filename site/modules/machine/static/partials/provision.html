@@ -41,19 +41,21 @@
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
 									<strong>{{dataset.name}}</strong><br />
 									{{dataset.description}}
-									<div class="image-container">
-										<span class="span2" style="margin-left:0px"><strong>Choose image version</strong></span>
-										<div class="btn-group">
-											<button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">
-												1.0.3
-												<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu">
-												<li><a tabindex="-1">1.0.3</a></li>
-												<li><a tabindex="-1">1.0.1</a></li>
-											</ul>
-										</div>
-									</div>
+                                    <div class="image-container" data-ng-show="versions[dataset.name].length > 1">
+                                        <span class="span2" style="margin-left:0px"><strong>Choose image version</strong></span>
+                                        <div class="btn-group">
+                                            <button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">
+                                                {{versions[dataset.name][0]}}
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu" data-ng-repeat="(key, value) in versions[dataset.name]">
+                                                <li><a tabindex="-1">{{value}}</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="image-container" data-ng-show="versions[dataset.name].length < 2">
+                                        <span class="span2" style="margin-left:0px"><strong>Image version</strong> {{dataset.version}}</span>
+                                    </div>
 								</label>
 								<span class="span1 item-select pointer" data-ng-click="selectDataset(dataset.id); slideCarousel()" >
 									&raquo;

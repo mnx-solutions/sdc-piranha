@@ -146,7 +146,27 @@
 
                     if (newVal) {
                         Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
-                            $scope.datasets = datasets;
+                            var unique_datasets = [];
+                            var dataset_names = [];
+                            var versions = {};
+                            datasets.forEach(function (dataset) {
+                                if (!dataset_names[dataset.name]) {
+                                    dataset_names[dataset.name] = true;
+                                    unique_datasets.push(dataset);
+                                }
+                                if (!versions[dataset.name]) {
+                                    var suba = [dataset.version];
+                                    versions[dataset.name] = suba;
+                                } else {
+                                    if (versions[dataset.name].indexOf(dataset.version) === -1) {
+                                        versions[dataset.name].push(dataset.version);
+                                    }
+                                }
+                            });
+                            $scope.datasets = unique_datasets;
+                            $scope.versions = versions;
+                            console.log(datasets);
+                            console.log(versions);
                         });
 
                         Package.package({ datacenter: newVal }).then(function (packages) {
