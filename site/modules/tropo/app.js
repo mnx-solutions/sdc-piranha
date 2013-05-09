@@ -11,15 +11,18 @@ module.exports = function (scope, app, callback) {
 
   var SignupProgress = scope.api('SignupProgress');
 
-  app.get('/status/:tropoid', function(req, res) {
-    redisClient.get(req.params.tropoid, function(err, result) {
-      if(result === 'PASSED') {
-        SignupProgress.setMinProgress(req, 'tropo');
-      }
+    app.get('/status/:tropoid', function(req, res) {
+        redisClient.get(req.params.tropoid, function(err, result) {
+            if(result === 'PASSED') {
+                SignupProgress.setMinProgress(req, 'tropo', function (err){
+                    res.json({sessionId: req.params.tropoid, status: result});
+                });
+            return;
+            }
 
-      res.json({sessionId: req.params.tropoid, status: result});
-    })
-  });
+            res.json({sessionId: req.params.tropoid, status: result});
+        });
+    });
 
   app.get('/:number', function(req, res) {
     var randomNumber = Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9) +''+ Math.floor(Math.random() * 9);
