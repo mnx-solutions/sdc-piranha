@@ -1,8 +1,570 @@
 {
-  "0ea54d9d-8d4d-4959-a87e-bf47c0f61a47": {
-    "sequence": 1
-  },
-  "1ee2a2ab-2138-8542-b563-a67bb03792f7": {
-    "sequence": 2
-  }
+ "t1-micro-0.25-smartos": {
+  "group": "Micro",
+  "description": "Micro 0.25 GB RAM 0.125 vCPUs 16 GB Disk"
+ },
+ "t1-micro-0.5-smartos": {
+  "group": "Micro",
+  "description": "Micro 0.5 GB RAM 0.125 vCPUs 16 GB Disk"
+ },
+ "m1-small-0.625-smartos": {
+  "group": "Micro",
+  "description": "Micro 0.6 GB RAM 0.15 vCPUs 20 GB Disk"
+ },
+ "m1-small-1-smartos": {
+  "group": "Standard",
+  "description": "Standard 1 GB RAM 0.25 vCPUs 33 GB Disk"
+ },
+ "m1-small-1.75-smartos": {
+  "group": "Standard",
+  "description": "Standard 1.7 GB RAM 1 vCPUs 56 GB Disk"
+ },
+ "m1-small-2-smartos": {
+  "group": "Standard",
+  "description": "Standard 2 GB RAM 1 vCPUs 66 GB Disk"
+ },
+ "m1-medium-3.75-smartos": {
+  "group": "Standard",
+  "description": "Standard 3.75 GB RAM 1 vCPUs 123 GB Disk"
+ },
+ "m1-medium-4-smartos": {
+  "group": "Standard",
+  "description": "Standard 4 GB RAM 1 vCPUs 131 GB Disk"
+ },
+ "m1-large-7.5-smartos": {
+  "group": "Standard",
+  "description": "Standard 7.5 GB RAM 2 vCPUs 738 GB Disk"
+ },
+ "m1-large-8-smartos": {
+  "group": "Standard",
+  "description": "Standard 8 GB RAM 2 vCPUs 789 GB Disk"
+ },
+ "m1-xlarge-15-smartos": {
+  "group": "Standard",
+  "description": "Standard 15 GB RAM 4 vCPUs 1467 GB Disk"
+ },
+ "m1-xlarge-16-smartos": {
+  "group": "Standard",
+  "description": "Standard 16 GB RAM 4 vCPUs 1575 GB Disk"
+ },
+ "m1-xlarge-17.125-smartos": {
+  "group": "Standard",
+  "description": "Standard 17.1 GB RAM 5 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-30-smartos": {
+  "group": "Standard",
+  "description": "Standard 30 GB RAM 8 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-32-smartos": {
+  "group": "Standard",
+  "description": "Standard 32 GB RAM 8 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-40-smartos": {
+  "group": "Standard",
+  "description": "Standard 40 GB RAM 10 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-48-smartos": {
+  "group": "Standard",
+  "description": "Standard 48 GB RAM 12 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-56-smartos": {
+  "group": "Standard",
+  "description": "Standard 56 GB RAM 14 vCPUs 1838 GB Disk"
+ },
+ "m1-2xlarge-64-smartos": {
+  "group": "Standard",
+  "description": "Standard 64 GB RAM 16 vCPUs 2100 GB Disk"
+ },
+ "m1-2xlarge-72-smartos": {
+  "group": "Standard",
+  "description": "Standard 72 GB RAM 18 vCPUs 2363 GB Disk"
+ },
+ "m1-2xlarge-80-smartos": {
+  "group": "Standard",
+  "description": "Standard 80 GB RAM 20 vCPUs 2625 GB Disk"
+ },
+ "m1-2xlarge-88-smartos": {
+  "group": "Standard",
+  "description": "Standard 88 GB RAM 22 vCPUs 2888 GB Disk"
+ },
+ "m1-2xlarge-96-smartos": {
+  "group": "Standard",
+  "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk"
+ },
+ "m1-2xlarge-104-smartos": {
+  "group": "Standard",
+  "description": "Standard 104 GB RAM 26 vCPUs 3413 GB Disk"
+ },
+ "m1-2xlarge-112-smartos": {
+  "group": "Standard",
+  "description": "Standard 112 GB RAM 28 vCPUs 3675 GB Disk"
+ },
+ "m1-2xlarge-120-smartos": {
+  "group": "Standard",
+  "description": "Standard 120 GB RAM 30 vCPUs 3938 GB Disk"
+ },
+ "cc1-2xlarge-128-smartos": {
+  "group": "Standard-CC",
+  "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk"
+ },
+ "m2-xlarge-17.125-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 17.1 GB RAM 2 vCPUs 420 GB Disk"
+ },
+ "m2-2xlarge-34.25-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 34.2 GB RAM 4 vCPUs 843 GB Disk"
+ },
+ "m2-2xlarge-48-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 48 GB RAM 6 vCPUs 843 GB Disk"
+ },
+ "m2-4xlarge-68.375-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 68.4 GB RAM 8 vCPUs 1122 GB Disk"
+ },
+ "m2-4xlarge-80-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 80 GB RAM 10 vCPUs 1313 GB Disk"
+ },
+ "m2-4xlarge-96-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 96 GB RAM 12 vCPUs 1575 GB Disk"
+ },
+ "m2-4xlarge-112-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 112 GB RAM 14 vCPUs 1838 GB Disk"
+ },
+ "m2-4xlarge-128-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 128 GB RAM 16 vCPUs 2100 GB Disk"
+ },
+ "m2-4xlarge-144-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk"
+ },
+ "m2-4xlarge-160-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 160 GB RAM 20 vCPUs 2625 GB Disk"
+ },
+ "m2-4xlarge-176-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 176 GB RAM 22 vCPUs 2888 GB Disk"
+ },
+ "m2-4xlarge-192-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 192 GB RAM 24 vCPUs 3150 GB Disk"
+ },
+ "m2-4xlarge-208-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 208 GB RAM 26 vCPUs 3413 GB Disk"
+ },
+ "m2-4xlarge-224-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 224 GB RAM 28 vCPUs 3675 GB Disk"
+ },
+ "m2-4xlarge-240-smartos": {
+  "group": "High Memory",
+  "description": "High Memory 240 GB RAM 30 vCPUs 3938 GB Disk"
+ },
+ "cr2-4xlarge-256-smartos": {
+  "group": "High Memory-CC",
+  "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk"
+ },
+ "c1-medium-1.75-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 1.7 GB RAM 2 vCPUs 336 GB Disk"
+ },
+ "c1-medium-4-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 4 GB RAM 4 vCPUs 789 GB Disk"
+ },
+ "c1-xlarge-7-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 7 GB RAM 7 vCPUs 1377 GB Disk"
+ },
+ "c1-xlarge-8-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 8 GB RAM 8 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-10-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 10 GB RAM 10 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-12-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 12 GB RAM 12 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-14-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 14 GB RAM 14 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-16-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 16 GB RAM 16 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-18-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 18 GB RAM 18 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-20-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 20 GB RAM 20 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-22-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 22 GB RAM 22 vCPUs 1444 GB Disk"
+ },
+ "c1-2xlarge-24-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 24 GB RAM 24 vCPUs 1575 GB Disk"
+ },
+ "c1-2xlarge-26-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 26 GB RAM 26 vCPUs 1706 GB Disk"
+ },
+ "c1-2xlarge-28-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 28 GB RAM 28 vCPUs 1838 GB Disk"
+ },
+ "c1-2xlarge-30-smartos": {
+  "group": "High CPU",
+  "description": "High CPU 30 GB RAM 30 vCPUs 1969 GB Disk"
+ },
+ "cc1-2xlarge-32-smartos": {
+  "group": "High CPU-CC",
+  "description": "High CPU-CC 32 GB RAM 32 vCPUs 2100 GB Disk"
+ },
+ "hs1-4xlarge-64-smartos": {
+  "group": "High Storage",
+  "description": "High Storage 64 GB RAM 8 vCPUs 7680 GB Disk"
+ },
+ "hs1-4xlarge-96-smartos": {
+  "group": "High Storage",
+  "description": "High Storage 96 GB RAM 12 vCPUs 11520 GB Disk"
+ },
+ "hs1-4xlarge-128-smartos": {
+  "group": "High Storage",
+  "description": "High Storage 128 GB RAM 16 vCPUs 15360 GB Disk"
+ },
+ "hs1-8xlarge-192-smartos": {
+  "group": "High Storage",
+  "description": "High Storage 192 GB RAM 24 vCPUs 23040 GB Disk"
+ },
+ "hs1-8xlarge-256-smartos": {
+  "group": "High Storage",
+  "description": "High Storage 256 GB RAM 32 vCPUs 30720 GB Disk"
+ },
+ "hi1-4xlarge-60.5-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk"
+ },
+ "hi1-4xlarge-96-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 96 GB RAM 12 vCPUs 2304 GB Disk"
+ },
+ "hi1-4xlarge-128-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk"
+ },
+ "hi1-8xlarge-160-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 160 GB RAM 20 vCPUs 3840 GB Disk"
+ },
+ "hi1-8xlarge-192-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 192 GB RAM 24 vCPUs 4608 GB Disk"
+ },
+ "hi1-8xlarge-224-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 224 GB RAM 28 vCPUs 5376 GB Disk"
+ },
+ "hi1-8xlarge-256-smartos": {
+  "group": "High I/O",
+  "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk"
+ },
+ "t1-micro-0.25-kvm": {
+  "group": "Micro",
+  "description": "Micro 0.25 GB RAM 0.125 vCPUs 16 GB Disk"
+ },
+ "t1-micro-0.5-kvm": {
+  "group": "Micro",
+  "description": "Micro 0.5 GB RAM 0.125 vCPUs 16 GB Disk"
+ },
+ "m1-small-0.625-kvm": {
+  "group": "Standard",
+  "description": "Standard 0.6 GB RAM 0.15 vCPUs 20 GB Disk"
+ },
+ "m1-small-1-kvm": {
+  "group": "Standard",
+  "description": "Standard 1 GB RAM 0.25 vCPUs 33 GB Disk"
+ },
+ "m1-small-1.75-kvm": {
+  "group": "Standard",
+  "description": "Standard 1.7 GB RAM 1 vCPUs 56 GB Disk"
+ },
+ "m1-small-2-kvm": {
+  "group": "Standard",
+  "description": "Standard 2 GB RAM 1 vCPUs 66 GB Disk"
+ },
+ "m1-medium-3.75-kvm": {
+  "group": "Standard",
+  "description": "Standard 3.75 GB RAM 1 vCPUs 123 GB Disk"
+ },
+ "m1-medium-4-kvm": {
+  "group": "Standard",
+  "description": "Standard 4 GB RAM 1 vCPUs 131 GB Disk"
+ },
+ "m1-large-7.5-kvm": {
+  "group": "Standard",
+  "description": "Standard 7.5 GB RAM 2 vCPUs 738 GB Disk"
+ },
+ "m1-large-8-kvm": {
+  "group": "Standard",
+  "description": "Standard 8 GB RAM 2 vCPUs 789 GB Disk"
+ },
+ "m1-xlarge-15-kvm": {
+  "group": "Standard",
+  "description": "Standard 15 GB RAM 4 vCPUs 1467 GB Disk"
+ },
+ "m1-xlarge-16-kvm": {
+  "group": "Standard",
+  "description": "Standard 16 GB RAM 4 vCPUs 1575 GB Disk"
+ },
+ "m1-xlarge-17.125-kvm": {
+  "group": "Standard",
+  "description": "Standard 17.1 GB RAM 5 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-30-kvm": {
+  "group": "Standard",
+  "description": "Standard 30 GB RAM 8 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-32-kvm": {
+  "group": "Standard",
+  "description": "Standard 32 GB RAM 8 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-40-kvm": {
+  "group": "Standard",
+  "description": "Standard 40 GB RAM 10 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-48-kvm": {
+  "group": "Standard",
+  "description": "Standard 48 GB RAM 12 vCPUs 1683 GB Disk"
+ },
+ "m1-2xlarge-56-kvm": {
+  "group": "Standard",
+  "description": "Standard 56 GB RAM 14 vCPUs 1838 GB Disk"
+ },
+ "m1-2xlarge-64-kvm": {
+  "group": "Standard",
+  "description": "Standard 64 GB RAM 16 vCPUs 2100 GB Disk"
+ },
+ "m1-2xlarge-72-kvm": {
+  "group": "Standard",
+  "description": "Standard 72 GB RAM 18 vCPUs 2363 GB Disk"
+ },
+ "m1-2xlarge-80-kvm": {
+  "group": "Standard",
+  "description": "Standard 80 GB RAM 20 vCPUs 2625 GB Disk"
+ },
+ "m1-2xlarge-88-kvm": {
+  "group": "Standard",
+  "description": "Standard 88 GB RAM 22 vCPUs 2888 GB Disk"
+ },
+ "m1-2xlarge-96-kvm": {
+  "group": "Standard",
+  "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk"
+ },
+ "m1-2xlarge-104-kvm": {
+  "group": "Standard",
+  "description": "Standard 104 GB RAM 26 vCPUs 3413 GB Disk"
+ },
+ "m1-2xlarge-112-kvm": {
+  "group": "Standard",
+  "description": "Standard 112 GB RAM 28 vCPUs 3675 GB Disk"
+ },
+ "m1-2xlarge-120-kvm": {
+  "group": "Standard",
+  "description": "Standard 120 GB RAM 30 vCPUs 3938 GB Disk"
+ },
+ "cc1-2xlarge-128-kvm": {
+  "group": "Standard-CC",
+  "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk"
+ },
+ "m2-xlarge-17.125-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 17.1 GB RAM 2 vCPUs 420 GB Disk"
+ },
+ "m2-2xlarge-34.25-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 34.2 GB RAM 4 vCPUs 843 GB Disk"
+ },
+ "m2-2xlarge-48-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 48 GB RAM 6 vCPUs 843 GB Disk"
+ },
+ "m2-4xlarge-68.375-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 68.4 GB RAM 8 vCPUs 1122 GB Disk"
+ },
+ "m2-4xlarge-80-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 80 GB RAM 10 vCPUs 1313 GB Disk"
+ },
+ "m2-4xlarge-96-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 96 GB RAM 12 vCPUs 1575 GB Disk"
+ },
+ "m2-4xlarge-112-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 112 GB RAM 14 vCPUs 1838 GB Disk"
+ },
+ "m2-4xlarge-128-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 128 GB RAM 16 vCPUs 2100 GB Disk"
+ },
+ "m2-4xlarge-144-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk"
+ },
+ "m2-4xlarge-160-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 160 GB RAM 20 vCPUs 2625 GB Disk"
+ },
+ "m2-4xlarge-176-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 176 GB RAM 22 vCPUs 2888 GB Disk"
+ },
+ "m2-4xlarge-192-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 192 GB RAM 24 vCPUs 3150 GB Disk"
+ },
+ "m2-4xlarge-208-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 208 GB RAM 26 vCPUs 3413 GB Disk"
+ },
+ "m2-4xlarge-224-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 224 GB RAM 28 vCPUs 3675 GB Disk"
+ },
+ "m2-4xlarge-240-kvm": {
+  "group": "High Memory",
+  "description": "High Memory 240 GB RAM 30 vCPUs 3938 GB Disk"
+ },
+ "cr2-4xlarge-256-kvm": {
+  "group": "High Memory-CC",
+  "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk"
+ },
+ "c1-medium-1.75-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 1.7 GB RAM 2 vCPUs 336 GB Disk"
+ },
+ "c1-medium-4-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 4 GB RAM 4 vCPUs 789 GB Disk"
+ },
+ "c1-xlarge-7-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 7 GB RAM 7 vCPUs 1377 GB Disk"
+ },
+ "c1-xlarge-8-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 8 GB RAM 8 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-10-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 10 GB RAM 10 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-12-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 12 GB RAM 12 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-14-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 14 GB RAM 14 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-16-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 16 GB RAM 16 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-18-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 18 GB RAM 18 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-20-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 20 GB RAM 20 vCPUs 1377 GB Disk"
+ },
+ "c1-2xlarge-22-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 22 GB RAM 22 vCPUs 1444 GB Disk"
+ },
+ "c1-2xlarge-24-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 24 GB RAM 24 vCPUs 1575 GB Disk"
+ },
+ "c1-2xlarge-26-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 26 GB RAM 26 vCPUs 1706 GB Disk"
+ },
+ "c1-2xlarge-28-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 28 GB RAM 28 vCPUs 1838 GB Disk"
+ },
+ "c1-2xlarge-30-kvm": {
+  "group": "High CPU",
+  "description": "High CPU 30 GB RAM 30 vCPUs 1969 GB Disk"
+ },
+ "cc1-2xlarge-32-kvm": {
+  "group": "High CPU-CC",
+  "description": "High CPU-CC 32 GB RAM 32 vCPUs 2100 GB Disk"
+ },
+ "hs1-4xlarge-64-kvm": {
+  "group": "High Storage",
+  "description": "High Storage 64 GB RAM 8 vCPUs 7680 GB Disk"
+ },
+ "hs1-4xlarge-96-kvm": {
+  "group": "High Storage",
+  "description": "High Storage 96 GB RAM 12 vCPUs 11520 GB Disk"
+ },
+ "hs1-4xlarge-128-kvm": {
+  "group": "High Storage",
+  "description": "High Storage 128 GB RAM 16 vCPUs 15360 GB Disk"
+ },
+ "hs1-8xlarge-192-kvm": {
+  "group": "High Storage",
+  "description": "High Storage 192 GB RAM 24 vCPUs 23040 GB Disk"
+ },
+ "hs1-8xlarge-256-kvm": {
+  "group": "High Storage",
+  "description": "High Storage 256 GB RAM 32 vCPUs 30720 GB Disk"
+ },
+ "hi1-4xlarge-60.5-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk"
+ },
+ "hi1-4xlarge-96-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 96 GB RAM 12 vCPUs 2304 GB Disk"
+ },
+ "hi1-4xlarge-128-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk"
+ },
+ "hi1-8xlarge-160-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 160 GB RAM 20 vCPUs 3840 GB Disk"
+ },
+ "hi1-8xlarge-192-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 192 GB RAM 24 vCPUs 4608 GB Disk"
+ },
+ "hi1-8xlarge-224-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 224 GB RAM 28 vCPUs 5376 GB Disk"
+ },
+ "hi1-8xlarge-256-kvm": {
+  "group": "High I/O",
+  "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk"
+ }
 }
