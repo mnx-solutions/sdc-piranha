@@ -19,6 +19,7 @@
                 packages.nameIndex[datacenter] = {};
                 packages.list[datacenter] = [];
                 packages.search[datacenter] = {};
+//                packages.info[datacenter] = info.packages[datacenter];
             }
 
             if (!packages.job[datacenter]) {

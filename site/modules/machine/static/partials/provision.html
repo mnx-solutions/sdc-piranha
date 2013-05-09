@@ -37,7 +37,7 @@
 							</div>
 							
 							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
-								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" name="dataset" value="{{dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
+								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" data-ng-click="selectDataset(dataset.id); slideCarousel()" name="dataset" value="{{dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
 									<strong>{{dataset.name}}</strong><br />
 									{{dataset.description}}
@@ -60,7 +60,7 @@
 								<span class="span1 item-select pointer" data-ng-click="selectDataset(dataset.id); slideCarousel()" >
 									&raquo;
 								</span>
-								
+
 								<div class="clearfix"></div>
 							</div>
 							<div class="clearfix"></div>
@@ -70,29 +70,26 @@
 						<div class="item">
 							<div class="item header">
 								    <div class="btn-group pull-left">
-								        <button class="btn" data-translate>High CPU</button>
-								        <button class="btn dropdown-toggle" data-toggle="dropdown">
-								            <span class="caret"></span>
-								        </button>
-								        <ul class="dropdown-menu">
-								            <li data-ng-repeat="datacenter in datacenters">
-								                <a>High CPU</a>
-								            </li>
-								        </ul>
+                                        <select data-ng-model="packageType" data-ng-options="val as val for (key, val) in packageTypes">
+                                            <option value="">-- All Types --</option>
+                                        </select>
 								    </div>
+                                <div class="pull-right">
+                                    <form class="navbar-form pull-left">
+                                        <input type="text" class="span3" placeholder="Search image" data-ng-model="searchPackages" data-translate="placeholder" />
+                                    </form>
+                                </div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="item pointer" data-ng-repeat="package in (packages | orderBy:'sequence') | filter:filterPackages">
 								<input class="pull-left" data-ng-checked="selectedPackage == $parent.selectedPackage" value="{{package.id}}" data-ng-click="selectPackage(package.id)" data-ng-model="selectedPackage" type="radio" name="tmp" id="package-{{package.id}}"/>
 								<label for="package-{{package.id}}">
 									<span class="span5 text-medium"><strong>{{package.name}}</strong><br />
-										<span data-translate>RAM</span>: {{package.memory}}MB, 
-										<span data-translate>Disk</span>: {{package.disk}}MB, 
-										<span data-translate>vCPUs</span>: {{package.vcpus}}
+                                        <span data-translate>{{package.description}}</span>
 									</span>
 									<span class="span2 text-medium align-right" style="padding-top:5px">
-										<font class="b" size="4">$0.05</font><br />
-										<font class="text-gray">per day</font>
+										<font class="b" size="4">${{package.price}}</font><br />
+										<font class="text-gray">per hour</font>
 									</span>
 									
 								</label>
@@ -108,11 +105,17 @@
 
                     <h4 data-translate>Selected configuration</h4>
                     <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
+                    <br/>
                     <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
-                        {{selectedPackageInfo.memory}}<br/>
-                        {{selectedPackageInfo.disk}}<br/>
-                        {{selectedPackageInfo.vcpus}}
+                        <span data-translate>Memory</span>: {{selectedPackageInfo.memory}}<br/>
+                        <span data-translate>Disk</span>: {{selectedPackageInfo.disk}}<br/>
+                        <span data-translate>vCPUs</span>: {{selectedPackageInfo.vcpus}}<br/>
+                        <br/>
+                        <span data-translate>Price</span>: {{selectedPackageInfo.price}} <span data-translate>USD</span><br/>
+                        <span data-translate>Monthly price</span>: {{selectedPackageInfo.price_month}} <span data-translate>USD</span><br/>
+
                     </div>
+
 
 					<div class="clearfix"></div><br />
                     <a class="btn btn-mini btn-info pull-left" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">&#171; Back</a>

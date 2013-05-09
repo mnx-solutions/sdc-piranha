@@ -146,12 +146,19 @@ module.exports = function (scope, callback) {
                 call.done(err);
                 return;
             }
-            data.forEach(function (p, i) {
-                if(info.packages.data[p.name]) {
-                    data[i] = utils.extend(p, info.packages.data[p.name]);
+
+            if(!info.packages.data[call.data.datacenter]) {
+                call.data.datacenter = 'all';
+            }
+
+            var filteredPackages = [];
+            data.forEach(function (p) {
+                if(info.packages.data[call.data.datacenter][p.name]) {
+                    filteredPackages.push(utils.extend(p, info.packages.data[call.data.datacenter][p.name]));
                 }
             });
-            call.done(null, data);
+
+            call.done(null, filteredPackages);
         });
     });
 

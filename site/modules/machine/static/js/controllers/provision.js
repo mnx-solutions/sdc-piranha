@@ -20,6 +20,8 @@
 
                 $scope.keys = Account.getKeys();
                 $scope.datacenters = Datacenter.datacenter();
+                $scope.packageTypes = [];
+                $scope.packageType = null;
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm';
@@ -82,14 +84,21 @@
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
                     $scope.data = {};
+                    $scope.packageType = null;
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
 					ng.element('#finish-configuration').fadeOut('fast');
-					// ng.element('#finish-configuration').addClass('none');
+
                 };
 
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
+                        if(dataset.type == 'virtualmachine') {
+                            $scope.datasetType = 'kvm';
+                        } else if(dataset.type == 'smartmachine'){
+                            $scope.datasetType = 'smartos';
+                        }
+
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
                         
@@ -121,21 +130,20 @@
                         ng.element('#finish-configuration').fadeIn('fast');
 
                         $scope.selectedPackage = id;
-                        $scope.selectedPackageInfo = {
-                            memory: localization.translate($scope, 'machine', 'Memory') + ': ' + pkg.memory  + 'MB',
-                            disk: localization.translate($scope, 'machine', 'Disk') + ': ' + pkg.disk + 'MB',
-                            vcpus: localization.translate($scope, 'machine', 'vCPUs') + ': ' + pkg.vcpus
-                        };
+                        $scope.selectedPackageInfo = pkg;
 
                         $scope.data.package = pkg.id;
                     });
                 };
 
                 $scope.filterPackages = function (item) {
-                    var props = [ 'name', 'memory', 'disk', 'vcpus' ];
+                    var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
                     for (var i = 0, c = props.length; i < c; i++) {
                         var val = item[props[i]];
-                        if (val.match($scope.searchText)) {
+
+                        var dstype = $scope.dataset ? item.type == $scope.dataset : true;
+
+                        if (val.match($scope.searchPackages) && dstype && ($scope.packageType === null || $scope.packageType === item.group)) {
                             return true;
                         }
                     }
@@ -144,7 +152,7 @@
                 };
 
                 // Watch datacenter change
-                $scope.$watch('data.datacenter', function (newVal, oldVal) {
+                $scope.$watch('data.datacenter', function (newVal) {
 
                     if (newVal) {
                         Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
@@ -167,12 +175,18 @@
                             });
                             $scope.datasets = unique_datasets;
                             $scope.versions = versions;
-                            console.log(datasets);
-                            console.log(versions);
                         });
 
                         Package.package({ datacenter: newVal }).then(function (packages) {
+                            var packageTypes = [];
+                            packages.forEach(function (p) {
+                                if(packageTypes.indexOf(p.group) === -1){
+                                    packageTypes.push(p.group);
+                                }
+                            });
+                            $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
+                            $scope.searchPackages = '';
                         });
                     }
                 });
