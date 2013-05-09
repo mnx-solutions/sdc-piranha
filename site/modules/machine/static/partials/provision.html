@@ -102,7 +102,7 @@
             </div>
 
             <div class="span4 pull-right">
-                <div data-ng-show="selectedDataset" class="alert alert-muted span3" id="pricing" style="padding-bottom:10px !important;">
+                <div data-ng-show="selectedDataset" class="alert alert-info span3" id="pricing" style="padding-bottom:10px !important;">
 
                     <h4 data-translate>Selected configuration</h4>
                     <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
@@ -113,30 +113,33 @@
                     </div>
 
 					<div class="clearfix"></div><br />
-                    <a class="btn btn-mini btn-success pull-left" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Reconfigure</a>
+                    <a class="btn btn-mini btn-info pull-left" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Reconfigure</a>
 					<div class="clearfix"></div>
                     <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
-                        <h4 data-translate>You're almost done.</h4>
-                            <span data-translate>A few more things are needed or go back</span>						        
-						<div class="clearfix"></div><br />
-                        <div id="finish-configuration" class="none">
-                            <form name="provision">
-                                Valis: {{provison['data.name'].$error}}
-                                <span ng-show="provison.data.name.$error">This is not a valid float number!</span>
-                                <input name="machineName"
-                                       type="text"
-                                       placeholder="Name of your instance"
-                                       data-ng-model="data.name" data-machine-name />
-                                <button class="btn btn-success"
-                                        data-ng-disabled="!provision.$valid"
-                                        data-ng-click="clickProvision()"
-                                        data-translate>Create instance</button>
-                            </form>
-                        </div>
+						<div class="clearfix"></div>
                     </div>
 					
 					<div class="clearfix"></div>
                 </div>
+				<div id="finish-configuration" class="none alert alert-success span3">
+                    <form name="provision">
+                        {{provison['data.name'].$error}}
+						<span ng-show="provison.data.name.$error">This is not a valid float number!</span>
+                        <h4 data-translate>You're almost done.</h4>
+						<span data-translate>Give your instance a name and you are all done.</span>						        
+
+                        
+                        <input name="machineName"
+                               type="text"
+                               placeholder="Name of your instance"
+                               data-ng-model="data.name" data-machine-name />
+                        <button class="btn btn-success"
+                                data-ng-disabled="!provision.$valid"
+                                data-ng-click="clickProvision()"
+                                data-translate>Create instance</button>
+                    </form>
+                </div>
+
             </div>
             <div class="clearfix"></div>
         </div>
