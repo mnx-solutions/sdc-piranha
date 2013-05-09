@@ -22,7 +22,6 @@
             var interval = setInterval(function() {
               $scope.tropoPoll++;
               $http.get('/tropo/tropo/status/'+ data.tropoId).success(function(data) {
-                console.log(data);
                 if(data.status === 'passed') {
                   clearInterval(interval);
                   $scope.nextStep();
@@ -31,10 +30,12 @@
                 if(data.status === 'failed') {
                   // TODO: Fail handling
                   clearInterval(interval);
+                  $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                 }
 
                 if($scope.tropoPoll == 60) {
                   clearInterval(interval);
+                  $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                 }
               });
             }, 1000);
