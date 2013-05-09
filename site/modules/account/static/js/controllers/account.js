@@ -11,9 +11,5 @@
             $scope.sshKeys = Account.getKeys(true);
             $scope.paymentMethods = BillingService.getPaymentMethods();
 
-            $scope.$watch('account', function (acc) {
-                console.log(acc);
-            }, true);
-
         }]);
 }(window.JP.getModule('Account')));
