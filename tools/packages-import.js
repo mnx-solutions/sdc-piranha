@@ -6,7 +6,7 @@ var result = {};
 csv()
     .from.stream(fs.createReadStream(process.argv[2] || __dirname+'/packages.csv'), {columns: true})
     .on('record', function(row, index){
-        result[row.instance_type_name]= {group: row.group, description: row.description};
+        result[row["Joyent Instant Type Name"]]= {group: row.GROUP, description: row.Description, price: row.Price, price_month: row["Price Per Month"]};
     })
     .on('end', function(count){
         console.log(JSON.stringify(result, null, " "));
