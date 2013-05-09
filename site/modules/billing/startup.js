@@ -213,9 +213,214 @@ module.exports = function (scope, callback) {
     });
 
     function getInvoiceList(call, cb) {
-        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
-            zuora.transaction.getInvoices(id, cb);
-        }));
+//        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
+//            zuora.transaction.getInvoices(id, cb);
+//        }));
+        setImmediate(function () {
+            cb(null, {
+                'invoices': [
+                    {
+                        "accountId": "2c92a0f9391832b10139183e277a0042",
+                        "accountName": "subscribeCallYan_1",
+                        "dueDate": "2012-08-11",
+                        "id": "2c92a09739190dc60139194bcf1b0098",
+                        "status": "Posted",
+                        "createdBy": "23",
+                        "balance": 0.0,
+                        "invoiceTargetDate": "2012-08-11",
+                        "invoiceNumber": "INV00000160",
+                        "invoiceDate": "2012-08-11",
+                        "accountNumber": "A00001115",
+                        "invoiceItems": [
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc95a0059",
+                                "unitOfMeasure": "MMPV",
+                                "quantity": 20.0,
+                                "serviceStartDate": "2012-08-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a09739190dc60139194bd0e800ac",
+                                "chargeName": "Flat",
+                                "chargeAmount": 484.0,
+                                "serviceEndDate": "2012-08-31"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc91a0052",
+                                "unitOfMeasure": "MMPV",
+                                "quantity": 20.0,
+                                "serviceStartDate": "2011-01-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a09739190dc60139194bd00f00a3",
+                                "chargeName": "Flat",
+                                "chargeAmount": 400.0,
+                                "serviceEndDate": "2011-01-31"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc91a0051",
+                                "unitOfMeasure": "DOWN",
+                                "quantity": 10.0,
+                                "serviceStartDate": "2011-01-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a09739190dc60139194bd16300b1",
+                                "chargeName": "New Component",
+                                "chargeAmount": 100.0,
+                                "serviceEndDate": "2011-01-31"
+                            }
+                        ],
+                        "amount": 10521.0
+                    },
+                    {
+                        "accountId": "2c92a0f9391832b10139183e277a0042",
+                        "accountName": "subscribeCallYan_1",
+                        "dueDate": "2012-08-11",
+                        "id": "2c92a09539190dbe0139190f42780012",
+                        "status": "Posted",
+                        "createdBy": "23",
+                        "balance": 0.0,
+                        "invoiceTargetDate": "2012-08-11",
+                        "invoiceNumber": "INV00000159",
+                        "invoiceDate": "2012-08-11",
+                        "accountNumber": "A00001115",
+                        "invoiceItems": [
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a0f9391832b10139183e2aae004b",
+                                "unitOfMeasure": "",
+                                "quantity": 1.0,
+                                "serviceStartDate": "2011-02-11",
+                                "subscriptionName": "A-S00001008",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a0f9391832b10139183e28780046",
+                                "id": "2c92a09539190dbe0139190f44000015",
+                                "chargeName": "Recurring",
+                                "chargeAmount": 10.0,
+                                "serviceEndDate": "2012-02-10"
+                            }
+                        ],
+                        "amount": 10.0
+                    },
+                    {
+                        "accountId": "2c92a0f9391832b10139183e277a0042",
+                        "accountName": "subscribeCallYan_1",
+                        "dueDate": "2012-10-08",
+                        "id": "2c92a0953a3fa95d013a401914770aa1",
+                        "status": "Canceled",
+                        "createdBy": "23",
+                        "balance": 2420.0,
+                        "invoiceTargetDate": "2012-12-08",
+                        "invoiceNumber": "INV00000253",
+                        "invoiceDate": "2012-10-08",
+                        "accountNumber": "A00001115",
+                        "invoiceItems": [
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc979005c",
+                                "unitOfMeasure": "DOWN",
+                                "quantity": 10.0,
+                                "serviceStartDate": "2012-12-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a0953a3fa95d013a401914b50aa6",
+                                "chargeName": "New Component",
+                                "chargeAmount": 121.0,
+                                "serviceEndDate": "2012-12-31"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc95a0059",
+                                "unitOfMeasure": "MMPV",
+                                "quantity": 20.0,
+                                "serviceStartDate": "2012-12-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a0953a3fa95d013a401914ff0aac",
+                                "chargeName": "Flat",
+                                "chargeAmount": 484.0,
+                                "serviceEndDate": "2012-12-31"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc95a0059",
+                                "unitOfMeasure": "MMPV",
+                                "quantity": 20.0,
+                                "serviceStartDate": "2012-11-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a0953a3fa95d013a401914da0aa9",
+                                "chargeName": "Flat",
+                                "chargeAmount": 484.0,
+                                "serviceEndDate": "2012-11-30"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc979005c",
+                                "unitOfMeasure": "DOWN",
+                                "quantity": 10.0,
+                                "serviceStartDate": "2012-11-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a0953a3fa95d013a401915120aae",
+                                "chargeName": "New Component",
+                                "chargeAmount": 121.0,
+                                "serviceEndDate": "2012-11-30"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc95a0059",
+                                "unitOfMeasure": "MMPV",
+                                "quantity": 20.0,
+                                "serviceStartDate": "2012-09-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a0953a3fa95d013a401914a20aa5",
+                                "chargeName": "Flat",
+                                "chargeAmount": 484.0,
+                                "serviceEndDate": "2012-09-30"
+                            },
+                            {
+                                "productName": "Recurring Charge",
+                                "chargeId": "2c92a09739190dc60139194bc979005c",
+                                "unitOfMeasure": "DOWN",
+                                "quantity": 10.0,
+                                "serviceStartDate": "2012-09-01",
+                                "subscriptionName": "A-S00001013",
+                                "taxAmount": 0.0,
+                                "chargeDescription": "",
+                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
+                                "id": "2c92a0953a3fa95d013a401914c70aa7",
+                                "chargeName": "New Component",
+                                "chargeAmount": 121.0,
+                                "serviceEndDate": "2012-09-30"
+                            }
+                        ],
+                        "amount": 2420.0
+                    }
+                ],
+                'success': true
+            });
+        });
     }
 
     server.onCall('listInvoices', function (call) {
@@ -234,7 +439,15 @@ module.exports = function (scope, callback) {
                 call.done(err);
                 return;
             }
+            if(!resp.invoices.length) {
+                call.done(null, null);
+                return;
+            }
+            resp.invoices.sort(function (a, b) {
+                return moment(b.invoiceDate).unix() - moment(a.invoiceDate).unix();
+            });
 
+            call.done(null, resp.invoices[0]);
         });
     });
 

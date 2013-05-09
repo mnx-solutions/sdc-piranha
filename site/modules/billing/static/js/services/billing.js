@@ -45,6 +45,15 @@
             return call.deferred;
         };
 
+        service.getLastInvoice = function (data, callback) {
+            var call = serverTab.call({
+                name: 'getLastInvoice',
+                data: data,
+                done: callback
+            });
+            return call.deferred;
+        };
+
         return service;
     }]);
 }(window.JP.getModule('Billing')));
