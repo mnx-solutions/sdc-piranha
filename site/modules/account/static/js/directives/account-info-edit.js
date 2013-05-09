@@ -11,37 +11,58 @@
                     replace: true,
                     scope: true,
                     link: function ($scope) {
+                        function required(fields) {
+                            for(var field in fields) {
+                                if (fields[field].required && !$scope.account.$$v[field]) {
+                                    return false;
+                                }
+                            }
+
+                            return true;
+                        }
+
+                        function sanitize(fields) {
+                            for(var field in fields) {
+                                if (!fields[field].pattern) {
+                                    fields[field].pattern = /^+$/;
+                                }
+                            }
+                        }
+
                         $scope.fields = {
                             basic: {
                                 email: {
                                     title: localization.translate(null, 'account', 'Email'),
                                     type: 'email',
-                                    validate: 'email',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 firstName: {
                                     title: localization.translate(null, 'account', 'First name'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 lastName: {
                                     title: localization.translate(null, 'account', 'Last name'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 phone: {
                                     title: localization.translate(null, 'account', 'Phone'),
-                                    type: 'number',
-                                    validate: 'phone',
+                                    type: 'text',
+                                    pattern: /^(\d+)$/,
                                     required: true
                                 },
 
                                 companyName: {
                                     title: localization.translate(null, 'account', 'Company name'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 }
                             },
@@ -50,30 +71,35 @@
                                 address: {
                                     title: localization.translate(null, 'account', 'Address'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 postalCode: {
                                     title: localization.translate(null, 'account', 'Postal code'),
                                     type: 'number',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 city: {
                                     title: localization.translate(null, 'account', 'City'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 state: {
                                     title: localization.translate(null, 'account', 'State'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 },
 
                                 country: {
                                     title: localization.translate(null, 'account', 'Country'),
                                     type: 'text',
+                                    pattern: /^(.*)$/,
                                     required: true
                                 }
                             }
@@ -88,27 +114,18 @@
                         };
 
                         $scope.updateAccount = function () {
-                            console.log($scope.account);
-                            function required(fields) {
-                                for(var field in fields) {
-                                    if (fields[field].required && !$scope.account.$$v[field]) {
-                                        return false;
-                                    }
-                                }
-
-                                return true;
-                            }
-
                             if (required($scope.fields.basic) &&
                                 required($scope.fields.address)) {
                                 $scope.saving = true;
 
                                 Account.updateAccount($scope.account).then(function () {
-                                    $scope.setAccount();
                                     $scope.saving = false;
                                     $scope.error = null;
 
-                                    $scope.nextStep();
+                                    if ($scope.nextStep) {
+                                        $scope.setAccount();
+                                        $scope.nextStep();
+                                    }
                                 }, function (err) {
                                     $scope.error = null;
                                     $scope.saving = false;
