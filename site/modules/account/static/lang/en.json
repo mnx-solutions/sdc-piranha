@@ -4,7 +4,7 @@
     "Name: {{account.firstName}} {{account.lastName}}": "Name: {{account.firstName}} {{account.lastName}}",
     "Change password": "Change password",
     "Change my password": "Change my password",
-	"Edit profile": "Edit profile"
+	"Edit profile": "Edit profile",
     "Email": "Email",
     "First name": "First name",
     "Last name": "Last name",
