@@ -28,6 +28,7 @@
     "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
     "moment": "*",
     "xml2js": "*",
+    "mustache": "*",
     "tropo-webapi-node": "*"
   },
   "devDependencies": {
