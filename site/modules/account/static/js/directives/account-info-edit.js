@@ -62,7 +62,7 @@
                   title: localization.translate(null, 'account', 'Email'),
                   type: 'email',
                   shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
+                  pattern: new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"),
                   required: true
                 },
 
