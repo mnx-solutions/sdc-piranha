@@ -24,7 +24,7 @@
             function sanitize(fields) {
               for(var field in fields) {
                 if (!fields[field].pattern) {
-                  fields[field].pattern = /^+$/;
+                  fields[field].pattern = new RegExp('/^+$/');
                 }
               }
             }
@@ -62,7 +62,7 @@
                   title: localization.translate(null, 'account', 'Email'),
                   type: 'email',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -70,7 +70,7 @@
                   title: localization.translate(null, 'account', 'First name'),
                   type: 'text',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -78,7 +78,7 @@
                   title: localization.translate(null, 'account', 'Last name'),
                   type: 'text',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -86,7 +86,7 @@
                   title: localization.translate(null, 'account', 'Phone'),
                   type: 'text',
                   shown: true,
-                  pattern: /^(\d+)$/,
+                  pattern: new RegExp('/^(\d+)$/'),
                   required: true
                 },
 
@@ -94,7 +94,7 @@
                   title: localization.translate(null, 'account', 'Company name'),
                   type: 'text',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 }
               },
@@ -104,7 +104,7 @@
                   title: localization.translate(null, 'account', 'Address'),
                   type: 'text',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -112,7 +112,7 @@
                   title: localization.translate(null, 'account', 'Postal code'),
                   type: 'number',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -120,7 +120,7 @@
                   title: localization.translate(null, 'account', 'City'),
                   type: 'text',
                   shown: true,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -128,7 +128,7 @@
                   title: localization.translate(null, 'account', 'State'),
                   type: 'text',
                   shown: false,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 },
 
@@ -136,7 +136,7 @@
                   title: localization.translate(null, 'account', 'Country'),
                   type: 'text',
                   shown: false,
-                  pattern: /^(.*)$/,
+                  pattern: new RegExp('/^(.*)$/'),
                   required: true
                 }
               }
