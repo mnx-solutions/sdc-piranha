@@ -75,6 +75,7 @@
                     BillingService.addPaymentMethod($scope.form, function (errs, job) {
                         if(errs) {
                             $scope.errs = errs;
+                            $scope.isSaving = false;
                         } else {
                             $scope.errs = null;
                             var cc = BillingService.getDefaultCreditCard();
