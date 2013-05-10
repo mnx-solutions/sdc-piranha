@@ -17,8 +17,9 @@
                     <input type="{{properties.type}}"
                            name="account_{{field}}"
                            id="account_{{field}}"
+                           data-ng-validate="properties.validate"
                            data-ng-required="properties.required"
-                           data-ng-pattern="properties.pattern"
+                           data-ng-pattern="{{properties.pattern}}"
                            data-ng-model="account[field]" />
                 </div>
             </div>
@@ -52,7 +53,7 @@
                        for="account_country">
                     * Country
                 </label>
-                <select data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"></select>
+                <select data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.name as country.name for country in countries| orderBy: 'name'"></select>
 
                 <div data-ng-show="!stateSel">
                     <label class="control-label" for="account_state">* State</label>
