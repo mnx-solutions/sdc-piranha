@@ -155,18 +155,21 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         ]
 
         for(var opt in oo) {
-            $scope.ca.createInstrumentations(oo[opt], function(inst) {
-                if(!$scope.endtime) {
-                    // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
-                    $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
-                    tick();
-                }
-                $scope.graphs.push({
-                    instrumentations: inst,
-                    ca: $scope.ca,
-                    title: ot[opt]
-                });
-            });
+
+          (function(index) {
+              $scope.ca.createInstrumentations(oo[index], function(inst) {
+                  if(!$scope.endtime) {
+                      // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                      $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
+                      tick();
+                  }
+                  $scope.graphs.push({
+                      instrumentations: inst,
+                      ca: $scope.ca,
+                      title: ot[index]
+                  });
+              });
+            })(opt);
 
         }
     }
