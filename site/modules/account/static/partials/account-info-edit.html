@@ -25,25 +25,44 @@
         </div>
 
         <div class="pull-left span4">
-            <div class="control-group" data-ng-repeat="(field, properties) in fields.address">
-                <label data-ng-show="properties.required"
-                       class="control-label"
-                       for="account_{{field}}">
-                    * {{properties.title}}
+            <div class="control-group">
+                <div class="control-group" data-ng-repeat="(field, properties) in fields.address" data-ng-show="properties.shown">
+                    <label data-ng-show="properties.required"
+                           class="control-label"
+                           for="account_{{field}}">
+                        * {{properties.title}}
+                    </label>
+                    <label data-ng-show="!properties.required"
+                           class="control-label"
+                           for="account_{{field}}">
+                        {{properties.title}}
+                    </label>
+                    <div class="controls">
+                        <input type="{{properties.type}}"
+                               name="account_{{field}}"
+                               id="account_{{field}}"
+                               data-ng-validate="properties.validate"
+                               data-ng-required="properties.required"
+                               data-ng-pattern="{{properties.pattern}}"
+                               data-ng-model="account[field]" />
+                    </div>
+                </div>
+
+                <label class="control-label"
+                       for="account_country">
+                    * Country
                 </label>
-                <label data-ng-show="!properties.required"
-                       class="control-label"
-                       for="account_{{field}}">
-                    {{properties.title}}
-                </label>
-                <div class="controls">
-                    <input type="{{properties.type}}"
-                           name="account_{{field}}"
-                           id="account_{{field}}"
-                           data-ng-validate="properties.validate"
-                           data-ng-required="properties.required"
-                           data-ng-pattern="{{properties.pattern}}"
-                           data-ng-model="account[field]" />
+                <select data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"></select>
+
+                <div data-ng-show="!stateSel">
+                    <label class="control-label" for="account_state">* State</label>
+                    <input type="text" id="account_state" name="account_state" data-ng-model="account['state']" required>
+                </div>
+                <div data-ng-show="stateSel">
+                    <label class="control-label" for="account_state">* State</label>
+                    <select id="account_state" name="account_state" data-ng-model="account['state']" required>
+                        <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
+                    </select>
                 </div>
             </div>
         </div>
