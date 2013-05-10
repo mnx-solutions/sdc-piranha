@@ -44,6 +44,7 @@
                 done: function(err, job) {
                     var resolver = job.__read();
                     deferred.resolve(resolver);
+                    $$track.marketing_lead(account);
                 }
             });
 
