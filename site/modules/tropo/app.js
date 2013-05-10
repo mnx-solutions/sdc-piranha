@@ -9,15 +9,17 @@ var parseXml = require('xml2js').parseString;
 
 module.exports = function (scope, app, callback) {
 
-  app.get('/:number', function(req, res) {
-    var randomNumber = Math.floor(Math.random() * 10000);
-    if(randomNumber === 0) {
-        randomNumber = '0000';
-    }
-    if(randomNumber === 10000) {
-        randomNumber = '9999';
+    function getNr(digits) {
+        var i = 0;
+        var nr = '';
+        for(i; i < digits; i++) {
+            nr += Math.floor(Math.random() * 9);
+        }
+        return nr;
     }
 
+  app.get('/:number', function(req, res) {
+    var randomNumber = getNr(4);
 
     var options = {
       host:'api.tropo.com',
