@@ -83,7 +83,7 @@ module.exports = function (scope, callback) {
         getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
             zuora.payment.get(id, function (err, pms) {
                 if(err) {
-                    if(pms.reasons && pms.reasons.length === 1 && pms.reasons[0].split.category === '40') {
+                    if(pms && pms.reasons && pms.reasons.length === 1 && pms.reasons[0].split.category === '40') {
                         cb(null, []);
                         return;
                     }
