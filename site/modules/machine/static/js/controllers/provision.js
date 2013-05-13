@@ -159,6 +159,9 @@
                             var unique_datasets = [];
                             var dataset_names = [];
                             var versions = {};
+                            var selectedVersions = {};
+                            var manyVersions = {};
+
                             datasets.forEach(function (dataset) {
                                 if (!dataset_names[dataset.name]) {
                                     dataset_names[dataset.name] = true;
@@ -168,14 +171,20 @@
 //                                    var suba = [dataset.version];
                                     versions[dataset.name] = {};
                                     versions[dataset.name][dataset.version] = dataset;
+
+                                    selectedVersions[dataset.name] = dataset;
+
                                 } else {
                                     if (!versions[dataset.name][dataset.version]) {
+                                        manyVersions[dataset.name] = true;
                                         versions[dataset.name][dataset.version] = dataset;
                                     }
                                 }
                             });
                             $scope.datasets = unique_datasets;
                             $scope.versions = versions;
+                            $scope.manyVersions = manyVersions;
+                            $scope.selectedVersions = selectedVersions;
                         });
 
                         Package.package({ datacenter: newVal }).then(function (packages) {
