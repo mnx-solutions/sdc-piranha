@@ -1,10 +1,10 @@
-<form name="accountForm" data-ng-class="{saving: 'loading-medium'}">
-    <ul class="nav nav-tabs">
+<form name="accountForm" data-ng-class="{saving: 'loading-medium'}" class="pull-left">
+    <ul class="nav nav-tabs" data-ng-show="steps">
         <li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">
-            <a>{{s}}</span>
+            <a>{{s}}</a>
         </li>
     </ul>
-    <fieldset class="span8 border">
+    <fieldset>
         <legend data-translate data-ng-hide="currentStep">Edit profile</legend><div class="clearfix"></div><br />
         <div class="span4 clearfix container">
             <div class="control-group" data-ng-repeat="(field, properties) in fields.basic" data-ng-show="properties.shown">
@@ -95,4 +95,5 @@
 		<button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
         <div class="clearfix"></div>
     </fieldset>
+	<div class="clearfix"></div>
 </form>
