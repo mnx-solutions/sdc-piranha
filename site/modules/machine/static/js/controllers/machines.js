@@ -201,6 +201,7 @@
                             $scope.pagedMachines[index].push($scope.filteredMachines[i]);
                         }
                     }
+                    console.log($scope.pagedMachines);
                 };
 
                 // get pagination range

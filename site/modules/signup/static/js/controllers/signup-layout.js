@@ -29,6 +29,10 @@
                 });
 
                 $scope.nextStep();
+
+                $scope.signOut = function() {
+                    window.location = '/landing/forgetToken';
+                }
             }
         ]);
 }(window.JP.getModule('Signup'), window.jQuery));

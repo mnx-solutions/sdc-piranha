@@ -39,19 +39,24 @@
 							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
 								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" data-ng-click="selectDataset(dataset.id); slideCarousel()" name="dataset" value="{{dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
+                                    {{dataset.id}}
 									<strong>{{dataset.name}}</strong><br />
 									{{dataset.description}}
-                                    <div class="image-container" data-ng-show="versions[dataset.name].length > 1">
+                                    {{proov}}
+                                    <div class="image-container" data-ng-show=" 1">
                                         <span class="span2" style="margin-left:0px"><strong>Choose image version</strong></span>
-                                        <div class="btn-group">
-                                            <button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">
-                                                {{versions[dataset.name][0]}}
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" data-ng-repeat="(key, value) in versions[dataset.name]">
-                                                <li><a tabindex="-1">{{value}}</a></li>
-                                            </ul>
-                                        </div>
+                                        <select data-ng-model="proov" data-ng-options="key as val for (key, val) in versions[dataset.name]">
+
+                                        </select>
+                                        <!--<div class="btn-group">-->
+                                            <!--<button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">-->
+                                                <!--{{versions[dataset.name][0]}}-->
+                                                <!--<span class="caret"></span>-->
+                                            <!--</button>-->
+                                            <!--<ul class="dropdown-menu" data-ng-repeat="(key, value) in versions[dataset.name]">-->
+                                                <!--<li><a tabindex="-1">{{value}}</a></li>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
                                     </div>
                                     <div class="image-container" data-ng-show="versions[dataset.name].length < 2">
                                         <span class="span2" style="margin-left:0px"><strong>Image version</strong> {{dataset.version}}</span>
