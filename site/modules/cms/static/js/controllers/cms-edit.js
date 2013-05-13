@@ -1,24 +1,38 @@
 'use strict';
 
-(function (ng, app) {
+(function (ng, app, $) {
     app.controller(
         'CMSEditController',
         [
             '$scope',
             'requestContext',
             'CMSService',
-
-            function ($scope, requestContext, CMSService) {
+            '$q',
+            function ($scope, requestContext, CMSService, $q) {
                 requestContext.setUpRenderContext('cms.edit', $scope);
                 var id = requestContext.getParam('id');
-                $scope.data = CMSService.getData(id);
+                $scope.el = CMSService.getData(id);
+                $q.when($scope.el, function (el){
+                    if(el.type === 'json') {
+                        $scope.data = JSON.stringify(el.data, null, 2);
+                    } else {
+                        $scope.data = el.data;
+                    }
+                });
                 $scope.error = null;
 
                 $scope.saveData = function() {
                     $scope.error = null;
                     var d = null;
                     try {
-                        d = JSON.parse($scope.data);
+                        if($scope.el.type === 'json'){
+                            d = JSON.parse($scope.data);
+                        } else {
+                            d = {
+                                data: $('#editor').html()
+                            };
+                            $scope.data = d.data;
+                        }
                         CMSService.setData(id, d, function (err) {
                             if(err) {
                                 $scope.message = 'FAILED TO SAVE';
@@ -39,4 +53,4 @@
             }
 
         ]);
-}(window.angular, window.JP.getModule('CMS')));
+}(window.angular, window.JP.getModule('CMS'), window.jQuery));

@@ -83,7 +83,7 @@ module.exports = function (scope, app, callback) {
 
     var tropo = new TropoWebAPI();
 
-    var answer = req.body['result']['actions']['value'];
+    var answer = req.body.result.actions.value;
 
     tropo.say("You said " + answer);
     tropo.on("continue", null, "/tropo/tropo/finish?randomNumber="+ req.query.randomNumber +"&answer="+ answer, true);

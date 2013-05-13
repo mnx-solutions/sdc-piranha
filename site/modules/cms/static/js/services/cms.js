@@ -6,21 +6,35 @@
         '$q',
         function ($http, $q) {
             var data = null;
+            function findFromData(id) {
+                if(!id) {
+                    return data;
+                }
+                var res = null;
+                data.forEach(function (el) {
+                    if(el.id === id) {
+                        res = el;
+                    }
+                });
+                return res;
+            }
             return {
                 getData: function (id) {
                     var ret = $q.defer();
                     if(!data) {
                         $http.get('cms').success(function (d) {
-                            ret.resolve(id ? JSON.stringify(d[id], null, '  ') : d);
+                            data = d;
+                            ret.resolve(findFromData(id));
                         });
                     } else {
-                        ret.resolve(id ? JSON.stringify(data[id], null, '  ') : data);
+                        ret.resolve(findFromData(id));
                     }
                     return ret.promise;
                 },
                 setData: function (id, data, callback) {
                     $http.post('cms/' + id, data).success(function () {
-                        data[id] = data;
+                        var el = findFromData(id);
+                        el.data = data;
                         callback();
                     }).error(function () {
                         callback(true);

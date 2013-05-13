@@ -120,6 +120,7 @@ module.exports = function (scope, callback) {
         });
     });
 
+    //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
 
         function setProgress(resp) {
@@ -174,7 +175,6 @@ module.exports = function (scope, callback) {
                                 var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
                                 obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
                             });
-                            console.log(obj);
                             zuora.account.create(obj, function (accErr, accResp) {
                                 console.log(arguments);
                                 if(accResp && accResp.reasons) {
