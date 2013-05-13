@@ -108,29 +108,32 @@
                             </div>
                             <div class="pull-right action-container">
                                 <button role="button"
-                                        class="btn btn-mini"
+                                        class="btn btn-mini span1"
                                         data-ng-disabled="machine.state == 'running' || (machine.job && !machine.job.finished)"
                                         data-ng-click="startMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Start</button>
+										<div class="clearfix"></div>
                                 <button role="button"
-                                        class="btn btn-mini"
+                                        class="btn btn-mini span1"
                                         data-ng-disabled="machine.state == 'stopped' || (machine.job && !machine.job.finished)"
                                         data-ng-click="stopMachine(machine.id)"
                                         data-translate>Stop</button>
+										<div class="clearfix"></div>
                                 <button role="button"
-                                        class="btn btn-mini"
+                                        class="btn btn-mini span1"
                                         data-ng-disabled="machine.state != 'stopped' || (machine.job && !machine.job.finished)"
                                         data-ng-click="deleteMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Delete</button>
+										<div class="clearfix"></div>
                                 <button role="button"
-                                        class="btn btn-mini"
+                                        class="btn btn-mini span1"
                                         data-ng-disabled="machine.state != 'running' || (machine.job && !machine.job.finished)"
                                         data-ng-click="rebootMachine(machine.id)"
                                         data-toggle="modal"
                                         data-translate>Reboot</button>
-
+										<div class="clearfix"></div>
                             </div>
                             <div class="clearfix"></div>
                         </div>

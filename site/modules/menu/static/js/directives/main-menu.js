@@ -25,8 +25,8 @@
 							'<div class="container">' +
                             '<a href="#!/dashboard/"><div class="brand pull-left"></div></a>' +
                             '<div class="pull-right top-menu">' +
-									'<span><a href="#!/account">Support</a></span>' +
-									'<span><a href="#!/account">Docs</a></span>' +
+									'<span><a href="http://joyent.com/developers/support" target="_blank">Support</a></span>' +
+									'<span><a href="http://wiki.joyent.com/wiki/display/jpc2/JoyentCloud+Home" target="_blank">Docs</a></span>' +
 									'<span><a href="#!/account">My Account</a></span>' +
 									'<span class="last"><a href="/landing/forgetToken">Log Out</a></span>' +
                             		'<div class="clearfix"></div>' +
