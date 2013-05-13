@@ -24,9 +24,9 @@
             template: '<div class="navbar-inner">' +
 							'<div class="container">' +
                             '<a href="#!/dashboard/"><div class="brand pull-left"></div></a>' +
-							'<div class="pull-left nav">' +
+							'<div class="pull-left main-nav">' +
 								'<a href="#!/dashboard/">Dashboard</a>' +
-								'<a class="active" href="#!/machine/">Instances</a>' +
+								'<a href="#!/machine/">Instances</a>' +
 							'</div>' +
                             '<div class="pull-right top-menu">' +
 									'<span><a href="http://joyent.com/developers/support" target="_blank">Support</a></span>' +
