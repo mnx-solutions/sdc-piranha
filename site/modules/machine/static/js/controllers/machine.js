@@ -73,31 +73,41 @@
 
                 $scope.tagcloud = tagcloud();
 
-                $q.when($scope.tagcloud).then(function (){
-                    $scope.$watch('tagcloud', function(val, old) {
-                        if(val) {
-                            var keys = Object.keys(val);
-                            var map = {};
-                            keys.forEach(function (k) {
-                                delete val[k].conflict;
+                function checkTags (val, old) {
+                    if(val) {
+                        var keys = Object.keys(val);
+                        var map = {};
+                        keys.forEach(function (k) {
+                            delete val[k].conflict;
 
-                                if (!val[k].key && !val[k].val && old && old[k] && !old[k].key && !old[k].val && +k !== +$scope.tagnr) {
-                                    delete val[k];
-                                } else if (val[k].key) {
-                                    if (map[val[k].key] !== undefined){
-                                        val[map[val[k].key]].conflict = true;
-                                        val[k].conflict = true;
-                                    }
-
-                                    map[val[k].key] = k;
+                            if (!val[k].key && !val[k].val && old && old[k] && !old[k].key && !old[k].val && +k !== +$scope.tagnr) {
+                                delete val[k];
+                            } else if (val[k].key) {
+                                if (map[val[k].key] !== undefined){
+                                    val[map[val[k].key]].conflict = true;
+                                    val[k].conflict = true;
                                 }
-                            });
 
-                            if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
-                                val[++$scope.tagnr] = {key: '', val: '', edit: true};
+                                map[val[k].key] = k;
+                            }
+                        });
+
+                        if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
+                            val[++$scope.tagnr] = {key: '', val: '', edit: true};
+                        }
+
+                        if(keys.length > 1) {
+                            var nextToLast = keys[keys.length -2];
+                            if(!val[nextToLast].key && !val[nextToLast].val && !val[$scope.tagnr].val && !val[$scope.tagnr].key) {
+                                delete val[$scope.tagnr];
+                                $scope.tagnr = +nextToLast;
                             }
                         }
-                    }, true);
+                    }
+                }
+
+                $q.when($scope.tagcloud).then(function (){
+                    $scope.$watch('tagcloud', checkTags, true);
                 });
 
                 $scope.$on(
