@@ -313,8 +313,9 @@
         </div>
     </fieldset>
     <div class="clearfix"></div>
-    <div class="span7 align-right">
-        <button class="btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || isSaving">Submit</button>
+    <div class="span7">
+        <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
+        <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || isSaving">Submit</button>
     </div>
 
 </form>

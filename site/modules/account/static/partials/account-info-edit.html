@@ -1,13 +1,11 @@
 <form name="accountForm" data-ng-class="{saving: 'loading-medium'}">
-	<ul class="nav nav-tabs">
-	  <li class="active">
-	    <a href="#">Step #1</a>
-	  </li>
-	  <li  class="disabled"><a href="#">Step #2</a></li>
-	  <li><a href="#">Step #3</a></li>
-	</ul>
+    <ul class="nav nav-tabs">
+        <li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">
+            <a>{{s}}</span>
+        </li>
+    </ul>
     <fieldset class="span8 border">
-        <legend data-translate>Edit profile</legend><div class="clearfix"></div><br />
+        <legend data-translate data-ng-hide="currentStep">Edit profile</legend><div class="clearfix"></div><br />
         <div class="span4 clearfix container">
             <div class="control-group" data-ng-repeat="(field, properties) in fields.basic" data-ng-show="properties.shown">
                 <label data-ng-show="properties.required"
@@ -90,7 +88,10 @@
         </div>
         <div class="clearfix"></div>
         <div class="span8" data-ng-show="error">{{error}}</div>
-		<button class="btn btn-success pull-left" data-translate>Cancel</button>
+
+        <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
+        <button data-ng-hide="currentStep" data-ng-click="cancelChanges()" class="btn btn-success pull-left" data-translate>Cancel</button>
+
 		<button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
         <div class="clearfix"></div>
     </fieldset>

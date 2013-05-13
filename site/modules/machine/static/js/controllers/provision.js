@@ -165,11 +165,12 @@
                                     unique_datasets.push(dataset);
                                 }
                                 if (!versions[dataset.name]) {
-                                    var suba = [dataset.version];
-                                    versions[dataset.name] = suba;
+//                                    var suba = [dataset.version];
+                                    versions[dataset.name] = {};
+                                    versions[dataset.name][dataset.version] = dataset;
                                 } else {
-                                    if (versions[dataset.name].indexOf(dataset.version) === -1) {
-                                        versions[dataset.name].push(dataset.version);
+                                    if (!versions[dataset.name][dataset.version]) {
+                                        versions[dataset.name][dataset.version] = dataset;
                                     }
                                 }
                             });

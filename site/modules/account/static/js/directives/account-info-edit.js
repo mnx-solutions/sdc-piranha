@@ -172,6 +172,10 @@
               $scope.account = Account.getAccount(true);
             };
 
+            $scope.cancelChanges = function () {
+                window.location = '/main/#!/account/';
+            };
+
             $scope.updateAccount = function () {
               if (required($scope.fields.basic) &&
                 required($scope.fields.address)) {
