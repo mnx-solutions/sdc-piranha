@@ -4,12 +4,13 @@
         <div class="control-group">
             <label class="control-label" for="creditCardNumber" data-translate>Card number</label>
             <div class="controls">
-                <input type="number"
+                <input type="text"
                        id="creditCardNumber"
                        name="creditCardNumber"
                        size="40"
                        placeholder="Card number"
                        data-translate="placeholder"
+                       data-ng-pattern="/^(\d+)$/"
                        data-ng-model="form.creditCardNumber"
                        data-ng-class="{error: isErrorPresent('creditCard.creditCardNumber')}"
                        required>
@@ -25,7 +26,7 @@
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('creditCard.creditCardNumber', 'number')">
+                     data-ng-show="isErrorOf('creditCard.creditCardNumber', 'pattern')">
                     Invalid symbols (numbers only)
                 </div>
             </div>
@@ -284,11 +285,12 @@
         <div class="control-group">
             <label class="control-label" for="zipCode" data-translate>Zip code</label>
             <div class="controls">
-                <input type="number"
+                <input type="text"
                        id="zipCode"
                        name="zipCode"
                        placeholder="Zip"
                        data-translate="placeholder"
+                       data-ng-pattern="/^(\d+)$/"
                        data-ng-class="{error: isErrorPresent('zipCode')}"
                        data-ng-model="form.cardHolderInfo.zipCode"
                        required>
@@ -301,6 +303,11 @@
                      data-translate
                      data-ng-show="isErrorOf('zipCode', 'required')">
                     Missing Zip code
+                </div>
+                <div class="error"
+                     data-translate
+                     data-ng-show="isErrorOf('zipCode', 'pattern')">
+                    Invalid symbols (numbers only)
                 </div>
             </div>
         </div>
