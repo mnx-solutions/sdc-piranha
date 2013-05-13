@@ -141,13 +141,12 @@
                     for (var i = 0, c = props.length; i < c; i++) {
                         var val = item[props[i]];
 
-                        var dstype = $scope.dataset ? item.type == $scope.dataset : true;
+                        var dstype = $scope.datasetType ? item.type == $scope.datasetType : true;
 
                         if (val.match($scope.searchPackages) && dstype && ($scope.packageType === null || $scope.packageType === item.group)) {
                             return true;
                         }
                     }
-
                     return false;
                 };
 
@@ -193,7 +192,10 @@
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
+
+
                             });
+
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
                             $scope.searchPackages = '';
