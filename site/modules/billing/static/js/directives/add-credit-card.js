@@ -41,14 +41,17 @@
                 $scope.isSaving = false;
                 $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                 $scope.years = [];
+
                 var c = (new Date()).getFullYear();
                 var i = c;
                 for(i; i < c + 20; i++) {
                     $scope.years.push(i);
                 }
+
                 $http.get('billing/countries').success(function (data) {
                     $scope.countries = data;
                 });
+
                 $http.get('billing/states').success(function (data) {
                     $scope.allStates = data;
                 });
@@ -67,11 +70,72 @@
                 }, true);
 
                 $scope.$watch('form.creditCardNumber', function (newVal) {
-                    $scope.form.creditCardType = getCardType(newVal);
+                    $scope.form.creditCardType = getCardType(newVal ? newVal.toString() : '');
                 }, true);
+
+                $scope.isErrorOf = function (field, errorType) {
+                    var isPresent = false;
+                    var fieldAtoms = field.split('.');
+
+                    if (fieldAtoms.length > 1) {
+                        field = fieldAtoms[1];
+
+                        if (!errorType) {
+                            if ($scope.errs && ($scope.errs[fieldAtoms[1]] ||
+                                $scope.errs[fieldAtoms[0] + '.' + fieldAtoms[1]])) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        if ($scope.errs && ($scope.errs[field])) {
+                            return true;
+                        }
+                    }
+
+                    if ($scope.paymentForm[field].$dirty) {
+                        Object.keys($scope.paymentForm[field].$error).some(function (key) {
+                            if ($scope.paymentForm[field].$error[key] && key === errorType) {
+                                isPresent = true;
+                                return true;
+                            }
+                        });
+                    }
+
+                    return isPresent;
+                };
+
+                $scope.isErrorPresent = function (field) {
+                    var isPresent = false;
+                    var fieldAtoms = field.split('.');
+
+                    if (fieldAtoms.length > 1) {
+                        field = fieldAtoms[1];
+
+                        if ($scope.errs && ($scope.errs[fieldAtoms[1]] ||
+                            $scope.errs[fieldAtoms[0] + '.' + fieldAtoms[1]])) {
+                            return true;
+                        }
+                    } else {
+                        if ($scope.errs && ($scope.errs[field])) {
+                            return true;
+                        }
+                    }
+
+                    if ($scope.paymentForm[field].$dirty) {
+                        Object.keys($scope.paymentForm[field].$error).some(function (key) {
+                            if ($scope.paymentForm[field].$error[key]) {
+                                isPresent = true;
+                                return true;
+                            }
+                        });
+                    }
+
+                    return isPresent;
+                };
 
                 $scope.submitForm = function() {
                     $scope.isSaving = true;
+
                     BillingService.addPaymentMethod($scope.form, function (errs, job) {
                         if(errs) {
                             $scope.errs = errs;
@@ -79,6 +143,7 @@
                         } else {
                             $scope.errs = null;
                             var cc = BillingService.getDefaultCreditCard();
+
                             $q.when(cc, function (credit) {
                                 $scope.isSaving = false;
                                 $rootScope.$broadcast('creditCardUpdate', credit);
