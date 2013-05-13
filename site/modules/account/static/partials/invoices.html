@@ -11,33 +11,29 @@
         <div class="pull-left listing">
             <div class="container item-list-container span8">
                 <div class="item header">
-                    <span class="span7 text-medium">Date / Amount</span>
+                    <span class="span2 text-medium">Invoice Number</span>
+					<span class="span2 text-medium">Date</span>
+					<span class="span1 text-medium">State</span>
+					<span class="span2 text-medium align-right">Total (USD)</span>
                     <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
                 <div class="item" data-ng-repeat="invoice in invoices">
-                    <span class="span7 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceDate}} / {{invoice.amount}} USD</span>
+                    <span class="span2 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceNumber}}</span>
+					<span class="span2 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceDate}}</span>
+					<span class="span1 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.status}}</span>
+					<span class="span2 pointer text-medium align-right" data-ng-click="setOpenDetails($index);">{{invoice.amount.toFixed(2)}}</span>
                     <div class="clearfix"></div>
                     <div data-ng-show="openDetails == $index" class="toolbox ">
-                        <div class="span6 pull-left text-medium">
-                            <span class="b key span2">InvoiceItems:</span>
-                            <span class="value span4">
-                                <div class="key span4" data-ng-repeat="item in invoice.invoiceItems">
-                                    <div class="value span4" style="border-bottom: 0px;">Product: {{item.productName}}</div>
-                                    <div class="value span4" style="border-bottom: 0px;">Charge: {{item.chargeName}}</div>
-                                    <div class="value span4" style="border-bottom: 0px;">Quantity: {{item.quantity}}</div>
-                                    <div class="value span4" style="border-bottom: 0px;">Start: {{item.serviceStartDate}}</div>
-                                    <div class="value span4" style="border-bottom: 0px;">End: {{item.serviceEndDate}}</div>
-                                    <div class="value span4" style="border-bottom: 0px;">Amount: {{item.chargeAmount}} USD</div>
+                        <div class="item text-medium">
+                                <div data-ng-repeat="item in invoice.invoiceItems">
+                                    <span class="span4">Product: {{item.productName}}</span>
+                                    <span class="span4">Quantity: {{item.quantity}}</span>
+                                    <!-- <div class="span4">Start: {{item.serviceStartDate}}</div>
+                                    <div class="span4">End: {{item.serviceEndDate}}</div> -->
+                                    <div class="span4">Amount: {{item.chargeAmount}} USD</div>
                                 </div>
-                            </span>
-
-                            <div class="clearfix"></div>
-
-                            <span class="b key span2 last">Total</span>
-                            <span class="value span4 last" style="word-wrap:break-word">{{invoice.amount}} USD</span>
-                            <div class="clearfix"></div>
-                            <div class="clearfix"></div>
+                            	<div class="clearfix"></div>
                         </div>
                         <div class="clearfix"></div>
                     </div>
