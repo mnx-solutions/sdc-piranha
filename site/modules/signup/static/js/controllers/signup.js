@@ -8,16 +8,6 @@
 function ($scope, requestContext) {
     requestContext.setUpRenderContext('signup.index', $scope);
 
-    console.log('here');
-
-    $scope.steps = [
-        'accountInfo',
-        'tropo',
-        'billing',
-        'ssh'
-    ];
-    $scope.step = 'accountInfo';
-
 
     /**
      * Controller public methods
