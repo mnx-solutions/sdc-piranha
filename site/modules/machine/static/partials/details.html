@@ -117,7 +117,8 @@
                     <div data-ng-class="{error: o.conflict}" class="controls control-group" >
                         <input type="text" class="input-large" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
                         <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
-						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px"></span>
+						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px" data-ng-show="!!o.key"></span>
+						<button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate data-ng-show="!o.key">Save</button>
                         <div class="clearfix"></div>
                     </div>
                     <div class="clearfix"></div>
@@ -128,7 +129,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="controls control-group clearfix" style="margin-right:80px">
-            <button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>
+            
         </div>
     </fieldset>
     <br />
