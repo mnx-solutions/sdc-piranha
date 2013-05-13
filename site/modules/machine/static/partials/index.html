@@ -18,7 +18,7 @@
 
             <div class="span9 container">
 				<div class="item-list-container">
-                <div class="item header">
+                	<div class="item header">
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
                               data-ng-switch on="sortIcon.id" data-translate>
@@ -57,9 +57,8 @@
                         </span>
 					<div class="clearfix"></div>
                 </div>
-
-                    <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse"
-                         class="item">
+				
+                    <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" class="item">
 
 	                            <span class="span2 text-medium crop">
 	                                <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
@@ -84,21 +83,22 @@
                         </div>
 						<div class="clearfix"></div>
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
-                            <div class="span6 toolbox-list text-medium">
-                                <span class="key span2 data-translate">Memory</span>
-                                <span class="value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
+							
+                            <div class="item pull-left">
+                                <span class="text-medium key span2 data-translate">Memory</span>
+                                <span class="text-medium value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
                                 <div class="clearfix"></div>
 
-                                <span class="key span2 data-translate">Disk</span>
-                                <span class="value span4">{{machine.disk | sizeFormat}}&nbsp;</span>
+                                <span class="text-medium key span2 data-translate">Disk</span>
+                                <span class="text-medium value span4">{{machine.disk | sizeFormat}}&nbsp;</span>
                                 <div class="clearfix"></div>
 
-                                <span class="key span2 data-translate">Image</span>
-                                <span class="value span4">{{machine.dataset.name}}</span>
+                                <span class="text-medium key span2 data-translate">Image</span>
+                                <span class="text-medium value span4">{{machine.dataset.name}}</span>
                                 <div class="clearfix"></div>
 
-                                <span class="key span2 last" data-translate>IP(s)</span>
-                                <span class="value span4 last">
+                                <span class="text-medium key span2 last" data-translate>IP(s)</span>
+                                <span class="text-medium value span4 last">
                                     <span data-ng-repeat="ip in machine.ips">
                                         <!-- TODO: !isPrivateIP -->
                                         <span data-ng-show="isPrivateIP(ip)">{{ip}}</span>
