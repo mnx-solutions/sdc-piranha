@@ -17,16 +17,24 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
         div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
     div(class='JoyentPortal-module-menu')
-        div(class="container navbar-static-bottom")
-            div(class="pull-left")
-                span(class="span4")
-                    ul(class="nav text-medium clearfix")
+        div(class="container footer")
+             div(class="brand pull-left")            
+             div(class="pull-left")
+                    ul(class="nav")
+                        li
+                            a(href="http://joyent.com/", target="_blank") Joyent.com
+
                         li
                             a(href="http://joyent.com/tos", target="_blank") Terms of Service
                         li
                             a(href="http://joyent.com/company/policies", target="_blank") Policies
                         li
                             a(href="http://joyent.com/company/security-and-compliance", target="_blank") Compliance
+                        li
+                            a(href="https://help.joyent.com/forums/20715782-current-system-status", target="_blank") System Status
+                        li
+                            a &copy; 2013 Joyent, Inc.
+
             div(class="clearfix")
 
     each link in js

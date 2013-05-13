@@ -7,7 +7,7 @@
             function ($scope, requestContext, $location) {
                 requestContext.setUpRenderContext('signup', $scope);
 
-                $scope.steps = ['start', 'accountInfo', 'tropo', 'billing','ssh'];
+                $scope.steps = ['accountInfo', 'tropo', 'billing','ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.setStep = function (step) {
@@ -23,6 +23,14 @@
                         window.location.href = '/main';
                     }
                 };
+
+                $scope.location = window.location;
+
+                $scope.$watch('location.hash', function (val) {
+                    if(val === '#!/start') {
+                        $scope.setStep($scope.steps[0]);
+                    }
+                }, true);
 
                 $scope.$on('creditCardUpdate', function () {
                     $scope.nextStep();

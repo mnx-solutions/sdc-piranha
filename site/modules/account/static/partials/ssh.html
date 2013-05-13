@@ -34,29 +34,28 @@
                 
             </div>
             <div data-ng-show="sshKeys.length > 0">
-				<div class="container item-list-container span8">
+				<div class="item-list-container span8">
 	                	<div class="item header">
-	                		<span class="span7 text-medium">Key Name / UUID</span>
+	                		<span class="text-medium">Key Name / UUID</span>
 							<div class="clearfix"></div>
 	                	</div>
 						<div class="clearfix"></div>
 						<div class="item" data-ng-repeat="key in sshKeys">
-						<span class="span7 pointer text-medium" data-ng-click="setOpenDetails($index);">{{key.name}}</span>
+						<span class="pointer text-medium" data-ng-click="setOpenDetails($index);">{{key.name}}</span>
 						<div class="clearfix"></div>
                         <div data-ng-show="openKeyDetails == $index" class="toolbox ">
-							<div class="span6 pull-left text-medium">
-                                <span class="b key span2" ng->Fingerpint:</span>
-                                <span class="value span4">{{key.fingerprint}}</span>
+							<div class="item pull-left">
+                                <span class="text-medium b key span2" ng->Fingerpint:</span>
+                                <span class="text-medium value span4">{{key.fingerprint}}</span>
 
                                 <div class="clearfix"></div>
 
-                                <span class="b key span2 last" ng->Key</span>
-								<span class="value span4 last" style="word-wrap:break-word">{{key.key}}</span>
-								<div class="clearfix"></div>
+                                <span class="b key span2 last text-medium" ng->Key</span>
+								<span class="value span4 last text-medium" style="word-wrap:break-word">{{key.key}}</span>
 								<div class="clearfix"></div>
                             </div>
 
-                            <div class="pull-right action-container">
+                            <div class="pull-right action-container span1">
                                 <button data-ng-click="deleteKey(key.name, key.fingerprint)" class="btn btn-mini btn-danger">Delete</button>
 								<div class="clearfix"></div>
                             </div>

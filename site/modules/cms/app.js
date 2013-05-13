@@ -4,9 +4,13 @@ module.exports = function (scope, app, callback) {
     var info = scope.api('Info');
 
     app.get('/', function (req, res, next) {
-        var infoObj = {};
+        var infoObj = [];
         Object.keys(info).forEach(function (key) {
-            infoObj[key] = info[key].data;
+            infoObj.push({
+                id: key,
+                data: info[key].data,
+                type: info[key].pointer._ext
+            });
         });
         res.json(infoObj);
     });
@@ -20,7 +24,6 @@ module.exports = function (scope, app, callback) {
             res.send(400);
             return;
         }
-
         info[req.params.name].save(req.body, function (err) {
             if(err) {
                 res.send(500, err);

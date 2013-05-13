@@ -98,7 +98,7 @@
     <fieldset>
         <legend>
             <span data-translate>Tags</span>
-            <small data-translate>Add tags for convenient searching</small>
+            <small data-translate>Add tags for convenient instance searching</small>
         </legend>
         <p class="text-small muted" data-translate>
             Tags are metadata stored as key-value pairs to make it easier for you to find, sort,
@@ -120,9 +120,10 @@
 
                 <div class="muted" style="margin-top:10px;" data-ng-show="o.edit">
                     <div data-ng-class="{error: o.conflict}" class="controls control-group" >
-                        <input type="text" class="input-large" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
+                        <input class="input-large" type="text" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
                         <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
-						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px"></span>
+						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px" data-ng-show="key != tagnr"></span>
+						<button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate data-ng-show="key == tagnr">Save</button>
                         <div class="clearfix"></div>
                     </div>
                     <div class="clearfix"></div>
@@ -133,7 +134,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="controls control-group clearfix" style="margin-right:80px">
-            <button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate>Save</button>
+            
         </div>
     </fieldset>
     <br />
@@ -144,7 +145,7 @@
             It may not always be possible to resize based on the constraints of your current server location.
         </p>
 		
-		<div class="well" style="padding:10px 20px 10px 20px" data-ng-class="{'loading-medium': isResizing}">
+		<div class="well well-small" data-ng-class="{'loading-medium': isResizing}">
 	        <div data-ng-show="selectedPackage">
 				<div class="span3 container arrow-to">
 					<h6 data-translate>Current package</h6>
