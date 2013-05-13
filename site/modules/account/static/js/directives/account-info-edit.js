@@ -12,31 +12,36 @@
           scope: true,
           link: function ($scope) {
             function required(fields) {
-              for(var field in fields) {
-                if (fields[field].required && !$scope.account.$$v[field]) {
-                  return false;
+                for(var field in fields) {
+                    if (fields[field].required && !$scope.account.$$v[field]) {
+                        return false;
+                    }
                 }
-              }
 
-              return true;
+                return true;
             }
 
             function sanitize(fields) {
-              for(var field in fields) {
-                if (!fields[field].pattern) {
-                  fields[field].pattern = new RegExp('/^+$/');
+                for(var field in fields) {
+                    if (!fields[field].pattern) {
+                        fields[field].pattern = new RegExp('/^+$/');
+                    }
                 }
-              }
             }
 
             $scope.countries = null;
             $http.get('billing/countries').success(function (data) {
-              $scope.countries = data;
+                $scope.countries = data;
             });
 
             $scope.allStates = null;
             $http.get('billing/states').success(function (data) {
-              $scope.allStates = data;
+                $scope.allStates = data;
+            });
+
+            $scope.countryCodes = null;
+            $http.get('account/countryCodes').success(function (data) {
+                $scope.countryCodes = data;
             });
 
             $scope.stateSel = null;
@@ -53,6 +58,23 @@
               } else {
                 $scope.stateSel = undefined;
               }
+            }, true);
+
+            $scope.phone = null;
+            $scope.selectedCountryCode = null;
+
+            /* phone number handling */
+            $scope.$watch('phone', function(newVal, oldVal) {
+                if(oldVal != newVal) {
+                    $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
+                }
+            }, true);
+
+            $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
+                console.log(newVal);
+                if(oldVal != newVal) {
+                    $scope.account.$$v['phone'] = newVal + $scope.phone;
+                }
             }, true);
 
 
@@ -85,7 +107,7 @@
                 phone: {
                   title: localization.translate(null, 'account', 'Phone'),
                   type: 'text',
-                  shown: true,
+                  shown: false,
                   pattern: new RegExp('/^(\d+)$/'),
                   required: true
                 },
@@ -110,7 +132,7 @@
 
                 postalCode: {
                   title: localization.translate(null, 'account', 'Postal code'),
-                  type: 'number',
+                  type: 'text',
                   shown: true,
                   pattern: new RegExp('/^(.*)$/'),
                   required: true
