@@ -1,7 +1,14 @@
-<form name="accountForm" data-ng-class="{saving: 'loading-medium'}" class="span8 container">
-    <fieldset class="row">
-        <legend class="span8" data-translate>Edit profile</legend>
-        <div class="span4 row">
+<form name="accountForm" data-ng-class="{saving: 'loading-medium'}">
+	<ul class="nav nav-tabs">
+	  <li class="active">
+	    <a href="#">Step #1</a>
+	  </li>
+	  <li  class="disabled"><a href="#">Step #2</a></li>
+	  <li><a href="#">Step #3</a></li>
+	</ul>
+    <fieldset class="span8 border">
+        <legend data-translate>Edit profile</legend><div class="clearfix"></div><br />
+        <div class="span4 clearfix container">
             <div class="control-group" data-ng-repeat="(field, properties) in fields.basic">
                 <label data-ng-show="properties.required"
                        class="control-label"
@@ -25,7 +32,7 @@
             </div>
         </div>
 
-        <div class="pull-left span4">
+        <div class="pull-right span4 container">
             <div class="control-group">
                 <div class="control-group" data-ng-repeat="(field, properties) in fields.address" data-ng-show="properties.shown">
                     <label data-ng-show="properties.required"
@@ -39,7 +46,7 @@
                         {{properties.title}}
                     </label>
                     <div class="controls">
-                        <input type="{{properties.type}}"
+                        <input class="span4" type="{{properties.type}}"
                                name="account_{{field}}"
                                id="account_{{field}}"
                                data-ng-validate="properties.validate"
@@ -53,26 +60,25 @@
                        for="account_country">
                     * Country
                 </label>
-                <select data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.name as country.name for country in countries| orderBy: 'name'"></select>
+                <select class="span4" data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.name as country.name for country in countries| orderBy: 'name'"></select>
 
                 <div data-ng-show="!stateSel">
                     <label class="control-label" for="account_state">* State</label>
-                    <input type="text" id="account_state" name="account_state" data-ng-model="account['state']" required>
+                    <input type="text" class="span4" id="account_state" name="account_state" data-ng-model="account['state']" required>
                 </div>
-                <div data-ng-show="stateSel">
+                <div data-ng-show="stateSel" class="border">
                     <label class="control-label" for="account_state">* State</label>
                     <select id="account_state" name="account_state" data-ng-model="account['state']" required>
                         <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
                     </select>
                 </div>
+				
             </div>
         </div>
-
         <div class="clearfix"></div>
-        <div class="span7" data-ng-show="error">{{error}}</div>
-        <div class="span7">
-            <button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
-        </div>
+        <div class="span8" data-ng-show="error">{{error}}</div>
+		<button class="btn btn-success pull-left" data-translate>Cancel</button>
+		<button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
         <div class="clearfix"></div>
     </fieldset>
 </form>

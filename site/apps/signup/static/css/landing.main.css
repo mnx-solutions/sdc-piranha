@@ -14,3 +14,6 @@ body {
 h3 {
 	color:#333 !important;
 }
+.border {
+	border:1px solid red !important;
+}
