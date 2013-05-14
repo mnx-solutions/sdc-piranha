@@ -83,8 +83,10 @@
         </div>
         <div class="clearfix"></div>
         <div class="span8" data-ng-show="error">{{error}}</div>
-
-        <a data-ng-show="currentStep" data-ng-click="signOut()" class="btn pull-left" data-translate>Cancel</a>
+		
+		<div class="clearfix" data-ng-show="currentStep"></div>
+		<hr data-ng-show="currentStep" />
+		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
         <a data-ng-hide="currentStep" data-ng-click="cancelChanges()" class="btn pull-left" data-translate>Cancel</a>
 
 		<button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
