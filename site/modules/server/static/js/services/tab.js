@@ -73,15 +73,11 @@
                                 self.results(data);
                                 setTimeout(self.poll, 100);
                             } else if (code === 204) {
-                                console.log('nothing processing');
                                 if (Object.keys(_calls).length) {
-                                    console.log('ERROR: Out of sync');
-                                    console.log(_calls);
                                 }
                             }
                         })
                         .error(function() {
-                            console.log(arguments);
                             polling = false;
                             eventer.$emit('error');
                         });
