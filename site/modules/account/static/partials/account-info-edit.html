@@ -1,12 +1,7 @@
 <form name="accountForm" data-ng-class="{saving: 'loading-medium'}" class="pull-left">
-    <ul class="nav nav-tabs" data-ng-show="steps">
-        <li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">
-            <a>{{s}}</a>
-        </li>
-    </ul>
     <fieldset>
         <legend data-translate data-ng-hide="currentStep">Edit profile</legend><div class="clearfix"></div><br />
-        <div class="span4 clearfix container">
+        <div class="span5 clearfix container">
             <div class="control-group" data-ng-repeat="(field, properties) in fields.basic" data-ng-show="properties.shown">
                 <label data-ng-show="properties.required"
                        class="control-label"
@@ -25,7 +20,7 @@
                            data-ng-validate="properties.validate"
                            data-ng-required="properties.required"
                            data-ng-pattern="{{properties.pattern}}"
-                           data-ng-model="account[field]" />
+                           data-ng-model="account[field]" class="span4" />
                 </div>
             </div>
 
@@ -34,11 +29,11 @@
                     * Phone
                 </label>
                 <div class="controls">
-                    <select class="span4" data-ng-model="selectedCountryCode" name="account_phonecountrycode" id="countrycode" required>
+                    <select class="span2" data-ng-model="selectedCountryCode" name="account_phonecountrycode" id="countrycode" required>
                         <option value="">Choose phone country code</option>
                         <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{code}} (+{{value}})</option>
                     </select>
-                    <input type="text" class="span4" id="account_phone" name="account_phone" data-ng-model="phone" required>
+                    <input type="text" class="span2" id="account_phone" name="account_phone" data-ng-model="phone" required>
                 </div>
             </div>
         </div>
@@ -89,8 +84,8 @@
         <div class="clearfix"></div>
         <div class="span8" data-ng-show="error">{{error}}</div>
 
-        <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
-        <button data-ng-hide="currentStep" data-ng-click="cancelChanges()" class="btn btn-success pull-left" data-translate>Cancel</button>
+        <a data-ng-show="currentStep" data-ng-click="signOut()" class="btn pull-left" data-translate>Cancel</a>
+        <a data-ng-hide="currentStep" data-ng-click="cancelChanges()" class="btn pull-left" data-translate>Cancel</a>
 
 		<button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
         <div class="clearfix"></div>

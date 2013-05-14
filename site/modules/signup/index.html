@@ -1,7 +1,25 @@
-<div data-ng-switch="subview">
-    <div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>
-    <div data-ng-switch-when="accountInfo" data-ng-include="'signup/static/partials/accountInfo.html'"></div>
-    <div data-ng-switch-when="tropo" data-ng-include="'signup/static/partials/tropo.html'"></div>
-    <div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>
-    <div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>
+<div class="navbar-inner">
+	<div class="container">
+		<a data-ng-click="signOut()"><div class="brand pull-left"></div></a>
+	</div>
+</div>
+<div class="container">
+	<div class="brand pull-left"></div>
+	<div class="clearfix"></div>
+	<ul class="nav nav-tabs" data-ng-show="steps">
+	    <li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">
+	        <a>{{stepNames[s]}}</a>
+	    </li>
+	</ul>
+	<div class="signup-progress-container" data-ng-switch="subview">
+			
+		    <div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>
+		    <div data-ng-switch-when="accountInfo" data-ng-include="'signup/static/partials/accountInfo.html'"></div>
+			<!-- <div class="loading-medium" data-ng-hide="accountInfo" style="height:60px;width:100%"></div> -->
+		    <div data-ng-switch-when="tropo" data-ng-include="'signup/static/partials/tropo.html'"></div>
+		    <div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>
+		    <div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>
+		<div class="clearfix"></div>
+	</div>
+	<div class="clearfix"></div>
 </div>
