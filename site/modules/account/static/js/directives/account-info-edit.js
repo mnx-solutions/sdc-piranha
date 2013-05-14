@@ -68,6 +68,7 @@
 
 
                         $scope.setAccount = function() {
+                            console.log('setting account');
                             $scope.account = Account.getAccount(true);
                         };
 
