@@ -1,4 +1,4 @@
-<form name="paymentForm" class="row" data-ng-class="{'loading-medium': isSaving}">
+<form name="paymentForm" data-ng-class="{'loading-medium': isSaving}">
     <fieldset class="span4">
         <legend>Credit card details</legend>
         <div class="control-group">
@@ -321,13 +321,12 @@
     	  </div>
 		</fieldset>
     <div class="clearfix"></div>
-    <div class="span7">
-		
+    <div>
 		<div class="clearfix" data-ng-show="currentStep"></div>
 		<hr data-ng-show="currentStep" />
 		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
 
-        <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || isSaving">Submit</button>
+        <button class="pull-right btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || isSaving">Submit</button>
     </div>
 
 </form>
