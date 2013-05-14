@@ -573,6 +573,11 @@ th {
     -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 }
+.shadow-dark{
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.165);
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.165);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.165);
+}
 
 .carousel-inner {
     min-height:400px;
