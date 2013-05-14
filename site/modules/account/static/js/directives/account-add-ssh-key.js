@@ -15,7 +15,7 @@
             $scope.newKey = {};
 
             $scope.createNewKey = function() {
-              $scope.createPending = true;
+              $scope.loading = true;
               $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
 
               $q.when($scope.addedKey, function(key) {
@@ -32,7 +32,7 @@
                   $scope.error = 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '');
 
                 }
-                $scope.createPending = false;
+                $scope.loading = false;
               });
             }
 

@@ -1,5 +1,5 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
-	<div class="loading-medium" data-ng-show="initializing" style="height:60px;width:100%"></div>
+	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="container content-container-inner">
         <div class="machines container" data-ng-show="machines.length">
             <data-breadcrumb></data-breadcrumb>
@@ -177,7 +177,7 @@
                 </div>
             </div>
         </div>
-        <div class="machines container" data-ng-hide="(machines.length || initializing)">
+        <div class="machines container" data-ng-hide="(machines.length || loading)">
             <div class="alert alert-info alert-global">
 				<div class="pull-left">
 					<h4>Hello there!</h4>
