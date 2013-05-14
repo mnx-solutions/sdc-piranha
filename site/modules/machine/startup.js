@@ -226,11 +226,13 @@ module.exports = function (scope, callback) {
                             if(json === newTags) {
                                 call.log.debug('Machine %s tags changed successfully', call.data.uuid);
                                 clearInterval(timer);
+                                clearTimeout(timer2);
                                 call.done(null, tags);
                             } else if(!oldTags) {
                                 oldTags = json;
                             } else if(json !== oldTags) {
                                 clearInterval(timer);
+                                clearTimeout(timer2);
                                 call.done(new Error('Other call changed tags'));
                             }
                         } else {
@@ -238,6 +240,12 @@ module.exports = function (scope, callback) {
                         }
                     }, undefined, true);
                 }, 5000);
+
+                var timer2 = setTimeout(function () {
+                    call.log.error('Operation timed out');
+                    clearInterval(timer);
+                    call.done(new Error('Operation timed out'));
+                }, 1 * 60 * 1000);
             });
         }
     });
