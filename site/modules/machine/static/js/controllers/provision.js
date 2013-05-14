@@ -41,6 +41,34 @@
                 $scope.selectedPackage = null;
                 $scope.previousPos = 0;
 
+                // version number comparison
+                var isVersionHigher = function (v1, v2) {
+                    var v1parts = v1.split('.');
+                    var v2parts = v2.split('.');
+
+                    for (var i = 0; i < v1parts.length; ++i) {
+                        if (v2parts.length == i) {
+                            return true;
+                        }
+
+                        if (v1parts[i] == v2parts[i]) {
+                            continue;
+                        }
+                        else if (v1parts[i] > v2parts[i]) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+
+                    if (v1parts.length != v2parts.length) {
+                        return false;
+                    }
+
+                    return false;
+                }
+
                 $scope.clickProvision = function () {
                     function provision() {
                         confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
@@ -167,7 +195,6 @@
                                     unique_datasets.push(dataset);
                                 }
                                 if (!versions[dataset.name]) {
-//                                    var suba = [dataset.version];
                                     versions[dataset.name] = {};
                                     versions[dataset.name][dataset.version] = dataset;
 
@@ -177,6 +204,10 @@
                                     if (!versions[dataset.name][dataset.version]) {
                                         manyVersions[dataset.name] = true;
                                         versions[dataset.name][dataset.version] = dataset;
+                                    }
+                                    // if version is more recent, use as default
+                                    if(isVersionHigher(dataset.version, selectedVersions[dataset.name].version)) {
+                                        selectedVersions[dataset.name] = dataset;
                                     }
                                 }
                             });
@@ -189,6 +220,13 @@
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
                             packages.forEach(function (p) {
+                                // if price is below 0.005 we don't want to
+                                // show a 0.00 price.
+                                var price = parseFloat(p.price);
+                                if(price === 0) {
+                                    price = 0.01;
+                                }
+                                p.price = price.toFixed(2);
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
