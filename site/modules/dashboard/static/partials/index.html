@@ -12,12 +12,12 @@
 			<div class="clearfix"></div>
 			<div class="pull-left box box-yellow span5">
 				<h2>Instances</h2>
-				<p>{{runningcount}} Up</p>
-				<p>{{othercount}} Stopped</p>
+				<p data-ng-show="runningcount">{{runningcount}} Up</p>
+				<p data-ng-show="othercount">{{othercount}} Stopped</p>
 				<p><i class="icon-plus-sign"></i>&nbsp;&nbsp;Create new Instance</p>
 				<p><a href="#!/machine" class="btn btn-primary btn-large">Go to instances list »</a></p>
 			</div>
-			<div class="pull-left box box-blue span5">
+			<div class="pull-left box box-blue span5" data-ng-show="lastInvoice">
 				<h2>Billing</h2>
 				<!--
 					{{lastInvoice.invoiceDate || 'Date'}}/

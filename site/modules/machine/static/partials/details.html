@@ -123,7 +123,11 @@
                         <input class="input-large" type="text" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
                         <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
 						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px" data-ng-show="key != tagnr"></span>
-						<button class="btn btn-primary pull-right" data-ng-click="clickSaveTags(machine.id)" data-translate data-ng-show="key == tagnr">Save</button>
+						<button class="btn btn-primary pull-right"
+                                data-ng-click="clickSaveTags(machine.id)"
+                                data-translate
+                                data-ng-show="key == tagnr"
+                                data-ng-disabled="machine.state != 'running'">Save</button>
                         <div class="clearfix"></div>
                     </div>
                     <div class="clearfix"></div>
@@ -146,7 +150,7 @@
         </p>
 		
 		<div class="well well-small" data-ng-class="{'loading-medium': isResizing}">
-	        <div data-ng-show="selectedPackage">
+	        <div data-ng-show="currentPackage">
 				<div class="span3 container arrow-to">
 					<h6 data-translate>Current package</h6>
                     <span>{{currentPackage.description}}</span><br />
@@ -161,7 +165,7 @@
 				</div>
 	        </div>
 
-			<div class="span3 pull-right">
+			<div class="span3" data-ng-class="{'pull-right': currentPackage}">
 				<h6 class="control-label" data-translate>Resize Package</h6>
 	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:220px">
 	                <option data-ng-repeat="package in packages"

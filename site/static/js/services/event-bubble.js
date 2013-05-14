@@ -42,7 +42,7 @@ window.JP.main.service(
                     if(!force && (!eventList[event] || eventList[event].length < 1)){
                         return false;
                     }
-                    console.log('emitting - ' + args[0]);
+
                     $emit.apply($s, args);
                 };
                 return $s;

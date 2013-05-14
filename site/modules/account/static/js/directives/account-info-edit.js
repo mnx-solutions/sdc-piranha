@@ -2,203 +2,121 @@
 
 (function (app) {
 
-  app.directive('accountInfoEdit',
-    ['Account', 'localization', '$q', '$http',
-      function (Account, localization, $q, $http) {
+    app.directive('accountInfoEdit',
+        ['Account', 'localization', '$q', '$http',
+            function (Account, localization, $q, $http) {
 
-        return {
-          restrict: 'A',
-          replace: true,
-          scope: true,
-          link: function ($scope) {
-            function required(fields) {
-                for(var field in fields) {
-                    if (fields[field].required && !$scope.account.$$v[field]) {
-                        return false;
-                    }
-                }
+                return {
+                    restrict: 'A',
+                    replace: true,
+                    scope: true,
+                    link: function ($scope) {
+                        $scope.countries = null;
+                        $scope.allStates = null;
+                        $scope.countryCodes = null;
+                        $scope.stateSel = null;
+                        $scope.phone = null;
+                        $scope.selectedCountryCode = null;
+                        $scope.error = null;
+                        $scope.saving = false;
+                        $scope.account = Account.getAccount(true);
 
-                return true;
-            }
+                        $http.get('billing/countries').success(function (data) {
+                            $scope.countries = data;
+                        });
 
-            function sanitize(fields) {
-                for(var field in fields) {
-                    if (!fields[field].pattern) {
-                        fields[field].pattern = new RegExp('/^+$/');
-                    }
-                }
-            }
+                        $http.get('billing/states').success(function (data) {
+                            $scope.allStates = data;
+                        });
 
-            $scope.countries = null;
-            $http.get('billing/countries').success(function (data) {
-                $scope.countries = data;
-            });
+                        $http.get('account/countryCodes').success(function (data) {
+                            $scope.countryCodes = data;
+                        });
 
-            $scope.allStates = null;
-            $http.get('billing/states').success(function (data) {
-                $scope.allStates = data;
-            });
+                        $scope.$watch('account["country"]', function (newVal, oldVal) {
+                            if (oldVal === 'United States' || oldVal === 'Canada'){
+                                $scope.account.$$v.state = '';
+                            }
 
-            $scope.countryCodes = null;
-            $http.get('account/countryCodes').success(function (data) {
-                $scope.countryCodes = data;
-            });
-
-            $scope.stateSel = null;
-
-            $scope.$watch('account["country"]', function (newVal, oldVal) {
-              console.log(newVal, oldVal, $scope.account);
-              if(oldVal === 'USA' || oldVal === 'CAN'){
-                $scope.account.$$v['state'] = '';
-              }
-              if(newVal === 'USA') {
-                $scope.stateSel = $scope.allStates.us.obj;
-              } else if (newVal === 'CAN') {
-                $scope.stateSel = $scope.allStates.canada.obj;
-              } else {
-                $scope.stateSel = undefined;
-              }
-            }, true);
-
-            $scope.phone = null;
-            $scope.selectedCountryCode = null;
-
-            /* phone number handling */
-            $scope.$watch('phone', function(newVal, oldVal) {
-                if(oldVal != newVal) {
-                    $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
-                }
-            }, true);
-
-            $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
-                console.log(newVal);
-                if(oldVal != newVal) {
-                    $scope.account.$$v['phone'] = newVal + $scope.phone;
-                }
-            }, true);
+                            if (newVal === 'United States') {
+                                $scope.stateSel = $scope.allStates.us.obj;
+                            } else if (newVal === 'Canada') {
+                                $scope.stateSel = $scope.allStates.canada.obj;
+                            } else {
+                                $scope.stateSel = undefined;
+                            }
+                        }, true);
 
 
-            $scope.fields = {
-              basic: {
-                email: {
-                  title: localization.translate(null, 'account', 'Email'),
-                  type: 'email',
-                  shown: true,
-                  pattern: new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"),
-                  required: true
-                },
+                        /* phone number handling */
+                        $scope.$watch('phone', function(newVal, oldVal) {
+                            if(oldVal !== newVal) {
+                                $scope.account.$$v.phone = $scope.selectedCountryCode + newVal;
+                            }
+                        }, true);
 
-                firstName: {
-                  title: localization.translate(null, 'account', 'First name'),
-                  type: 'text',
-                  shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                },
+                        $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
+                            console.log(newVal);
+                            if(oldVal !== newVal) {
+                                $scope.account.$$v.phone = newVal + $scope.phone;
+                            }
+                        }, true);
 
-                lastName: {
-                  title: localization.translate(null, 'account', 'Last name'),
-                  type: 'text',
-                  shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                },
 
-                phone: {
-                  title: localization.translate(null, 'account', 'Phone'),
-                  type: 'text',
-                  shown: false,
-                  pattern: new RegExp('/^(\d+)$/'),
-                  required: true
-                },
+                        $scope.setAccount = function() {
+                            $scope.account = Account.getAccount(true);
+                        };
 
-                companyName: {
-                  title: localization.translate(null, 'account', 'Company name'),
-                  type: 'text',
-                  shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                }
-              },
+                        $scope.cancelChanges = function () {
+                            window.location = '/main/#!/account/';
+                        };
 
-              address: {
-                address: {
-                  title: localization.translate(null, 'account', 'Address'),
-                  type: 'text',
-                  shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                },
+                        $scope.isErrorOf = function (field, errorType) {
+                            var isPresent = false;
 
-                postalCode: {
-                  title: localization.translate(null, 'account', 'Postal code'),
-                  type: 'text',
-                  shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                },
+                            if ($scope.accountForm[field].$dirty) {
+                                Object.keys($scope.accountForm[field].$error).some(function (key) {
+                                    if ($scope.accountForm[field].$error[key] && key === errorType) {
+                                        isPresent = true;
+                                        return true;
+                                    }
+                                });
+                            }
 
-                city: {
-                  title: localization.translate(null, 'account', 'City'),
-                  type: 'text',
-                  shown: true,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                },
+                            return isPresent;
+                        };
 
-                state: {
-                  title: localization.translate(null, 'account', 'State'),
-                  type: 'text',
-                  shown: false,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                },
+                        $scope.isErrorPresent = function (field) {
+                            var isPresent = false;
 
-                country: {
-                  title: localization.translate(null, 'account', 'Country'),
-                  type: 'text',
-                  shown: false,
-                  pattern: new RegExp('/^(.*)$/'),
-                  required: true
-                }
-              }
-            };
+                            if ($scope.accountForm[field].$dirty) {
+                                Object.keys($scope.accountForm[field].$error).some(function (key) {
+                                    if ($scope.accountForm[field].$error[key]) {
+                                        isPresent = true;
+                                        return true;
+                                    }
+                                });
+                            }
 
-            $scope.error = null;
-            $scope.saving = false;
-            $scope.account = Account.getAccount(true);
+                            return isPresent;
+                        };
 
-            $scope.setAccount = function() {
-              $scope.account = Account.getAccount(true);
-            };
+                        $scope.submitForm = function () {
+                            Account.updateAccount($scope.account).then(function () {
+                                $scope.saving = false;
+                                $scope.error = null;
 
-            $scope.cancelChanges = function () {
-                window.location = '/main/#!/account/';
-            };
-
-            $scope.updateAccount = function () {
-              if (required($scope.fields.basic) &&
-                required($scope.fields.address)) {
-                $scope.saving = true;
-
-                Account.updateAccount($scope.account).then(function () {
-                  $scope.saving = false;
-                  $scope.error = null;
-
-                  if ($scope.nextStep) {
-                    $scope.setAccount();
-                    $scope.nextStep();
-                  }
-                }, function (err) {
-                  $scope.error = null;
-                  $scope.saving = false;
-                });
-              } else {
-                $scope.error = localization.translate(null, 'account', 'Please fill all the required fields');
-              }
-            };
-          },
-          templateUrl: 'account/static/partials/account-info-edit.html'
-        };
-      }]);
+                                if ($scope.nextStep) {
+                                    $scope.setAccount();
+                                    $scope.nextStep();
+                                }
+                            }, function (err) {
+                                $scope.error = null;
+                                $scope.saving = false;
+                            });
+                        };
+                    },
+                    templateUrl: 'account/static/partials/account-info-edit.html'
+                };
+            }]);
 }(window.JP.getModule('Account')));

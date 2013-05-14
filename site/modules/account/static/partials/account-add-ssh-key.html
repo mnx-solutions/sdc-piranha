@@ -1,4 +1,4 @@
-<fieldset class="pull-left">
+<fieldset>
     <legend>Add your SSH Key</legend>
     <div class="control-group">
         <label class="control-label">Name</label>
@@ -15,8 +15,9 @@
     </div>
 
     <div data-ng-show="error">{{error}}</div>
-    <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
-    <div class="align-right">
-        <button class="btn btn-success" data-ng-click="createNewKey()">Add SSH key</button>
-    </div>
+	<div class="clearfix"></div>
+	<hr />
+	<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
+	<button class="btn btn-success pull-right" data-ng-click="createNewKey()">Add SSH key</button>
+	
 </fieldset>
