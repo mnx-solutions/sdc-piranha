@@ -418,7 +418,6 @@ th {
 .item-select:hover {
 	color:#555;
 }
-
 .carousel-inner .item:hover {
     background:#fff;
 }
@@ -426,8 +425,21 @@ th {
 	background-color:#fcfcfc;
 }
 .carousel-inner > .item{
-	border:none;
+/*	border:none;*/
+/*	border:1px solid red !important;*/
 }
+.carousel-inner .item.header{
+/*	width:608px;
+	margin-left:-5px;
+	margin-top:-10px;
+	position:fixed;
+	top:0px;*/
+}
+
+.fixed-position-fix {
+/*	height:50px;*/
+}
+
 .item-list-container .item .action-container{
 	margin-right:5px;
 	margin-top:5px;

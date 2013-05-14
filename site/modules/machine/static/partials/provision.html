@@ -36,7 +36,7 @@
 								    </div>
 								<div class="clearfix"></div>
 							</div>
-							
+							<div class="fixed-position-fix"></div>
 							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets">
 								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" data-ng-click="selectDataset(dataset.id); slideCarousel()" name="dataset" value="{{selectedVersions[dataset.name].id || dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
@@ -74,6 +74,7 @@
                                 </div>
 								<div class="clearfix"></div>
 							</div>
+							<div class="fixed-position-fix"></div>
 							<div class="item pointer" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages">
 								<input class="pull-left" data-ng-checked="selectedPackage == $parent.selectedPackage" value="{{package.id}}" data-ng-click="selectPackage(package.id)" data-ng-model="selectedPackage" type="radio" name="tmp" id="package-{{package.id}}"/>
 								<label for="package-{{package.id}}">
