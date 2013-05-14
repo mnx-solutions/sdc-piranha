@@ -74,7 +74,7 @@
                                 </div>
 								<div class="clearfix"></div>
 							</div>
-							<div class="item pointer" data-ng-repeat="package in (packages | orderBy:'sequence') | filter:filterPackages">
+							<div class="item pointer" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages">
 								<input class="pull-left" data-ng-checked="selectedPackage == $parent.selectedPackage" value="{{package.id}}" data-ng-click="selectPackage(package.id)" data-ng-model="selectedPackage" type="radio" name="tmp" id="package-{{package.id}}"/>
 								<label for="package-{{package.id}}">
 									<span class="span5 text-medium"><strong>{{package.name}}</strong><br />

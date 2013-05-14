@@ -10,7 +10,7 @@
                     <input type="email"
                            id="email"
                            name="email"
-                           data-ng-model="account.email"
+                           data-ng-model="account['email']"
                            data-ng-class="{error: isErrorPresent('email')}"
                            required/>
                     <div class="error"
@@ -34,7 +34,7 @@
                     <input type="text"
                            id="firstName"
                            name="firstName"
-                           data-ng-model="account.firstName"
+                           data-ng-model="account['firstName']"
                            data-ng-class="{error: isErrorPresent('firstName')}"
                            required/>
                     <div class="error"
@@ -53,7 +53,7 @@
                     <input type="text"
                            id="lastName"
                            name="lastName"
-                           data-ng-model="account.lastName"
+                           data-ng-model="account['lastName']"
                            data-ng-class="{error: isErrorPresent('lastName')}"
                            required/>
                     <div class="error"
@@ -72,7 +72,7 @@
                     <input type="text"
                            id="companyName"
                            name="companyName"
-                           data-ng-model="account.companyName"/>
+                           data-ng-model="account['companyName']"/>
                     <div class="error"
                          data-translate
                          data-ng-show="isErrorOf('companyName', 'required')">
@@ -87,13 +87,12 @@
                 </label>
                 <div class="controls">
                     <select data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
-                        <option value="" data-translate>Code</option>
-                        <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{code}} (+{{value}})</option>
+                        <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{ iso2ToName(code) }} (+{{value}})</option>
                     </select>
                     <input type="text"
                            id="phone"
                            name="phone"
-                           data-ng-model="account.phone"
+                           data-ng-model="account['phone']"
                            data-ng-pattern="/^(\d+)$/"
                            data-ng-class="{error: isErrorPresent('phone')}"
                            required>
@@ -120,7 +119,7 @@
                         <input type="text"
                                id="address"
                                name="address"
-                               data-ng-model="account.address"
+                               data-ng-model="account['address']"
                                data-ng-class="{error: isErrorPresent('address')}"
                                required>
                         <div class="error"
@@ -139,7 +138,7 @@
                         <input type="text"
                                id="city"
                                name="city"
-                               data-ng-model="account.city"
+                               data-ng-model="account['city']"
                                data-ng-class="{error: isErrorPresent('city')}"
                                required>
                         <div class="error"
@@ -157,7 +156,7 @@
                         <input type="text"
                                id="postalCode"
                                name="postalCode"
-                               data-ng-model="account.postalCode"
+                               data-ng-model="account['postalCode']"
                                data-ng-class="{error: isErrorPresent('postalCode')}"
                                data-ng-pattern="/^(\d+)$/"
                                required>
@@ -181,7 +180,7 @@
                     <select name="country"
                             id="country"
                             required
-                            data-ng-model="account.country"
+                            data-ng-model="account['country']"
                             data-ng-options="country.iso3 as country.name for country in countries | orderBy: 'name'">
                             </select>
                 </div>
@@ -193,7 +192,7 @@
                     <input type="text"
                            id="state"
                            name="state"
-                           data-ng-model="account.state"
+                           data-ng-model="account['state']"
                            data-ng-class="{error: isErrorPresent('state')}"
                            required>
                     <div class="error"
@@ -210,7 +209,7 @@
 
                     <select id="state2"
                             name="state"
-                            data-ng-model="account.state"
+                            data-ng-model="account['state']"
                             required>
                         <option data-ng-repeat="(key, value) in stateSel"
                                 data-ng-selected="key == account.state"
@@ -220,11 +219,14 @@
                     </select>
                 </div>			
 		<div class="clearfix"></div>
-		</fieldset>
+       
+          </fieldset>
+        <!-- <div class="span7"> -->
 			<div class="clearfix" data-ng-show="currentStep"></div>
 			<hr data-ng-show="currentStep" />
 			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
             <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="saving || accountForm.$invalid" data-translate>Save changes</button>
+        <!-- </div> -->
 
 	<div class="clearfix"></div>
 </form>

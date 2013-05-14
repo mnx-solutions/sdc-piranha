@@ -687,3 +687,15 @@ div .disabled{
 	width:42px;
 	border:none;
 }
+.sizebar-fix {
+	margin-top:-20px;
+	padding-top:30px;
+	padding-bottom:30px;
+/*	border:1px solid;*/
+	display:block;
+}
+.sizebar-fix-right {
+	border-left:1px solid #ddd;
+	margin-left:-1px;
+	padding-left:10px;
+}

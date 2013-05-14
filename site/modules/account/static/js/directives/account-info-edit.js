@@ -47,6 +47,14 @@
                             }
                         }, true);
 
+                        $scope.iso2ToName = function(iso2) {
+                            for(var country in $scope.countries) {
+                                if($scope.countries[country].iso2 === iso2)
+                                    return $scope.countries[country].name;
+                            }
+                            return iso2;
+                        };
+
 
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
@@ -56,7 +64,6 @@
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
-                            console.log(newVal);
                             if(oldVal !== newVal) {
                                 $scope.account.$$v.phone = newVal + $scope.phone;
                             }
@@ -64,6 +71,7 @@
 
 
                         $scope.setAccount = function() {
+                            console.log('setting account');
                             $scope.account = Account.getAccount(true);
                         };
 

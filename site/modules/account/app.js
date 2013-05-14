@@ -28,7 +28,7 @@ module.exports = function (scope, app, callback) {
 
     app.get('/countryCodes',function(req, res) {
       res.json(countryCodes);
-    })
+    });
 
     app.get('/signup/:step', function (req, res) {
         SignupProgress.setMinProgress(req, req.params.step, function () {
