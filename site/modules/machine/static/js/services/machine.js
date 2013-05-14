@@ -293,12 +293,13 @@
                     notification.push(id, { type: 'error' },
                         localization.translate(null,
                             'machine',
-                            'Unable to create instance {{name}}',
-                            {
-                                name: data.name
-                            }
+                            'Unable to create instance'
                         )
                     );
+
+                    delete machines.list.splice(machines.list.indexOf(machine), 1);
+                    delete machines.index[id];
+                    return;
                 }
             });
 
