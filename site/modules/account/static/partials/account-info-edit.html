@@ -1,5 +1,5 @@
 <div class="{{currentStep && '' || 'container span9'}}">
-<form name="accountForm" data-ng-class="{loading: 'loading-medium'}" class="row-fluid">
+<form name="accountForm" data-ng-class="{'loading-medium': loading}" class="row-fluid">
     <fieldset class="span6">
 		<legend data-translate data-ng-hide="currentStep">Contact Info</legend>
             <div class="control-group">
@@ -11,16 +11,16 @@
                            id="email"
                            name="email"
                            data-ng-model="account.email"
-                           data-ng-class="{error: isErrorPresent('email')}"
+                           data-ng-class="{error: isError('email')}"
                            required/>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('email', 'required')">
+                         data-ng-show="isError('email', 'required')">
                         Missing email address
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('email', 'email')">
+                         data-ng-show="isError('email', 'email')">
                         Invalid email address
                     </div>
                 </div>
@@ -35,11 +35,11 @@
                            id="firstName"
                            name="firstName"
                            data-ng-model="account.firstName"
-                           data-ng-class="{error: isErrorPresent('firstName')}"
+                           data-ng-class="{error: isError('firstName')}"
                            required/>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('firstName', 'required')">
+                         data-ng-show="isError('firstName', 'required')">
                         Missing first name
                     </div>
                 </div>
@@ -54,11 +54,11 @@
                            id="lastName"
                            name="lastName"
                            data-ng-model="account.lastName"
-                           data-ng-class="{error: isErrorPresent('lastName')}"
+                           data-ng-class="{error: isError('lastName')}"
                            required/>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('lastName', 'required')">
+                         data-ng-show="isError('lastName', 'required')">
                         Missing last name
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                            data-ng-model="account.companyName"/>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('companyName', 'required')">
+                         data-ng-show="isError('companyName', 'required')">
                         Missing company name
                     </div>
                 </div>
@@ -98,17 +98,17 @@
                            name="phone"
                            data-ng-model="phone"
                            data-ng-pattern="/^(\d+)$/"
-                           data-ng-class="{error: isErrorPresent('phone')}"
+                           data-ng-class="{error: isError('phone')}"
                            required>
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('phone', 'required')">
+                         data-ng-show="isError('phone', 'required')">
                         Missing phone number
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('phone', 'pattern')">
+                         data-ng-show="isError('phone', 'pattern')">
                         Invalid phone number
                     </div>
                 </div>
@@ -125,11 +125,11 @@
                                id="address"
                                name="address"
                                data-ng-model="account.address"
-                               data-ng-class="{error: isErrorPresent('address')}"
+                               data-ng-class="{error: isError('address')}"
                                required>
                         <div class="error"
                              data-translate
-                             data-ng-show="isErrorOf('address', 'required')">
+                             data-ng-show="isError('address', 'required')">
                             Missing address
                         </div>
                     </div>
@@ -144,11 +144,11 @@
                                id="city"
                                name="city"
                                data-ng-model="account.city"
-                               data-ng-class="{error: isErrorPresent('city')}"
+                               data-ng-class="{error: isError('city')}"
                                required>
                         <div class="error"
                              data-translate
-                             data-ng-show="isErrorOf('city', 'required')">
+                             data-ng-show="isError('city', 'required')">
                             Missing city
                         </div>
                     </div>
@@ -162,17 +162,17 @@
                                id="postalCode"
                                name="postalCode"
                                data-ng-model="account.postalCode"
-                               data-ng-class="{error: isErrorPresent('postalCode')}"
+                               data-ng-class="{error: isError('postalCode')}"
                                data-ng-pattern="/^(\d+)$/"
                                required>
                         <div class="error"
                              data-translate
-                             data-ng-show="isErrorOf('postalCode', 'required')">
+                             data-ng-show="isError('postalCode', 'required')">
                             Missing postal code
                         </div>
                         <div class="error"
                              data-translate
-                             data-ng-show="isErrorOf('postalCode', 'pattern')">
+                             data-ng-show="isError('postalCode', 'pattern')">
                             Invalid postal code
                         </div>
                     </div>
@@ -198,11 +198,11 @@
                            id="state"
                            name="state"
                            data-ng-model="account.state"
-                           data-ng-class="{error: isErrorPresent('state')}"
+                           data-ng-class="{error: isError('state')}"
                            required>
                     <div class="error"
                          data-translate
-                         data-ng-show="isErrorOf('state', 'required')">
+                         data-ng-show="isError('state', 'required')">
                         Missing state
                     </div>
                 </div>
@@ -230,7 +230,7 @@
 			<div class="clearfix" data-ng-show="currentStep"></div>
 			<hr data-ng-show="currentStep" />
 			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
-            <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="saving || accountForm.$invalid" data-translate>Save changes</button>
+            <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
         <!-- </div> -->
 
 	<div class="clearfix"></div>

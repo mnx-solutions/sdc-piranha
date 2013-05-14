@@ -3,8 +3,8 @@
 (function (app) {
 
     app.directive('accountInfoEdit',
-        ['Account', 'localization', '$q', '$http',
-            function (Account, localization, $q, $http) {
+        ['Account', 'localization', '$q', '$http', '$location',
+            function (Account, localization, $q, $http, $location) {
 
                 return {
                     restrict: 'A',
@@ -19,8 +19,18 @@
                         $scope.selectedCountryCode = null;
                         $scope.error = null;
                         $scope.loading = false;
-                        $scope.account = Account.getAccount(true);
-                        $scope.countryStyle = {width: '100px'};
+
+                        $scope.setAccount = function() {
+                            $q.when(Account.getAccount(true), function (account) {
+                                $scope.account = account;
+                            });
+                        };
+
+                        $scope.setAccount();
+
+                        $scope.countryStyle = {
+                            width: '100px'
+                        };
 
                         $http.get('billing/countries').success(function (data) {
                             $scope.countries = data;
@@ -40,7 +50,7 @@
 
                         $scope.$watch('account.country', function (newVal, oldVal) {
                             if (oldVal === 'United States' || oldVal === 'Canada'){
-                                $scope.account.$$v.state = '';
+                                $scope.account.state = '';
                             }
 
                             if (newVal === 'United States') {
@@ -55,15 +65,14 @@
 
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
-                            console.log($scope.account);
                             if(oldVal !== newVal) {
-                                $scope.account.$$v.phone = $scope.selectedCountryCode + newVal;
+                                $scope.account.phone = $scope.selectedCountryCode + newVal;
                             }
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.$$v.phone = newVal + $scope.phone;
+                                $scope.account.phone = newVal + $scope.phone;
                             }
                             if(!newVal) {
                                 $scope.countryStyle.width = '100px';
@@ -84,37 +93,16 @@
                             }
                         }, true);
 
-
-                        $scope.setAccount = function() {
-                            console.log('setting account');
-                            $scope.account = Account.getAccount(true);
-                        };
-
                         $scope.cancelChanges = function () {
-                            window.location = '/main/#!/account/';
+                            $location.path('/account/');
                         };
 
-                        $scope.isErrorOf = function (field, errorType) {
+                        $scope.isError = function (field, errorType) {
                             var isPresent = false;
 
                             if ($scope.accountForm[field].$dirty) {
                                 Object.keys($scope.accountForm[field].$error).some(function (key) {
-                                    if ($scope.accountForm[field].$error[key] && key === errorType) {
-                                        isPresent = true;
-                                        return true;
-                                    }
-                                });
-                            }
-
-                            return isPresent;
-                        };
-
-                        $scope.isErrorPresent = function (field) {
-                            var isPresent = false;
-
-                            if ($scope.accountForm[field].$dirty) {
-                                Object.keys($scope.accountForm[field].$error).some(function (key) {
-                                    if ($scope.accountForm[field].$error[key]) {
+                                    if ($scope.accountForm[field].$error[key] && (!errorType || key === errorType)) {
                                         isPresent = true;
                                         return true;
                                     }

@@ -36,7 +36,7 @@
 
             serverTab.call({
                 name: 'updateAccount',
-                data: data.$$v,
+                data: (data.$$v || data),
                 progress: function(err, job) {
                 },
                 done: function(err, job) {
