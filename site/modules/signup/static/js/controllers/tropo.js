@@ -48,7 +48,7 @@
                                   $scope.deleteInterval(interval);
 
 
-                                  $scope.error = 'Phone verification failed. Retrying...';
+                                  $scope.error = 'Phone verification failed '+ (data.retries ? '(retries left '+ data.retries +')' : '') +'. Retrying...';
                                   $scope.phoneVerification(account);
 
                               }
@@ -56,7 +56,7 @@
                               if($scope.tropoPoll == 60) {
                                   $scope.deleteInterval(interval);
 
-                                  $scope.error = 'Phone verification failed. Retrying...';
+                                  $scope.error = 'Phone verification failed '+ (data.retries ? '(retries left '+ data.retries +')' : '') +'. Retrying...';
                                   $scope.phoneVerification(account);
                               }
                           });
