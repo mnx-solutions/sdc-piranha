@@ -242,7 +242,6 @@
                     if(dstype){
                         return true;
                     }
-                    console.log('returning false');
                     return false;
 
                 };
