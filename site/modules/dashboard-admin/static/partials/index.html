@@ -1,0 +1,21 @@
+<div class="container-fluid content-container" data-ng-controller="DashboardAdmin.IndexController">
+	<div class="loading-medium" data-ng-show="initializing" style="height:60px;width:100%"></div>
+    <div class="container content-container-inner">
+		<div>
+			<ul class="breadcrumb">
+				<li class="active"><span>Dashboard</span></li>
+			</ul>
+			<div class="page-header">
+			    <h1 class="pull-left">Welcome {{account.firstName}} {{account.lastName}}</h1> 
+				<div class="clearfix"></div>
+			</div>
+			<div class="clearfix"></div>
+        </div>
+		
+        <div class="row">
+			<a href="#!/cms">CMS</a></br>
+            <a href="#!/account">Account</a>
+		</div>
+    </div>
+</div>
+

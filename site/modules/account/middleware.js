@@ -6,6 +6,7 @@ var config = require('easy-config');
 module.exports = function (scope, callback) {
 
     var SignupProgress = scope.api('SignupProgress');
+    var ends = ['completed','complete'];
 
     function returnPage(req, res, next, step) {
         if(req.session.signupStep !== step) {
@@ -13,7 +14,7 @@ module.exports = function (scope, callback) {
             req.session.save();
         }
 
-        if(step === 'completed' || step === 'complete') {
+        if(ends.indexOf(step) > -1) {
             return next();
         }
 
@@ -22,13 +23,17 @@ module.exports = function (scope, callback) {
 
     var middleware = function (req, res, next) {
 
-        if(/^\/signup/.test(req.originalUrl)) {
-            next();
-            return;
-        }
         SignupProgress.getSignupStep(req, function(err, step) {
             if(err) {
                 next(err);
+                return;
+            }
+            if(/^\/signup/.test(req.originalUrl)) {
+                if(ends.indexOf(step) > -1) {
+                    res.redirect('/main/');
+                    return;
+                }
+                next();
                 return;
             }
             returnPage(req, res, next, step);

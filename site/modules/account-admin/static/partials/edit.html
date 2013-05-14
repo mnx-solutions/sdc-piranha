@@ -1,0 +1,10 @@
+<div data-ng-controller="AccountAdmin.EditController">
+    <div class="control-group">
+        <h6 class="control-label" data-translate>Set last finished step</h6>
+        <div>
+            current - {{currentStep}}
+        </div>
+        <select name="resize" data-ng-model="step" data-ng-options="stepe for stepe in steps"></select>
+    </div>
+    <button class="btn btn-primary" data-ng-click="setStep()">Set</button>
+</div>

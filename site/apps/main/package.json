@@ -4,7 +4,10 @@
         "defaultHash": "#!/dashboard",
 		"modules": [
             "error",
-            "cms",
+            {
+                "id": "cms",
+                "api": true
+            },
             "account",
             "billing",
             "cloudAnalytics",

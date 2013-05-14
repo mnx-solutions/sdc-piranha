@@ -26,10 +26,13 @@
 
                 $scope.location = window.location;
 
-                $scope.$watch('location.hash', function (val) {
-                    if(val === '#!/start') {
+                var i = 0;
+
+                $scope.$watch('location.hash', function (val, oldval) {
+                    if(val === '#!/start' && i > 0) {
                         $scope.setStep($scope.steps[0]);
                     }
+                    i++;
                 }, true);
 
                 $scope.$on('creditCardUpdate', function () {
