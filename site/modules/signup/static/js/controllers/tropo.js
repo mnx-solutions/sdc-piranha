@@ -47,23 +47,17 @@
                                   // TODO: Fail handling
                                   $scope.deleteInterval(interval);
 
-                                  if(++$scope.retryCount < 3) {
-                                      $scope.error = 'Phone verification failed. Retrying...';
-                                      $scope.phoneVerification(account);
-                                  } else {
-                                      $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
-                                  }
+
+                                  $scope.error = 'Phone verification failed. Retrying...';
+                                  $scope.phoneVerification(account);
+
                               }
 
                               if($scope.tropoPoll == 60) {
                                   $scope.deleteInterval(interval);
 
-                                  if(++$scope.retryCount < 3) {
-                                      $scope.error = 'Phone verification failed. Retrying...';
-                                      $scope.phoneVerification(account);
-                                  } else {
-                                      $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
-                                  }
+                                  $scope.error = 'Phone verification failed. Retrying...';
+                                  $scope.phoneVerification(account);
                               }
                           });
                       }, 1000);

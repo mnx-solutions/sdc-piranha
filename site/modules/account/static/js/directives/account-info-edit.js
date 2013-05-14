@@ -59,13 +59,13 @@
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
+                                $scope.account.$$v.phone = $scope.selectedCountryCode + newVal;
                             }
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.$$v['phone'] = newVal + $scope.phone;
+                                $scope.account.$$v.phone = newVal + $scope.phone;
                             }
                         }, true);
 
