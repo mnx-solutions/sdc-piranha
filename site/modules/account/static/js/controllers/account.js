@@ -11,5 +11,8 @@
             $scope.sshKeys = Account.getKeys(true);
             $scope.paymentMethods = BillingService.getPaymentMethods();
 
+
+            $scope.summary = true;
+
         }]);
 }(window.JP.getModule('Account')));

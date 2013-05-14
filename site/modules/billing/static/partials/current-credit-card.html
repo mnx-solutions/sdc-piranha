@@ -1,10 +1,10 @@
-<div class="sizebar-fix sizebar-fix-right text-small" data-ng-show="creditCard">
-	<div class="alert alert-success shadow">
-		<strong>{{creditCard.cardHolderInfo.cardHolderName}}</strong><br />
-		Card type: {{creditCard.cardType}}<br />
-		Card No: {{creditCard.cardNumber}}<br />
-		Exp. Date: {{creditCard.expirationMonth}}/{{creditCard.expirationYear}}<br />
-	</div>
+<div class="{{summary && ' ' || 'sizebar-fix sizebar-fix-right text-small' }}" data-ng-show="creditCard">
+		<div class="{{summary && ' ' || 'alert alert-success shadow' }}">
+			<strong>{{creditCard.cardHolderInfo.cardHolderName}}</strong><br />
+			Card type: {{creditCard.cardType}}<br />
+			Card No: {{creditCard.cardNumber}}<br />
+			Exp. Date: {{creditCard.expirationMonth}}/{{creditCard.expirationYear}}<br />
+		</div>
 	<!-- {{creditCardJSON}} -->
 </div>
 
