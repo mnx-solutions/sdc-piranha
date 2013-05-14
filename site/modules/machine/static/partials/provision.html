@@ -101,9 +101,11 @@
                     <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
                     <br/>
                     <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
-                        <span data-translate>Memory</span>: {{selectedPackageInfo.memory}}<br/>
-                        <span data-translate>Disk</span>: {{selectedPackageInfo.disk}}<br/>
-                        <span data-translate>vCPUs</span>: {{selectedPackageInfo.vcpus}}<br/>
+						<div class="row-fluid">
+                        	<b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory}}<br/>
+                        	<b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk}}<br />
+                        	<b style="width:90px;display:inline-block" data-translate>vCPUs</b> {{selectedPackageInfo.vcpus}}<br />
+						</div>
 					<div class="row-fluid price-container">
 						<div class="span6 text-center">
 	                        <h5 data-translate>Hourly $</h5>
