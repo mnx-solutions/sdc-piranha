@@ -20,6 +20,7 @@
                         $scope.error = null;
                         $scope.saving = false;
                         $scope.account = Account.getAccount(true);
+                        $scope.countryStyle = {width: '100px'};
 
                         $http.get('billing/countries').success(function (data) {
                             $scope.countries = data;
@@ -64,6 +65,23 @@
                             if(oldVal !== newVal) {
                                 $scope.account.$$v.phone = newVal + $scope.phone;
                             }
+                            if(!newVal) {
+                                $scope.countryStyle.width = '100px';
+                            } else {
+                                var width = '';
+                                switch((newVal + '').length){
+                                    case 3:
+                                        width = '50px';
+                                        break;
+                                    case 2:
+                                        width = '58px';
+                                        break;
+                                    case 1:
+                                        width = '66px';
+                                        break;
+                                }
+                                $scope.countryStyle.width = width;
+                            }
                         }, true);
 
 
@@ -107,6 +125,7 @@
                         };
 
                         $scope.submitForm = function () {
+                            $scope.saving = true;
                             Account.updateAccount($scope.account).then(function () {
                                 $scope.saving = false;
                                 $scope.error = null;

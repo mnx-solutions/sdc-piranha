@@ -86,9 +86,13 @@
                     Phone
                 </label>
                 <div class="controls">
-                    <select data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
-                        <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}">{{country.name}} (+{{country.areaCode}})</option>
+                    <select data-ng-style="countryStyle" data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
+                        <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}">
+                            {{country.name}} (+{{country.areaCode}})
+                        </option>
                     </select>
+                    <div class="input-prepend">
+                        <span class="add-on" data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</span>
                     <input type="text"
                            id="phone"
                            name="phone"
@@ -96,6 +100,7 @@
                            data-ng-pattern="/^(\d+)$/"
                            data-ng-class="{error: isErrorPresent('phone')}"
                            required>
+                    </div>
                     <div class="error"
                          data-translate
                          data-ng-show="isErrorOf('phone', 'required')">
