@@ -13,8 +13,7 @@
 
       $scope.tropoRunning = false;
       $scope.tropoPoll = 0;
-
-      $scope.retryCount = 1;
+      $scope.retriesLeft = 3;
 
       $scope.account.then(function(account) {
           $scope.phoneVerification(account);
@@ -30,7 +29,7 @@
           if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
               $http.get('/tropo/tropo/'+ account.phone +'/'+ account.id).success(function(data) {
                   if(data.retries) {
-                      $scope.error = 'Phone verification failed. Retrying... Retries left: '+ (3-data.retries);
+                      $scope.retriesLeft = (3-data.retries);
                   }
 
                   if(!data.success) {

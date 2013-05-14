@@ -434,10 +434,12 @@ th {
 	margin-top:-10px;
 	position:fixed;
 	top:0px;*/
+	height:40px;
+	padding-top:10px;
 }
 
 .fixed-position-fix {
-/*	height:50px;*/
+/*	height:30px;*/
 }
 
 .item-list-container .item .action-container{
@@ -710,4 +712,12 @@ div .disabled{
 	border-left:1px solid #ddd;
 	margin-left:-1px;
 	padding-left:10px;
+}
+.loading-small {
+	background-image:url('/static/img/icon-loading-small.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	width:16px;
+	height:16px;
+	display:block;
 }
