@@ -38,7 +38,7 @@
                     cardHolderInfo: {}
                 };
 
-                $scope.isSaving = false;
+                $scope.loading = false;
                 $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                 $scope.years = [];
                 $scope.account = Account.getAccount();
@@ -168,18 +168,18 @@
                 };
 
                 $scope.submitForm = function() {
-                    $scope.isSaving = true;
+                    $scope.loading = true;
 
                     BillingService.addPaymentMethod($scope.form, function (errs, job) {
                         if(errs) {
                             $scope.errs = errs;
-                            $scope.isSaving = false;
+                            $scope.loading = false;
                         } else {
                             $scope.errs = null;
                             var cc = BillingService.getDefaultCreditCard();
 
                             $q.when(cc, function (credit) {
-                                $scope.isSaving = false;
+                                $scope.loading = false;
                                 $rootScope.$broadcast('creditCardUpdate', credit);
                             });
                         }
