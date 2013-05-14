@@ -1,8 +1,8 @@
-<form name="accountForm" data-ng-class="{saving: 'loading-medium'}" class="pull-left">
-    <fieldset>
+<form name="accountForm" data-ng-class="{saving: 'loading-medium'}"  class="row-fluid">
+    <fieldset class="span6">
         <legend data-translate data-ng-hide="currentStep">Edit profile</legend>
         <div class="clearfix"></div>
-        <div class="span4">
+        <div>
             <div class="control-group">
                 <label class="control-label" for="email" data-translate>
                     Email
@@ -111,8 +111,9 @@
                 </div>
             </div>
         </div>
-
-        <div class=span4">
+		</fieldset>
+		<fieldset class="span6">
+        <div>
             <div class="control-group">
                 <div class="control-group">
                     <label class="control-label" for="address" data-translate>
@@ -227,17 +228,16 @@
             </div>
         </div>
 
-        <!--
-		<div class="clearfix" data-ng-show="currentStep"></div>
-		<hr data-ng-show="currentStep" />
-		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
-        <a data-ng-hide="currentStep" data-ng-click="cancelChanges()" class="btn pull-left" data-translate>Cancel</a>
-        -->
-
-        <div class="clearfix"></div>
-        <div class="span7">
+        
+		<div class="clearfix"></div>
+       
+          </fieldset>
+        <!-- <div class="span7"> -->
+			<div class="clearfix" data-ng-show="currentStep"></div>
+			<hr data-ng-show="currentStep" />
+			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
             <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="saving || accountForm.$invalid" data-translate>Save changes</button>
-        </div>
-    </fieldset>
+        <!-- </div> -->
+
 	<div class="clearfix"></div>
 </form>
