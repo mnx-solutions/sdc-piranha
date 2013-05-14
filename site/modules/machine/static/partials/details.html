@@ -150,7 +150,7 @@
         </p>
 		
 		<div class="well well-small" data-ng-class="{'loading-medium': isResizing}">
-	        <div data-ng-show="selectedPackage">
+	        <div data-ng-show="currentPackage">
 				<div class="span3 container arrow-to">
 					<h6 data-translate>Current package</h6>
                     <span>{{currentPackage.description}}</span><br />
@@ -165,7 +165,7 @@
 				</div>
 	        </div>
 
-			<div class="span3 pull-right">
+			<div class="span3" data-ng-class="{'pull-right': currentPackage}">
 				<h6 class="control-label" data-translate>Resize Package</h6>
 	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:220px">
 	                <option data-ng-repeat="package in packages"
