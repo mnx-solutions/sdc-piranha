@@ -250,11 +250,19 @@
                 ng.element('.carousel').carousel({
                     interval:false
                 });
-
+				ng.element('.carousel').bind({
+					slide: function() {
+						ng.element('.item .header').hide();
+					},
+					slid:function(){
+						ng.element('.item .header').show();
+					}
+				  });
                 $scope.slideCarousel = function() {
                   $scope.previousPos = ng.element('.carousel-inner').scrollTop();
                   ng.element('.carousel-inner').scrollTop(0);
                   ng.element('.carousel').carousel('next');
+				  
                 }
             }
 
