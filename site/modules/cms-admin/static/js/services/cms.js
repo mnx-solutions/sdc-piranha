@@ -22,7 +22,7 @@
                 getData: function (id) {
                     var ret = $q.defer();
                     if(!data) {
-                        $http.get('cms').success(function (d) {
+                        $http.get('cms-admin').success(function (d) {
                             data = d;
                             ret.resolve(findFromData(id));
                         });
@@ -32,7 +32,7 @@
                     return ret.promise;
                 },
                 setData: function (id, data, callback) {
-                    $http.post('cms/' + id, data).success(function () {
+                    $http.post('cms-admin/' + id, data).success(function () {
                         var el = findFromData(id);
                         el.data = data;
                         callback();
@@ -43,4 +43,4 @@
             };
         }
     ]);
-}(window.JP.getModule('CMS')));
+}(window.JP.getModule('CMSAdmin')));

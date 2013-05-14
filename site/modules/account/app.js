@@ -30,6 +30,12 @@ module.exports = function (scope, app, callback) {
       res.json(countryCodes);
     });
 
+    app.get('/signup/skipSsh', function(req, res) {
+        SignupProgress.setMinProgress(req, 'ssh', function() {
+            res.redirect('/main');
+        });
+    });
+
     app.get('/signup/:step', function (req, res) {
         SignupProgress.setMinProgress(req, req.params.step, function () {
             res.send(200);

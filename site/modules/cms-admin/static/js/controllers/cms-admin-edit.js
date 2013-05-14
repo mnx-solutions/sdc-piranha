@@ -2,14 +2,14 @@
 
 (function (ng, app, $) {
     app.controller(
-        'CMSEditController',
+        'CMSAdmin.EditController',
         [
             '$scope',
             'requestContext',
             'CMSService',
             '$q',
             function ($scope, requestContext, CMSService, $q) {
-                requestContext.setUpRenderContext('cms.edit', $scope);
+                requestContext.setUpRenderContext('cms-admin.edit', $scope);
                 var id = requestContext.getParam('id');
                 $scope.el = CMSService.getData(id);
                 $q.when($scope.el, function (el){

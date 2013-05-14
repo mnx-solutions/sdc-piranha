@@ -58,6 +58,7 @@
 
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
+                            console.log($scope.account);
                             if(oldVal !== newVal) {
                                 $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
                             }

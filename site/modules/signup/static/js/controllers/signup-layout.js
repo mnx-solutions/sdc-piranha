@@ -30,6 +30,10 @@
                     }
                 };
 
+                $scope.skipSsh = function() {
+                    window.location.href = '/signup/account/signup/skipSsh';
+                };
+
                 $scope.location = window.location;
 
                 var i = 0;
