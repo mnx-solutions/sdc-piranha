@@ -9,7 +9,7 @@ csv()
         // turning price strings to floats and round up to nearest penny;
         var price = Math.ceil(parseFloat(row.Price.split(',').join('')) * 100) / 100;
         var price_month = Math.ceil(parseFloat(row["Price Per Month"].split(',').join('')) * 100) / 100;
-        result[row["Joyent Instant Type Name"]]= {type: row.TYPE, group: row["Pricing Group"], description: row.Description, price: price, price_month: price_month};
+        result[row["Joyent Instant Type Name"]]= {type: row.TYPE, group: row["Pricing Group"], description: row.Description, price: price.toFixed(2), price_month: price_month.toFixed(2)};
     })
     .on('end', function(count){
         console.log(JSON.stringify(result, null, " "));
