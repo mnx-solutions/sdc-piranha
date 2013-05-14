@@ -130,10 +130,8 @@
                                placeholder="Name of your instance"
                                data-ng-model="data.name"
                                data-machine-name
-                               required />
-                        <span ng-show="!provisionForm.$valid">Missing/taken/invalid name!</span>
+                                />
                         <button class="btn btn-success"
-                                data-ng-disabled="!provisionForm.$valid"
                                 data-ng-click="clickProvision()"
                                 data-translate>Create instance</button>
                     </form>
