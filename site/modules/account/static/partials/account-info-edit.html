@@ -1,8 +1,7 @@
+<div class="{{currentStep && '' || 'container span9'}}">
 <form name="accountForm" data-ng-class="{saving: 'loading-medium'}"  class="row-fluid">
     <fieldset class="span6">
-        <legend data-translate data-ng-hide="currentStep">Edit profile</legend>
-        <div class="clearfix"></div>
-        <div>
+		<legend data-translate data-ng-hide="currentStep">Contact Info</legend>
             <div class="control-group">
                 <label class="control-label" for="email" data-translate>
                     Email
@@ -109,11 +108,14 @@
                     </div>
                 </div>
             </div>
-        </div>
 		</fieldset>
 		<fieldset class="span6">
+<<<<<<< HEAD
         <div>
             <div class="control-group">
+=======
+			<legend data-translate data-ng-hide="currentStep">Address Info</legend>
+>>>>>>> 134eb3896e3e1fdac9e607719521b45b4edca29d
                 <div class="control-group">
                     <label class="control-label" for="address" data-translate>
                         Address
@@ -151,7 +153,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="control-group">
                     <label class="control-label" for="postalCode" data-translate>
                         Postal code
@@ -181,12 +182,11 @@
                     <label class="control-label" for="country">
                         Country
                     </label>
-
                     <select name="country"
                             id="country"
                             required
                             data-ng-model="account['country']"
-                            data-ng-options="country.name as country.name for country in countries | orderBy: 'name'">
+                            data-ng-options="country.iso3 as country.name for country in countries | orderBy: 'name'">
                             </select>
                 </div>
 
@@ -208,11 +208,11 @@
                 </div>
 
                 <div class="control-group" data-ng-show="stateSel" class="border">
-                    <label class="control-label" for="state" data-translate>
+                    <label class="control-label" for="state2" data-translate>
                         State
                     </label>
 
-                    <select id="state"
+                    <select id="state2"
                             name="state"
                             data-ng-model="account['state']"
                             required>
@@ -222,12 +222,16 @@
                             {{value}}
                         </option>
                     </select>
+<<<<<<< HEAD
                 </div>
 				
             </div>
         </div>
 
         
+=======
+                </div>			
+>>>>>>> 134eb3896e3e1fdac9e607719521b45b4edca29d
 		<div class="clearfix"></div>
        
           </fieldset>
@@ -240,3 +244,7 @@
 
 	<div class="clearfix"></div>
 </form>
+<<<<<<< HEAD
+=======
+</div>
+>>>>>>> 134eb3896e3e1fdac9e607719521b45b4edca29d

@@ -33,7 +33,7 @@
 
                         $scope.$watch('account["country"]', function (newVal, oldVal) {
                             if (oldVal === 'United States' || oldVal === 'Canada'){
-                                $scope.account.$$v['state'] = '';
+                                $scope.account.$$v.state = '';
                             }
 
                             if (newVal === 'United States') {
@@ -55,14 +55,14 @@
 
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
-                            if(oldVal != newVal) {
-                                $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
+                            if(oldVal !== newVal) {
+                                $scope.account.$$v.phone = $scope.selectedCountryCode + newVal;
                             }
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
-                            if(oldVal != newVal) {
-                                $scope.account.$$v['phone'] = newVal + $scope.phone;
+                            if(oldVal !== newVal) {
+                                $scope.account.$$v.phone = newVal + $scope.phone;
                             }
                         }, true);
 
