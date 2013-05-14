@@ -104,10 +104,19 @@
                         <span data-translate>Memory</span>: {{selectedPackageInfo.memory}}<br/>
                         <span data-translate>Disk</span>: {{selectedPackageInfo.disk}}<br/>
                         <span data-translate>vCPUs</span>: {{selectedPackageInfo.vcpus}}<br/>
-                        <br/>
-                        <span data-translate>Price</span>: {{selectedPackageInfo.price}} <span data-translate>USD</span><br/>
-                        <span data-translate>Monthly price</span>: {{selectedPackageInfo.price_month}} <span data-translate>USD</span><br/>
-
+					<div class="row-fluid price-container">
+						<div class="span6 text-center">
+	                        <h5 data-translate>Hourly $</h5>
+							<b style="font-size:26px">{{selectedPackageInfo.price}}</b>
+							<!-- <span data-translate>USD</span><br/> -->
+						</div>
+						<div class="span6 text-center">
+	                        <h5 data-translate>Monthly $</h5>
+							<b style="font-size:26px">
+							{{selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
+						</div>
+						<div class="clearfix"></div>
+					</div>	
                     </div>
 
 
