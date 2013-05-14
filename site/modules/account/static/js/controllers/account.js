@@ -20,5 +20,6 @@
                 }
             };
 
+            $scope.summary = true;
         }]);
 }(window.JP.getModule('Account')));

@@ -234,13 +234,10 @@
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
-
-
                             });
 
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
-                            console.log(packages);
                             $scope.searchPackages = '';
                         });
                     }

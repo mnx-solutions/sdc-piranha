@@ -33,7 +33,11 @@
                             $scope.countryCodes = data;
                         });
 
-                        $scope.$watch('account["country"]', function (newVal, oldVal) {
+                        $scope.filterUndefinedAreas = function (country) {
+                            return !!country.areaCode;
+                        };
+
+                        $scope.$watch('account.country', function (newVal, oldVal) {
                             if (oldVal === 'United States' || oldVal === 'Canada'){
                                 $scope.account.$$v.state = '';
                             }
@@ -47,26 +51,18 @@
                             }
                         }, true);
 
-                        $scope.iso2ToName = function(iso2) {
-                            for(var country in $scope.countries) {
-                                if($scope.countries[country].iso2 === iso2)
-                                    return $scope.countries[country].name;
-                            }
-                            return iso2;
-                        };
-
 
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
                             console.log($scope.account);
                             if(oldVal !== newVal) {
-                                $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
+                                $scope.account.$$v.phone = $scope.selectedCountryCode + newVal;
                             }
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.$$v['phone'] = newVal + $scope.phone;
+                                $scope.account.$$v.phone = newVal + $scope.phone;
                             }
                         }, true);
 
