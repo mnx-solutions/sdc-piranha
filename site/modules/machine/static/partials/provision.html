@@ -132,7 +132,6 @@
                 </div>
 				<div id="finish-configuration" class="none alert alert-success span3">
                     <form name="provisionForm">
-						<span ng-show="provison.data.name.$error">This is not a valid float number!</span>
                         <h4 data-translate>You're almost done.</h4>
 						<span data-translate>Give your instance a name and you are all done.</span>
                         
@@ -142,6 +141,7 @@
                                data-ng-model="data.name"
                                data-machine-name
                                required />
+                        <span ng-show="!provisionForm.$valid">Missing/taken/invalid name!</span>
                         <button class="btn btn-success"
                                 data-ng-disabled="!provisionForm.$valid"
                                 data-ng-click="clickProvision()"
