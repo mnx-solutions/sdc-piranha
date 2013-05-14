@@ -1,4 +1,115 @@
+.navbar-inner {
+	border:none;
+}
+.navbar-inner {
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+    -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+    -moz-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
+}
+.navbar-inner .container {
+    padding:10px;
+}
+
+.navbar-inverse,.navbar-inner  {
+    background-color:#dee4e9 !important;
+    border-bottom:1px solid #d7dee2 !important;
+    color:#375775;
+    margin-bottom:30px;
+	overflow:hidden;
+	height:80px;	
+}
+
+.navbar-inner .brand {
+	position:absolute;
+	z-index:10;
+	background-color:#375775;
+    background-image: url('/static/img/logo-white.png');
+    background-repeat:no-repeat;
+    background-position:50% 60%;
+    width:190px;
+    height:100px;
+	margin-top:-15px;
+	-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+	
+}
+
+.navbar-inner .top-menu span {
+	padding-right:10px;
+	padding-left:10px;
+	text-transform:uppercase;
+	font-size:12px;
+	border-right:1px solid #375775;
+}
+.navbar-inner .top-menu span.last {
+	border:none;
+}
+.navbar-inner .top-menu span a {
+	color:#375775;
+}
+.signup-progress-container {
+	border:1px solid #ddd;
+	border-top:none;
+	margin-top:-20px;
+	padding:20px 20px 20px 20px;
+}
+h1 {
+	font-weight:normal;
+}
+.align-center {
+	text-align:center;
+}
+
+.text-huge {
+	font-size:100px;
+	line-height:100px;
+}
+.text-small {
+    font-size:11px;
+}
+.note {
+    color:#888;
+}
+
+.loading-medium {
+	background-image:url('/static/img/icon-loading-medium.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	min-height:50px;
+	max-width:100%;
+	min-width:50px;
+}
+.footer .brand {
+	background-image: url('/static/img/logo-gray.png');
+    background-repeat:no-repeat;
+    background-position:50% 60%;
+    width:120px;
+    height:30px;
+}
+
+.footer {
+	padding-top:20px;
+	margin-bottom:65px;
+}
+.footer .nav {
+	padding-top:8px;
+}
+.footer .nav li {
+	float:left;
+	font-size:11px;
+}
+.footer a {
+    color:#999;
+    background-color:transparent !important;
+	padding-right:20px;
+}
+
+/*
 .text-small {
 	font-size:11px;
 }
@@ -7,8 +118,6 @@
     cursor:pointer;
 }
 .signin-flow-container {
-/*	border:1px solid red;*/
-/*	width:700px;*/
 	margin-left:150px;
 }
 .signin-flow-container .alert {
@@ -65,4 +174,4 @@
 .landingTOS:hover {
     color:#b2d7fd;
 	
-}
+}*/

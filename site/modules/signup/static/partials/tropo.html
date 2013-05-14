@@ -1,15 +1,17 @@
 <div data-ng-controller="TropoController">
-    <div class="signin-flow-container span9">
-        <div class="brand pull-left"></div>
-        <div class="clearfix"></div>
-        <div class="alert">
-            <span>You'll recieve a call. Please enter this number:</span>
-            <div>{{randomNumber}}</div>
-
-            <div class="red">{{error}}</div>
-        </div>
-        <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
-        <div class="clearfix"></div>
-    </div>
-
-</div>
+	<div class="page-header">
+	    <h1>Phone confirmation <small>You'll recieve a call. Enter the number below</small></h1> 
+	</div>
+	
+		<div class="alert alert-error" data-ng-show="error">
+			{{error}}
+		</div>
+		<div class="clearfix"></div>
+		<div class="well well-small span6 align-center text-huge offset2">	
+			<b>{{randomNumber}}</b>
+		</div>
+		<div class="clearfix"></div>
+		<hr />
+		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
+		<div class="clearfix"></div>
+	</div>
