@@ -23,7 +23,7 @@
 
             template: '<div class="navbar-inner">' +
 							'<div class="container">' +
-                            '<a href="#!/dashboard/"><div class="brand pull-left"></div></a>' +
+                            '<a href="#!/dashboard/"><div class="brand pull-left shadow-dark"></div></a>' +
 							'<div class="pull-left main-nav">' +
 								'<a href="#!/dashboard/">Dashboard</a>' +
 								'<a href="#!/machine/">Instances</a>' +

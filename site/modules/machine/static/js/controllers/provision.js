@@ -159,7 +159,7 @@
                 };
 
                 $scope.selectPackage = function (id) {
-
+                    $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
 
@@ -233,6 +233,8 @@
                                     price = 0.01;
                                 }
                                 p.price = price.toFixed(2);
+                                var price_month = parseFloat(p.price_month).toFixed(2);
+                                p.price_month = price_month;
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }

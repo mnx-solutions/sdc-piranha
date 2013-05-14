@@ -49,13 +49,13 @@
                         };
 
                         $scope.$watch('account.country', function (newVal, oldVal) {
-                            if (oldVal === 'United States' || oldVal === 'Canada'){
+                            if (oldVal === 'USA' || oldVal === 'CAN'){
                                 $scope.account.state = '';
                             }
 
-                            if (newVal === 'United States') {
+                            if (newVal === 'USA') {
                                 $scope.stateSel = $scope.allStates.us.obj;
-                            } else if (newVal === 'Canada') {
+                            } else if (newVal === 'CAN') {
                                 $scope.stateSel = $scope.allStates.canada.obj;
                             } else {
                                 $scope.stateSel = undefined;
