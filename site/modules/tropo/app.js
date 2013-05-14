@@ -18,7 +18,7 @@ module.exports = function (scope, app, callback) {
         return nr;
     }
 
-    function makeTropoCall(randomNumber, req, res) {
+    function makeTropoCall(randomNumber, retries, req, res) {
 
         var options = {
             host:'api.tropo.com',
@@ -35,7 +35,7 @@ module.exports = function (scope, app, callback) {
 
             res.on('end', function() {
                 parseXml(resultBody.toString(), {trim: true}, function(err, result) {
-                    response.json({randomNumber: randomNumber, tropoId: result.session.id[0], success: true});
+                    response.json({randomNumber: randomNumber, tropoId: result.session.id[0], retries: retries, success: true});
                 });
             });
 
@@ -56,14 +56,16 @@ module.exports = function (scope, app, callback) {
             if(retries >= 3) {
                 response.json({success: false});
             } else {
-                redisClient.get(req.params.uuid +'_troporandom', function(err, result) {
+                redisClient.get(req.params.uuid +'_troporandom', function(err, result)
+                {
+                    retries++;
                     if(!result || result === '') {
                         redisClient.set(req.params.uuid +'_troporandom', randomNumber);
                         redisClient.set(req.params.uuid +'_tropo', 1);
-                            makeTropoCall(randomNumber,req, res);
+                        makeTropoCall(randomNumber, retries, req, res);
                     } else {
-                        redisClient.set(req.params.uuid + '_tropo', ++retries);
-                        makeTropoCall(result, req, res);
+                        redisClient.set(req.params.uuid + '_tropo', retries);
+                        makeTropoCall(result, retries, req, res);
                     }
                 });
             }
