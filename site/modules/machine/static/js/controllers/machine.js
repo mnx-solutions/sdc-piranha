@@ -123,9 +123,19 @@
                 $scope.packages = Package.package();
 
                 $q.when($scope.machine, function (m) {
+                    console.log('packages', $scope.packages);
                     $scope.dataset = Dataset.dataset(m.image);
                     $scope.package = Package.package(m.package);
 
+                    $scope.dataset.then(function(ds){
+                        if(!$scope.datasetType) {
+                            if(ds.type == 'virtualmachine') {
+                                $scope.datasetType = 'kvm';
+                            } else if(ds.type == 'smartmachine'){
+                                $scope.datasetType = 'smartos';
+                            }
+                        }
+                    })
                     Package.package(m.package).then(function (pkg) {
                         $scope.selectedPackageName = pkg.name;
                         $scope.selectedPackage = pkg;
@@ -221,6 +231,20 @@
                 $scope.isPasswordVisible = function (id) {
                     return !$scope.visiblePasswords.hasOwnProperty(id) ||
                         $scope.visiblePasswords[id];
+                };
+
+                $scope.sortPackages = function(pkg) {
+                    return parseInt(pkg.memory);
+                };
+
+                $scope.filterPackages = function (item) {
+                    var dstype = $scope.datasetType ? item.type == $scope.datasetType : true;
+                    if(dstype){
+                        return true;
+                    }
+                    console.log('returning false');
+                    return false;
+
                 };
             }
 
