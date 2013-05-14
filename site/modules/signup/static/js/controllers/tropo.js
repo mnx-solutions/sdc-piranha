@@ -49,7 +49,7 @@
 
                                   if(++$scope.retryCount < 3) {
                                       $scope.error = 'Phone verification failed. Retrying...';
-                                      $scope.phoneVerification($scope.account);
+                                      $scope.phoneVerification(account);
                                   } else {
                                       $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                                   }
@@ -60,7 +60,7 @@
 
                                   if(++$scope.retryCount < 3) {
                                       $scope.error = 'Phone verification failed. Retrying...';
-                                      $scope.phoneVerification($scope.account);
+                                      $scope.phoneVerification(account);
                                   } else {
                                       $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                                   }

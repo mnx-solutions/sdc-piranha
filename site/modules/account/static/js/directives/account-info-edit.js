@@ -15,6 +15,8 @@
                         $scope.allStates = null;
                         $scope.countryCodes = null;
                         $scope.stateSel = null;
+                        $scope.phone = null;
+                        $scope.selectedCountryCode = null;
                         $scope.error = null;
                         $scope.saving = false;
                         $scope.account = Account.getAccount(true);
@@ -50,19 +52,20 @@
                                 if($scope.countries[country].iso2 === iso2)
                                     return $scope.countries[country].name;
                             }
+                            return iso2;
                         };
 
 
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.$$v.phone = $scope.selectedCountryCode + newVal;
+                                $scope.account.$$v['phone'] = $scope.selectedCountryCode + newVal;
                             }
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.$$v.phone = newVal + $scope.phone;
+                                $scope.account.$$v['phone'] = newVal + $scope.phone;
                             }
                         }, true);
 
