@@ -6,8 +6,14 @@
         ['$scope', 'requestContext', '$location',
             function ($scope, requestContext, $location) {
                 requestContext.setUpRenderContext('signup', $scope);
-
-                $scope.steps = ['accountInfo', 'tropo', 'billing','ssh'];
+				
+				$scope.stepNames = {
+					accountInfo:"Account Info",
+					tropo:"Phone confirmation",
+					billing:"Payment Method",
+					ssh:"SSH Key"
+				};
+				$scope.steps = ['accountInfo', 'tropo', 'billing','ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.setStep = function (step) {
@@ -26,10 +32,13 @@
 
                 $scope.location = window.location;
 
-                $scope.$watch('location.hash', function (val) {
-                    if(val === '#!/start') {
+                var i = 0;
+
+                $scope.$watch('location.hash', function (val, oldval) {
+                    if(val === '#!/start' && i > 0) {
                         $scope.setStep($scope.steps[0]);
                     }
+                    i++;
                 }, true);
 
                 $scope.$on('creditCardUpdate', function () {
@@ -39,7 +48,11 @@
                 $scope.nextStep();
 
                 $scope.signOut = function() {
-                    window.location = '/landing/forgetToken';
+					var msg = confirm('This will cancel your sign-up process. Are you sure you want that?');
+					if(msg){
+						window.location = '/landing/forgetToken';
+					}
+                    return false;
                 }
             }
         ]);

@@ -15,5 +15,17 @@
     "City": "City",
     "State": "State",
     "Country": "Country",
-    "Please fill all the required fields": "Please fill all the required fields"
+    "Code": "Code",
+    "Missing email address": "Missing email address",
+    "Invalid email address": "Invalid email address",
+    "Missing first name": "Missing first name",
+    "Missing last name": "Missing last name",
+    "Missing company name": "Missing company name",
+    "Missing phone number": "Missing phone number",
+    "Invalid phone number": "Invalid phone number",
+    "Missing address": "Missing address",
+    "Missing city": "Missing city",
+    "Missing state": "Missing state",
+    "Missing postal code": "Missing postal code",
+    "Invalid postal code": "Invalid postal code"
 }

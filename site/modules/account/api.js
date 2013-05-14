@@ -2,14 +2,21 @@
 
 var redis = require('redis');
 var config = require('easy-config');
+var redisClients = {};
+var redisOnHold = {};
 
 module.exports = function (scope, register, callback) {
     var api = {};
+    var id = config.redis.host + ':' + config.redis.port + '-' + config.redis.signupDB;
 
-    api.client = redis.createClient(config.redis.port, config.redis.host);
-    api.client.on('error', function (err) {
+    if(redisClients[id]) {
+        api.client = redisClients[id];
+    } else {
+        api.client = redisClients[id] = redis.createClient(config.redis.port, config.redis.host);
+        api.client.on('error', function (err) {
 
-    });
+        });
+    }
 
     var steps = ['start', 'accountInfo', 'tropo', 'billing','ssh'];
 
@@ -186,7 +193,18 @@ module.exports = function (scope, register, callback) {
 
     register('SignupProgress', api);
 
-    api.client.select(config.redis.signupDB, function () {
-        callback();
-    });
+    if(api.client.__connected) {
+        setImmediate(callback);
+    } else if(api.client.__connecting) {
+        redisOnHold[id].push(callback);
+    } else {
+        redisOnHold[id] = [callback];
+        api.client.__connecting = true;
+        api.client.select(config.redis.signupDB, function () {
+            redisClients[id].__connected = true;
+            redisOnHold[id].forEach(function (fn){
+                fn();
+            });
+        });
+    }
 };

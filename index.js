@@ -41,7 +41,7 @@ var opts = {
     main: app,
     extensions: config.extensions,
     compiler: compiler,
-    apps: ['main','landing','signup','tropo']
+    apps: ['main','landing','signup','tropo','admin']
 };
 
 

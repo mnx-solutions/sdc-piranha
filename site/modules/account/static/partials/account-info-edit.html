@@ -1,99 +1,243 @@
-<form name="accountForm" data-ng-class="{saving: 'loading-medium'}" class="pull-left">
-    <ul class="nav nav-tabs" data-ng-show="steps">
-        <li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">
-            <a>{{s}}</a>
-        </li>
-    </ul>
-    <fieldset>
-        <legend data-translate data-ng-hide="currentStep">Edit profile</legend><div class="clearfix"></div><br />
-        <div class="span4 clearfix container">
-            <div class="control-group" data-ng-repeat="(field, properties) in fields.basic" data-ng-show="properties.shown">
-                <label data-ng-show="properties.required"
-                       class="control-label"
-                       for="account_{{field}}">
-                    * {{properties.title}}
-                </label>
-                <label data-ng-show="!properties.required"
-                       class="control-label"
-                       for="account_{{field}}">
-                    {{properties.title}}
+<form name="accountForm" data-ng-class="{saving: 'loading-medium'}"  class="row-fluid">
+    <fieldset class="span6">
+        <legend data-translate data-ng-hide="currentStep">Edit profile</legend>
+        <div class="clearfix"></div>
+        <div>
+            <div class="control-group">
+                <label class="control-label" for="email" data-translate>
+                    Email
                 </label>
                 <div class="controls">
-                    <input type="{{properties.type}}"
-                           name="account_{{field}}"
-                           id="account_{{field}}"
-                           data-ng-validate="properties.validate"
-                           data-ng-required="properties.required"
-                           data-ng-pattern="{{properties.pattern}}"
-                           data-ng-model="account[field]" />
+                    <input type="email"
+                           id="email"
+                           name="email"
+                           data-ng-model="account['email']"
+                           data-ng-class="{error: isErrorPresent('email')}"
+                           required/>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('email', 'required')">
+                        Missing email address
+                    </div>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('email', 'email')">
+                        Invalid email address
+                    </div>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="account_phone">
-                    * Phone
+                <label class="control-label" for="firstName" data-translate>
+                    First name
                 </label>
                 <div class="controls">
-                    <select class="span4" data-ng-model="selectedCountryCode" name="account_phonecountrycode" id="countrycode" required>
-                        <option value="">Choose phone country code</option>
+                    <input type="text"
+                           id="firstName"
+                           name="firstName"
+                           data-ng-model="account['firstName']"
+                           data-ng-class="{error: isErrorPresent('firstName')}"
+                           required/>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('firstName', 'required')">
+                        Missing first name
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="lastName" data-translate>
+                    Last name
+                </label>
+                <div class="controls">
+                    <input type="text"
+                           id="lastName"
+                           name="lastName"
+                           data-ng-model="account['lastName']"
+                           data-ng-class="{error: isErrorPresent('lastName')}"
+                           required/>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('lastName', 'required')">
+                        Missing last name
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="companyName" data-translate>
+                    Company name
+                </label>
+                <div class="controls">
+                    <input type="text"
+                           id="companyName"
+                           name="companyName"
+                           data-ng-model="account['companyName']"/>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('companyName', 'required')">
+                        Missing company name
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="phone" data-translate>
+                    Phone
+                </label>
+                <div class="controls">
+                    <select data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
+                        <option value="" data-translate>Code</option>
                         <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{code}} (+{{value}})</option>
                     </select>
-                    <input type="text" class="span4" id="account_phone" name="account_phone" data-ng-model="phone" required>
+                    <input type="text"
+                           id="phone"
+                           name="phone"
+                           data-ng-model="account['phone']"
+                           data-ng-pattern="/^(\d+)$/"
+                           data-ng-class="{error: isErrorPresent('phone')}"
+                           required>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('phone', 'required')">
+                        Missing phone number
+                    </div>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('phone', 'pattern')">
+                        Invalid phone number
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="pull-right span4 container">
+		</fieldset>
+		<fieldset class="span6">
+        <div>
             <div class="control-group">
-                <div class="control-group" data-ng-repeat="(field, properties) in fields.address" data-ng-show="properties.shown">
-                    <label data-ng-show="properties.required"
-                           class="control-label"
-                           for="account_{{field}}">
-                        * {{properties.title}}
-                    </label>
-                    <label data-ng-show="!properties.required"
-                           class="control-label"
-                           for="account_{{field}}">
-                        {{properties.title}}
+                <div class="control-group">
+                    <label class="control-label" for="address" data-translate>
+                        Address
                     </label>
                     <div class="controls">
-                        <input class="span4" type="{{properties.type}}"
-                               name="account_{{field}}"
-                               id="account_{{field}}"
-                               data-ng-validate="properties.validate"
-                               data-ng-required="properties.required"
-                               data-ng-pattern="{{properties.pattern}}"
-                               data-ng-model="account[field]" />
+                        <input type="text"
+                               id="address"
+                               name="address"
+                               data-ng-model="account['address']"
+                               data-ng-class="{error: isErrorPresent('address')}"
+                               required>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isErrorOf('address', 'required')">
+                            Missing address
+                        </div>
                     </div>
                 </div>
 
-                <label class="control-label"
-                       for="account_country">
-                    * Country
-                </label>
-                <select class="span4" data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.name as country.name for country in countries| orderBy: 'name'"></select>
-
-                <div data-ng-show="!stateSel">
-                    <label class="control-label" for="account_state">* State</label>
-                    <input type="text" class="span4" id="account_state" name="account_state" data-ng-model="account['state']" required>
+                <div class="control-group">
+                    <label class="control-label" for="city" data-translate>
+                        City
+                    </label>
+                    <div class="controls">
+                        <input type="text"
+                               id="city"
+                               name="city"
+                               data-ng-model="account['city']"
+                               data-ng-class="{error: isErrorPresent('city')}"
+                               required>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isErrorOf('city', 'required')">
+                            Missing city
+                        </div>
+                    </div>
                 </div>
-                <div data-ng-show="stateSel" class="border">
-                    <label class="control-label" for="account_state">* State</label>
-                    <select id="account_state" name="account_state" data-ng-model="account['state']" required>
-                        <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
+
+                <div class="control-group">
+                    <label class="control-label" for="postalCode" data-translate>
+                        Postal code
+                    </label>
+                    <div class="controls">
+                        <input type="text"
+                               id="postalCode"
+                               name="postalCode"
+                               data-ng-model="account['postalCode']"
+                               data-ng-class="{error: isErrorPresent('postalCode')}"
+                               data-ng-pattern="/^(\d+)$/"
+                               required>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isErrorOf('postalCode', 'required')">
+                            Missing postal code
+                        </div>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isErrorOf('postalCode', 'pattern')">
+                            Invalid postal code
+                        </div>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="country">
+                        Country
+                    </label>
+
+                    <select name="country"
+                            id="country"
+                            required
+                            data-ng-model="account['country']"
+                            data-ng-options="country.name as country.name for country in countries | orderBy: 'name'">
+                            </select>
+                </div>
+
+                <div class="control-group" data-ng-show="!stateSel">
+                    <label class="control-label" for="state" data-translate>
+                        State
+                    </label>
+                    <input type="text"
+                           id="state"
+                           name="state"
+                           data-ng-model="account['state']"
+                           data-ng-class="{error: isErrorPresent('state')}"
+                           required>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isErrorOf('state', 'required')">
+                        Missing state
+                    </div>
+                </div>
+
+                <div class="control-group" data-ng-show="stateSel" class="border">
+                    <label class="control-label" for="state" data-translate>
+                        State
+                    </label>
+
+                    <select id="state"
+                            name="state"
+                            data-ng-model="account['state']"
+                            required>
+                        <option data-ng-repeat="(key, value) in stateSel"
+                                data-ng-selected="key == account.state"
+                                value="{{key}}">
+                            {{value}}
+                        </option>
                     </select>
                 </div>
 				
             </div>
         </div>
-        <div class="clearfix"></div>
-        <div class="span8" data-ng-show="error">{{error}}</div>
 
-        <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
-        <button data-ng-hide="currentStep" data-ng-click="cancelChanges()" class="btn btn-success pull-left" data-translate>Cancel</button>
+        
+		<div class="clearfix"></div>
+       
+          </fieldset>
+        <!-- <div class="span7"> -->
+			<div class="clearfix" data-ng-show="currentStep"></div>
+			<hr data-ng-show="currentStep" />
+			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
+            <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="saving || accountForm.$invalid" data-translate>Save changes</button>
+        <!-- </div> -->
 
-		<button class="btn btn-success pull-right" data-ng-click="updateAccount()" data-ng-disabled="saving || !accountForm.$valid" data-translate>Save changes</button>
-        <div class="clearfix"></div>
-    </fieldset>
 	<div class="clearfix"></div>
 </form>

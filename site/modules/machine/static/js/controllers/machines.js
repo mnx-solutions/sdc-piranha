@@ -201,7 +201,6 @@
                             $scope.pagedMachines[index].push($scope.filteredMachines[i]);
                         }
                     }
-                    console.log($scope.pagedMachines);
                 };
 
                 // get pagination range
@@ -336,7 +335,7 @@
                 };
 
                 $scope.checkState = function(state) {
-                    console.log(state);
+
                 };
 
                 $scope.isPrivateIP = function (ip) {

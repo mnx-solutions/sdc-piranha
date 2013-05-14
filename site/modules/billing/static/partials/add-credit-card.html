@@ -1,5 +1,5 @@
-<form name="paymentForm" class="row" data-ng-class="{'loading-medium': isSaving}">
-    <fieldset class="span4">
+<form name="paymentForm" data-ng-class="{'loading-medium': isSaving}" class="row-fluid">
+    <fieldset class="span6">
         <legend>Credit card details</legend>
         <div class="control-group">
             <label class="control-label" for="creditCardNumber" data-translate>Card number</label>
@@ -31,8 +31,8 @@
                 </div>
             </div>
         </div>
-		<div class="row">
-            <div class="control-group span1">
+		<div class="container">
+            <div class="control-group pull-left">
             	<label class="control-label" for="expirationMonth" data-translate>Month</label>
             	<div class="controls">
                     <select id="expirationMonth"
@@ -45,7 +45,7 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group span2">
+            <div class="control-group pull-left span3">
             	<label class="control-label" for="expirationYear" data-translate>Year</label>
             	<div class="controls">
                     <select id="expirationYear"
@@ -144,176 +144,189 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="span4">
+    <fieldset class="span6">
         <legend>Billing	 information</legend>
-
-        <div class="control-group">
-            <label class="control-label" for="addressLine1" data-translate>Address line 1</label>
-            <div class="controls">
-                <input type="text"
-                       id="addressLine1"
-                       name="addressLine1"
-                       data-ng-class="{error: isErrorPresent('addressLine1')}"
-                       data-ng-model="form.cardHolderInfo.addressLine1"
-                       size="255">
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('addressLine1')">
-                    Invalid address 1 line
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('addressLine1', 'required')">
-                    Missing address 1 line
-                </div>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="addressLine2">Address line 2</label>
-            <div class="controls">
-                <input type="text"
-                       id="addressLine2"
-                       name="addressLine2"
-                       data-ng-class="{error: isErrorPresent('addressLine2')}"
-                       data-ng-model="form.cardHolderInfo.addressLine2"
-                       size="255">
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('addressLine2')">
-                    Invalid address 2 line
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('addressLine2', 'required')">
-                    Missing address 2 line
-                </div>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="country" data-translate>Country</label>
-            <div class="controls">
-                <select  id="country"
-                         name="country"
-                         data-ng-class="{error: isErrorPresent('country')}"
-                         data-ng-model="form.cardHolderInfo.country"
-                         data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"
-                         required>
-                </select>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('country')">
-                    Invalid country
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('country', 'required')">
-                    Missing country
-                </div>
-            </div>
-        </div>
-        <div class="control-group" data-ng-show="!stateSel">
-            <label class="control-label" for="state" data-translate>State</label>
-            <div class="controls">
-                <input type="text"
-                       id="state"
-                       name="state"
-                       placeholder="State"
-                       data-translate="placeholder"
-                       data-ng-class="{error: isErrorPresent('state')}"
-                       data-ng-model="form.cardHolderInfo.state"
-                       required>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('state')">
-                    Invalid state
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('state', 'required')">
-                    Missing state
-                </div>
-            </div>
-        </div>
-        <div class="control-group" data-ng-show="stateSel">
-            <label class="control-label" for="stateSel" data-translate>State</label>
-            <div class="controls">
-                <select id="stateSel"
-                        name="state"
-                        data-ng-class="{error: isErrorPresent('state')}"
-                        data-ng-model="form.cardHolderInfo.state"
-                        required>
-                    <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
-                </select>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('state')">
-                    Invalid state
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('state', 'required')">
-                    Missing state
-                </div>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="city" data-translate>City</label>
-            <div class="controls">
-                <input type="text"
-                       id="city"
-                       name="city"
-                       size="40"
-                       placeholder="City"
-                       data-translate="placeholder"
-                       data-ng-class="{error: isErrorPresent('city')}"
-                       data-ng-model="form.cardHolderInfo.city"
-                       required>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('city')">
-                    Invalid city
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('city', 'required')">
-                    Missing city
-                </div>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="zipCode" data-translate>Zip code</label>
-            <div class="controls">
-                <input type="text"
-                       id="zipCode"
-                       name="zipCode"
-                       placeholder="Zip"
-                       data-translate="placeholder"
-                       data-ng-pattern="/^(\d+)$/"
-                       data-ng-class="{error: isErrorPresent('zipCode')}"
-                       data-ng-model="form.cardHolderInfo.zipCode"
-                       required>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('zipCode')">
-                    Invalid Zip code
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('zipCode', 'required')">
-                    Missing Zip code
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isErrorOf('zipCode', 'pattern')">
-                    Invalid symbols (numbers only)
-                </div>
-            </div>
-        </div>
-    </fieldset>
+		<div>
+			<!--
+			    <input type="checkbox" checked> I will use my previously entered info
+				see on signupi jaoks ainult.
+					- checked > default > kasutatakse eelnevat infot
+					- not checked, vqetakse alumiselt containerilt "none" 2ra
+					- siin tahaks kuvatada ka seda eelnevalt sisestatud infot ja seda mitte vormis
+			-->
+		</div>
+		<div>
+	        <div class="control-group">
+	            <label class="control-label" for="addressLine1" data-translate>Address line 1</label>
+	            <div class="controls">
+	                <input type="text"
+	                       id="addressLine1"
+	                       name="addressLine1"
+	                       data-ng-class="{error: isErrorPresent('addressLine1')}"
+	                       data-ng-model="form.cardHolderInfo.addressLine1"
+	                       size="255">
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('addressLine1')">
+	                    Invalid address 1 line
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('addressLine1', 'required')">
+	                    Missing address 1 line
+	                </div>
+	            </div>
+	        </div>
+	        <div class="control-group">
+	            <label class="control-label" for="addressLine2">Address line 2</label>
+	            <div class="controls">
+	                <input type="text"
+	                       id="addressLine2"
+	                       name="addressLine2"
+	                       data-ng-class="{error: isErrorPresent('addressLine2')}"
+	                       data-ng-model="form.cardHolderInfo.addressLine2"
+	                       size="255">
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('addressLine2')">
+	                    Invalid address 2 line
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('addressLine2', 'required')">
+	                    Missing address 2 line
+	                </div>
+	            </div>
+	        </div>
+	        <div class="control-group">
+	            <label class="control-label" for="country" data-translate>Country</label>
+	            <div class="controls">
+	                <select  id="country"
+	                         name="country"
+	                         data-ng-class="{error: isErrorPresent('country')}"
+	                         data-ng-model="form.cardHolderInfo.country"
+	                         data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"
+	                         required>
+	                </select>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('country')">
+	                    Invalid country
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('country', 'required')">
+	                    Missing country
+	                </div>
+	            </div>
+	        </div>
+	        <div class="control-group" data-ng-show="!stateSel">
+	            <label class="control-label" for="state" data-translate>State</label>
+	            <div class="controls">
+	                <input type="text"
+	                       id="state"
+	                       name="state"
+	                       placeholder="State"
+	                       data-translate="placeholder"
+	                       data-ng-class="{error: isErrorPresent('state')}"
+	                       data-ng-model="form.cardHolderInfo.state"
+	                       required>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('state')">
+	                    Invalid state
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('state', 'required')">
+	                    Missing state
+	                </div>
+	            </div>
+	        </div>
+	        <div class="control-group" data-ng-show="stateSel">
+	            <label class="control-label" for="stateSel" data-translate>State</label>
+	            <div class="controls">
+	                <select id="stateSel"
+	                        name="state"
+	                        data-ng-class="{error: isErrorPresent('state')}"
+	                        data-ng-model="form.cardHolderInfo.state"
+	                        required>
+	                    <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
+	                </select>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('state')">
+	                    Invalid state
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('state', 'required')">
+	                    Missing state
+	                </div>
+	            </div>
+	        </div>
+	        <div class="control-group">
+	            <label class="control-label" for="city" data-translate>City</label>
+	            <div class="controls">
+	                <input type="text"
+	                       id="city"
+	                       name="city"
+	                       size="40"
+	                       placeholder="City"
+	                       data-translate="placeholder"
+	                       data-ng-class="{error: isErrorPresent('city')}"
+	                       data-ng-model="form.cardHolderInfo.city"
+	                       required>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('city')">
+	                    Invalid city
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('city', 'required')">
+	                    Missing city
+	                </div>
+	            </div>
+	        </div>
+	        <div class="control-group">
+	            <label class="control-label" for="zipCode" data-translate>Zip code</label>
+	            <div class="controls">
+	                <input type="text"
+	                       id="zipCode"
+	                       name="zipCode"
+	                       placeholder="Zip"
+	                       data-translate="placeholder"
+	                       data-ng-pattern="/^(\d+)$/"
+	                       data-ng-class="{error: isErrorPresent('zipCode')}"
+	                       data-ng-model="form.cardHolderInfo.zipCode"
+	                       required>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('zipCode')">
+	                    Invalid Zip code
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('zipCode', 'required')">
+	                    Missing Zip code
+	                </div>
+	                <div class="error"
+	                     data-translate
+	                     data-ng-show="isErrorOf('zipCode', 'pattern')">
+	                    Invalid symbols (numbers only)
+	                </div>
+	            </div>
+	        </div>
+    	  </div>
+		</fieldset>
     <div class="clearfix"></div>
-    <div class="span7">
-        <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
-        <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || isSaving">Submit</button>
+    <div>
+		<div class="clearfix" data-ng-show="currentStep"></div>
+		<hr data-ng-show="currentStep" />
+		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
+
+        <button class="pull-right btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || isSaving">Submit</button>
     </div>
 
 </form>

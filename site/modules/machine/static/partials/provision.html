@@ -120,19 +120,19 @@
 					<div class="clearfix"></div>
                 </div>
 				<div id="finish-configuration" class="none alert alert-success span3">
-                    <form name="provision">
-                        {{provison['data.name'].$error}}
-						<span ng-show="provison.data.name.$error">This is not a valid float number!</span>
+                    <form name="provisionForm">
                         <h4 data-translate>You're almost done.</h4>
-						<span data-translate>Give your instance a name and you are all done.</span>						        
-
+						<span data-translate>Give your instance a name and you are all done.</span>
                         
                         <input name="machineName"
                                type="text"
                                placeholder="Name of your instance"
-                               data-ng-model="data.name" data-machine-name />
+                               data-ng-model="data.name"
+                               data-machine-name
+                               required />
+                        <span ng-show="!provisionForm.$valid">Missing/taken/invalid name!</span>
                         <button class="btn btn-success"
-                                data-ng-disabled="!provision.$valid"
+                                data-ng-disabled="!provisionForm.$valid"
                                 data-ng-click="clickProvision()"
                                 data-translate>Create instance</button>
                     </form>
