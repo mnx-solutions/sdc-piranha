@@ -87,7 +87,7 @@
                 </label>
                 <div class="controls">
                     <select data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
-                        <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{ iso2ToName(code) }} (+{{value}})</option>
+                        <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}">(+{{country.areaCode}}) {{country.name}}</option>
                     </select>
                     <input type="text"
                            id="phone"
