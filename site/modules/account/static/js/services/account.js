@@ -35,12 +35,12 @@
             var deferred = $q.defer();
 
             serverTab.call({
-                name: 'updateAccount',
                 data: (data.$$v || data),
                 progress: function(err, job) {
                 },
                 done: function(err, job) {
                     var resolver = job.__read();
+                    console.log(resolver);
                     deferred.resolve(resolver);
                     $$track.marketing_lead(account);
                 }
