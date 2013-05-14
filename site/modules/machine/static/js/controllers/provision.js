@@ -106,6 +106,10 @@
 
                 };
 
+                $scope.sortPackages = function (pkg) {
+                    return parseInt(pkg.memory);
+                };
+
                 $scope.reconfigure = function () {
 
                     $scope.selectedDataset = null;
@@ -236,6 +240,7 @@
 
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
+                            console.log(packages);
                             $scope.searchPackages = '';
                         });
                     }
