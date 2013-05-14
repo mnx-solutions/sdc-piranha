@@ -11,8 +11,15 @@
             $scope.sshKeys = Account.getKeys(true);
             $scope.paymentMethods = BillingService.getPaymentMethods();
 
+            $scope.openKeyDetails = null;
+            $scope.setOpenDetails = function(id) {
+                if(id === $scope.openKeyDetails) {
+                    $scope.openKeyDetails = null;
+                } else {
+                    $scope.openKeyDetails = id;
+                }
+            };
 
             $scope.summary = true;
-
         }]);
 }(window.JP.getModule('Account')));
