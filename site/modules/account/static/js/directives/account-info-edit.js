@@ -46,11 +46,11 @@
                         }, true);
 
                         $scope.iso2ToName = function(iso2) {
-                            for(country in $scope.countries) {
+                            for(var country in $scope.countries) {
                                 if($scope.countries[country].iso2 === iso2)
                                     return $scope.countries[country].name;
                             }
-                        }
+                        };
 
 
                         /* phone number handling */
@@ -68,6 +68,7 @@
 
 
                         $scope.setAccount = function() {
+                            console.log('setting account');
                             $scope.account = Account.getAccount(true);
                         };
 
