@@ -1,5 +1,6 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.ProvisionController">
-    <div class="container content-container-inner">
+	<div class="loading-medium" data-ng-show="initializing" style="height:60px;width:100%"></div>
+    <div class="container content-container-inner" data-ng-hide="initializing">
         <div class="container" data-ng-show="keys.length">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
@@ -37,23 +38,26 @@
 							</div>
 							
 							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets  ">
-								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" data-ng-click="selectDataset(dataset.id); slideCarousel()" name="dataset" value="{{dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
+								<input class="pull-left" type="radio" id="dataset-{{dataset.id}}" data-ng-click="selectDataset(dataset.id); slideCarousel()" name="dataset" value="{{selectedVersions[dataset.name].id || dataset.id}}" data-ng-checked="$parent.selectedDataset.id && selectedDataset == $parent.selectedDataset.id" data-ng-model="selectedDataset"  />
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
-									<strong>{{dataset.name}}</strong><br />
-									{{dataset.description}}
-                                    <div class="image-container" data-ng-show="versions[dataset.name].length > 1">
+									<strong>{{selectedVersions[dataset.name].name || dataset.name}}</strong><br />
+									{{selectedVersions[dataset.name].description || dataset.description}}
+                                    <div class="image-container" data-ng-show="manyVersions[dataset.name]">
                                         <span class="span2" style="margin-left:0px"><strong>Choose image version</strong></span>
-                                        <div class="btn-group">
-                                            <button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">
-                                                {{versions[dataset.name][0]}}
-                                                <span class="caret"></span>
-                                            </button>
-                                            <ul class="dropdown-menu" data-ng-repeat="(key, value) in versions[dataset.name]">
-                                                <li><a tabindex="-1">{{value}}</a></li>
-                                            </ul>
-                                        </div>
+                                        <select data-ng-model="selectedVersions[dataset.name]" data-ng-options="val as key for (key, val) in versions[dataset.name]">
+
+                                        </select>
+                                        <!--<div class="btn-group">-->
+                                            <!--<button class="btn dropdown-toggle btn-mini" data-toggle="dropdown" href="#">-->
+                                                <!--{{versions[dataset.name][0]}}-->
+                                                <!--<span class="caret"></span>-->
+                                            <!--</button>-->
+                                            <!--<ul class="dropdown-menu" data-ng-repeat="(key, value) in versions[dataset.name]">-->
+                                                <!--<li><a tabindex="-1">{{value}}</a></li>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
                                     </div>
-                                    <div class="image-container" data-ng-show="versions[dataset.name].length < 2">
+                                    <div class="image-container" data-ng-hide="manyVersions[dataset.name]">
                                         <span class="span2" style="margin-left:0px"><strong>Image version</strong> {{dataset.version}}</span>
                                     </div>
 								</label>

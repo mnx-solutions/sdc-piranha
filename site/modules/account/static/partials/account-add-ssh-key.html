@@ -15,6 +15,7 @@
     </div>
 
     <div data-ng-show="error">{{error}}</div>
+    <button data-ng-show="currentStep" data-ng-click="signOut()" class="btn btn-success pull-left" data-translate>Cancel</button>
     <div class="align-right">
         <button class="btn btn-success" data-ng-click="createNewKey()">Add SSH key</button>
     </div>

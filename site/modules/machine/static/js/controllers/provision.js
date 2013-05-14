@@ -141,13 +141,12 @@
                     for (var i = 0, c = props.length; i < c; i++) {
                         var val = item[props[i]];
 
-                        var dstype = $scope.dataset ? item.type == $scope.dataset : true;
+                        var dstype = $scope.datasetType ? item.type == $scope.datasetType : true;
 
                         if (val.match($scope.searchPackages) && dstype && ($scope.packageType === null || $scope.packageType === item.group)) {
                             return true;
                         }
                     }
-
                     return false;
                 };
 
@@ -159,22 +158,32 @@
                             var unique_datasets = [];
                             var dataset_names = [];
                             var versions = {};
+                            var selectedVersions = {};
+                            var manyVersions = {};
+
                             datasets.forEach(function (dataset) {
                                 if (!dataset_names[dataset.name]) {
                                     dataset_names[dataset.name] = true;
                                     unique_datasets.push(dataset);
                                 }
                                 if (!versions[dataset.name]) {
-                                    var suba = [dataset.version];
-                                    versions[dataset.name] = suba;
+//                                    var suba = [dataset.version];
+                                    versions[dataset.name] = {};
+                                    versions[dataset.name][dataset.version] = dataset;
+
+                                    selectedVersions[dataset.name] = dataset;
+
                                 } else {
-                                    if (versions[dataset.name].indexOf(dataset.version) === -1) {
-                                        versions[dataset.name].push(dataset.version);
+                                    if (!versions[dataset.name][dataset.version]) {
+                                        manyVersions[dataset.name] = true;
+                                        versions[dataset.name][dataset.version] = dataset;
                                     }
                                 }
                             });
                             $scope.datasets = unique_datasets;
                             $scope.versions = versions;
+                            $scope.manyVersions = manyVersions;
+                            $scope.selectedVersions = selectedVersions;
                         });
 
                         Package.package({ datacenter: newVal }).then(function (packages) {
@@ -183,7 +192,10 @@
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
+
+
                             });
+
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
                             $scope.searchPackages = '';

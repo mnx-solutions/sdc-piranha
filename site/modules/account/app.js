@@ -6,6 +6,7 @@ var redis = require('redis');
 var config = require('easy-config');
 var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var fs = require('fs');
+var countryCodes = require('./data/countryCodes');
 
 module.exports = function (scope, app, callback) {
     var keyGen = null;
@@ -24,6 +25,10 @@ module.exports = function (scope, app, callback) {
             res.json({sessionId: req.params.tropoid, status: result});
         });
     });
+
+    app.get('/countryCodes',function(req, res) {
+      res.json(countryCodes);
+    })
 
     app.get('/signup/:step', function (req, res) {
         SignupProgress.setMinProgress(req, req.params.step, function () {

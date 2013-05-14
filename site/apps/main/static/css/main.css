@@ -92,6 +92,18 @@ h4 {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
 }
+.main-nav {
+	width:350px;
+	margin-left:250px;
+	margin-top:40px;
+	float:left;
+}
+.main-nav a {
+	margin-right:30px;
+}
+.main-nav a.active {
+	color:#666;
+}
 
 .navbar-inner .container {
     padding:10px;
@@ -380,6 +392,15 @@ th {
 .item-list-container .item:hover .item,.item-list-container .item:hover .item:hover {
     background:#fff;
 }
+.item-list-container .item .item > span {
+/*    background:#fff;*/
+/*	margin-left:15px;*/
+}
+
+.item-list-container .item:hover .item.header,.item-list-container .item:hover .item.header:hover {
+	background-color:#fcfcfc;
+}
+
 .item-list-container .item .item.header {
     margin-top:-2px;
 }
