@@ -1,11 +1,6 @@
-<div class="{{currentStep && '' || 'container span9'}}">
-	<!--
-		if accoutn view, append to parent
-			- class="container span9"
-	-->
 <form name="accountForm" data-ng-class="{saving: 'loading-medium'}"  class="row-fluid">
     <fieldset class="span6">
-		<legend data-translate data-ng-hide="currentStep">Contact Info</legend>
+        <legend data-translate data-ng-hide="currentStep">Edit profile</legend>
         <div class="clearfix"></div>
         <div>
             <div class="control-group">
@@ -93,8 +88,7 @@
                 </label>
                 <div class="controls">
                     <select data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
-                        <option value="" data-translate>Code</option>
-                        <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{code}} (+{{value}})</option>
+                        <option data-ng-repeat="(code, value) in countryCodes.codes" value="{{value}}">{{ iso2ToName(code) }} (+{{value}})</option>
                     </select>
                     <input type="text"
                            id="phone"
@@ -118,8 +112,7 @@
         </div>
 		</fieldset>
 		<fieldset class="span6">
-			<legend data-translate data-ng-hide="currentStep">Address Info</legend>
-			<div class="clearfix"></div>
+        <div>
             <div class="control-group">
                 <div class="control-group">
                     <label class="control-label" for="address" data-translate>
@@ -229,15 +222,21 @@
                             {{value}}
                         </option>
                     </select>
-                </div>			
+                </div>
+				
             </div>
+        </div>
+
+        
 		<div class="clearfix"></div>
-		</fieldset>
+       
+          </fieldset>
+        <!-- <div class="span7"> -->
 			<div class="clearfix" data-ng-show="currentStep"></div>
 			<hr data-ng-show="currentStep" />
 			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
             <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="saving || accountForm.$invalid" data-translate>Save changes</button>
+        <!-- </div> -->
 
 	<div class="clearfix"></div>
 </form>
-</div>

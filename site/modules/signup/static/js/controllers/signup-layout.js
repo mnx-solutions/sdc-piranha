@@ -35,6 +35,10 @@
                 var i = 0;
 
                 $scope.$watch('location.hash', function (val, oldval) {
+                    if($scope.steps.indexOf(val.substring(3)) !== $scope.currentStep && val !== '#!/start') {
+                        $scope.setStep($scope.currentStep);
+                    }
+
                     if(val === '#!/start' && i > 0) {
                         $scope.setStep($scope.steps[0]);
                     }
