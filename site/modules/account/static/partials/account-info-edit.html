@@ -1,5 +1,5 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
-<form name="accountForm" data-ng-class="{'loading-medium': loading}" class="row-fluid">
+<form name="accountForm" class="row-fluid">
     <fieldset class="span6">
 		<legend data-translate data-ng-hide="currentStep">Contact Info</legend>
             <div class="control-group">
@@ -231,6 +231,7 @@
 			<hr data-ng-show="currentStep" />
 			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
             <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
         <!-- </div> -->
 
 	<div class="clearfix"></div>
