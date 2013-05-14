@@ -18,7 +18,7 @@
                         $scope.phone = null;
                         $scope.selectedCountryCode = null;
                         $scope.error = null;
-                        $scope.saving = false;
+                        $scope.loading = false;
                         $scope.account = Account.getAccount(true);
                         $scope.countryStyle = {width: '100px'};
 
@@ -125,9 +125,9 @@
                         };
 
                         $scope.submitForm = function () {
-                            $scope.saving = true;
+                            $scope.loading = true;
                             Account.updateAccount($scope.account).then(function () {
-                                $scope.saving = false;
+                                $scope.loading = false;
                                 $scope.error = null;
 
                                 if ($scope.nextStep) {
@@ -136,7 +136,7 @@
                                 }
                             }, function (err) {
                                 $scope.error = null;
-                                $scope.saving = false;
+                                $scope.loading = false;
                             });
                         };
                     },
