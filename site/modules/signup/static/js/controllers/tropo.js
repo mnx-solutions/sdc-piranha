@@ -27,7 +27,7 @@
 
       $scope.phoneVerification = function(account) {
           if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
-              $http.get('/tropo/tropo/'+ account.phone +'/'+ account.id).success(function(data) {
+              $http.get('/tropo/tropo/'+ account.phone.replace('-', '') +'/'+ account.id).success(function(data) {
                   if(data.retries) {
                       $scope.retriesLeft = (3-data.retries);
                   }

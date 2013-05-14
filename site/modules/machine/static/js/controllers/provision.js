@@ -14,7 +14,8 @@
             '$dialog',
             '$location',
             'localization',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization) {
+            '$q',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
@@ -73,6 +74,7 @@
                     function provision() {
                         confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
+
                             $location.path('/machine');
                         });
                     }
