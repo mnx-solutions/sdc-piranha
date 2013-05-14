@@ -1,5 +1,5 @@
-<form name="paymentForm" data-ng-class="{'loading-medium': isSaving}">
-    <fieldset class="span4">
+<form name="paymentForm" data-ng-class="{'loading-medium': isSaving}" class="row-fluid">
+    <fieldset class="span6">
         <legend>Credit card details</legend>
         <div class="control-group">
             <label class="control-label" for="creditCardNumber" data-translate>Card number</label>
@@ -31,8 +31,8 @@
                 </div>
             </div>
         </div>
-		<div class="row">
-            <div class="control-group span1">
+		<div class="container">
+            <div class="control-group pull-left">
             	<label class="control-label" for="expirationMonth" data-translate>Month</label>
             	<div class="controls">
                     <select id="expirationMonth"
@@ -45,7 +45,7 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group span2">
+            <div class="control-group pull-left span3">
             	<label class="control-label" for="expirationYear" data-translate>Year</label>
             	<div class="controls">
                     <select id="expirationYear"
@@ -144,7 +144,7 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="span4">
+    <fieldset class="span6">
         <legend>Billing	 information</legend>
 		<div>
 			<!--
