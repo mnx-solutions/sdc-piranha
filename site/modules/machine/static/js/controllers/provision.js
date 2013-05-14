@@ -226,15 +226,6 @@
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
                             packages.forEach(function (p) {
-                                // if price is below 0.005 we don't want to
-                                // show a 0.00 price.
-                                var price = parseFloat(p.price);
-                                if(price === 0) {
-                                    price = 0.01;
-                                }
-                                p.price = price.toFixed(2);
-                                var price_month = parseFloat(p.price_month).toFixed(2);
-                                p.price_month = price_month;
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
