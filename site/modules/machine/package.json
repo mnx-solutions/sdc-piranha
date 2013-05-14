@@ -4,8 +4,7 @@
 
         "pre": {
             "js": [
-                "/vendor/bootstrap-select2/select2.min.js",
-                "/vendor/bootstrap-select2/angular-ui.min.js"
+                "/vendor/bootstrap-select2/select2.min.js"
             ],
             "css": [
                 "/vendor/bootstrap-select2/select2.css"

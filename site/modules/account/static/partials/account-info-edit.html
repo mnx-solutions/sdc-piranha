@@ -66,15 +66,15 @@
                        for="account_country">
                     * Country
                 </label>
-                <select class="span4" data-ng-model="account['country']" name="account_country" id="country" required data-ng-options="country.name as country.name for country in countries| orderBy: 'name'"></select>
+                <select class="span4" data-ng-model="account['country']" name="account_country" id="account_country" required data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"></select>
 
                 <div data-ng-show="!stateSel">
                     <label class="control-label" for="account_state">* State</label>
                     <input type="text" class="span4" id="account_state" name="account_state" data-ng-model="account['state']" required>
                 </div>
                 <div data-ng-show="stateSel" class="border">
-                    <label class="control-label" for="account_state">* State</label>
-                    <select id="account_state" name="account_state" data-ng-model="account['state']" required>
+                    <label class="control-label" for="account_state2">* State</label>
+                    <select id="account_state2" name="account_state" data-ng-model="account['state']" required>
                         <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
                     </select>
                 </div>

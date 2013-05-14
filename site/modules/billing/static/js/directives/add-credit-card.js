@@ -2,7 +2,7 @@
 
 (function (app) {
 
-    app.directive('addCreditCard',['BillingService', '$q','$http', '$rootScope', function (BillingService, $q, $http, $rootScope) {
+    app.directive('addCreditCard',['BillingService', '$q','$http', '$rootScope', 'Account', function (BillingService, $q, $http, $rootScope, Account) {
 
         return {
             restrict: 'A',
@@ -41,6 +41,32 @@
                 $scope.isSaving = false;
                 $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                 $scope.years = [];
+                $scope.account = Account.getAccount();
+                $scope.useExisting = true;
+                var searchCountry = false;
+
+                $q.when($scope.account, function(account) {
+                    var form = $scope.form.cardHolderInfo;
+                    form.zipCode = account.postalCode;
+                    form.city = account.city;
+                    form.state = account.state;
+                    form.addressLine1 = account.address;
+                    if(account.country.length === 3) {
+                        form.country = account.country;
+                    } else {
+                        if($scope.countries) {
+                            $scope.countries.some(function (e){
+                                if(e.name === account.country) {
+                                    form.country = e.iso3;
+                                    return true;
+                                }
+                            });
+                        } else {
+                            searchCountry = account.country;
+                        }
+                    }
+                    console.log($scope.form);
+                });
 
                 var c = (new Date()).getFullYear();
                 var i = c;
@@ -50,6 +76,14 @@
 
                 $http.get('billing/countries').success(function (data) {
                     $scope.countries = data;
+                    if(searchCountry) {
+                        data.some(function (el) {
+                            if(el.name === searchCountry) {
+                                $scope.form.cardHolderInfo.country = el.iso3;
+                                return true;
+                            }
+                        });
+                    }
                 });
 
                 $http.get('billing/states').success(function (data) {
