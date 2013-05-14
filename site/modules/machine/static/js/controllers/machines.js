@@ -160,7 +160,7 @@
                         $scope.sortIcon[newSortingOrder] = 'up';
                     }
                 };
-                $scope.initializing = true;
+                $scope.loading = true;
                 // Searching
                 $scope.search = function (changePage) {
                     // filter by search term
@@ -181,8 +181,8 @@
                     $scope.groupToPages();
 
                     $scope.$watch('machines.final', function(newval) {
-                        if(newval && $scope.initializing) {
-                            $scope.initializing = false;
+                        if(newval && $scope.loading) {
+                            $scope.loading = false;
                         }
                     })
                 };
