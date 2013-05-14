@@ -63,7 +63,7 @@
                             timeout: 40000,
                             method: 'get',
                             url: 'server/call',
-                            params: {tab: self.id}
+                            params: {tab: self.id, rnd: Math.floor(Math.random()*123456)}
                         })
                         .success(function (data, code) {
                             eventer.$emit('polled');
