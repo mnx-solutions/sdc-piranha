@@ -12,6 +12,7 @@
             "menu",
             "account",
             "cms",
+            "cms-admin",
             "dashboard-admin",
             "account-admin"
         ]

@@ -10,7 +10,7 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
   body()
     div(data-ng-switch='subview', class='subview container ng-cloak', ng-cloak)
                 each layout in layouts
-                    div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}')!= layout.data
+                    div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
     each link in js
       script(type='text/javascript',src='#{link._url}')

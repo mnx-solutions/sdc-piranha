@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
             'cms.LayoutController',
-            ['$scope', 'requestContext', 'localization',
-                function ($scope, requestContext, localization) {
+            ['$scope', 'requestContext',
+                function ($scope, requestContext) {
                     requestContext.setUpRenderContext('cms',
                         $scope,
                         {
