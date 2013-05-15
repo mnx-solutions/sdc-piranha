@@ -104,7 +104,6 @@
                 var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
                 return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
             };
-
             $scope.clickKeygenDownload = function() {
                 window.location.href = '/main/account/key-generator.sh';
             };

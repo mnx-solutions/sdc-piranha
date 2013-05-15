@@ -2,42 +2,51 @@
 
 (function (app) {
 
-  app.directive('accountAddSshKey',
-    ['Account', 'localization', '$q',
-      function (Account, localization, $q) {
+    app.directive('accountAddSshKey',
+        ['Account', 'localization', '$q', '$window',
+            function (Account, localization, $q, $window) {
 
-        return {
-          restrict: 'A',
-          replace: true,
-          scope: true,
-          link: function ($scope) {
+                return {
+                    restrict: 'A',
+                    replace: true,
+                    scope: true,
+                    link: function ($scope) {
 
-            $scope.newKey = {};
+                        $scope.newKey = {};
 
-            $scope.createNewKey = function() {
-              $scope.loading = true;
-              $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
+                        $scope.createNewKey = function() {
+                            $scope.loading = true;
+                            $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
 
-              $q.when($scope.addedKey, function(key) {
+                            $q.when($scope.addedKey, function(key) {
 
-                if(key.name && key.fingerprint && key.key) {
-                  // successful add
-                  $scope.addsshKey = false;
-                  $scope.newKey = {};
+                                if(key.name && key.fingerprint && key.key) {
+                                    // successful add
+                                    $scope.addsshKey = false;
+                                    $scope.newKey = {};
 
-                  if ($scope.nextStep) {
-                    $scope.nextStep();
-                  }
-                } else {
-                  $scope.error = 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '');
+                                    if ($scope.nextStep) {
+                                        $scope.nextStep();
+                                    }
+                                } else {
+                                    $scope.error = 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '');
 
-                }
-                $scope.loading = false;
-              });
-            }
+                                }
+                                $scope.loading = false;
+                            });
+                        };
 
-          },
-          templateUrl: 'account/static/partials/account-add-ssh-key.html'
-        };
-      }]);
+                        $scope.showKeygenDownload = function() {
+                            // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
+                            var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
+                            return (supportedPlatforms.indexOf($window.navigator.platform) >= 0);
+                        };
+                        $scope.clickKeygenDownload = function() {
+                            window.location.href = '/main/account/key-generator.sh';
+                        };
+
+                    },
+                    templateUrl: 'account/static/partials/account-add-ssh-key.html'
+                };
+            }]);
 }(window.JP.getModule('Account')));

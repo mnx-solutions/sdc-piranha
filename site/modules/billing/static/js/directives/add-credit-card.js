@@ -53,19 +53,7 @@
                     form.addressLine1 = account.address;
                     if(account.country.length === 3) {
                         form.country = account.country;
-                    } else {
-                        if($scope.countries) {
-                            $scope.countries.some(function (e){
-                                if(e.name === account.country) {
-                                    form.country = e.iso3;
-                                    return true;
-                                }
-                            });
-                        } else {
-                            searchCountry = account.country;
-                        }
                     }
-                    console.log($scope.form);
                 });
 
                 var c = (new Date()).getFullYear();
@@ -107,7 +95,7 @@
                     $scope.form.creditCardType = getCardType(newVal ? newVal.toString() : '');
                 }, true);
 
-                $scope.isErrorOf = function (field, errorType) {
+                $scope.isError = function (field, errorType) {
                     var isPresent = false;
                     var fieldAtoms = field.split('.');
 
@@ -128,36 +116,7 @@
 
                     if ($scope.paymentForm[field].$dirty) {
                         Object.keys($scope.paymentForm[field].$error).some(function (key) {
-                            if ($scope.paymentForm[field].$error[key] && key === errorType) {
-                                isPresent = true;
-                                return true;
-                            }
-                        });
-                    }
-
-                    return isPresent;
-                };
-
-                $scope.isErrorPresent = function (field) {
-                    var isPresent = false;
-                    var fieldAtoms = field.split('.');
-
-                    if (fieldAtoms.length > 1) {
-                        field = fieldAtoms[1];
-
-                        if ($scope.errs && ($scope.errs[fieldAtoms[1]] ||
-                            $scope.errs[fieldAtoms[0] + '.' + fieldAtoms[1]])) {
-                            return true;
-                        }
-                    } else {
-                        if ($scope.errs && ($scope.errs[field])) {
-                            return true;
-                        }
-                    }
-
-                    if ($scope.paymentForm[field].$dirty) {
-                        Object.keys($scope.paymentForm[field].$error).some(function (key) {
-                            if ($scope.paymentForm[field].$error[key]) {
+                            if ($scope.paymentForm[field].$error[key] && (!errorType || key === errorType)) {
                                 isPresent = true;
                                 return true;
                             }

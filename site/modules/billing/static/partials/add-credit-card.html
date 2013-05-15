@@ -13,21 +13,21 @@
                        data-translate="placeholder"
                        data-ng-pattern="/^(\d+)$/"
                        data-ng-model="form.creditCardNumber"
-                       data-ng-class="{error: isErrorPresent('creditCard.creditCardNumber')}"
+                       data-ng-class="{error: isError('creditCard.creditCardNumber')}"
                        required>
                 <div class="error"
                       data-translate
-                      data-ng-show="isErrorOf('creditCard.creditCardNumber')">
+                      data-ng-show="isError('creditCard.creditCardNumber')">
                     Invalid credit card number
                 </div>
                 <div class="error"
                       data-translate
-                      data-ng-show="isErrorOf('creditCard.creditCardNumber', 'required')">
+                      data-ng-show="isError('creditCard.creditCardNumber', 'required')">
                     Missing credit card number
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('creditCard.creditCardNumber', 'pattern')">
+                     data-ng-show="isError('creditCard.creditCardNumber', 'pattern')">
                     Invalid symbols (numbers only)
                 </div>
             </div>
@@ -40,7 +40,7 @@
                             name="expirationMonth"
                             class="date-month"
                             data-ng-model="form.expirationMonth"
-                            data-ng-class="{error: isErrorPresent('creditCard.expirationMonth')}"
+                            data-ng-class="{error: isError('creditCard.expirationMonth')}"
                             data-ng-options="value for value in months"
                             required>
                     </select>
@@ -53,7 +53,7 @@
                             name="expirationYear"
                             class="date-year"
                             data-ng-model="form.expirationYear"
-                            data-ng-class="{error: isErrorPresent('creditCard.expirationYear')}"
+                            data-ng-class="{error: isError('creditCard.expirationYear')}"
                             data-ng-options="value for value in years"
                             required>
 
@@ -65,12 +65,12 @@
         <div class="control-group">
             <div class="error"
                  data-translate
-                 data-ng-show="isErrorOf('creditCard.expirationMonth')">
+                 data-ng-show="isError('creditCard.expirationMonth')">
                 Missing expiration month
             </div>
             <div class="error"
                  data-translate
-                 data-ng-show="isErrorOf('creditCard.expirationYear')">
+                 data-ng-show="isError('creditCard.expirationYear')">
                 Missing expiration year
             </div>
         </div>
@@ -81,17 +81,17 @@
                 <input type="text"
                        id="securityCode"
                        name="securityCode"
-                       data-ng-class="{error: isErrorPresent('creditCard.securityCode')}"
+                       data-ng-class="{error: isError('creditCard.securityCode')}"
                        data-ng-model="form.securityCode"
                        required>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('creditCard.securityCode')">
+                     data-ng-show="isError('creditCard.securityCode')">
                     Invalid security code
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('creditCard.securityCode', 'required')">
+                     data-ng-show="isError('creditCard.securityCode', 'required')">
                     Missing security code
                 </div>
             </div>
@@ -105,17 +105,17 @@
                        placeholder="First name"
                        size="50"
                        data-translate="placeholder"
-                       data-ng-class="{error: isErrorPresent('billToContact.firstName')}"
+                       data-ng-class="{error: isError('billToContact.firstName')}"
                        data-ng-model="form.firstName"
                        required>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('billToContact.firstName')">
+                     data-ng-show="isError('billToContact.firstName')">
                     Invalid first name
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('billToContact.firstName', 'required')">
+                     data-ng-show="isError('billToContact.firstName', 'required')">
                     Missing first name
                 </div>
             </div>
@@ -129,17 +129,17 @@
                        placeholder="Last name"
                        size="50"
                        data-translate="placeholder"
-                       data-ng-class="{error: isErrorPresent('billToContact.lastName')}"
+                       data-ng-class="{error: isError('billToContact.lastName')}"
                        data-ng-model="form.lastName"
                        required>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('billToContact.lastName')">
+                     data-ng-show="isError('billToContact.lastName')">
                     Invalid last name
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('billToContact.lastName', 'required')">
+                     data-ng-show="isError('billToContact.lastName', 'required')">
                     Missing last name
                 </div>
             </div>
@@ -156,18 +156,18 @@
                 <input type="text"
                        id="addressLine1"
                        name="addressLine1"
-                       data-ng-class="{error: isErrorPresent('addressLine1')}"
+                       data-ng-class="{error: isError('addressLine1')}"
                        data-ng-model="form.cardHolderInfo.addressLine1"
                        size="255"
                        data-ng-disabled="useExisting">
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('addressLine1')">
+                     data-ng-show="isError('addressLine1')">
                     Invalid address 1 line
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('addressLine1', 'required')">
+                     data-ng-show="isError('addressLine1', 'required')">
                     Missing address 1 line
                 </div>
             </div>
@@ -178,18 +178,18 @@
                 <input type="text"
                        id="addressLine2"
                        name="addressLine2"
-                       data-ng-class="{error: isErrorPresent('addressLine2')}"
+                       data-ng-class="{error: isError('addressLine2')}"
                        data-ng-model="form.cardHolderInfo.addressLine2"
                        size="255"
                        data-ng-disabled="useExisting">
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('addressLine2')">
+                     data-ng-show="isError('addressLine2')">
                     Invalid address 2 line
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('addressLine2', 'required')">
+                     data-ng-show="isError('addressLine2', 'required')">
                     Missing address 2 line
                 </div>
             </div>
@@ -199,7 +199,7 @@
             <div class="controls">
                 <select  id="country"
                          name="country"
-                         data-ng-class="{error: isErrorPresent('country')}"
+                         data-ng-class="{error: isError('country')}"
                          data-ng-model="form.cardHolderInfo.country"
                          data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"
                          required
@@ -207,12 +207,12 @@
                 </select>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('country')">
+                     data-ng-show="isError('country')">
                     Invalid country
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('country', 'required')">
+                     data-ng-show="isError('country', 'required')">
                     Missing country
                 </div>
             </div>
@@ -225,18 +225,18 @@
                        name="state"
                        placeholder="State"
                        data-translate="placeholder"
-                       data-ng-class="{error: isErrorPresent('state')}"
+                       data-ng-class="{error: isError('state')}"
                        data-ng-model="form.cardHolderInfo.state"
                        required
                        data-ng-disabled="useExisting">
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('state')">
+                     data-ng-show="isError('state')">
                     Invalid state
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('state', 'required')">
+                     data-ng-show="isError('state', 'required')">
                     Missing state
                 </div>
             </div>
@@ -246,7 +246,7 @@
             <div class="controls">
                 <select id="stateSel"
                         name="state"
-                        data-ng-class="{error: isErrorPresent('state')}"
+                        data-ng-class="{error: isError('state')}"
                         data-ng-model="form.cardHolderInfo.state"
                         required
                         data-ng-disabled="useExisting">
@@ -254,12 +254,12 @@
                 </select>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('state')">
+                     data-ng-show="isError('state')">
                     Invalid state
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('state', 'required')">
+                     data-ng-show="isError('state', 'required')">
                     Missing state
                 </div>
             </div>
@@ -273,18 +273,18 @@
                        size="40"
                        placeholder="City"
                        data-translate="placeholder"
-                       data-ng-class="{error: isErrorPresent('city')}"
+                       data-ng-class="{error: isError('city')}"
                        data-ng-model="form.cardHolderInfo.city"
                        required
                        data-ng-disabled="useExisting">
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('city')">
+                     data-ng-show="isError('city')">
                     Invalid city
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('city', 'required')">
+                     data-ng-show="isError('city', 'required')">
                     Missing city
                 </div>
             </div>
@@ -298,23 +298,23 @@
                        placeholder="Zip"
                        data-translate="placeholder"
                        data-ng-pattern="/^(\d+)$/"
-                       data-ng-class="{error: isErrorPresent('zipCode')}"
+                       data-ng-class="{error: isError('zipCode')}"
                        data-ng-model="form.cardHolderInfo.zipCode"
                        required
                        data-ng-disabled="useExisting">
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('zipCode')">
+                     data-ng-show="isError('zipCode')">
                     Invalid Zip code
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('zipCode', 'required')">
+                     data-ng-show="isError('zipCode', 'required')">
                     Missing Zip code
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isErrorOf('zipCode', 'pattern')">
+                     data-ng-show="isError('zipCode', 'pattern')">
                     Invalid symbols (numbers only)
                 </div>
             </div>
