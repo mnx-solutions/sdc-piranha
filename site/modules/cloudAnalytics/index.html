@@ -21,6 +21,9 @@
 	                
 
 					<div class="well well-small">
+						<!--
+							seda containerit peaks n2itama peale create vqi create defaults nuppude vajutamist
+						-->
 			        	<graph data-ng-repeat="i in graphs" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
 						<div class="clearfix"></div>
 					</div>
@@ -28,7 +31,7 @@
 				</div>
 				<div class="pull-right alert alert-info span3">
 					<h5>Choose your components</h5>
-					<div class="clearfix"></div><br />
+
 					<select ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
 	                    <option value="">-- Choose Instance --</option>
 	                </select>
@@ -55,7 +58,7 @@
 					<button class="btn" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
 					<h5>Use default instrumentation</h5>
 					<p class="text-small">This is precompiled list of instrumntations and contains /../ </p>
-					<button class="btn btn-success" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create</button>
+					<button class="btn btn-info" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create Defaults</button>
 				</div>
 				
 
