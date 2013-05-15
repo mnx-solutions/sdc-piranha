@@ -12,8 +12,8 @@
 			<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
 			<div class="clearfix"></div>
 			<div class="row">
-				<div class="span4 text-medium">
-					
+				<div class="dashboard-height span4 text-medium bg-blue-lite">
+					<div class="container-fluid ">
 					<h4>
 						<span class="pull-left">Instance status</span>
 						<a class="text-small text-regular pull-right" href="#!/machine" target="_blank">All Instances »</a>
@@ -26,31 +26,38 @@
 						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create new Instance</a></p>
 					</div>
 					<h5>Billing</h5>
-					<div class="separation-container text-medium">
-						<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
-							View full history <a href="#!/account/invoices">My Account » Invoices</a></p>
-					</div>
-				</div>
-				<div class="span4">
-					<h4>
-						<span class="pull-left">Joyent Blog</span> 
-						<a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>
-						<div class="clearfix"></div>
-					</h4>
-					
-					
-					
-					<div class="separation-container text-medium">
-						<div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
-							<span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
-		                    <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
-							<div class="clearfix"></div>
+						<div class="separation-container text-medium">
+							<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
+								View full history <a href="#!/account/invoices">My Account » Invoices</a></p>
 						</div>
 					</div>
+				</div>
+				
+				<a href=""><div class="dashboard-height span8 feature1 pointer">
 					<div>
-						<!-- <hr /> -->
+						<!-- <h3>Learn what Joyent Cloud can do for you.</h3> -->
 					</div>
 
+				</div></a>
+				<div class="clearfix"></div>
+				<hr />
+			</div>
+			<div class="row">
+				<div class="span4">
+						<h4>
+							<span class="pull-left">Joyent Blog</span> 
+							<a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>
+							<div class="clearfix"></div>
+						</h4>
+							<div class="separation-container text-medium">
+								<div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
+									<span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
+				                    <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
+									<div class="clearfix"></div>
+								</div>
+							</div>
+						<div>
+					</div>
 				</div>
 				<div class="span4">
 					<h4>
@@ -68,14 +75,10 @@
 					</div>
 
 					<div>
-						<!-- <hr /> -->
-						
-						<div class="clearfix"></div>
 					</div>
 				</div>
-				<div class="clearfix"></div>
-				<hr />
 			</div>
+			
 			<div class="clearfix"></div>
 		</div>
     </div>
