@@ -585,6 +585,13 @@ th {
 	padding:0px 0px 10px 0px;
 	margin-top:10px;
 }
+.text-fix {
+	padding-top:1px;
+}
+.icon {
+	margin-top:-1px;
+	margin-right:3px;
+}
 
 .carousel-inner {
     min-height:530px;

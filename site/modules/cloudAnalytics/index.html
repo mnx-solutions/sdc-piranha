@@ -13,20 +13,15 @@
 	            
 				<div class="container span8 listing text-medium">
 					<div class="well well-small">
-	                	<i class="icon-zoom-in" title="zoom in the graph" data-ng-click="zoomIn()" ></i> Zoom In for closer look
-	                	<i class="icon-zoom-out" title="zoom out the graph" data-ng-click="zoomOut()" ></i> Zoom Out for overview
-	                	<i class="icon-pause" title="freeze the graph" data-ng-click="pause()" ></i> Freeze
-	                	<i class="icon-play" title="resume graph" data-ng-click="run()" ></i> Unfreeze
+	                	<span class="span2 text-fix"><i class="icon icon-zoom-in" title="zoom in the graph" data-ng-click="zoomIn()" ></i> Zoom In for closer look</span>
+	                	<span class="span2 text-fix"><i class="icon icon-zoom-out" title="zoom out the graph" data-ng-click="zoomOut()" ></i> Zoom Out for overview</span>
+	                	<span class="span1 text-fix"><i class="icon icon-pause" title="freeze the graph" data-ng-click="pause()" ></i> Pause</span>
+	                	<span class="span2 text-fix"><i class="icon icon-play" title="resume graph" data-ng-click="run()" ></i> Run again</span>
 					</div>
 	                
 
-					<div class="well well-small">
-						<!--
-							seda containerit peaks n2itama peale create vqi create defaults nuppude vajutamist
-						-->
-			        	<graph data-ng-repeat="i in graphs" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
-						<div class="clearfix"></div>
-					</div>
+		        	<graph data-ng-repeat="i in graphs" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
+					<div class="clearfix"></div>
 					
 				</div>
 				<div class="pull-right alert alert-info span3">
