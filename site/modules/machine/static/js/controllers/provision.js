@@ -72,7 +72,7 @@
 
                 $scope.clickProvision = function () {
                     function provision() {
-                        confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
+                        confirm(localization.translate($scope, 'machine', 'Are you sure you want to provision a new machine?'), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
 
                             $location.path('/machine');
