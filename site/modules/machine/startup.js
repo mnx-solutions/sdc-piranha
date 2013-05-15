@@ -240,7 +240,7 @@ module.exports = function (scope, callback) {
                             call.log.error('Cloud polling failed %o', tagsErr);
                         }
                     }, undefined, true);
-                }, config.polling.machineState);
+                }, config.polling.machineTags);
 
                 var timer2 = setTimeout(function () {
                     call.log.error('Operation timed out');
