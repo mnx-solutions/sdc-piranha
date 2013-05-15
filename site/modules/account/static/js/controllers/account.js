@@ -8,25 +8,19 @@
             localization.bind('account', $scope);
 
             $scope.loading = true;
-            var c = 0;
-            function checkAll() {
-                c++;
-                return function () {
-                    if(--c <= 0) {
-                        $scope.loading = false;
-                    } else {
-                        $scope.loading = true;
-                    }
-                };
-            }
             $scope.account = Account.getAccount();
             $scope.sshKeys = Account.getKeys(true);
             $scope.paymentMethods = BillingService.getPaymentMethods();
 			$scope.lastInvoice = BillingService.getLastInvoice();
 
-            $q.when($scope.account, checkAll());
-            $q.when($scope.sshKeys, checkAll());
-            $q.when($scope.paymentMethods, checkAll());
+            $q.all([
+                $scope.account,
+                $scope.sshKeys,
+                $scope.paymentMethods,
+                $scope.lastInvoice
+            ]).then(function () {
+                $scope.loading = false;
+            });
 
             $scope.openKeyDetails = null;
             $scope.setOpenDetails = function(id) {
