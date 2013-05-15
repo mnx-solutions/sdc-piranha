@@ -123,20 +123,23 @@
                 $scope.packages = Package.package();
 
                 $q.when($scope.machine, function (m) {
-                    console.log('packages', $scope.packages);
                     $scope.dataset = Dataset.dataset(m.image);
                     $scope.package = Package.package(m.package);
-
                     $scope.dataset.then(function(ds){
-                        if(!$scope.datasetType) {
-                            if(ds.type == 'virtualmachine') {
-                                $scope.datasetType = 'kvm';
-                            } else if(ds.type == 'smartmachine'){
-                                $scope.datasetType = 'smartos';
-                            }
+                        var type = ds.type;
+                        switch(ds.type) {
+                            case 'virtualmachine':
+                                type = 'kvm';
+                                break;
+                            case 'smartmachine':
+                                type = 'smartos';
+                                break;
+                            default:
+                                break;
                         }
-                    })
-                    Package.package(m.package).then(function (pkg) {
+                        $scope.datasetType = type;
+                    });
+                    $scope.package.then(function (pkg) {
                         $scope.selectedPackageName = pkg.name;
                         $scope.selectedPackage = pkg;
                         $scope.currentPackageName = pkg.name;
@@ -234,16 +237,11 @@
                 };
 
                 $scope.sortPackages = function(pkg) {
-                    return parseInt(pkg.memory);
+                    return parseInt(pkg.memory, 10);
                 };
 
                 $scope.filterPackages = function (item) {
-                    var dstype = $scope.datasetType ? item.type == $scope.datasetType : true;
-                    if(dstype){
-                        return true;
-                    }
-                    return false;
-
+                    return $scope.currentPackage && item.group === $scope.currentPackage.group && item.type === 'smartos';
                 };
             }
 

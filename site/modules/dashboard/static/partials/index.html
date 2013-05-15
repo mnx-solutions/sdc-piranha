@@ -13,22 +13,27 @@
 			<div class="row">
 				<div class="span4 text-medium">
 					
-					<h4>Instances</h4>
-					<!-- <hr /> -->
+					<h4>Instance status</h4>
 					<div class="separation-container text-medium">
 						<div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
 						<div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
 						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create new Instance</a></p>
 					</div>
 					<h5>Billing</h5>
-					
 					<div class="separation-container text-medium">
 						<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
 							View full history <a href="#!/account/invoices">My Account » Invoices</a></p>
 					</div>
 				</div>
 				<div class="span4">
-					<h4>Joyent Blog</h4>
+					<h4>
+						<span class="pull-left">Joyent Blog</span> 
+						<a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>
+						<div class="clearfix"></div>
+					</h4>
+					
+					
+					
 					<div class="separation-container text-medium">
 						<div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
 							<span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
@@ -37,14 +42,17 @@
 						</div>
 					</div>
 					<div>
-						<hr />
-						<a class="pull-right" href="http://joyent.com/blog" target="_blank">Read more from your blog »</a>
-						<div class="clearfix"></div>
+						<!-- <hr /> -->
 					</div>
 
 				</div>
 				<div class="span4">
-					<h4>Support FAQ</h4>
+					<h4>
+						<span class="pull-left">Support FAQ</span>
+						<a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status" target="_blank">More »</a>
+						<div class="clearfix"></div>
+						
+					</h4>
 					<div class="separation-container text-medium">
 						<div class="row-fluid text-medium" data-ng-repeat="forum in forums">
 							<div><a  target="_blank" href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a></div>
@@ -54,8 +62,8 @@
 					</div>
 
 					<div>
-						<hr />
-						<a class="pull-right" href="https://help.joyent.com/forums/20715782-current-system-status" target="_blank">Go to Support page »</a>
+						<!-- <hr /> -->
+						
 						<div class="clearfix"></div>
 					</div>
 				</div>

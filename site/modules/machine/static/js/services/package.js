@@ -13,7 +13,7 @@
         var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};
 
         service.updatePackages = function (datacenter) {
-            datacenter = datacenter ? datacenter : 'all';
+            datacenter = datacenter || 'all';
             if (!packages.index[datacenter]) {
                 packages.index[datacenter] = {};
                 packages.nameIndex[datacenter] = {};
@@ -53,10 +53,9 @@
                             }
 
                             packages.nameIndex[datacenter][p.name] = p;
-
-                            if (packages.search[p.name]) {
-                                packages.search[p.name].resolve(p);
-                                delete packages.search[p.name];
+                            if (packages.search[datacenter][p.name]) {
+                                packages.search[datacenter][p.name].resolve(p);
+                                delete packages.search[datacenter][p.name];
                             }
 
                             if (old !== null) {
@@ -65,7 +64,7 @@
                                 packages.list[datacenter].push(p);
                             }
                         });
-
+                        console.log(packages);
                         packages.list.final = true;
                     }
                 });
@@ -75,11 +74,11 @@
         };
 
         service.package = function (params) {
-            if (typeof(params) === 'string') {
+            if (typeof (params) === 'string') {
                 params = { id: params };
             }
 
-            params = params ? params : {};
+            params = params || {};
             if (!params.datacenter) {
                 params.datacenter = 'all';
             }
