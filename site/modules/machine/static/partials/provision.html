@@ -44,7 +44,17 @@
 									{{selectedVersions[dataset.name].description || dataset.description}}
                                     <div class="image-container" data-ng-show="manyVersions[dataset.name]">
                                         <span class="span2" style="margin-left:0px"><strong>Choose image version</strong></span>
-                                        <select data-ng-model="selectedVersions[dataset.name]" data-ng-options="val as key for (key, val) in versions[dataset.name]"></select>
+                                        <div class="btn-group pull-left">
+                                            <button class="btn" data-translate data-ng-show="selectedVersions[dataset.name]">{{selectedVersions[dataset.name].version}}</button>
+                                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li data-ng-repeat="version in versions[dataset.name]">
+                                                    <a data-ng-click="selectVersion(dataset.name, version)">{{version.version}}</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </div>
                                     <div class="image-container" data-ng-hide="manyVersions[dataset.name]">
                                         <span class="span2" style="margin-left:0px"><strong>Image version</strong> {{dataset.version}}</span>
@@ -63,9 +73,16 @@
 						<div class="item">
 							<div class="item header">
 								    <div class="btn-group pull-left">
-                                        <select data-ng-model="packageType" data-ng-options="val as val for (key, val) in packageTypes">
-                                            <option value="">-- All Types --</option>
-                                        </select>
+                                        <button class="btn" data-translate data-ng-show="!packageType">-- All Types --</button>
+                                        <button class="btn" data-translate data-ng-show="packageType">{{packageType}}</button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="package in packageTypes">
+                                                <a data-ng-click="selectPackageType(package)">{{package}}</a>
+                                            </li>
+                                        </ul>
 								    </div>
                                 <div class="pull-right">
                                     <form class="navbar-form pull-left">

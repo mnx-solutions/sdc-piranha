@@ -146,6 +146,14 @@
 
                 };
 
+                $scope.selectVersion = function (name, version) {
+                    $scope.selectedVersions[name] = version;
+                };
+
+                $scope.selectPackageType = function (packageType) {
+                    $scope.packageType = packageType;
+                };
+
                 $scope.filterDatasets = function (item) {
                     var props = [ 'name', 'description' ];
                     for (var i = 0, c = props.length; i < c; i++) {
