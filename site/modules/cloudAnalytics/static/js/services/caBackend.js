@@ -155,7 +155,7 @@
                 init: createOpts.init,
                 parent:ca
             }, function(err, inst){
-
+                console.log('service create', arguments);
                 if(!err) {
                     var heatmap = inst['value-arity'] === 'numeric-decomposition';
 
@@ -187,8 +187,11 @@
                     }
                     ca.options.individual[inst.id] = options;
 
-                    cb(inst)
+                    cb(err, inst)
 
+                } else {
+                    console.log('err', err);
+                    cb(err, inst);
                 }
 
             });
@@ -196,12 +199,17 @@
 
         service.prototype.createInstrumentations = function(createOpts, cb) {
             var insts = [];
+            var errors = [];
             var self = this;
             for(var opt in createOpts) {
-                self.createInstrumentation(createOpts[opt], function(inst){
-                    insts.push(inst);
-                    if(createOpts.length == insts.length){
-                        cb(insts);
+                self.createInstrumentation(createOpts[opt], function(err, inst){
+                    if(!err){
+                        insts.push(inst);
+                    } else {
+                        errors.push(err);
+                    }
+                    if(createOpts.length == insts.length + errors.length){
+                        cb(errors, insts);
                     }
                 })
             }
@@ -284,8 +292,10 @@
 
             for(var i in ca.instrumentations) {
                 (function(i) {
-                    ca.instrumentations[i].delete(function() {
-                        delete(ca.instrumentations[i]);
+                    var inst = ca.instrumentations[i];
+                    delete(ca.instrumentations[i]);
+                    inst.delete(function() {
+                        console.log('deleting finished');
                     });
                 })(i);
             }
