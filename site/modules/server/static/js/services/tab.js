@@ -58,7 +58,7 @@
                 value: function (){
                     if (!polling && Object.keys(_calls).length > 0) {
                         polling = true;
-                        // get call results
+                        // get call
                         $http({
                             timeout: 40000,
                             method: 'get',

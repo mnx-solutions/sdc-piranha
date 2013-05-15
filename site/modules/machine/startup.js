@@ -1,6 +1,7 @@
 'use strict';
 
 var vasync = require('vasync');
+var config = require('easy-config');
 
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
@@ -239,7 +240,7 @@ module.exports = function (scope, callback) {
                             call.log.error('Cloud polling failed %o', tagsErr);
                         }
                     }, undefined, true);
-                }, 5000);
+                }, config.polling.machineState);
 
                 var timer2 = setTimeout(function () {
                     call.log.error('Operation timed out');
@@ -286,7 +287,7 @@ module.exports = function (scope, callback) {
                     }
                 }
             }, null, null, true);
-        }, 5000);
+        }, config.polling.machineState);
 
         var timer2 = setTimeout(function () {
             call.log.error('Operation timed out');
@@ -315,7 +316,7 @@ module.exports = function (scope, callback) {
                     call.log.error(err);
                 }
             }, null, null, true);
-        }, 1000);
+        }, config.polling.packageChange);
 
         var timer2 = setTimeout(function () {
             call.log.error('Operation timed out');

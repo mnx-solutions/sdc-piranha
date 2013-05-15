@@ -52,5 +52,10 @@
     },
     "marketo": {
         "apikey": "CatsLikeSandboxes"
+    },
+    "polling": {
+        "machineTags": 5000,
+        "machineState": 5000,
+        "packageChange": 1000
     }
 }
