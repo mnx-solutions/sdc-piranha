@@ -124,7 +124,7 @@
                         <input class="input-large" type="text" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
                         <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
 						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px" data-ng-show="key != tagnr"></span>
-						<button class="btn btn-primary pull-right"
+						<button class="btn btn-success pull-right"
                                 data-ng-click="clickSaveTags(machine.id)"
                                 data-translate
                                 data-ng-show="key == tagnr"
@@ -151,8 +151,8 @@
         </p>
 		
 		<div class="well well-small" data-ng-class="{'loading-medium': isResizing}">
-	        <div data-ng-show="currentPackage">
-				<div class="span3 container arrow-to">
+	        <div class="span3 container arrow-to">
+				<div data-ng-show="currentPackage">
 					<h6 data-translate>Current package</h6>
                     <span>{{currentPackage.description}}</span><br />
                     <span data-translate>Type</span>:
