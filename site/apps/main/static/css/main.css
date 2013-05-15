@@ -286,7 +286,7 @@ h4 {
 }
 .add-machine {
 	margin-top:-1px;
-	font-size:11px !important;
+	font-size:12px !important;
 }
 .navbar-static-bottom a {
     color:#999;
@@ -305,8 +305,9 @@ h4 {
 .border {
     border:1px solid red !important;
 }
-.text-small {
-    font-size:12px;
+
+.text-regular {
+	font-weight:normal;
 }
 .row-fluid.text-small {
 
@@ -320,8 +321,11 @@ h4 {
 h5 small {
     font-size:11px;
 }
-.text-small,.text-medium {
+.text-small {
     font-size:11px;
+}
+.text-medium {
+	font-size:12px;
 }
 
 th {
