@@ -6,41 +6,60 @@
 			
 		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
 				<data-breadcrumb></data-breadcrumb>
-	            <div class="page-header">
-
+				<div class="page-header">
 	                <h1 class="pull-left">Instance analytics <small>{{zoneId}}</small></h1>
 					<div class="clearfix"></div>
 	            </div>
-                <select ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
-                    <option value="">-- Choose Instance --</option>
-                </select>
-		            <!-- <span data-translate>Currently selected zone id</span>: {{zoneId}} -->
-		        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
-		            <option value="">-- Choose Metric --</option>
-		        </select>
-		        <span class="nullable">
-		            <select ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
-		                <option value="">-- None --</option>
-		            </select>
-		        </span>
-		        <span class="nullable">
-		            <select ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
-		                <option value="">-- None --</option>
-		            </select>
-		        </span>
+	            
+				<div class="container span8 listing text-medium">
+					<div class="well well-small">
+	                	<i class="icon-zoom-in" title="zoom in the graph" data-ng-click="zoomIn()" ></i> Zoom In for closer look
+	                	<i class="icon-zoom-out" title="zoom out the graph" data-ng-click="zoomOut()" ></i> Zoom Out for overview
+	                	<i class="icon-pause" title="freeze the graph" data-ng-click="pause()" ></i> Freeze
+	                	<i class="icon-play" title="resume graph" data-ng-click="run()" ></i> Unfreeze
+					</div>
+	                
 
-                <br/><br/>
-                <i class="icon-zoom-in" title="zoom in the graph" data-ng-click="zoomIn()" ></i>
-                <i class="icon-zoom-out" title="zoom out the graph" data-ng-click="zoomOut()" ></i>
-                <i class="icon-pause" title="freeze the graph" data-ng-click="pause()" ></i>
-                <i class="icon-play" title="resume graph" data-ng-click="run()" ></i>
-                <br/><br/>
-		        <button class="btn" data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> 
-				<button class="btn" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
-                <button class="btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create default instrumentations</button>
+					<div class="well well-small">
+			        	<graph data-ng-repeat="i in graphs" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
+						<div class="clearfix"></div>
+					</div>
+					
+				</div>
+				<div class="pull-right alert alert-info span3">
+					<h5>Choose your components</h5>
+					<div class="clearfix"></div><br />
+					<select ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
+	                    <option value="">-- Choose Instance --</option>
+	                </select>
+					<div class="clearfix"></div>
+			            <!-- <span data-translate>Currently selected zone id</span>: {{zoneId}} -->
+			        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
+			            <option value="">-- Choose Metric --</option>
+			        </select>
+					<div class="clearfix"></div>
+			        <span class="nullable">
+			            <select ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
+			                <option value="">-- None --</option>
+			            </select>
+						<div class="clearfix"></div>
+			        </span>
+					<div class="clearfix"></div>
+			        <span class="nullable">
+			            <select ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
+			                <option value="">-- None --</option>
+			            </select>
+			        </span>
+	                <div class="clearfix"></div>
+					<button class="btn" data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button> 
+					<button class="btn" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
+					<h5>Use default instrumentation</h5>
+					<p class="text-small">This is precompiled list of instrumntations and contains /../ </p>
+					<button class="btn btn-success" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Create</button>
+				</div>
+				
 
-		        <br/><br/><br/>
-		        <graph data-ng-repeat="i in graphs" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
+
 		    </div>
 		</div>
 	</div>
