@@ -22,6 +22,7 @@
             $scope.account = Account.getAccount();
             $scope.sshKeys = Account.getKeys(true);
             $scope.paymentMethods = BillingService.getPaymentMethods();
+			$scope.lastInvoice = BillingService.getLastInvoice();
 
             $q.when($scope.account, checkAll());
             $q.when($scope.sshKeys, checkAll());

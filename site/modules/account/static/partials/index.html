@@ -10,23 +10,50 @@
 			<div class="span9 container">
 				<fieldset>
             		<legend class="clearfix"><span class="pull-left">Profile summary</span> <a href="#!/account/edit/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
-					<div class="text-medium">
-                        Your name is: {{account.firstName}} {{account.lastName}}<br />
-                        Your username is: {{account.login}}<br />
-                        Your email is: {{account.email}}<br />
-                        Your phone is: {{account.phone}}<br />
-                        Your company is: {{account.companyName}}<br />
-                        Your address is: {{account.address}} {{account.city}} {{account.state}} {{account.postalCode}} {{account.country}}<br />
+					<div class="row-fluid">
+						<div class="text-medium span6">
+							<h6>General info</h6>
+								<font style="width:90px;display:inline-block">Name</font> <strong>{{account.firstName}} {{account.lastName}}</strong><br />
+	                         	<font style="width:90px;display:inline-block">Username</font> <strong>{{account.login}}</strong><br />
+	                        	<font style="width:90px;display:inline-block">Email</font> {{account.email}}<br />
+	                        	<font style="width:90px;display:inline-block">Phone</font> {{account.phone}}<br />
+	                        	<font style="width:90px;display:inline-block">Company</font> {{account.companyName}}<br />						
+						</div>
+						<div class="text-medium span5">
+							<h6>Address</h6>
+							<div class="pull-left span12">
+								{{account.address}}<br />
+								{{account.city}}<br /> 
+								{{account.state}} {{account.postalCode}}<br />
+								{{account.country}}
+							</div>
+						</div>
 					</div>
 				</fieldset>
+				<br />
 				<fieldset>
-					<legend class="clearfix"><span class="pull-left">Payment Summary</span> <a href="#!/account/payment/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
-                    <div data-current-credit-card></div>
+					<legend class="clearfix"><span class="pull-left">Billing info</span> <a href="#!/account/payment/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
+					<div class="row-fluid">
+						<div class="text-medium span6">
+							<h6>Credit Card info</h6>
+							<div data-current-credit-card></div>
+						</div>
+						<div class="text-medium span5">
+							<h6>Latest invoice</h6>
+							<div class="pull-left span12">
+								<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong></p>
+								<p class="text-gray">Full history available at the <a href="#!/account/invoices">Invoices</a> section on the right</p>
+								
+							</div>
+						</div>
+					</div>
 				</fieldset>
+				<br />
 				<fieldset>
 					<legend class="clearfix"><span class="pull-left">SSH Summary</span> <a href="#!/account/ssh/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
-                    <div data-ng-show="sshKeys.length > 0">
-                        <div class="item-list-container alert-global">
+					<div class="clearfix"></div>
+                    <div data-ng-show="sshKeys.length > 0" style="margin-top:10px">
+                        <div class="item-list-container">
                             <div class="item header">
                                 <span class="span7 text-medium">Key Name / UUID</span>
                                 <div class="clearfix"></div>

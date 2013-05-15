@@ -2,6 +2,8 @@
 
 .rickshaw_graph {
 	position: relative;
+	max-width:570px;
+	overflow:hidden;
 }
 .rickshaw_graph svg {
 	display: block;	
