@@ -74,11 +74,11 @@
                 <div account-right-menu></div>
                 <button class="btn btn-success" data-ng-click="addNewKey()" data-ng-show="sshKeys.length > 0">Add new SSH key</button>
 				<div class="clearfix"></div>
-				<div class="sizebar-fix sizebar-fix-right">
+				<div class="sizebar-fix sizebar-fix-right" data-ng-show="showKeygenDownload()">
 	                <div class="alert alert-success shadow">
 	                    <h5 data-translate>SSH Key generator</h5>
 	                    <p class="text-medium">Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
-	                    <button class="btn btn-success" data-ng-show="showKeygenDownload()" data-ng-click="clickKeygenDownload()">Download script</button>
+	                    <button class="btn btn-success" data-ng-click="clickKeygenDownload()">Download script</button>
 	                    <div class="clearfix"></div>
 	                </div>
 				</div>
