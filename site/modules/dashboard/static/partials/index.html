@@ -6,12 +6,12 @@
 				<li class="active"><span>Dashboard</span></li>
 			</ul>
 			<div class="page-header">
-			    <h1 class="pull-left">Welcome {{account.firstName}} {{account.lastName}}</h1> 
+			    <h1 class="pull-left">Welcome {{account.firstName}}</h1> 
 				<div class="clearfix"></div>
 			</div>
 			<div class="clearfix"></div>
 			<div class="row">
-				<div class="span4">
+				<div class="span4 text-medium">
 					
 					<h4>Instances</h4>
 					<!-- <hr /> -->
@@ -23,14 +23,45 @@
 					<h5>Billing</h5>
 					
 					<div class="separation-container text-medium">
-						<p><strong>Your last invoice was ${{lastInvoice.amount || '0'}}</strong><br />
-							Go to <a href="#!/account/invoices">My Account » Invoices</a> to view your full payment history</p>
+						<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
+							View full history <a href="#!/account/invoices">My Account » Invoices</a></p>
 					</div>
 				</div>
-				
-				<div class="span6 home-video pull-right">
-					<a class="video-link"><h1>See what your cloud could be</h1><p class="play">Get the Joyent Advantage</p></a>
+				<div class="span4">
+					<h4>Joyent Blog</h4>
+					<div class="separation-container text-medium">
+						<div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
+							<span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
+		                    <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+					<div>
+						<hr />
+						<a class="pull-right" href="http://joyent.com/blog" target="_blank">Read more from your blog »</a>
+						<div class="clearfix"></div>
+					</div>
+
 				</div>
+				<div class="span4">
+					<h4>Support FAQ</h4>
+					<div class="separation-container text-medium">
+						<div class="row-fluid text-medium" data-ng-repeat="forum in forums">
+							<div><a  target="_blank" href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a></div>
+		                    <p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+
+					<div>
+						<hr />
+						<a class="pull-right" href="http://joyent.com/blog" target="_blank">Go to Support page »</a>
+						<div class="clearfix"></div>
+					</div>
+				</div>
+				<!-- <div class="span6 home-video pull-right">
+					<a class="video-link"><h1>See what your cloud could be</h1><p class="play">Get the Joyent Advantage</p></a>
+				</div> -->
 				<div class="clearfix"></div>
 				<hr />
 			</div>
@@ -55,15 +86,14 @@
 			<div class="clearfix"></div>
 		</div>
 		
-        <div class="row">			
+<!--         <div class="row text-medium">			
 			<div class="span4">
-				<h2>Joyent blog</h2>
-                <table>
-                    <tr data-ng-repeat="entry in rssentries">
-                        <td class="text-small text-gray" valign="top" style="width:60px">{{entry.publishedDate | date}}</td>
-                        <td valign="top" style="padding-bottom:10px"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></td>
-                    </tr>
-                </table>
+				<h4>Joyent Blog</h4>
+				<div class="row-fluid" data-ng-repeat="entry in rssentries">
+					<span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
+                    <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
+					<div class="clearfix"></div>
+				</div>
 				<div>
 					<hr />
 					<a class="pull-right" href="http://joyent.com/blog" target="_blank">Read more from your blog »</a>
@@ -72,28 +102,21 @@
 				
 			</div>
 			<div class="span4">
-				<h2>Support FAQ</h2>
-                <table cellspacing="0" cellpadding="0" border="0">
-                    <tr data-ng-repeat="forum in forums">
-                        <td>
-							<a  target="_blank" href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a><br/>
-                        	<p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>
-						</td>
-                    </tr>
-                </table>
+				<h4>Support FAQ</h4>
+				<div class="row-fluid" data-ng-repeat="forum in forums">
+					<div><a  target="_blank" href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a></div>
+                    <p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>
+					<div class="clearfix"></div>
+				</div>
+
 				<div>
 					<hr />
 					<a class="pull-right" href="http://joyent.com/blog" target="_blank">Go to Support page »</a>
 					<div class="clearfix"></div>
 				</div>
-				
 			</div>
-			<div class="span4">
-				<h2>Joyent Tweets</h2>
-				<p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-				<p><a class="btn" href="#">More »</a></p>
-			</div>
-		</div>
+		</div> -->
+
     </div>
 </div>
 
