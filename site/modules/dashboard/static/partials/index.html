@@ -14,14 +14,14 @@
 				<div class="span4">
 					
 					<h4>Instances</h4>
-					<hr />
+					<!-- <hr /> -->
 					<div class="separation-container text-medium">
 						<div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
 						<div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
 						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create new Instance</a></p>
 					</div>
-					<h4>Billing</h4>
-					<hr />
+					<h5>Billing</h5>
+					
 					<div class="separation-container text-medium">
 						<p><strong>Your last invoice was ${{lastInvoice.amount || '0'}}</strong><br />
 							Go to <a href="#!/account/invoices">My Account » Invoices</a> to view your full payment history</p>
