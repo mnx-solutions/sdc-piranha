@@ -5,10 +5,11 @@
 <data-notification></data-notification>
 
 <div class="page-header">
-    <h1>{{machine.name}}<machine-status machine="machine" class="pull-right"></machine-status></h1> 
+    <h1 class="pull-left">{{machine.name}}</h1> <machine-status machine="machine" class="pull-right"></machine-status>
+	<div class="clearfix"></div>
 </div>
 
-<div class="pull-left span7 listing text-medium">
+<div class="container span8 listing text-medium">
     <fieldset>
         <legend data-translate>Overview</legend>
         <div class="container span7">
@@ -191,36 +192,39 @@
 </div>
 
 <div class="span4 pull-right" style="margin-top:40px">
-    <div class="well shadow">
+    <div class="well well-small shadow">
+	<div class="row-fluid">
         <button role="button"
                 data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
                 data-ng-click="clickStart(machine.id)"
                 data-toggle="modal"
                 data-translate
                 data-ng-class="{'btn-success': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                class="btn btn-small">Start</button>
+                class="btn btn-small span3">Start</button>
         <button role="button"
                 data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
                 data-ng-click="clickStop(machine.id)"
                 data-toggle="modal"
                 data-translate
                 data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                class="btn btn-small">Stop</button>
-        <button role="button"
-                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
-                data-ng-click="clickReboot(machine.id)"
-                data-toggle="modal"
-                data-translate
-                data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                class="btn btn-small">Reboot</button>
+                class="btn btn-small span3">Stop</button>
         <button role="button"
                 data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
                 data-ng-click="clickDelete(machine.id)"
                 data-translate
                 data-toggle="modal"
                 data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                class="btn btn-small">Delete</button>
-    </div>
+                class="btn btn-small span3">Delete</button>
+
+        <button role="button"
+                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
+                data-ng-click="clickReboot(machine.id)"
+                data-toggle="modal"
+                data-translate
+                data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
+                class="btn btn-small span3">Reboot</button>
+    	</div>
+	</div>
     <div class="clearfix"></div>
     <div class="alert alert-success shadow">
         <h4 data-translate>Need help?</h4>
