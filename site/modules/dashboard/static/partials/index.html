@@ -77,6 +77,26 @@
 					<div>
 					</div>
 				</div>
+
+				<div class="span4">
+					<h4>
+						<span class="pull-left">News and Support</span>
+						<a class="text-small text-regular pull-right" href="#" target="_blank">More »</a>
+						<div class="clearfix"></div>
+						
+					</h4>
+					<div class="separation-container text-medium">
+						<div class="row-fluid text-medium" data-ng-repeat="forum in forums">
+							<div><a  target="_blank" href="https://help.joyent.com/forums/{{forum.id}}">{{forum.name}}</a></div>
+		                    <p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>
+							<div class="clearfix"></div>
+						</div>
+					</div>
+
+					<div>
+					</div>
+				</div>
+
 			</div>
 			
 			<div class="clearfix"></div>
