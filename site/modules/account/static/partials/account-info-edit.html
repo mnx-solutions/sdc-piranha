@@ -12,7 +12,7 @@
                            name="email"
                            data-ng-model="account.email"
                            data-ng-class="{error: isError('email')}"
-                           required/>
+                           required/> <span data-toggle="tooltip" data-placement="right" class="icon-info-sign" title="" data-original-title="Must container letters and numbers"></span>
                     <div class="error"
                          data-translate
                          data-ng-show="isError('email', 'required')">
