@@ -270,6 +270,8 @@ module.exports = function (scope, callback) {
             call.log.debug('Polling for machine %s to become %s', machineId, state);
             client.getMachine(machineId, function (err, machine) {
                 if (err) {
+
+                    console.log('Machine:', machine);
                     call.log.error('Cloud polling failed %o', err);
                 } else if (machine.state === 'failed') {
                     call.done(new Error('Machine fell into failed state'));

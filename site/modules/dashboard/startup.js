@@ -12,12 +12,12 @@ module.exports = function (scope, callback) {
         langs[lng] = {};
     });
 
-    server.onCall('ZendeskForumList', function (call) {
+    function zendDeskCall(call, path, objectName) {
         call.log.info('Querying Zendesk for forums list');
 
         var options = {
             hostname: 'help.joyent.com',
-            path: '/api/v2/categories/20066858/forums.json',
+            path: path,
             method: 'GET',
             auth: config.zendesk.account + ':' + config.zendesk.token
         };
@@ -30,7 +30,8 @@ module.exports = function (scope, callback) {
 
             res.on('end', function(){
                 var JSONbody = JSON.parse(body);
-                call.done(null, JSONbody['forums']);
+                console.log(JSONbody);
+                call.done(null, JSONbody[objectName]);
                 return;
             });
 
@@ -39,8 +40,19 @@ module.exports = function (scope, callback) {
             console.error(e);
         });
         req.end();
+    }
 
+    server.onCall('ZendeskForumList', function (call) {
+        zendDeskCall(call, '/api/v2/categories/20066858/forums.json', 'forums');
     });
+
+    server.onCall('ZendeskSystemStatusTopics', function(call) {
+        zendDeskCall(call, '/api/v2/forums/20715782/topics.json', 'topics');
+    })
+
+    server.onCall('ZendeskPackagesUpdateTopics', function(call) {
+        zendDeskCall(call, '/api/v2/forums/21147498/topics.json', 'topics');
+    })
 
     setImmediate(callback);
 };
