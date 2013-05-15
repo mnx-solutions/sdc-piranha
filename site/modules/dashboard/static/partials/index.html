@@ -80,14 +80,16 @@
 
 				<div class="span4">
 					<h4>
-						<span class="pull-left">News and Support</span>
-						<a class="text-small text-regular pull-right" href="#" target="_blank">More »</a>
+						<span class="pull-left">System Status</span>
+						<a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status" target="_blank">More »</a>
 						<div class="clearfix"></div>
 						
 					</h4>
 					<div class="separation-container text-medium">
 						<div class="row-fluid text-medium" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-							<div><a  target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.title}}</a></div>
+							<span class="pull-left span3 text-small text-gray">{{topic.created_at | date}}</span>
+		                    <span class="pull-left span8"><a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.title}}</a></span>
+							
 							<div class="clearfix"></div>
 						</div>
 					</div>
