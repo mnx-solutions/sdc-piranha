@@ -23,6 +23,10 @@
                         $scope.setAccount = function() {
                             $q.when(Account.getAccount(true), function (account) {
                                 $scope.account = account;
+
+                                var phoneSplit = account.phone.split('-');
+                                $scope.selectedCountryCode = phoneSplit[0];
+                                $scope.phone = phoneSplit[1];
                             });
                         };
 
@@ -66,13 +70,13 @@
                         /* phone number handling */
                         $scope.$watch('phone', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.phone = $scope.selectedCountryCode + newVal;
+                                $scope.account.phone = $scope.selectedCountryCode +'-'+ newVal;
                             }
                         }, true);
 
                         $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
                             if(oldVal !== newVal) {
-                                $scope.account.phone = newVal + $scope.phone;
+                                $scope.account.phone = newVal +'-'+ $scope.phone;
                             }
                             if(!newVal) {
                                 $scope.countryStyle.width = '100px';

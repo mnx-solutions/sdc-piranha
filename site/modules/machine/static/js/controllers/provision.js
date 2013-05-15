@@ -14,7 +14,8 @@
             '$dialog',
             '$location',
             'localization',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization) {
+            '$q',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope);
 
@@ -73,6 +74,7 @@
                     function provision() {
                         confirm(localization.translate($scope, 'machine', 'Are you sure it works?'), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
+
                             $location.path('/machine');
                         });
                     }
@@ -157,7 +159,7 @@
                 };
 
                 $scope.selectPackage = function (id) {
-
+                    $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
 
@@ -224,13 +226,6 @@
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
                             packages.forEach(function (p) {
-                                // if price is below 0.005 we don't want to
-                                // show a 0.00 price.
-                                var price = parseFloat(p.price);
-                                if(price === 0) {
-                                    price = 0.01;
-                                }
-                                p.price = price.toFixed(2);
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }

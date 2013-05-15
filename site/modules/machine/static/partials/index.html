@@ -9,7 +9,7 @@
             <div class="page-header">
                 <h1 class="pull-left" data-translate>Instance</h1><div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
                 <form class="form-search pull-right">
-                    <input type="search" class="input-large"
+                    <input type="search" class="span3"
                            data-ng-model="query" data-ng-change="search()"
                            placeholder="Search instances" name="search" id="search" data-translate="placeholder" />
                 </form>
@@ -17,7 +17,7 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="pull-left">
+            <div class="container span9 listing text-medium">
 				<div class="item-list-container">
                 	<div class="item header">
                         <span class="span2 text-medium sortable"
@@ -179,6 +179,8 @@
             </div>
         </div>
         <div class="machines container" data-ng-hide="(machines.length || loading)">
+            <data-notification></data-notification>
+
             <div class="alert alert-info alert-global">
 				<div class="pull-left">
 					<h4>Hello there!</h4>

@@ -258,6 +258,7 @@
                 },
 
                 done: function (err, job) {
+
                     if (err) {
                         notification.push(id, { type: 'error' },
                             localization.translate(null,
@@ -286,6 +287,19 @@
                             machine[k] = step[k];
                         });
                     }
+                },
+
+                error: function(err, job) {
+                    notification.push(id, { type: 'error' },
+                        localization.translate(null,
+                            'machine',
+                            'Unable to create instance'
+                        )
+                    );
+
+                    delete machines.list.splice(machines.list.indexOf(machine), 1);
+                    delete machines.index[id];
+                    return;
                 }
             });
 
