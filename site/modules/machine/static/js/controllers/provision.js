@@ -121,29 +121,30 @@
                     $scope.packageType = null;
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
-					ng.element('#finish-configuration').fadeOut('fast');
+                    ng.element('#finish-configuration').fadeOut('fast');
 
                 };
 
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
-                        if(dataset.type == 'virtualmachine') {
+                        if (dataset.type == 'virtualmachine') {
                             $scope.datasetType = 'kvm';
-                        } else if(dataset.type == 'smartmachine'){
+                        } else if (dataset.type == 'smartmachine') {
                             $scope.datasetType = 'smartos';
                         }
 
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
-                        
+
                         $scope.selectedDataset = dataset;
                         ng.element('#pricing').removeClass('alert-muted');
                         ng.element('#pricing').addClass('alert-info');
-                        
+
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
                     });
 
+                    $scope.slideCarousel();
                 };
 
                 $scope.selectVersion = function (name, version) {
@@ -253,20 +254,22 @@
                 ng.element('.carousel').carousel({
                     interval:false
                 });
-				ng.element('.carousel').bind({
-					slide: function() {
-						ng.element('.item .header').hide();
-					},
-					slid:function(){
-						ng.element('.item .header').show();
-					}
-				  });
+
+                ng.element('.carousel').bind({
+                    slide: function() {
+                        ng.element('.item .header').hide();
+                    },
+                    slid:function(){
+                        ng.element('.item .header').show();
+                    }
+                });
+
                 $scope.slideCarousel = function() {
-                  $scope.previousPos = ng.element('.carousel-inner').scrollTop();
-                  ng.element('.carousel-inner').scrollTop(0);
-                  ng.element('.carousel').carousel('next');
-				  
-                }
+                    $scope.previousPos = ng.element('.carousel-inner').scrollTop();
+
+                    ng.element('.carousel-inner').scrollTop(0);
+                    ng.element('.carousel').carousel('next');
+                };
             }
 
         ]);
