@@ -27,5 +27,12 @@
     "Missing city": "Missing city",
     "Missing state": "Missing state",
     "Missing postal code": "Missing postal code",
-    "Invalid postal code": "Invalid postal code"
+    "Invalid postal code": "Invalid postal code",
+    "Invoice Number": "Invoice Number",
+    "Date": "Date",
+    "Total (USD)": "Total (USD)",
+    "Sum (USD)": "Sum (USD)",
+    "Product": "Product",
+    "Period": "Period",
+    "Quantity": "Quantity"
 }
