@@ -36,9 +36,8 @@
 		        </div>
 
 		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
-		        <button class="btn btn-success pull-right span1" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry</button>
-		<div class="clearfix"></div>
-				<p class="text-gray text-small" data-ng-show="error && !tropoRunning && retriesLeft > 0">You have {{retriesLeft}} retries left</p>
+		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry</button>
+				<p class="text-gray text-small pull-left" data-ng-show="error && !tropoRunning && retriesLeft > 0">You have {{retriesLeft}} retries left</p>
 		    </div>
 		</div>
             <div class="well well-small span6 align-center text-huge pull-right" data-ng-show="tropoRunning">
