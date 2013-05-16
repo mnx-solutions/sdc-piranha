@@ -37,8 +37,6 @@
                 $scope.tagnr = 0;
                 $scope.visiblePasswords = {};
 
-                $scope.jobRunning = '';
-
                 $q.when($scope.machine, function (m) {
                     m.primaryIps = m.ips.filter(function (ip) {
                         return !util.isPrivateIP(ip);
@@ -47,34 +45,40 @@
 
 
                 function tagcloud(tags) {
-                    if(!tags) {
+                    if (!tags) {
                         tags = Machine.tags(machineid);
                     }
+
                     var d = $q.defer();
                     var cloud = {};
+
                     function addVal(k, val, edit) {
                         var id = ++$scope.tagnr;
                         cloud[id] = {key: k, val: val, edit: edit};
                     }
+
                     function split() {
                         $scope.tagnr = -1;
                         Object.keys(tags).forEach(function(k) {
                             addVal(k, tags[k], false);
                         });
+
                         addVal('', '', true);
                         d.resolve(cloud);
                     }
+
                     $q.when(tags).then(function (t) {
                         tags = t;
                         split();
                     });
+
                     return d.promise;
                 }
 
                 $scope.tagcloud = tagcloud();
 
                 function checkTags (val, old) {
-                    if(val) {
+                    if (val) {
                         var keys = Object.keys(val);
                         var map = {};
                         keys.forEach(function (k) {
@@ -114,7 +118,7 @@
                     'event:forceUpdate',
                     function (){
                         Machine.updateMachines();
-                        Machine.machine(machineid).then(function(m){
+                        Machine.machine(machineid).then(function (m) {
                             $scope.machine = m;
                         });
                     }
@@ -201,12 +205,13 @@
                     $$track.event('machine', 'saveTags');
                     var data = {};
                     var tags = $scope.tagcloud.$$v;
-                    var i;
-                    for(i = 0; i < $scope.tagnr; i++) {
-                        if(tags[i] && tags[i].key && tags[i].val){
+
+                    for (var i = 0; i < $scope.tagnr; i++) {
+                        if (tags[i] && tags[i].key && tags[i].val){
                             data[tags[i].key] = tags[i].val;
                         }
                     }
+
                     $scope.tagsave = true;
                     $scope.retinfo = Machine.tags(machineid, data);
                     $scope.retinfo.then(function(tags) {
@@ -241,7 +246,9 @@
                 };
 
                 $scope.filterPackages = function (item) {
-                    return $scope.currentPackage && item.group === $scope.currentPackage.group && item.type === 'smartos';
+                    return $scope.currentPackage &&
+                        item.group === $scope.currentPackage.group &&
+                        item.type === 'smartos';
                 };
             }
 
