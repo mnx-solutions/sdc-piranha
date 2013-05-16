@@ -91,7 +91,7 @@ module.exports = function (scope, app, callback) {
 
         redisClient.set(req.body.session.id, 'pending');
 
-        redisClient.get(req.ression.tropoId +'_retries', function(err, result) {
+        redisClient.get(req.session.tropoId +'_retries', function(err, result) {
             if(!result || result === '') {
                 redisClient.set(req.session.tropoId +'_retries', 2);
             } else {
