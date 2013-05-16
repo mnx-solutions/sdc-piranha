@@ -47,20 +47,21 @@
             <span class="value span5 pull-right">{{machine.disk | sizeFormat}}&nbsp;</span>
         </div>
 
-        <div class="container span7">
+        <div class="container span7" data-ng-show="machine.ips">
             <span class="key span2" data-translate>IP addresses</span>
                             <span class="value span5 pull-right">
                                 <span data-ng-repeat="ip in machine.ips">{{ip}}&nbsp;</span>
                             </span>
         </div>
 
-        <div class="container span7">
+        <div class="container span7" data-ng-show="machine.created">
             <span class="key span2" data-translate>Created</span>
                             <span class="value span5 pull-right">
                                 {{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}&nbsp;
                             </span>
         </div>
-        <div class="container span7">
+
+        <div class="container span7" data-ng-show="machine.datacenter">
             <span class="key span2" data-translate>Datacenter</span>
             <span class="value span5 pull-right">{{machine.datacenter}}&nbsp;</span>
         </div>
