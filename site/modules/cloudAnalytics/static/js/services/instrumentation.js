@@ -146,6 +146,7 @@ var instrumentations = {};
             delete(instrumentations[this._uuid]);
             callback = (callback || ng.noop);
             var self = this;
+            console.log('deleting', self.getUrl());
             $http({ method: 'DELETE', url: self.getUrl() })
                 .success(function() {
                     console.log('delete success');

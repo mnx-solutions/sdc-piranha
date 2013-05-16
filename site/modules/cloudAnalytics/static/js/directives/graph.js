@@ -53,8 +53,8 @@
                     var conf = {
                         element: document.querySelector("#chart_" + $scope.$id),
                         renderer: $scope.renderer,
-                        width: $scope.width || 640,
-                        height: $scope.height || 200,
+                        width: $scope.width || 580,
+                        height: $scope.height || 180,
                         series: series
                     };
                     var graph = new Rickshaw.Graph(conf);
@@ -170,7 +170,7 @@
                         '</div>' +
                         '</div>' +
                     '</div><br/>' +
-                    '<div id="legend_{{$id}}" style="width:680px;" ></div><br/>' +
+                    '<div id="legend_{{$id}}" style="width:620px;" ></div><br/>' +
                 '</div><br/><br/>'
         };
     });

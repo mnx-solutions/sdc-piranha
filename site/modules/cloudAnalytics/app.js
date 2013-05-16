@@ -49,21 +49,31 @@ module.exports = function (scope, app, callback) {
     });
 
     app.post('/ca/instrumentations', function (req, res) {
+        console.log('createing instrumentation', req.body);
         req.cloud.CreateInstrumentation(req.body, function (err, resp) {
             // !TODO: Error handling
-            console.log(resp);
             if (!err) {
                 res.json(resp);
+            } else {
+//                console.log(res);
+                res.send(500, err);
+//                console.log('>>>>>>>>>>>ERRROR>>>>>>>>>>>>', err)
             }
         });
     });
 
     app.del('/ca/instrumentations/:id', function(req, res) {
+        console.log('deleting instrumentation');
         req.cloud.DeleteInstrumentation(+req.params.id, function (err, resp) {
             if (!err) {
+                console.log('deleted instrumentation');
                 res.json(resp);
+            } else {
+                console.log('deleting failed', err);
+                res.send(err);
             }
-            res.send(err);
+
+
         });
     });
 
@@ -129,6 +139,7 @@ module.exports = function (scope, app, callback) {
 
 
                     if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
+//                        console.log(response);
                         res.json(response);
                     }
                 });

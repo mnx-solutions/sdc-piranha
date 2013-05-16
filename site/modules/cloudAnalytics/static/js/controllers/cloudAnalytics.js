@@ -69,13 +69,15 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
                 $scope.ca.createInstrumentation({
                     init: insts[i],
                     pollingstart: time
-                }, function(inst) {
+                }, function(err, inst) {
+                    if(!err) {
+                        $scope.graphs.push({
+                            instrumentations: [inst],
+                            ca: $scope.ca,
+                            title: $scope.ca.instrumentations[inst.id].graphtitle
+                        });
+                    }
 
-                    $scope.graphs.push({
-                        instrumentations: [inst],
-                        ca: $scope.ca,
-                        title: $scope.ca.instrumentations[inst.id].graphtitle
-                    });
                 });
 
             }
@@ -131,12 +133,12 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
                 module: 'zfs',
                 stat: 'dataset_unused_quota',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: {}
             }, {
                 module: 'zfs',
                 stat: 'dataset_quota',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: {}
             }], [{
                 module: 'nic',
                 stat: 'vnic_bytes',
@@ -157,17 +159,19 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         for(var opt in oo) {
 
           (function(index) {
-              $scope.ca.createInstrumentations(oo[index], function(inst) {
-                  if(!$scope.endtime) {
-                      // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
-                      $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
-                      tick();
+              $scope.ca.createInstrumentations(oo[index], function(errs, inst) {
+                  if(!errs.length) {
+                      if(!$scope.endtime) {
+                          // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                          $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
+                          tick();
+                      }
+                      $scope.graphs.push({
+                          instrumentations: inst,
+                          ca: $scope.ca,
+                          title: ot[index]
+                      });
                   }
-                  $scope.graphs.push({
-                      instrumentations: inst,
-                      ca: $scope.ca,
-                      title: ot[index]
-                  });
               });
             })(opt);
 
@@ -183,28 +187,36 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         decomp.push($scope.current.decomposition.primary);
         if($scope.current.decomposition.secondary)
         decomp.push($scope.current.decomposition.secondary);
-
+        var mod = $scope.current.metric.module;
+//        var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
+        var predicate = { "eq": ["zonename", $scope.zoneId ]};
         var options = {
-            module: $scope.current.metric.module,
+            module: mod,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: { "eq": ["zonename", $scope.zoneId ]}
+            predicate: predicate
         }
 
-        $scope.ca.createInstrumentations([ options ], function(instrumentations){
-            if(!$scope.endtime) {
-                // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
-                $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
-                tick();
+        $scope.ca.createInstrumentations([ options ], function(errs, instrumentations){
+            console.log(instrumentations);
+
+            if(!errs.length) {
+                console.log('no errors')
+                if(!$scope.endtime) {
+                    // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
+                    $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
+                    tick();
+                }
+                var title = $scope.ca.instrumentations[instrumentations[0].id].graphtitle;
+                $scope.graphs.push({
+                    instrumentations: instrumentations,
+                    ca: $scope.ca,
+                    title: title
+
+                });
+            } else {
+
             }
-            var title = $scope.ca.instrumentations[instrumentations[0].id].graphtitle;
-            $scope.graphs.push({
-                instrumentations: instrumentations,
-                ca: $scope.ca,
-                title: title
-
-            });
-
         });
 
     }

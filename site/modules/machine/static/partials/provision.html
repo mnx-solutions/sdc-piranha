@@ -12,22 +12,30 @@
 
             <div class="span8 container">
                 <div id="myCarousel" class="carousel slide">
+                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of software package or system do you need?"></span>-->
+                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of instance do you need?"></span>-->
+                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="How many CPU, how much memory or disk do you need?"></span>-->
+                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="Here are the specs of the instance you're about to launch. Click 'Launch Instance' if okay?"></span>-->
 
                     <div class="carousel-inner item-list-container">
 						<div class="active item">
 							<div class="item header">
-								    <div class="btn-group pull-left">
-								        <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
-								        <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
-								        <button class="btn dropdown-toggle" data-toggle="dropdown">
-								            <span class="caret"></span>
-								        </button>
-								        <ul class="dropdown-menu">
-								            <li data-ng-repeat="datacenter in datacenters">
-								                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
-								            </li>
-								        </ul>
-								    </div>
+                                <div class="btn-group pull-left tooltip-hover"
+                                      data-html="true"
+                                      data-toggle="tooltip"
+                                      data-placement="right"
+                                      data-original-title="Where do you want to launch your instance?">
+                                    <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
+                                    <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li data-ng-repeat="datacenter in datacenters">
+                                            <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
 
 								    <div class="pull-right">
 								        <form class="navbar-form pull-left">

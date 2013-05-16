@@ -83,7 +83,14 @@
                        name="securityCode"
                        data-ng-class="{error: isError('creditCard.securityCode')}"
                        data-ng-model="form.securityCode"
-                       required>
+                       required/>
+                <span data-html="true"
+                      data-translate="data-original-title"
+                      data-toggle="tooltip"
+                      data-trigger="hover"
+                      data-placement="right"
+                      class="tooltip-hover icon-info-sign"
+                      data-original-title="Please see the CCV code on the back of your card, for AMEX users, the CCV code is on the front of your card"></span>
                 <div class="error"
                      data-translate
                      data-ng-show="isError('creditCard.securityCode')">
@@ -108,6 +115,13 @@
                        data-ng-class="{error: isError('billToContact.firstName')}"
                        data-ng-model="form.firstName"
                        required>
+                <span data-html="true"
+                      data-translate="data-original-title"
+                      data-toggle="tooltip"
+                      data-trigger="hover"
+                      data-placement="right"
+                      class="tooltip-hover icon-info-sign"
+                      data-original-title="First name of the card holder"></span>
                 <div class="error"
                      data-translate
                      data-ng-show="isError('billToContact.firstName')">
@@ -131,7 +145,14 @@
                        data-translate="placeholder"
                        data-ng-class="{error: isError('billToContact.lastName')}"
                        data-ng-model="form.lastName"
-                       required>
+                       required />
+                <span data-html="true"
+                      data-translate="data-original-title"
+                      data-toggle="tooltip"
+                      data-trigger="hover"
+                      data-placement="right"
+                      class="tooltip-hover icon-info-sign"
+                      data-original-title="Last name of the card holder"></span>
                 <div class="error"
                      data-translate
                      data-ng-show="isError('billToContact.lastName')">
@@ -159,7 +180,14 @@
                        data-ng-class="{error: isError('addressLine1')}"
                        data-ng-model="form.cardHolderInfo.addressLine1"
                        size="255"
-                       data-ng-disabled="useExisting">
+                       data-ng-disabled="useExisting"/>
+                <span data-html="true"
+                      data-translate="data-original-title"
+                      data-toggle="tooltip"
+                      data-trigger="hover"
+                      data-placement="right"
+                      class="tooltip-hover icon-info-sign"
+                      data-original-title="Address of the card holder"></span>
                 <div class="error"
                      data-translate
                      data-ng-show="isError('addressLine1')">

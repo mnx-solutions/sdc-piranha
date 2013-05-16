@@ -17,3 +17,7 @@ h3 {
 .border {
 	border:1px solid red !important;
 }*/
+[class^="icon-"],
+[class*=" icon-"] {
+    background-image: url("/static/img/glyphicons-halflings.png");
+}

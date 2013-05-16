@@ -131,6 +131,8 @@
                                 $scope.loading = false;
                             });
                         };
+
+                        window.jQuery('.icon-info-sign').tooltip();
                     },
                     templateUrl: 'account/static/partials/account-info-edit.html'
                 };
