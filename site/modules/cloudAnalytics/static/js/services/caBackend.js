@@ -60,6 +60,10 @@
                 for(var id in datapoints) {
                     console.log(datapoints[id]);
 
+                    if(datapoints[id].err){
+                        continue;
+                    }
+
                     if(datapoints[id].blocked) {
                         var previous = ca.options.individual[id].ndatapoints || ca.options.ndatapoints;
                         ca.options.individual[id].ndatapoints = previous + (difference || 1);

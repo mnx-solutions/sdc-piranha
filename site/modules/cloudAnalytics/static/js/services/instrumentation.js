@@ -143,6 +143,7 @@ var instrumentations = {};
         };
 
         Instrumentation.prototype.delete = function (callback) {
+
             delete(instrumentations[this._uuid]);
             callback = (callback || ng.noop);
             var self = this;
