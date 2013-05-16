@@ -1,44 +1,46 @@
 <div data-ng-controller="TropoController">
-    <div class="alert alert-error" data-ng-show="error && !tropoRunning">
-        {{error}}
-    </div>
-
-    <div class="control-group">
-        <label class="control-label" for="phone" data-translate>
-            Phone
-        </label>
-        <div class="controls">
-            <select data-ng-style="countryStyle" data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
-                <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}" data-ng-selected="country.areaCode == selectedCountryCode">
-                    {{country.name}} (+{{country.areaCode}})
-                </option>
-            </select>
-            <br />
-            <div class="input-prepend">
-                <span class="add-on" data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</span>
-                <input type="text"
-                       id="phone"
-                       name="phone"
-                       data-ng-model="phone"
-                       required/>
-            </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
-        </div>
-
-        <button data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
-        <button data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry (Retries left: {{retriesLeft}})</button>
-    </div>
-
-    <div data-ng-show="tropoRunning">
+    <div>
         <div class="page-header">
             <h1>Phone confirmation <small>You'll recieve a call. Enter the number below</small></h1>
         </div>
-            <div class="alert alert-info">
-                <h5>Wait for a phone call.</h5>
-                    <p>If you should fail to receive a call please contact our <a href="">support</a></p>
+		<div class="alert alert-info" data-ng-show="tropoRunning">
+			<h5>Wait for a phone call.</h5>
+			<p>If you should fail to receive a call please contact our <a href="">support</a></p>
+		</div>
+		
+		<div class="alert alert-error" data-ng-show="error && !tropoRunning">
+	        {{error}}
+	    </div>
+	    
+		
+		<div class="span4">
+			<div class="control-group">
+		        <label class="control-label" for="phone" data-translate>
+		            Phone
+		        </label>
+		        <div class="controls">
+		            <select data-ng-style="countryStyle" data-ng-model="selectedCountryCode" style="width:255px" name="countryCode" id="countryCode">
+		                <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}" data-ng-selected="country.areaCode == selectedCountryCode">
+		                    {{country.name}} (+{{country.areaCode}})
+		                </option>
+		            </select>
+		            <br />
+		            <div class="input-prepend">
+		                <span class="add-on" style="width:50px"><font data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</font></span>
+		                <input style="width:180px" type="text"
+		                       id="phone"
+		                       name="phone"
+		                       data-ng-model="phone"
+		                       required/>
+		            </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
+		        </div>
 
-            </div>
-            <div class="clearfix"></div>
-            <div class="well well-small span6 align-center text-huge offset2">
+		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
+		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry</button>
+				<p class="text-gray text-small pull-left" data-ng-show="error && !tropoRunning && retriesLeft > 0">You have {{retriesLeft}} retries left</p>
+		    </div>
+		</div>
+            <div class="well well-small span6 align-center text-huge pull-right" data-ng-show="tropoRunning">
                 <b>{{randomNumber}}</b>
             </div>
             <div class="clearfix"></div>
