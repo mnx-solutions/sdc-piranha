@@ -48,19 +48,29 @@
         var pending = false;
         ca._poll = function() {
             var instCount = Object.keys(ca.instrumentations).length;
+            console.log('polling');
             $http.post('cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
                 ca.options.last_poll_time = res.end_time;
 
+                var now = Math.floor((new Date()).getTime() / 1000);
+                var difference = now - ca.request_time;
+
                 var datapoints = res.datapoints;
                 for(var id in datapoints) {
-                    if(ca.instrumentations[id]) {
+                    console.log(datapoints[id]);
+
+                    if(datapoints[id].blocked) {
+                        var previous = ca.options.individual[id].ndatapoints || ca.options.ndatapoints;
+                        ca.options.individual[id].ndatapoints = previous + (difference || 1);
+                        console.log('blocked, adding to datatpoints', ca.options.individual[id].ndatapoints);
+                    } else if(ca.instrumentations[id]) {
+                        delete(ca.options.individual[id].ndatapoints);
                         ca.instrumentations[id].addValues(datapoints[id]);
                     }
                 }
 
-                var now = Math.floor((new Date()).getTime() / 1000);
-                var difference = now - ca.request_time;
+
                 ca.request_time = now;
 
                 // if there's no difference in time, ask 1 datapoint;
@@ -70,6 +80,7 @@
             });
         }
         ca._sync = function(){
+            console.log('sync iteration', Object.keys(ca.instrumentations).length)
             if (Object.keys(ca.instrumentations).length) {
                 if (!pending) {
                     pending = true;
@@ -155,7 +166,6 @@
                 init: createOpts.init,
                 parent:ca
             }, function(err, inst){
-                console.log('service create', arguments);
                 if(!err) {
                     var heatmap = inst['value-arity'] === 'numeric-decomposition';
 

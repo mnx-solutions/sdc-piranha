@@ -192,9 +192,17 @@ var instrumentations = {};
                     callback(err, inst);
                 });
             } else {
-                setTimeout(function() {
-                    callback(null, instrumentations[uuid]);
-                }, 1);
+//
+                $http({
+                    method:'POST',
+                    url: 'cloudAnalytics/ca/instrumentations/unblock/' + instrumentations[uuid].id
+                })
+                .success(function (data) {
+                    setTimeout(function() {
+                        callback(null, instrumentations[uuid]);
+                    }, 1);
+                })
+
             }
         };
 
