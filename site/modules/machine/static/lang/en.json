@@ -52,6 +52,8 @@
     "Username": "Username",
     "Password": "Password",
     "[ Show ]": "[ Show ]",
+    "[ Hide ]": "[ Hide ]",
+    "System": "System",
     "Resize": "Resize",
     "Resize instance": "Resize instance",
     "Tags": "Tags",

@@ -1,3 +1,23 @@
+.machine fieldset {
+    margin-bottom: 20px;
+}
+
+.machine fieldset table thead {
+    width: 115px !important;
+    color: red;
+}
+
+.tags {
+
+}
+
+.tags .tag {
+
+}
+
+.tag.editable {
+    margin-top: 10px;
+}
 .delete {
     margin-top: 5px;
     margin-left: 30px
