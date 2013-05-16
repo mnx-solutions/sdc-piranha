@@ -15,7 +15,7 @@
 
                 var id = requestContext.getParam('id');
 
-                $scope.steps = ['start','accountInfo','tropo','billing','ssh'];
+                $scope.steps = ['start','tropo','billing','ssh'];
                 $scope.step = Account.getSignupStep(id);
                 $scope.currentStep = $scope.step;
 

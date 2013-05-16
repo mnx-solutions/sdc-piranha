@@ -8,12 +8,11 @@
                 requestContext.setUpRenderContext('signup', $scope);
 				
 				$scope.stepNames = {
-					accountInfo:"Account Info",
 					tropo:"Phone confirmation",
 					billing:"Payment Method",
 					ssh:"SSH Key"
 				};
-				$scope.steps = ['accountInfo', 'tropo', 'billing','ssh'];
+				$scope.steps = ['tropo', 'billing','ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.setStep = function (step) {

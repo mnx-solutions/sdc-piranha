@@ -42,7 +42,7 @@
                 $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                 $scope.years = [];
                 $scope.account = Account.getAccount();
-                $scope.useExisting = true;
+                $scope.useExisting = false;
                 var searchCountry = false;
 
                 $q.when($scope.account, function(account) {
@@ -54,6 +54,15 @@
                     if(account.country.length === 3) {
                         form.country = account.country;
                     }
+
+                    $scope.useExistingPossible = true;
+                    ['zipCode','city','state','addressLine1','country'].some(function (e) {
+                        if(!form[e] || form[e] === '') {
+                            $scope.useExistingPossible = false;
+                            return true;
+                        }
+                    });
+                    $scope.useExisting = $scope.useExistingPossible;
                 });
 
                 var c = (new Date()).getFullYear();
