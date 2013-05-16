@@ -79,8 +79,6 @@ module.exports = function (scope, app, callback) {
         var say = new Say("Please enter your four digit number");
         var choices = new Choices("[4 DIGITS]");
 
-        console.log('tropo calling to +'+ req.body.session.parameters.numberToDial);
-
         tropo.call("+"+ req.body.session.parameters.numberToDial);
         tropo.ask(choices, null, true, null, "digit", null, null, say, 60, null);
 
@@ -88,18 +86,24 @@ module.exports = function (scope, app, callback) {
         tropo.on("hangup", null, "/tropo/tropo/fail", true);
         tropo.on("incomplete", null, "/tropo/tropo/fail", true);
 
-        console.log('tropo id: ', req.body.session.id);
-
         req.session.tropoId = req.body.session.id;
         req.session.save();
 
         redisClient.set(req.body.session.id, 'pending');
 
-        res.send(TropoJSON(tropo));
-
+        redisClient.get(req.session.tropoId +'_retries', function(err, result) {
+            if(!result || result === '') {
+                redisClient.set(req.session.tropoId +'_retries', 1);
+            } else {
+                redisClient.set(req.session.tropoId +'_retries', ++result);
+            }
         });
 
-        app.post('/fail', function(req, res) {
+        res.send(TropoJSON(tropo));
+
+    });
+
+    app.post('/fail', function(req, res) {
         redisClient.set(req.body.result.sessionId, 'failed');
 
         res.send(200);
