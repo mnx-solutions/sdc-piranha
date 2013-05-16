@@ -3,56 +3,103 @@
         <div class="container">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
+
             <div class="page-header">
-                <h1 class="pull-left" data-translate>My Account Summary</h1> <div ng-show="loading" class="loading-medium-after-h1"></div>
+                <h1 class="pull-left" data-translate>My Account Summary</h1>
+                <div ng-show="loading" class="loading-medium-after-h1"></div>
                 <div class="clearfix"></div>
             </div>
-			
-			<div class="span9 container">
-				<fieldset>
-            		<legend class="clearfix"><span class="pull-left">Profile summary</span> <a href="#!/account/edit/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
-					<div class="row-fluid">
-						<div class="text-medium span6">
-							<h6>General info</h6>
-								<font style="width:90px;display:inline-block">Name</font> <strong>{{account.firstName}} {{account.lastName}}</strong><br />
-	                         	<font style="width:90px;display:inline-block">Username</font> <strong>{{account.login}}</strong><br />
-	                        	<font style="width:90px;display:inline-block">Email</font> {{account.email}}<br />
-	                        	<font style="width:90px;display:inline-block">Phone</font> {{account.phone}}<br />
-	                        	<font style="width:90px;display:inline-block">Company</font> {{account.companyName}}<br />						
-						</div>
-						<div class="text-medium span5">
-							<h6>Address</h6>
-							<div class="pull-left span12">
-								{{account.address}}<br />
-								{{account.city}}<br /> 
-								{{account.state}} {{account.postalCode}}<br />
-								{{account.country}}
-							</div>
-						</div>
-					</div>
-				</fieldset>
-				<br />
-				<fieldset>
-					<legend class="clearfix"><span class="pull-left">Billing info</span> <a href="#!/account/payment/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
-					<div class="row-fluid">
-						<div class="text-medium span6">
-							<h6>Credit Card info</h6>
-							<div data-current-credit-card></div>
-						</div>
-						<div class="text-medium span5">
-							<h6>Latest invoice</h6>
-							<div class="pull-left span12">
-								<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong></p>
-								<p class="text-gray">Full history available at the <a href="#!/account/invoices">Invoices</a> section on the right</p>
-								
-							</div>
-						</div>
-					</div>
-				</fieldset>
-				<br />
-				<fieldset>
-					<legend class="clearfix"><span class="pull-left">SSH Summary</span> <a href="#!/account/ssh/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
-					<div class="clearfix"></div>
+
+            <div class="account span9 container">
+                <fieldset>
+                    <legend class="clearfix">
+                        <span class="pull-left" data-translate>Profile summary</span>
+                        <a href="#!/account/edit/" class="pull-right btn btn-mini" style="margin-top:5px" data-translate>Edit</a>
+                    </legend>
+
+                    <div class="row-fluid">
+                        <div class="text-medium span6">
+                            <h6 data-translate>General info</h6>
+
+                            <p class="field">
+                                <span class="name" data-translate>Name</span>
+                                <span class="value b">{{account.firstName}} {{account.lastName}}</span>
+                            </p>
+
+                            <p class="field">
+                                <span class="name" data-translate>Username</span>
+                                <span class="value b">{{account.login}}</span>
+                            </p>
+
+                            <p class="field">
+                                <span class="name" data-translate>Email</span>
+                                <span class="value">{{account.email}}</span>
+                            </p>
+
+                            <p class="field">
+                                <span class="name" data-translate>Phone</span>
+                                <span class="value">{{account.phone}}</span>
+                            </p>
+
+                            <p class="field">
+                                <span class="name" data-translate>Company</span>
+                                <span class="value">{{account.companyName}}</span>
+                            </p>
+                        </div>
+
+                        <div class="text-medium span5">
+                            <h6 data-translate>Address</h6>
+                            <div class="pull-left span12">
+                                <p class="field">
+                                    <span class="name" data-translate>Address</span>
+                                    <span class="value">{{account.address}}</span>
+                                </p>
+
+                                <p class="field">
+                                    <span class="name" data-translate>City</span>
+                                    <span class="value">{{account.city}}</span>
+                                </p>
+
+                                <p class="field">
+                                    <span class="name" data-translate>State</span>
+                                    <span class="value">{{account.state}}</span>
+                                </p>
+
+                                <p class="field">
+                                    <span class="name" data-translate>Postal code</span>
+                                    <span class="value">{{account.postalCode}}</span>
+                                </p>
+
+                                <p class="field">
+                                    <span class="name" data-translate>Contry</span>
+                                    <span class="value">{{account.country}}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend class="clearfix"><span class="pull-left">Billing info</span> <a href="#!/account/payment/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
+                    <div class="row-fluid">
+                        <div class="text-medium span6">
+                            <h6>Credit Card info</h6>
+                            <div data-current-credit-card></div>
+                        </div>
+                        <div class="text-medium span5">
+                            <h6>Latest invoice</h6>
+                            <div class="pull-left span12">
+                                <p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong></p>
+                                <p class="text-gray">Full history available at the <a href="#!/account/invoices">Invoices</a> section on the right</p>
+
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend class="clearfix"><span class="pull-left">SSH Summary</span> <a href="#!/account/ssh/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
+                    <div class="clearfix"></div>
                     <div data-ng-show="sshKeys.length > 0" style="margin-top:10px">
                         <div class="item-list-container">
                             <div class="item header">
@@ -91,19 +138,19 @@
                             </div>
                         </div>
                     </div>
-					<div class="clearfix"></div>
-			            <div class="alert alert-info alert-global" data-ng-hide="loading || sshKeys.length > 0">
-			                <div class="pull-left">
-			                    <h4>Please set up your SSH Key.</h4>
-			                    <div>I see you have no SSH keys configured.</div>
-			                </div>
-			                <a class="btn btn-success pull-right alert-global" href="#!/account/ssh" data-translate>Add a SSH key</a>
-			                <div class="clearfix"></div>
-			            </div>
-                    
-				</fieldset>
+                    <div class="clearfix"></div>
+                    <div class="alert alert-info alert-global" data-ng-hide="loading || sshKeys.length > 0">
+                        <div class="pull-left">
+                            <h4>Please set up your SSH Key.</h4>
+                            <div>I see you have no SSH keys configured.</div>
+                        </div>
+                        <a class="btn btn-success pull-right alert-global" href="#!/account/ssh" data-translate>Add a SSH key</a>
+                        <div class="clearfix"></div>
+                    </div>
 
-			</div>
+                </fieldset>
+
+            </div>
             <div account-right-menu></div>
         </div>
     </div>
