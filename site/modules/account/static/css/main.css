@@ -12,3 +12,23 @@ input.error, select.error, textarea.error {
     -moz-box-shadow: 0 0 6px #f8b9b7;
     box-shadow: 0 0 6px #f8b9b7;
 }
+
+.account fieldset {
+    margin-bottom: 20px;
+}
+
+.account .field {
+    margin-bottom: 2px;
+}
+
+.account .field .name {
+     width: 90px;
+     display: inline-block;
+}
+
+.account .field .value {
+    padding: 0px;
+    float: none;
+    text-decoration: none;
+    border: none;
+}
