@@ -270,7 +270,7 @@
                             )
                         );
 
-                        delete machines.list.splice(machines.list.indexOf(machine), 1);
+                        machines.list.splice(machines.list.indexOf(machine), 1);
                         delete machines.index[id];
                         return;
                     }
@@ -297,7 +297,7 @@
                         )
                     );
 
-                    delete machines.list.splice(machines.list.indexOf(machine), 1);
+                    machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];
                     return;
                 }
