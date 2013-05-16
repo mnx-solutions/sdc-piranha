@@ -111,20 +111,24 @@
             <div class="container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
                 <div data-ng-show="!o.edit">
                     <span class="key span3" data-ng-class="{error: o.conflict}">{{o.key}}</span>
-	                                <span class="value span4" data-ng-class="{error: o.conflict}">
-	                                    {{o.val}}
-	                                    <span class="icon-trash pull-right"
-                                              data-ng-click="removeTag(key)"
-                                              style="margin-top:5px;margin-left:30px"></span>
-	                                    <div class="clearfix"></div>
-	                                </span>
+                    <span class="value span4" data-ng-class="{error: o.conflict}">
+                        {{o.val}}
+                        <span class="icon-trash pull-right delete"
+                              data-ng-click="removeTag(key)"
+                              data-ng-show="!tagsave"
+                              ></span>
+                        <div class="clearfix"></div>
+                    </span>
                 </div>
 
                 <div class="muted" style="margin-top:10px;" data-ng-show="o.edit">
                     <div data-ng-class="{error: o.conflict}" class="controls control-group" >
                         <input class="input-large" type="text" placeholder="Key" placeholder="Enter New Tag Key" data-ng-model="o.key">
                         <input type="text" class="input-large span3" placeholder="Value" placeholder="Enter New Tag Value" data-ng-model="o.val" style="margin-left:10px">
-						<span class="icon-trash pull-right" data-ng-click="removeTag(key)" style="margin-top:5px;margin-left:30px" data-ng-show="key != tagnr"></span>
+						<span class="icon-trash pull-right delete"
+                              data-ng-click="removeTag(key)"
+                              data-ng-show="!tagsave && tagsavekey != tagnr">
+                        </span>
 						<button class="btn btn-success pull-right"
                                 data-ng-click="clickSaveTags(machine.id)"
                                 data-translate
