@@ -24,7 +24,7 @@ module.exports = function (scope, app, callback) {
         var blocked = {};
         for(var i in is) {
             if(instrumentationBlock[token].indexOf(i) === -1) {
-                console.log('not blocked', i)
+
                 ret[i] = is[i];
             } else {
                 console.log('blocked', instrumentationBlock[token].indexOf(i), typeof(instrumentationBlock[token].indexOf(i)))
