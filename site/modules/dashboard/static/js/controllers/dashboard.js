@@ -15,7 +15,8 @@
             'localization',
             'util',
             'BillingService',
-            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService) {
+            '$http',
+            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http) {
                 localization.bind('dashboard', $scope);
                 requestContext.setUpRenderContext('dashboard.index', $scope);
                 $scope.loading = true;
@@ -28,9 +29,10 @@
                 $scope.machines    = Machine.machine();
                 $scope.lastInvoice = BillingService.getLastInvoice();
 
-                parseRSS('http://joyent.com/blog/feed', function(response) {
-                    $scope.rssentries = response.entries;
-                });
+                window.dashboard_rss_feed_callback = function (data) {
+                    $scope.rssentries = data.responseData.feed.entries;
+                };
+                $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://joyent.com/blog/feed'));
 
                 // when all datasources are loaded, disable loader
                 $q.all(

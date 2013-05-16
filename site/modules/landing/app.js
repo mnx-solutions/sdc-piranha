@@ -13,13 +13,13 @@ module.exports = function (scope, app, callback) {
         process.exit();
     }
 
-	app.post('/ssourl', function (req, res) {
+    function sendToSSO(req, res, method, redirectUrl, redirect) {
 
         // returnUrl will save the token and then redirect
-        var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup' : req.body.redirectUrl)).toString('base64');
+        var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
 
         var returnUrl = req.protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
-        var ssoUrl = config.url +'/'+ req.body.method;
+        var ssoUrl = config.url +'/'+ method;
 
         var date = new Date().toUTCString();
         var nonce = Math.random().toString(36).substring(7);
@@ -36,6 +36,7 @@ module.exports = function (scope, app, callback) {
         var signature = signer.sign(privateKey, 'base64');
         querystring += '&sig=' + encodeURIComponent(signature);
 
+        var url = '';
         // with signup mehtod, the url looks somewhat different
         if(req.body.method === 'signup') {
             var queryObj = {
@@ -46,11 +47,27 @@ module.exports = function (scope, app, callback) {
                 'returnto': returnUrl,
                 'sig': signature
             };
-
-            res.json({url: ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj))});
+            url = ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj));
         } else {
-            res.json({url: ssoUrl +'?'+ querystring});
+            url = ssoUrl +'?'+ querystring;
         }
+        if(redirect) {
+            res.redirect(url);
+            return;
+        }
+        res.json({url: url});
+    }
+
+	app.post('/ssourl', function (req, res, next) {
+        sendToSSO(req, res, req.body.method, req.body.redirectUrl);
+    });
+
+    app.get('/signup', function (req, res, next) {
+        sendToSSO(req, res, 'signup', '/main/', true);
+    });
+
+    app.get('/login', function (req, res, next) {
+        sendToSSO(req, res, 'login', '/main/', true);
     });
 
     app.get('/saveUrl/', function(req, res) {
