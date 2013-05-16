@@ -15,7 +15,7 @@
             },
             marketing_lead: function (account) {
                 var enc_email = '';
-                $http.get('/main/marketo/sha/' + account.email).success(function (data, status) {
+                $http.get('/main/tracking/sha/' + account.email).success(function (data, status) {
                     enc_email = data;
                     //TODO: username was on the wish list also
                     //TODO: campaign id propagation
