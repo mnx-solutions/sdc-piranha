@@ -1,5 +1,5 @@
 'use strict';
-
+var allInstrs = [];
 var instrumentationBlock = {}
 
 module.exports = function (scope, app, callback) {
@@ -22,14 +22,17 @@ module.exports = function (scope, app, callback) {
 
         var ret = {};
         var blocked = {};
-        for(var i in is) {
-            if(instrumentationBlock[token].indexOf(i) === -1) {
 
-                ret[i] = is[i];
-            } else {
-                console.log('blocked', instrumentationBlock[token].indexOf(i), typeof(instrumentationBlock[token].indexOf(i)))
-                blocked[i] = is[i];
+        for(var i in is) {
+            if(i) {
+                if(instrumentationBlock[token].indexOf(i) === -1) {
+                    ret[i] = is[i];
+                } else {
+                    console.log('blocked', instrumentationBlock[token].indexOf(i), typeof(instrumentationBlock[token].indexOf(i)))
+                    blocked[i] = is[i];
+                }
             }
+
         }
         console.log('returning', ret);
         console.log('BI, is', instrumentationBlock[token], is);
@@ -56,7 +59,10 @@ module.exports = function (scope, app, callback) {
 
                 if(resp.length) {
                     var id = resp[0].id;
-
+                    for(var i in resp) {
+                        if(allInstrs.indexOf(+resp[i].id) === -1)
+                            allInstrs.push(+resp[i].id);
+                    }
                     // poll the most recent value to sync with ca time.
                     req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
                         if(!err2) {
@@ -93,7 +99,8 @@ module.exports = function (scope, app, callback) {
         req.cloud.CreateInstrumentation(req.body, function (err, resp) {
             // !TODO: Error handling
             if (!err) {
-                console.log('created inst')
+                console.log('created inst');
+                allInstrs.push(+resp.id);
                 res.json(resp);
             } else {
                 console.log('create failed', err);
@@ -112,10 +119,16 @@ module.exports = function (scope, app, callback) {
             instrumentationBlock[req.session.token].splice(instrumentationBlock[req.session.token].indexOf(req.params.id), 1);
         }, 15000)
 
-        console.log('deleting instrumentation');
+        if(allInstrs.indexOf(+req.params.id) === -1) {
+            console.log('instrumentation deleted already', +req.params.id, allInstrs);
+            res.json({})
+            return;
+        }
+        console.log('deleting instrumentation', +req.params.id);
         req.cloud.DeleteInstrumentation(+req.params.id, function (err, resp) {
             if (!err) {
-                console.log('deleted instrumentation');
+                console.log('deleted instrumentation', +req.params.id);
+                allInstrs.splice(allInstrs.indexOf(+req.params.id), 1);
                 res.json(resp);
             } else {
                 console.log('deleting failed', err);
@@ -137,7 +150,7 @@ module.exports = function (scope, app, callback) {
 
         var is = removeBlocked(req.session.token, instrumentations);
         instrumentations = is.valid;
-        console.log('valid instrumentations',instrumentations);
+//        console.log('valid instrumentations',instrumentations);
         var blocked = is.blocked;
 
         for(var i in blocked) {
@@ -166,6 +179,7 @@ module.exports = function (scope, app, callback) {
                 options.duration = 1;
 
                 options.start_time = opts.last_poll_time || instrumentation.crtime;
+
 
                 switch(instrumentation['value-arity']) {
                     case 'numeric-decomposition':
@@ -210,6 +224,7 @@ module.exports = function (scope, app, callback) {
                         res.json(response);
                     }
                 });
+
             })();
         }
     });
