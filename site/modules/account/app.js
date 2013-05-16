@@ -8,11 +8,30 @@ var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var fs = require('fs');
 var countryCodes = require('./data/countryCodes');
 
+/**
+ * @ngdoc service
+ * @name account.service:api
+ * @requires $rootScope $q serverTab $$track
+ *
+ * @description
+ * Account module API
+ */
 module.exports = function (scope, app, callback) {
     var keyGen = null;
 
     var SignupProgress = scope.api('SignupProgress');
 
+    /**
+     * @ngdoc method
+     * @name account.function:api#/tropo/tropoid
+     * @methodOf account.service:api
+     *
+     * @param {String} tropoid Tropo id
+     *
+     * @description
+     * Get tropo id
+     *
+     */
     app.get('/tropo/:tropoid', function(req, res) {
         redisClient.get(req.params.tropoid, function(err, result) {
             if(result === 'passed') {

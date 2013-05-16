@@ -106,8 +106,47 @@ module.exports = function(grunt) {
                     ]
                 }
             }
+        },
+
+        docular: {
+            baseUrl: 'http://localhost:8000',
+            showAngularDocs: false,
+            showDocularDocs: false,
+            groups: [
+                {
+                    groupTitle: 'Portal modules',
+                    groupId: 'modules',
+                    groupIcon: 'icon-fire',
+                    sections: [
+                        {
+                            id: 'modules',
+                            title: 'Modules',
+                            scripts: [
+                                'site/modules',
+                                'site/static/js'
+                            ]
+                        }
+                    ]
+                },
+
+                {
+                    groupTitle: 'Portal documentation',
+                    groupId: 'portal',
+                    groupIcon: 'icon-book',
+                    sections: [
+                        {
+                            id: 'documentation',
+                            title: 'Documentation',
+                            scripts: [
+                                'site/docs'
+                            ]
+                        }
+                    ]
+                }
+            ] //groups of documentation to parse
         }
     });
+    grunt.loadNpmTasks('grunt-docular');
 
     grunt.registerMultiTask('deps', 'set up dependencies', function() {
         var command = 'git clone ' + this.data.url + ' ' + this.data.path;
