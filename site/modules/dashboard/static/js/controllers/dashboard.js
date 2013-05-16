@@ -24,6 +24,8 @@
                 // populate all datasources
                 $scope.account     = Account.getAccount();
                 $scope.forums      = Zendesk.getForumsList();
+                $scope.systemStatusTopics = Zendesk.getSystemStatusTopics();
+                $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
                 $scope.machines    = Machine.machine();
                 $scope.lastInvoice = BillingService.getLastInvoice();
 
@@ -37,6 +39,8 @@
                    [$q.when($scope.machines),
                     $q.when($scope.lastInvoice),
                     $q.when($scope.forums),
+                    $q.when($scope.systemStatusTopics),
+                    $q.when($scope.softwareUpdateTopics),
                     $q.when($scope.account),
                     $q.when($scope.rssentries)
                 ]).then( function(){

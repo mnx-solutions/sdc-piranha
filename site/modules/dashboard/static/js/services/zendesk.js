@@ -11,6 +11,11 @@
             var service = {};
 
             var forums = false;
+            var systemStatusTopics = false;
+            var softwareUpdateTopics = false;
+
+
+
             service.getForumsList = function() {
                 var deferred = $q.defer();
 
@@ -30,6 +35,49 @@
 
                 return deferred.promise;
             };
+
+
+            service.getSystemStatusTopics = function() {
+                var deferred = $q.defer();
+
+                if(!systemStatusTopics) {
+                    serverTab.call({
+                        name: 'ZendeskSystemStatusTopics',
+                        progress: function(err, job) {
+                        },
+                        done: function(err, job) {
+                            systemStatusTopics = job.__read();
+                            deferred.resolve(systemStatusTopics);
+                        }
+                    });
+                } else {
+                    deferred.resolve(systemStatusTopics);
+                }
+
+                return deferred.promise;
+            }
+
+            service.getSoftwareUpdateTopics = function() {
+                var deferred = $q.defer();
+
+                if(!softwareUpdateTopics) {
+                    serverTab.call({
+                        name: 'ZendeskPackagesUpdateTopics',
+                        progress: function(err, job) {
+                        },
+                        done: function(err, job) {
+                            softwareUpdateTopics = job.__read();
+                            deferred.resolve(softwareUpdateTopics);
+                        }
+                    });
+                } else {
+                    deferred.resolve(softwareUpdateTopics);
+                }
+
+                return deferred.promise;
+            }
+
+
             return service;
         }]);
 }(window.JP.getModule('Dashboard')));

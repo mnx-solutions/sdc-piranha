@@ -15,7 +15,6 @@
             "machine",
             "debug",
             "tracking",
-            "marketo",
             "dashboard"
         ],
 		"auth": true,

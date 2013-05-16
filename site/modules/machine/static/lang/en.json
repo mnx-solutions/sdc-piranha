@@ -53,6 +53,8 @@
     "Username": "Username",
     "Password": "Password",
     "[ Show ]": "[ Show ]",
+    "[ Hide ]": "[ Hide ]",
+    "System": "System",
     "Resize": "Resize",
     "Resize instance": "Resize instance",
     "Tags": "Tags",
@@ -65,6 +67,8 @@
     "Datacenter": "Datacenter",
     "Datacenters": "Datacenters",
     "Image (version)": "Image (version)",
+    "Image version": "Image version",
+    "Choose image version": "Choose image version",
     "Package": "Package",
     "New Package": "New Package",
     "Current Size: {{selectedmachine.memory | sizeFormat}} of RAM": "Current Size: {{selectedmachine.memory | sizeFormat}} of RAM",
@@ -83,5 +87,6 @@
     "Unable to retrieve datasets list": "Unable to retrieve datasets list",
     "Unable to retrieve datacenters list": "Unable to retrieve datacenters list",
     "Need help?": "Need help?",
-    "Help will open in new window": "Help will open in new window"
+    "Help will open in new window": "Help will open in new window",
+    "per hour": "per hour"
 }

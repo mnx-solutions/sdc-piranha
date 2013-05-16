@@ -1,4 +1,6 @@
 <fieldset data-ng-class="{'loading-medium': loading}" >
+	<div class="alert alert-error" data-ng-show="error">{{error}}</div>
+	
     <div class="span6 pull-left">
         <div class="control-group">
             <label class="control-label">Name</label>
@@ -27,11 +29,10 @@
         <div class="clearfix"></div>
     </div>
 
-    <div data-ng-show="error">{{error}}</div>
 	<div class="clearfix"></div>
 	<hr />
 	<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
-    <button class="btn btn-success pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
-	<button class="btn btn-success pull-right" data-ng-click="createNewKey()" data-ng-disabled="loading">Add SSH key</button>
+    <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
+	<button class="btn btn-success pull-right" style="margin-right:10px" data-ng-click="createNewKey()" data-ng-disabled="loading">Add SSH key</button>
 	
 </fieldset>

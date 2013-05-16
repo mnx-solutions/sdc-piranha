@@ -1,11 +1,32 @@
 'use strict';
 
 (function (app) {
-    // I provide information about the current route request.
+    /**
+     * @ngdoc service
+     * @name account.service:account
+     *
+     * @requires angular.$rootScope
+     * @requires angular.$q
+     * @requires serverTab
+     * @requires $$track
+     *
+     * @description
+     * Account module
+     */
     app.factory('Account', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
         var account = null;
+
+        /**
+         * @ngdoc
+         * @name account.service:account#getAccount
+         * @methodOf account.service:account
+         * @description
+         * Get an account
+         *
+         * @returns {Deferred} Returns a new instance of deferred.
+         */
         service.getAccount = function(noCache) {
             if(!noCache)
               noCache = false;
@@ -31,6 +52,15 @@
             return deferred.promise;
         };
 
+        /**
+         * @ngdoc
+         * @name account.service:account#updateAccount
+         * @methodOf account.service:account
+         * @description
+         * Update an account
+         *
+         * @returns {Deferred} Returns a new instance of deferred.
+         */
         service.updateAccount = function(data) {
             var deferred = $q.defer();
 
@@ -49,6 +79,15 @@
             return deferred.promise;
         };
 
+        /**
+         * @ngdoc
+         * @name account.service:account#createKey
+         * @methodOf account.service:account
+         * @description
+         * Create a new SSH key
+         *
+         * @returns {Deferred} Returns a new instance of deferred.
+         */
         service.createKey = function(name, keyData) {
             var deferred = $q.defer();
 
@@ -73,6 +112,15 @@
             return deferred.promise;
         };
 
+        /**
+         * @ngdoc
+         * @name account.service:account#getKeys
+         * @methodOf account.service:account
+         * @description
+         * Get account keys
+         *
+         * @returns {Deferred} Returns a new instance of deferred.
+         */
         service.getKeys = function(noCache) {
             if(!noCache)
                 noCache = false;
@@ -93,6 +141,15 @@
             return deferred.promise;
         };
 
+        /**
+         * @ngdoc
+         * @name account.service:account#deleteKey
+         * @methodOf account.service:account
+         * @description
+         * Delete account key
+         *
+         * @returns {Deferred} Returns a new instance of deferred.
+         */
         service.deleteKey = function(fingerprint) {
             var deferred = $q.defer();
             serverTab.call({

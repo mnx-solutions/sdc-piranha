@@ -1,0 +1,47 @@
+.machines button.create-instance {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.item label p.name {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.item label p.size {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.item label span.price {
+    padding-top: 10px;
+}
+
+.machine fieldset {
+    margin-bottom: 20px;
+}
+
+.machine fieldset table thead {
+    width: 115px !important;
+    color: red;
+}
+
+.tags {
+
+}
+
+.tags .tag {
+
+}
+
+.tag.editable {
+    margin-top: 10px;
+}
+.delete {
+    margin-top: 5px;
+    margin-left: 30px
+}
+
+.label-margin-fix {
+    margin-left: 0px;
+}
