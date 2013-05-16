@@ -95,7 +95,8 @@ module.exports = function (scope, app, callback) {
             if(!result || result === '') {
                 redisClient.set(req.session.tropoId +'_retries', 1);
             } else {
-                redisClient.set(req.session.tropoId +'_retries', ++result);
+                var count = Number(result);
+                redisClient.set(req.session.tropoId +'_retries', ++count);
             }
         });
 
