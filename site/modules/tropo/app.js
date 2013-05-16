@@ -93,9 +93,9 @@ module.exports = function (scope, app, callback) {
 
         redisClient.get(req.session.tropoId +'_retries', function(err, result) {
             if(!result || result === '') {
-                redisClient.set(req.session.tropoId +'_retries', 2);
+                redisClient.set(req.session.tropoId +'_retries', 1);
             } else {
-                redisClient.set(req.session.tropoId +'_retries', (3 - result));
+                redisClient.set(req.session.tropoId +'_retries', ++result);
             }
         });
 
