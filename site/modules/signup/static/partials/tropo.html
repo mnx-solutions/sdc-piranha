@@ -6,7 +6,12 @@
 		<div class="alert alert-error" data-ng-show="error">
 			{{error}}
 		</div>
-        <div class="alert alert-info">Retries left: {{retriesLeft}}</div>
+        <div class="alert alert-info">
+			<h5>Wait for a phone call.</h5>
+				<p>You have {{retriesLeft}} retries left</p>
+				<p>If you should fail to receive a call please contact our <a href="">support</a></p>
+				
+		</div>
 		<div class="clearfix"></div>
 		<div class="well well-small span6 align-center text-huge offset2">	
 			<b>{{randomNumber}}</b>
