@@ -180,7 +180,7 @@
                         $scope.isResizing = true;
                         $$track.event('machine', 'resize');
                         $scope.retinfo = Machine.resizeMachine(machineid, $scope.selectedPackage);
-                        console.log($scope.retinfo);
+
                         var job = $scope.retinfo.getJob();
                         job.done(function () {
                             $scope.isResizing = false;
