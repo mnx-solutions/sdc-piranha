@@ -32,7 +32,7 @@
               $dialog.messageBox(title, question, btns, templateUrl)
                 .open()
                 .then(function(result) {
-                  if(result.value === 'add') {
+                  if(result === 'add') {
                     callback(result.data);
                   }
                 });
@@ -54,6 +54,9 @@
             $scope.createPending = false;
             $scope.addNewKey = function() {
                 newKeyPopup('', function(keyData) {
+                    if(!keyData)
+                        keyData = {};
+
                     $scope.newKey.name = keyData.keyName;
                     $scope.newKey.data = keyData.keyData;
 
@@ -79,7 +82,6 @@
 
                         $scope.newKey = {};
                     } else {
-                        console.log(key);
                         notification.push(null, {type: 'error'},
                         localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
                     }

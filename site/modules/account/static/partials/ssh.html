@@ -3,6 +3,7 @@
         <div class="container">
 
             <data-breadcrumb></data-breadcrumb>
+            <data-notification></data-notification>
 			
             <div class="page-header">
                 <h1 class="pull-left" data-translate>My keys</h1><div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
@@ -27,6 +28,7 @@
 				        		<textarea class="span8" rows="10" data-ng-model="newKey.data"></textarea><br />
 							</div>
 						</div>
+                    <div data-ng-show="error">{{error}}</div>
 				    <div class="align-right">
 				        <button class="btn btn-success" data-ng-click="createNewKey()">Add SSH key</button>
 				    </div>
