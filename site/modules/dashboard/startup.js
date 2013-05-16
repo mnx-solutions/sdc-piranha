@@ -2,57 +2,54 @@
 
 var https = require('https');
 var config = require('easy-config');
+var restify = require('restify');
 
 module.exports = function (scope, callback) {
     var server = scope.api('Server');
 
-    var langs = {};
-    var oldLangs = {};
-    scope.config.localization.locales.forEach(function (lng) {
-        langs[lng] = {};
+    var cacheTTL = config.zendesk.cacheTTL || 1000 * 60 * 60;
+    var cache = {};
+
+    var client = restify.createJsonClient({
+        url: config.zendesk.host,
+        auth: config.zendesk.account + ':' + config.zendesk.token
     });
 
+
     function zendDeskCall(call, path, objectName) {
-        call.log.info('Querying Zendesk for forums list');
+        if (cache[path] && ((Date.now() - cache[path].lastSuccess) < cacheTTL)) {
+            call.log.debug("Returning Zendesk " + objectName + " from cache ");
+            call.done(null, cache[path].data);
+        } else {
+            call.log.info('Querying Zendesk for ' + objectName + ' list');
 
-        var options = {
-            hostname: 'help.joyent.com',
-            path: path,
-            method: 'GET',
-            auth: config.zendesk.account + ':' + config.zendesk.token
-        };
-        var body = '';
-        var req = https.request(options,  function(res) {
+            client.get(path, function (err, req, res, obj) {
+                if (!err) {
+                    // update cache
+                    cache[path] = {};
+                    cache[path].data = obj[objectName]
+                    cache[path].lastSuccess = Date.now();
 
-            res.on('data', function(chunk) {
-                body += chunk;
+                    call.done(null, obj[objectName]);
+                } else {
+                    call.log.error(err);
+                    call.done(err);
+                }
             });
-
-            res.on('end', function(){
-                var JSONbody = JSON.parse(body);
-                console.log(JSONbody);
-                call.done(null, JSONbody[objectName]);
-                return;
-            });
-
-        });
-        req.on('error', function(e) {
-            console.error(e);
-        });
-        req.end();
+        }
     }
 
     server.onCall('ZendeskForumList', function (call) {
-        zendDeskCall(call, '/api/v2/categories/20066858/forums.json', 'forums');
+        zendDeskCall(call, config.zendesk.forumsPath, 'forums');
     });
 
-    server.onCall('ZendeskSystemStatusTopics', function(call) {
-        zendDeskCall(call, '/api/v2/forums/20715782/topics.json', 'topics');
-    })
+    server.onCall('ZendeskSystemStatusTopics', function (call) {
+        zendDeskCall(call, config.zendesk.systemStatusPath, 'topics');
+    });
 
-    server.onCall('ZendeskPackagesUpdateTopics', function(call) {
-        zendDeskCall(call, '/api/v2/forums/21147498/topics.json', 'topics');
-    })
+    server.onCall('ZendeskPackagesUpdateTopics', function (call) {
+        zendDeskCall(call, config.zendesk.packageUpdatePath, 'topics');
+    });
 
     setImmediate(callback);
 };

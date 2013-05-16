@@ -51,7 +51,7 @@
                         }
                     });
                 } else {
-                    deferred.resolve(forums);
+                    deferred.resolve(systemStatusTopics);
                 }
 
                 return deferred.promise;
@@ -60,7 +60,7 @@
             service.getSoftwareUpdateTopics = function() {
                 var deferred = $q.defer();
 
-                if(!systemStatusTopics) {
+                if(!softwareUpdateTopics) {
                     serverTab.call({
                         name: 'ZendeskPackagesUpdateTopics',
                         progress: function(err, job) {
@@ -71,7 +71,7 @@
                         }
                     });
                 } else {
-                    deferred.resolve(forums);
+                    deferred.resolve(softwareUpdateTopics);
                 }
 
                 return deferred.promise;

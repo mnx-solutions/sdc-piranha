@@ -48,7 +48,11 @@
     },
     "zendesk": {
         "account": "jaan.oras@joyent.com/token",
-        "token": "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ"
+        "token"  : "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ",
+        "host"   : "https://help.joyent.com",
+        "forumsPath" : "/api/v2/categories/20066858/forums.json",
+        "systemStatusPath"  : "/api/v2/forums/20715782/topics.json",
+        "packageUpdatePath" : "/api/v2/forums/21147498/topics.json"
     },
     "marketo": {
         "apikey": "CatsLikeSandboxes"

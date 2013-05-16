@@ -29,7 +29,8 @@
     "moment": "*",
     "xml2js": "*",
     "mustache": "*",
-    "tropo-webapi-node": "*"
+    "tropo-webapi-node": "*",
+    "restify": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
