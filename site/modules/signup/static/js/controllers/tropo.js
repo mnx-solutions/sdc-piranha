@@ -25,6 +25,12 @@
         $scope.setAccount = function() {
             $q.when(Account.getAccount(true), function (account) {
                 $scope.account = account;
+
+                if($scope.account.phone) {
+                    var phoneSplit = $scope.account.phone.split('-');
+                    $scope.selectedCountryCode = phoneSplit[0];
+                    $scope.phone = phoneSplit[1];
+                }
             });
         };
 
@@ -94,12 +100,15 @@
                   if(!data.success) {
                       $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                       $scope.tropoRunning = false;
+                      $scope.retriesLeft = 0;
                   } else {
                       $scope.randomNumber = data.randomNumber;
 
                       var interval = setInterval(function() {
                           $scope.tropoPoll++;
                           $http.get('account/tropo/'+ data.tropoId).success(function(data) {
+                              $scope.retriesLeft = (3-data.retries);
+
                               if(data.status === 'passed') {
 
                                   $scope.deleteInterval(interval);
@@ -114,8 +123,10 @@
                                   // TODO: Fail handling
                                   $scope.deleteInterval(interval);
 
-
-                                  $scope.error = 'Phone verification failed. Please check the number and try again';
+                                  if($scope.retriesLeft <= 0)
+                                      $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                                  else
+                                      $scope.error = 'Phone verification failed. Please check the number and try again';
                               }
 
                               if($scope.tropoPoll == 60) {

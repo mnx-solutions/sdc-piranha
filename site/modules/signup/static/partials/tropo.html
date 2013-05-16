@@ -24,8 +24,8 @@
             </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
         </div>
 
-        <button data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
-        <button data-ng-click="makeCall()" data-ng-show="error && !tropoRunning" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry (Retries left: {{retriesLeft}})</button>
+        <button data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
+        <button data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry (Retries left: {{retriesLeft}})</button>
     </div>
 
     <div data-ng-show="tropoRunning">
@@ -34,7 +34,6 @@
         </div>
             <div class="alert alert-info">
                 <h5>Wait for a phone call.</h5>
-                    <p>You have {{retriesLeft}} retries left</p>
                     <p>If you should fail to receive a call please contact our <a href="">support</a></p>
 
             </div>
