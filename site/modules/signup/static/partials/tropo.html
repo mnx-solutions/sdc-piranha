@@ -13,7 +13,7 @@
 	    </div>
 	    
 		
-		<div class="span4 border">
+		<div class="span4">
 			<div class="control-group">
 		        <label class="control-label" for="phone" data-translate>
 		            Phone
@@ -35,8 +35,10 @@
 		            </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
 		        </div>
 
-		        <button class="btn btn-success pull-right" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
-		        <button data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry (Retries left: {{retriesLeft}})</button>
+		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
+		        <button class="btn btn-success pull-right span1" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry</button>
+		<div class="clearfix"></div>
+				<p class="text-gray text-small" data-ng-show="error && !tropoRunning && retriesLeft > 0">You have {{retriesLeft}} retries left</p>
 		    </div>
 		</div>
             <div class="well well-small span6 align-center text-huge pull-right" data-ng-show="tropoRunning">
