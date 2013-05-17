@@ -27,7 +27,14 @@
                 $scope.account = account;
 
                 $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
-                    $scope.retriesLeft = data.retries;
+
+                    if(data.retries && data.retries != null) {
+                        $scope.retriesLeft = (3-data.retries);
+                    }
+
+                    if($scope.retriesLeft <= 0) {
+                        $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                    }
                 });
 
                 if($scope.account.phone) {

@@ -30,11 +30,6 @@
                     sequence: 3,
                     name: 'Payment',
                     url: '/account/payment'
-                },
-                {
-                    sequence: 4,
-                    name: 'Invoices',
-                    url: '/account/invoices'
                 }];
             },
             template: '<div class="pull-right">' +

@@ -162,22 +162,20 @@
             template:
                 '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
-                    '<i style="float:right" data-ng-click="deleteGraph()" class="icon-remove-circle" ></i>' +
-                    '<br/>' +
-                    '<div>{{graphtitle}}</div>' +
-                    '<br/>' +
-                    '<button  data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                    '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
+                    '<h6>{{graphtitle}}</h6>' +
+                    '<button class="btn btn-mini default-margin default-margin-mini" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
                     '<br/><br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
                         '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
-                        '<div class="caOverlaid" >' +
-                            '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+	                        '<div class="caOverlaid" >' +
+	                            '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+	                        '</div>' +
                         '</div>' +
-                        '</div>' +
-                    '</div><br/>' +
-                    '<div id="legend_{{$id}}" style="width:620px;" ></div><br/>' +
-                '</div><br/><br/>'
+                    '</div>' +
+                    '<div id="legend_{{$id}}" style="width:620px"></div>' +
+                '</div><hr />'
         };
     });
 }(window.JP.getModule('cloudAnalytics')));
