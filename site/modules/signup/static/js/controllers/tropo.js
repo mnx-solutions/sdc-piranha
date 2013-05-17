@@ -28,7 +28,7 @@
 
                 $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
 
-                    if(data.retries) {
+                    if(data.retries && data.retries != null) {
                         $scope.retriesLeft = (3-data.retries);
                     }
 
@@ -101,7 +101,7 @@
 
       $scope.phoneVerification = function(account) {
           var dialNumber = $scope.tropoPhone;
-          if(!$scope.tropoRunning && $scope.currentStep === 'tropo' && $scope.retriesLeft < 3) {
+          if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
               $scope.tropoRunning = true;
               $http.get('/tropo/tropo/'+ dialNumber.replace('-', '') +'/'+ account.id).success(function(data) {
                   if(data.retries) {
