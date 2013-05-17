@@ -28,7 +28,10 @@
 
                 $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
                     $scope.retriesLeft = (3-data.retries);
-                    $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+
+                    if($scope.retriesLeft >= 3) {
+                        $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                    }
                 });
 
                 if($scope.account.phone) {
