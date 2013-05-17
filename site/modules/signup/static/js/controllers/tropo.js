@@ -26,6 +26,10 @@
             $q.when(Account.getAccount(true), function (account) {
                 $scope.account = account;
 
+                $http.get('/tropo/tropo/'+ dialNumber.replace('-', '') +'/'+ account.id).success(function(data) {
+                    $scope.retriesLeft = data.retries;
+                });
+
                 if($scope.account.phone) {
                     var phoneSplit = $scope.account.phone.split('-');
                     $scope.selectedCountryCode = phoneSplit[0];
@@ -106,7 +110,7 @@
 
                       var interval = setInterval(function() {
                           $scope.tropoPoll++;
-                          $http.get('account/tropo/'+ data.tropoId).success(function(data) {
+                          $http.get('account/tropo/'+ data.tropoId +'/'+ account.id).success(function(data) {
                               $scope.retriesLeft = (3-data.retries);
 
                               if(data.status === 'passed') {
