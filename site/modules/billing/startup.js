@@ -132,10 +132,27 @@ module.exports = function (scope, callback) {
                 call.done(null, resp);
             });
         }
+        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
+            // Get the account object ready
+            obj.creditCard = {};
+            Object.keys(call.data).forEach(function (k) {
+                if(k === 'firstName' || k === 'lastName') {
+                    return;
+                }
+                var key = ((k === 'creditCardType' && 'cardType') || (k === 'creditCardNumber' && 'cardNumber') || k);
+                obj.creditCard[key] = call.data[k];
+            });
+            Object.keys(call.data.cardHolderInfo).forEach(function (k) {
+                if(k === 'cardHolderName') {
+                    return;
+                }
+                var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
+                obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
+            });
 
-        getAccountId(call, scope.log.noErr('Failed to get account info', call.done, function (id) {
+            //Compose the creditcard object
             var data = {
-                accountKey: id,
+                accountKey: obj.accountNumber,
                 defaultPaymentMethod: true
             };
             Object.keys(call.data).forEach(function (k) {
@@ -157,40 +174,21 @@ module.exports = function (scope, callback) {
                 data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
             }
 
+            // Create payment
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
-                        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
-                            obj.creditCard = {};
-                            Object.keys(call.data).forEach(function (k) {
-                                if(k === 'firstName' || k === 'lastName') {
-                                    return;
-                                }
-                                var key = ((k === 'creditCardType' && 'cardType') || (k === 'creditCardNumber' && 'cardNumber') || k);
-                                obj.creditCard[key] = call.data[k];
-                            });
-                            Object.keys(call.data.cardHolderInfo).forEach(function (k) {
-                                if(k === 'cardHolderName') {
-                                    return;
-                                }
-                                var key = ((k === 'addressLine1' && 'address1') || (k === 'addressLine2' && 'address2') || k);
-                                obj.billToContact[key] = obj.billToContact[key] || call.data.cardHolderInfo[k];
-                            });
-                            zuora.account.create(obj, function (accErr, accResp) {
-                                console.log(arguments);
-                                if(accResp && accResp.reasons) {
-                                    accResp.reasons.forEach(function(r) {
-                                        console.log(r);
-                                    });
-                                }
-                                if(accErr) {
-                                    accErr.zuora = accResp;
-                                    call.done(accErr);
-                                    return;
-                                }
-                                setProgress(accResp);
-                            });
-                        }));
+                        zuora.account.create(obj, function (accErr, accResp) {
+                            if(accResp && accResp.reasons) {
+                                scope.log.error('Zuora account creation failed', accResp.reasons);
+                            }
+                            if(accErr) {
+                                accErr.zuora = accResp;
+                                call.done(accErr);
+                                return;
+                            }
+                            setProgress(accResp);
+                        });
                         return;
                     }
                     if(preErr) {
@@ -204,11 +202,21 @@ module.exports = function (scope, callback) {
                     call.done(err);
                     return;
                 }
-                if(!call.req.session.signupStep || call.req.session.signupStep !== 'complete') {
-                    setProgress(resp);
-                    return;
-                }
-                call.done(null, resp);
+                // No error - so update the account
+                var accData = {
+                    billToContact: obj.billToContact,
+                    soldToContact: obj.billToContact
+                };
+                zuora.account.update(obj.accountNumber, accData, function (accErr, accResp) {
+                    if(accErr) {
+                        scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
+                    }
+                    if(!call.req.session.signupStep || call.req.session.signupStep !== 'complete') {
+                        setProgress(resp);
+                        return;
+                    }
+                    call.done(null, resp);
+                });
             });
         }));
     });
