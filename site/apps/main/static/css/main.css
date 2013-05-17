@@ -410,6 +410,12 @@ th {
 	margin-left:16px;
 /*	border:1px solid red;*/
 }
+.default-margin {
+	margin:5px;
+}
+.default-margin-mini {
+	margin:2px;
+}
 
 .item-list-container .item:hover .item.header,.item-list-container .item:hover .item.header:hover {
 	background-color:#fcfcfc;
