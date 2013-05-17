@@ -32,7 +32,7 @@
                         $scope.retriesLeft = (3-data.retries);
                     }
 
-                    if($scope.retriesLeft >= 3) {
+                    if($scope.retriesLeft <= 0) {
                         $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                     }
                 });
