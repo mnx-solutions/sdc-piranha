@@ -172,7 +172,7 @@
         </p>
 		
 		<div data-ng-show="datasetType == 'smartos'" class="well well-small" data-ng-class="{'loading-medium': isResizing}">
-	        <div class="span3 container arrow-to" data-ng-show="currentPackage">
+	        <div class="span2 container arrow-to" data-ng-show="currentPackage">
 				<div>
 					<h6 data-translate>Current package</h6>
                     <span>{{currentPackage.description}}</span><br />
@@ -187,9 +187,9 @@
 				</div>
 	        </div>
 
-			<div class="span3" data-ng-class="{'pull-right': currentPackage}">
+			<div style="width:250px" data-ng-class="{'pull-right': currentPackage}">
 				<h6 class="control-label" data-translate>Resize Package</h6>
-	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:220px">
+	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:250px">
 	                <option data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
 	                        value="{{package.name}}" class="text-medium">
 	                    Mem: {{package.memory | sizeFormat}}
@@ -200,7 +200,7 @@
 
 	            <div class="clearfix"></div>
 	            <br />
-		        <div class="control-group align-right ">
+		        <div class="control-group align-right">
 		            <button class="btn btn-success" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
 		        </div>
 			</div>

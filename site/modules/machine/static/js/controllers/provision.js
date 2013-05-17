@@ -125,7 +125,13 @@
                     $scope.selectedDataset = null;
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
-                    $scope.data = {};
+                    var ds = $scope.data.datacenter;
+					var opsys = $scope.data.opsys;
+					// console.log($scope.data);
+					$scope.data = {
+						datacenter: ds,
+						opsys: opsys
+					};
                     $scope.packageType = null;
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
@@ -287,10 +293,10 @@
 
                 ng.element('.carousel').bind({
                     slide: function() {
-                        ng.element('.item .header').hide();
+                        // ng.element('.item .header').hide();
                     },
                     slid:function(){
-                        ng.element('.item .header').show();
+                        // ng.element('.item .header').show();
                     }
                 });
 
