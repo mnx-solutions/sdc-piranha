@@ -26,7 +26,7 @@
             $q.when(Account.getAccount(true), function (account) {
                 $scope.account = account;
 
-                $http.get('/tropo/tropo/'+ dialNumber.replace('-', '') +'/'+ account.id).success(function(data) {
+                $http.get('/account/tropoRetries/'+ account.id).success(function(data) {
                     $scope.retriesLeft = data.retries;
                 });
 
