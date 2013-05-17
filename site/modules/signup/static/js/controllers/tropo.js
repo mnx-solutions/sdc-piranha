@@ -121,6 +121,8 @@
 
                               if(data.status === 'failed') {
                                   // TODO: Fail handling
+
+
                                   $scope.deleteInterval(interval);
 
                                   if($scope.retriesLeft <= 0)
