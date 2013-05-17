@@ -86,6 +86,7 @@ var instrumentations = {};
             });
             self.ask[id] = true;
 
+            console.log('returning values',ret);
             return ret;
         };
 

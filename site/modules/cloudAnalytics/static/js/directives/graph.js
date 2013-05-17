@@ -15,13 +15,18 @@
             link: function ($scope){
                 var ticktime = null;
                 var graph = false;
+                var legend = null;
                 $scope.heatmap;
 
                 function createLegend(graph) {
-                    var legend = new Rickshaw.Graph.Legend({
-                        graph: graph,
-                        element: document.querySelector('#legend_' + $scope.$id)
-                    });
+//                    console.log('create legend graph:',graph);
+                    legend = true;
+                    if(graph.series[0].name !== 'default') {
+                        legend = new Rickshaw.Graph.Legend({
+                            graph: graph,
+                            element: document.querySelector('#legend_' + $scope.$id)
+                        });
+                    }
                 }
 
                 function createXAxis(graph) {
@@ -74,8 +79,6 @@
                 $scope.renderer = 'bar';
                 $scope.renderers = [
                     'area',
-//                    'stack',
-//                    'scatterplot',
                     'bar',
                     'line'
                 ];
@@ -101,7 +104,6 @@
                 $scope.ready = false;
 
                 function updateGraph() {
-
                         var series = $scope.ca.getSeries(
                             $scope.instrumentations,
                             ticktime
@@ -119,6 +121,10 @@
                                 graph.series.splice(0, graph.series.length);
                                 graph.series.push.apply(graph.series, series);
                                 graph.render();
+                                if(legend) {
+                                    document.querySelector('#legend_' + $scope.$id).innerHTML = "";
+                                    createLegend(graph);
+                                }
                             }
                         }
                 }

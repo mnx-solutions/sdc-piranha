@@ -102,8 +102,8 @@
 
             // view options
             this.range = 60;
-            this.width = 640;
-            this.height = 200;
+            this.width = 570;
+            this.height = 180;
 
             this.deletequeue = []
         };
@@ -260,6 +260,7 @@
                 for(var name in series) {
                     var data = [];
                     var hms;
+
                     for(var dp in series[name]) {
 
                         var y = (heatmap ? 0 : series[name][dp]);
@@ -287,9 +288,29 @@
                         color: ca.getColor(gName)
                     });
 
+                    if(!seriesCollection.length) {
+                        var data = [];
+                        var range = self.instrumentations[id].range || self.range;
+                        var endtime = times[times.length-1];
+                        for(var i = range; range >= 0; --range ) {
+                            data.push({
+                                x:endtime-range,
+                                y:0
+                            })
+                        }
+                        seriesCollection.push({
+                            name: 'default',
+                            data: data,
+                            color: ca.getColor('default')
+                        })
+                    }
+
                 }
 
             }
+
+
+
             return seriesCollection;
         }
 
