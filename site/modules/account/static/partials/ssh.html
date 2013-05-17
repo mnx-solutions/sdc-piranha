@@ -47,31 +47,38 @@
             <div data-ng-show="sshKeys.length > 0" class="container span9 pull-left">
                 <div class="item-list-container">
                     <div class="item header">
-                        <span class="text-medium" data-translate>Key Name / UUID</span>
+						<span class="span2">Key Name</span>
+						<span class="span2">UUID</span>
+
                         <div class="clearfix"></div>
                     </div>
                     <div class="clearfix"></div>
 
                     <div class="item" data-ng-repeat="key in sshKeys">
                         <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
-                            {{key.name}} / {{key.fingerprint}}
+							<span class="span2">{{key.name}}</span>
+							<span class="span2">{{key.fingerprint}}</span>
                         </span>
                         <div class="clearfix"></div>
 
-                        <div data-ng-show="openKeyDetails == $index" class="toolbox ">
-                            <div class="item pull-left">
-                                <span class="text-medium b key span2" data-translate>Fingerpint:</span>
-                                <span class="text-medium value span4">{{key.fingerprint}}</span>
-
-                                <div class="clearfix"></div>
-
-                                <span class="b key span2 last text-medium" data-translate>Key</span>
-                                <span class="value span4 last text-medium" style="word-wrap:break-word">{{key.key}}</span>
-                                <div class="clearfix"></div>
+                        <div data-ng-show="openKeyDetails == $index" class="toolbox row-fluid">
+                            <div class="item pull-left span10">
+								
+								<div class="row-fluid">
+                                	<span class="text-medium key span2" data-translate>Fingerpint</span>
+                                	<span class="text-medium value span10">{{key.fingerprint}}</span>
+									<div class="clearfix"></div>
+								</div>
+                                
+								<div class="row-fluid">
+                                	<span class="text-medium key span2 last" data-translate>Key</span>
+                                	<span class="text-medium value span10 last" style="word-wrap:break-word">{{key.key}}</span>
+                                	<div class="clearfix"></div>
+								</div>
                             </div>
 
-                            <div class="pull-right action-container span1">
-                                <button class="btn btn-mini btn-danger"
+                            <div class="pull-right span2" style="margin-top:10px">
+                                <button class="btn btn-mini btn-danger" style="width:80px;"
                                         data-ng-click="deleteKey(key.name, key.fingerprint)"
                                         data-translate>Delete</button>
                                 <div class="clearfix"></div>

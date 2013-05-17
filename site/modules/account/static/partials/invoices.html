@@ -14,19 +14,19 @@
             <div class="item-list-container" data-ng-show="!loading">
                 <div class="item header">
                     <span class="span2 text-medium" data-translate>Invoice Number</span>
-					<span class="span2 text-medium" data-translate>Date</span>
+					<span class="span3 text-medium" data-translate>Date</span>
 					<span class="span1 text-medium" data-translate>State</span>
-					<span class="span2 text-medium align-right" data-translate>Total (USD)</span>
+					<span class="span2 text-medium pull-right align-right" data-translate>Total (USD)</span>
                     <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
 
                 <div class="item" data-ng-repeat="invoice in invoices">
                     <span class="span2 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceNumber}}</span>
-					<span class="span2 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceDate}}</span>
+					<span class="span3 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceDate}}</span>
 					<span class="span1 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.status}}</span>
 
-					<span class="span2 pointer text-medium align-right"
+					<span class="span2 pointer text-medium pull-right align-right"
                           data-ng-click="setOpenDetails($index);">{{invoice.amount | number:2}}
                     </span>
 
@@ -35,16 +35,16 @@
                     <div data-ng-show="openDetails == $index" class="toolbox ">
 	                    <div class="item header text-medium">
 							<span class="pull-left span2 text-medium" data-translate>Product</span>
-							<span class="pull-left span2 text-medium" data-translate>Period</span>
-							<span class="pull-left span1 text-medium align-right" data-translate>Quantity</span>
-							<span class="pull-right span2 text-medium align-right" data-translate>Sum (USD)</span>
+							<span class="pull-left span3 text-medium" data-translate>Period</span>
+							<span class="pull-left span1 text-medium" data-translate>Quantity</span>
+							<span class="pull-right span2 text-medium pull-right align-right" data-translate>Sum (USD)</span>
 							<div class="clearfix"></div>
                         </div>
 
                         <div class="item text-medium" data-ng-repeat="item in invoice.invoiceItems">
 							<span class="pull-left span2 text-medium">{{item.productName}}</span>
-							<span class="pull-left span2 text-medium">{{item.serviceStartDate}}-{{item.serviceEndDate}}</span>
-							<span class="pull-left span1 text-medium align-right">{{item.quantity}}</span>
+							<span class="pull-left span3 text-medium">{{item.serviceStartDate}}-{{item.serviceEndDate}}</span>
+							<span class="pull-left span1 text-medium">{{item.quantity}}</span>
 							<span class="pull-right span2 text-medium align-right">{{item.chargeAmount | number:2}} USD</span>
 							<div class="clearfix"></div>
                         </div>
