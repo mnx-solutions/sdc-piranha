@@ -106,7 +106,7 @@
 
                       var interval = setInterval(function() {
                           $scope.tropoPoll++;
-                          $http.get('account/tropo/'+ data.tropoId).success(function(data) {
+                          $http.get('account/tropo/'+ data.tropoId +'/'+ account.id).success(function(data) {
                               $scope.retriesLeft = (3-data.retries);
 
                               if(data.status === 'passed') {
