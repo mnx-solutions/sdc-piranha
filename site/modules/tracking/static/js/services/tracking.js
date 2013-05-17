@@ -15,7 +15,7 @@
             },
             marketing_lead: function (account) {
                 var enc_email = '';
-                $http.get('/signup/tracking/sha/' + account.email).success(function (data, status) {
+                $http.get('/tracking/sha/' + account.email).success(function (data, status) {
                     enc_email = data;
 
                     //TODO: username was on the wish list also
