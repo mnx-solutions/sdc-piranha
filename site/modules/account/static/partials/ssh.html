@@ -104,14 +104,15 @@
                 <div account-right-menu></div>
                 <div class="clearfix"></div>
 
-                <div data-ng-show="showKeygenDownload()">
-                    <div class="alert alert-success shadow">
+                <div data-ng-show="showKeygenDownload()" class="sizebar-fix sizebar-fix-right text-small">
+                    <div class="separation-container">
+					
                         <h5 data-translate>SSH key generator</h5>
                         <p class="text-medium" data-translate>
                             Let us guide you with this small piece of code. Just press the button "Download script" below.
                         </p>
 
-                        <button class="btn btn-success"
+                        <button class="btn"
                                 data-ng-click="clickKeygenDownload()"
                                 data-translate>Download script</button>
                         <div class="clearfix"></div>
