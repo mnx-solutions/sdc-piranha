@@ -93,14 +93,22 @@
 
                         <div class="text-medium span5">
                             <h6>Latest invoice</h6>
-
-                            <div class="pull-left span12">
-                                <p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong></p>
-                                <p class="text-gray">
-                                    Full history available at the
-                                    <a href="#!/account/invoices">Invoices</a> section on the right</p>
-
-                            </div>
+							<!-- 
+								Juhul kui on arve olemas kuva alloleva <p> containerit
+							-->
+                                <p>
+									Your costs from last month 
+									<hr />
+									<b style="font-size:26px">${{lastInvoice.amount || '0'}}</b>
+									<hr />	
+								</p>
+								<!-- 
+									Juhul kui POLE arvet, kuva allolevat <p> containerit
+								-->
+								<!-- 
+								<p>You haven't been invoiced, yet :)</p>
+								-->
+								
                         </div>
                     </div>
                 </fieldset>
