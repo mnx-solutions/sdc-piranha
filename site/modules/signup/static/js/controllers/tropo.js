@@ -26,7 +26,7 @@
             $q.when(Account.getAccount(true), function (account) {
                 $scope.account = account;
 
-                $http.get('/account/tropoRetries/'+ account.id).success(function(data) {
+                $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
                     $scope.retriesLeft = data.retries;
                 });
 
@@ -118,6 +118,7 @@
                                   $scope.deleteInterval(interval);
 
                                   // update account phone
+                                  $scope.account.phone = dialNumber;
                                   Account.updateAccount($scope.account).then(function(newAcc) {
                                     $scope.nextStep();
                                   });
