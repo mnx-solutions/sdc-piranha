@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.factory('$$track', ['$location', '$http', function ($location, $http) {
+    app.factory('$$track', ['$location', '$http', '$cookies', function ($location, $http, $cookies) {
 
         return {
             event: function (category, action, label) {
@@ -15,8 +15,9 @@
             },
             marketing_lead: function (account) {
                 var enc_email = '';
-                $http.get('/main/tracking/sha/' + account.email).success(function (data, status) {
+                $http.get('/signup/tracking/sha/' + account.email).success(function (data, status) {
                     enc_email = data;
+
                     //TODO: username was on the wish list also
                     //TODO: campaign id propagation
                     mktoMunchkinFunction(
@@ -27,7 +28,7 @@
                             LastName:          account.lastName,
                             Company:           account.companyName || '--',
                             CAPI_UUID__c:      account.id || '',
-                            Campaign_ID__c:    123456789
+                            Campaign_ID__c:    $cookies.campaignId || ''
                         },
                         enc_email
                     );

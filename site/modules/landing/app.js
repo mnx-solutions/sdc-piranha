@@ -62,7 +62,12 @@ module.exports = function (scope, app, callback) {
         sendToSSO(req, res, req.body.method, req.body.redirectUrl);
     });
 
-    app.get('/signup', function (req, res, next) {
+    app.get('/signup/:campaignId?', function (req, res, next) {
+        if(req.params.campaignId) {
+            // set campaign id to the cookie
+            res.cookie('campaignId', req.params.campaignId, { maxAge: 900000, httpOnly: false});
+        }
+
         sendToSSO(req, res, 'signup', '/main/', true);
     });
 

@@ -8,6 +8,7 @@ module.exports = function (scope, app, callback) {
         var privatekey = scope.config.marketo.apikey;
 
         var sha = crypto.createHash('sha1');
+
         sha.update(privatekey + req.params.email);
         var enc_email = sha.digest('hex');
 
