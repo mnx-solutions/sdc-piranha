@@ -6,7 +6,7 @@
             <data-notification></data-notification>
 
             <div class="page-header">
-                <h1 class="pull-left" data-translate>Create new instance</h1>
+                <h1 class="pull-left" data-translate>Create instance</h1>
 				<div class="clearfix"></div>
             </div>
 
@@ -19,12 +19,12 @@
 
                     <div class="carousel-inner item-list-container">
 						<div class="active item">
-							<div class="item header">
+                            <div class="item header">
                                 <div class="btn-group pull-left tooltip-hover"
-                                      data-html="true"
-                                      data-toggle="tooltip"
-                                      data-placement="right"
-                                      data-original-title="Where do you want to launch your instance?">
+                                     data-html="true"
+                                     data-toggle="tooltip"
+                                     data-placement="right"
+                                     data-original-title="Where do you want to launch your instance?">
                                     <button class="btn" data-translate data-ng-show="!data.datacenter">Datacenters</button>
                                     <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
                                     <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -37,15 +37,32 @@
                                     </ul>
                                 </div>
 
-								    <div class="pull-right">
-								        <form class="navbar-form pull-left">
-								            <input type="text" class="span3" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
-								        </form>
-								    </div>
+                                <div class="btn-group pull-left tooltip-hover"
+                                     data-html="true"
+                                     data-toggle="tooltip"
+                                     data-placement="right"
+                                     data-original-title="Operating system for instance?">
+                                    <button class="btn" data-translate data-ng-show="!data.opsys">Operating system</button>
+                                    <button class="btn" data-translate data-ng-show="data.opsys">{{data.opsys}}</button>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li data-ng-repeat="opsys in operating_systems">
+                                            <a data-ng-click="selectOpsys(opsys)">{{opsys}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="pull-right">
+                                    <form class="navbar-form pull-left">
+                                        <input type="text" class="span3" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                    </form>
+                                </div>
 								<div class="clearfix"></div>
 							</div>
 							<div class="fixed-position-fix"></div>
-							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets">
+							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets | filter:filterDatasetsByOS">
 								<input class="pull-left"
                                        type="radio"
                                        id="dataset-{{dataset.id}}"
@@ -178,8 +195,8 @@
                     <br/>
                     <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
 						<div class="row-fluid">
-                        	<b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory}}<br/>
-                        	<b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk}}<br />
+                        	<b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
+                        	<b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
                         	<b style="width:90px;display:inline-block" data-translate>vCPUs</b> {{selectedPackageInfo.vcpus}}<br />
 						</div>
 					<div class="row-fluid price-container">
