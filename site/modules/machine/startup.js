@@ -417,7 +417,7 @@ module.exports = function (scope, callback) {
                 dataset: call.data.dataset
             };
 
-            call.log.info('Creating machine %s', call.data.name);
+            call.log.info({options: options}, 'Creating machine %s', call.data.name);
             call.getImmediate(false);
 
             call.cloud.setDatacenter(call.data.datacenter);
