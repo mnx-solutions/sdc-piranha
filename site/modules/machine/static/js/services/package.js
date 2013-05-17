@@ -64,7 +64,7 @@
                                 packages.list[datacenter].push(p);
                             }
                         });
-                        console.log(packages);
+
                         packages.list.final = true;
                     }
                 });

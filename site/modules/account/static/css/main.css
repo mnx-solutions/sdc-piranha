@@ -32,3 +32,13 @@ input.error, select.error, textarea.error {
     text-decoration: none;
     border: none;
 }
+
+.ssh .new-key-button {
+    margin-top: 20px;
+}
+
+.page-header span.name {
+    font-size: 28px;
+    margin-left: 10px;
+    padding-top: 21px;
+}

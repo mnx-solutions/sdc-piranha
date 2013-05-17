@@ -1,7 +1,7 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
-<form name="accountForm" class="row-fluid">
-    <fieldset class="span6">
-		<legend data-translate data-ng-hide="currentStep">Contact Info</legend>
+    <form name="accountForm" class="row-fluid">
+        <fieldset class="span6">
+            <legend data-translate data-ng-hide="currentStep">Contact Info</legend>
             <div class="control-group">
                 <label class="control-label" for="email" data-translate>
                     Email
@@ -93,13 +93,13 @@
                     </select>
                     <div class="input-prepend">
                         <span class="add-on" data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</span>
-                    <input type="text"
-                           id="phone"
-                           name="phone"
-                           data-ng-model="phone"
-                           data-ng-pattern="/^(\d+)$/"
-                           data-ng-class="{error: isError('phone')}"
-                           required/>
+                        <input type="text"
+                               id="phone"
+                               name="phone"
+                               data-ng-model="phone"
+                               data-ng-pattern="/^(\d+)$/"
+                               data-ng-class="{error: isError('phone')}"
+                               required/>
                     </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
                     <div class="error"
                          data-translate
@@ -113,127 +113,127 @@
                     </div>
                 </div>
             </div>
-		</fieldset>
-		<fieldset class="span6">
-			<legend data-translate data-ng-hide="currentStep">Address Info</legend>
-                <div class="control-group">
-                    <label class="control-label" for="address" data-translate>
-                        Address
-                    </label>
-                    <div class="controls">
-                        <input type="text"
-                               id="address"
-                               name="address"
-                               data-ng-model="account.address"
-                               data-ng-class="{error: isError('address')}"
-                               required>
-                        <div class="error"
-                             data-translate
-                             data-ng-show="isError('address', 'required')">
-                            Missing address
-                        </div>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="city" data-translate>
-                        City
-                    </label>
-                    <div class="controls">
-                        <input type="text"
-                               id="city"
-                               name="city"
-                               data-ng-model="account.city"
-                               data-ng-class="{error: isError('city')}"
-                               required>
-                        <div class="error"
-                             data-translate
-                             data-ng-show="isError('city', 'required')">
-                            Missing city
-                        </div>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label" for="postalCode" data-translate>
-                        Postal code
-                    </label>
-                    <div class="controls">
-                        <input type="text"
-                               id="postalCode"
-                               name="postalCode"
-                               data-ng-model="account.postalCode"
-                               data-ng-class="{error: isError('postalCode')}"
-                               data-ng-pattern="/^(\d+)$/"
-                               required>
-                        <div class="error"
-                             data-translate
-                             data-ng-show="isError('postalCode', 'required')">
-                            Missing postal code
-                        </div>
-                        <div class="error"
-                             data-translate
-                             data-ng-show="isError('postalCode', 'pattern')">
-                            Invalid postal code
-                        </div>
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <label class="control-label" for="country">
-                        Country
-                    </label>
-                    <select name="country"
-                            id="country"
-                            required
-                            data-ng-model="account.country"
-                            data-ng-options="country.iso3 as country.name for country in countries | orderBy: 'name'">
-                            </select>
-                </div>
-
-                <div class="control-group" data-ng-show="!stateSel">
-                    <label class="control-label" for="state" data-translate>
-                        State
-                    </label>
+        </fieldset>
+        <fieldset class="span6">
+            <legend data-translate data-ng-hide="currentStep">Address Info</legend>
+            <div class="control-group">
+                <label class="control-label" for="address" data-translate>
+                    Address
+                </label>
+                <div class="controls">
                     <input type="text"
-                           id="state"
-                           name="state"
-                           data-ng-model="account.state"
-                           data-ng-class="{error: isError('state')}"
+                           id="address"
+                           name="address"
+                           data-ng-model="account.address"
+                           data-ng-class="{error: isError('address')}"
                            required>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('state', 'required')">
-                        Missing state
+                         data-ng-show="isError('address', 'required')">
+                        Missing address
                     </div>
                 </div>
+            </div>
 
-                <div class="control-group" data-ng-show="stateSel" class="border">
-                    <label class="control-label" for="state2" data-translate>
-                        State
-                    </label>
+            <div class="control-group">
+                <label class="control-label" for="city" data-translate>
+                    City
+                </label>
+                <div class="controls">
+                    <input type="text"
+                           id="city"
+                           name="city"
+                           data-ng-model="account.city"
+                           data-ng-class="{error: isError('city')}"
+                           required>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('city', 'required')">
+                        Missing city
+                    </div>
+                </div>
+            </div>
 
-                    <select id="state2"
-                            name="state"
-                            data-ng-model="account.state"
-                            required>
-                        <option data-ng-repeat="(key, value) in stateSel"
-                                data-ng-selected="key == account.state"
-                                value="{{key}}">
-                            {{value}}
-                        </option>
-                    </select>
-                </div>			
-		<div class="clearfix"></div>
-       
-          </fieldset>
-        <!-- <div class="span7"> -->
-			<div class="clearfix" data-ng-show="currentStep"></div>
-			<hr data-ng-show="currentStep" />
-			<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>	
-            <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
-            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
-        <!-- </div> -->
+            <div class="control-group">
+                <label class="control-label" for="postalCode" data-translate>
+                    Postal code
+                </label>
+                <div class="controls">
+                    <input type="text"
+                           id="postalCode"
+                           name="postalCode"
+                           data-ng-model="account.postalCode"
+                           data-ng-class="{error: isError('postalCode')}"
+                           data-ng-pattern="/^(\d+)$/"
+                           required>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('postalCode', 'required')">
+                        Missing postal code
+                    </div>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('postalCode', 'pattern')">
+                        Invalid postal code
+                    </div>
+                </div>
+            </div>
 
-	<div class="clearfix"></div>
-</form>
+            <div class="control-group">
+                <label class="control-label" for="country">
+                    Country
+                </label>
+                <select name="country"
+                        id="country"
+                        required
+                        data-ng-model="account.country"
+                        data-ng-options="country.iso3 as country.name for country in countries | orderBy: 'name'">
+                </select>
+            </div>
+
+            <div class="control-group" data-ng-show="!stateSel">
+                <label class="control-label" for="state" data-translate>
+                    State
+                </label>
+                <input type="text"
+                       id="state"
+                       name="state"
+                       data-ng-model="account.state"
+                       data-ng-class="{error: isError('state')}"
+                       required>
+                <div class="error"
+                     data-translate
+                     data-ng-show="isError('state', 'required')">
+                    Missing state
+                </div>
+            </div>
+
+            <div class="control-group" data-ng-show="stateSel" class="border">
+                <label class="control-label" for="state2" data-translate>
+                    State
+                </label>
+
+                <select id="state2"
+                        name="state"
+                        data-ng-model="account.state"
+                        required>
+                    <option data-ng-repeat="(key, value) in stateSel"
+                            data-ng-selected="key == account.state"
+                            value="{{key}}">
+                        {{value}}
+                    </option>
+                </select>
+            </div>
+            <div class="clearfix"></div>
+
+        </fieldset>
+
+        <div class="clearfix" data-ng-show="currentStep"></div>
+        <hr data-ng-show="currentStep" />
+        <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
+        <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+        <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
+
+        <div class="clearfix"></div>
+    </form>
 </div>

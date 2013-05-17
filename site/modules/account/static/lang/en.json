@@ -19,6 +19,19 @@
     "State": "State",
     "Country": "Country",
     "Code": "Code",
+    "My keys": "My keys",
+    "SSH key name": "SSH key name",
+    "SSH key": "SSH key",
+    "Add SSH key": "Add SSH key",
+    "Key Name / UUID": "Key Name / UUID",
+    "Fingerpint:": "Fingerpint:",
+    "Key": "Key",
+    "Delete": "Delete",
+    "Add new SSH key": "Add new SSH key",
+    "SSH key generator": "SSH key generator",
+    "Let us guide you with this small piece of code. Just press the button \"Download script\" below.": "Let us guide you with this small piece of code. Just press the button \"Download script\" below.",
+    "You have to add SSH key to start creating instances.": "You have to add SSH key to start creating instances.",
+    "Download script": "Download script",
     "Missing email address": "Missing email address",
     "Invalid email address": "Invalid email address",
     "Missing first name": "Missing first name",
@@ -40,5 +53,6 @@
     "Period": "Period",
     "Quantity": "Quantity",
     "Profile summary": "Profile summary",
-    "General info": "General info"
+    "General info": "General info",
+    "My Account": "My Account"
 }

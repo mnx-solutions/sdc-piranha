@@ -1,11 +1,18 @@
 'use strict';
 
 (function (app) {
-    app.controller(
-        'Account.SSHController',
-        ['$scope', '$window', '$q', '$dialog', 'Account', 'localization', 'requestContext', 'notification',
-          function ($scope, $window, $q, $dialog, Account, localization, requestContext, notification) {
+    app.controller('Account.SSHController', [
+        '$scope',
+        '$window',
+        '$timeout',
+        '$q',
+        '$dialog',
+        'Account',
+        'localization',
+        'requestContext',
+        'notification',
 
+        function ($scope, $window, $timeout, $q, $dialog, Account, localization, requestContext, notification) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
@@ -25,17 +32,17 @@
 
             /* ssh key creating popup with custom template */
             var newKeyPopup = function(question, callback) {
-              var title = 'Add new ssh key';
-              var btns = [{result:'cancel', label:'Cancel'}, {result:'add', label:'Add', cssClass: 'btn-primary'}];
-              var templateUrl = 'account/static/template/dialog/message.html';
+                var title = 'Add new ssh key';
+                var btns = [{result:'cancel', label:'Cancel'}, {result:'add', label:'Add', cssClass: 'btn-primary'}];
+                var templateUrl = 'account/static/template/dialog/message.html';
 
-              $dialog.messageBox(title, question, btns, templateUrl)
-                .open()
-                .then(function(result) {
-                  if(result === 'add') {
-                    callback(result.data);
-                  }
-                });
+                $dialog.messageBox(title, question, btns, templateUrl)
+                    .open()
+                    .then(function(result) {
+                        if(result.value === 'add') {
+                            callback(result.data);
+                        }
+                    });
             };
 
             $scope.userPlatform = $window.navigator.platform;
@@ -54,8 +61,9 @@
             $scope.createPending = false;
             $scope.addNewKey = function() {
                 newKeyPopup('', function(keyData) {
-                    if(!keyData)
+                    if (!keyData) {
                         keyData = {};
+                    }
 
                     $scope.newKey.name = keyData.keyName;
                     $scope.newKey.data = keyData.keyData;
@@ -78,12 +86,12 @@
                         refreshKeyList();
                         $scope.addsshKey = false;
                         notification.push(null, {type: 'notification'},
-                        localization.translate($scope, null, 'New key successfully added'));
+                            localization.translate($scope, null, 'New key successfully added'));
 
                         $scope.newKey = {};
                     } else {
                         notification.push(null, {type: 'error'},
-                        localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
+                            localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
                     }
                     $scope.createPending = false;
                 });
@@ -95,8 +103,13 @@
                     var deleteKey = Account.deleteKey(fingerprint);
 
                     $q.when(deleteKey, function(data) {
+                        $scope.openKeyDetails = null;
                         notification.push(null, {type: 'notification'}, localization.translate($scope, null, 'Key successfully deleted'));
-                        refreshKeyList();
+
+                        // FIXME: Bad, bad, bad
+                        $timeout(function () {
+                            refreshKeyList();
+                        }, 1000);
                     });
                 });
             };
@@ -106,6 +119,7 @@
                 var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
                 return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
             };
+
             $scope.clickKeygenDownload = function() {
                 window.location.href = '/main/account/key-generator.sh';
             };

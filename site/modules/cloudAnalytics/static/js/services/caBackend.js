@@ -258,7 +258,7 @@
                 });
 
                 var times = series._timestamps;
-                delete series._timestamps;
+                series._timestamps = undefined;
 
                 for(var name in series) {
                     var data = [];

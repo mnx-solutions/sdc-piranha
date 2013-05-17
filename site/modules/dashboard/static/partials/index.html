@@ -6,10 +6,9 @@
 				<li class="pull-right"><a class="add-machine" href="#!/machine/add">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
 			</ul>
 			<div class="page-header">
-			    <h1 class="pull-left">Welcome {{account.firstName}}</h1> 
+			    <h1 class="pull-left">Welcome {{account.firstName}}</h1> <div class="loading-medium" data-ng-show="loading" ></div>
 				<div class="clearfix"></div>
 			</div>
-			<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
 			<div class="clearfix"></div>
 			<div class="row">
 				<div class="dashboard-height span4 text-medium bg-blue-lite">
@@ -23,7 +22,7 @@
 					<div class="separation-container text-medium">
 						<div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
 						<div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
-						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create new Instance</a></p>
+						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create Instance</a></p>
 					</div>
 					<h5>Billing</h5>
 						<div class="separation-container text-medium">
@@ -62,7 +61,7 @@
 				<div class="span4">
 					<h4>
 						<span class="pull-left">Support FAQ</span>
-						<span class="border"><a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status" target="_blank">More »</a></span>
+						<a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status" target="_blank">More »</a>
 						<div class="clearfix"></div>
 						
 					</h4>

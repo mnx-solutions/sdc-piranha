@@ -1,89 +1,124 @@
 <div class="container-fluid content-container" data-ng-controller="Account.SSHController" >
     <div class="container content-container-inner">
-        <div class="container">
+        <div class="ssh container">
 
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
-			
+
             <div class="page-header">
-                <h1 class="pull-left" data-translate>My keys</h1><div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
+                <h1 class="pull-left" data-translate>My keys</h1>
+                <div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
                 <div class="clearfix"></div>
             </div>
-            <div class="span8 ssh-container-empty container" data-ng-show="sshKeys.length <= 0">
-				<div class="alert alert-info">
-					<h3></h3>
-					<p>You have to add SSH key to start creating instances.</p>
-				</div>
-				<fieldset class="pull-left">
-						<div class="control-group">
-				            <label class="control-label">Name</label>
-				            <div class="controls">
-				                <input type="text" class="span8" data-ng-model="newKey.name" placeholder="ssh key name" />
-				            </div>
-				        </div>
 
-						<div class="control-group">
-							<label class="control-label">SSH Key</label>
-							<div class="controls">
-				        		<textarea class="span8" rows="10" data-ng-model="newKey.data"></textarea><br />
-							</div>
-						</div>
+            <div class="span8 ssh-container-empty container" data-ng-show="sshKeys.length <= 0">
+                <div class="alert alert-info">
+                    <p data-translate>You have to add SSH key to start creating instances.</p>
+                </div>
+
+                <fieldset class="pull-left">
+                    <div class="control-group">
+                        <label class="control-label" data-translate>Name</label>
+                        <div class="controls">
+                            <input type="text"
+                                   class="span8"
+                                   placeholder="SSH key name"
+                                   data-ng-model="newKey.name"
+                                   data-translate-attributes="placeholder" />
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" data-translate>SSH key</label>
+                        <div class="controls">
+                            <textarea class="span8" rows="10" data-ng-model="newKey.data"></textarea>
+                        </div>
+                    </div>
+
                     <div data-ng-show="error">{{error}}</div>
-				    <div class="align-right">
-				        <button class="btn btn-success" data-ng-click="createNewKey()">Add SSH key</button>
-				    </div>
-				</fieldset>
-                
+                    <div class="align-right">
+                        <button class="btn btn-success"
+                                data-ng-click="createNewKey()"
+                                data-translate>Add SSH key</button>
+                    </div>
+                </fieldset>
             </div>
+
             <div data-ng-show="sshKeys.length > 0" class="container span9 pull-left">
-				<div class="item-list-container">
-	                	<div class="item header">
-	                		<span class="text-medium">Key Name / UUID</span>
-							<div class="clearfix"></div>
-	                	</div>
-						<div class="clearfix"></div>
-						<div class="item" data-ng-repeat="key in sshKeys">
-						<span class="pointer text-medium" data-ng-click="setOpenDetails($index)">{{key.name}} / {{key.fingerprint}}</span>
-						<div class="clearfix"></div>
+                <div class="item-list-container">
+                    <div class="item header">
+                        <span class="text-medium" data-translate>Key Name / UUID</span>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="clearfix"></div>
+
+                    <div class="item" data-ng-repeat="key in sshKeys">
+                        <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
+                            {{key.name}} / {{key.fingerprint}}
+                        </span>
+                        <div class="clearfix"></div>
+
                         <div data-ng-show="openKeyDetails == $index" class="toolbox ">
-							<div class="item pull-left">
-                                <span class="text-medium b key span2" ng->Fingerpint:</span>
+                            <div class="item pull-left">
+                                <span class="text-medium b key span2" data-translate>Fingerpint:</span>
                                 <span class="text-medium value span4">{{key.fingerprint}}</span>
 
                                 <div class="clearfix"></div>
 
-                                <span class="b key span2 last text-medium" ng->Key</span>
-								<span class="value span4 last text-medium" style="word-wrap:break-word">{{key.key}}</span>
-								<div class="clearfix"></div>
+                                <span class="b key span2 last text-medium" data-translate>Key</span>
+                                <span class="value span4 last text-medium" style="word-wrap:break-word">{{key.key}}</span>
+                                <div class="clearfix"></div>
                             </div>
 
                             <div class="pull-right action-container span1">
-                                <button data-ng-click="deleteKey(key.name, key.fingerprint)" class="btn btn-mini btn-danger">Delete</button>
-								<div class="clearfix"></div>
+                                <button class="btn btn-mini btn-danger"
+                                        data-ng-click="deleteKey(key.name, key.fingerprint)"
+                                        data-translate>Delete</button>
+                                <div class="clearfix"></div>
                             </div>
                             <div class="clearfix"></div>
                         </div>
                         <div class="clearfix"></div>
-					</div>
+                    </div>
+
                     <div data-ng-show="addsshKey">
-                        <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
+                        <button data-ng-click="addNewKey()"
+                                data-ng-disabled="createPending"
+                                data-transalte>Add SSH key</button>
+
                         <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
                         <div class="loading-medium" data-ng-show="createPending"></div>
                     </div>
                 </div>
+                <div class="clearfix"></div>
+
+                <div class="new-key-button">
+                    <button class="btn btn-success pull-right"
+                            data-ng-click="addNewKey()"
+                            data-ng-show="sshKeys.length > 0"
+                            data-translate>Add new SSH key</button>
+                </div>
             </div>
+
             <div class="span3 pull-right">
                 <div account-right-menu></div>
-                <button class="btn btn-success" data-ng-click="addNewKey()" data-ng-show="sshKeys.length > 0">Add new SSH key</button>
-				<div class="clearfix"></div>
-				<div class="sizebar-fix sizebar-fix-right" data-ng-show="showKeygenDownload()">
-	                <div class="alert alert-success shadow">
-	                    <h5 data-translate>SSH Key generator</h5>
-	                    <p class="text-medium">Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
-	                    <button class="btn btn-success" data-ng-click="clickKeygenDownload()">Download script</button>
-	                    <div class="clearfix"></div>
-	                </div>
-				</div>
+                <div class="clearfix"></div>
+
+                <div data-ng-show="showKeygenDownload()" class="sizebar-fix sizebar-fix-right text-small">
+                    <div class="separation-container">
+					
+                        <h5 data-translate>SSH key generator</h5>
+                        <p class="text-medium" data-translate>
+                            Let us guide you with this small piece of code. Just press the button "Download script" below.
+                        </p>
+
+                        <button class="btn"
+                                data-ng-click="clickKeygenDownload()"
+                                data-translate>Download script</button>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+
                 <div class="clearfix"></div>
             </div>
         </div>

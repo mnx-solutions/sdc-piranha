@@ -95,13 +95,12 @@
                 name: 'createKey',
                 data: {name: name, key: keyData},
                 progress: function(err, job) {
-                    console.log('Error on progress', err);
-                    if(err) {
+                    if (err) {
                         deferred.resolve(err);
                     }
                 },
                 done: function(err, job) {
-                    if(err) {
+                    if (err) {
                         deferred.resolve(err);
                     } else {
                         deferred.resolve(job.__read());

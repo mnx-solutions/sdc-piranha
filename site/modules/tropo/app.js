@@ -92,10 +92,13 @@ module.exports = function (scope, app, callback) {
         redisClient.set(req.body.session.id, 'pending');
 
         redisClient.get(req.session.tropoId +'_retries', function(err, result) {
+            var retries = result;
+            retries++;
             if(!result || result === '') {
                 redisClient.set(req.session.tropoId +'_retries', 1);
             } else {
-                redisClient.set(req.session.tropoId +'_retries', ++result);
+                var count = Number(result);
+                redisClient.set(req.session.tropoId +'_retries', retries);
             }
         });
 

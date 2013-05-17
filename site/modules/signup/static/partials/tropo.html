@@ -20,7 +20,7 @@
 		        </label>
 		        <div class="controls">
 		            <select data-ng-style="countryStyle" data-ng-model="selectedCountryCode" style="width:255px" name="countryCode" id="countryCode">
-		                <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}" data-ng-selected="country.areaCode == selectedCountryCode">
+		                <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}">
 		                    {{country.name}} (+{{country.areaCode}})
 		                </option>
 		            </select>

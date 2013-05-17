@@ -108,6 +108,14 @@
 
                 };
 
+                $scope.selectOpsys = function (name) {
+
+                    if (name && (name !== $scope.data.opsys)) {
+                        $scope.data.opsys = name;
+                    }
+
+                };
+
                 $scope.sortPackages = function (pkg) {
                     return parseInt(pkg.memory);
                 };
@@ -167,6 +175,19 @@
                     return false;
                 };
 
+                $scope.filterDatasetsByOS = function (item) {
+                    if ($scope.data.opsys != 'All') {
+                        var val = item['os'];
+                        if (val.match($scope.data.opsys)) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
+
+                    return false;
+                };
+
                 $scope.selectPackage = function (id) {
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
@@ -203,8 +224,11 @@
                             var versions = {};
                             var selectedVersions = {};
                             var manyVersions = {};
+                            var operating_systems = {'All': 1};
 
                             datasets.forEach(function (dataset) {
+                                operating_systems[dataset.os] = 1;
+
                                 if (!dataset_names[dataset.name]) {
                                     dataset_names[dataset.name] = true;
                                     unique_datasets.push(dataset);
@@ -226,6 +250,8 @@
                                     }
                                 }
                             });
+
+                            $scope.operating_systems = Object.keys(operating_systems);
                             $scope.datasets = unique_datasets;
                             $scope.versions = versions;
                             $scope.manyVersions = manyVersions;
@@ -249,6 +275,10 @@
 
                 if (!$scope.data.datacenter) {
                     $scope.selectDatacenter();
+                }
+
+                if (!$scope.data.opsys) {
+                    $scope.data.opsys = 'All';
                 }
 
                 ng.element('.carousel').carousel({
