@@ -26,9 +26,9 @@
             $q.when(Account.getAccount(true), function (account) {
                 $scope.account = account;
 
-                redisClient.get(account.id +'_tropo', function(err, result) {
-                    $scope.retriesLeft = result;
-                })
+                $http.get('/tropo/tropo/'+ dialNumber.replace('-', '') +'/'+ account.id).success(function(data) {
+                    $scope.retriesLeft = data.retries;
+                });
 
                 if($scope.account.phone) {
                     var phoneSplit = $scope.account.phone.split('-');

@@ -50,6 +50,12 @@ module.exports = function (scope, app, callback) {
         });
     });
 
+    app.get('/tropoRetries/:uuid', function(req, res) {
+        redisClient.get(req.params.uuid +'_tropo', function(err, result) {
+            res.json({retries: result});
+        });
+    });
+
     app.get('/countryCodes',function(req, res) {
       res.json(countryCodes);
     });
