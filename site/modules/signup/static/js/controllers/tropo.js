@@ -27,7 +27,8 @@
                 $scope.account = account;
 
                 $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
-                    $scope.retriesLeft = data.retries;
+                    $scope.retriesLeft = (3-data.retries);
+                    $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
                 });
 
                 if($scope.account.phone) {
@@ -94,7 +95,7 @@
 
       $scope.phoneVerification = function(account) {
           var dialNumber = $scope.tropoPhone;
-          if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
+          if(!$scope.tropoRunning && $scope.currentStep === 'tropo' && $scope.retriesLeft < 3) {
               $scope.tropoRunning = true;
               $http.get('/tropo/tropo/'+ dialNumber.replace('-', '') +'/'+ account.id).success(function(data) {
                   if(data.retries) {
