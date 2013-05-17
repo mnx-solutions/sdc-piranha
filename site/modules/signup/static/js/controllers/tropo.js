@@ -26,6 +26,10 @@
             $q.when(Account.getAccount(true), function (account) {
                 $scope.account = account;
 
+                redisClient.get(account.id +'_tropo', function(err, result) {
+                    $scope.retriesLeft = result;
+                })
+
                 if($scope.account.phone) {
                     var phoneSplit = $scope.account.phone.split('-');
                     $scope.selectedCountryCode = phoneSplit[0];
