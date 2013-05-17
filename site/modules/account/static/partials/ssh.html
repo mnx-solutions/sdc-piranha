@@ -9,25 +9,27 @@
                 <h1 class="pull-left" data-translate>My keys</h1><div ng-show="!account || !sshKeys" class="loading-medium-after-h1"></div>
                 <div class="clearfix"></div>
             </div>
+
             <div class="span8 ssh-container-empty container" data-ng-show="sshKeys.length <= 0">
 				<div class="alert alert-info">
 					<h3></h3>
 					<p>You have to add SSH key to start creating instances.</p>
 				</div>
 				<fieldset class="pull-left">
-						<div class="control-group">
-				            <label class="control-label">Name</label>
-				            <div class="controls">
-				                <input type="text" class="span8" data-ng-model="newKey.name" placeholder="ssh key name" />
-				            </div>
-				        </div>
+                    <div class="control-group">
+                        <label class="control-label">Name</label>
+                        <div class="controls">
+                            <input type="text" class="span8" data-ng-model="newKey.name" placeholder="ssh key name" />
+                        </div>
+                    </div>
 
-						<div class="control-group">
-							<label class="control-label">SSH Key</label>
-							<div class="controls">
-				        		<textarea class="span8" rows="10" data-ng-model="newKey.data"></textarea><br />
-							</div>
-						</div>
+                    <div class="control-group">
+                        <label class="control-label">SSH Key</label>
+                        <div class="controls">
+                            <textarea class="span8" rows="10" data-ng-model="newKey.data"></textarea><br />
+                        </div>
+                    </div>
+
                     <div data-ng-show="error">{{error}}</div>
 				    <div class="align-right">
 				        <button class="btn btn-success" data-ng-click="createNewKey()">Add SSH key</button>
