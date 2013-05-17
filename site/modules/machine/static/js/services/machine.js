@@ -67,8 +67,14 @@
                         }
                     },
                     done: function(err, job) {
+                        var data = job.__read();
+
                         if (err) {
-                            console.log(err);
+                            errorContext.emit(new Error(localization.translate(null,
+                                'machine',
+                                'Unable to retrieve instances from datacenter {{name}}',
+                                { name: data.name }
+                            )));
                         }
 
                         machines.list.final = true;
@@ -258,7 +264,6 @@
                 },
 
                 done: function (err, job) {
-
                     if (err) {
                         notification.push(id, { type: 'error' },
                             localization.translate(null,

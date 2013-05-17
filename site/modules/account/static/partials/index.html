@@ -80,17 +80,25 @@
                 </fieldset>
 
                 <fieldset>
-                    <legend class="clearfix"><span class="pull-left">Billing info</span> <a href="#!/account/payment/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
+                    <legend class="clearfix">
+                        <span class="pull-left">Billing info</span>
+                        <a href="#!/account/payment/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a>
+                    </legend>
+
                     <div class="row-fluid">
                         <div class="text-medium span6">
                             <h6>Credit Card info</h6>
                             <div data-current-credit-card></div>
                         </div>
+
                         <div class="text-medium span5">
                             <h6>Latest invoice</h6>
+
                             <div class="pull-left span12">
                                 <p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong></p>
-                                <p class="text-gray">Full history available at the <a href="#!/account/invoices">Invoices</a> section on the right</p>
+                                <p class="text-gray">
+                                    Full history available at the
+                                    <a href="#!/account/invoices">Invoices</a> section on the right</p>
 
                             </div>
                         </div>

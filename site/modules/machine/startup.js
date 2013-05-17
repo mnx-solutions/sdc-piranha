@@ -107,28 +107,27 @@ module.exports = function (scope, callback) {
                 };
 
                 if (err) {
-                    response.err = err;
-                    response.status = 'error';
-
                     call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
-                } else {
-                    machines = machines.filter(function (el) {
-                        return el.state !== 'failed';
-                    });
-
-                    machines.forEach(function (machine, i) {
-                        machine.datacenter = name;
-                        machine.metadata.credentials = handleCredentials(machine);
-                        machines[i] = filterFields(machine);
-                    });
-
-                    response.status = 'complete';
-                    response.machines = machines;
-
-                    call.log.debug('List machines succeeded for datacenter %s', name);
+                    call.error(err);
+                    return;
                 }
 
+                machines = machines.filter(function (el) {
+                    return el.state !== 'failed';
+                });
+
+                machines.forEach(function (machine, i) {
+                    machine.datacenter = name;
+                    machine.metadata.credentials = handleCredentials(machine);
+                    machines[i] = filterFields(machine);
+                });
+
+                response.status = 'complete';
+                response.machines = machines;
+
+                call.log.debug('List machines succeeded for datacenter %s', name);
                 call.update(null, response);
+
                 if(--count === 0) {
                     call.done();
                 }
@@ -143,12 +142,12 @@ module.exports = function (scope, callback) {
 
         call.cloud.setDatacenter(call.data.datacenter);
         call.cloud.listPackages(function (err, data) {
-            if(err) {
-                call.done(err);
+            if (err) {
+                call.error(err);
                 return;
             }
 
-            if(!info.packages.data[call.data.datacenter]) {
+            if (!info.packages.data[call.data.datacenter]) {
                 call.data.datacenter = 'all';
             }
 
@@ -170,14 +169,16 @@ module.exports = function (scope, callback) {
         call.cloud.setDatacenter(call.data.datacenter);
         call.cloud.listDatasets(function (err, data) {
             if(err) {
-                call.done(err);
+                call.error(err);
                 return;
             }
+
             data.forEach(function (img, i) {
                 if(info.images.data[img.id]) {
                     data[i] = utils.extend(img, info.images.data[img.id]);
                 }
             });
+
             call.done(null, data);
         });
     });
@@ -216,9 +217,10 @@ module.exports = function (scope, callback) {
             call.cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
                 if(err) {
                     call.log.error(err);
-                    call.done(err);
+                    call.error(err);
                     return;
                 }
+
                 var timer = setInterval(function () {
                     call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
                     call.cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
@@ -245,7 +247,7 @@ module.exports = function (scope, callback) {
                 var timer2 = setTimeout(function () {
                     call.log.error('Operation timed out');
                     clearInterval(timer);
-                    call.done(new Error('Operation timed out'));
+                    call.error(new Error('Operation timed out'));
                 }, 1 * 60 * 1000);
             });
         }
@@ -270,9 +272,8 @@ module.exports = function (scope, callback) {
             call.log.debug('Polling for machine %s to become %s', machineId, state);
             client.getMachine(machineId, function (err, machine) {
                 if (err) {
-
-                    console.log('Machine:', machine);
                     call.log.error('Cloud polling failed %o', err);
+                    call.error(err);
                 } else if (machine.state === 'failed') {
                     call.done(new Error('Machine fell into failed state'));
                     clearInterval(timer);
@@ -294,7 +295,7 @@ module.exports = function (scope, callback) {
         var timer2 = setTimeout(function () {
             call.log.error('Operation timed out');
             clearInterval(timer);
-            call.done(new Error('Operation timed out'));
+            call.error(new Error('Operation timed out'));
         }, 5 * 60 * 1000);
     }
 
@@ -316,6 +317,7 @@ module.exports = function (scope, callback) {
                     }
                 } else {
                     call.log.error(err);
+                    call.error(err);
                 }
             }, null, null, true);
         }, config.polling.packageChange);
@@ -323,7 +325,7 @@ module.exports = function (scope, callback) {
         var timer2 = setTimeout(function () {
             call.log.error('Operation timed out');
             clearInterval(timer);
-            call.done(new Error('Operation timed out'));
+            call.error(new Error('Operation timed out'));
         }, 5 * 60 * 1000);
     }
 
@@ -350,7 +352,7 @@ module.exports = function (scope, callback) {
                         pollForMachineState(call.cloud, call, machineId, endstate);
                     } else {
                         call.log.error(err);
-                        call.done(err);
+                        call.error(err);
                     }
                 });
             };
@@ -392,7 +394,7 @@ module.exports = function (scope, callback) {
                     pollForMachinePackageChange(call.cloud, call, options.package);
                 } else {
                     call.log.error(err);
-                    call.done(err);
+                    call.error(err);
                 }
             });
         }
