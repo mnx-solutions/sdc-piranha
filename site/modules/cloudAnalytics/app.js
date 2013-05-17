@@ -159,8 +159,8 @@ module.exports = function (scope, app, callback) {
 
                 switch(instrumentation['value-arity']) {
                     case 'numeric-decomposition':
-                        options.width = instrumentation.width || 640;
-                        options.height = instrumentation.height || 200;
+                        options.width = instrumentation.width || 570;
+                        options.height = instrumentation.height || 180;
                         options.nbuckets = instrumentation.nbuckets || 50;
                         options.duration = instrumentation.duration || 60;
                         options.hues = instrumentation.hues || 21;
@@ -197,6 +197,7 @@ module.exports = function (scope, app, callback) {
 
                     Object.keys(response.datapoints).length === Object.keys(instrumentations).length;
                     if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
+                        console.log(response);
                         res.json(response);
                     }
                 });
