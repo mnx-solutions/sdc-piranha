@@ -32,3 +32,7 @@ input.error, select.error, textarea.error {
     text-decoration: none;
     border: none;
 }
+
+.ssh .new-key-button {
+    margin-top: 20px;
+}
