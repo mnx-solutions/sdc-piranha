@@ -10,7 +10,7 @@
         function (serverTab, $q, localization, notification, errorContext) {
 
         var service = {};
-        var datasets = { job: {}, index: {}, list: {}, search: {}};
+        var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
 
         service.updateDatasets = function (datacenter) {
             datacenter = datacenter ? datacenter : 'all';
