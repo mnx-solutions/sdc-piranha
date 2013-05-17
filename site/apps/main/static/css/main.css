@@ -407,6 +407,8 @@ th {
 .item-list-container .item .item > span {
 /*    background:#fff;*/
 /*	margin-left:15px;*/
+	margin-left:16px;
+/*	border:1px solid red;*/
 }
 
 .item-list-container .item:hover .item.header,.item-list-container .item:hover .item.header:hover {

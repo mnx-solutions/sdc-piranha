@@ -22,11 +22,17 @@
 
                         $scope.setAccount = function() {
                             $q.when(Account.getAccount(true), function (account) {
+                                console.log(account);
                                 $scope.account = account;
 
                                 var phoneSplit = account.phone.split('-');
-                                $scope.selectedCountryCode = phoneSplit[0];
-                                $scope.phone = phoneSplit[1];
+
+                                if(phoneSplit[1]) {
+                                    $scope.selectedCountryCode = phoneSplit[0];
+                                    $scope.phone = phoneSplit[1];
+                                } else {
+                                    $scope.phone = account.phone;
+                                }
                             });
                         };
 

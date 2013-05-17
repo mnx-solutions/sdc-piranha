@@ -32,21 +32,27 @@ module.exports = function (scope, app, callback) {
      * Get tropo id
      *
      */
-    app.get('/tropo/:tropoid', function(req, res) {
+    app.get('/tropo/:tropoid/:uuid', function(req, res) {
         redisClient.get(req.params.tropoid, function(err, result) {
             var status = result;
             if(status === 'passed') {
                 SignupProgress.setMinProgress(req, 'tropo', function () {
-                    redisClient.get(req.params.tropoid +'_retries', function(err, result) {
+                    redisClient.get(req.params.uuid +'_tropo', function(err, result) {
                         res.json({sessionId: req.params.tropoid, status: status, retries: result});
-                    })
+                    });
                 });
                 return;
             }
 
-            redisClient.get(req.params.tropoid +'_retries', function(err, result) {
+            redisClient.get(req.params.uuid +'_tropo', function(err, result) {
                 res.json({sessionId: req.params.tropoid, status: status, retries: result});
-            })
+            });
+        });
+    });
+
+    app.get('/tropoRetries/:uuid', function(req, res) {
+        redisClient.get(req.params.uuid +'_tropo', function(err, result) {
+            res.json({retries: result});
         });
     });
 

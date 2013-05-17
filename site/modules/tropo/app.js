@@ -64,7 +64,7 @@ module.exports = function (scope, app, callback) {
                         redisClient.set(req.params.uuid +'_tropo', 1);
                         makeTropoCall(randomNumber, retries, req, res);
                     } else {
-                        redisClient.set(req.params.uuid + '_tropo', retries);
+                        redisClient.set(req.params.uuid +'_tropo', retries);
                         makeTropoCall(result, retries, req, res);
                     }
                 });
@@ -91,19 +91,7 @@ module.exports = function (scope, app, callback) {
 
         redisClient.set(req.body.session.id, 'pending');
 
-        redisClient.get(req.session.tropoId +'_retries', function(err, result) {
-            var retries = result;
-            retries++;
-            if(!result || result === '') {
-                redisClient.set(req.session.tropoId +'_retries', 1);
-            } else {
-                var count = Number(result);
-                redisClient.set(req.session.tropoId +'_retries', retries);
-            }
-        });
-
         res.send(TropoJSON(tropo));
-
     });
 
     app.post('/fail', function(req, res) {
