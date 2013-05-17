@@ -15,8 +15,8 @@
 					<div class="well well-small">
 	                	<span class="span2 text-fix pointer text-small" data-ng-click="zoomIn()"><i class="icon icon-zoom-in" title="zoom in the graph"></i> Zoom In for closer look</span>
 	                	<span class="span2 text-fix pointer text-small" data-ng-click="zoomOut()"><i class="icon icon-zoom-out" title="zoom out the graph"></i> Zoom Out for overview</span>
-	                	<span class="span1 text-fix pointer text-small" data-ng-click="pause()"><i class="icon icon-pause" title="freeze the graph"></i> Pause</span>
-	                	<span class="span2 text-fix pointer text-small" data-ng-click="run()"><i class="icon icon-play" title="resume graph"></i> Run again</span>
+	                	<span class="span1 text-fix pointer text-small" data-ng-hide="frozen" data-ng-click="pause()"><i class="icon icon-pause" title="freeze the graph"></i> Pause</span>
+	                	<span class="span2 text-fix pointer text-small" data-ng-show="frozen" data-ng-click="run()"><i class="icon icon-play" title="resume graph"></i> Run again</span>
 					</div>
 	                
 

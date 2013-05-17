@@ -48,7 +48,7 @@
         var pending = false;
         ca._poll = function() {
             var instCount = Object.keys(ca.instrumentations).length;
-            console.log('polling');
+
             $http.post('cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
                 ca.options.last_poll_time = res.end_time;
@@ -58,7 +58,6 @@
 
                 var datapoints = res.datapoints;
                 for(var id in datapoints) {
-                    console.log(datapoints[id]);
 
                     if(datapoints[id].err){
                         continue;
@@ -67,7 +66,6 @@
                     if(datapoints[id].blocked) {
                         var previous = ca.options.individual[id].ndatapoints || ca.options.ndatapoints;
                         ca.options.individual[id].ndatapoints = previous + (difference || 1);
-                        console.log('blocked, adding to datatpoints', ca.options.individual[id].ndatapoints);
                     } else if(ca.instrumentations[id]) {
                         delete(ca.options.individual[id].ndatapoints);
                         ca.instrumentations[id].addValues(datapoints[id]);
@@ -84,7 +82,6 @@
             });
         }
         ca._sync = function(){
-            console.log('sync iteration', Object.keys(ca.instrumentations).length)
             if (Object.keys(ca.instrumentations).length) {
                 if (!pending) {
                     pending = true;
@@ -309,7 +306,7 @@
                     var inst = ca.instrumentations[i];
                     delete(ca.instrumentations[i]);
                     inst.delete(function() {
-                        console.log('deleting finished');
+
                     });
                 })(i);
             }

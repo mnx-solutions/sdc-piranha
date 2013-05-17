@@ -1,17 +1,14 @@
 'use strict';
-var allInstrs = [];
 var instrumentationBlock = {}
 
 module.exports = function (scope, app, callback) {
 
-    //    console.log(cloud);
     //convert ca call uri to cloudApi call uri
     function convertUri(uri) {
         return '/ca' + uri.substring(uri.indexOf('/instrumentations'));
     }
 
     function removeBlocked(token, is) {
-//        console.log(instrumentationBlock, token);
 
         if(!instrumentationBlock[token]) {
             return {
@@ -28,15 +25,12 @@ module.exports = function (scope, app, callback) {
                 if(instrumentationBlock[token].indexOf(i) === -1) {
                     ret[i] = is[i];
                 } else {
-                    console.log('blocked', instrumentationBlock[token].indexOf(i), typeof(instrumentationBlock[token].indexOf(i)))
                     blocked[i] = is[i];
                 }
             }
 
         }
-        console.log('returning', ret);
-        console.log('BI, is', instrumentationBlock[token], is);
-        console.log('blocked obj', blocked);
+
         return {
             valid: ret,
             blocked: blocked
@@ -59,10 +53,7 @@ module.exports = function (scope, app, callback) {
 
                 if(resp.length) {
                     var id = resp[0].id;
-                    for(var i in resp) {
-                        if(allInstrs.indexOf(+resp[i].id) === -1)
-                            allInstrs.push(+resp[i].id);
-                    }
+
                     // poll the most recent value to sync with ca time.
                     req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
                         if(!err2) {
@@ -88,22 +79,17 @@ module.exports = function (scope, app, callback) {
     app.post('/ca/instrumentations/unblock/:id', function(req, res) {
 
         if (instrumentationBlock[req.session.token] && instrumentationBlock[req.session.token][req.params.id]) {
-            console.log('unblocking');
             instrumentationBlock[req.session.token].splice(instrumentationBlock[req.session.token].indexOf(req.params.id), 1);
         }
         res.json({});
     })
 
     app.post('/ca/instrumentations', function (req, res) {
-        console.log('creating instrumentation', req.body);
         req.cloud.CreateInstrumentation(req.body, function (err, resp) {
             // !TODO: Error handling
             if (!err) {
-                console.log('created inst');
-                allInstrs.push(+resp.id);
                 res.json(resp);
             } else {
-                console.log('create failed', err);
                 res.send(500, err);
             }
         });
@@ -117,21 +103,12 @@ module.exports = function (scope, app, callback) {
         instrumentationBlock[req.session.token].push(req.params.id);
         setTimeout(function(){
             instrumentationBlock[req.session.token].splice(instrumentationBlock[req.session.token].indexOf(req.params.id), 1);
-        }, 15000)
+        }, 5000)
 
-        if(allInstrs.indexOf(+req.params.id) === -1) {
-            console.log('instrumentation deleted already', +req.params.id, allInstrs);
-            res.json({})
-            return;
-        }
-        console.log('deleting instrumentation', +req.params.id);
         req.cloud.DeleteInstrumentation(+req.params.id, function (err, resp) {
             if (!err) {
-                console.log('deleted instrumentation', +req.params.id);
-                allInstrs.splice(allInstrs.indexOf(+req.params.id), 1);
                 res.json(resp);
             } else {
-                console.log('deleting failed', err);
                 res.send(err);
             }
 
@@ -150,7 +127,6 @@ module.exports = function (scope, app, callback) {
 
         var is = removeBlocked(req.session.token, instrumentations);
         instrumentations = is.valid;
-//        console.log('valid instrumentations',instrumentations);
         var blocked = is.blocked;
 
         for(var i in blocked) {

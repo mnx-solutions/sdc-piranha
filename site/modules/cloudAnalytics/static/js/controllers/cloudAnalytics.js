@@ -188,8 +188,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         if($scope.current.decomposition.secondary)
         decomp.push($scope.current.decomposition.secondary);
         var mod = $scope.current.metric.module;
-//        var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
-        var predicate = { "eq": ["zonename", $scope.zoneId ]};
+        var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
         var options = {
             module: mod,
             stat: $scope.current.metric.stat,
@@ -238,7 +237,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     $scope.run = function() {
         $scope.frozen = false;
     }
-    $scope.zoomIn = function() {
+    $scope.zoomOut = function() {
         var index = $scope.ranges.indexOf($scope.currentRange);
 
         if(index+1 < $scope.ranges.length){
@@ -246,7 +245,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
             $scope.currentRange = $scope.ranges[index];
         }
     }
-    $scope.zoomOut = function() {
+    $scope.zoomIn = function() {
         var index = $scope.ranges.indexOf($scope.currentRange);
 
         if(index-1 >= 0){
