@@ -9,7 +9,6 @@
 
 			      $scope.updateable = ['email','firstName','lastName','phone'];
             $scope.updateable2 = ['companyName','address','postalCode','city','state','country'];
-			
 
             $scope.userPlatform = $window.navigator.platform;
 

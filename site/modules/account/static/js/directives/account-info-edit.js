@@ -22,7 +22,6 @@
 
                         $scope.setAccount = function() {
                             $q.when(Account.getAccount(true), function (account) {
-                                console.log(account);
                                 $scope.account = account;
 
                                 var phoneSplit = account.phone.split('-');
