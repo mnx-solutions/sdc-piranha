@@ -38,8 +38,8 @@ module.exports = function (scope, app, callback) {
 
         // do we have campaign id?
         var campaignUrl = '';
-        if(campaignId) {
-           campaignUrl = '&cid='+ campaignId;
+        if(campaignId || req.cookies.campaignId) {
+           campaignUrl = '&cid='+ (campaignId || req.cookies.campaignId);
         }
 
         var url = '';
