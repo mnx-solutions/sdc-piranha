@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location',
-            function ($scope, requestContext, $location) {
+        ['$scope', 'requestContext', '$location', '$cookies',
+            function ($scope, requestContext, $location, $cookies) {
                 requestContext.setUpRenderContext('signup', $scope);
 				
 				$scope.stepNames = {
@@ -14,6 +14,8 @@
 				};
 				$scope.steps = ['tropo', 'billing','ssh'];
                 $scope.currentStep = $('#signupStep').val();
+
+                $scope.campaignId = $cookies.campaignId;
 
                 $scope.setStep = function (step) {
                     $scope.currentStep = step;

@@ -36,6 +36,14 @@ module.exports = function (scope, app, callback) {
         var signature = signer.sign(privateKey, 'base64');
         querystring += '&sig=' + encodeURIComponent(signature);
 
+        // do we have campaign id?
+        var campaignId = req.cookies.campaignId;
+        var campaignUrl = '';
+
+        if(campaignId) {
+           campaignUrl = '&cid='+ campaignId;
+        }
+
         var url = '';
         // with signup mehtod, the url looks somewhat different
         if(req.body.method === 'signup') {
@@ -47,7 +55,7 @@ module.exports = function (scope, app, callback) {
                 'returnto': returnUrl,
                 'sig': signature
             };
-            url = ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj));
+            url = ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
         } else {
             url = ssoUrl +'?'+ querystring;
         }
@@ -66,7 +74,11 @@ module.exports = function (scope, app, callback) {
         if(req.params.campaignId) {
             // set campaign id to the cookie
             res.cookie('campaignId', req.params.campaignId, { maxAge: 900000, httpOnly: false});
+            // faking signup button
+            req.body.method = 'signup';
         }
+
+
 
         sendToSSO(req, res, 'signup', '/main/', true);
     });
