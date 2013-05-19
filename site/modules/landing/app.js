@@ -13,7 +13,7 @@ module.exports = function (scope, app, callback) {
         process.exit();
     }
 
-    function sendToSSO(req, res, method, redirectUrl, redirect) {
+    function sendToSSO(req, res, method, redirectUrl, redirect, campaignId) {
 
         // returnUrl will save the token and then redirect
         var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
@@ -37,9 +37,7 @@ module.exports = function (scope, app, callback) {
         querystring += '&sig=' + encodeURIComponent(signature);
 
         // do we have campaign id?
-        var campaignId = req.cookies.campaignId;
         var campaignUrl = '';
-
         if(campaignId) {
            campaignUrl = '&cid='+ campaignId;
         }
@@ -78,9 +76,7 @@ module.exports = function (scope, app, callback) {
             req.body.method = 'signup';
         }
 
-
-
-        sendToSSO(req, res, 'signup', '/main/', true);
+        sendToSSO(req, res, 'signup', '/main/', true, req.params.campaignId);
     });
 
     app.get('/login', function (req, res, next) {
