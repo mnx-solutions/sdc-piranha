@@ -35,7 +35,8 @@
                 }
 
                 $scope.form = {
-                    cardHolderInfo: {}
+                    cardHolderInfo: {
+                    }
                 };
 
                 $scope.loading = false;
@@ -73,7 +74,7 @@
 
                 $http.get('billing/countries').success(function (data) {
                     $scope.countries = data;
-                    if(searchCountry) {
+                    if (searchCountry) {
                         data.some(function (el) {
                             if(el.name === searchCountry) {
                                 $scope.form.cardHolderInfo.country = el.iso3;
@@ -85,6 +86,10 @@
 
                 $http.get('billing/states').success(function (data) {
                     $scope.allStates = data;
+
+                    if (!$scope.form.cardHolderInfo.country) {
+                        //$scope.form.cardHolderInfo.country = 'USA';
+                    }
                 });
 
                 $scope.$watch('form.cardHolderInfo.country', function (newVal, oldVal) {

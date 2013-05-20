@@ -22,14 +22,20 @@
 
                         $scope.setAccount = function() {
                             $q.when(Account.getAccount(true), function (account) {
+                                // Set default country if not set
+                                if (!account.country) {
+                                    account.country = 'USA';
+                                }
+
                                 $scope.account = account;
 
                                 var phoneSplit = account.phone.split('-');
 
-                                if(phoneSplit[1]) {
+                                if (phoneSplit.length === 2) {
                                     $scope.selectedCountryCode = phoneSplit[0];
                                     $scope.phone = phoneSplit[1];
                                 } else {
+                                    $scope.selectedCountryCode = 1;
                                     $scope.phone = account.phone;
                                 }
                             });

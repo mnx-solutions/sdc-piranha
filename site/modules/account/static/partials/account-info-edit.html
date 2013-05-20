@@ -87,7 +87,9 @@
                 </label>
                 <div class="controls">
                     <select data-ng-style="countryStyle" data-ng-model="selectedCountryCode" name="countryCode" id="countryCode">
-                        <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'" value="{{country.areaCode}}" data-ng-selected="country.areaCode == selectedCountryCode">
+                        <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'"
+                                value="{{country.areaCode}}"
+                                data-ng-selected="country.areaCode == selectedCountryCode || country.iso3 == 'USA'">
                             {{country.name}} (+{{country.areaCode}})
                         </option>
                     </select>
