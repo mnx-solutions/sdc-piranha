@@ -19,19 +19,6 @@
 
                 var machineid = requestContext.getParam('machineid');
 
-                var confirm = function (question, callback) {
-                    var title = 'Confirm';
-                    var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
-
-                    $dialog.messageBox(title, question, btns)
-                        .open()
-                        .then(function(result){
-                            if(result ==='ok'){
-                                callback();
-                            }
-                        });
-                };
-
                 $scope.machineid = machineid;
                 $scope.machine = Machine.machine(machineid);
                 $scope.tagnr = 0;
@@ -159,43 +146,93 @@
                 });
 
                 $scope.clickStart = function () {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to start the machine'), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Start instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Restart this instance'
+                        ), function () {
                         $$track.event('machine', 'start');
                         var job = Machine.startMachine(machineid);
                     });
                 };
 
                 $scope.clickStop = function () {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to stop the machine'), function () {
-                        var job = Machine.stopMachine(machineid);
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Stop instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
+                        ), function () {
+                        Machine.stopMachine(machineid);
                         $$track.event('machine', 'stop');
                     });
                 };
 
                 $scope.clickReboot = function () {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to reboot the machine'), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Restart instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Restart this instance'
+                        ), function () {
                         $$track.event('machine', 'reboot');
                         var job  = Machine.rebootMachine(machineid);
                     });
                 };
 
                 $scope.clickResize = function () {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to resize the machine'), function () {
-                        $scope.isResizing = true;
-                        $$track.event('machine', 'resize');
-                        $scope.retinfo = Machine.resizeMachine(machineid, $scope.selectedPackage);
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Resize instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Resize this instance'
+                        ), function () {
+                            $scope.isResizing = true;
+                            $$track.event('machine', 'resize');
+                            $scope.retinfo = Machine.resizeMachine(machineid, $scope.selectedPackage);
 
-                        var job = $scope.retinfo.getJob();
-                        job.done(function () {
-                            $scope.isResizing = false;
-                            $scope.currentPackageName = $scope.selectedPackageName;
-                            $scope.currentPackage = $scope.selectedPackage;
-                        });
+                            var job = $scope.retinfo.getJob();
+                            job.done(function () {
+                                $scope.isResizing = false;
+                                $scope.currentPackageName = $scope.selectedPackageName;
+                                $scope.currentPackage = $scope.selectedPackage;
+                            });
                     });
                 };
 
                 $scope.clickDelete = function () {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to delete the machine'), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Delete instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Destroy the information on this instance and stop billing for this instance.'
+                        ), function () {
                         $$track.event('machine', 'delete');
                         $scope.retinfo = Machine.deleteMachine(machineid);
                     });

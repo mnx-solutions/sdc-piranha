@@ -35,7 +35,7 @@
                                     $scope.selectedCountryCode = phoneSplit[0];
                                     $scope.phone = phoneSplit[1];
                                 } else {
-                                    $scope.selectedCountryCode = 1;
+                                    $scope.selectedCountryCode = 1; // Default country code
                                     $scope.phone = account.phone;
                                 }
                             });

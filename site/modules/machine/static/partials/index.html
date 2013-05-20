@@ -1,4 +1,3 @@
-
 <div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
 	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="container content-container-inner">
@@ -116,8 +115,7 @@
 	                                <span class="text-medium key span2 last" data-translate>IP(s)</span>
 	                                <span class="text-medium value span4 last">
 	                                    <span data-ng-repeat="ip in machine.ips">
-	                                        <!-- TODO: !isPrivateIP -->
-	                                        <span data-ng-show="isPrivateIP(ip)">{{ip}}</span>
+	                                        <span data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
 	                                    </span>
 	                                </span>
 	                                <div class="clearfix"></div>
@@ -125,16 +123,21 @@
                             </div>
                             <div class="pull-right action-container">
                                 <button role="button"
-                                        class="btn btn-mini span1"
+                                        class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state == 'running' || (machine.job && !machine.job.finished)"
                                         data-ng-click="startMachine(machine.id)"
-                                        data-toggle="modal"
+                                        data-toggle="tooltip"
+                                        data-placement="right"
+                                        data-html="true"
+                                        data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
+                                        data-translate-attributes="data-original-title"
                                         data-translate>Start</button>
 										<div class="clearfix"></div>
                                 <button role="button"
                                         class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state == 'stopped' || (machine.job && !machine.job.finished)"
                                         data-ng-click="stopMachine(machine.id)"
+                                        data-translate
                                         data-translate-attributes="data-original-title"
                                         data-toggle="tooltip"
                                         data-placement="right"
@@ -145,7 +148,7 @@
                                         class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state != 'stopped' || (machine.job && !machine.job.finished)"
                                         data-ng-click="deleteMachine(machine.id)"
-                                        data-toggle="modal"
+                                        data-translate
                                         data-translate-attributes="data-original-title"
                                         data-toggle="tooltip"
                                         data-placement="right"
@@ -153,10 +156,10 @@
                                         data-original-title="You can restart your instance after you stop your machine. You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.">Delete</button>
 										<div class="clearfix"></div>
                                 <button role="button"
-                                        class="btn btn-mini span1"
+                                        class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state != 'running' || (machine.job && !machine.job.finished)"
                                         data-ng-click="rebootMachine(machine.id)"
-                                        data-toggle="modal"
+                                        data-translate
                                         data-translate-attributes="data-original-title"
                                         data-toggle="tooltip"
                                         data-placement="right"

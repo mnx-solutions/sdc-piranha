@@ -2,7 +2,8 @@
 
 (function (ng, app) {
     app.factory('util', [
-        function () {
+        '$dialog',
+        function ($dialog) {
             var service = {};
 
             service.isPrivateIP = function isPrivateIP(ip) {
@@ -14,7 +15,30 @@
                     return true;
                 }
 
-                return true;
+                return false;
+            };
+
+            service.confirm = function (title, question, callback) {
+                var title = title || 'Confirm';
+                var btns = [
+                    {
+                        result: 'cancel',
+                        label: 'Cancel'
+                    },
+                    {
+                        result:'ok',
+                        label: 'OK',
+                        cssClass: 'btn-primary'
+                    }
+                ];
+
+                $dialog.messageBox(title, question, btns)
+                    .open()
+                    .then(function(result) {
+                        if (result ==='ok') {
+                            callback();
+                        }
+                    });
             };
 
             return service;

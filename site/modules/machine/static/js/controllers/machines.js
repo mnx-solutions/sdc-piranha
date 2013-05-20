@@ -34,20 +34,6 @@
                 $scope.machines = Machine.machine();
                 $scope.packages = Package.package();
 
-
-                var confirm = function (question, callback) {
-                    var title = 'Confirm';
-                    var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
-
-                    $dialog.messageBox(title, question, btns)
-                        .open()
-                        .then(function(result){
-                            if(result ==='ok'){
-                                callback();
-                            }
-                        });
-                };
-
                 $scope.$on(
                     'event:forceUpdate',
                     function () {
@@ -283,34 +269,72 @@
                 }
 
                 $scope.startMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to start the instance'), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Start instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Restart this instance'
+                        ), function () {
                         $$track.event('machine', 'start');
                         Machine.startMachine(id);
                     });
                 };
 
                 $scope.stopMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to stop the instance'), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Stop instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
+                        ), function () {
                         Machine.stopMachine(id);
                         $$track.event('machine', 'stop');
                     });
                 };
 
                 $scope.deleteMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to delete the instance'), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Delete instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Destroy the information on this instance and stop billing for this instance.'
+                        ), function () {
                         $$track.event('machine', 'delete');
                         Machine.deleteMachine(id);
                     });
                 };
 
                 $scope.rebootMachine = function (id) {
-                    confirm(localization.translate($scope, null, 'Are you sure you want to reboot the instance'), function() {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Restart instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Restart this instance'
+                        ), function() {
                         $$track.event('machine', 'reboot');
                         Machine.rebootMachine(id);
                     });
                 };
-
-
 
                 $scope.showGroupActions = function () {
                     $scope.ischecked = false;
