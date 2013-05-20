@@ -84,13 +84,16 @@
             };
 
             $scope.makeCall = function() {
-                $scope.phoneVerification($scope.account);
+                $scope.phoneVerification();
             };
 
-            $scope.phoneVerification = function(account) {
+            $scope.phoneVerification = function() {
+                // clean the phone number
+                $scope.account.phone = $scope.account.phone.replace(new RegExp(/\s+/g), '').replace(new RegExp(/-/g), '');
+
                 if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
                     $scope.tropoRunning = true;
-                    $http.get('/tropo/tropo/'+ $scope.nameToCode($scope.account.country) + $scope.account.phone +'/'+ account.id).success(function(data) {
+                    $http.get('/tropo/tropo/'+ $scope.nameToCode($scope.account.country) + $scope.account.phone +'/'+ $scope.account.id).success(function(data) {
                         if(data.retries) {
                             $scope.retriesLeft = (3-data.retries);
                         }
@@ -104,7 +107,7 @@
 
                             var interval = setInterval(function() {
                                 $scope.tropoPoll++;
-                                $http.get('account/tropo/'+ data.tropoId +'/'+ account.id).success(function(data) {
+                                $http.get('account/tropo/'+ data.tropoId +'/'+ $scope.account.id).success(function(data) {
                                     $scope.retriesLeft = (3-data.retries);
 
                                     if(data.status === 'passed') {

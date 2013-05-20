@@ -101,6 +101,9 @@
                         };
 
                         $scope.submitForm = function () {
+                            // clean the phone number
+                            $scope.account.phone = $scope.account.phone.replace(new RegExp(/\s+/g), '').replace(new RegExp(/-/g), '');
+
                             $scope.loading = true;
                             Account.updateAccount($scope.account).then(function () {
                                 $scope.loading = false;
