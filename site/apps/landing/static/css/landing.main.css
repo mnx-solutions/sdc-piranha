@@ -8,10 +8,9 @@ body {
     width:190px;
     height:100px;
     background-color:#375775;
-/*	position:absolute;
-	z-index:10;
-	
-*/	
+	left:50%;
+	position:relative;
+	margin-left:-110px;
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
