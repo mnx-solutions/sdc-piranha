@@ -30,6 +30,10 @@ hr.dark {
 	text-shadow:1px 1px 1px #375775;
 	border-bottom:1px solid #28445e;
 }
+.btn-bottom {
+/*	position:relative;*/
+	bottom:0;
+}
 
 .signin-container {
 	margin-top:70px;
@@ -40,4 +44,16 @@ hr.dark {
 
 .border {
 	border:1px solid red !important;
+}
+.landing-fixed-container {
+	min-height:200px;
+	max-height:200px;
+	height:200px;
+}
+.landing-fixed-container > p {
+	min-height:60px;
+
+}
+.text-small {
+    font-size:11px;
 }

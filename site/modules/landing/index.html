@@ -1,28 +1,41 @@
-	<div class="container-fluid span6 offset2" data-ng-controller="LandingPageController" ng-cloack>
+	<div class="container-fluid span7 offset2" data-ng-controller="LandingPageController" ng-cloack>
 		<div class="brand pull-left"></div>
 		<div class="clearfix"></div>
 		<div class="signin-container">
-			<hr class="dark" />
-			<h3 class="text-regular" data-translate>Already a customer?</h3>
-			<form method="POST" class="form-horisontal">
-				<div class="control-group">
-					<div class="controls">
-						<input type="text" name="" class="span3" placeholder="Username" data-validate="required">
-						<input type="password" name="" class="span3 pull-right" placeholder="Password" data-validate="required">
-						<button  class="btn btn-joyent-blue btn-large pull-right" type="button" data-translate>Log In</button>
-					</div>
+			
+			
+			<form method="POST" class="form-inline">
+				
+				<div class="pull-left span3 landing-fixed-container">
 					
+					<h3 class="text-regular" data-translate>Not a customer?</h3>
+					<hr class="dark" />
+					<p>If you are not our existing user, please sign up and let's see how we can halp you out.</p>
+					<div class="clearfix"></div>
+					<hr class="dark" />
+					<button  class="btn btn-bottom btn-joyent-blue btn-large pull-right" ng-click="signup();" type="button" data-translate>Create an Account</button>
+					<div class="clearfix"></div>
+					
+					<div class="clearfix"></div>
 				</div>
-				<strong><a href="#" class="text-small pull-left" ng-click="passreset();" class="forgotPassword" data-translate>Forgot Password</a></strong>
 				
-				
-				<div class="divider dark"></div>
-				
+				<div class="pull-right span3 landing-fixed-container">
+					<h3 class="text-regular" data-translate>Sign In?</h3>
+					<hr class="dark" />
+					<p>In order to get into our portal, please sing in with Joyent SSO</p>
+					<div class="clearfix"></div>
+					<hr class="dark" />
+					<div class="clearfix"></div>
+					<button  class="btn btn-bottom btn-joyent-blue btn-large pull-right" ng-click="login();" type="button" data-translate>Log into Portal</button>
+					<div class="clearfix"></div>
+					<a href="#" class="text-small pull-right" ng-click="passreset();" class="forgotPassword" data-translate>Forgot Password</a>
+				</div>
+				<div class="clearfix"></div>
 			</form>
 			<div class="clearfix"></div>
-			<hr class="dark" />
-			<font size="5">New to Joyent? <a href="#" ng-click="login();">Create an Account</a></font>
+			
 		</div>
 		<div class="clearfix"></div>
+		
 	</div>
 	<div class="clearfix"></div>
