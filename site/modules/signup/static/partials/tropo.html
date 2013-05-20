@@ -18,10 +18,10 @@
 		            Phone
 		        </label>
 		        <div class="controls">
-		            <select data-ng-style="countryStyle" data-ng-model="selectedCountryCode" style="width:255px" name="countryCode" id="countryCode">
+		            <select data-ng-style="countryStyle" data-ng-model="account.country" style="width:255px" name="countryCode" id="countryCode">
 		                <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'"
-                                data-ng-selected="(selectedCountryCode == 1 && country.iso3 == 'USA')"
-                                value="{{country.areaCode}}">
+                                value="{{country.name}}"
+                                data-ng-selected="country.name == account.country">
 		                    {{country.name}} (+{{country.areaCode}})
 		                </option>
 		            </select>
@@ -31,14 +31,14 @@
 		                <input style="width:180px" type="text"
 		                       id="phone"
 		                       name="phone"
-		                       data-ng-model="phone"
+		                       data-ng-model="account.phone"
 		                       required/>
 		            </div>
                     <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
 		        </div>
 
-		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Call</button>
-		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !phone || !selectedCountryCode">Retry</button>
+		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Call</button>
+		        <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Retry</button>
 				<p class="text-gray text-small pull-left" data-ng-show="error && !tropoRunning && retriesLeft > 0">You have {{retriesLeft}} retries left</p>
 		    </div>
 		</div>

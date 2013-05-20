@@ -84,22 +84,21 @@
                     $scope.countries = data;
                 });
 
-                $http.get('billing/states').success(function (data) {
-                    $scope.allStates = data;
-
-                    if (!$scope.form.cardHolderInfo.country) {
-                        //$scope.form.cardHolderInfo.country = 'USA';
-                    }
-                });
+                var statesP = $http.get('billing/states');
 
                 $scope.$watch('form.cardHolderInfo.country', function (newVal, oldVal) {
                     if(oldVal === 'USA' || oldVal === 'CAN'){
                         $scope.form.cardHolderInfo.state = '';
                     }
                     if(newVal === 'USA') {
-                        $scope.stateSel = $scope.allStates.us.obj;
+                        statesP.then(function(res) {
+                            $scope.stateSel = res.data.us.obj;
+                        });
+
                     } else if (newVal === 'CAN') {
-                        $scope.stateSel = $scope.allStates.canada.obj;
+                        statesP.then(function(res) {
+                            $scope.stateSel = res.data.canada.obj;
+                        })
                     } else {
                         $scope.stateSel = undefined;
                     }

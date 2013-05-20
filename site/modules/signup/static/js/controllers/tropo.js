@@ -15,16 +15,17 @@
             $scope.tropoPoll = 0;
             $scope.retriesLeft = 3;
 
-            $scope.countries = null;
             $scope.countryCodes = null;
-            $scope.stateSel = null;
-            $scope.selectedCountryCode = 1; // default to USA
+            $scope.selectedCountryCode = null; // default to USA
             $scope.phone = null;
-            $scope.tropoPhone = null;
 
             $scope.setAccount = function() {
                 $q.when(Account.getAccount(true), function (account) {
                     $scope.account = account;
+
+                    if(!account.country) {
+                        account.country = 'United States';
+                    }
 
                     $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
 
@@ -47,47 +48,34 @@
 
             $scope.setAccount();
 
-            $http.get('billing/countries').success(function (data) {
-                $scope.countries = data;
-            });
+            $scope.nameToCode = function(countryName) {
+                if(!$scope.countryCodes)
+                    return;
+
+                for(var country in $scope.countryCodes.codes){
+                    if($scope.countryCodes.codes[country].name === countryName) {
+                        return $scope.countryCodes.codes[country].areaCode;
+                    }
+                }
+            }
 
             $http.get('account/countryCodes').success(function (data) {
                 $scope.countryCodes = data;
+            });
+
+            $scope.$watch('account.country', function(newVal, oldVal) {
+                if(newVal)
+                    newVal = $scope.nameToCode(newVal);
+
+                if(newVal != oldVal) {
+                    $scope.selectedCountryCode = newVal;
+                }
             });
 
             $scope.filterUndefinedAreas = function (country) {
                 return !!country.areaCode;
             };
 
-            /* phone number handling */
-            $scope.$watch('phone', function(newVal, oldVal) {
-                if(oldVal !== newVal) {
-                    $scope.tropoPhone = $scope.selectedCountryCode +'-'+ newVal;
-                }
-            }, true);
-
-            $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
-                if(oldVal !== newVal) {
-                    $scope.tropoPhone = newVal +'-'+ $scope.phone;
-                }
-//            if(!newVal) {
-//                $scope.countryStyle.width = '100px';
-//            } else {
-//                var width = '';
-//                switch((newVal + '').length){
-//                    case 3:
-//                        width = '50px';
-//                        break;
-//                    case 2:
-//                        width = '58px';
-//                        break;
-//                    case 1:
-//                        width = '66px';
-//                        break;
-//                }
-//                $scope.countryStyle.width = width;
-//            }
-            }, true);
 
             $scope.deleteInterval = function(interval) {
                 $scope.tropoPoll = 0;
@@ -100,10 +88,9 @@
             };
 
             $scope.phoneVerification = function(account) {
-                var dialNumber = $scope.tropoPhone;
                 if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
                     $scope.tropoRunning = true;
-                    $http.get('/tropo/tropo/'+ dialNumber.replace('-', '') +'/'+ account.id).success(function(data) {
+                    $http.get('/tropo/tropo/'+ $scope.nameToCode($scope.account.country) + $scope.account.phone +'/'+ account.id).success(function(data) {
                         if(data.retries) {
                             $scope.retriesLeft = (3-data.retries);
                         }
@@ -124,8 +111,7 @@
 
                                         $scope.deleteInterval(interval);
 
-                                        // update account phone
-                                        $scope.account.phone = dialNumber;
+                                        // update account phone and country
                                         Account.updateAccount($scope.account).then(function(newAcc) {
                                             $scope.nextStep();
                                         });
