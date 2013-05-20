@@ -28,6 +28,7 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         }
     }
     $scope.graphs = [];
+    $scope.help = null;
 
     $scope.ca = new caBackend();
 
@@ -50,8 +51,11 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     $scope.ca.describeCa(function (conf){
 
         $scope.conf = conf;
-
-
+        $scope.help = $scope.conf.help;
+//        console.log('helpp',$scope.conf.help);
+//        $scope.ca.help.then(function(data) {
+//            console.log('assa', data);
+//        })
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
 
