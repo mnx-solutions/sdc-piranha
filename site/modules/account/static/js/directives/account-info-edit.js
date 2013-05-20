@@ -11,86 +11,57 @@
                     replace: true,
                     scope: true,
                     link: function ($scope) {
-                        $scope.countries = null;
-                        $scope.allStates = null;
                         $scope.countryCodes = null;
-                        $scope.stateSel = null;
-                        $scope.phone = null;
                         $scope.selectedCountryCode = null;
                         $scope.error = null;
                         $scope.loading = false;
 
                         $scope.setAccount = function() {
                             $q.when(Account.getAccount(true), function (account) {
-                                // Set default country if not set
-                                if (!account.country) {
-                                    account.country = 'USA';
-                                }
+                                $q.when($http.get('account/countryCodes'), function(data) {
+                                    $scope.countryCodes = data.data;
 
-                                $scope.account = account;
+                                    // Set default country if not set
+                                    if (!account.country) {
+                                        account.country = 'United States';
+                                    }
 
-                                var phoneSplit = account.phone.split('-');
+                                    $scope.account = account;
+                                    $scope.selectedCountryCode = $scope.nameToCode(account.country);
+                                });
 
-                                if (phoneSplit.length === 2) {
-                                    $scope.selectedCountryCode = phoneSplit[0];
-                                    $scope.phone = phoneSplit[1];
-                                } else {
-                                    $scope.selectedCountryCode = 1; // Default country code
-                                    $scope.phone = account.phone;
-                                }
                             });
                         };
 
                         $scope.setAccount();
 
+                        $scope.nameToCode = function(countryName) {
+                            if(!$scope.countryCodes)
+                                return;
+
+                            for(var country in $scope.countryCodes.codes){
+                                if($scope.countryCodes.codes[country].name === countryName) {
+                                    return $scope.countryCodes.codes[country].areaCode;
+                                }
+                            }
+                        }
+
                         $scope.countryStyle = {
                             width: '100px'
                         };
-
-                        $http.get('billing/countries').success(function (data) {
-                            $scope.countries = data;
-                        });
-
-                        var statesP = $http.get('billing/states');
-
-                        $http.get('account/countryCodes').success(function (data) {
-                            $scope.countryCodes = data;
-                        });
 
                         $scope.filterUndefinedAreas = function (country) {
                             return !!country.areaCode;
                         };
 
-                        $scope.$watch('account.country', function (newVal, oldVal) {
-                            if (oldVal === 'USA' || oldVal === 'CAN'){
-                                $scope.account.state = '';
+                        $scope.$watch('account.country', function(newVal, oldVal) {
+                            if(newVal)
+                                newVal = $scope.nameToCode(newVal);
+
+                            if(newVal != oldVal) {
+                                $scope.selectedCountryCode = newVal;
                             }
 
-                            if (newVal === 'USA') {
-                                statesP.then(function(res) {
-                                    $scope.stateSel = res.data.us.obj;
-                                });
-                            } else if (newVal === 'CAN') {
-                                statesP.then(function(res) {
-                                    $scope.stateSel = res.data.canada.obj;
-                                });
-                            } else {
-                                $scope.stateSel = undefined;
-                            }
-                        }, true);
-
-
-                        /* phone number handling */
-                        $scope.$watch('phone', function(newVal, oldVal) {
-                            if(oldVal !== newVal) {
-                                $scope.account.phone = $scope.selectedCountryCode +'-'+ newVal;
-                            }
-                        }, true);
-
-                        $scope.$watch('selectedCountryCode', function(newVal, oldVal) {
-                            if(oldVal !== newVal) {
-                                $scope.account.phone = newVal +'-'+ $scope.phone;
-                            }
                             if(!newVal) {
                                 $scope.countryStyle.width = '100px';
                             } else {
