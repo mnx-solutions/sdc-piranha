@@ -125,7 +125,7 @@
 
                     if ($scope.paymentForm[field].$dirty) {
                         Object.keys($scope.paymentForm[field].$error).some(function (key) {
-                            if ($scope.paymentForm[field].$error[key] && (!errorType || key === errorType)) {
+                            if ($scope.paymentForm[field].$error[key] && key === errorType) {
                                 isPresent = true;
                                 return true;
                             }
