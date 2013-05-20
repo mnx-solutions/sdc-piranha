@@ -44,7 +44,6 @@
                 $scope.years = [];
                 $scope.account = Account.getAccount();
                 $scope.useExisting = false;
-                var searchCountry = false;
 
                 $q.when($scope.account, function(account) {
                     var form = $scope.form.cardHolderInfo;
@@ -54,6 +53,8 @@
                     form.addressLine1 = account.address;
                     if(account.country.length === 3) {
                         form.country = account.country;
+                    } else {
+                        form.country = 'USA';
                     }
 
                     $scope.useExistingPossible = true;
@@ -74,14 +75,6 @@
 
                 $http.get('billing/countries').success(function (data) {
                     $scope.countries = data;
-                    if (searchCountry) {
-                        data.some(function (el) {
-                            if(el.name === searchCountry) {
-                                $scope.form.cardHolderInfo.country = el.iso3;
-                                return true;
-                            }
-                        });
-                    }
                 });
 
                 $http.get('billing/states').success(function (data) {

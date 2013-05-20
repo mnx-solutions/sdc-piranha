@@ -9,7 +9,7 @@ var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
 var util = require('util');
 var utils = require('./lib/utils');
-var redisStore = require('connect-redis')(express);
+var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
 app.use(app.router);
@@ -17,7 +17,7 @@ app.use(express.bodyParser());
 app.use(express.cookieParser());
 
 app.use(express.session({
-    store: new redisStore({
+    store: new RedisStore({
         host: config.redis.host,
         port: config.redis.port,
         db: config.redis.db,

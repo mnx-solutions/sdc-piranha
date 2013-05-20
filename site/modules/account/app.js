@@ -66,10 +66,8 @@ module.exports = function (scope, app, callback) {
         });
     });
 
-    app.get('/signup/:step', function (req, res) {
-        SignupProgress.setMinProgress(req, req.params.step, function () {
-            res.send(200);
-        });
+    app.get('/changepassword/:uuid', function (req, res, next) {
+        res.redirect(config.sso.url + '/changepassword/' + req.params.uuid);
     });
 
     app.get('/key-generator.sh', function(req, res, next) {

@@ -9,15 +9,6 @@ var parseXml = require('xml2js').parseString;
 
 module.exports = function (scope, app, callback) {
 
-    function getNr(digits) {
-        var i = 0;
-        var nr = '';
-        for(i; i < digits; i++) {
-            nr += Math.floor(Math.random() * 9);
-        }
-        return nr;
-    }
-
     function makeTropoCall(randomNumber, retries, req, res) {
 
         var options = {
@@ -46,7 +37,7 @@ module.exports = function (scope, app, callback) {
 
 
     app.get('/:number/:uuid', function(req, res) {
-        var randomNumber = getNr(4);
+        var randomNumber = Math.random().toString(10).substr(2,4);
 
         var response = res;
 
