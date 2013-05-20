@@ -76,7 +76,7 @@
         </div>
 		<div class="clearfix"></div>
         <div class="control-group">
-            <label class="control-label" for="securityCode" data-translate>CVV</label>
+            <label class="control-label" for="securityCode" data-translate>CCV</label>
             <div class="controls">
                 <input type="text"
                        id="securityCode"
@@ -325,7 +325,6 @@
                        name="zipCode"
                        placeholder="Zip"
                        data-translate="placeholder"
-                       data-ng-pattern="/^(\d+)$/"
                        data-ng-class="{error: isError('zipCode')}"
                        data-ng-model="form.cardHolderInfo.zipCode"
                        required
@@ -339,11 +338,6 @@
                      data-translate
                      data-ng-show="isError('zipCode', 'required')">
                     Missing Zip code
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isError('zipCode', 'pattern')">
-                    Invalid symbols (numbers only)
                 </div>
             </div>
         </div>

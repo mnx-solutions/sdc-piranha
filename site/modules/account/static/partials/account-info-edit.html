@@ -164,17 +164,11 @@
                            name="postalCode"
                            data-ng-model="account.postalCode"
                            data-ng-class="{error: isError('postalCode')}"
-                           data-ng-pattern="/^(\d+)$/"
                            required>
                     <div class="error"
                          data-translate
                          data-ng-show="isError('postalCode', 'required')">
                         Missing postal code
-                    </div>
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('postalCode', 'pattern')">
-                        Invalid postal code
                     </div>
                 </div>
             </div>
