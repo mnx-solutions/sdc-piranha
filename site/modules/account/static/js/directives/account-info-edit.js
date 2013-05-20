@@ -51,9 +51,7 @@
                             $scope.countries = data;
                         });
 
-                        $http.get('billing/states').success(function (data) {
-                            $scope.allStates = data;
-                        });
+                        var statesP = $http.get('billing/states');
 
                         $http.get('account/countryCodes').success(function (data) {
                             $scope.countryCodes = data;
@@ -69,9 +67,13 @@
                             }
 
                             if (newVal === 'USA') {
-                                $scope.stateSel = $scope.allStates.us.obj;
+                                statesP.then(function(res) {
+                                    $scope.stateSel = res.data.us.obj;
+                                });
                             } else if (newVal === 'CAN') {
-                                $scope.stateSel = $scope.allStates.canada.obj;
+                                statesP.then(function(res) {
+                                    $scope.stateSel = res.data.canada.obj;
+                                });
                             } else {
                                 $scope.stateSel = undefined;
                             }
