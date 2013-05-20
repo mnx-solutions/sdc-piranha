@@ -1,4 +1,4 @@
-exports.codes =  [{ name: 'Afghanistan',
+var codes =  [{ name: 'Afghanistan',
     iso3: 'AFG',
     iso2: 'AF',
     areaCode: '93' },
@@ -991,4 +991,26 @@ exports.codes =  [{ name: 'Afghanistan',
     iso2: 'ZW',
     areaCode: '263' }];
 
+module.exports.codes = codes;
+module.exports.getArray = function (filter, singleArr) {
+    var arr;
+    if(filter) {
+        arr = codes.filter(function (el) {
+            return (filter.list.indexOf(el[filter.name]) !== -1 && filter.type === 'allow') ||
+                (filter.list.indexOf(el[filter.name]) === -1 && filter.type === 'deny');
+        });
+    } else {
+        arr = codes;
+    }
 
+    if(!singleArr) {
+        return arr;
+    }
+    var single = [];
+    arr.forEach(function (el) {
+        single.push(el.iso2);
+        single.push(el.iso3);
+        single.push(el.name);
+    });
+    return single;
+};

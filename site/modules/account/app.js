@@ -57,7 +57,7 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/countryCodes',function(req, res) {
-      res.json(countryCodes);
+      res.json(countryCodes.getArray(config.zuora.api.validation.countries));
     });
 
     app.get('/signup/skipSsh', function(req, res) {
