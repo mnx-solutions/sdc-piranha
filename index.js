@@ -23,7 +23,8 @@ app.use(express.session({
         db: config.redis.db,
         retry_max_delay: 1000,
         connect_timeout: 1000,
-        debug_mode: true
+        debug_mode: true,
+        ttl: (15 * 60) // 15 minutes
     }),
     secret: 'secret'
 }));

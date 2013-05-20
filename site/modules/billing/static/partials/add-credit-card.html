@@ -229,7 +229,7 @@
                          name="country"
                          data-ng-class="{error: isError('country')}"
                          data-ng-model="form.cardHolderInfo.country"
-                         data-ng-options="country.iso3 as country.name for country in countries| orderBy: 'name'"
+                         data-ng-options="country.iso3 as country.name group by country.group for country in countries| orderBy: ['-group','name']"
                          required
                          data-ng-disabled="useExisting">
                 </select>

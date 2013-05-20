@@ -1,6 +1,6 @@
 {
-    "Welcome to Joyent Portal": "Welcome to Joyent Portal",
-    "Signup": "Signup",
-    "Signin": "Signin",
-    "Forgot your password?": "Forgot password?"
+    "Hello there!": "Hello there!",
+    "Sign up": "Create Account",
+    "Sign in": "Sign In",
+    "Forgot Password": "Forgot password"
 }

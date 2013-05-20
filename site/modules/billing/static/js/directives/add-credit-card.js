@@ -74,6 +74,13 @@
                 }
 
                 $http.get('billing/countries').success(function (data) {
+                    data.forEach(function (el) {
+                        if(['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
+                            el.group = 'Default';
+                        } else {
+                            el.group = 'All countries';
+                        }
+                    });
                     $scope.countries = data;
                 });
 
