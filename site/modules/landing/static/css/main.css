@@ -1,9 +1,4 @@
-
-
-/*.landing-container {
-    text-align: center;
-}
-*/
+/*
 .text-small {
 	font-size:11px;
 }
@@ -13,7 +8,6 @@
 }
 
 .signin-container {
-/*	top:50%;*/
 	width:355px;
 }
 .signin {
@@ -77,9 +71,8 @@
 	border-bottom: 1px solid #ccc;
 }
 .landingTOS {
-/*	border:1px solid red;*/
 }
 .landingTOS:hover {
     color:#b2d7fd;
 	
-}
+}*/

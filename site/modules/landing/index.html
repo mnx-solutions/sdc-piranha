@@ -1,19 +1,30 @@
-<div class="container signin-container">
-	<div class="signin" data-ng-controller="LandingPageController" ng-cloack>
+	<div class="container-fluid span6 offset2 border" data-ng-controller="LandingPageController" ng-cloack>
 		<div class="brand pull-left"></div>
 		<div class="clearfix"></div>
-		<div class="alert">
-			<h3 data-translate>Hello there!</h3>
+		<div class="signin-container">
+			<hr class="dark" />
+			<h3 data-translate>Already a customer?</h3>
 			<form method="POST" class="form-horisontal">
 				<div class="control-group">
-					<button ng-click="signup();" class="btn btn-large pull-left" type="button" data-translate>Sign up</button>
-					<button ng-click="login();" class="btn btn-success btn-large pull-right" type="button" data-translate>Sign in</button>
-					<div class="clearfix"></div>
+					<div class="controls">
+						<input type="text" name="firstName" class="span3" placeholder="Username" data-validate="required">
+						<input type="text" name="lastName" class="span3 pull-right" placeholder="Password" data-validate="required">
+					</div>
 				</div>
+
+				
+				<!-- <div class="control-group"> -->
+					
+					<!-- <button ng-click="signup();" class="btn btn-large pull-left" type="button" data-translate>Sign up</button> -->
+					<!-- <button  class="btn btn-success btn-large pull-right" type="button" data-translate>Sign in</button> -->
+					<!-- <div class="clearfix"></div> -->
+				<!-- </div> -->
 				<div class="divider dark"></div>
 				<a href="#" class="text-small pull-right" ng-click="passreset();" class="forgotPassword" data-translate>Forgot Password</a>
 			</form>
 			<div class="clearfix"></div>
+			<hr class="dark" />
+			<font size="5">New to Joyent? <a href="#" ng-click="login();">Create an Account</a></font>
 		</div>
 		<div>
         	<a href="#!/cms/tos" class="landingTOS text-small" target="_blank">Terms of Service</a>
@@ -21,4 +32,3 @@
 		<div class="clearfix"></div>
 	</div>
 	<div class="clearfix"></div>
-</div>
