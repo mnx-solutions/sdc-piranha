@@ -4,6 +4,10 @@ var config = require('easy-config');
 var SmartCloud = require('../lib/smartcloud');
 var bunyan = require('bunyan');
 
+if(!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPath !== 'string') {
+    throw new TypeError('cloudapi configuration (.keyPath) must be defined');
+}
+
 var smartCloud = new SmartCloud({
     log: bunyan.createLogger(config.log),
     api: config.cloudapi
