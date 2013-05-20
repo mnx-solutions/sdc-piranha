@@ -24,18 +24,26 @@ module.exports = function (scope, callback) {
     var middleware = function (req, res, next) {
 
         SignupProgress.getSignupStep(req, function(err, step) {
-            if(err) {
+            if (err) {
                 next(err);
                 return;
             }
-            if(/^\/signup/.test(req.originalUrl)) {
-                if(ends.indexOf(step) > -1) {
+
+            // FIXME: Temporary fix to allow ssh keygenerator download
+            if (/key\-generator\.sh$/.test(req.originalUrl)) {
+                next();
+                return;
+            }
+
+            if (/^\/signup/.test(req.originalUrl)) {
+                if (ends.indexOf(step) > -1) {
                     res.redirect('/main/');
                     return;
                 }
                 next();
                 return;
             }
+
             returnPage(req, res, next, step);
         });
     };
