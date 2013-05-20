@@ -129,12 +129,17 @@
             var self = this;
 
             ca.conf = $http.get('cloudAnalytics/ca');
+            var help = $http.get('cloudAnalytics/ca/help')
 
             ca.conf.then(function(conf) {
                 ca.desc = conf.data;
                 conf.data.metrics.forEach(_labelMetrics);
                 console.log(conf);
-                cb(ca.desc);
+                help.then(function(data) {
+                    ca.desc.help = data.data.data;
+                    cb(ca.desc);
+                })
+
             });
 
         };

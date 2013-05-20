@@ -8,6 +8,8 @@ module.exports = function (scope, app, callback) {
         return '/ca' + uri.substring(uri.indexOf('/instrumentations'));
     }
 
+    var info = scope.api('Info');
+
     function removeBlocked(token, is) {
 
         if(!instrumentationBlock[token]) {
@@ -36,7 +38,9 @@ module.exports = function (scope, app, callback) {
             blocked: blocked
         };
     }
-
+    app.get('/ca/help', function (req, res) {
+        res.json(info.ca_help);
+    });
     app.get('/ca', function (req, res) {
         req.cloud.DescribeAnalytics(function (err, resp) {
         if (!err) {
