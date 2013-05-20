@@ -34,6 +34,9 @@ hr.dark {
 .signin-container {
 	margin-top:70px;
 }
+.text-regular {
+	font-weight:normal;
+}
 
 .border {
 	border:1px solid red !important;
