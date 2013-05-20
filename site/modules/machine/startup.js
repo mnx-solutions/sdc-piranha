@@ -272,8 +272,20 @@ module.exports = function (scope, callback) {
             call.log.debug('Polling for machine %s to become %s', machineId, state);
             client.getMachine(machineId, function (err, machine) {
                 if (err) {
-                    call.log.error('Cloud polling failed %o', err);
+                    // in case we're waiting for deletion a http 410(Gone) is good enough
+                    if ( err.statusCode === 410 && state === 'deleted')
+                    {
+                        call.log.debug('Machine %s is deleted, returning call', machineId);
+                        call.done(null, machine);
+                        clearInterval(timer);
+                        clearTimeout(timer2);
+                        return;
+                    }
+
+                    call.log.error({error:err}, 'Cloud polling failed');
                     call.error(err);
+                    clearInterval(timer);
+                    clearTimeout(timer2);
                 } else if (machine.state === 'failed') {
                     call.done(new Error('Machine fell into failed state'));
                     clearInterval(timer);
