@@ -39,9 +39,9 @@
                             if(!$scope.countryCodes)
                                 return;
 
-                            for(var country in $scope.countryCodes.codes){
-                                if($scope.countryCodes.codes[country].name === countryName) {
-                                    return $scope.countryCodes.codes[country].areaCode;
+                            for(var country in $scope.countryCodes){
+                                if($scope.countryCodes[country].name === countryName) {
+                                    return $scope.countryCodes[country].areaCode;
                                 }
                             }
                         }

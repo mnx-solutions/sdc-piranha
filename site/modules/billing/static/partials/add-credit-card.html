@@ -347,7 +347,7 @@
 		<div class="clearfix" data-ng-show="currentStep"></div>
 		<hr data-ng-show="currentStep" />
 		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
-        <button class="pull-right btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || loading">Submit</button>
+        <button class="pull-right btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || loading">{{saveButton}}</button>
         <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
     </div>
 </form>

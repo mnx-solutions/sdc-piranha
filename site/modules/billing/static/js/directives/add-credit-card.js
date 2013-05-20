@@ -45,6 +45,13 @@
                 $scope.account = Account.getAccount();
                 $scope.useExisting = false;
 
+                $scope.saveButton = 'Submit';
+
+                if($scope.nextStep) {
+                    $scope.saveButton = 'Next';
+                }
+
+
                 $q.when($scope.account, function(account) {
                     var form = $scope.form.cardHolderInfo;
                     form.zipCode = account.postalCode;

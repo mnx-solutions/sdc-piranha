@@ -87,7 +87,7 @@
                 </label>
                 <div class="controls">
                     <select data-ng-style="countryStyle" data-ng-model="account.country" name="countryCode" id="countryCode">
-                        <option data-ng-repeat="country in countryCodes.codes | filter:filterUndefinedAreas | orderBy:'name'"
+                        <option data-ng-repeat="country in countryCodes | filter:filterUndefinedAreas | orderBy:'name'"
                                 value="{{country.name}}"
                                 data-ng-selected="country.name == account.country">
                             {{country.name}} (+{{country.areaCode}})
