@@ -90,7 +90,7 @@ module.exports = function (scope, callback) {
         getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
             zuora.payment.get(id, function (err, pms) {
                 if(err) {
-                    if(pms && pms.reasons && pms.reasons.length === 1 && pms.reasons[0].split.category === '40') {
+                    if(pms && pms.reasons && pms.reasons.length === 1 && pms.reasons[0].split.category.nr === '40') {
                         cb(null, []);
                         return;
                     }
@@ -154,14 +154,6 @@ module.exports = function (scope, callback) {
                 }
             });
         }
-        function localUpdate(user, resp) {
-            call.cloud.updateAccount(user, function (err) {
-                if(err) {
-                    scope.log.error('UFDS update failed', err);
-                }
-                updateProgress(user, resp);
-            });
-        }
         composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj, user) {
             // Get the account object ready
             obj.creditCard = {};
@@ -204,17 +196,6 @@ module.exports = function (scope, callback) {
                 data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
             }
 
-            //Modify the UFDS user object
-            var change = !user.state;
-            if(change) {
-                user.country = obj.billToContact.country; //Will overwrite tropo country
-                //TODO: TROPO needs separate field
-                user.state = obj.billToContact.state;
-                user.city = obj.billToContact.city;
-                user.postalCode = obj.billToContact.zipCode;
-                user.address = obj.billToContact.address1 + (obj.billToContact.address2 ? ', ' + obj.billToContact.address2 : '');
-            }
-
             // Create payment
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
@@ -228,11 +209,7 @@ module.exports = function (scope, callback) {
                                 call.done(accErr);
                                 return;
                             }
-                            if(change) {
-                                localUpdate(user, accResp);
-                            } else {
-                                updateProgress(user, accResp);
-                            }
+                            updateProgress(user, accResp);
                         });
                         return;
                     }
@@ -257,11 +234,7 @@ module.exports = function (scope, callback) {
                     if(accErr) {
                         scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
                     }
-                    if(change) {
-                        localUpdate(user, accResp);
-                    } else {
-                        updateProgress(user, accResp);
-                    }
+                    updateProgress(user, accResp);
                 });
             });
         }));

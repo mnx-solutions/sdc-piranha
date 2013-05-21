@@ -5,6 +5,13 @@ var config = require('easy-config');
 var redisClients = {};
 var redisOnHold = {};
 
+var restify = require('restify');
+var jsonClient = null;
+
+if(!config.billing.noUpdate) {
+    jsonClient = restify.createJsonClient({url: config.billing.url});
+}
+
 module.exports = function (scope, register, callback) {
     var api = {};
     var id = config.redis.host + ':' + config.redis.port + '-' + config.redis.signupDB;
@@ -26,14 +33,17 @@ module.exports = function (scope, register, callback) {
     }
 
     api.getTokenVal = function (token, cb) {
-        api.client.get(token, function (err, val) {
-            if(err) {
-                scope.log.error('Failed to connect to redis', err);
-                //TODO: Figure out how to do error handling here,
-                // should we assume client has passed all or simply refuse to move on.
-                return cb(err);
-            }
-            cb(null, val);
+//        api.client.get(token, function (err, val) {
+//            if(err) {
+//                scope.log.error('Failed to connect to redis', err);
+//                //TODO: Figure out how to do error handling here,
+//                // should we assume client has passed all or simply refuse to move on.
+//                return cb(err);
+//            }
+//            cb(null, val);
+//        });
+        setImmediate(function () {
+            cb(null, null);
         });
     };
 
@@ -44,24 +54,44 @@ module.exports = function (scope, register, callback) {
                 cb(accErr);
                 return;
             }
-            api.getTokenVal(account.login, function (err2, data) {
-                if(err2) {
-                    //TODO: Figure out how to do error handling here,
-                    // should we assume client has passed all or simply refuse to move on.
-                    return cb(err2);
-                }
-                if(data) {
-                    cb(null, data);
-                    return;
-                }
-                data = 'start';
-                api.setAccountVal(account.login, data, function (setErr) {
-                    if(setErr) {
-                        scope.log.error('Failed to set value in db', setErr);
+            if(!jsonClient) { //Dev env
+                api.getTokenVal(account.login, function (err2, data) {
+                    if(err2) {
+                        //TODO: Figure out how to do error handling here,
+                        // should we assume client has passed all or simply refuse to move on.
+                        return cb(err2);
                     }
-                    cb(setErr, data);
+                    if(data) {
+                        cb(null, data);
+                        return;
+                    }
+                    data = 'start';
+                    api.setAccountVal(account.login, data, function (setErr) {
+                        if(setErr) {
+                            scope.log.error('Failed to set value in db', setErr);
+                        }
+                        cb(setErr, data);
+                    });
                 });
-            });
+            } else {
+                jsonClient.get('/provision/' + account.id, function (err, req, res, obj) {
+                    if(!err) {
+                        cb(null, 'completed'); // Can provision so we let through
+                        return;
+                    }
+                    var state = 'start';
+                    if(obj.errors && obj.errors.length === 1) {
+                        if(obj.errors[0].code.charAt(0) === 'Z'){
+                            state = 'tropo';
+                        } else if(obj.errors[0].code === 'U01') {
+                            state = 'completed';
+                        }
+                    }
+                    cb(null, state);
+                    return;
+
+                });
+            }
         });
         return;
     };
@@ -108,7 +138,7 @@ module.exports = function (scope, register, callback) {
 
     api.getSignupStep = function (req, cb) {
         function end(step) {
-            if(steps.indexOf(step) === (steps.length -1)) {
+            if(steps.indexOf(step) === (steps.length - 1)) {
                 step = 'completed';
             }
             cb(null, step);
@@ -145,7 +175,7 @@ module.exports = function (scope, register, callback) {
     };
 
     api.setSignupStep = function (call, step, cb) {
-        var count = 2;
+        var count = 1;
         var errs = [];
 
         function end(err) {
@@ -162,7 +192,7 @@ module.exports = function (scope, register, callback) {
         }
 
         api.setTokenVal(call.req.session.token, step, true, end);
-        api.setAccountVal(call.req.cloud, step, end);
+//        api.setAccountVal(call.req.cloud, step, end);
     };
 
     api.setMinProgress = function (call, step, cb) {

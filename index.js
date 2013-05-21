@@ -12,6 +12,11 @@ var utils = require('./lib/utils');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
+app.use(function (req, res, next) {
+    res.start = Date.now();
+    next();
+});
+
 app.use(app.router);
 app.use(express.bodyParser());
 app.use(express.cookieParser());
