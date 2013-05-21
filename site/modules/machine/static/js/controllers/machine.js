@@ -22,15 +22,13 @@
 
                 $scope.machineid = machineid;
                 $scope.machine = Machine.machine(machineid);
+                $scope.machine.then(function () {
+                    console.log('põrsa');
+                }, function () {
+                    console.log('põrsa');
+                });
                 $scope.tagnr = 0;
                 $scope.visiblePasswords = {};
-
-                $q.when($scope.machine, function (m) {
-                    m.primaryIps = m.ips.filter(function (ip) {
-                        return !util.isPrivateIP(ip);
-                    });
-                });
-
 
                 function tagcloud(tags) {
                     if (!tags) {
@@ -115,22 +113,32 @@
                 $scope.packages = Package.package();
 
                 $q.when($scope.machine, function (m) {
+                    m.primaryIps = m.ips.filter(function (ip) {
+                        return !util.isPrivateIP(ip);
+                    });
+
                     $scope.dataset = Dataset.dataset(m.image);
                     $scope.package = Package.package(m.package);
+
                     $scope.dataset.then(function(ds){
                         var type = ds.type;
-                        switch(ds.type) {
+
+                        switch (ds.type) {
                             case 'virtualmachine':
                                 type = 'kvm';
                                 break;
+
                             case 'smartmachine':
                                 type = 'smartos';
                                 break;
+
                             default:
                                 break;
                         }
+
                         $scope.datasetType = type;
                     });
+
                     $scope.package.then(function (pkg) {
                         $scope.selectedPackageName = pkg.name;
                         $scope.selectedPackage = pkg;

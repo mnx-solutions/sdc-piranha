@@ -99,16 +99,17 @@ module.exports = function (scope, callback) {
 
             call.log.debug('List machines for datacenter %s', name);
 
-            cloud.listMachines({'credentials': true}, function (err, machines) {
+            cloud.listMachines({ 'credentials': true }, function (err, machines) {
                 var response = {
                     name: name,
                     status: 'pending',
                     machines: []
                 };
 
+                err = new Error('fdsfdsfsfds');
                 if (err) {
                     call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
-                    call.error(err);
+                    call.update(err, response, true);
                     return;
                 }
 
@@ -128,7 +129,7 @@ module.exports = function (scope, callback) {
                 call.log.debug('List machines succeeded for datacenter %s', name);
                 call.update(null, response);
 
-                if(--count === 0) {
+                if (--count === 0) {
                     call.done();
                 }
             });
