@@ -17,7 +17,6 @@
         var service = {};
 
         var account = null;
-        var keys = null;
 
         /**
          * @ngdoc
@@ -97,7 +96,6 @@
                 data: {name: name, key: keyData},
                 progress: function(err, job) {
                     if (err) {
-                        keys = null;
                         deferred.resolve(err);
                     }
                 },
@@ -105,7 +103,6 @@
                     if (err) {
                         deferred.resolve(err);
                     } else {
-                        keys = null;
                         deferred.resolve(job.__read());
                     }
                 }
@@ -129,22 +126,16 @@
 
             var deferred = $q.defer();
 
-            if (!keys) {
-                serverTab.call({
-                    name: 'listKeys',
-                    data: { noCache: noCache },
-                    progress: function(err, job) {
+            serverTab.call({
+                name: 'listKeys',
+                data: {noCache: noCache},
+                progress: function(err, job) {
+                },
+                done: function(err, job) {
+                    deferred.resolve(job.__read());
+                }
 
-                    },
-                    done: function(err, job) {
-                        keys = job.__read();
-                        deferred.resolve(keys);
-                    }
-
-                });
-            } else {
-                deferred.resolve(keys);
-            }
+            });
 
             return deferred.promise;
         };
@@ -167,7 +158,6 @@
 
                 },
                 done: function(err, job) {
-                    keys = null;
                     deferred.resolve(job.__read());
                 }
             });
