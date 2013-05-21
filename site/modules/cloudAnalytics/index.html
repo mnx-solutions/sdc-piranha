@@ -18,7 +18,7 @@
 	                	<span class="span1 text-fix pointer text-small" data-ng-hide="frozen" data-ng-click="pause()"><i class="icon icon-pause" title="freeze the graph"></i> Pause</span>
 	                	<span class="span2 text-fix pointer text-small" data-ng-show="frozen" data-ng-click="run()"><i class="icon icon-play" title="resume graph"></i> Run again</span>
 					</div>
-                    <div>
+                    <div data-ng-show="help[current.metric.module]" class="alert alert-info text-small">
                         <span data-ng-show="help[current.metric.module].generic"><span style="font-weight:bold;">{{current.metric.labelHtml.split(':')[0]}}:</span> {{help[current.metric.module].generic}} <br/><br/> </span>
 
                         <span data-ng-show="help[current.metric.module][current.metric.module + '.' +current.metric.stat]"><span style="font-weight:bold;">{{ current.metric.labelHtml }}:</span> {{help[current.metric.module][current.metric.module + '.' +current.metric.stat]}}</span>
