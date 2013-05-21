@@ -1,7 +1,7 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
-	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
+    <div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="container content-container-inner">
-        <div class="machines container" data-ng-show="machines.length">
+        <div class="machines container" data-ng-show="pagedMachines.length">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
 
@@ -24,103 +24,103 @@
             </div>
 
             <div class="container span9 listing text-medium">
-				<div class="item-list-container">
-                	<div class="item header">
+                <div class="item-list-container">
+                    <div class="item header">
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
                               data-ng-switch on="sortIcon.id"
                               data-translate>
-							<span class="pull-left border">Name</span>
+                            <span class="pull-left border">Name</span>
 
-							<span class="icon-arrow-up pull-right" data-ng-switch-when="up"></span>
-	                        <span class="icon-arrow-down pull-right" data-ng-switch-when="down"></span>
-	                        <div class="clearfix"></div>
+                            <span class="icon-arrow-up pull-right" data-ng-switch-when="up"></span>
+                            <span class="icon-arrow-down pull-right" data-ng-switch-when="down"></span>
+                            <div class="clearfix"></div>
                         </span>
 
-                        
+
                         <span class="span1 text-medium sortable"
                               data-ng-click="sortBy('datacenter')"
                               data-ng-switch on="sortIcon.datacenter" data-translate>
-							Datacenter
+                            Datacenter
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
-						
+
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('created')"
                               data-ng-switch on="sortIcon.created" data-translate>
-							Created
+                            Created
                             <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
 
-                    <span class="span2 text-medium" data-translate>IP</span>
+                        <span class="span2 text-medium" data-translate>IP</span>
+                            <span class="span1 text-medium pull-right sortable"
+                                  data-ng-click="sortBy('state')"
+                                  data-ng-switch on="sortIcon.state" data-translate>
+                                State
+                                <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                                <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
+                            </span>
+                        <div class="clearfix"></div>
+                    </div>
 
-                        <span class="span1 text-medium pull-right sortable"
-                              data-ng-click="sortBy('state')"
-                              data-ng-switch on="sortIcon.state" data-translate>
-							State
-                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
-                        </span>
-					<div class="clearfix"></div>
-                </div>
-				
                     <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" class="item">
                         <span class="span2 text-medium crop">
                             <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
                         </span>
 
                         <span class="span1 text-medium">{{machine.datacenter}}</span>
-                        <span class="span2 text-medium crop" alt="{{machine.created | fromNow}}"
-                              title="{{machine.created | fromNow}}">
-                            {{machine.created | fromNow}}
-                        </span>
+                            <span class="span2 text-medium crop" alt="{{machine.created | fromNow}}"
+                                  title="{{machine.created | fromNow}}">
+                                {{machine.created | fromNow}}
+                            </span>
 
-                        <span class="span2 text-medium crop">
-                            <span data-ng-repeat="ip in machine.ips">{{ip}}</span>
-                        </span>
+                            <span class="span2 text-medium crop">
+                                <span data-ng-repeat="ip in machine.ips" data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
+                            </span>
 
 
-                        <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
-                            <machine-status machine="machine"></machine-status>
-                        </span>
-						<div class="clearfix"></div>
+                            <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
+                                <machine-status machine="machine"></machine-status>
+                            </span>
+                        <div class="clearfix"></div>
 
                         <div class="toolbox-help text-small span8"
                              data-ng-hide="machine.state != 'stopped'">
                             <span class="text-error" data-translate>
                                 Machine is stopped, but billing will continue. You have to delete machine to cancel billing
                             </span>
-							<div class="clearfix"></div>
+                            <div class="clearfix"></div>
                         </div>
-						<div class="clearfix"></div>
+                        <div class="clearfix"></div>
 
                         <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
-							
+
                             <div class="item pull-left">
-								<div class="span7">
-	                                <span class="text-medium key span2 data-translate">Memory</span>
-	                                <span class="text-medium value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
-	                                <div class="clearfix"></div>
+                                <div class="span7">
+                                    <span class="text-medium key span2 data-translate">Memory</span>
+                                    <span class="text-medium value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
+                                    <div class="clearfix"></div>
 
-	                                <span class="text-medium key span2 data-translate">Disk</span>
-	                                <span class="text-medium value span4">{{machine.disk | sizeFormat}}&nbsp;</span>
-	                                <div class="clearfix"></div>
+                                    <span class="text-medium key span2 data-translate">Disk</span>
+                                    <span class="text-medium value span4">{{machine.disk | sizeFormat}}&nbsp;</span>
+                                    <div class="clearfix"></div>
 
-	                                <span class="text-medium key span2 data-translate">Image</span>
-	                                <span class="text-medium value span4">{{machine.dataset.name}}</span>
-	                                <div class="clearfix"></div>
+                                    <span class="text-medium key span2 data-translate">Image</span>
+                                    <span class="text-medium value span4">{{machine.dataset.name}}</span>
+                                    <div class="clearfix"></div>
 
-	                                <span class="text-medium key span2 last" data-translate>IP(s)</span>
-	                                <span class="text-medium value span4 last">
-	                                    <span data-ng-repeat="ip in machine.ips">
-	                                        <span data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
-	                                    </span>
-	                                </span>
-	                                <div class="clearfix"></div>
-								</div>
+                                    <span class="text-medium key span2 last" data-translate>IP(s)</span>
+                                        <span class="text-medium value span4 last">
+                                            <span data-ng-repeat="ip in machine.ips">
+                                                <span data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
+                                            </span>
+                                        </span>
+                                    <div class="clearfix"></div>
+                                </div>
                             </div>
+
                             <div class="pull-right action-container">
                                 <button role="button"
                                         class="btn btn-mini span1 tooltip-hover"
@@ -132,7 +132,8 @@
                                         data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
                                         data-translate-attributes="data-original-title"
                                         data-translate>Start</button>
-										<div class="clearfix"></div>
+                                <div class="clearfix"></div>
+
                                 <button role="button"
                                         class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state == 'stopped' || (machine.job && !machine.job.finished)"
@@ -143,7 +144,8 @@
                                         data-placement="right"
                                         data-html="true"
                                         data-original-title="Stopping an instance does not stop billing. <br/>You can restart your instance after you stop your machine.">Stop</button>
-										<div class="clearfix"></div>
+                                <div class="clearfix"></div>
+
                                 <button role="button"
                                         class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state != 'stopped' || (machine.job && !machine.job.finished)"
@@ -154,7 +156,8 @@
                                         data-placement="right"
                                         data-html="true"
                                         data-original-title="You can restart your instance after you stop your machine. You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.">Delete</button>
-										<div class="clearfix"></div>
+                                <div class="clearfix"></div>
+
                                 <button role="button"
                                         class="btn btn-mini span1 tooltip-hover"
                                         data-ng-disabled="machine.state != 'running' || (machine.job && !machine.job.finished)"
@@ -165,12 +168,13 @@
                                         data-placement="right"
                                         data-html="true"
                                         data-original-title="Click here to reboot your instance. Use reboot to restart stopped instances.">Reboot</button>
-										<div class="clearfix"></div>
+                                <div class="clearfix"></div>
                             </div>
                             <div class="clearfix"></div>
                         </div>
                     </div>
-				</div>
+                </div>
+
                 <div class="pagination pagination-small pagination-centered span8">
                     <ul>
                         <li data-ng-class="{disabled: currentPage == 0}">
@@ -194,7 +198,7 @@
                         class="create-instance btn btn-success btn-large"
                         data-translate>Create instance</button>
                 <div class="clearfix"></div>
-                
+
                 <div class="alert alert-success">
                     <h4 data-translate>Need help?</h4>
                     <p class="text-medium" data-translate>Help will open in new window</p>
@@ -207,17 +211,18 @@
                 </div>
             </div>
         </div>
-        <div class="machines container" data-ng-hide="(machines.length || loading)">
+
+        <div class="machines container" data-ng-hide="(pagedMachines.length || loading)">
             <data-notification></data-notification>
 
             <div class="alert alert-info alert-global">
-				<div class="pull-left">
-					<h4>Hello there!</h4>
-					<div data-translate>I see you have no instances configured.</div>
-				</div>
-				<a class="btn btn-success pull-right alert-global" href="#!/machine/add" data-translate>Create an instance</a>
-				<div class="clearfix"></div>
-			</div>
+                <div class="pull-left">
+                    <h4>Hello there!</h4>
+                    <div data-translate>I see you have no instances configured.</div>
+                </div>
+                <a class="btn btn-success pull-right alert-global" href="#!/machine/add" data-translate>Create an instance</a>
+                <div class="clearfix"></div>
+            </div>
         </div>
         <div class="clearfix"></div>
     </div>
