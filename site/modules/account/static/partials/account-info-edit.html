@@ -1,6 +1,6 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
     <form name="accountForm" class="row-fluid">
-        <fieldset class="span12">
+        <fieldset class="span6">
             <legend data-translate data-ng-hide="currentStep">Contact Info</legend>
             <div class="control-group">
                 <label class="control-label" for="email" data-translate>
@@ -10,6 +10,7 @@
                     <input type="email"
                            id="email"
                            name="email"
+							class="span12"
                            data-ng-model="account.email"
                            data-ng-class="{error: isError('email')}"
                            required/>
@@ -33,6 +34,7 @@
                 <div class="controls">
                     <input type="text"
                            id="firstName"
+						class="span12"
                            name="firstName"
                            data-ng-model="account.firstName"
                            data-ng-class="{error: isError('firstName')}"
@@ -52,6 +54,7 @@
                 <div class="controls">
                     <input type="text"
                            id="lastName"
+							class="span12"
                            name="lastName"
                            data-ng-model="account.lastName"
                            data-ng-class="{error: isError('lastName')}"
@@ -71,6 +74,7 @@
                 <div class="controls">
                     <input type="text"
                            id="companyName"
+							class="span12"
                            name="companyName"
                            data-ng-model="account.companyName"/>
                     <div class="error"
@@ -86,7 +90,7 @@
                     Phone
                 </label>
                 <div class="controls">
-                    <select data-ng-style="countryStyle" data-ng-model="account.country" name="countryCode" id="countryCode">
+                    <select class="span5" data-ng-style="countryStyle" data-ng-model="account.country" name="countryCode" id="countryCode">
                         <option data-ng-repeat="country in countryCodes | filter:filterUndefinedAreas | orderBy:'name'"
                                 value="{{country.name}}"
                                 data-ng-selected="country.name == account.country">
@@ -94,10 +98,11 @@
                         </option>
                     </select>
                     <div class="input-prepend">
-                        <span class="add-on" data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</span>
+                        <span class="add-on" style="width:50px;text-align:left">(+{{selectedCountryCode}})</span>
                         <input type="text"
                                id="phone"
                                name="phone"
+								style="width:160px"
                                data-ng-model="account.phone"
                                data-ng-pattern="/^(\d+)$/"
                                data-ng-class="{error: isError('phone')}"
@@ -115,12 +120,27 @@
                     </div>
                 </div>
             </div>
+			<button class="btn btn-success pull-right" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
         </fieldset>
-        <a data-ng-show="!currentStep" data-ng-click="changePassword()" class="pull-left note text-small" data-translate>Change password</a>
+
+		<fieldset class="span6 pull-right">
+            <legend data-translate data-ng-hide="currentStep">Change password</legend>
+			<div class="clearfix"></div><br />
+			<p>Popup window will direct you to SSO pages. No delicate date is exchanged between tow sites.</p>
+			<p>Change password will open a popup window. Please ensure you dont have popup blokers active.</p>
+			
+			<a data-ng-show="!currentStep" data-ng-click="changePassword()" class="btn btn-primary pull-right note" data-translate>Change password</a>
+		</fieldset>
+
+
+		<div class="clearfix"></div>
+        
         <div class="clearfix" data-ng-show="currentStep"></div>
         <hr data-ng-show="currentStep" />
         <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
-        <button class="btn btn-success pull-right" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+		<button class="btn btn-success pull-right"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+		
+
         <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
 
         <div class="clearfix"></div>

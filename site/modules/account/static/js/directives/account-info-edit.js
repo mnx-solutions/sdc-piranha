@@ -120,7 +120,7 @@
                         };
 
                         $scope.changePassword = function() {
-                            window.open('account/changepassword/' + $scope.account.id ,'1369071355773','width=700,height=500,toolbar=0,menubar=0,location=1,status=1,scrollbars=1,resizable=1,left=100,top=100');
+                            window.open('account/changepassword/' + $scope.account.id ,'1369071355773','width=980,height=580,toolbar=0,menubar=0,location=1,status=1,scrollbars=1,resizable=1,left=100,top=100');
                         };
 
                         window.jQuery('.icon-info-sign').tooltip();
