@@ -786,9 +786,9 @@ div .disabled{
 	border-top:1px solid rgba(0,0,0,0.1);
 }
 .dashboard-height {
-	min-height:300px;
-	max-height:300px;
-	height:300px;
+	min-height:338px;
+	max-height:338px;
+	height:338px;
 }
 .feature1{
 	background:url(/static/img/video-tile.jpg) no-repeat center bottom #99abba;
