@@ -47,7 +47,7 @@
 		        </div>
 				
 		        <button class="btn btn-success pull-right span4" style="margin-right:61px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Call</button>
-		        <button class="btn btn-success pull-right span1" style="margin-right:61px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Retry</button>
+		        <button class="btn btn-success pull-right span4" style="margin-right:61px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Retry</button>
 				<span class="text-gray text-small pull-left span5"  data-ng-show="error && !tropoRunning && retriesLeft > 0" style="margin-top:5px;">You have {{retriesLeft}} retries left</span>
 				<div class="clearfix"></div>
 				<br />
