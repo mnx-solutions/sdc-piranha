@@ -57,7 +57,7 @@
                 $scope.nextStep();
 
                 $scope.signOut = function() {
-					var msg = confirm('This will cancel your sign-up process. Are you sure you want that?');
+					var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
 					if(msg){
 						window.location = '/landing/forgetToken';
 					}

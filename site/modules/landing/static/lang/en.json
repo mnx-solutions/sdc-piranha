@@ -1,6 +1,8 @@
 {
-    "Hello there!": "Hello there!",
-    "Sign up": "Create Account",
+    "Get Sarted": "Get Sarted",
+    "Create Account": "Create Account",
     "Sign in": "Sign In",
-    "Forgot Password": "Forgot password"
+    "Forgot Password": "Forgot password",
+    "Sign-in to Joyent cloud services via SSO": "Sign-in to Joyent cloud services via SSO",
+    "Get started in less than five minutes": "Get started in less than five minutes"
 }
