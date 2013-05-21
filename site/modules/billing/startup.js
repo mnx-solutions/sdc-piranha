@@ -3,6 +3,12 @@
 var config = require('easy-config');
 var moment = require('moment');
 var zuora = require('zuora').create(config.zuora.api);
+var restify = require('restify');
+var jsonClient = null;
+
+if(!config.billing.noUpdate) {
+    jsonClient = restify.createJsonClient({url: config.billing.url});
+}
 
 module.exports = function (scope, callback) {
 
@@ -64,7 +70,7 @@ module.exports = function (scope, callback) {
                     },
                     invoiceCollect: false
                 };
-                cb(null, obj);
+                cb(null, obj, data);
             });
         });
     }
@@ -124,15 +130,39 @@ module.exports = function (scope, callback) {
     //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
 
-        function setProgress(resp) {
+        function updateProgress(user, resp) {
+            var count = 1;
+            //Update billingAPI
+            if (jsonClient) {
+                count++;
+                jsonClient.get('/update/' + user.id, function (err, req, res, obj) {
+                    if(err) {
+                        scope.log.error('Something went wrong with billing API', err);
+                    }
+                    //No error handling or nothing here, just let it pass.
+                    if(--count === 0) {
+                        call.done(null, resp);
+                    }
+                });
+            }
             SignupProgress.setMinProgress(call, 'billing', function (err) {
                 if(err) {
                     scope.log.error(err);
                 }
-                call.done(null, resp);
+                if(--count === 0) {
+                    call.done(null, resp);
+                }
             });
         }
-        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
+        function localUpdate(user, resp) {
+            call.cloud.updateAccount(user, function (err) {
+                if(err) {
+                    scope.log.error('UFDS update failed', err);
+                }
+                updateProgress(user, resp);
+            });
+        }
+        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj, user) {
             // Get the account object ready
             obj.creditCard = {};
             Object.keys(call.data).forEach(function (k) {
@@ -174,6 +204,17 @@ module.exports = function (scope, callback) {
                 data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
             }
 
+            //Modify the UFDS user object
+            var change = !user.state;
+            if(change) {
+                user.country = obj.billToContact.country; //Will overwrite tropo country
+                //TODO: TROPO needs separate field
+                user.state = obj.billToContact.state;
+                user.city = obj.billToContact.city;
+                user.postalCode = obj.billToContact.zipCode;
+                user.address = obj.billToContact.address1 + (obj.billToContact.address2 ? ', ' + obj.billToContact.address2 : '');
+            }
+
             // Create payment
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
@@ -187,7 +228,11 @@ module.exports = function (scope, callback) {
                                 call.done(accErr);
                                 return;
                             }
-                            setProgress(accResp);
+                            if(change) {
+                                localUpdate(user, accResp);
+                            } else {
+                                updateProgress(user, accResp);
+                            }
                         });
                         return;
                     }
@@ -212,225 +257,20 @@ module.exports = function (scope, callback) {
                     if(accErr) {
                         scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
                     }
-                    if(!call.req.session.signupStep || call.req.session.signupStep !== 'complete') {
-                        setProgress(resp);
-                        return;
+                    if(change) {
+                        localUpdate(user, accResp);
+                    } else {
+                        updateProgress(user, accResp);
                     }
-                    call.done(null, resp);
                 });
             });
         }));
     });
 
     function getInvoiceList(call, cb) {
-//        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
-//            zuora.transaction.getInvoices(id, cb);
-//        }));
-        setImmediate(function () {
-            cb(null, {
-                'invoices': [
-                    {
-                        "accountId": "2c92a0f9391832b10139183e277a0042",
-                        "accountName": "subscribeCallYan_1",
-                        "dueDate": "2012-08-11",
-                        "id": "2c92a09739190dc60139194bcf1b0098",
-                        "status": "Posted",
-                        "createdBy": "23",
-                        "balance": 0.0,
-                        "invoiceTargetDate": "2012-08-11",
-                        "invoiceNumber": "INV00000160",
-                        "invoiceDate": "2012-08-11",
-                        "accountNumber": "A00001115",
-                        "invoiceItems": [
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc95a0059",
-                                "unitOfMeasure": "MMPV",
-                                "quantity": 20.0,
-                                "serviceStartDate": "2012-08-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a09739190dc60139194bd0e800ac",
-                                "chargeName": "Flat",
-                                "chargeAmount": 484.0,
-                                "serviceEndDate": "2012-08-31"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc91a0052",
-                                "unitOfMeasure": "MMPV",
-                                "quantity": 20.0,
-                                "serviceStartDate": "2011-01-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a09739190dc60139194bd00f00a3",
-                                "chargeName": "Flat",
-                                "chargeAmount": 400.0,
-                                "serviceEndDate": "2011-01-31"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc91a0051",
-                                "unitOfMeasure": "DOWN",
-                                "quantity": 10.0,
-                                "serviceStartDate": "2011-01-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a09739190dc60139194bd16300b1",
-                                "chargeName": "New Component",
-                                "chargeAmount": 100.0,
-                                "serviceEndDate": "2011-01-31"
-                            }
-                        ],
-                        "amount": 10521.0
-                    },
-                    {
-                        "accountId": "2c92a0f9391832b10139183e277a0042",
-                        "accountName": "subscribeCallYan_1",
-                        "dueDate": "2012-08-11",
-                        "id": "2c92a09539190dbe0139190f42780012",
-                        "status": "Posted",
-                        "createdBy": "23",
-                        "balance": 0.0,
-                        "invoiceTargetDate": "2012-08-11",
-                        "invoiceNumber": "INV00000159",
-                        "invoiceDate": "2012-08-11",
-                        "accountNumber": "A00001115",
-                        "invoiceItems": [
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a0f9391832b10139183e2aae004b",
-                                "unitOfMeasure": "",
-                                "quantity": 1.0,
-                                "serviceStartDate": "2011-02-11",
-                                "subscriptionName": "A-S00001008",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a0f9391832b10139183e28780046",
-                                "id": "2c92a09539190dbe0139190f44000015",
-                                "chargeName": "Recurring",
-                                "chargeAmount": 10.0,
-                                "serviceEndDate": "2012-02-10"
-                            }
-                        ],
-                        "amount": 10.0
-                    },
-                    {
-                        "accountId": "2c92a0f9391832b10139183e277a0042",
-                        "accountName": "subscribeCallYan_1",
-                        "dueDate": "2012-10-08",
-                        "id": "2c92a0953a3fa95d013a401914770aa1",
-                        "status": "Canceled",
-                        "createdBy": "23",
-                        "balance": 2420.0,
-                        "invoiceTargetDate": "2012-12-08",
-                        "invoiceNumber": "INV00000253",
-                        "invoiceDate": "2012-10-08",
-                        "accountNumber": "A00001115",
-                        "invoiceItems": [
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc979005c",
-                                "unitOfMeasure": "DOWN",
-                                "quantity": 10.0,
-                                "serviceStartDate": "2012-12-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a0953a3fa95d013a401914b50aa6",
-                                "chargeName": "New Component",
-                                "chargeAmount": 121.0,
-                                "serviceEndDate": "2012-12-31"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc95a0059",
-                                "unitOfMeasure": "MMPV",
-                                "quantity": 20.0,
-                                "serviceStartDate": "2012-12-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a0953a3fa95d013a401914ff0aac",
-                                "chargeName": "Flat",
-                                "chargeAmount": 484.0,
-                                "serviceEndDate": "2012-12-31"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc95a0059",
-                                "unitOfMeasure": "MMPV",
-                                "quantity": 20.0,
-                                "serviceStartDate": "2012-11-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a0953a3fa95d013a401914da0aa9",
-                                "chargeName": "Flat",
-                                "chargeAmount": 484.0,
-                                "serviceEndDate": "2012-11-30"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc979005c",
-                                "unitOfMeasure": "DOWN",
-                                "quantity": 10.0,
-                                "serviceStartDate": "2012-11-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a0953a3fa95d013a401915120aae",
-                                "chargeName": "New Component",
-                                "chargeAmount": 121.0,
-                                "serviceEndDate": "2012-11-30"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc95a0059",
-                                "unitOfMeasure": "MMPV",
-                                "quantity": 20.0,
-                                "serviceStartDate": "2012-09-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a0953a3fa95d013a401914a20aa5",
-                                "chargeName": "Flat",
-                                "chargeAmount": 484.0,
-                                "serviceEndDate": "2012-09-30"
-                            },
-                            {
-                                "productName": "Recurring Charge",
-                                "chargeId": "2c92a09739190dc60139194bc979005c",
-                                "unitOfMeasure": "DOWN",
-                                "quantity": 10.0,
-                                "serviceStartDate": "2012-09-01",
-                                "subscriptionName": "A-S00001013",
-                                "taxAmount": 0.0,
-                                "chargeDescription": "",
-                                "subscriptionId": "2c92a09739190dc60139194bc90a0046",
-                                "id": "2c92a0953a3fa95d013a401914c70aa7",
-                                "chargeName": "New Component",
-                                "chargeAmount": 121.0,
-                                "serviceEndDate": "2012-09-30"
-                            }
-                        ],
-                        "amount": 2420.0
-                    }
-                ],
-                'success': true
-            });
-        });
+        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
+            zuora.transaction.getInvoices(id, cb);
+        }));
     }
 
     server.onCall('listInvoices', function (call) {

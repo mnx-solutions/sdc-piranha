@@ -82,6 +82,9 @@ module.exports = function (scope, app, callback) {
     app.get('/login', function (req, res, next) {
         sendToSSO(req, res, 'login', '/main/', true);
     });
+    app.get('/signin', function (req, res, next) {
+        sendToSSO(req, res, 'login', '/main/', true);
+    });
 
     app.get('/saveUrl/', function(req, res) {
         req.saveUrl = req.query.returnUrl;

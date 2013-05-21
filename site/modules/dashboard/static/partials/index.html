@@ -24,10 +24,10 @@
 						<div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
 						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create Instance</a></p>
 					</div>
-					<h5>Billing</h5>
-						<div class="separation-container text-medium" data-ng-show="lastInvoice.amount">
-							<p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
-						</div>
+					<h5 data-ng-show="lastInvoice">Billing</h5>
+                    <div class="separation-container text-medium" data-ng-show="lastInvoice">
+                        <p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
+                    </div>
 					</div>
 				</div>
 				

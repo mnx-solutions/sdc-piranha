@@ -46,6 +46,10 @@
             }
         }
     },
+    "billing":{
+        "url":"",
+        "noUpdate":true
+    },
     "zendesk": {
         "account": "jaan.oras@joyent.com/token",
         "token"  : "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ",

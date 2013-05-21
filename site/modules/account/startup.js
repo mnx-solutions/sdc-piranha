@@ -34,36 +34,7 @@ module.exports = function (scope, callback) {
         });
         scope.log.debug('Updating account with', data);
 
-//        call.cloud.getAccount(function (err, user) {
-//            if(err) {
-//                call.done(err);
-//                return;
-//            }
-//            zuora.account.update(user.id, composeZuora(data), function (err, acc) {
-//                if(err && acc) { // No previous account
-//                    zuora.account.create(composeZuora(data, user.id), function (err2, acc) {
-//                        console.log(arguments);
-//                        console.log(acc.reasons);
-//                        if(err2) {
-//                            call.done(err2);
-//                            return;
-//                        }
-//                        call.cloud.updateAccount(data, call.done.bind(call));
-//                    });
-//                    return;
-//                }
-//            });
-//        });
-        call.cloud.updateAccount(data, function(err, res) {
-            if(!err) {
-                SignupProgress.setMinProgress(call, 'accountInfo', function() {
-                    call.done(err, res);
-                });
-                return;
-            }
-
-          call.done(err, res);
-        });
+        call.cloud.updateAccount(data, call.done.bind(call));
     });
 
     server.onCall('listKeys', function(call) {
