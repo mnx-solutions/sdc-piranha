@@ -16,7 +16,8 @@
             'util',
             'BillingService',
             '$http',
-            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http) {
+            '$cookies',
+            function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies) {
                 localization.bind('dashboard', $scope);
                 requestContext.setUpRenderContext('dashboard.index', $scope);
                 $scope.loading = true;
@@ -28,6 +29,9 @@
                 $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
                 $scope.machines    = Machine.machine();
                 $scope.lastInvoice = BillingService.getLastInvoice();
+
+                // get campaign id from the cookie
+                $scope.campaignId = ($cookies.campaignId || 'default');
 
                 window.dashboard_rss_feed_callback = function (data) {
                     $scope.rssentries = data.responseData.feed.entries;
