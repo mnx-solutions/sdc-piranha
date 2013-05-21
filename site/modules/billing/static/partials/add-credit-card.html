@@ -278,7 +278,7 @@
                     data-ng-model="form.cardHolderInfo.state"
                     required
                     data-ng-disabled="useExisting">
-                <option data-ng-repeat="(k, v) in stateSel" value="{{k}}">{{v}}</option>
+                <option data-ng-repeat="(k, v) in stateSel" value="{{k}}" data-ng-selected="k == form.cardHolderInfo.state">{{v}}</option>
             </select>
             <div class="error"
                  data-translate

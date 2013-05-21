@@ -105,7 +105,7 @@
                     } else if (newVal === 'CAN') {
                         statesP.then(function(res) {
                             $scope.stateSel = res.data.canada.obj;
-                        })
+                        });
                     } else {
                         $scope.stateSel = undefined;
                     }

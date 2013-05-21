@@ -70,7 +70,7 @@ module.exports = function (scope, callback) {
                     },
                     invoiceCollect: false
                 };
-                cb(null, obj);
+                cb(null, obj, data);
             });
         });
     }
@@ -129,34 +129,37 @@ module.exports = function (scope, callback) {
 
     //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
-        var obj = {};
 
-        function setProgress(resp) {
-            var count = 1;
-            //We have successfully updated zuora - update billingAPI
-            if (jsonClient) {
-                count++;
-                jsonClient.get('/update/' + obj.accountNumber, function (err, req, res, obj) {
+        function localUpdate(user, resp) {
+            call.cloud.updateAccount(user, function (err) {
+                if(err) {
+                    scope.log.error('UFDS update failed', err);
+                }
+                var count = 1;
+                //Update billingAPI
+                if (jsonClient) {
+                    count++;
+                    jsonClient.get('/update/' + user.id, function (err, req, res, obj) {
+                        if(err) {
+                            scope.log.error('Something went wrong with billing API', err);
+                        }
+                        //No error handling or nothing here, just let it pass.
+                        if(--count === 0) {
+                            call.done(null, resp);
+                        }
+                    });
+                }
+                SignupProgress.setMinProgress(call, 'billing', function (err) {
                     if(err) {
-                        scope.log.error('Something went wrong with billing API', err);
+                        scope.log.error(err);
                     }
-                    //No error handling or nothing here, just let it pass.
                     if(--count === 0) {
                         call.done(null, resp);
                     }
                 });
-            }
-            SignupProgress.setMinProgress(call, 'billing', function (err) {
-                if(err) {
-                    scope.log.error(err);
-                }
-                if(--count === 0) {
-                    call.done(null, resp);
-                }
             });
         }
-        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (acc) {
-            obj = acc;
+        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj, user) {
             // Get the account object ready
             obj.creditCard = {};
             Object.keys(call.data).forEach(function (k) {
@@ -198,6 +201,13 @@ module.exports = function (scope, callback) {
                 data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
             }
 
+            //Modify the UFDS user object
+            user.country = obj.billToContact.country;
+            user.state = obj.billToContact.state;
+            user.city = obj.billToContact.city;
+            user.postalCode = obj.billToContact.zipCode;
+            user.address = obj.billToContact.address1 + (obj.billToContact.address2 ? ', ' + obj.billToContact.address2 : '');
+
             // Create payment
             zuora.payment.create(data, function (err, resp) {
                 if(err) {
@@ -211,7 +221,7 @@ module.exports = function (scope, callback) {
                                 call.done(accErr);
                                 return;
                             }
-                            setProgress(accResp);
+                            localUpdate(user, accResp);
                         });
                         return;
                     }
@@ -236,11 +246,7 @@ module.exports = function (scope, callback) {
                     if(accErr) {
                         scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
                     }
-                    if(!call.req.session.signupStep || call.req.session.signupStep !== 'complete') {
-                        setProgress(resp);
-                        return;
-                    }
-                    call.done(null, resp);
+                    localUpdate(user, resp);
                 });
             });
         }));
