@@ -12,8 +12,9 @@
             '$$track',
             'localization',
             '$q',
+            '$location',
             'util',
-            function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, util) {
+            function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, $location, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.details', $scope);
 
@@ -233,9 +234,14 @@
                             null,
                             'Destroy the information on this instance and stop billing for this instance.'
                         ), function () {
-                        $$track.event('machine', 'delete');
-                        $scope.retinfo = Machine.deleteMachine(machineid);
-                    });
+                            $$track.event('machine', 'delete');
+
+                            // Redirect if complete
+                            Machine.deleteMachine(machineid).getJob().done(function () {
+                                $location.url('/machine');
+                                $location.replace();
+                            });
+                        });
                 };
 
                 $scope.clickSaveTags = function () {

@@ -171,6 +171,7 @@
                 if (machine.id) {
                     return start();
                 }
+
                 var d = $q.defer();
                 machine.then(function(m) {
                     machine = m;
