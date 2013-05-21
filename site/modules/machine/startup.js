@@ -106,7 +106,6 @@ module.exports = function (scope, callback) {
                     machines: []
                 };
 
-                err = new Error('fdsfdsfsfds');
                 if (err) {
                     call.log.error('List machines failed for datacenter %s; err: %s', name, err.message);
                     call.update(err, response, true);

@@ -358,10 +358,6 @@
                         $scope.collapsedMachines[id];
                 };
 
-                $scope.checkState = function(state) {
-
-                };
-
                 $scope.isPrivateIP = function (ip) {
                     return util.isPrivateIP(ip);
                 };

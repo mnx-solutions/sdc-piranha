@@ -25,11 +25,13 @@
                         var data = job.__read();
 
                         if (data.err) {
-                            errorContext.emit(new Error(localization.translate(null,
-                                'machine',
-                                'Unable to retrieve instances from datacenter {{name}}',
-                                { name: data.name }
-                            )));
+                            notification.push(data.name, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve instances from datacenter {{name}}',
+                                    { name: data.name }
+                                )
+                            );
                             return;
                         }
 
@@ -66,16 +68,25 @@
                             });
                         }
                     },
+
                     done: function(err, job) {
                         var data = job.__read();
 
                         if (err) {
-                            errorContext.emit(new Error(localization.translate(null,
-                                'machine',
-                                'Unable to retrieve instances from datacenter {{name}}',
-                                { name: data.name }
-                            )));
+                            notification.push(data.name, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve instances from datacenter {{name}}',
+                                    { name: data.name }
+                                )
+                            );
                         }
+
+                        Object.keys(machines.search).forEach(function (id) {
+                            if (!machines.index[id]) {
+                                machines.search[id].reject();
+                            }
+                        });
 
                         machines.list.final = true;
                     }
@@ -100,7 +111,7 @@
             }
 
             if (!machines.index[id] || (machines.job && !machines.job.finished)) {
-                if (!machines.search[id]){
+                if (!machines.search[id]) {
                     machines.search[id] = $q.defer();
                 }
 
@@ -110,11 +121,10 @@
             return machines.index[id];
         };
 
-        if(!machines.job) {
+        if (!machines.job) {
             // run updateMachines
             service.updateMachines();
         }
-
 
         function changeState(opts) {
             return function (uuid) {

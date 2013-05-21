@@ -22,11 +22,16 @@
 
                 $scope.machineid = machineid;
                 $scope.machine = Machine.machine(machineid);
-                $scope.machine.then(function () {
-                    console.log('põrsa');
-                }, function () {
-                    console.log('põrsa');
-                });
+
+                // Handle case when machine loading fails or machine uuid is invalid
+                $scope.machine.then(
+                    function () {
+                    }, function () {
+                        $location.url('/machine');
+                        $location.replace();
+                    }
+                );
+
                 $scope.tagnr = 0;
                 $scope.visiblePasswords = {};
 
