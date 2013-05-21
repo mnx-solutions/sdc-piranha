@@ -3,6 +3,12 @@
 var config = require('easy-config');
 var moment = require('moment');
 var zuora = require('zuora').create(config.zuora.api);
+var restify = require('restify');
+var jsonClient = null;
+
+if(!config.billing.noUpdate) {
+    jsonClient = restify.createJsonClient({url: config.billing.url});
+}
 
 module.exports = function (scope, callback) {
 
@@ -123,16 +129,34 @@ module.exports = function (scope, callback) {
 
     //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
+        var obj = {};
 
         function setProgress(resp) {
+            var count = 1;
+            //We have successfully updated zuora - update billingAPI
+            if (jsonClient) {
+                count++;
+                jsonClient.get('/update/' + obj.accountNumber, function (err, req, res, obj) {
+                    if(err) {
+                        scope.log.error('Something went wrong with billing API', err);
+                    }
+                    //No error handling or nothing here, just let it pass.
+                    if(--count === 0) {
+                        call.done(null, resp);
+                    }
+                });
+            }
             SignupProgress.setMinProgress(call, 'billing', function (err) {
                 if(err) {
                     scope.log.error(err);
                 }
-                call.done(null, resp);
+                if(--count === 0) {
+                    call.done(null, resp);
+                }
             });
         }
-        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj) {
+        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (acc) {
+            obj = acc;
             // Get the account object ready
             obj.creditCard = {};
             Object.keys(call.data).forEach(function (k) {
