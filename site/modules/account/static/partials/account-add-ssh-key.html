@@ -1,38 +1,43 @@
 <fieldset data-ng-class="{'loading-medium': loading}" >
 	<div class="alert alert-error" data-ng-show="error">{{error}}</div>
-
-    <div class="span6 pull-left">
+	<iframe allowtransparency="true" frameborder="0" scrolling="no" class="loading-medium pull-left" 
+	src="http://joyent.com/portal/default-promo.html" style="width:475px; height:360px;margin-left:-5px"></iframe>
+	
+    <div class="span5 pull-right">
         <div class="control-group">
             <label class="control-label">Name</label>
             <div class="controls">
-                <input type="text" class="span6" data-ng-model="newKey.name" placeholder="ssh key name" />
+                <input type="text" class="span5" data-ng-model="newKey.name" placeholder="ssh key name" />
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label">SSH Key</label>
             <div class="controls">
-                <textarea class="span6" rows="10" data-ng-model="newKey.data"></textarea><br />
+                <textarea class="span5" rows="10" data-ng-model="newKey.data"></textarea><br />
             </div>
         </div>
+		<div data-ng-show="showKeygenDownload()">
+	        <div class="sizebar-fix sizebar-fix-right">
+	            <div class="alert alert-info shadow">
+	                <p class="text-small pull-left" style="width:250px">Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
+	                <button class="btn btn-info btn-mini pull-right" style="margin-top:10px;margin-right:-20px" data-ng-click="clickKeygenDownload()">Download script</button>
+	                <div class="clearfix"></div>
+	            </div>
+	        </div>
+	        <div class="clearfix"></div>
+	    </div>
+	    
     </div>
-
-    <div class="span3 pull-right" data-ng-show="showKeygenDownload()">
-        <div class="sizebar-fix sizebar-fix-right">
-            <div class="alert alert-success shadow">
-                <h5 data-translate>SSH Key generator</h5>
-                <p class="text-medium">Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
-                <button class="btn btn-success" data-ng-click="clickKeygenDownload()">Download script</button>
-                <div class="clearfix"></div>
-            </div>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-
 	<div class="clearfix"></div>
 	<hr />
 	<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
     <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
 	<button class="btn btn-success pull-right" style="margin-right:10px" data-ng-click="createNewKey()" data-ng-disabled="loading">Add SSH key</button>
-
+	<div class="clearfix"></div>
+	<hr />
+	<div class="loading-medium" style="padding-bottom:20px;">
+		<iframe allowtransparency="true" frameborder="0" scrolling="no" class="" src="http://joyent.com/portal/default-toc.html" style="width:100%;"></iframe>
+	</div>
+	
 </fieldset>
