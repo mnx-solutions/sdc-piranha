@@ -24,7 +24,7 @@
                 $scope.machine = Machine.machine(machineid);
 
                 // Handle case when machine loading fails or machine uuid is invalid
-                $scope.machine.then(
+                $q.when($scope.machine).then(
                     function () {
                     }, function () {
                         $location.url('/machine');
