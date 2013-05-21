@@ -39,7 +39,7 @@
                 $dialog.messageBox(title, question, btns, templateUrl)
                     .open()
                     .then(function(result) {
-                        if(result === 'add') {
+                        if(result.value === 'add') {
                             callback(result.data);
                         }
                     });
@@ -61,7 +61,6 @@
             $scope.createPending = false;
             $scope.addNewKey = function() {
                 newKeyPopup('', function(keyData) {
-
                     if (!keyData) {
                         keyData = {};
                     }
