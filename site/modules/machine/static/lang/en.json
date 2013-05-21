@@ -96,5 +96,7 @@
     "Unable to retrieve datacenters list": "Unable to retrieve datacenters list",
     "Need help?": "Need help?",
     "Help will open in new window": "Help will open in new window",
-    "per hour": "per hour"
+    "per hour": "per hour",
+    "Invalid machine name": "Invalid machine name",
+    "Machine name is already in use": "Machine name is already in use"
 }

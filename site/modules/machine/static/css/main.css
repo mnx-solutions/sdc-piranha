@@ -1,3 +1,8 @@
+#finish-configuration .error {
+    margin: 10px 0 10px 0;
+    color: red;
+}
+
 .machines button.create-instance {
     margin-bottom: 10px;
     width: 100%;

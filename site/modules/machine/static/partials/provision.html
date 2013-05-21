@@ -226,14 +226,27 @@
                     <form name="provisionForm">
                         <h4 data-translate>You're almost done.</h4>
 						<span data-translate>Give your instance a name and you are all done.</span>
-                        
+                        <div class="error"
+                             data-ng-show="provisionForm.machineName.$error.machineName"
+                             data-translate>
+                            Invalid machine name
+                        </div>
+
+                        <div class="error"
+                             data-ng-show="provisionForm.machineName.$error.machineUnique"
+                             data-translate>
+                            Machine name is already in use
+                        </div>
+
                         <input name="machineName"
                                type="text"
                                placeholder="Name of your instance"
                                data-ng-model="data.name"
                                data-machine-name
-                                />
+                               data-machine-unique />
+
                         <button class="btn btn-success"
+                                data-ng-disabled="provisionForm.$invalid"
                                 data-ng-click="clickProvision()"
                                 data-translate>Create instance</button>
                     </form>
