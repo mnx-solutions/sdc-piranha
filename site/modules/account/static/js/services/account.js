@@ -132,8 +132,9 @@
             if (!keys) {
                 serverTab.call({
                     name: 'listKeys',
-                    data: {noCache: noCache},
+                    data: { noCache: noCache },
                     progress: function(err, job) {
+
                     },
                     done: function(err, job) {
                         keys = job.__read();
