@@ -42,7 +42,7 @@
                 $scope.loading = false;
                 $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                 $scope.years = [];
-                $scope.account = Account.getAccount();
+                $scope.prev = BillingService.getDefaultCreditCard();
                 $scope.useExisting = false;
 
                 $scope.saveButton = 'Submit';
@@ -50,48 +50,70 @@
                 if($scope.nextStep) {
                     $scope.saveButton = 'Next';
                 }
+                $scope.countries = $http.get('billing/countries');
+                var statesP = $http.get('billing/states');
 
+                $q.when($scope.prev, function (prev) {
+                    console.log(prev);
+                    if(prev && prev.cardHolderInfo) {
+                        $scope.form.cardHolderInfo = prev.cardHolderInfo;
+                        delete $scope.form.cardHolderName;
 
-                $q.when($scope.account, function(account) {
-                    var form = $scope.form.cardHolderInfo;
-                    form.zipCode = account.postalCode;
-                    form.city = account.city;
-                    form.state = account.state;
-                    form.addressLine1 = account.address;
-                    if(account.country.length === 3) {
-                        form.country = account.country;
+                        $scope.countries.then(function (cs) {
+                            cs.data.some(function (el){
+                                if(el.name === prev.cardHolderInfo.country) {
+                                    $scope.form.cardHolderInfo.country = el.iso3;
+                                    return true;
+                                }
+                            });
+                            var country = $scope.form.cardHolderInfo.country;
+                            if(country === 'CAN' || country === 'USA') {
+                                statesP.then(function (allStates) {
+                                    var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
+                                    Object.keys(states).some(function (el) {
+                                        if(states[el] === prev.cardHolderInfo.state) {
+                                            $scope.form.cardHolderInfo.state = el;
+                                            return true;
+                                        }
+                                    });
+                                });
+                            }
+                        });
+
+                        $scope.useExistingPossible = $scope.useExisting = true;
                     } else {
-                        form.country = 'USA';
-                    }
 
-                    $scope.useExistingPossible = true;
-                    ['zipCode','city','state','addressLine1','country'].some(function (e) {
-                        if(!form[e] || form[e] === '') {
-                            $scope.useExistingPossible = false;
-                            return true;
-                        }
-                    });
-                    $scope.useExisting = $scope.useExistingPossible;
+                        $q.when(Account.getAccount(), function(account) {
+                            var form = $scope.form.cardHolderInfo;
+                            form.zipCode = account.postalCode;
+                            form.city = account.city;
+                            form.state = account.state;
+                            form.addressLine1 = account.address;
+                            if(account.country.length === 3) {
+                                form.country = account.country;
+                            } else {
+                                form.country = 'USA';
+                            }
+
+                            $scope.useExistingPossible = true;
+                            ['zipCode','city','state','addressLine1','country'].some(function (e) {
+                                if(!form[e] || form[e] === '') {
+                                    $scope.useExistingPossible = false;
+                                    return true;
+                                }
+                            });
+                            $scope.useExisting = $scope.useExistingPossible;
+                        });
+                    }
                 });
+
+
 
                 var c = (new Date()).getFullYear();
                 var i = c;
                 for(i; i < c + 20; i++) {
                     $scope.years.push(i);
                 }
-
-                $http.get('billing/countries').success(function (data) {
-                    data.forEach(function (el) {
-                        if(['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
-                            el.group = 'Default';
-                        } else {
-                            el.group = 'All countries';
-                        }
-                    });
-                    $scope.countries = data;
-                });
-
-                var statesP = $http.get('billing/states');
 
                 $scope.$watch('form.cardHolderInfo.country', function (newVal, oldVal) {
                     if(oldVal === 'USA' || oldVal === 'CAN'){

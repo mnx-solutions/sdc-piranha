@@ -169,7 +169,7 @@
 <fieldset class="span6">
     <legend>Billing	information</legend>
     <div class="control-group" data-ng-show="useExistingPossible">
-        <label class="checkbox" for="useExisting"><input type="checkbox" id="useExisting" data-ng-model="useExisting" /><span data-translate>Use contact info</span></label>
+        <label class="checkbox" for="useExisting"><input type="checkbox" id="useExisting" data-ng-model="useExisting" /><span data-translate>Use previous contact info</span></label>
     </div>
     <div class="control-group">
         <label class="control-label" for="addressLine1" data-translate>Address line 1</label>
@@ -229,7 +229,7 @@
                     name="country"
                     data-ng-class="{error: isError('country')}"
                     data-ng-model="form.cardHolderInfo.country"
-                    data-ng-options="country.iso3 as country.name group by country.group for country in countries| orderBy: ['-group','name']"
+                    data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
                     required
                     data-ng-disabled="useExisting">
             </select>

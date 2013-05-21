@@ -130,33 +130,36 @@ module.exports = function (scope, callback) {
     //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
 
+        function updateProgress(user, resp) {
+            var count = 1;
+            //Update billingAPI
+            if (jsonClient) {
+                count++;
+                jsonClient.get('/update/' + user.id, function (err, req, res, obj) {
+                    if(err) {
+                        scope.log.error('Something went wrong with billing API', err);
+                    }
+                    //No error handling or nothing here, just let it pass.
+                    if(--count === 0) {
+                        call.done(null, resp);
+                    }
+                });
+            }
+            SignupProgress.setMinProgress(call, 'billing', function (err) {
+                if(err) {
+                    scope.log.error(err);
+                }
+                if(--count === 0) {
+                    call.done(null, resp);
+                }
+            });
+        }
         function localUpdate(user, resp) {
             call.cloud.updateAccount(user, function (err) {
                 if(err) {
                     scope.log.error('UFDS update failed', err);
                 }
-                var count = 1;
-                //Update billingAPI
-                if (jsonClient) {
-                    count++;
-                    jsonClient.get('/update/' + user.id, function (err, req, res, obj) {
-                        if(err) {
-                            scope.log.error('Something went wrong with billing API', err);
-                        }
-                        //No error handling or nothing here, just let it pass.
-                        if(--count === 0) {
-                            call.done(null, resp);
-                        }
-                    });
-                }
-                SignupProgress.setMinProgress(call, 'billing', function (err) {
-                    if(err) {
-                        scope.log.error(err);
-                    }
-                    if(--count === 0) {
-                        call.done(null, resp);
-                    }
-                });
+                updateProgress(user, resp);
             });
         }
         composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj, user) {
@@ -202,11 +205,15 @@ module.exports = function (scope, callback) {
             }
 
             //Modify the UFDS user object
-            user.country = obj.billToContact.country;
-            user.state = obj.billToContact.state;
-            user.city = obj.billToContact.city;
-            user.postalCode = obj.billToContact.zipCode;
-            user.address = obj.billToContact.address1 + (obj.billToContact.address2 ? ', ' + obj.billToContact.address2 : '');
+            var change = !user.state;
+            if(change) {
+                user.country = obj.billToContact.country; //Will overwrite tropo country
+                //TODO: TROPO needs separate field
+                user.state = obj.billToContact.state;
+                user.city = obj.billToContact.city;
+                user.postalCode = obj.billToContact.zipCode;
+                user.address = obj.billToContact.address1 + (obj.billToContact.address2 ? ', ' + obj.billToContact.address2 : '');
+            }
 
             // Create payment
             zuora.payment.create(data, function (err, resp) {
@@ -221,7 +228,11 @@ module.exports = function (scope, callback) {
                                 call.done(accErr);
                                 return;
                             }
-                            localUpdate(user, accResp);
+                            if(change) {
+                                localUpdate(user, accResp);
+                            } else {
+                                updateProgress(user, accResp);
+                            }
                         });
                         return;
                     }
@@ -246,7 +257,11 @@ module.exports = function (scope, callback) {
                     if(accErr) {
                         scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
                     }
-                    localUpdate(user, resp);
+                    if(change) {
+                        localUpdate(user, accResp);
+                    } else {
+                        updateProgress(user, accResp);
+                    }
                 });
             });
         }));
