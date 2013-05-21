@@ -133,7 +133,7 @@
 		                        <div class="clearfix"></div>
 
 		                        <div data-ng-show="openKeyDetails == $index" class="toolbox row-fluid">
-		                            <div class="item pull-left span10">
+		                            <div class="item pull-left span12">
 
 										<div class="row-fluid">
 		                                	<span class="text-medium key span2" data-translate>Fingerpint</span>
@@ -148,24 +148,9 @@
 										</div>
 		                            </div>
 
-		                            <div class="pull-right span2" style="margin-top:10px">
-		                                <button class="btn btn-mini btn-danger" style="width:80px;"
-		                                        data-ng-click="deleteKey(key.name, key.fingerprint)"
-		                                        data-translate>Delete</button>
-		                                <div class="clearfix"></div>
-		                            </div>
 		                            <div class="clearfix"></div>
 		                        </div>
 		                        <div class="clearfix"></div>
-		                    </div>
-
-		                    <div data-ng-show="addsshKey">
-		                        <button data-ng-click="addNewKey()"
-		                                data-ng-disabled="createPending"
-		                                data-transalte>Add SSH key</button>
-
-		                        <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
-		                        <div class="loading-medium" data-ng-show="createPending"></div>
 		                    </div>
 		                </div>
 		                <div class="clearfix"></div>
