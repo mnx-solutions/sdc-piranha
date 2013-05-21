@@ -481,9 +481,26 @@ th {
     text-overflow:ellipsis;
     white-space: nowrap;
     overflow:hidden;
-    
 }
 
+.crop.crop-long {
+	padding-right:80px;
+	margin-left:-57px;
+}
+
+.crop.crop-long:before {
+	content:"Read more";
+	font-size:11px;
+	font-weight:bold;
+	position:relative;
+	top: 0px;
+	left:100%;
+	text-shadow:1px 1px 1px #fff;
+}
+
+p.margin-mini {
+	margin-top:-10px;
+}
 
 #package-selected p {
     width:240px;
