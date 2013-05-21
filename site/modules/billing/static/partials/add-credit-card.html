@@ -1,14 +1,73 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
-<form name="paymentForm" class="row-fluid">
-    <fieldset class="span6">
+<form name="paymentForm" class="row-fluid form-inline">
+    <fieldset class="pull-left" style="width:475px">
         <legend>Credit card details</legend>
+		<div class="control-group">
+		    <label class="control-label" for="firstName" data-translate>Cardholders name <span data-html="true"
+                  data-translate-attributes="data-original-title"
+                  data-toggle="tooltip"
+                  data-trigger="hover"
+                  data-placement="right"
+                  class="tooltip-hover icon-info-sign"
+                  data-original-title="First and Last name of the card holder"></span></label>
+			<div class="clearfix"></div>
+		    <div class="controls pull-left" style="margin-right:10px">
+			
+		        <input type="text"
+		               id="firstName"
+		               name="firstName"
+		               placeholder="First name"
+						class="span12"
+		               data-translate="placeholder"
+		               data-ng-class="{error: isError('billToContact.firstName')}"
+		               data-ng-model="form.firstName"
+		               required>
+
+		        <div class="error"
+		             data-translate
+		             data-ng-show="isError('billToContact.firstName')">
+		            Invalid first name
+		        </div>
+		        <div class="error"
+		             data-translate
+		             data-ng-show="isError('billToContact.firstName', 'required')">
+		            Missing first name
+		        </div>
+		    </div>
+			
+			
+			<div class="controls pull-left">
+                <input type="text"
+                       id="lastName"
+                       name="lastName"
+                       placeholder="Last name"
+                       class="span10"
+                       data-translate="placeholder"
+                       data-ng-class="{error: isError('billToContact.lastName')}"
+                       data-ng-model="form.lastName"
+                       required />
+
+                <div class="error"
+                     data-translate
+                     data-ng-show="isError('billToContact.lastName')">
+                    Invalid last name
+                </div>
+                <div class="error"
+                     data-translate
+                     data-ng-show="isError('billToContact.lastName', 'required')">
+                    Missing last name
+                </div>
+            </div>
+		
+			<div class="clearfix"></div>
+		</div>
         <div class="control-group">
             <label class="control-label" for="creditCardNumber" data-translate>Card number</label>
             <div class="controls">
                 <input type="text"
                        id="creditCardNumber"
                        name="creditCardNumber"
-                       size="40"
+                       class="span8"
                        placeholder="Card number"
                        data-translate="placeholder"
                        data-ng-pattern="/^(\d+)$/"
@@ -102,77 +161,22 @@
                     Missing security code
                 </div>
             </div>
+				<iframe allowtransparency="true" frameborder="0" scrolling="no" class="loading-medium pull-left" 
+				src="http://joyent.com/portal/default-promo.html" style="width:475px; height:360px;margin-left:-5px"></iframe>
         </div>
-        <div class="control-group">
-            <label class="control-label" for="firstName" data-translate>First name</label>
-            <div class="controls">
-                <input type="text"
-                       id="firstName"
-                       name="firstName"
-                       placeholder="First name"
-                       size="50"
-                       data-translate="placeholder"
-                       data-ng-class="{error: isError('billToContact.firstName')}"
-                       data-ng-model="form.firstName"
-                       required>
-                <span data-html="true"
-                      data-translate-attributes="data-original-title"
-                      data-toggle="tooltip"
-                      data-trigger="hover"
-                      data-placement="right"
-                      class="tooltip-hover icon-info-sign"
-                      data-original-title="First name of the card holder"></span>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isError('billToContact.firstName')">
-                    Invalid first name
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isError('billToContact.firstName', 'required')">
-                    Missing first name
-                </div>
-            </div>
-        </div>
-        <div class="control-group">
-            <label class="control-label" for="lastName" data-translate>Last name</label>
-            <div class="controls">
-                <input type="text"
-                       id="lastName"
-                       name="lastName"
-                       placeholder="Last name"
-                       size="50"
-                       data-translate="placeholder"
-                       data-ng-class="{error: isError('billToContact.lastName')}"
-                       data-ng-model="form.lastName"
-                       required />
-                <span data-html="true"
-                      data-translate-attributes="data-original-title"
-                      data-toggle="tooltip"
-                      data-trigger="hover"
-                      data-placement="right"
-                      class="tooltip-hover icon-info-sign"
-                      data-original-title="Last name of the card holder"></span>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isError('billToContact.lastName')">
-                    Invalid last name
-                </div>
-                <div class="error"
-                     data-translate
-                     data-ng-show="isError('billToContact.lastName', 'required')">
-                    Missing last name
-                </div>
-            </div>
-        </div>
+
+
+
     </fieldset>
-    <fieldset class="span6">
+    <fieldset class="span5">
         <legend>Billing	information</legend>
-        <div class="control-group" data-ng-show="useExistingPossible">
-            <label class="checkbox" for="useExisting"><input type="checkbox" id="useExisting" data-ng-model="useExisting" /><span data-translate>Use contact info</span></label>
+		<div class="clearfix"></div><br />
+		<div class="control-group" data-ng-show="useExistingPossible">
+            <label class="checkbox" for="useExisting"><input type="checkbox" id="useExisting" data-ng-model="useExisting" /><span data-translate>Use contact info</span></label>			
         </div>
         <div class="control-group">
             <label class="control-label" for="addressLine1" data-translate>Address line 1</label>
+			
             <div class="controls">
                 <input type="text"
                        id="addressLine1"
@@ -349,6 +353,12 @@
 		<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
         <button class="pull-right btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || loading">{{saveButton}}</button>
         <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
+		<div class="clearfix"></div>
+		<hr />
     </div>
 </form>
+<div class="container loading-medium" style="padding-bottom:20px;">
+	<iframe allowtransparency="true" frameborder="0" scrolling="no" class="" src="http://joyent.com/portal/default-toc.html" style="width:100%;"></iframe>
+</div>
+
 </div>
