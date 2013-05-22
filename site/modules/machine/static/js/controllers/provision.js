@@ -198,7 +198,7 @@
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
-
+                        console.log(pkg);
                         $scope.selectedPackage = id;
                         $scope.selectedPackageInfo = pkg;
 
@@ -256,7 +256,6 @@
                                     }
                                 }
                             });
-
                             $scope.operating_systems = Object.keys(operating_systems);
                             $scope.datasets = unique_datasets;
                             $scope.versions = versions;
@@ -270,8 +269,9 @@
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
+                                p.price = parseFloat(p.price).toFixed(3);
+                                p.price_month = parseFloat(p.price_month).toFixed(2);
                             });
-
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
                             $scope.searchPackages = '';

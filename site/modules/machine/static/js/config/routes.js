@@ -10,7 +10,7 @@ window.JP.main.config([
             title: 'Instance details',
             action: 'machine.details'
         }).when('/machine/add', {
-            title: 'Create instance',
+            title: 'Create Instance',
             action: 'machine.provision'
         });
     }]);
