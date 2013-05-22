@@ -21,9 +21,10 @@
                                 $q.when($http.get('account/countryCodes'), function(data) {
                                     $scope.countryCodes = data.data;
 
-                                    $scope.account = account;
+                                    account.country = $scope.isoToObj(account.country.iso3  || account.country);
+                                    $scope.selectedCountryCode = account.country.areaCode;
 
-                                    $scope.account.country = $scope.isoToObj(account.country);
+                                    $scope.account = account;
                                 });
 
                             });
@@ -37,6 +38,7 @@
                             }
                             var selected = null;
                             var usa = null;
+
                             $scope.countryCodes.some(function (el) {
                                 if(el.iso3 === 'USA') {
                                     usa = el;
@@ -46,6 +48,7 @@
                                     return true;
                                 }
                             });
+
                             return selected || usa;
                         };
 
@@ -85,7 +88,7 @@
                         $scope.submitForm = function () {
                             // clean the phone number
                             var account = angular.copy($scope.account);
-                            account.country = account.country.iso3;
+                            account.country = $scope.account.country.iso3;
 
                             $scope.loading = true;
                             Account.updateAccount(account).then(function (acc) {
