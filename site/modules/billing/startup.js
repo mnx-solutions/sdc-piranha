@@ -103,6 +103,22 @@ module.exports = function (scope, callback) {
         }));
     }
 
+    function getAllButDefaultPaymentMethods(call, cb) {
+        getPaymentMethods(call, function (err, pms) {
+            if(err) {
+                cb(err);
+                return;
+            }
+            var arr = [];
+            if(pms.creditCards) {
+                arr = pms.creditCards.filter(function (el) {
+                    return !el.defaultPaymentMethod;
+                });
+            }
+            cb(null, arr);
+        });
+    }
+
 
     server.onCall('listPaymentMethods', function (call) {
         getPaymentMethods(call, call.done.bind(call));
@@ -234,7 +250,27 @@ module.exports = function (scope, callback) {
                     if(accErr) {
                         scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
                     }
-                    updateProgress(user, accResp);
+                    // Have to remove previous billing methods.
+                    getAllButDefaultPaymentMethods(call, function (err, notDefault) {
+                        if(err) { // Ignore errors
+                            updateProgress(user, accResp);
+                            return;
+                        }
+                        var count = notDefault.length;
+                        if(count < 1) {
+                            console.log('no nonDefault');
+                            updateProgress(user, accResp);
+                            return;
+                        }
+                        notDefault.forEach(function (el) {
+                            zuora.payment.del(el.id, function (err, resp) {
+                                // Ignoring errors here
+                                if(--count === 0) {
+                                    updateProgress(user, accResp);
+                                }
+                            });
+                        });
+                    });
                 });
             });
         }));
