@@ -835,17 +835,16 @@ a .feature1 {
 	color:#30566a;
 }
 
-.alert-gray {
+.alert-joyent-gray {
 	background:#f5f5f5;
 	border:1px solid #ddd;
 	color:#555;
 }
-.alert-joyent-blue h1,
-.alert-joyent-blue h2,
-.alert-joyent-blue h3,
-.alert-joyent-blue h4,
-.alert-joyent-blue h5,
-.alert-joyent-blue h6 {
+.alert-joyent-gray h1,
+.alert-joyent-gray h2,
+.alert-joyent-gray h3,
+.alert-joyent-gray h4,
+.alert-joyent-gray h5,
+.alert-joyent-gray h6 {
 	color:#555;
 }
-
