@@ -617,11 +617,12 @@ p.margin-mini {
 }
 
 .price-container {
-	border-top:1px solid rgba(58, 135, 173,0.5);
-	border-bottom:1px solid rgba(58, 135, 173,0.5);
+	border-top:1px solid rgba(155, 155, 155,0.5);
+	border-bottom:1px solid rgba(155, 155, 155,0.5);
 	padding:0px 0px 10px 0px;
 	margin-top:10px;
 }
+
 .text-fix {
 	padding-top:1px;
 }
