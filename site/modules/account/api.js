@@ -33,17 +33,17 @@ module.exports = function (scope, register, callback) {
     }
 
     api.getTokenVal = function (token, cb) {
-//        api.client.get(token, function (err, val) {
-//            if(err) {
-//                scope.log.error('Failed to connect to redis', err);
-//                //TODO: Figure out how to do error handling here,
-//                // should we assume client has passed all or simply refuse to move on.
-//                return cb(err);
-//            }
-//            cb(null, val);
-//        });
-        setImmediate(function () {
-            cb(null, null);
+
+        api.client.get(token, function (err, val) {
+            if(err) {
+                scope.log.error('Failed to connect to redis', err);
+                //TODO: Figure out how to do error handling here,
+                // should we assume client has passed all or simply refuse to move on.
+                return cb(err);
+            }
+
+            scope.log.info("token %s is %s", token, val);
+            cb(null, val);
         });
     };
 
@@ -137,12 +137,14 @@ module.exports = function (scope, register, callback) {
     };
 
     api.getSignupStep = function (req, cb) {
+
         function end(step) {
             if(steps.indexOf(step) === (steps.length - 1)) {
                 step = 'completed';
             }
             cb(null, step);
         }
+
         if(req.session.signupStep) {
             end(req.session.signupStep);
             return;
@@ -153,10 +155,12 @@ module.exports = function (scope, register, callback) {
                 cb(err);
                 return;
             }
-            if(val) {
+
+            if (val) {
                 end(val);
                 return;
             }
+
             api.getAccountVal(req.cloud, function (err, value) {
                 if(err) {
                     cb(err);
@@ -192,7 +196,7 @@ module.exports = function (scope, register, callback) {
         }
 
         api.setTokenVal(call.req.session.token, step, true, end);
-//        api.setAccountVal(call.req.cloud, step, end);
+        api.setAccountVal(call.req.cloud, step, end);
     };
 
     api.setMinProgress = function (call, step, cb) {
