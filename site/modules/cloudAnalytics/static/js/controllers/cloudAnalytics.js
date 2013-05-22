@@ -32,6 +32,22 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     $scope.graphs = [];
     $scope.help = null;
 
+    $scope.$watch('ca.deletequeue.length', function(newvalue){
+        if(newvalue) {
+            var id = $scope.ca.deletequeue[0];
+            for( var g in $scope.graphs ) {
+                var graph = $scope.graphs[g];
+                for(var i in graph.instrumentations) {
+                    if( graph.instrumentations[i].id == id) {
+                        $scope.graphs.splice(g, 1);
+                        $scope.ca.deletequeue.splice(0, 1);
+                    }
+                }
+
+            }
+        }
+    })
+
     $scope.ca.describeCa(function (conf){
 
         $scope.conf = conf;
