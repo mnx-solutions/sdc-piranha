@@ -99,6 +99,7 @@
                 });
 
                 $scope.deleteGraph = function () {
+                    $scope.ca.deletequeue.push($scope.instrumentations[0].id);
                     $scope.ca.deleteInstrumentations($scope.instrumentations);
                 }
 
@@ -176,9 +177,9 @@
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
                         '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
-	                        '<div class="caOverlaid" >' +
-	                            '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
-	                        '</div>' +
+                            '<div class="caOverlaid" >' +
+                            '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                            '</div>' +
                         '</div>' +
                     '</div>' +
                     '<div id="legend_{{$id}}" style="width:620px"></div>' +
