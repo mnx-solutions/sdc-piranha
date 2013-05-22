@@ -1,5 +1,5 @@
 body {
-	background-color:#e4e7eb;
+/*	background-color:#e4e7eb;*/
 }
 .brand {
 	background-image: url('/static/img/logo-white.png');
@@ -30,6 +30,20 @@ hr.dark {
 	text-shadow:1px 1px 1px #375775;
 	border-bottom:1px solid #28445e;
 }
+.alert-joyent-blue {
+	background:#eaf0f6;
+	border:1px solid #dee4ea;
+	color:#30566a;
+}
+.alert-joyent-blue h1,
+.alert-joyent-blue h2,
+.alert-joyent-blue h3,
+.alert-joyent-blue h4,
+.alert-joyent-blue h5,
+.alert-joyent-blue h6 {
+	color:#30566a;
+}
+
 .btn-bottom {
 /*	position:relative;*/
 	bottom:0;
