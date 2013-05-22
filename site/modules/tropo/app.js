@@ -40,6 +40,8 @@ module.exports = function (scope, app, callback) {
         var randomNumber = Math.random().toString(10).substr(2,4);
 
         var response = res;
+        // set no-cache headers for IE 10 fix
+        response.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
         // check for tropo retry count
         redisClient.get(req.params.uuid +'_tropo', function(err, result) {
@@ -104,7 +106,7 @@ module.exports = function (scope, app, callback) {
     });
 
     app.post('/finish', function(req, res) {
-        if(req.query.randomNumber == req.query.answer) {
+        if(req.query.randomNumber === req.query.answer) {
           redisClient.set(req.body.result.sessionId, 'passed');
         } else {
           redisClient.set(req.body.result.sessionId, 'failed');

@@ -33,6 +33,9 @@ module.exports = function (scope, app, callback) {
      *
      */
     app.get('/tropo/:tropoid/:uuid', function(req, res) {
+        // set no-cache headers for IE 10 fix
+        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+
         redisClient.get(req.params.tropoid, function(err, result) {
             var status = result;
             if(status === 'passed') {
@@ -57,7 +60,15 @@ module.exports = function (scope, app, callback) {
     });
 
     app.get('/countryCodes',function(req, res) {
-      res.json(countryCodes.getArray(config.zuora.api.validation.countries));
+        var data = countryCodes.getArray(config.zuora.api.validation.countries);
+        data.forEach(function (el) {
+            if(['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
+                el.group = 'Default';
+            } else {
+                el.group = 'All countries';
+            }
+        });
+        res.json(data);
     });
 
     app.get('/signup/skipSsh', function(req, res) {

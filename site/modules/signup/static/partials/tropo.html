@@ -17,12 +17,13 @@
                 <h4>Please enter your phone number</h4>
                 After you enter your phone number, you will receive an automate call where you have to type in the confirmation code.<br /><br />
                 <div class="controls">
-                    <select data-ng-style="countryStyle" data-ng-model="account.country" style="width:255px" name="countryCode" id="countryCode">
-                        <option data-ng-repeat="country in countryCodes | filter:filterUndefinedAreas | orderBy:'name'"
-                                value="{{country.name}}"
-                                data-ng-selected="country.name == account.country">
-                            {{country.name}} (+{{country.areaCode}})
-                        </option>
+                    <select
+                        data-ng-style="countryStyle"
+                        data-ng-model="account.country"
+                        style="width:255px"
+                        name="countryCode"
+                        id="countryCode"
+                        data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">git
                     </select>
                     <br />
                     <div class="input-prepend">

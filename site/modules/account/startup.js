@@ -30,7 +30,7 @@ module.exports = function (scope, callback) {
         // update account using cloudapi
         var data = {};
         updateable.forEach(function (f) {
-            data[f] = call.data[f] || '';
+            data[f] = call.data[f] || null;
         });
         scope.log.debug('Updating account with', data);
 

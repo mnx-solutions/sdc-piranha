@@ -7,15 +7,15 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'account.index'
         })
         .when('/account/edit', {
-            title: 'Account edit',
+            title: 'Edit Account',
             action: 'account.edit'
         })
         .when('/account/ssh', {
-            title: 'SSH keys',
+            title: 'SSH Keys',
             action: 'account.ssh'
         })
         .when('/account/payment', {
-            title: 'Payment info',
+            title: 'Payment Information',
             action: 'account.payment'
         })
         .when('/account/invoices', {
