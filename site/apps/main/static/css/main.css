@@ -849,3 +849,15 @@ a .feature1 {
 .alert-joyent-gray h6 {
 	color:#555;
 }
+
+.iframe-no-border {
+    border: 0px;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 0px;
+    border-left-width: 0px;
+    border-top-style: none;
+    border-right-style: none;
+    border-bottom-style: none;
+    border-left-style: none;
+}
