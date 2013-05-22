@@ -790,6 +790,12 @@ div .disabled{
 	max-height:338px;
 	height:338px;
 }
+.dashboard-splash {
+	width:620px;
+	height:338px;
+}
+
+
 .feature1{
 	background:url(/static/img/video-tile.jpg) no-repeat center bottom #99abba;
 }
@@ -805,6 +811,26 @@ a .feature1 {
 	font-weight: normal;
 }
 
+.btn-joyent-blue,.btn-joyent-blue:hover {
+	background-image:url('/static/img/bg-button-blue.png');
+	background-position:50% 50%;
+	background-repeat:repeat-x;
+	color:#fff;
+	text-shadow:1px 1px 1px #375775;
+	border-bottom:1px solid #28445e;
+}
 
 
-
+.alert-joyent-blue {
+	background:#eaf0f6;
+	border:1px solid #dee4ea;
+	color:#30566a;
+}
+.alert-joyent-blue h1,
+.alert-joyent-blue h2,
+.alert-joyent-blue h3,
+.alert-joyent-blue h4,
+.alert-joyent-blue h5,
+.alert-joyent-blue h6 {
+	color:#30566a;
+}
