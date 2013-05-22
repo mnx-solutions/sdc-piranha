@@ -213,7 +213,7 @@
 
                         var dstype = $scope.datasetType ? item.type == $scope.datasetType : true;
 
-                        if (val.match($scope.searchPackages) && dstype && ($scope.packageType === null || $scope.packageType === item.group)) {
+                        if (val && val.match($scope.searchPackages) && dstype && ($scope.packageType === null || $scope.packageType === item.group)) {
                             return true;
                         }
                     }
