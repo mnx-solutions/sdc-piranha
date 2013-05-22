@@ -42,8 +42,8 @@
 							</span>
                     </div>
 
-		        	<graph data-ng-repeat="i in graphs" instrumentations="i.instrumentations" range="currentRange" frozen="frozen" endtime="endtime" graphtitle="i.title" ca="i.ca"></graph>
-					<div class="clearfix"></div>
+		            <graph data-ng-repeat="i in graphs" options="i"></graph>
+                    <div class="clearfix"></div>
 					
 				</div>
 				<div class="pull-right alert alert-info span3">

@@ -3,9 +3,9 @@
 (function (app) {
     app.controller(
             'cloudController',
-            ['$scope', 'caBackend', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            ['$scope', 'ca', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
 
-function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeout) {
+function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
 
@@ -14,10 +14,12 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     $scope.zones = Machine.machine();
 
     $scope.ranges = [10, 30, 60, 90, 120];
-    $scope.currentRange = 60;
 
+    // values graphs are watching
+    $scope.currentRange = 60;
     $scope.endtime = null;
     $scope.frozen = false;
+    $scope.ca = new ca();
 
     $scope.current = {
         metric:null,
@@ -30,32 +32,10 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
     $scope.graphs = [];
     $scope.help = null;
 
-    $scope.ca = new caBackend();
-
-    $scope.$watch('ca.deletequeue.length', function(newvalue){
-        if(newvalue) {
-            var id = $scope.ca.deletequeue[0];
-            for( var g in $scope.graphs ) {
-                var graph = $scope.graphs[g];
-                for(var i in graph.instrumentations) {
-                    if( graph.instrumentations[i].id == id) {
-                        $scope.graphs.splice(g, 1);
-                        $scope.ca.deletequeue.splice(0, 1);
-                    }
-                }
-
-            }
-        }
-    })
-
     $scope.ca.describeCa(function (conf){
 
         $scope.conf = conf;
         $scope.help = $scope.conf.help;
-//        console.log('helpp',$scope.conf.help);
-//        $scope.ca.help.then(function(data) {
-//            console.log('assa', data);
-//        })
         $scope.metrics = $scope.conf.metrics;
         $scope.fields = $scope.conf.fields;
 
@@ -87,21 +67,6 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
             }
 
         });
-//        console.log('ca.instrumentations', ca.instrumentations);
-//        $scope.$watch('ca.instrumentations.length', function(){
-//            console.log('watching instrumentations');
-//            for(var g in $scope.graphs) {
-//                var graph = $scope.graphs[g];
-//                for(var i in graph.instrumentations) {
-//                    var inst = graph.instrumentations[i];
-//                    if(!ca.instrumentations[inst.id]){
-//                        console.log('deleting', $scope.graphs);
-//                        delete($scope.graphs[g]);
-//                        console.log($scope.graphs);
-//                    }
-//                }
-//            }
-//        });
     });
 
     $scope.createDefaultInstrumentations = function() {
@@ -172,7 +137,6 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
                       }
                       $scope.graphs.push({
                           instrumentations: inst,
-                          ca: $scope.ca,
                           title: ot[index]
                       });
                   }
@@ -201,19 +165,15 @@ function ($scope, caBackend, $routeParams, Machine, $q, instrumentation, $timeou
         }
 
         $scope.ca.createInstrumentations([ options ], function(errs, instrumentations){
-            console.log(instrumentations);
 
             if(!errs.length) {
-                console.log('no errors')
                 if(!$scope.endtime) {
-                    // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
                     $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
                     tick();
                 }
                 var title = $scope.ca.instrumentations[instrumentations[0].id].graphtitle;
                 $scope.graphs.push({
                     instrumentations: instrumentations,
-                    ca: $scope.ca,
                     title: title
 
                 });

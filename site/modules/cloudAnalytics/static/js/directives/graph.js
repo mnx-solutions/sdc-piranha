@@ -1,25 +1,32 @@
 'use strict';
 
 (function (app) {
-     app.directive('graph', function (caBackend, $filter, $timeout) {
+     app.directive('graph', function () {
         return {
             restrict: "E",
             scope: {
-                instrumentations:'=',
-                ca:'=',
-                endtime:'=',
-                frozen:'=',
-                range:'=',
-                graphtitle: '='
+                options:'='
             },
-            link: function ($scope){
+            link: function ($scope, ca){
+
+                $scope.instrumentations = $scope.options.instrumentations;
+                $scope.initCa = true;
+                if ($scope.$parent.ca) {
+                    $scope.ca = $scope.$parent.ca;
+                    $scope.initCa = false;
+                } else {
+                    (new ca()).then(function(conf) {
+                        $scope.ca = conf.data;
+                        $scope.initCa = false;
+                    })
+                }
+
                 var ticktime = null;
                 var graph = false;
                 var legend = null;
                 $scope.heatmap;
 
-                function createLegend(graph) {
-//                    console.log('create legend graph:',graph);
+                function renderLegend(graph) {
                     legend = true;
                     if(graph.series[0].name !== 'default') {
                         legend = new Rickshaw.Graph.Legend({
@@ -29,7 +36,7 @@
                     }
                 }
 
-                function createXAxis(graph) {
+                function renderXAxis(graph) {
                     var axis = new Rickshaw.Graph.Axis.Time({
                         'graph': graph
                     });
@@ -37,7 +44,7 @@
                     return axis;
                 }
 
-                function createYAxis(graph) {
+                function renderYAxis(graph) {
                     var axis = new Rickshaw.Graph.Axis.Y( {
                         graph: graph,
                         orientation: 'left',
@@ -48,7 +55,7 @@
                     return axis;
                 }
 
-                function createHover(graph) {
+                function renderHover(graph) {
                     new Rickshaw.Graph.HoverDetail( {
                         graph: graph
                     });
@@ -66,12 +73,11 @@
                     graph.render();
 
                     if(!$scope.heatmap) {
-                        createLegend(graph);
+                        renderLegend(graph);
                     }
-
-                    createXAxis(graph);
-                    createYAxis(graph);
-                    createHover(graph);
+                    renderXAxis(graph);
+                    renderYAxis(graph);
+                    renderHover(graph);
 
                     return graph;
                 }
@@ -93,7 +99,6 @@
                 });
 
                 $scope.deleteGraph = function () {
-                    $scope.ca.deletequeue.push($scope.instrumentations[0].id);
                     $scope.ca.deleteInstrumentations($scope.instrumentations);
                 }
 
@@ -123,29 +128,31 @@
                                 graph.render();
                                 if(legend) {
                                     document.querySelector('#legend_' + $scope.$id).innerHTML = "";
-                                    createLegend(graph);
+                                    renderLegend(graph);
                                 }
                             }
                         }
                 }
 
 
-                $scope.$watch('range', function(newVal) {
+                $scope.$watch('$parent.currentRange', function(newVal) {
                     if(newVal){
-                        $scope.ca.changeRange([$scope.instrumentations[0].id], $scope.range);
+                        $scope.ca.changeRange([$scope.instrumentations[0].id], $scope.$parent.currentRange);
+                        if(!$scope.initCa) {
+                            updateGraph();
+                        }
                     }
                 });
 
-                $scope.$watch('endtime', function(newVal) {
+                $scope.$watch('$parent.endtime', function(newVal) {
 
                     if(newVal){
                         if(!ticktime) {
-                            ticktime = $scope.endtime
+                            ticktime = $scope.$parent.endtime
                         }
 
-                        if(!$scope.frozen) {
-                            if(graph && $scope.ca.polltime() > ticktime) {
-
+                        if(!$scope.$parent.frozen) {
+                            if(graph && $scope.ca.polltime() > ticktime && !$scope.initCa) {
                                 updateGraph();
                                 ticktime++;
                             } else if (!graph){
@@ -163,7 +170,7 @@
                 '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
                     '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
-                    '<h6>{{graphtitle}}</h6>' +
+                    '<h6 data-ng-show="options.title">{{options.title}}</h6>' +
                     '<button class="btn btn-mini default-margin default-margin-mini" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
                     '<br/><br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +
