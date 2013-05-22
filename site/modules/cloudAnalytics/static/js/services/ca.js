@@ -2,7 +2,7 @@
 
 
 (function (app) {
-    app.factory('caBackend', ['$resource', '$timeout', '$http', 'caInstrumentation',
+    app.factory('ca', ['$resource', '$timeout', '$http', 'caInstrumentation',
         function ($resource, $timeout, $http, instrumentation) {
 
         var ca = function(){};
@@ -15,6 +15,9 @@
         ca.instrumentations = {};
         ca.conf = null;
         ca.desc = {};
+
+        var conf = $http.get('cloudAnalytics/ca');
+        var help = $http.get('cloudAnalytics/ca/help');
 
         function _labelMetrics(metric) {
             var fieldsArr = metric.fields;
@@ -47,7 +50,6 @@
         // Poll all the instrumentation values.
         var pending = false;
         ca._poll = function() {
-            var instCount = Object.keys(ca.instrumentations).length;
 
             $http.post('cloudAnalytics/ca/getInstrumentations', {options: ca.options}).success(function(res){
 
@@ -128,13 +130,9 @@
         service.prototype.describeCa = function(cb) {
             var self = this;
 
-            ca.conf = $http.get('cloudAnalytics/ca');
-            var help = $http.get('cloudAnalytics/ca/help')
-
-            ca.conf.then(function(conf) {
-                ca.desc = conf.data;
-                conf.data.metrics.forEach(_labelMetrics);
-                console.log(conf);
+            conf.then(function(c) {
+                ca.desc = c.data;
+                c.data.metrics.forEach(_labelMetrics);
                 help.then(function(data) {
                     ca.desc.help = data.data.data;
                     cb(ca.desc);
@@ -149,7 +147,6 @@
                 var decomposition = decomps[d];
                 response.push(ca.desc.fields[decomposition].label);
             }
-            console.log(response);
             return response;
         }
         service.prototype.getMetricLabel = function (mod, stat) {
