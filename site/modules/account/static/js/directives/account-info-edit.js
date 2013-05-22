@@ -21,13 +21,9 @@
                                 $q.when($http.get('account/countryCodes'), function(data) {
                                     $scope.countryCodes = data.data;
 
-                                    // Set default country if not set
-                                    if (!account.country) {
-                                        account.country = 'United States';
-                                    }
-
                                     $scope.account = account;
-                                    $scope.selectedCountryCode = $scope.nameToCode(account.country);
+
+                                    $scope.account.country = $scope.isoToObj(account.country);
                                 });
 
                             });
@@ -35,16 +31,23 @@
 
                         $scope.setAccount();
 
-                        $scope.nameToCode = function(countryName) {
-                            if(!$scope.countryCodes)
+                        $scope.isoToObj = function(iso) {
+                            if(!$scope.countryCodes){
                                 return;
-
-                            for(var country in $scope.countryCodes){
-                                if($scope.countryCodes[country].name === countryName) {
-                                    return $scope.countryCodes[country].areaCode;
-                                }
                             }
-                        }
+                            var selected = null;
+                            var usa = null;
+                            $scope.countryCodes.some(function (el) {
+                                if(el.iso3 === 'USA') {
+                                    usa = el;
+                                }
+                                if(el.iso3 === iso) {
+                                    selected = el;
+                                    return true;
+                                }
+                            });
+                            return selected || usa;
+                        };
 
                         $scope.countryStyle = {
                             width: '100px'
@@ -55,29 +58,8 @@
                         };
 
                         $scope.$watch('account.country', function(newVal, oldVal) {
-                            if(newVal)
-                                newVal = $scope.nameToCode(newVal);
-
                             if(newVal != oldVal) {
-                                $scope.selectedCountryCode = newVal;
-                            }
-
-                            if(!newVal) {
-                                $scope.countryStyle.width = '100px';
-                            } else {
-                                var width = '';
-                                switch((newVal + '').length){
-                                    case 3:
-                                        width = '50px';
-                                        break;
-                                    case 2:
-                                        width = '58px';
-                                        break;
-                                    case 1:
-                                        width = '66px';
-                                        break;
-                                }
-                                $scope.countryStyle.width = width;
+                                $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                             }
                         }, true);
 
@@ -102,11 +84,12 @@
 
                         $scope.submitForm = function () {
                             // clean the phone number
-                            $scope.account.phone = $scope.account.phone.replace(new RegExp(/\s+/g), '').replace(new RegExp(/-/g), '');
+                            var account = angular.copy($scope.account);
+                            account.country = account.country.iso3;
 
                             $scope.loading = true;
-                            Account.updateAccount($scope.account).then(function () {
-                                $scope.loading = false;
+                            Account.updateAccount(account).then(function (acc) {
+                                $scope.loading = false
                                 $scope.error = null;
 
                                 if ($scope.nextStep) {
