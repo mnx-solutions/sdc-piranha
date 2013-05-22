@@ -44,17 +44,17 @@ hr.dark {
 	color:#30566a;
 }
 
-.alert-gray {
+.alert-joyent-gray {
 	background:#f5f5f5;
 	border:1px solid #ddd;
 	color:#555;
 }
-.alert-gray h1,
-.alert-gray h2,
-.alert-gray h3,
-.alert-gray h4,
-.alert-gray h5,
-.alert-gray h6 {
+.alert-joyent-gray h1,
+.alert-joyent-gray h2,
+.alert-joyent-gray h3,
+.alert-joyent-gray h4,
+.alert-joyent-gray h5,
+.alert-joyent-gray h6 {
 	color:#555;
 }
 
