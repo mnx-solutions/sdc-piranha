@@ -36,6 +36,9 @@ input.error, select.error, textarea.error {
 .ssh .new-key-button {
     margin-top: 20px;
 }
+.ssharea {
+    resize: none;
+}
 
 .page-header span.name {
     font-size: 28px;
