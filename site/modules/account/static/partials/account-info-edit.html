@@ -90,12 +90,12 @@
                     Phone
                 </label>
                 <div class="controls">
-                    <select class="span5" data-ng-style="countryStyle" data-ng-model="account.country" name="countryCode" id="countryCode">
-                        <option data-ng-repeat="country in countryCodes | filter:filterUndefinedAreas | orderBy:'name'"
-                                value="{{country.name}}"
-                                data-ng-selected="country.name == account.country">
-                            {{country.name}} (+{{country.areaCode}})
-                        </option>
+                    <select data-ng-style="countryStyle"
+                            data-ng-model="account.country"
+                            style="width:255px"
+                            name="countryCode"
+                            id="countryCode"
+                            data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
                     </select>
                     <div class="input-prepend">
                         <span class="add-on" style="width:50px;text-align:left">(+{{selectedCountryCode}})</span>
