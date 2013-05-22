@@ -1,0 +1,43 @@
+{"Portfolio Description":
+    {   "Status": "Pre-production",
+        "Created": "2013-05-22T11:37:34.596864",
+        "Notes": "",
+        "SchemaVersion": "1.0.0.1",
+        "Type": "Joyent License Portfolio",
+        "Revision": "1.0.0.0"
+    },
+    "License Portfolio": [{
+        "Pan-Instance Price Uplift": 0.108,
+        "Canonical Image Name": "sdc:jpc:stingray-500L"
+    }, {
+        "Pan-Instance Price Uplift": 0.226,
+        "Canonical Image Name": "sdc:jpc:stingray-500M"
+    }, {
+        "Pan-Instance Price Uplift": 0.612,
+        "Canonical Image Name": "sdc:jpc:stingray-100M"
+    }, {
+        "Pan-Instance Price Uplift": 1.28,
+        "Canonical Image Name": "sdc:jpc:stingray-100M-SAF"
+    }, {
+        "Pan-Instance Price Uplift": 0.932,
+        "Canonical Image Name": "sdc:jpc:stingray-1000H"
+    }, {
+        "Pan-Instance Price Uplift": 1.374,
+        "Canonical Image Name": "sdc:jpc:stingray-2000L"
+    }, {
+        "Pan-Instance Price Uplift": 2.362,
+        "Canonical Image Name": "sdc:jpc:stingray-2000L-SAF"
+    }, {
+        "Pan-Instance Price Uplift": 2.586,
+        "Canonical Image Name": "sdc:jpc:stingray-4000L"
+    }, {
+        "Pan-Instance Price Uplift": 0.2,
+        "Canonical Image Name": "sdc:admin:ws2008ent-r2-sp1"
+    }, {
+        "Pan-Instance Price Uplift": 0.06,
+        "Canonical Image Name": "sdc:admin:ws2008std-r2-sp1"
+    }, {
+        "Pan-Instance Price Uplift": 0.06,
+        "Canonical Image Name": "sdc:admin:ws2012std"
+    }]
+}
