@@ -16,7 +16,7 @@
             $scope.retriesLeft = 3;
 
             $scope.countryCodes = null;
-            $scope.selectedCountryCode = null; // default to USA
+            $scope.selectedCountryCode = '1'; // default to USA
             $scope.phone = null;
 
             $scope.setAccount = function() {
@@ -39,9 +39,7 @@
                     });
 
                     if ($scope.account.phone) {
-                        var phoneSplit = $scope.account.phone.split('-');
-                        $scope.selectedCountryCode = phoneSplit[0];
-                        $scope.phone = phoneSplit[1];
+                        $scope.phone = $scope.account.phone;
                     }
                 });
             };
@@ -122,8 +120,6 @@
 
                                     if(data.status === 'failed') {
                                         // TODO: Fail handling
-
-
                                         $scope.deleteInterval(interval);
 
                                         if($scope.retriesLeft <= 0)

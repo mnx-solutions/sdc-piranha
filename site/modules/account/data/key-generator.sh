@@ -23,13 +23,14 @@ while [  $TRIES -lt 3 ]; do
     read -s -p "password: " PASSWORD
     echo
 
-    RESPONSE_CODE=`curl --write-out '%{http_code}' -o /dev/null -u $USER:$PASSWORD -s -H "Accept: application/json" -X GET https://$SERVER/my/keys`
+
+    RESPONSE_CODE=`curl --write-out '%{http_code}' -o /dev/null -u $USER:$PASSWORD -s -k -H "Accept: application/json" -H "X-Api-Version: ~6.5" -X GET https://$SERVER/my/keys`
     STATUS_CODE=$RESPONSE_CODE
     VALID_USER=0
 
     case $RESPONSE_CODE in
         200)
-            break ;;
+            ;;
         401)
             echo "---------------------------"
             echo "ERROR: Invalid Credentials" ;
@@ -59,8 +60,10 @@ while [  $TRIES -lt 3 ]; do
 
     echo "2) Uploading SSH Public Key to your Joyent Cloud account"
     PUB_KEY=`cat $PUB_KEY_PATH`
-    RESPONSE_CODE=`curl --write-out '%{http_code}' -o /dev/null -u $USER:$PASSWORD -s -H "Accept: application/json" -X POST --data-urlencode "name=$KEYNAME" --data-urlencode "key=$PUB_KEY" https://$SERVER/my/keys`
+    REQUEST_BODY="{ \"name\": \"$KEYNAME\", \"key\": \"$PUB_KEY\"}"
+    RESPONSE_CODE=`curl --write-out '%{http_code}' -o /dev/null -u $USER:$PASSWORD -s -k -H "Accept: application/json" -H "Content-Type: application/json" -H "X-Api-Version: ~6.5" -X POST -d "$REQUEST_BODY" https://$SERVER/my/keys`
     STATUS_CODE=$RESPONSE_CODE
+
     case $RESPONSE_CODE in
         201)
             break ;;

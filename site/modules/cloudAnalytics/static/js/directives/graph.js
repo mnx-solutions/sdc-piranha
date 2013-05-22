@@ -170,7 +170,7 @@
                 '<div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
                     '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
-                    '<h6 data-ng-show="options.title">{{options.title}}</h6>' +
+                    '<h3 data-ng-show="options.title">{{options.title}}</h3>' +
                     '<button class="btn btn-mini default-margin default-margin-mini" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
                     '<br/><br/>' +
                     '<div class="chart_container_{{$id}}" style="position: relative;">' +

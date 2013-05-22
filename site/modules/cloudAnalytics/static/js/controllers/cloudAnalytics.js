@@ -117,8 +117,8 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
         ];
 
         var ot = [
-            'CPU: useage',
-            'CPU: waittime',
+            'CPU: usage',
+            'CPU: wait time',
             'Memory: resident set size vs max resident size',
             'Memory: excess memory reclaimed',
             'ZFS: used space vs unused quote',

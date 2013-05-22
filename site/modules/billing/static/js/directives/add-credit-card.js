@@ -58,6 +58,8 @@
                     if(prev && prev.cardHolderInfo) {
                         $scope.form.cardHolderInfo = prev.cardHolderInfo;
                         delete $scope.form.cardHolderName;
+                        delete $scope.form.cardHolderInfo.email;
+                        delete $scope.form.cardHolderInfo.phone;
 
                         $scope.countries.then(function (cs) {
                             cs.data.some(function (el){

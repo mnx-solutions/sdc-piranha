@@ -145,7 +145,7 @@
                               data-ng-show="key != tagnr">
                         </span>
 
-						<button class="btn btn-success pull-right"
+						<button class="btn btn-joyent-blue pull-right"
                                 data-ng-click="clickSaveTags(machine.id)"
                                 data-translate
                                 data-ng-show="key == tagnr"
@@ -201,7 +201,7 @@
 	            <div class="clearfix"></div>
 	            <br />
 		        <div class="control-group align-right">
-		            <button class="btn btn-success" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
+		            <button class="btn btn-joyent-blue" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
 		        </div>
 			</div>
 			<div class="clearfix"></div>
@@ -245,7 +245,7 @@
                 data-toggle="tooltip"
                 data-placement="top"
                 data-html="true"
-                data-original-title="You can restart your instance after you stop your machine. You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
+                data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
                 data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
                 class="btn btn-small span3 tooltip-hover">Delete</button>
 
@@ -258,7 +258,7 @@
                 data-toggle="tooltip"
                 data-placement="top"
                 data-html="true"
-                data-original-title="Click here to reboot your instance. Use reboot to restart stopped instances."
+                data-original-title="Click here to reboot your instance."
                 data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                 class="btn btn-small span3 tooltip-hover">Reboot</button>
     	</div>
@@ -276,7 +276,7 @@
     </div>
     <div class="alert shadow">
         <h4 data-translate>Analytics</h4>
-        <p data-translate>Check out this machines analytics.</p>
+        <p data-translate>Examine system performance.</p>
         <a href="#!/cloudAnalytics/{{machine.id}}"><img src="/static/img/analytics.png" hspace="10" vspace="20" border="0"></a>
     </div>
     <div class="clearfix"></div>

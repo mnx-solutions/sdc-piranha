@@ -46,36 +46,6 @@
                                 <span class="value">{{account.companyName}}</span>
                             </p>
                         </div>
-
-                        <div class="text-medium span5">
-                            <h6 data-translate>Address</h6>
-                            <div class="pull-left span12">
-                                <p class="field">
-                                    <span class="name" data-translate>Address</span>
-                                    <span class="value">{{account.address}}</span>
-                                </p>
-
-                                <p class="field">
-                                    <span class="name" data-translate>City</span>
-                                    <span class="value">{{account.city}}</span>
-                                </p>
-
-                                <p class="field">
-                                    <span class="name" data-translate>State</span>
-                                    <span class="value">{{account.state}}</span>
-                                </p>
-
-                                <p class="field">
-                                    <span class="name" data-translate>Postal code</span>
-                                    <span class="value">{{account.postalCode}}</span>
-                                </p>
-
-                                <p class="field">
-                                    <span class="name" data-translate>Contry</span>
-                                    <span class="value">{{account.country}}</span>
-                                </p>
-                            </div>
-                        </div>
                     </div>
                 </fieldset>
 
@@ -91,24 +61,15 @@
                             <div data-current-credit-card></div>
                         </div>
 
-                        <div class="text-medium span5">
+                        <div class="text-medium span5" data-ng-show="0">
                             <h6>Latest invoice</h6>
-							<!-- 
-								Juhul kui on arve olemas kuva alloleva <p> containerit
-							-->
-                                <p>
-									Your costs from last month 
-									<hr />
-									<b style="font-size:26px">${{lastInvoice.amount || '0'}}</b>
-									<hr />	
-								</p>
-								<!-- 
-									Juhul kui POLE arvet, kuva allolevat <p> containerit
-								-->
-								<!-- 
-								<p>You haven't been invoiced, yet :)</p>
-								-->
-								
+                            <div data-ng-show="lastInvoice">
+                                Your costs from last month
+                                <hr />
+                                <b style="font-size:26px">${{lastInvoice.amount || '0'}}</b>
+                                <hr />
+                            </div>
+                            <p data-ng-hide="lastInvoice">You haven't been invoiced, yet :)</p>
                         </div>
                     </div>
                 </fieldset>
