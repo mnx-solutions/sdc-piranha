@@ -15,7 +15,7 @@
 
                 $scope.id = '';
                 $scope.searchUser = function () {
-                    $location.path('/account/' + $scope.id);
+                    $location.path('/accountAdmin/' + $scope.id);
                 };
 
             }

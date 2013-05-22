@@ -23,13 +23,11 @@
                 $q.when(Account.getAccount(true), function (account) {
                     $scope.account = account;
 
-                    if(!account.country) {
-                        account.country = 'United States';
-                    }
+                    account.country = $scope.isoToObj(account.country);
 
                     $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
 
-                        if(data.retries && data.retries != null) {
+                        if(data.retries && data.retries !== null) {
                             $scope.retriesLeft = (3-data.retries);
                         }
 
@@ -46,28 +44,30 @@
 
             $scope.setAccount();
 
-            $scope.nameToCode = function(countryName) {
-                if(!$scope.countryCodes)
+            $scope.isoToObj = function(iso) {
+                if(!$scope.countryCodes){
                     return;
-
-                for(var country in $scope.countryCodes){
-                    if($scope.countryCodes[country].name === countryName) {
-                        return $scope.countryCodes[country].areaCode;
-                    }
                 }
-            }
+                var selected = null;
+                var usa = null;
+                $scope.countryCodes.some(function (el) {
+                    if(el.iso3 === 'USA') {
+                        usa = el;
+                    }
+                    if(el.iso3 === iso) {
+                        selected = el;
+                        return true;
+                    }
+                });
+                return selected || usa;
+            };
 
             $http.get('account/countryCodes').success(function (data) {
                 $scope.countryCodes = data;
             });
 
-            $scope.$watch('account.country', function(newVal, oldVal) {
-                if(newVal)
-                    newVal = $scope.nameToCode(newVal);
-
-                if(newVal != oldVal) {
-                    $scope.selectedCountryCode = newVal;
-                }
+            $scope.$watch('account.country', function(newVal) {
+                $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
             });
 
             $scope.filterUndefinedAreas = function (country) {
@@ -91,7 +91,7 @@
 
                 if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
                     $scope.tropoRunning = true;
-                    $http.get('/tropo/tropo/'+ $scope.nameToCode($scope.account.country) + $scope.account.phone +'/'+ $scope.account.id).success(function(data) {
+                    $http.get('/tropo/tropo/'+ $scope.account.country.iso3 + $scope.account.phone +'/'+ $scope.account.id).success(function(data) {
                         if(data.retries) {
                             $scope.retriesLeft = (3-data.retries);
                         }
@@ -113,7 +113,10 @@
                                         $scope.deleteInterval(interval);
 
                                         // update account phone and country
-                                        Account.updateAccount($scope.account).then(function(newAcc) {
+                                        Account.updateAccount({
+                                            country: $scope.account.country.iso3,
+                                            phone: $scope.account.phone
+                                        }).then(function(newAcc) {
                                             $scope.nextStep();
                                         });
                                     }
@@ -122,13 +125,14 @@
                                         // TODO: Fail handling
                                         $scope.deleteInterval(interval);
 
-                                        if($scope.retriesLeft <= 0)
+                                        if($scope.retriesLeft <= 0){
                                             $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
-                                        else
+                                        } else {
                                             $scope.error = 'Phone verification failed. Please check the number and try again';
+                                        }
                                     }
 
-                                    if($scope.tropoPoll == 60) {
+                                    if(+$scope.tropoPoll === 60) {
                                         $scope.deleteInterval(interval);
 
                                         $scope.error = 'Phone verification failed. Please check the number and try again';

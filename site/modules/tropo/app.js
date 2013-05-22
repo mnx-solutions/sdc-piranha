@@ -104,7 +104,7 @@ module.exports = function (scope, app, callback) {
     });
 
     app.post('/finish', function(req, res) {
-        if(req.query.randomNumber == req.query.answer) {
+        if(req.query.randomNumber === req.query.answer) {
           redisClient.set(req.body.result.sessionId, 'passed');
         } else {
           redisClient.set(req.body.result.sessionId, 'failed');
