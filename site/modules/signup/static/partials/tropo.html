@@ -23,12 +23,7 @@
                         style="width:255px"
                         name="countryCode"
                         id="countryCode"
-                        data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-                        <!--<option data-ng-repeat="country in countryCodes | filter:filterUndefinedAreas | orderBy:'name'"-->
-                                <!--value="{{country.iso3}}"-->
-                                <!--data-ng-selected="country.iso3 == account.country">-->
-                            <!--{{country.name}} (+{{country.areaCode}})-->
-                        <!--</option>-->
+                        data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">git
                     </select>
                     <br />
                     <div class="input-prepend">
