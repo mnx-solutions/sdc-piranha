@@ -49,12 +49,12 @@ hr.dark {
 	border:1px solid #ddd;
 	color:#555;
 }
-.alert-joyent-blue h1,
-.alert-joyent-blue h2,
-.alert-joyent-blue h3,
-.alert-joyent-blue h4,
-.alert-joyent-blue h5,
-.alert-joyent-blue h6 {
+.alert-gray h1,
+.alert-gray h2,
+.alert-gray h3,
+.alert-gray h4,
+.alert-gray h5,
+.alert-gray h6 {
 	color:#555;
 }
 
