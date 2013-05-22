@@ -91,7 +91,7 @@
 
                 if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
                     $scope.tropoRunning = true;
-                    $http.get('/tropo/tropo/'+ $scope.account.country.iso3 + $scope.account.phone +'/'+ $scope.account.id).success(function(data) {
+                    $http.get('/tropo/tropo/'+ $scope.selectedCountryCode + $scope.account.phone +'/'+ $scope.account.id).success(function(data) {
                         if(data.retries) {
                             $scope.retriesLeft = (3-data.retries);
                         }
