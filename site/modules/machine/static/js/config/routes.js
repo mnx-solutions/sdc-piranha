@@ -7,7 +7,7 @@ window.JP.main.config([
             title: 'Compute',
             action: 'machine.index'
         }).when('/machine/details/:machineid', {
-            title: 'Instance details',
+            title: 'Instance Details',
             action: 'machine.details'
         }).when('/machine/add', {
             title: 'Create Instance',
