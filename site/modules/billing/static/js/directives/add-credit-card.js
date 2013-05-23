@@ -185,12 +185,18 @@
                             if(errs) {
                                 $scope.errs = errs;
                                 $scope.loading = false;
+                                var message = '';
+                                if(errs._general) {
+                                    errs.zuora.reasons.forEach(function (err) {
+                                        message += err.message + '<br/>';
+                                    });
+                                }
 
                                 notification.push(null, { type: 'error' },
                                     localization.translate(null,
                                         'billing',
-                                        'Payment information not updated'
-                                    )
+                                        'Payment information not updated:'
+                                    ) + message
                                 );
                             } else {
                                 notification.push(null, { type: 'success' },
