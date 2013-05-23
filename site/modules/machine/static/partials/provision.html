@@ -172,7 +172,7 @@
 									</span>
 
 									<span class="price span2 text-medium align-right">
-										<p class="size b">${{package.price}}</p>
+										<p class="size b">${{package.full_price || package.price}}</p>
 										<p class="text-small text-gray" data-translate>per hour</p>
 									</span>
 									
@@ -204,13 +204,13 @@
                         <div class="row-fluid price-container">
                             <div class="span6 text-center">
                                 <h5 data-translate>Hourly $</h5>
-                                <b style="font-size:26px">{{selectedPackageInfo.price}}</b>
+                                <b style="font-size:26px">{{selectedPackageInfo.full_price || selectedPackageInfo.price}}</b>
                                 <!-- <span data-translate>USD</span><br/> -->
                             </div>
                             <div class="span6 text-center">
                                 <h5 data-translate>Est. Monthly $</h5>
                                 <b style="font-size:26px">
-                                {{selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
+                                {{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
                             </div>
                             <div class="clearfix"></div>
                         </div>
