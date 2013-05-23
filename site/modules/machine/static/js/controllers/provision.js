@@ -163,6 +163,13 @@
 
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
+
+                        if($scope.packages && dataset.license_price) {
+                            $scope.packages.forEach(function(p) {
+                                p.price = (parseFloat(p.price) + parseFloat(dataset.license_price)).toFixed(2);
+                                p.price_month = (parseFloat(p.price_month) + parseFloat(dataset.license_price) * 730).toFixed(3);
+                            });
+                        }
                     });
 
                     $scope.slideCarousel();
@@ -276,7 +283,6 @@
                             });
                             $scope.operating_systems = Object.keys(operating_systems);
                             $scope.datasets = unique_datasets;
-                            console.log(unique_datasets);
                             $scope.versions = versions;
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;
