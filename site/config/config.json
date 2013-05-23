@@ -63,7 +63,7 @@
         "packageUpdatePath" : "/api/v2/forums/21147498/topics.json"
     },
     "marketo": {
-        "apikey": "CatsLikeSandboxes"
+        "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
     },
     "polling": {
         "machineTags": 5000,

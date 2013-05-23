@@ -1,4 +1,4 @@
-Munchkin.init('140-PAV-202');
+Munchkin.init('993-RJQ-253');          // effin hardcoded
 
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-39227360-1']); // XXX hardcoded
