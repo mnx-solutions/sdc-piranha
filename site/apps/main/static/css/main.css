@@ -811,8 +811,8 @@ a .feature1 {
 	font-family: Helvetica Neue;
 	font-weight: normal;
 }
-.btn.disabled,
-.btn[disabled],
+.btn.btn-joyent-blue.disabled,
+.btn.btn-joyent-blue[disabled],
 .btn-joyent-blue,
 .btn-joyent-blue:hover {
 	background-image:url('/static/img/bg-button-blue.png');
