@@ -17,7 +17,7 @@
                     <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="How many CPU, how much memory or disk do you need?"></span>-->
                     <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="Here are the specs of the instance you're about to launch. Click 'Launch Instance' if okay?"></span>-->
 
-                    <div class="carousel-inner item-list-container">
+                    <div class="carousel-inner item-list-container" data-ng-class="{'loading-medium':reloading}">
 						<div class="active item">
                             <div class="item header">
                                 <div class="btn-group tooltip-hover" style="width:150px"
@@ -60,7 +60,7 @@
 								<div class="clearfix"></div>
 							</div>
 							<div class="fixed-position-fix"></div>
-							<div class="item" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets | filter:filterDatasetsByOS">
+							<div class="item" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets | filter:filterDatasetsByOS">
 								<input class="pull-left"
                                        type="radio"
                                        id="dataset-{{dataset.id}}"
