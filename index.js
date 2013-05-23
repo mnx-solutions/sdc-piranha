@@ -21,6 +21,7 @@ app.use(express.session({
         host: config.redis.host,
         port: config.redis.port,
         db: config.redis.db,
+        pass: config.redis.password,
         retry_max_delay: 1000,
         connect_timeout: 1000,
         debug_mode: true,

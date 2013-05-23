@@ -9,10 +9,16 @@ module.exports = function (scope, register, callback) {
     var api = {};
     var id = config.redis.host + ':' + config.redis.port + '-' + config.redis.signupDB;
 
+    console.log('Using old account-api');
+
     if(redisClients[id]) {
         api.client = redisClients[id];
     } else {
         api.client = redisClients[id] = redis.createClient(config.redis.port, config.redis.host);
+
+        api.client.auth(config.redis.password, function() {
+            console.log('Redis auth in old-account-api');
+        });
         api.client.on('error', function (err) {
 
         });
