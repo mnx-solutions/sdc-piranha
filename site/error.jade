@@ -4,7 +4,19 @@ html(lang='en',data-ng-app='JoyentPortal')
         meta(charset='utf-8')
         meta(name='fragment',content='!')
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        title Error
+
+        case statusCode
+            when 404
+                title Page not found
+            default
+                title Internal server error
+
         link(rel='stylesheet',href='/static/css/error.css',type='text/css')
-    body(class='error-body')
-    div(class='splash')
+    case statusCode
+        when 404
+            body(class='error-body')
+            div(class='splash')
+
+        default
+            body(class='error-body')
+            div(class='splash')
