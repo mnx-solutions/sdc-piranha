@@ -9,6 +9,8 @@ module.exports = function (scope, register, callback) {
     var api = {};
     var id = config.redis.host + ':' + config.redis.port + '-' + config.redis.signupDB;
 
+    console.log('Using old account-api');
+
     if(redisClients[id]) {
         api.client = redisClients[id];
     } else {
@@ -24,6 +26,10 @@ module.exports = function (scope, register, callback) {
         scope.log.fatal('Redis config missing');
         process.exit();
     }
+
+    api.client.auth(config.redis.password, function() {
+        console.log('Redis auth in old-account-api');
+    });
 
     api.getTokenVal = function (token, cb) {
 
