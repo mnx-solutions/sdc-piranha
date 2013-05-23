@@ -25,6 +25,8 @@
 
                     account.country = $scope.isoToObj(account.country);
 
+                    console.log(account);
+
                     $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
                         if(data.retries && data.retries !== null) {
                             $scope.retriesLeft = (3-data.retries);
@@ -41,6 +43,8 @@
                 });
             };
 
+
+            console.log('Account:', $scope.account);
             $scope.setAccount();
 
             $scope.isoToObj = function(iso) {
