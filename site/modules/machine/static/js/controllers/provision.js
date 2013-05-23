@@ -276,6 +276,7 @@
                             });
                             $scope.operating_systems = Object.keys(operating_systems);
                             $scope.datasets = unique_datasets;
+                            console.log(unique_datasets);
                             $scope.versions = versions;
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;
