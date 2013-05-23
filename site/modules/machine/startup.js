@@ -173,23 +173,19 @@ module.exports = function (scope, callback) {
                 call.error(err);
                 return;
             }
-            console.log(info.licenses);
             data.forEach(function (img, i) {
                 if(info.images.data[img.id]) {
                     data[i] = utils.extend(img, info.images.data[img.id]);
                 }
 
                 if(data[i].name) {
-                    for(var k in info.licenses["License Portfolio"]) {
-                        var lic = info.licenses["License Portfolio"][k];
+                    for(var k in info.licenses.data["License Portfolio"]) {
+                        var lic = info.licenses.data["License Portfolio"][k];
                         if(lic["API Name"] == data[i].name) {
-
                             data[i].license_price = lic["Pan-Instance Price Uplift"];
                             console.log('match found for dataset license', data[i]);
                         }
                     }
-                } else {
-                    console.log('data didnt have name', data[i]);
                 }
             });
 
