@@ -19,6 +19,10 @@ module.exports = function (scope, callback) {
             var response = {};
             accountFields.forEach(function (field) {
                 response[field] = data[field] || '';
+
+                if(field === 'phone') {
+                    response[field] = response[field].replace(/[^0-9\.]+/g, '');
+                }
             });
             call.req.session.userId = data.id;
             call.req.session.save();
