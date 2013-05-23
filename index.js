@@ -51,6 +51,13 @@ var m = new Modulizer(opts);
 m.set('utils', utils);
 
 m.init(opts, function (err) {
+    app.use(function (res, req, next) {
+        var err = new Error('Page not found');
+        err.statusCode = 404;
+
+        require('./lib/error')(err, res, req, next);
+    });
+
     app.use(function (err, res, req, next) {
         require('./lib/error')(err, res, req, next);
     });
