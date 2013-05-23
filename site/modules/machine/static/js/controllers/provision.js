@@ -166,13 +166,21 @@
 
                         if($scope.packages && dataset.license_price) {
                             $scope.packages.forEach(function(p) {
-                                p.price = (parseFloat(p.price) + parseFloat(dataset.license_price)).toFixed(2);
-                                p.price_month = (parseFloat(p.price_month) + parseFloat(dataset.license_price) * 730).toFixed(3);
+                                if(!p.full_price && p.price) {
+                                    p.full_price = parseFloat(dataset.license_price) + parseFloat(p.price);
+                                    p.full_price.toFixed(2);
+                                }
+                                if(!p.full_price_month && p.price_month) {
+                                    p.full_price_month = parseFloat(p.price_month) + parseFloat(dataset.license_price) * 730;
+                                    p.full_price_month.toFixed(3);
+                                }
+
                             });
                         }
+                        $scope.slideCarousel();
                     });
 
-                    $scope.slideCarousel();
+
                 };
 
                 $scope.selectVersion = function (name, version) {
