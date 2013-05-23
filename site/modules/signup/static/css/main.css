@@ -117,3 +117,7 @@ h1 {
 .border {
 	border:1px solid red !important;
 }
+
+.cancel-signup-link {
+    cursor:pointer;
+}

@@ -347,7 +347,7 @@
 <div>
     <div class="clearfix" data-ng-show="currentStep"></div>
     <hr data-ng-show="currentStep" />
-    <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Cancel signup process</a>
+    <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</a>
     <button class="pull-right btn btn-joyent-blue" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || loading">{{saveButton}}</button>
     <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
 </div>
