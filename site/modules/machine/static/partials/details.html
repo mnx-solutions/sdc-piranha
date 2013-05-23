@@ -186,11 +186,10 @@
 		            <span data-ng-show="currentPackage.vcpus" data-translate>{{currentPackage.vcpus}}</span>
 				</div>
 	        </div>
-
 			<div style="width:250px" data-ng-class="{'pull-right': currentPackage}">
 				<h6 class="control-label" data-translate>Resize Package</h6>
 	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:250px">
-	                <option data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
+	                <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
 	                        value="{{package.name}}" class="text-medium">
 	                    Mem: {{package.memory | sizeFormat}}
 	                    Disk: {{package.disk | sizeFormat}}
