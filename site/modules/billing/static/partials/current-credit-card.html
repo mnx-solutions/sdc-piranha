@@ -1,10 +1,14 @@
 <div class="{{summary && ' ' || 'sizebar-fix sizebar-fix-right' }}" data-ng-show="creditCard">
-		<div class="{{summary && 'text-medium' || 'separation-container' }}">
+		<div class="{{summary && 'text-medium' || 'separation-container' }}" data-ng-show="creditCard.cardNumber">
 			<strong>{{creditCard.cardHolderInfo.cardHolderName}}</strong><br />
 			Card type: {{creditCard.cardType}}<br />
 			Card No: {{creditCard.cardNumber}}<br />
 			Exp. Date: {{creditCard.expirationMonth}}/{{creditCard.expirationYear}}<br />
 		</div>
+
+        <div data-ng-show="!creditCard.cardNumber" data-translate>
+            Alternative Payment Method on File
+        </div>
 	<!-- {{creditCardJSON}} -->
 </div>
 
