@@ -172,12 +172,10 @@
                                     if(!p.full_price && p.price) {
                                         p.full_price = lPrice + parseFloat(p.price);
                                         p.full_price = p.full_price.toFixed(3);
-                                        console.log('HOURLY', p.price, lPrice, parseFloat(p.price), p.full_price );
                                     }
                                     if(!p.full_price_month && p.price_month) {
                                         p.full_price_month = parseFloat(p.price_month) + (lPrice * 730);
                                         p.full_price_month = p.full_price_month.toFixed(2);
-                                        console.log('MONTHLY', p.price_month, lPrice, parseFloat(p.price_month), p.full_price_month );
                                     }
                                 });
                             }
