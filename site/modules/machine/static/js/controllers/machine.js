@@ -306,7 +306,7 @@
                     if($scope.currentPackage && item.type) {
                         //handle old images
                         if (!$scope.currentPackage.type) {
-                            return item.memory >= $scope.currentPackage.memory && item.group == 'High CPU';
+                            return item.memory >= $scope.currentPackage.memory && item.group == 'High CPU'
                         //handle new images
                         } else {
                             return item.group === $scope.currentPackage.group &&

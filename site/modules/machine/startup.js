@@ -152,13 +152,23 @@ module.exports = function (scope, callback) {
             }
 
             var filteredPackages = [];
+            var a = [];
+            var b = [];
             data.forEach(function (p) {
                 if(info.packages.data[call.data.datacenter][p.name]) {
-                    filteredPackages.push(utils.extend(p, info.packages.data[call.data.datacenter][p.name]));
+                    var c = utils.extend(p, info.packages.data[call.data.datacenter][p.name])
+                    if(!a.length) {
+                        a.push(c);
+                    }
+                    filteredPackages.push(c);
                 } else {
+                    if(!b.length) {
+                        b.push(p);
+                    }
                     filteredPackages.push(p);
                 }
             });
+            console.log('2 different types of packages:',a, b);
             call.done(null, filteredPackages);
         });
     });
