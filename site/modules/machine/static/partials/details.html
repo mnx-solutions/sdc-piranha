@@ -182,8 +182,8 @@
 		            <span data-translate>{{currentPackage.memory | sizeFormat}}</span><br />
 		            <span data-translate>Disk</span>:
 		            <span data-translate>{{currentPackage.disk | sizeFormat}}</span><br />
-		            <span data-translate>vCPUs</span>:
-		            <span data-translate>{{currentPackage.vcpus}}</span>
+		            <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
+		            <span data-ng-show="currentPackage.vcpus" data-translate>{{currentPackage.vcpus}}</span>
 				</div>
 	        </div>
 
@@ -194,7 +194,7 @@
 	                        value="{{package.name}}" class="text-medium">
 	                    Mem: {{package.memory | sizeFormat}}
 	                    Disk: {{package.disk | sizeFormat}}
-	                    VCPU: {{package.vcpus}}
+	                    <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span>
 	                </option>
 	            </select>
 
