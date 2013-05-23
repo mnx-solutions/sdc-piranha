@@ -296,7 +296,7 @@
                             $scope.versions = versions;
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;
-                            $scope.reloading = --count === 0;
+                            $scope.reloading = --count <= 0;
                         });
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
@@ -310,7 +310,7 @@
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
                             $scope.searchPackages = '';
-                            $scope.reloading = --count === 0;
+                            $scope.reloading = --count <= 0;
                         });
                     }
                 });
