@@ -35,5 +35,6 @@
     "Missing Zip code": "Missing Zip code",
     "Invalid symbols (numbers only)": "Invalid symbols (numbers only)",
     "Payment information updated": "Payment information updated",
-    "Payment information not updated": "Payment information not updated"
+    "Payment information not updated": "Payment information not updated",
+    "Alternative Payment Method on File": "Alternative Payment Method on File"
 }

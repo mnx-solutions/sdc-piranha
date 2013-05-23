@@ -62,7 +62,7 @@
 						window.location = '/landing/forgetToken';
 					}
                     return false;
-                }
+                };
             }
         ]);
 }(window.JP.getModule('Signup'), window.jQuery));

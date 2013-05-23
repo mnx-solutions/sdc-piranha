@@ -14,6 +14,10 @@ var smartCloud = new SmartCloud({
 });
 
 module.exports = function (req, res, next) {
+    if(req.originalUrl === '/testfest') {
+        console.log('testfest', req.session);
+        console.log('testfest', req.cookie);
+    }
     if(!req.session.token) {
         // token missing, don't allow the request
 
