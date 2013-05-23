@@ -1,6 +1,6 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
 <form name="paymentForm" class="row-fluid">
-<fieldset class="span6">
+<fieldset class="span6" style="width:340px">
     <legend>Credit card details</legend>
     <div class="control-group">
         <label class="control-label" for="creditCardNumber" data-translate>Card number</label>
@@ -168,6 +168,7 @@
 </fieldset>
 <fieldset class="span6">
     <legend>Billing	information</legend>
+	<div class="clearfix"></div><br />
     <div class="control-group" data-ng-show="useExistingPossible">
         <label class="checkbox" for="useExisting"><input type="checkbox" id="useExisting" data-ng-model="useExisting" /><span data-translate>Use previous contact info</span></label>
     </div>
@@ -347,8 +348,9 @@
     <div class="clearfix" data-ng-show="currentStep"></div>
     <hr data-ng-show="currentStep" />
     <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Cancel signup process</a>
-    <button class="pull-right btn btn-success" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || loading">{{saveButton}}</button>
+    <button class="pull-right btn btn-joyent-blue" data-ng-click="submitForm()" data-ng-disabled="paymentForm.$invalid || loading">{{saveButton}}</button>
     <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
 </div>
+<div class="clearfix"></div>
 </form>
 </div>
