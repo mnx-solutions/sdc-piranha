@@ -8,6 +8,10 @@ var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var fs = require('fs');
 var countryCodes = require('./data/countryCodes');
 
+
+redisClient.auth(config.redis.password, function() {
+    console.log('Redis auth in old-account-api');
+});
 /**
  * @ngdoc service
  * @name account.service:api
