@@ -23,9 +23,8 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
                     ul(class="nav")
                         li
                             a(href="http://joyent.com/", target="_blank") Joyent.com
-
                         li
-                            a(href="#!/cms/tos", target="_blank") Terms of Service
+                            a(href="http://joyent.com/tos", target="_blank") Terms of Service
                         li
                             a(href="http://joyent.com/company/policies", target="_blank") Policies
                         li
@@ -45,7 +44,7 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
 
     script(type='text/javascript')
-        if (typeof(Zenbox) !== "undefined") {
+        /*if (typeof(Zenbox) !== "undefined") {
           Zenbox.init({
             dropboxID:   "20175628",
             url:         "https://zetazoft.zendesk.com",
@@ -54,4 +53,4 @@ html(lang='en',data-ng-app='JoyentPortal',data-ng-controller='MainController')
             tabColor:    "#375675",
             tabPosition: "Right"
           });
-        }
+        }*/

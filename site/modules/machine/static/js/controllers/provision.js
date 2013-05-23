@@ -23,9 +23,17 @@
                 $scope.datacenters = Datacenter.datacenter();
                 $scope.packageTypes = [];
                 $scope.packageType = null;
+                $scope.loading = true;
+
+                $q.all([
+                    $q.when($scope.keys),
+                    $q.when($scope.datacenters)
+                ]).then(function () {
+                    $scope.loading = false;
+                });
 
                 var confirm = function (question, callback) {
-                    var title = 'Confirm';
+                    var title = 'Confirm: Create Instance';
                     var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
 
                     $dialog.messageBox(title, question, btns)
@@ -72,7 +80,7 @@
 
                 $scope.clickProvision = function () {
                     function provision() {
-                        confirm(localization.translate($scope, 'machine', 'Are you sure you want to provision a new machine?'), function () {
+                        confirm(localization.translate($scope, 'machine', 'Click OK to create instance'), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
 
                             $location.path('/machine');
@@ -268,6 +276,7 @@
                             });
                             $scope.operating_systems = Object.keys(operating_systems);
                             $scope.datasets = unique_datasets;
+                            console.log(unique_datasets);
                             $scope.versions = versions;
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;

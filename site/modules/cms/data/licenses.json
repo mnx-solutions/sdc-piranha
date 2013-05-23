@@ -1,43 +1,72 @@
-{"Portfolio Description":
-    {   "Status": "Pre-production",
-        "Created": "2013-05-22T11:37:34.596864",
+{
+    "License Portfolio": [
+        {
+            "API Name": "stm-500L-base-version",
+            "Pan-Instance Price Uplift": 0.108,
+            "URN": "sdc:jpc:stingray-500L"
+        },
+        {
+            "API Name": "stm-500M-base-version",
+            "Pan-Instance Price Uplift": 0.226,
+            "URN": "sdc:jpc:stingray-500M"
+        },
+        {
+            "API Name": "stm-1000M-base-version",
+            "Pan-Instance Price Uplift": 0.612,
+            "URN": "sdc:jpc:stingray-100M"
+        },
+        {
+            "API Name": "stm-1000M-SAF-base-version",
+            "Pan-Instance Price Uplift": 1.28,
+            "URN": "sdc:jpc:stingray-100M-SAF"
+        },
+        {
+            "API Name": "stm-1000H-base-version",
+            "Pan-Instance Price Uplift": 0.932,
+            "URN": "sdc:jpc:stingray-1000H"
+        },
+        {
+            "API Name": "stm-2000L-base-version",
+            "Pan-Instance Price Uplift": 1.374,
+            "URN": "sdc:jpc:stingray-2000L"
+        },
+        {
+            "API Name": "stm-2000L-saf-base-version",
+            "Pan-Instance Price Uplift": 2.362,
+            "URN": "sdc:jpc:stingray-2000L-SAF"
+        },
+        {
+            "API Name": "stm-4000L-base-version",
+            "Pan-Instance Price Uplift": 2.586,
+            "URN": "sdc:jpc:stingray-4000L"
+        },
+        {
+            "API Name": "ws2008ent-r2-sp1",
+            "Pan-Instance Price Uplift": 0.2,
+            "URN": "sdc:admin:ws2008ent-r2-sp1"
+        },
+        {
+            "API Name": "ws2008std-r2-sp1",
+            "Pan-Instance Price Uplift": 0.06,
+            "URN": "sdc:admin:ws2008std-r2-sp1"
+        },
+        {
+            "API Name": "ws2012std",
+            "Pan-Instance Price Uplift": 0.06,
+            "URN": "sdc:admin:ws2012std"
+        },
+        {
+            "API Name": "ubuntu-12.04",
+            "Pan-Instance Price Uplift": 5.06,
+            "URN": "sdc:fake:ubuntu-12.04"
+        }
+    ],
+    "Portfolio Description": {
+        "Created": "2013-05-22T17:12:00",
         "Notes": "",
+        "Revision": "1.1.0.1",
         "SchemaVersion": "1.0.0.1",
-        "Type": "Joyent License Portfolio",
-        "Revision": "1.0.0.0"
-    },
-    "License Portfolio": [{
-        "Pan-Instance Price Uplift": 0.108,
-        "Canonical Image Name": "sdc:jpc:stingray-500L"
-    }, {
-        "Pan-Instance Price Uplift": 0.226,
-        "Canonical Image Name": "sdc:jpc:stingray-500M"
-    }, {
-        "Pan-Instance Price Uplift": 0.612,
-        "Canonical Image Name": "sdc:jpc:stingray-100M"
-    }, {
-        "Pan-Instance Price Uplift": 1.28,
-        "Canonical Image Name": "sdc:jpc:stingray-100M-SAF"
-    }, {
-        "Pan-Instance Price Uplift": 0.932,
-        "Canonical Image Name": "sdc:jpc:stingray-1000H"
-    }, {
-        "Pan-Instance Price Uplift": 1.374,
-        "Canonical Image Name": "sdc:jpc:stingray-2000L"
-    }, {
-        "Pan-Instance Price Uplift": 2.362,
-        "Canonical Image Name": "sdc:jpc:stingray-2000L-SAF"
-    }, {
-        "Pan-Instance Price Uplift": 2.586,
-        "Canonical Image Name": "sdc:jpc:stingray-4000L"
-    }, {
-        "Pan-Instance Price Uplift": 0.2,
-        "Canonical Image Name": "sdc:admin:ws2008ent-r2-sp1"
-    }, {
-        "Pan-Instance Price Uplift": 0.06,
-        "Canonical Image Name": "sdc:admin:ws2008std-r2-sp1"
-    }, {
-        "Pan-Instance Price Uplift": 0.06,
-        "Canonical Image Name": "sdc:admin:ws2012std"
-    }]
+        "Status": "Exploratory",
+        "Type": "Joyent License Portfolio"
+    }
 }
