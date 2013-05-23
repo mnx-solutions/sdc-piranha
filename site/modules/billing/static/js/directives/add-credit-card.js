@@ -8,7 +8,10 @@
         '$http',
         '$rootScope',
         'Account',
-        function (BillingService, $q, $http, $rootScope, Account) {
+        'notification',
+        'localization',
+
+        function (BillingService, $q, $http, $rootScope, Account, notification, localization) {
 
             return {
                 restrict: 'A',
@@ -182,7 +185,21 @@
                             if(errs) {
                                 $scope.errs = errs;
                                 $scope.loading = false;
+
+                                notification.push(null, { type: 'error' },
+                                    localization.translate(null,
+                                        'billing',
+                                        'Payment information not updated'
+                                    )
+                                );
                             } else {
+                                notification.push(null, { type: 'success' },
+                                    localization.translate(null,
+                                        'billing',
+                                        'Payment information updated'
+                                    )
+                                );
+
                                 $scope.errs = null;
                                 var cc = BillingService.getDefaultCreditCard();
 

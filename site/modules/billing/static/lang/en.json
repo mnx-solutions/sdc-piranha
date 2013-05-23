@@ -33,5 +33,7 @@
     "Missing city": "Missing city",
     "Invalid Zip code": "Invalid Zip code",
     "Missing Zip code": "Missing Zip code",
-    "Invalid symbols (numbers only)": "Invalid symbols (numbers only)"
+    "Invalid symbols (numbers only)": "Invalid symbols (numbers only)",
+    "Payment information updated": "Payment information updated",
+    "Payment information not updated": "Payment information not updated"
 }
