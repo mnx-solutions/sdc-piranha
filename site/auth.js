@@ -19,7 +19,6 @@ module.exports = function (req, res, next) {
 
         res.send(401);
     } else {
-        console.log(req.session.token);
         //return res.redirect('/login');
         // we have a token, create a new cloudapi object with this
         if(!req.cloud) {

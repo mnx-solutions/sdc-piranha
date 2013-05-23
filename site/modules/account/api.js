@@ -21,13 +21,20 @@ module.exports = function (scope, register, callback) {
     function getFromBilling(method, account, cb) {
         jsonClient.get('/' + method + '/' + account.id, function (err, req, res, obj) {
             if(!err) {
+                scope.log.debug({account: account}, "zuora(%s) allows provision", method);
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
+
+            scope.log.debug({obj: obj, account: account, method: method}, "got error from zuora, handling it" );
+
             if(obj.errors && obj.errors[0].code === 'U01' && method === 'provision') {
+                scope.log.debug("checking update method");
+
                 getFromBilling('update', account, cb);
                 return;
             }
+
             var state = 'start';
             if(obj.errors && obj.errors.length === 1) {
                 if(obj.errors[0].code.charAt(0) === 'Z'){
@@ -40,7 +47,6 @@ module.exports = function (scope, register, callback) {
             return;
         });
     }
-
     api.getAccountVal = function (cloud, cb) {
         cloud.getAccount(function (accErr, account) {
             if(accErr) {
@@ -55,12 +61,16 @@ module.exports = function (scope, register, callback) {
     };
 
     api.getSignupStep = function (call, cb) {
+
+        scope.log.debug("getting signup step")
+
         var req = (call.done && call.req) || call;
 
         function end(step) {
             if(steps.indexOf(step) === (steps.length - 1)) {
                 step = 'completed';
             }
+            scope.log.debug("signup step is %s", step);
             cb(null, step);
         }
 
