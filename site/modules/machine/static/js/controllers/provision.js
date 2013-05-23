@@ -267,6 +267,7 @@
                 $scope.$watch('data.datacenter', function (newVal) {
 
                     if (newVal) {
+                        console.log('reloading');
                         $scope.reloading = true;
                         var count = 2;
                         Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
@@ -306,7 +307,8 @@
                             $scope.versions = versions;
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;
-                            $scope.reloading = --count === 0;
+                            console.log('finished datasets');
+                            $scope.reloading = --count <= 0;
                         });
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
@@ -320,7 +322,8 @@
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
                             $scope.searchPackages = '';
-                            $scope.reloading = --count === 0;
+                            console.log('finished packages');g
+                            $scope.reloading = --count <= 0;
                         });
                     }
                 });
