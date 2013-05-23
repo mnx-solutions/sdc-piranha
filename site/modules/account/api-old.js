@@ -15,6 +15,10 @@ module.exports = function (scope, register, callback) {
         api.client = redisClients[id];
     } else {
         api.client = redisClients[id] = redis.createClient(config.redis.port, config.redis.host);
+
+        api.client.auth(config.redis.password, function() {
+            console.log('Redis auth in old-account-api');
+        });
         api.client.on('error', function (err) {
 
         });
@@ -26,10 +30,6 @@ module.exports = function (scope, register, callback) {
         scope.log.fatal('Redis config missing');
         process.exit();
     }
-
-    api.client.auth(config.redis.password, function() {
-        console.log('Redis auth in old-account-api');
-    });
 
     api.getTokenVal = function (token, cb) {
 
