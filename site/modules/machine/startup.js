@@ -183,7 +183,9 @@ module.exports = function (scope, callback) {
                     for(var k in info.licenses["License Portfolio"]) {
                         var lic = info.licenses["License Portfolio"][k];
                         if(lic["API Name"] == data[i].name) {
+
                             data[i].license_price = lic["Pan-Instance Price Uplift"];
+                            console.log('match found for dataset license', data[i]);
                         }
                     }
                 }
