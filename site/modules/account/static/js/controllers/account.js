@@ -10,12 +10,10 @@
             $scope.loading = true;
             $scope.account = Account.getAccount();
             $scope.sshKeys = Account.getKeys(true);
-			$scope.lastInvoice = BillingService.getLastInvoice();
 
             $q.all([
                 $scope.account,
-                $scope.sshKeys,
-                $scope.lastInvoice
+                $scope.sshKeys
             ]).then(function () {
                 $scope.loading = false;
             });
