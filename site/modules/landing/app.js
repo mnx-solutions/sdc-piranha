@@ -107,7 +107,7 @@ module.exports = function (scope, app, callback) {
         var redirectUrl = new Buffer(req.params.url, 'base64').toString('ascii');
 
         // as sso passes token using ?token=
-        var token = req.query.token;
+        var token = req.query.token;g
         req.session.token = token;
         req.session.save();
 
