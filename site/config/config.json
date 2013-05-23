@@ -16,7 +16,11 @@
         "host": "redis-gtint.piranha.ee",
         "port": 6379,
         "db": 1,
-        "signupDB": 5
+        "signupDB": 5,
+        "password": ""
+    },
+    "tropo": {
+      "token": ""
     },
     "static":{
         "js": {

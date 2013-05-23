@@ -18,6 +18,29 @@ module.exports = function (scope, register, callback) {
 
     var steps = ['start', 'tropo', 'billing','ssh'];
 
+    function getFromBilling(method, account, cb) {
+        jsonClient.get('/' + method + '/' + account.id, function (err, req, res, obj) {
+            if(!err) {
+                cb(null, 'completed'); // Can provision so we let through
+                return;
+            }
+            if(obj.errors && obj.errors[0].code === 'U01' && method === 'provision') {
+                getFromBilling('update', account, cb);
+                return;
+            }
+            var state = 'start';
+            if(obj.errors && obj.errors.length === 1) {
+                if(obj.errors[0].code.charAt(0) === 'Z'){
+                    state = 'tropo';
+                } else if(obj.errors[0].code === 'U01') {
+                    state = 'completed';
+                }
+            }
+            cb(null, state);
+            return;
+        });
+    }
+
     api.getAccountVal = function (cloud, cb) {
         cloud.getAccount(function (accErr, account) {
             if(accErr) {
@@ -26,22 +49,7 @@ module.exports = function (scope, register, callback) {
                 return;
             }
 
-            jsonClient.get('/provision/' + account.id, function (err, req, res, obj) {
-                if(!err) {
-                    cb(null, 'completed'); // Can provision so we let through
-                    return;
-                }
-                var state = 'start';
-                if(obj.errors && obj.errors.length === 1) {
-                    if(obj.errors[0].code.charAt(0) === 'Z'){
-                        state = 'tropo';
-                    } else if(obj.errors[0].code === 'U01') {
-                        state = 'completed';
-                    }
-                }
-                cb(null, state);
-                return;
-            });
+            getFromBilling('provision', account, cb);
         });
         return;
     };

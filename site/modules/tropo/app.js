@@ -7,13 +7,18 @@ var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var http = require('http');
 var parseXml = require('xml2js').parseString;
 
+
 module.exports = function (scope, app, callback) {
+
+    // auth redis
+    redisClient.auth(config.redis.password, function(err) {
+    });
 
     function makeTropoCall(randomNumber, retries, req, res) {
 
         var options = {
             host:'api.tropo.com',
-            path: '/1.0/sessions?action=create&token=1ce9e601654a6d459eecdf26eaabf7cb85a9f31031451a0aa3c1afc72c135d73c5398c473e1f150b77ece954&numberToDial='+ req.params.number +'&randomNumber='+ randomNumber
+            path: '/1.0/sessions?action=create&token='+ config.tropo.token +'&numberToDial='+ req.params.number +'&randomNumber='+ randomNumber
         };
 
         var response = res;
@@ -40,7 +45,7 @@ module.exports = function (scope, app, callback) {
         var randomNumber = Math.random().toString(10).substr(2,4);
 
         var response = res;
-        // set no-cache headers for IE 10 fix
+        // set no-cache headers
         response.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
         // check for tropo retry count

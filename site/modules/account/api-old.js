@@ -9,10 +9,13 @@ module.exports = function (scope, register, callback) {
     var api = {};
     var id = config.redis.host + ':' + config.redis.port + '-' + config.redis.signupDB;
 
+
     if(redisClients[id]) {
         api.client = redisClients[id];
     } else {
         api.client = redisClients[id] = redis.createClient(config.redis.port, config.redis.host);
+
+        api.client.auth(config.redis.password, function() {});
         api.client.on('error', function (err) {
 
         });
