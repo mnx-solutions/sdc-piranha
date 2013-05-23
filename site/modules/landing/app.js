@@ -108,7 +108,7 @@ module.exports = function (scope, app, callback) {
 
         // as sso passes token using ?token=
         var token = req.query.token;
-        console.log(req.session);
+        console.log(token);
         req.session.token = token;
         req.session.save();
 

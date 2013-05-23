@@ -24,6 +24,7 @@ module.exports = function (scope, register, callback) {
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
+            scope.log.warn('Got errors from billing', obj);
             if(obj.errors && obj.errors[0].code === 'U01' && method === 'provision') {
                 getFromBilling('update', account, cb);
                 return;

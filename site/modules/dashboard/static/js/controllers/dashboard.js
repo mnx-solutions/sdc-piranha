@@ -41,7 +41,6 @@
                 // when all datasources are loaded, disable loader
                 $q.all(
                    [$q.when($scope.machines),
-                    $q.when($scope.lastInvoice),
                     $q.when($scope.forums),
                     $q.when($scope.systemStatusTopics),
                     $q.when($scope.softwareUpdateTopics),
