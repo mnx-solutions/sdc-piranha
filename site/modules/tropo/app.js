@@ -12,7 +12,6 @@ module.exports = function (scope, app, callback) {
 
     // auth redis
     redisClient.auth(config.redis.password, function(err) {
-        console.log('REDIS AUTH');
     });
 
     function makeTropoCall(randomNumber, retries, req, res) {
