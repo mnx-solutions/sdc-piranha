@@ -180,8 +180,10 @@
                                 }
                             });
                         } else if(!dataset.license_price) {
-                            delete(p.full_price);
-                            delete(p.full_price_month);
+                            $scope.packages.forEach(function(p) {
+                                delete(p.full_price);
+                                delete(p.full_price_month);
+                            });
                         }
                         $scope.slideCarousel();
                     });
