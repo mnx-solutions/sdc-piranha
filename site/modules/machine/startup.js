@@ -173,7 +173,7 @@ module.exports = function (scope, callback) {
                 call.error(err);
                 return;
             }
-
+            console.log(info.licenses);
             data.forEach(function (img, i) {
                 if(info.images.data[img.id]) {
                     data[i] = utils.extend(img, info.images.data[img.id]);
@@ -188,6 +188,8 @@ module.exports = function (scope, callback) {
                             console.log('match found for dataset license', data[i]);
                         }
                     }
+                } else {
+                    console.log('data didnt have name', data[i]);
                 }
             });
 
