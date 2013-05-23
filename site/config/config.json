@@ -54,6 +54,9 @@
         "url":"",
         "noUpdate":true
     },
+    "googleAnalytics": {
+        "identifier": ""
+    },
     "zendesk": {
         "account": "jaan.oras@joyent.com/token",
         "token"  : "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ",
@@ -63,7 +66,8 @@
         "packageUpdatePath" : "/api/v2/forums/21147498/topics.json"
     },
     "marketo": {
-        "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
+        "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8",
+        "accountId": ""
     },
     "polling": {
         "machineTags": 5000,
