@@ -18,7 +18,7 @@ module.exports = function (scope, app, callback) {
 
         var options = {
             host:'api.tropo.com',
-            path: '/1.0/sessions?action=create&token=1ce9e601654a6d459eecdf26eaabf7cb85a9f31031451a0aa3c1afc72c135d73c5398c473e1f150b77ece954&numberToDial='+ req.params.number +'&randomNumber='+ randomNumber
+            path: '/1.0/sessions?action=create&token='+ config.tropo.token +'&numberToDial='+ req.params.number +'&randomNumber='+ randomNumber
         };
 
         var response = res;

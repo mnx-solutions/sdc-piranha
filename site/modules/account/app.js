@@ -9,9 +9,7 @@ var fs = require('fs');
 var countryCodes = require('./data/countryCodes');
 
 
-redisClient.auth(config.redis.password, function() {
-    console.log('Redis auth in old-account-api');
-});
+redisClient.auth(config.redis.password, function() {});
 /**
  * @ngdoc service
  * @name account.service:api
