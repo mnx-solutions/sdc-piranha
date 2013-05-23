@@ -207,15 +207,24 @@
                 };
 
                 $scope.filterPackages = function (item) {
+                    if (item.type !== $scope.datasetType) {
+                        return false;
+                    }
+
                     var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
                     for (var i = 0, c = props.length; i < c; i++) {
                         var val = item[props[i]];
 
-                        var dstype = $scope.datasetType ? item.type == $scope.datasetType : true;
-
-                        if (val && val.match($scope.searchPackages) && dstype && ($scope.packageType === null || $scope.packageType === item.group)) {
+                        if (val && (typeof val === 'string')) {
+                            if (val.match($scope.searchPackages)) {
+                                return true;
+                            }
+                        } else if (val === $scope.searchPackages) {
+                            return true;
+                        } else if ($scope.packageType && $scope.packageType === item.group) {
                             return true;
                         }
+
                     }
                     return false;
                 };

@@ -50,7 +50,7 @@
 
                 var selected = null;
                 var usa = null;
-                
+
                 $scope.countryCodes.some(function (el) {
                     if(el.iso3 === 'USA') {
                         usa = el;
