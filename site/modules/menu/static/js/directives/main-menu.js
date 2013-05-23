@@ -30,7 +30,7 @@
 								'<a href="#!/account/">My Account</a>' +
 							'</div>' +
                             '<div class="pull-right top-menu">' +
-									'<span><a href="//help.joyent.com">Support</a></span>' +
+									'<span><a href="//help.joyent.com" target="_blank">Support</a></span>' +
 									'<span><a href="http://wiki.joyent.com/wiki/display/jpc2/JoyentCloud+Home" target="_blank">Docs</a></span>' +
 									// '<span><a href="#!/account">My Account</a></span>' +
 									'<span class="last"><a href="/landing/forgetToken">Sign Out</a></span>' +
