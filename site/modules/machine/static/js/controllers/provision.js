@@ -165,20 +165,22 @@
                         $scope.searchText = '';
 
                         if($scope.packages && dataset.license_price) {
-                            $scope.packages.forEach(function(p) {
+                            var lPrice = parseFloat(dataset.license_price);
+                            if(lPrice === lPrice) {
+                                $scope.packages.forEach(function(p) {
 
-                                if(!p.full_price && p.price) {
-
-                                    p.full_price = parseFloat(dataset.license_price) + parseFloat(p.price);
-                                    p.full_price.toFixed(2);
-                                    console.log( dataset.license_price, p.price, parseFloat(dataset.license_price), parseFloat(p.price), p.full_price );
-                                }
-                                if(!p.full_price_month && p.price_month) {
-                                    p.full_price_month = parseFloat(p.price_month) + parseFloat(dataset.license_price) * 730;
-                                    p.full_price_month.toFixed(3);
-                                    console.log( dataset.license_price, p.price_month, parseFloat(dataset.license_price), parseFloat(p.price_month), p.full_price_month );
-                                }
-                            });
+                                    if(!p.full_price && p.price) {
+                                        p.full_price = lPrice + parseFloat(p.price);
+                                        p.full_price = p.full_price.toFixed(2);
+                                        console.log('HOURLY', p.price, lPrice, parseFloat(p.price), p.full_price );
+                                    }
+                                    if(!p.full_price_month && p.price_month) {
+                                        p.full_price_month = parseFloat(p.price_month) + (lPrice * 730);
+                                        p.full_price_month = p.full_price_month.toFixed(3);
+                                        console.log('MONTHLY', p.price_month, lPrice, parseFloat(p.price_month), p.full_price_month );
+                                    }
+                                });
+                            }
                         } else if(!dataset.license_price) {
                             $scope.packages.forEach(function(p) {
                                 delete(p.full_price);
