@@ -23,6 +23,14 @@
                 $scope.datacenters = Datacenter.datacenter();
                 $scope.packageTypes = [];
                 $scope.packageType = null;
+                $scope.loading = true;
+
+                $q.all([
+                    $q.when($scope.keys),
+                    $q.when($scope.datacenters)
+                ]).then(function () {
+                    $scope.loading = false;
+                });
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm: Create Instance';
