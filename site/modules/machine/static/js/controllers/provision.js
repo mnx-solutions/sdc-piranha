@@ -207,7 +207,11 @@
                 };
 
                 $scope.filterPackages = function (item) {
-                    if (item.type !== $scope.datasetType) {
+                    if ($scope.datasetType !== item.type) {
+                        return false;
+                    }
+
+                    if ($scope.packageType && $scope.packageType !== item.group) {
                         return false;
                     }
 
@@ -220,8 +224,6 @@
                                 return true;
                             }
                         } else if (val === $scope.searchPackages) {
-                            return true;
-                        } else if ($scope.packageType && $scope.packageType === item.group) {
                             return true;
                         }
 
