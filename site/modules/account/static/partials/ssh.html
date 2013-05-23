@@ -12,8 +12,8 @@
             </div>
 
             <div class="span8 ssh-container-empty container" data-ng-show="sshKeys.length <= 0">
-                <div class="alert alert-info">
-                    <p data-translate>You have to add SSH key to start creating instances.</p>
+                <div class="alert alert-joyent-blue">
+                    <span data-translate>You have to add SSH key to start creating instances.</span>
                 </div>
 
                 <fieldset class="pull-left">
@@ -37,7 +37,7 @@
 
                     <div data-ng-show="error">{{error}}</div>
                     <div class="align-right">
-                        <button class="btn btn-success"
+                        <button class="btn btn-joyent-blue"
                                 data-ng-click="createNewKey()"
                                 data-translate>Add SSH key</button>
                     </div>

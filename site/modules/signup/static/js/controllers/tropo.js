@@ -26,7 +26,6 @@
                     account.country = $scope.isoToObj(account.country);
 
                     $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
-
                         if(data.retries && data.retries !== null) {
                             $scope.retriesLeft = (3-data.retries);
                         }
@@ -48,8 +47,10 @@
                 if(!$scope.countryCodes){
                     return;
                 }
+
                 var selected = null;
                 var usa = null;
+                
                 $scope.countryCodes.some(function (el) {
                     if(el.iso3 === 'USA') {
                         usa = el;
@@ -73,7 +74,6 @@
             $scope.filterUndefinedAreas = function (country) {
                 return !!country.areaCode;
             };
-
 
             $scope.deleteInterval = function(interval) {
                 $scope.tropoPoll = 0;
