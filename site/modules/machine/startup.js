@@ -155,9 +155,10 @@ module.exports = function (scope, callback) {
             data.forEach(function (p) {
                 if(info.packages.data[call.data.datacenter][p.name]) {
                     filteredPackages.push(utils.extend(p, info.packages.data[call.data.datacenter][p.name]));
+                } else {
+                    filteredPackages.push(p);
                 }
             });
-
             call.done(null, filteredPackages);
         });
     });

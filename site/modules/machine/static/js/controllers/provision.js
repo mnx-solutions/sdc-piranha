@@ -127,7 +127,6 @@
                     $scope.selectedPackageInfo = null;
                     var ds = $scope.data.datacenter;
 					var opsys = $scope.data.opsys;
-					// console.log($scope.data);
 					$scope.data = {
 						datacenter: ds,
 						opsys: opsys
@@ -198,7 +197,6 @@
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
-                        console.log(pkg);
                         $scope.selectedPackage = id;
                         $scope.selectedPackageInfo = pkg;
 
