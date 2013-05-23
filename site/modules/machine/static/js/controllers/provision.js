@@ -169,11 +169,11 @@
                             if(lPrice === lPrice) {
                                 $scope.packages.forEach(function(p) {
 
-                                    if(!p.full_price && p.price) {
+                                    if(!p.full_price && p.price && parseFloat(p.price) === parseFloat(p.price)) {
                                         p.full_price = lPrice + parseFloat(p.price);
                                         p.full_price = p.full_price.toFixed(3);
                                     }
-                                    if(!p.full_price_month && p.price_month) {
+                                    if(!p.full_price_month && p.price_month && parseFloat(p.price_month) === parseFloat(p.price_month)) {
                                         p.full_price_month = parseFloat(p.price_month) + (lPrice * 730);
                                         p.full_price_month = p.full_price_month.toFixed(2);
                                     }
