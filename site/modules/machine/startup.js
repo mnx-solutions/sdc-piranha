@@ -182,7 +182,7 @@ module.exports = function (scope, callback) {
                 if(data[i].name) {
                     for(var k in info.licenses["License Portfolio"]) {
                         var lic = info.licenses["License Portfolio"][k];
-                        if(lic["Canonical Image Name"] == data[i].name) {
+                        if(lic["API Name"] == data[i].name) {
                             data[i].license_price = lic["Pan-Instance Price Uplift"];
                         }
                     }
