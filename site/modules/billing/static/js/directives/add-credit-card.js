@@ -198,6 +198,7 @@
                                         'Payment information not updated:'
                                     ) + message
                                 );
+                                window.scrollTo(0,0);
                             } else {
                                 notification.push(null, { type: 'success' },
                                     localization.translate(null,
