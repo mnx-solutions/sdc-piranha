@@ -16,9 +16,11 @@ module.exports = function (scope, app, callback) {
     function sendToSSO(req, res, method, redirectUrl, redirect, campaignId) {
 
         // returnUrl will save the token and then redirect
-        var baseUrl = new Buffer(req.protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
 
-        var returnUrl = req.protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
+        // req.protocol returned wrong protocol in some browsers
+        var baseUrl = new Buffer('https://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
+
+        var returnUrl = 'https://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
         var ssoUrl = config.url +'/'+ method;
 
         var date = new Date().toUTCString();
