@@ -54,11 +54,6 @@
             "API Name": "ws2012std",
             "Pan-Instance Price Uplift": 0.06,
             "URN": "sdc:admin:ws2012std"
-        },
-        {
-            "API Name": "ubuntu-12.04",
-            "Pan-Instance Price Uplift": 5.06,
-            "URN": "sdc:fake:ubuntu-12.04"
         }
     ],
     "Portfolio Description": {
