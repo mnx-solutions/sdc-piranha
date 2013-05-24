@@ -214,7 +214,7 @@ Localization.prototype.load = function (module, lng, filePath) {
 Localization.prototype.getLocaleParser = function () {
     var self = this;
     return function parseLocale(req, res, next) {
-        req.log.debug('Parsing locale information from incoming request');
+        req.log.trace('Parsing locale information from incoming request');
 
         // Find user locale from the cookie
         if (req.cookies.hasOwnProperty('locale')) {
@@ -271,7 +271,7 @@ Localization.prototype.getLocaleParser = function () {
             });
             return next();
         } else {
-            req.log.debug('Request did not contain any language related information');
+            req.log.trace('Request did not contain any language related information');
             return next();
         }
     };
@@ -286,7 +286,7 @@ Localization.prototype.getLocaleParser = function () {
 Localization.prototype.getRegisterHelpers = function() {
     var self = this;
     return function registerLocalizationHelpers(req, res, next) {
-        req.log.debug('Registering localization helpers');
+        req.log.trace('Registering localization helpers');
 
         res.locals.localizer = self;
         //res.locals.translate = res.translate = self.translate.bind(self);
