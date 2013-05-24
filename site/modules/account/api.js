@@ -25,6 +25,11 @@ module.exports = function (scope, register, callback) {
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
+            if(!obj) {
+                scope.log.warn({account: account}, 'zuora didnt respond, allowing through');
+                cb(null, 'completed'); // Can provision so we let through
+                return;
+            }
             scope.log.debug({obj: obj, account: account, method: method}, 'got error from zuora, handling it' );
 
             if(obj.errors && obj.errors[0].code === 'U01' && method === 'provision') {
