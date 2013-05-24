@@ -152,6 +152,8 @@
                             $scope.datasetType = 'kvm';
                         } else if (dataset.type == 'smartmachine') {
                             $scope.datasetType = 'smartos';
+                        } else {
+                            $scope.datasetType = dataset.type;
                         }
 
                         ng.element('#next').trigger('click');
@@ -185,6 +187,7 @@
                                 delete(p.full_price_month);
                             });
                         }
+                        console.log('type',$scope.datasetType);
                         $scope.slideCarousel();
                     });
 
@@ -240,9 +243,16 @@
                         return false;
                     }
 
+                    if($scope.datasetType === 'windows') {
+                       if(item.memory < 7168 && item.memory > 32768) {
+                            return false;
+                       }
+                    }
+
                     if ($scope.packageType && $scope.packageType !== item.group) {
                         return false;
                     }
+
 
                     var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
                     for (var i = 0, c = props.length; i < c; i++) {
