@@ -211,7 +211,8 @@
                                 return this._format(translation, params);
                             }
                         } else {
-                            return identifier;
+                            console.warn('TRANSLATE: ' + identifier);
+                            return this._format(identifier, params);
                         }
                     }
                 }

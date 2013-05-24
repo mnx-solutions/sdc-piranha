@@ -18,7 +18,7 @@
                 },
                 {
                     sequence: 4,
-                    name: 'SSH Keys',
+                    name: 'SSH keys',
                     url: '/account/ssh'
                 },
                 {
