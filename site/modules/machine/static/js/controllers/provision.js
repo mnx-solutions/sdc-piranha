@@ -255,14 +255,11 @@
                         var requirements = $scope.selectedDataset.requirements;
                         for(var requirement in requirements) {
                             var value = parseInt(requirements[requirement]);
-                            var p = requirement.split('_');
-                            if(p.length == 2) {
-                                if(p[0] == 'min' && item[p[1]] && parseInt(item[p[1]]) < value) {
-                                    return false;
-                                }
-                                if(p[0] == 'max' && item[p[1]] && parseInt(item[p[1]]) > value) {
-                                    return false;
-                                }
+                            if(requirement == 'min_ram' && item['memory'] && parseInt(item['memory']) < value) {
+                                return false;
+                            }
+                            if(requirement == 'max_ram' && item['memory'] && parseInt(item['memory']) > value) {
+                                return false;
                             }
                         }
                     }
