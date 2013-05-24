@@ -251,10 +251,20 @@
                         return false;
                     }
 
-                    if($scope.selectedDataset && $scope.selectedDataset.os === 'windows') {
-                       if(parseInt(item.memory) < 7168 || parseInt(item.memory) > 32768) {
-                            return false;
-                       }
+                    if($scope.selectedDataset && $scope.selectedDataset.requirements) {
+                        var requirements = $scope.selectedDataset.requirements;
+                        for(var requirement in requirements) {
+                            var value = parseInt(requirements[requirement]);
+                            var p = requirement.split('_');
+                            if(p.length == 2) {
+                                if(p[0] == 'min' && item[p[1]] && parseInt(item[p[1]]) < value) {
+                                    return false;
+                                }
+                                if(p[0] == 'max' && item[p[1]] && parseInt(item[p[1]]) > value) {
+                                    return false;
+                                }
+                            }
+                        }
                     }
 
                     if ($scope.packageType && $scope.packageType !== item.group) {
