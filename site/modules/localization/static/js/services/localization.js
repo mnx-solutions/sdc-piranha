@@ -66,7 +66,8 @@
                  * @param originScope origin scope for the registred module
                  * @returns {}
                  */
-                _find: function (originScope) {
+                _find: function (originScope, debug) {
+
                     for (var i = 0, c = contexts.length; i < c; i++) {
                         var context = contexts[i];
                         var scope = context.scope;
@@ -211,7 +212,8 @@
                                 return this._format(translation, params);
                             }
                         } else {
-                            return identifier;
+                            console.warn('TRANSLATE: ' + identifier);
+                            return this._format(identifier, params);
                         }
                     }
                 }

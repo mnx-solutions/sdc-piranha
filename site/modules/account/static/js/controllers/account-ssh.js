@@ -11,24 +11,11 @@
         'localization',
         'requestContext',
         'notification',
+        'util',
 
-        function ($scope, $window, $timeout, $q, $dialog, Account, localization, requestContext, notification) {
+        function ($scope, $window, $timeout, $q, $dialog, Account, localization, requestContext, notification, util) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
-
-            /* taken from the machines controller. Should be made globally available */
-            var confirm = function (question, callback) {
-                var title = 'Confirm';
-                var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
-
-                $dialog.messageBox(title, question, btns)
-                    .open()
-                    .then(function(result){
-                        if(result ==='ok'){
-                            callback();
-                        }
-                    });
-            };
 
             /* ssh key creating popup with custom template */
             var newKeyPopup = function(question, callback) {
@@ -45,10 +32,10 @@
                     });
             };
 
+            $scope.key = {};
             $scope.userPlatform = $window.navigator.platform;
-            $scope.newKey = {};
-
             $scope.openKeyDetails = null;
+
             $scope.setOpenDetails = function(id) {
                 if(id === $scope.openKeyDetails) {
                     $scope.openKeyDetails = null;
@@ -58,62 +45,83 @@
             };
 
             /* SSH key creating */
-            $scope.createPending = false;
-            $scope.addNewKey = function() {
-                newKeyPopup('', function(keyData) {
+            $scope.addNewKey = function () {
+                newKeyPopup('', function (keyData) {
                     if (!keyData) {
                         keyData = {};
                     }
 
-                    $scope.newKey.name = keyData.keyName;
-                    $scope.newKey.data = keyData.keyData;
-
-                    $scope.createNewKey();
-                });
-            };
-
-            function refreshKeyList() {
-                $scope.sshKeys = Account.getKeys(true);
-            }
-
-            $scope.createNewKey = function() {
-                $scope.createPending = true;
-                $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
-                $q.when($scope.addedKey, function(key) {
-
-                    if(key.name && key.fingerprint && key.key) {
-                        // successful add
-                        refreshKeyList();
-                        $scope.addsshKey = false;
-                        notification.push(null, {type: 'notification'},
-                            localization.translate($scope, null, 'New key successfully added'));
-
-                        $scope.newKey = {};
-                    } else {
-                        notification.push(null, {type: 'error'},
-                            localization.translate($scope, null, 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '')));
-                    }
-                    $scope.createPending = false;
-                });
-            };
-
-            /* SSH key deleting */
-            $scope.deleteKey = function(name, fingerprint) {
-                confirm(localization.translate($scope, null, 'Are you sure you want to delete "'+ name +'" SSH key'), function () {
-                    var deleteKey = Account.deleteKey(fingerprint);
-
-                    $q.when(deleteKey, function(data) {
-                        $scope.openKeyDetails = null;
-                        notification.push(null, {type: 'notification'}, localization.translate($scope, null, 'Key successfully deleted'));
-
-                        // FIXME: Bad, bad, bad
-                        $timeout(function () {
-                            refreshKeyList();
-                        }, 1000);
+                    $scope.createNewKey({
+                        name: keyData.keyName,
+                        data: keyData.keyData
                     });
                 });
             };
 
+            $scope.updateKeys = function () {
+                $scope.keys = Account.getKeys(true);
+            };
+
+            $scope.createNewKey = function (key) {
+                // If key is not given as an argument but exist in a scope
+                if (!key && $scope.key) {
+                    key = $scope.key;
+                }
+
+                var newKey = Account.createKey(key.name, key.data);
+
+                $q.when(newKey, function (key) {
+                    if (key.name && key.fingerprint && key.key) {
+                        $scope.key = null;
+                        $scope.updateKeys();
+
+                        notification.push(null, { type: 'success' },
+                            localization.translate($scope, null,
+                                'New key successfully added'
+                            )
+                        );
+
+                    } else {
+                        notification.push(null, { type: 'error' },
+                            localization.translate($scope, null,
+                                'Failed to add new key: {{message}}',
+                                {
+                                    message: (key.message || '') + ' ' + (key.code || '')
+                                }
+                            )
+                        );
+                    }
+                });
+            };
+
+            $scope.deleteKey = function(name, fingerprint) {
+                util.confirm(null, localization.translate($scope, null,
+                    'Are you sure you want to delete "{{name}}" SSH key',
+                    {
+                        name: name
+                    }
+                ),
+                    function () {
+                        var deleteKey = Account.deleteKey(fingerprint);
+
+                        $q.when(deleteKey, function (data) {
+                            $scope.openKeyDetails = null;
+
+                            notification.push(null, { type: 'success' },
+                                localization.translate($scope, null,
+                                    'Key successfully deleted'
+                                )
+                            );
+
+                            // FIXME: Bad, bad, bad
+                            $timeout(function () {
+                                $scope.updateKeys();
+                            }, 1000);
+                        });
+                    });
+            };
+
+            /*
             $scope.showKeygenDownload = function() {
                 // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
                 var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
@@ -123,6 +131,9 @@
             $scope.clickKeygenDownload = function() {
                 window.location.href = '/main/account/key-generator.sh';
             };
+            */
+
+            $scope.updateKeys();
 
         }]);
 }(window.JP.getModule('Account')));

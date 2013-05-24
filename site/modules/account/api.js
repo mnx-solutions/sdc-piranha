@@ -60,7 +60,7 @@ module.exports = function (scope, register, callback) {
             }
             var start = Date.now();
             getFromBilling('provision', account, function (err, state) {
-                scope.log.trace({account: account}, 'Checking with billing server took ' + (Date.now() - start));
+                scope.log.debug({account: account}, 'Checking with billing server took ' + (Date.now() - start));
                 cb(err, state);
             });
         });
@@ -69,7 +69,7 @@ module.exports = function (scope, register, callback) {
 
     api.getSignupStep = function (call, cb) {
 
-        scope.log.debug('getting signup step');
+        scope.log.trace('getting signup step');
 
         var req = (call.done && call.req) || call;
 
@@ -77,7 +77,7 @@ module.exports = function (scope, register, callback) {
             if(steps.indexOf(step) === (steps.length - 1)) {
                 step = 'completed';
             }
-            scope.log.debug('signup step is %s', step);
+            scope.log.trace('signup step is %s', step);
             cb(null, step);
         }
 

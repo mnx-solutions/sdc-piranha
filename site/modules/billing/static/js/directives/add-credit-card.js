@@ -17,8 +17,12 @@
                 restrict: 'A',
                 replace: true,
                 scope: true,
-                link: function ($scope) {
 
+                controller: function($scope, $element, $attrs, $transclude) {
+                    localization.bind('billing', $scope);
+                },
+
+                link: function ($scope) {
                     function getCardType(number){
                         if(!number) {
                             return '';
@@ -63,7 +67,6 @@
                     var statesP = $http.get('billing/states');
 
                     $q.when($scope.prev, function (prev) {
-                        console.log(prev);
                         if(prev && prev.cardHolderInfo) {
                             ['addressLine1','addressLine2','country','state','city','zipCode'].forEach(function (key) {
                                 $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];

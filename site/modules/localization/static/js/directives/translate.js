@@ -1,7 +1,11 @@
 'use strict';
 
 (function (app) {
-    app.directive('translate', [ 'localization', '$compile', '$interpolate',
+    app.directive('translate', [
+        'localization',
+        '$compile',
+        '$interpolate',
+
         function (localization, $compile, $interpolate) {
 
             /**
@@ -38,17 +42,19 @@
             return {
                 priority: 10,
                 restrict: 'EA',
-                compile: function compile(tElement, tAttrs, transclude) {
-                    return function link(scope, element, attrs) {
+
+                compile: function compile (tElement, tAttrs, transclude) {
+                    return function link (scope, element, attrs) {
                         var countVariable = null;
                         var countValue = 0;
                         var identifier = null;
-						var elementText = null;
-                        if(attrs.translate === 'value') {
-                            elementText = $interpolate(element.text())(scope);
-                        } else {
-                            elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
-                        }
+                        var elementText = null;
+
+                        if (attrs.translate === 'value') {
+                            elementText = $interpolate(element.text())(scope);
+                        } else {
+                            elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
+                        }
 
                         // Interpolate expression
                         if (attrs.translateExpression) {
@@ -74,15 +80,15 @@
                         // Watch for count variable changes
                         if (countVariable) {
                             scope.$watch(countVariable,
-                                         function (newValue, oldValue, scope) {
-                                             countValue = newValue;
-                                             onChange(scope, element, attrs, identifier, countValue);
-                                         });
+                                function (newValue, oldValue, scope) {
+                                    countValue = newValue;
+                                    onChange(scope, element, attrs, identifier, countValue);
+                                });
                         }
 
                         onChange(scope, element, attrs, identifier, countValue);
                     };
                 }
             };
-    }]);
+        }]);
 }(window.JP.getModule('localization')));

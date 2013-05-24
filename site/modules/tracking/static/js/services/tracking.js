@@ -5,13 +5,19 @@
 
         return {
             event: function (category, action, label) {
-                _gaq.push(["_trackEvent", category, action, label || ""])
+                if (typeof _gaq !== 'undefined') {
+                    _gaq.push(["_trackEvent", category, action, label || ""]);
+                }
             },
             page: function () {
-                _gaq.push(['_trackPageview', $location.path()]);
+                if (typeof _gaq !== 'undefined') {
+                    _gaq.push(['_trackPageview', $location.path()]);
+                }
             },
             timing: function (category, variable, time) {
-                _gaq.push(['_trackTiming', category, variable, time]);
+                if (typeof _gaq !== 'undefined') {
+                    _gaq.push(['_trackTiming', category, variable, time]);
+                }
             },
             marketing_lead: function (account) {
                 var enc_email = '';
@@ -27,7 +33,7 @@
                             FirstName:         account.firstName,
                             LastName:          account.lastName,
                             Company:           account.companyName || '--',
-                            "CAPI_UUID_(L)":     account.id || '',
+                            CAPI_UUID__c_lead: account.id || '',
                             Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'
                         },
                         enc_email

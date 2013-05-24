@@ -863,3 +863,9 @@ a .feature1 {
     border-bottom-style: none;
     border-left-style: none;
 }
+iframe {
+	border: 0px;
+	padding:0px;
+	margin:0px;
+}
+
