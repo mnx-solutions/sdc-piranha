@@ -15,6 +15,10 @@
                 replace: true,
                 scope: true,
 
+                controller: function($scope, $element, $attrs, $transclude) {
+                    localization.bind('account', $scope);
+                },
+
                 link: function ($scope) {
                     $scope.countryCodes = null;
                     $scope.selectedCountryCode = null;

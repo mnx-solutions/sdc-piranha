@@ -66,7 +66,8 @@
                  * @param originScope origin scope for the registred module
                  * @returns {}
                  */
-                _find: function (originScope) {
+                _find: function (originScope, debug) {
+
                     for (var i = 0, c = contexts.length; i < c; i++) {
                         var context = contexts[i];
                         var scope = context.scope;

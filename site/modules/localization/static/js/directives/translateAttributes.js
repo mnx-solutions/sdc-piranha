@@ -1,24 +1,22 @@
 'use strict';
 
 (function (app) {
-    app.directive('translateAttributes', [ 'localization', '$compile', '$interpolate',
-        function (localization, $compile, $interpolate) {
-
+    app.directive('translateAttributes', [
+        'localization',
+        function (localization) {
             return {
                 priority: 10,
                 restrict: 'EA',
-                compile: function compile(tElement, tAttrs, transclude) {
-                    return function link(scope, element, attrs) {
 
-                        // for translating other attributes
+                compile: function compile (tElement, tAttrs, transclude) {
+                    return function link (scope, element, attrs) {
                         if (attrs.translateAttributes.length > 0) {
                             var translateAttrs = attrs.translateAttributes.split(',');
 
-                            translateAttrs.forEach(function (attr) {
+                            for (var i = 0, c = translateAttrs.length; i < c; i++) {
+                                var attr = translateAttrs[i];
 
-                                if(attr === 'no-value') {
-                                    translate = false;
-                                } else {
+                                if (!attr || attr.length !== 0 || attr === 'no-value') {
                                     attrs.$observe(attr,
                                         function (value) {
                                             element.attr(attr, localization.translate(
@@ -29,7 +27,7 @@
                                             ));
                                         });
                                 }
-                            });
+                            }
                         }
                     };
                 }

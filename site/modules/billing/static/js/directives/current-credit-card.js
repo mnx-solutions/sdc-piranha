@@ -2,21 +2,30 @@
 
 (function (app) {
 
-    app.directive('currentCreditCard',['BillingService', function (BillingService) {
+    app.directive('currentCreditCard',[
+        'BillingService',
+        'localization',
 
-        return {
-            restrict: 'A',
-            replace: true,
-            scope: true,
-            link: function ($scope) {
+        function (BillingService, localization) {
 
-                $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
+            return {
+                restrict: 'A',
+                replace: true,
+                scope: true,
 
-                $scope.$on('creditCardUpdate', function (event, cc) {
-                    $scope.creditCard = cc;
-                });
-            },
-            templateUrl: 'billing/static/partials/current-credit-card.html'
-        };
-    }]);
+                controller: function($scope, $element, $attrs, $transclude) {
+                    localization.bind('billing', $scope);
+                },
+
+                link: function ($scope) {
+
+                    $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
+
+                    $scope.$on('creditCardUpdate', function (event, cc) {
+                        $scope.creditCard = cc;
+                    });
+                },
+                templateUrl: 'billing/static/partials/current-credit-card.html'
+            };
+        }]);
 }(window.JP.getModule('Billing')));
