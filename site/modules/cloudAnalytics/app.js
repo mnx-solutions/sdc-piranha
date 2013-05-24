@@ -201,7 +201,7 @@ module.exports = function (scope, app, callback) {
 
                     Object.keys(response.datapoints).length === Object.keys(instrumentations).length;
                     if(Object.keys(response.datapoints).length === Object.keys(instrumentations).length) {
-                        console.log(response);
+
                         res.json(response);
                     }
                 });
