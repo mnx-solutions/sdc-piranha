@@ -5,13 +5,19 @@
 
         return {
             event: function (category, action, label) {
-                _gaq.push(["_trackEvent", category, action, label || ""])
+                if (typeof _gaq !== 'undefined') {
+                    _gaq.push(["_trackEvent", category, action, label || ""]);
+                }
             },
             page: function () {
-                _gaq.push(['_trackPageview', $location.path()]);
+                if (typeof _gaq !== 'undefined') {
+                    _gaq.push(['_trackPageview', $location.path()]);
+                }
             },
             timing: function (category, variable, time) {
-                _gaq.push(['_trackTiming', category, variable, time]);
+                if (typeof _gaq !== 'undefined') {
+                    _gaq.push(['_trackTiming', category, variable, time]);
+                }
             },
             marketing_lead: function (account) {
                 var enc_email = '';
