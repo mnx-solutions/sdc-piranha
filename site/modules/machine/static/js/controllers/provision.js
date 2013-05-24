@@ -337,8 +337,10 @@
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
-                                p.price = getNr(p.price).toFixed(3);
-                                p.price_month = getNr(p.price_month).toFixed(2);
+                                var price = getNr(p.price);
+                                var priceMonth = getNr(p.price_month);
+                                p.price = price && price.toFixed(3) || undefined;
+                                p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
                             });
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
