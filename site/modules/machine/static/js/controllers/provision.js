@@ -336,8 +336,8 @@
                                 if(packageTypes.indexOf(p.group) === -1){
                                     packageTypes.push(p.group);
                                 }
-                                p.price = parseFloat(p.price).toFixed(3);
-                                p.price_month = parseFloat(p.price_month).toFixed(2);
+                                p.price = getNr(p.price).toFixed(3);
+                                p.price_month = getNr(p.price_month).toFixed(2);
                             });
                             $scope.packageTypes = packageTypes;
                             $scope.packages = packages;
