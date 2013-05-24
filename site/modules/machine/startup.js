@@ -276,7 +276,7 @@ module.exports = function (scope, callback) {
         }
     });
 
-    function pollForMachineState(client, call, machineId, state) {
+    function pollForMachineState(client, call, machineId, state, timeout) {
         var timer = setInterval(function () {
             call.log.debug('Polling for machine %s to become %s', machineId, state);
             client.getMachine(machineId, function (err, machine) {
@@ -317,10 +317,10 @@ module.exports = function (scope, callback) {
             call.log.error('Operation timed out');
             clearInterval(timer);
             call.error(new Error('Operation timed out'));
-        }, 5 * 60 * 1000);
+        }, (timeout || 5 * 60 * 1000));
     }
 
-    function pollForMachinePackageChange(client, call, sdcpackage) {
+    function pollForMachinePackageChange(client, call, sdcpackage, timeout) {
         var timer = setInterval(function () {
             var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
 
@@ -347,7 +347,7 @@ module.exports = function (scope, callback) {
             call.log.error('Operation timed out');
             clearInterval(timer);
             call.error(new Error('Operation timed out'));
-        }, 5 * 60 * 1000);
+        }, (timeout || 5 * 60 * 1000));
     }
 
     function changeState(func, logVerb, endstate, opts) {
@@ -445,7 +445,7 @@ module.exports = function (scope, callback) {
             call.cloud.createMachine(options, function (err, machine) {
                 if (!err) {
                     call.immediate(null, {machine: machine});
-                    pollForMachineState(call.cloud, call, machine.id, 'running');
+                    pollForMachineState(call.cloud, call, machine.id, 'running', (60 * 60 * 1000));
                 } else {
                     call.log.error(err);
                     call.immediate(err);
