@@ -1,7 +1,7 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
     <div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="container content-container-inner">
-        <div class="machines container" data-ng-show="pagedMachines.length">
+        <div class="machines container" data-ng-show="pagedMachines.length || query">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
 
