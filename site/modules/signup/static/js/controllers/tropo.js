@@ -91,7 +91,7 @@
 
             $scope.phoneVerification = function() {
                 // clean the phone number
-                $scope.account.phone = $scope.account.phone.replace(new RegExp(/\s+/g), '').replace(new RegExp(/-/g), '');
+                $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
 
                 if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
                     $scope.tropoRunning = true;

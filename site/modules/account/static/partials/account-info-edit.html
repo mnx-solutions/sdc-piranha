@@ -104,7 +104,7 @@
                                name="phone"
 								style="width:160px"
                                data-ng-model="account.phone"
-                               data-ng-pattern="/^(\d+)$/"
+                               data-ng-pattern="/^([\d#\*]+)$/"
                                data-ng-class="{error: isError('phone')}"
                                required/>
                     </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>

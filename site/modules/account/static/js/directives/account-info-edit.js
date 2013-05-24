@@ -98,6 +98,8 @@
                         // clean the phone number
                         var account = angular.copy($scope.account);
                         account.country = $scope.account.country.iso3;
+                        account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
+
 
                         $scope.loading = true;
                         Account.updateAccount(account).then(function (acc) {
