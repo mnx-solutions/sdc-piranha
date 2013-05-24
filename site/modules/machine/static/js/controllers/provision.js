@@ -155,7 +155,7 @@
 
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
-                        console.log(dataset);
+
                         if (dataset.type == 'virtualmachine') {
                             $scope.datasetType = 'kvm';
                         } else if (dataset.type == 'smartmachine') {
@@ -196,7 +196,6 @@
                                 delete(p.full_price_month);
                             });
                         }
-                        console.log('type',$scope.datasetType);
                         $scope.slideCarousel();
                     });
 
@@ -252,7 +251,7 @@
                         return false;
                     }
 
-                    if($scope.datasetType === 'windows') {
+                    if($scope.selectedDataset.os && $scope.selectedDataset.os === 'windows') {
                        if(item.memory < 7168 && item.memory > 32768) {
                             return false;
                        }
