@@ -20,7 +20,7 @@ module.exports = function (scope, app, callback) {
         // req.protocol returned wrong protocol in some browsers
         var protocol = 'https';
 
-        if(app.settings.env == 'development' || app.settings.env == 'staging') {
+        if(app.settings.env === 'development' || app.settings.env === 'staging') {
             protocol = req.protocol;
         }
 
