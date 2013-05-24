@@ -28,40 +28,39 @@
                     <div class="item header">
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('id')"
-                              data-ng-switch on="sortIcon.id"
-                              data-translate>
-                            <span class="pull-left border">Name</span>
-
-                            <span class="icon-arrow-up pull-right" data-ng-switch-when="up"></span>
-                            <span class="icon-arrow-down pull-right" data-ng-switch-when="down"></span>
+                              data-ng-switch on="sortIcon.id">
+                            <span class="pull-left" data-translate>Name</span>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                             <div class="clearfix"></div>
                         </span>
 
 
                         <span class="span1 text-medium sortable"
                               data-ng-click="sortBy('datacenter')"
-                              data-ng-switch on="sortIcon.datacenter" data-translate>
-                            Datacenter
+                              data-ng-switch on="sortIcon.datacenter">
+                            <span class="pull-left" data-translate>Datacenter</span>
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
 
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('created')"
-                              data-ng-switch on="sortIcon.created" data-translate>
-                            Created
+                              data-ng-switch on="sortIcon.created">
+                            <span class="pull-left" data-translate>Created</span>
                             <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
                         </span>
 
                         <span class="span2 text-medium" data-translate>IP</span>
-                            <span class="span1 text-medium pull-right sortable"
-                                  data-ng-click="sortBy('state')"
-                                  data-ng-switch on="sortIcon.state" data-translate>
-                                State
-                                <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
-                                <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
-                            </span>
+                        
+                        <span class="span1 text-medium pull-right sortable"
+                              data-ng-click="sortBy('state')"
+                              data-ng-switch on="sortIcon.state">
+                            <span class="pull-left" data-translate>State</span>
+                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
+                        </span>
                         <div class="clearfix"></div>
                     </div>
 

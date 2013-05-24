@@ -30,7 +30,8 @@
     "xml2js": "*",
     "mustache": "*",
     "tropo-webapi-node": "*",
-    "restify": "*"
+    "restify": "*",
+    "speakeasy": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
