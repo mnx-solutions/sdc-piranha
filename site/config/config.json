@@ -71,7 +71,7 @@
     },
     "polling": {
         "machineTags": 5000,
-        "machineState": 5000,
+        "machineState": 10000,
         "packageChange": 1000
     }
 }
