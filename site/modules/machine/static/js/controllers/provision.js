@@ -147,10 +147,10 @@
                 };
 
                 function getNr(el) {
-                    if(!el || isNaN(el)) {
+                    if(!el || !(el === el)) {
                         return false;
                     }
-                    return +((el + '').replace(/\,/g, ''));
+                    return +((el + '').replace(/,/g, ''));
                 }
 
                 $scope.selectDataset = function (id) {
