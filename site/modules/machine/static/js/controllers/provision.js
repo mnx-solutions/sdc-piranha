@@ -261,6 +261,13 @@
                             if(requirement == 'max_ram' && item['memory'] && parseInt(item['memory']) > value) {
                                 return false;
                             }
+                            // patch for SDC upgrade bug
+                            if(requirement == 'min_memory' && item['memory'] && parseInt(item['memory']) < value) {
+                                return false;
+                            }
+                            if(requirement == 'max_memory' && item['memory'] && parseInt(item['memory']) > value) {
+                                return false;
+                            }
                         }
                     }
 
