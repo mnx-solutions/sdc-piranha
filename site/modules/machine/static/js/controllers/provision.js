@@ -146,6 +146,13 @@
 
                 };
 
+                function getNr(el) {
+                    if(!el || isNaN(el)) {
+                        return false;
+                    }
+                    return +((el + '').replace(/\,/g, ''));
+                }
+
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
                         console.log(dataset);
@@ -167,17 +174,18 @@
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
 
-                        if($scope.packages && dataset.license_price) {
-                            var lPrice = parseFloat(dataset.license_price);
-                            if(lPrice === lPrice) {
-                                $scope.packages.forEach(function(p) {
 
+
+                        if($scope.packages && dataset.license_price) {
+                            var lPrice = getNr(dataset.license_price);
+                            if(lPrice !== false) {
+                                $scope.packages.forEach(function(p) {
                                     if(!p.full_price && p.price) {
-                                        p.full_price = lPrice + parseFloat(p.price.replace(',',''));
+                                        p.full_price = lPrice + getNr(p.price);
                                         p.full_price = p.full_price.toFixed(3);
                                     }
                                     if(!p.full_price_month && p.price_month) {
-                                        p.full_price_month = parseFloat(p.price_month.replace(',','')) + (lPrice * 730);
+                                        p.full_price_month = getNr(p.price_month) + (lPrice * 730);
                                         p.full_price_month = p.full_price_month.toFixed(2);
                                     }
                                 });

@@ -305,14 +305,9 @@
 
                 $scope.filterPackages = function (item) {
 
-                    if($scope.currentPackage && item.type && item.type === 'smartos') {
-                        //handle old images
-                        if (!$scope.currentPackage.type) {
-                            return item.memory >= $scope.currentPackage.memory && item.group == 'High CPU';
-                        //handle new images
-                        } else {
-                            return item.memory >= $scope.currentPackage.memory && item.group === $scope.currentPackage.group;
-                        }
+                    if($scope.currentPackage && item.type && item.type === 'smartos' && item.memory >= $scope.currentPackage.memory) {
+                        //Old images don't have currentPackage.type
+                        return (!$scope.currentPackage.type && item.group === 'High CPU') || (item.group === $scope.currentPackage.grou)p;
                     }
                     return false;
                 };
