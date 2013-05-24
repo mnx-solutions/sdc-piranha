@@ -18,9 +18,15 @@ module.exports = function (scope, app, callback) {
         // returnUrl will save the token and then redirect
 
         // req.protocol returned wrong protocol in some browsers
-        var baseUrl = new Buffer('https://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
+        var protocol = 'https';
 
-        var returnUrl = 'https://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
+        if(app.settings.env == 'development' || app.settings.env == 'staging') {
+            protocol = req.protocol;
+        }
+
+        var baseUrl = new Buffer(protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
+
+        var returnUrl = protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
         var ssoUrl = config.url +'/'+ method;
 
         var date = new Date().toUTCString();
