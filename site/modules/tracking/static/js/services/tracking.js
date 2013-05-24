@@ -27,7 +27,7 @@
                             FirstName:         account.firstName,
                             LastName:          account.lastName,
                             Company:           account.companyName || '--',
-                            CAPI_UUID_L:       account.id || '',
+                            CAPI_UUID__c_lead: account.id || '',
                             Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'
                         },
                         enc_email
