@@ -305,14 +305,13 @@
 
                 $scope.filterPackages = function (item) {
 
-                    if($scope.currentPackage && item.type) {
+                    if($scope.currentPackage && item.type && item.type === 'smartos') {
                         //handle old images
                         if (!$scope.currentPackage.type) {
                             return item.memory >= $scope.currentPackage.memory && item.group == 'High CPU';
                         //handle new images
                         } else {
-                            return item.memory >= $scope.currentPackage.memory && item.group === $scope.currentPackage.group &&
-                                item.type === 'smartos';
+                            return item.memory >= $scope.currentPackage.memory && item.group === $scope.currentPackage.group;
                         }
                     }
                     return false;
