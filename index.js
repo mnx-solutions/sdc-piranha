@@ -30,6 +30,10 @@ app.use(express.session({
     secret: 'secret'
 }));
 
+app.get('/healthcheck', function(req, res, next) {
+    res.send('ok');
+});
+
 var rack = new Rack();
 rack.addMiddleware(app);
 
