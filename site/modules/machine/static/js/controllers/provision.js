@@ -259,7 +259,7 @@
 
                     if($scope.selectedDataset && $scope.selectedDataset.os === 'windows') {
                         console.log(item);
-                       if(parseInt(item.memory) < 7168 && parseInt(item.memory) > 32768) {
+                       if(parseInt(item.memory) < 7168 || parseInt(item.memory) > 32768) {
                             return false;
                        }
                     }
