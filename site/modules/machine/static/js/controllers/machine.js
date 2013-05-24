@@ -253,8 +253,10 @@
 
                             // Redirect if complete
                             Machine.deleteMachine(machineid).getJob().done(function () {
-                                $location.url('/machine');
-                                $location.replace();
+                                if($location.url() === '/machine/details/'+ machineid) {
+                                    $location.url('/machine');
+                                    $location.replace();
+                                }
                             });
                         });
                 };

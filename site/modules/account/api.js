@@ -58,8 +58,11 @@ module.exports = function (scope, register, callback) {
                 cb(accErr);
                 return;
             }
-
-            getFromBilling('provision', account, cb);
+            var start = Date.now();
+            getFromBilling('provision', account, function (err, state) {
+                scope.log.trace({account: account}, 'Checking with billing server took ' + (Date.now() - start));
+                cb(err, state);
+            });
         });
         return;
     };
