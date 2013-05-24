@@ -251,7 +251,7 @@
                         return false;
                     }
 
-                    if($scope.selectedDataset.os && $scope.selectedDataset.os === 'windows') {
+                    if($scope.selectedDataset && $scope.selectedDataset.os === 'windows') {
                        if(item.memory < 7168 && item.memory > 32768) {
                             return false;
                        }
