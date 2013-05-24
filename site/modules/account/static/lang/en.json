@@ -1,6 +1,8 @@
 {
     "Name": "Name",
     "Account": "Account",
+    "Account updated": "Account updated",
+    "Account update failed": "Account update failed",
     "Payment": "Payment",
     "Payment information": "Payment information",
     "Summary": "Summary",
