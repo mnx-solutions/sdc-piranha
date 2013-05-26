@@ -17,7 +17,9 @@
             '$q',
             function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q) {
                 localization.bind('machine', $scope);
-                requestContext.setUpRenderContext('machine.provision', $scope);
+                requestContext.setUpRenderContext('machine.provision', $scope, {
+                    title: localization.translate(null, 'machine', 'Create Instances on Joyent')
+                });
 
                 $scope.keys = Account.getKeys();
                 $scope.datacenters = Datacenter.datacenter();

@@ -4,8 +4,8 @@
     app.controller(
         'AccountController',
         ['$scope', 'Account', 'localization', 'requestContext', 'BillingService', '$q', function ($scope, Account, localization, requestContext, BillingService, $q) {
-            requestContext.setUpRenderContext('account.index', $scope);
             localization.bind('account', $scope);
+            requestContext.setUpRenderContext('account.index', $scope);
 
             $scope.loading = true;
             $scope.account = Account.getAccount();

@@ -16,7 +16,9 @@
             'util',
             function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, $location, util) {
                 localization.bind('machine', $scope);
-                requestContext.setUpRenderContext('machine.details', $scope);
+                requestContext.setUpRenderContext('machine.details', $scope, {
+                    title: localization.translate(null, 'machine', 'View Joyent Instance Details')
+                });
 
                 var machineid = requestContext.getParam('machineid');
 

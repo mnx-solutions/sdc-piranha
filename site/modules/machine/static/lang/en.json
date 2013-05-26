@@ -1,4 +1,7 @@
 {
+    "See my Joyent Instances": "See my Joyent Instances",
+    "Create Instances on Joyent": "Create Instances on Joyent",
+    "View Joyent Instance Details": "View Joyent Instance Details",
     "Compute": "Compute",
     "IP": "IP",
     "Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.": "Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.",
