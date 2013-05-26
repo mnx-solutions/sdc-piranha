@@ -51,6 +51,16 @@
                         keyData = {};
                     }
 
+                    if (!keyData.keyData) {
+                        notification.push(null, { type: 'error' },
+                            localization.translate($scope, null,
+                                'Please enter a SSH key'
+                            )
+                        );
+
+                        return;
+                    }
+
                     $scope.createNewKey({
                         name: keyData.keyName,
                         data: keyData.keyData
