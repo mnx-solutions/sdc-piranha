@@ -66,6 +66,7 @@
                                        id="dataset-{{dataset.id}}"
                                        name="dataset"
                                        value="{{selectedVersions[dataset.name].id || dataset.id}}"
+                                       data-ng-checked="selectedDataset.id == dataset.id"
                                        data-ng-click="selectDataset(dataset.id)"
                                        data-ng-model="selectedDataset"  />
 
@@ -157,6 +158,7 @@
                                        name="tmp"
                                        id="package-{{package.id}}"
                                        value="{{package.id}}"
+                                       data-ng-checked="selectedPackage.id == package.id"
                                        data-ng-click="selectPackage(package.id)"
                                        data-ng-model="selectedPackage"/>
 

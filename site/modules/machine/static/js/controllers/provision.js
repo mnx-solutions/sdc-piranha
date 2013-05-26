@@ -131,17 +131,18 @@
                 };
 
                 $scope.reconfigure = function () {
-
-                    $scope.selectedDataset = null;
+                    //$scope.selectedDataset = null;
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
+                    $scope.packageType = null;
+
                     var ds = $scope.data.datacenter;
 					var opsys = $scope.data.opsys;
+
 					$scope.data = {
 						datacenter: ds,
 						opsys: opsys
 					};
-                    $scope.packageType = null;
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
                     ng.element('#finish-configuration').fadeOut('fast');
@@ -333,6 +334,7 @@
                             $scope.selectedVersions = selectedVersions;
                             $scope.reloading = (--count > 0);
                         });
+
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
                             packages.forEach(function (p) {
