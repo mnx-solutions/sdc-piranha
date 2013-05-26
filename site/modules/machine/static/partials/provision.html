@@ -194,6 +194,7 @@
 
                     <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
 						<div class="row-fluid">
+                            <b style="width:90px;display:inline-block" data-translate>Datacenter</b> {{data.datacenter}}<br/>
                         	<b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
                         	<b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
                             <span data-ng-show="selectedPackageInfo.vcpus">
