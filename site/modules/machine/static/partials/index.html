@@ -65,7 +65,7 @@
 
                     <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" class="item">
                         <span class="span2 text-medium crop">
-                            <a href="#!/machine/details/{{machine.id}}">{{machine.label}}</a>
+                            <a href="#!/instance/details/{{machine.id}}">{{machine.label}}</a>
                         </span>
 
                         <span class="span1 text-medium">{{machine.datacenter}}</span>
@@ -192,7 +192,7 @@
             </div>
 
             <div class="pull-right span3 container">
-                <button data-ng-click="changeLocation('/machine/add/')"
+                <button data-ng-click="changeLocation('/instance/create/')"
                         class="create-instance btn btn-joyent-blue btn-large"
                         data-translate>Create Instance</button>
                 <div class="clearfix"></div>
@@ -218,7 +218,7 @@
                     <h4>Hello there!</h4>
                     <div data-translate>I see you have no instances configured.</div>
                 </div>
-                <a class="btn btn-joyent-blue pull-right alert-global" href="#!/machine/add" data-translate>Create an instance</a>
+                <a class="btn btn-joyent-blue pull-right alert-global" href="#!/instance/create" data-translate>Create an instance</a>
                 <div class="clearfix"></div>
             </div>
         </div>

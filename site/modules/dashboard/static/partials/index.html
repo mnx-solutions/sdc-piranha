@@ -3,7 +3,7 @@
 		<div>
 			<ul class="breadcrumb">
 				<li class="active"><span>Dashboard</span></li>
-				<li class="pull-right"><a class="add-machine" href="#!/machine/add">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
+				<li class="pull-right"><a class="add-machine" href="#!/instance/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
 			</ul>
 			<div class="page-header">
 			    <h1 class="pull-left">Welcome {{account.firstName}}</h1> <div class="loading-medium" data-ng-show="loading" ></div>
@@ -15,14 +15,14 @@
 					<div class="container-fluid ">
 					<h4>
 						<span class="pull-left">Instance status</span>
-						<a class="text-small text-regular pull-right" href="#!/machine">All Instances »</a>
+						<a class="text-small text-regular pull-right" href="#!/instance">All Instances »</a>
 						<div class="clearfix"></div>
 						
 					</h4>
 					<div class="separation-container text-medium">
 						<div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
 						<div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
-						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/machine/add/">Create Instance</a></p>
+						<p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/instance/create/">Create Instance</a></p>
 					</div>
 					<h5 data-ng-show="lastInvoice">Billing</h5>
                     <div class="separation-container text-medium" data-ng-show="lastInvoice">

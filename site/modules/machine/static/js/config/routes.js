@@ -3,13 +3,13 @@
 window.JP.main.config([
     'routeProvider',
     function (routeProvider) {
-        routeProvider.when('/machine', {
+        routeProvider.when('/instance', {
             title: 'Compute',
             action: 'machine.index'
-        }).when('/machine/details/:machineid', {
+        }).when('/instance/details/:machineid', {
             title: 'Instance Details',
             action: 'machine.details'
-        }).when('/machine/add', {
+        }).when('/instance/create', {
             title: 'Create Instance',
             action: 'machine.provision'
         });

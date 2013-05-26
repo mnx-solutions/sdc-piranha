@@ -85,7 +85,7 @@
                         confirm(localization.translate($scope, 'machine', 'Click OK to create instance'), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
 
-                            $location.path('/machine');
+                            $location.path('/instance');
                         });
                     }
 

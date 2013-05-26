@@ -26,7 +26,7 @@
                             '<a href="#!/dashboard/"><div class="brand pull-left shadow-dark"></div></a>' +
 							'<div class="pull-left main-nav">' +
 								'<a href="#!/dashboard/">Dashboard</a>' +
-								'<a href="#!/machine/">Compute</a>' +
+								'<a href="#!/instance/">Compute</a>' +
 								'<a href="#!/account/">My Account</a>' +
 							'</div>' +
                             '<div class="pull-right top-menu">' +

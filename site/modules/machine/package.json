@@ -1,5 +1,6 @@
 {
 	"em": {
+        "route": "/instance",
 		"auth": true,
 
         "pre": {

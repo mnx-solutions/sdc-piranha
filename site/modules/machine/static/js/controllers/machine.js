@@ -31,7 +31,7 @@
                     function () {
                         $scope.loading = false;
                     }, function () {
-                        $location.url('/machine');
+                        $location.url('/instance');
                         $location.replace();
                     }
                 );
@@ -255,8 +255,8 @@
 
                             // Redirect if complete
                             Machine.deleteMachine(machineid).getJob().done(function () {
-                                if($location.url() === '/machine/details/'+ machineid) {
-                                    $location.url('/machine');
+                                if($location.url() === '/instance/details/'+ machineid) {
+                                    $location.url('/instance');
                                     $location.replace();
                                 }
                             });
