@@ -134,7 +134,7 @@
                                data-ng-model="o.key">
 
                         <input type="text"
-                               class="input-large span3"
+                               class="input-large span4"
                                placeholder="Value"
                                data-translate="placeholder"
                                data-ng-model="o.val"
@@ -145,13 +145,13 @@
                               data-ng-show="key != tagnr">
                         </span>
 
-						<button class="btn btn-joyent-blue pull-right"
-                                data-ng-click="clickSaveTags(machine.id)"
-                                data-translate
-                                data-ng-show="key == tagnr"
-                                data-ng-disabled="machine.state != 'running'">Save</button>
                         <div class="clearfix"></div>
                     </div>
+                    <button class="btn btn-joyent-blue pull-right"
+                            data-ng-click="clickSaveTags(machine.id)"
+                            data-translate
+                            data-ng-show="key == tagnr"
+                            data-ng-disabled="machine.state != 'running'">Save</button>
                     <div class="clearfix"></div>
                 </div>
                 <div class="clearfix"></div>
