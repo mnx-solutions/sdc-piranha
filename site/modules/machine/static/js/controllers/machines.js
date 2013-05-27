@@ -38,11 +38,11 @@
                 $scope.packages = Package.package();
 
                 $q.all([
-                    $q.when($scope.machines),
-                    $q.when($scope.packages)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
+                        $q.when($scope.machines),
+                        $q.when($scope.packages)
+                    ]).then(function () {
+                        $scope.loading = false;
+                    });
 
                 $scope.$on(
                     'event:forceUpdate',
@@ -172,7 +172,7 @@
                     }
 
                     if(changePage || oldMachineCount != $scope.filteredMachines.length)
-                      $scope.currentPage = 0;
+                        $scope.currentPage = 0;
 
                     $scope.groupToPages();
 
@@ -225,12 +225,12 @@
                     for (i = start; i < end; i++) {
                         // don't duplicate first or last page
                         if(i != 0 && i != $scope.pagedMachines.length-1)
-                          ret.push(i);
+                            ret.push(i);
                     }
 
                     // add last page
                     if($scope.pagedMachines.length > 1)
-                      ret.push($scope.pagedMachines.length-1);
+                        ret.push($scope.pagedMachines.length-1);
 
                     return ret;
                 };
@@ -290,9 +290,9 @@
                             null,
                             'Restart this instance'
                         ), function () {
-                        $$track.event('machine', 'start');
-                        Machine.startMachine(id);
-                    });
+                            $$track.event('machine', 'start');
+                            Machine.startMachine(id);
+                        });
                 };
 
                 $scope.stopMachine = function (id) {
@@ -307,9 +307,9 @@
                             null,
                             'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
                         ), function () {
-                        Machine.stopMachine(id);
-                        $$track.event('machine', 'stop');
-                    });
+                            Machine.stopMachine(id);
+                            $$track.event('machine', 'stop');
+                        });
                 };
 
                 $scope.deleteMachine = function (id) {
@@ -324,9 +324,9 @@
                             null,
                             'Destroy the information on this instance and stop billing for this instance.'
                         ), function () {
-                        $$track.event('machine', 'delete');
-                        Machine.deleteMachine(id);
-                    });
+                            $$track.event('machine', 'delete');
+                            Machine.deleteMachine(id);
+                        });
                 };
 
                 $scope.rebootMachine = function (id) {
@@ -341,9 +341,9 @@
                             null,
                             'Restart this instance'
                         ), function() {
-                        $$track.event('machine', 'reboot');
-                        Machine.rebootMachine(id);
-                    });
+                            $$track.event('machine', 'reboot');
+                            Machine.rebootMachine(id);
+                        });
                 };
 
                 $scope.showGroupActions = function () {
