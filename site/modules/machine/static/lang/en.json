@@ -103,5 +103,6 @@
     "Help will open in new window": "Help will open in new window",
     "per hour": "per hour",
     "Invalid machine name": "Invalid machine name",
-    "Machine name is already in use": "Machine name is already in use"
+    "Machine name is already in use": "Machine name is already in use",
+    "Billing will start once this instance is created": "Billing will start once this instance is created"
 }

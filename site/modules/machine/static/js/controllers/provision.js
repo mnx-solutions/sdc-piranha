@@ -82,7 +82,11 @@
 
                 $scope.clickProvision = function () {
                     function provision() {
-                        confirm(localization.translate($scope, 'machine', 'Click OK to create instance'), function () {
+                        confirm(localization.translate(
+                            $scope,
+                            'machine',
+                            'Billing will start once this instance is created'
+                        ), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
 
                             $location.path('/instance');
@@ -176,7 +180,6 @@
 
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
-
 
 
                         if($scope.packages && dataset.license_price) {
