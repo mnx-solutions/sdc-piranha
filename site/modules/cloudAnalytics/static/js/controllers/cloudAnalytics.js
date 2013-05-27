@@ -137,7 +137,7 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
             'CPU: wait time',
             'Memory: resident set size vs max resident size',
             'Memory: excess memory reclaimed',
-            'ZFS: used space vs unused quote',
+            'ZFS: used space vs unused quota',
             'Network: utilization'
         ]
 
