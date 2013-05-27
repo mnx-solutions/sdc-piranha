@@ -11,7 +11,8 @@
             },
             page: function () {
                 if (typeof _gaq !== 'undefined') {
-                    _gaq.push(['_trackPageview', $location.path()]);
+                    // track html5 style url even when hash style location is used
+                    _gaq.push(['_trackPageview', (window.location.pathname+$location.path()).replace(/\/\//,"/")]);
                 }
             },
             timing: function (category, variable, time) {

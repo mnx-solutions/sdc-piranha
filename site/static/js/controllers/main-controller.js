@@ -7,10 +7,11 @@
         '$route',
         '$routeParams',
         '$window',
+        '$$track',
         'requestContext',
         '$location',
 
-        function ($scope, $rootScope, $route, $routeParams, $window, requestContext, $location) {
+        function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location) {
             $scope.windowTitle = 'Joyent Portal';
 
             $scope.setWindowTitle = function (title) {
@@ -27,10 +28,14 @@
             $scope.$on(
                 'requestContextChanged',
                 function () {
+                    // track page change
+                    $$track.page();
+
                     // Make sure this change is relevant to this controller.
                     if (!renderContext.isChangeRelevant()) {
                         return;
                     }
+
 
                     // Update the view that is being rendered.
                     $scope.subview = renderContext.getNextSection();
