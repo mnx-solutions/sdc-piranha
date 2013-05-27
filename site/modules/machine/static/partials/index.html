@@ -75,7 +75,7 @@
                             </span>
 
                             <span class="span2 text-medium crop">
-                                <span data-ng-repeat="ip in machine.ips" data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
+                                <span>{{machine.primaryIP}}</span>
                             </span>
 
 
@@ -112,7 +112,7 @@
                                     <span class="text-medium key span2 last" data-translate>IP(s)</span>
                                         <span class="text-medium value span4 last">
                                             <span data-ng-repeat="ip in machine.ips">
-                                                <span data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
+                                                <div>{{ip}}</div>
                                             </span>
                                         </span>
                                     <div class="clearfix"></div>
