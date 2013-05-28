@@ -24,7 +24,7 @@
                                      data-html="true"
                                      data-toggle="tooltip"
                                      data-placement="right"
-                                     data-original-title="Where do you want to launch your instance?">
+                                     data-original-title="Filter by zone">
                                     <button class="btn" data-translate data-ng-show="data.datacenter">{{data.datacenter}}</button>
                                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                                         <span class="caret"></span>
@@ -40,7 +40,7 @@
                                      data-html="true"
                                      data-toggle="tooltip"
                                      data-placement="right"
-                                     data-original-title="Operating system for instance?">
+                                     data-original-title="Filter by operating system">
                                     <button class="btn" data-translate data-ng-show="data.opsys">{{data.opsys}}</button>
                                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                                         <span class="caret"></span>
@@ -67,7 +67,7 @@
                                        name="dataset"
                                        value="{{selectedVersions[dataset.name].id || dataset.id}}"
                                        data-ng-checked="selectedDataset.id == dataset.id"
-                                       data-ng-click="selectDataset(dataset.id)"
+                                       data-ng-click="selectDataset(selectedDataset)"
                                        data-ng-model="selectedDataset"  />
 
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
@@ -111,7 +111,7 @@
                                     </div>
 								</label>
 
-								<span class="span1 item-select pointer" data-ng-click="selectDataset(dataset.id)">
+								<span class="span1 item-select pointer" data-ng-click="selectDataset(selectedDataset)">
 									&raquo;
 								</span>
 
@@ -122,7 +122,10 @@
                         
 						<div class="item">
 							<div class="item header">
-                                <div class="btn-group pull-left">
+                                <div class="btn-group pull-left tooltip-hover"
+                                     data-toggle="tooltip"
+                                     data-placement="right"
+                                     data-original-title="Filter by instance type">
                                     <button class="btn" data-translate data-ng-show="!packageType">Package Types</button>
                                     <button class="btn" data-translate data-ng-show="packageType">{{packageType}}</button>
 
@@ -188,7 +191,7 @@
             </div>
 
             <div class="span4 pull-right">
-                <div data-ng-show="selectedDataset" class="alert alert-joyent-gray span3" id="pricing" style="padding-bottom:10px !important;">
+                <div data-ng-show="showReConfigure" class="alert alert-joyent-gray span3" id="pricing" style="padding-bottom:10px !important;">
 
                     <h4 data-translate>Selected configuration</h4>
                     <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>

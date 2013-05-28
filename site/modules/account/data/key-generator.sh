@@ -19,7 +19,7 @@ while [  $TRIES -lt 3 ]; do
         echo "Please reenter your Joyent Cloud login credentials:"
     fi
 
-    read -p -p "username: " USER
+#    read -p "username: " USER
     read -s -p "password: " PASSWORD
     echo
 

@@ -86,3 +86,15 @@ hr.dark {
 .text-small {
     font-size:11px;
 }
+
+.landing-login-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 540px;
+    maring-left:10px;
+}
+
+/* override bootstrap .container class */
+.container {
+    width: 540px;
+}
