@@ -34,11 +34,11 @@
                     <div data-ng-show="help[current.metric.module]" class="alert alert-info text-small">
                         <span data-ng-show="help[current.metric.module].generic">
 							<h6>{{current.metric.labelHtml.split(':')[0]}}</h6> 
-							<p class="margin-mini crop crop-long pointer">{{help[current.metric.module].generic}}</p>
+							<p data-ng-class="{true:'crop crop-long', false:''}[croppedModule]" class="margin-mini pointer" data-ng-click="expandModule()">{{help[current.metric.module].generic}}</p>
 
                         <span data-ng-show="help[current.metric.module][current.metric.module + '.' +current.metric.stat]">
 								<h6>{{ current.metric.labelHtml }}</h6>
-								<p class="margin-mini crop crop-long pointer">{{help[current.metric.module][current.metric.module + '.' +current.metric.stat]}}</p>
+								<p data-ng-class="{true:'crop crop-long', false:''}[croppedMetric]" class="margin-mini pointer" data-ng-click="expandMetric()">{{help[current.metric.module][current.metric.module + '.' +current.metric.stat]}}</p>
 							</span>
                     </div>
 

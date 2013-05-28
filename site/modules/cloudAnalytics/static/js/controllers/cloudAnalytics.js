@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (app, ng) {
     app.controller(
             'cloudController',
             ['$scope', 'ca', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
@@ -31,6 +31,8 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     }
     $scope.graphs = [];
     $scope.help = null;
+    $scope.croppedModule = true;
+    $scope.croppedMetric = true;
 
     $scope.$watch('ca.deletequeue.length', function(newvalue){
         if(newvalue) {
@@ -162,6 +164,12 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
         }
     }
 
+    $scope.expandMetric = function() {
+        $scope.croppedMetric = false;
+    }
+    $scope.expandModule = function() {
+        $scope.croppedModule = false;
+    }
 
 
     $scope.createInstrumentation = function(){
@@ -207,6 +215,8 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     }
 
     $scope.changeMetric = function(){
+        $scope.croppedMetric = true;
+        $scope.croppedModule = true;
         $scope.current.decomposition.primary = null;
         $scope.current.decomposition.secondary = null;
         $scope.current.decomposition.secondaryF = null;
@@ -234,7 +244,8 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
         }
     }
     $scope.changeDecomposition = function(){
-
+        $scope.croppedMetric = true;
+        $scope.croppedModule = true;
         if($scope.current.decomposition.primary) {
             var currentType =$scope.conf.fields[$scope.current.decomposition.primary].type;
             var currentArity =$scope.conf.types[currentType].arity;
@@ -264,4 +275,4 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
 }
 
             ]);
-}(window.JP.getModule('cloudAnalytics')));
+}(window.JP.getModule('cloudAnalytics'), window.angular));
