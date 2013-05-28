@@ -54,7 +54,7 @@ module.exports = function (scope, callback) {
                     paymentTerm: 'Due Upon Receipt',
                     Category__c: 'Credit Card',
                     billCycleDay: 1,
-                    name: data.companyName || (data.firstName + ' ' + data.lastName),
+                    name: data.companyName || ((data.firstName || call.data.firstName) + ' ' + (data.lastName || call.data.lastName)),
                     billToContact: {
                         firstName: call.data.firstName,
                         lastName: call.data.lastName,
