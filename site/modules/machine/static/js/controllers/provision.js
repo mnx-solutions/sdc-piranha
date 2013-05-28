@@ -27,6 +27,8 @@
                 $scope.packageType = null;
                 $scope.loading = true;
 
+                $scope.showReConfigure = false;
+
                 $q.all([
                     $q.when($scope.keys),
                     $q.when($scope.datacenters)
@@ -135,6 +137,7 @@
                 };
 
                 $scope.reconfigure = function () {
+                    $scope.showReConfigure = false;
                     //$scope.selectedDataset = null;
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
@@ -202,6 +205,7 @@
                                 delete(p.full_price_month);
                             });
                         }
+                        $scope.showReConfigure = true;
                         $scope.slideCarousel();
                     });
 
