@@ -3,7 +3,7 @@
 var foldermap = require('foldermap');
 var fs = require('fs');
 
-module.exports = function (scope, register, callback) {
+module.exports = function execute(scope, register, callback) {
 
     var info = {};
 

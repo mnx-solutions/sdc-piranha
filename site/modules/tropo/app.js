@@ -8,7 +8,7 @@ var http = require('http');
 var parseXml = require('xml2js').parseString;
 
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
 
     // auth redis
     redisClient.auth(config.redis.password, function(err) {
@@ -118,6 +118,4 @@ module.exports = function (scope, app, callback) {
         }
         res.send(200);
     });
-
-	setImmediate(callback);
 };

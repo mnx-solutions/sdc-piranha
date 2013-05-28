@@ -3,7 +3,7 @@
 var zuora = require('zuora');
 var config = require('easy-config');
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
     app.get('/countries', function (req, res, next) {
         var data = zuora.countries.getArray(config.zuora.api.validation.countries);
         data.forEach(function (el) {
@@ -18,5 +18,4 @@ module.exports = function (scope, app, callback) {
     app.get('/states', function (req, res, next) {
         res.json(zuora.states);
     });
-    setImmediate(callback);
 };

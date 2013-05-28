@@ -7,7 +7,9 @@
  *
  * stores the toggle in capi metadata
  */
-
+var config = require('easy-config');
+var sdcClients = require('sdc-clients');
+var capi = new sdcClients.CAPI(config.capishim);
 
 var appKey = 'portal';
 var key =    'useMoreSecurity';
@@ -42,12 +44,16 @@ var set = function (customerUuid, secretkey, callback) {
 
 var get = function (customerUuid, callback) {
     capi.getMetadata(customerUuid, appKey, key, function (err, res, headers) {
+        if(res === 'false') {
+            callback(null, false);
+            return;
+        }
+
         var result = false;
-        res = res === 'false' ? false : res;
-        if (typeof res === 'object' && res.secretkey) {
-            result = res.secretkey;
-        } else if (typeof res === 'string') {
+        if(typeof res === 'string') {
             result = res.indexOf('=') !== -1 ? res.split('=')[1] : result;
+        } else if(typeof res === 'object' && res.secretkey) {
+            result = res.secretkey;
         }
         callback(null, result);
     });

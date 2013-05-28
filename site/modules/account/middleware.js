@@ -3,7 +3,7 @@
 var redis = require('redis');
 var config = require('easy-config');
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
 
     var SignupProgress = scope.api('SignupProgress');
     var ends = ['completed','complete'];
@@ -48,8 +48,5 @@ module.exports = function (scope, callback) {
         });
     };
 
-    setImmediate(function () {
-        callback(null, middleware);
-    });
-
+    return middleware;
 };

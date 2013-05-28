@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
     app.get('/locales', function (req, res, next) {
         res.json(req.scope.config.localization.locales);
     });
@@ -8,6 +8,4 @@ module.exports = function (scope, app, callback) {
     app.get('/translations', function (req, res, next) {
         res.json(res.locals.localizer.getLanguage(req));
     });
-
-    setImmediate(callback);
 };

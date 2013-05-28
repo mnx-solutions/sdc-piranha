@@ -2,7 +2,7 @@
 
 var config = require('easy-config');
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
 
@@ -72,6 +72,4 @@ module.exports = function (scope, callback) {
         scope.log.debug('server call, delete key:', call.data.fingerprint);
         call.cloud.deleteKey(call.data.fingerprint, call.done.bind(call));
     });
-
-    setImmediate(callback);
 };

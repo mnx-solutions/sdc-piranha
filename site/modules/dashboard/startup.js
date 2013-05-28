@@ -4,7 +4,7 @@ var https = require('https');
 var config = require('easy-config');
 var restify = require('restify');
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
     var server = scope.api('Server');
 
     var cacheTTL = config.zendesk.cacheTTL || 1000 * 60 * 60;
@@ -50,6 +50,4 @@ module.exports = function (scope, callback) {
     server.onCall('ZendeskPackagesUpdateTopics', function (call) {
         zendDeskCall(call, config.zendesk.packageUpdatePath, 'topics');
     });
-
-    setImmediate(callback);
 };

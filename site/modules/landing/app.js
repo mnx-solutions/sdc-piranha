@@ -3,7 +3,7 @@
 var crypto = require('crypto');
 var fs = require('fs');
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app, callback) {
 
     var config = scope.config.sso;
     var privateKey = null;

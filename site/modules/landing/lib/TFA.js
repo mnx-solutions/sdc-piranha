@@ -1,21 +1,6 @@
 'use strict';
-var toggle =      require('./TFAToggle');
+var toggle = require('./TFAToggle');
 var tfaProvider = require('./TFAProvider');
-
-function isTwoFactorEnabled(req, res, next) {
-
-    if (!req.session.uuid) {
-        return next();
-    }
-    if (!req.session.tfaEnabled === undefined) return next();
-
-    toggle.get(req.session.uuid, function(err, secret) {
-        if (secret) {
-            req.session.tfaEnabled = secret || false;
-        }
-        next();
-    });
-};
 
 /**
  * if toggling security to a new value,

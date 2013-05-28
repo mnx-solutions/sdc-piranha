@@ -3,7 +3,7 @@
 var vasync = require('vasync');
 var config = require('easy-config');
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
     var server = scope.api('Server');
 
     var info = scope.api('Info');
@@ -453,6 +453,4 @@ module.exports = function (scope, callback) {
             });
         }
     });
-
-    setImmediate(callback);
 };

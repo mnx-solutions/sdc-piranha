@@ -73,5 +73,10 @@
         "machineTags": 5000,
         "machineState": 10000,
         "packageChange": 1000
+    },
+    "capishim": {
+        "username":"",
+        "password":"",
+        "url":""
     }
 }

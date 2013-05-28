@@ -2,7 +2,7 @@
 
 var Localization = require('./lib/localization');
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
     var extend = scope.get('utils').extend;
     var localization = new Localization(extend(
         scope.config.localization,
@@ -31,13 +31,11 @@ module.exports = function (scope, callback) {
         return next();
     };
 
-    setImmediate(function () {
-        callback(null, {
-            index: [
-                localization.getLocaleParser(),
-                localization.getRegisterHelpers(),
-                middleware
-            ]
-        });
-    });
+    return {
+        index: [
+            localization.getLocaleParser(),
+            localization.getRegisterHelpers(),
+            middleware
+        ]
+    };
 };

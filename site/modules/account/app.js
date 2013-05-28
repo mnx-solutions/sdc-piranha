@@ -18,7 +18,7 @@ redisClient.auth(config.redis.password, function() {});
  * @description
  * Account module API
  */
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app, callback) {
     var keyGen = null;
 
     var SignupProgress = scope.api('SignupProgress');

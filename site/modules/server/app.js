@@ -2,7 +2,7 @@
 
 var Session = require('./lib/session');
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
 
     var server = scope.api('Server');
 
@@ -11,6 +11,4 @@ module.exports = function (scope, app, callback) {
     app.get('/call', server.query());
 
     app.post('/call', server.call());
-
-    setImmediate(callback);
 };

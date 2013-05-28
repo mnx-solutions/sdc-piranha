@@ -8,7 +8,7 @@ if(!config.billing.noUpdate && config.billing.url) {
     jsonClient = restify.createJsonClient({url: config.billing.url});
 }
 
-module.exports = function (scope, register, callback) {
+module.exports = function execute(scope, register, callback) {
     //Compatibility with old version
     if(!jsonClient) {
         return require('./api-old.js').call(this, scope, register, callback);

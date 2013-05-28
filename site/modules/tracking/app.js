@@ -2,7 +2,7 @@
 
 var crypto = require('crypto');
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
 
     app.get('/sha/:email', function(req, res) {
         var privatekey = scope.config.marketo.apikey;
@@ -14,6 +14,4 @@ module.exports = function (scope, app, callback) {
 
         res.send(enc_email);
     });
-
-    setImmediate(callback);
 };

@@ -1,7 +1,7 @@
 'use strict';
-var instrumentationBlock = {}
+var instrumentationBlock = {};
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
 
     //convert ca call uri to cloudApi call uri
     function convertUri(uri) {
@@ -209,6 +209,4 @@ module.exports = function (scope, app, callback) {
             })();
         }
     });
-
-    setImmediate(callback);
 };

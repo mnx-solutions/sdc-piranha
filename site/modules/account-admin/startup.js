@@ -2,7 +2,7 @@
 
 var config = require('easy-config');
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
 
@@ -25,6 +25,4 @@ module.exports = function (scope, callback) {
             call.done(null, val);
         });
     });
-
-    setImmediate(callback);
 };

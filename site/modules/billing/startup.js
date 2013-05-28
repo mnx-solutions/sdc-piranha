@@ -10,7 +10,7 @@ if(!config.billing.noUpdate) {
     jsonClient = restify.createJsonClient({url: config.billing.url});
 }
 
-module.exports = function (scope, callback) {
+module.exports = function execute(scope) {
 
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
@@ -309,8 +309,4 @@ module.exports = function (scope, callback) {
             call.done(null, resp.invoices[0]);
         });
     });
-
-
-
-    setImmediate(callback);
 };

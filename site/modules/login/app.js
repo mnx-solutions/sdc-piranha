@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
 
 	app.post('/', function (req, res) {
 		var login = req.body;
@@ -8,5 +8,4 @@ module.exports = function (scope, app, callback) {
 		login.success = true;
 		res.json(login);
 	});
-	setImmediate(callback);
 };

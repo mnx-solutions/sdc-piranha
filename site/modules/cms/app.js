@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
     var info = scope.api('Info');
 
     app.get('/:name', function (req, res, next) {
@@ -10,6 +10,4 @@ module.exports = function (scope, app, callback) {
         }
         res.send(404);
     });
-
-    setImmediate(callback);
 };

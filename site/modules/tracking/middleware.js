@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function(scope, callback) {
+module.exports = function execute(scope) {
 
 
     var middleware = function(req, res, next) {
@@ -37,7 +37,5 @@ module.exports = function(scope, callback) {
         return next();
     }
 
-    setImmediate(function () {
-        callback(null, middleware);
-    });
+    return middleware;
 }

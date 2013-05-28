@@ -3,7 +3,7 @@
 var fs = require('fs');
 var mustache = require('mustache');
 
-module.exports = function (scope, app, callback) {
+module.exports = function execute(scope, app) {
 	app.get('/ssh-key-generator', function (req, res, next) {
 		fs.readFile(__dirname + '/static/partial/ssh-key-generator.html', function (err, data) {
 			if (err) {
@@ -18,6 +18,4 @@ module.exports = function (scope, app, callback) {
 			res.send(200, output);
 		});
 	});
-
-	setImmediate(callback);
 };

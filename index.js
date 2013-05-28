@@ -9,6 +9,7 @@ var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
 var util = require('util');
 var utils = require('./lib/utils');
+var smartCloud = require('./lib/smartCloud');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
@@ -53,6 +54,7 @@ var opts = {
 
 var m = new Modulizer(opts);
 m.set('utils', utils);
+m.set('smartCloud', smartCloud);
 
 m.init(opts, function (err) {
     app.use(function (res, req, next) {
