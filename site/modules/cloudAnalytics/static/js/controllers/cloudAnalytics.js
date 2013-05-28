@@ -165,10 +165,10 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     }
 
     $scope.expandMetric = function() {
-        $scope.croppedMetric = false;
+        $scope.croppedMetric = !$scope.croppedMetric;
     }
     $scope.expandModule = function() {
-        $scope.croppedModule = false;
+        $scope.croppedModule = !$scope.croppedModule;
     }
 
 
