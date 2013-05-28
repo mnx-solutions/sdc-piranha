@@ -248,21 +248,24 @@
                 });
             }
 
+            function showError(id, instanceName, err) {
+                notification.push(id, { type: 'error' },
+                    localization.translate(null,
+                        'machine',
+                        'Unable to create instance '+ (instanceName ? instanceName : ''),
+                        {
+                            name: data.name
+                        }
+                    ) +' '+ ((err.message) ? '<br />'+ err.message : '')
+                );
+            }
+
             var job = serverTab.call({
                 name: 'MachineCreate',
                 data: data,
                 initialized: function (err, job) {
                     if (err) {
-                        notification.push(id, { type: 'error' },
-                            localization.translate(null,
-                                'machine',
-                                'Unable to create instance {{name}}',
-                                {
-                                    name: data.name
-                                }
-                            ) +' '+ ((err.message) ? err.message : '')
-                        );
-
+                        showError(id, machine.name, err);
                         return;
                     }
 
@@ -276,15 +279,7 @@
 
                 done: function (err, job) {
                     if (err) {
-                        notification.push(id, { type: 'error' },
-                            localization.translate(null,
-                                'machine',
-                                'Unable to create instance {{name}}',
-                                {
-                                    name: data.name
-                                }
-                            ) +' '+ ((err.message) ? err.message : '')
-                        );
+                        showError(id, machine.name, err);
 
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         delete machines.index[id];
@@ -306,13 +301,7 @@
                 },
 
                 error: function(err, job) {
-                    console.log(err);
-                    notification.push(id, { type: 'error' },
-                        localization.translate(null,
-                            'machine',
-                            'Unable to create instance'
-                        ) +' '+  ((err.message) ? err.message : '')
-                    );
+                    showError(id, machine.name, err);
 
                     machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];
