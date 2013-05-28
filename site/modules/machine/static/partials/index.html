@@ -74,10 +74,9 @@
                                 {{machine.created | fromNow}}
                             </span>
 
-                            <span class="span2 text-medium crop">
-                                <span>{{machine.primaryIP}}</span>
+                            <span data-ng-repeat="ip in machine.ips">
+                                <span class="span2 text-medium crop" data-ng-show="!isPrivateIP(ip)">{{ip}}</span>
                             </span>
-
 
                             <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
                                 <machine-status machine="machine"></machine-status>

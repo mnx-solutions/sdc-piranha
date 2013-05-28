@@ -67,7 +67,7 @@
                                        name="dataset"
                                        value="{{selectedVersions[dataset.name].id || dataset.id}}"
                                        data-ng-checked="selectedDataset.id == dataset.id"
-                                       data-ng-click="selectDataset(dataset.id)"
+                                       data-ng-click="selectDataset(selectedDataset)"
                                        data-ng-model="selectedDataset"  />
 
 								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
@@ -111,7 +111,7 @@
                                     </div>
 								</label>
 
-								<span class="span1 item-select pointer" data-ng-click="selectDataset(dataset.id)">
+								<span class="span1 item-select pointer" data-ng-click="selectDataset(selectedDataset)">
 									&raquo;
 								</span>
 
