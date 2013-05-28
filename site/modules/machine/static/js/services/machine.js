@@ -260,7 +260,7 @@
                                 {
                                     name: data.name
                                 }
-                            )
+                            ) +' '+ ((err.message) ? err.message : '')
                         );
 
                         return;
@@ -283,7 +283,7 @@
                                 {
                                     name: data.name
                                 }
-                            )
+                            ) +' '+ ((err.message) ? err.message : '')
                         );
 
                         machines.list.splice(machines.list.indexOf(machine), 1);
@@ -306,11 +306,12 @@
                 },
 
                 error: function(err, job) {
+                    console.log(err);
                     notification.push(id, { type: 'error' },
                         localization.translate(null,
                             'machine',
                             'Unable to create instance'
-                        )
+                        ) +' '+  ((err.message) ? err.message : '')
                     );
 
                     machines.list.splice(machines.list.indexOf(machine), 1);
