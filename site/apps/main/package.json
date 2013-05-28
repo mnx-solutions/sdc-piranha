@@ -14,7 +14,8 @@
             "server",
             "machine",
             "tracking",
-            "dashboard"
+            "dashboard",
+            "tfa"
         ],
 		"auth": true,
         "error": true,

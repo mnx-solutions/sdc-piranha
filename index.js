@@ -9,7 +9,7 @@ var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
 var util = require('util');
 var utils = require('./lib/utils');
-var smartCloud = require('./lib/smartCloud');
+var SmartCloud = require('./lib/smartCloud');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
@@ -54,23 +54,36 @@ var opts = {
 
 var m = new Modulizer(opts);
 m.set('utils', utils);
+
+
+if(!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPath !== 'string') {
+    throw new TypeError('cloudapi configuration (.keyPath) must be defined');
+}
+
+var smartCloud = new SmartCloud({
+    log: bunyan.createLogger(config.log),
+    api: config.cloudapi
+});
 m.set('smartCloud', smartCloud);
+
+var libErr = require('./lib/error');
+
+function error(err, req, res, next) {
+    console.log(err);
+    libErr(err, req, res, next);
+}
 
 m.init(opts, function (err) {
     app.use(function (res, req, next) {
         var err = new Error('Page not found');
         err.statusCode = 404;
 
-        require('./lib/error')(err, res, req, next);
+        error(err, res, req, next);
     });
 
-    app.use(function (err, res, req, next) {
-        require('./lib/error')(err, res, req, next);
-    });
+    app.use(error);
 
-    app.all('*', function (err, res, req, next) {
-        require('./lib/error')(err, res, req, next);
-    });
+    app.all('*', error);
 
     m.run(config.server.port);
 });

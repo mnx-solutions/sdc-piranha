@@ -26,7 +26,7 @@ module.exports = function execute(scope, app, callback) {
 
         var baseUrl = new Buffer(protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
 
-        var returnUrl = protocol +'://'+ req.headers.host +'/landing/saveToken/'+ baseUrl +'/';
+        var returnUrl = protocol +'://'+ req.headers.host +'/tfa/saveToken/'+ baseUrl +'/';
         var ssoUrl = config.url +'/'+ method;
 
         var date = new Date().toUTCString();

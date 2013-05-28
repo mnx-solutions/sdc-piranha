@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     app.directive('accountInfoEdit', [
         'Account',
         'localization',
@@ -8,7 +8,8 @@
         '$q',
         '$http',
         '$location',
-        function (Account, localization, notification, $q, $http, $location) {
+        'TFAService',
+        function (Account, localization, notification, $q, $http, $location, TFAService) {
 
             return {
                 restrict: 'A',
@@ -70,7 +71,7 @@
                     };
 
                     $scope.$watch('account.country', function(newVal, oldVal) {
-                        if(newVal != oldVal) {
+                        if(newVal !== oldVal) {
                             $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                         }
                     }, true);
@@ -96,14 +97,14 @@
 
                     $scope.submitForm = function () {
                         // clean the phone number
-                        var account = angular.copy($scope.account);
+                        var account = ng.copy($scope.account);
                         account.country = $scope.account.country.iso3;
                         account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
 
 
                         $scope.loading = true;
                         Account.updateAccount(account).then(function (acc) {
-                            $scope.loading = false
+                            $scope.loading = false;
                             $scope.error = null;
 
                             if ($scope.nextStep) {
@@ -132,9 +133,49 @@
                         window.open('account/changepassword/' + $scope.account.id ,'1369071355773','width=980,height=580,toolbar=0,menubar=0,location=1,status=1,scrollbars=1,resizable=1,left=100,top=100');
                     };
 
+                    $scope.enableTwoFactorAuth = function () {
+                        $scope.tfaLoading = true;
+                        TFAService.setup().then(function (qr) {
+                            $scope.qrImage = qr;
+                            $scope.otpass = '';
+                            $scope.tfaLoading = false;
+                        }, function () {
+                            //Unauthorized
+                            //It should redirect automatically
+                        });
+                    };
+
+                    $scope.testTwoFactorAuth = function () {
+                        $scope.tfaTestLoading = true;
+                        TFAService.setupTest($scope.otpass).then(function (data){
+                            if(data.status === 'ok') {
+                                $scope.qrImage = false;
+                                $scope.account.tfaEnabled = true;
+                            } else {
+                                $scope.tfaError = true;
+                            }
+                            $scope.tfaTestLoading = false;
+                        }, function () {
+                            //Unauthorized
+                            //It should redirect automatically
+                        });
+                    };
+
+                    $scope.disableTwoFactorAuth = function () {
+                        $scope.tfaLoading = true;
+                        TFAService.remove().then(function () {
+                            $scope.account.tfaEnabled = false;
+                            $scope.tfaLoading = false;
+                        }, function (data) {
+                            //Unauthorized should already redirect
+                            $scope.tfaDisableError = data.err;
+                            $scope.tfaLoading = false;
+                        });
+                    };
+
                     window.jQuery('.icon-info-sign').tooltip();
                 },
                 templateUrl: 'account/static/partials/account-info-edit.html'
             };
         }]);
-}(window.JP.getModule('Account')));
+}(window.angular, window.JP.getModule('Account')));

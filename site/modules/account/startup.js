@@ -4,6 +4,7 @@ var config = require('easy-config');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
+    var TFA = scope.api('TFA');
     var SignupProgress = scope.api('SignupProgress');
 
     var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
@@ -24,9 +25,14 @@ module.exports = function execute(scope) {
                     response[field] = response[field].replace(/[^0-9\.]+/g, '');
                 }
             });
-            call.req.session.userId = data.id;
-            call.req.session.save();
-            call.done(null, response);
+            TFA.get(data.id, function (err, secret) {
+                if(err) {
+                    call.done(err);
+                    return;
+                }
+                response.tfaEnabled = !!secret;
+                call.done(null, response);
+            });
         });
     });
 
