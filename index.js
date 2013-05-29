@@ -9,6 +9,7 @@ var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
 var util = require('util');
 var utils = require('./lib/utils');
+var redirect = require('./lib/redirect');
 var SmartCloud = require('./lib/smartcloud');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
@@ -34,6 +35,8 @@ app.use(express.session({
 app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
 });
+
+redirect(app); //Add redirects for old urls
 
 var rack = new Rack();
 rack.addMiddleware(app);
