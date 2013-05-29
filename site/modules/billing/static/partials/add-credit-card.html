@@ -1,5 +1,5 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
-<form name="paymentForm" class="row-fluid" method="POST" action="" autocomplete="on">
+<form name="paymentForm" class="row-fluid">
 <fieldset class="span6" style="width:340px">
     <legend>Credit card details</legend>
     <div class="control-group">
@@ -168,7 +168,7 @@
 </fieldset>
 <fieldset class="span6">
     <legend>Billing	information</legend>
-	<div class="clearfix"></div><br />
+    <div class="clearfix"></div><br />
     <div class="control-group" data-ng-show="useExistingPossible">
         <label class="checkbox" for="useExisting"><input type="checkbox" id="useExisting" data-ng-model="useExisting" /><span data-translate>Use previous contact info</span></label>
     </div>
