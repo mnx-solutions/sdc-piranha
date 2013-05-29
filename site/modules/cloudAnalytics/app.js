@@ -59,8 +59,9 @@ module.exports = function execute(scope, app) {
         client.listDatacenters(function(dcerr, dcs) {
             for(var dcname in dcs) {
                 client.setDatacenter(dcname);
-
-                req.cloud.ListInstrumentations(function (err, resp) {
+                console.log('getting data from ', dcname)
+                client.ListInstrumentations(function (err, resp) {
+                    console.log('received data from ', dcname, err, resp)
                     if (!err) {
                         if(resp.length) {
                             var id = resp[0].id;
@@ -69,7 +70,7 @@ module.exports = function execute(scope, app) {
                             }
                             // poll the most recent value to sync with ca time.
                             if(!response.time) {
-                                req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
+                                client.GetInstrumentationValue(+id, {}, function(err2, value) {
                                     if(!err2) {
                                         response.time = value.start_time;
                                         response.instrumentations = response.instrumentations.concat(resp);
@@ -87,6 +88,11 @@ module.exports = function execute(scope, app) {
                                 }
                             }
 
+                        } else {
+                            responseCount++;
+                            if(responseCount === Object.keys(dcs).length) {
+                                res.json(response);
+                            }
                         }
 
                     }
@@ -108,7 +114,6 @@ module.exports = function execute(scope, app) {
     app.post('/ca/instrumentations/:datacenter', function (req, res) {
         var client = req.cloud;
         client.setDatacenter(req.params.datacenter);
-        console.log('current datacenter:', client._currentDC);
         client.CreateInstrumentation(req.body, function (err, resp) {
             // !TODO: Error handling
             if (!err) {
@@ -128,8 +133,9 @@ module.exports = function execute(scope, app) {
         setTimeout(function(){
             instrumentationBlock[req.session.token].splice(instrumentationBlock[req.session.token].indexOf(req.params.id), 1);
         }, 5000)
-
-        req.cloud.DeleteInstrumentation(+req.params.id, function (err, resp) {
+        var client = req.cloud;
+        client.setDatacenter(req.params.datacenter);
+        client.DeleteInstrumentation(+req.params.id, function (err, resp) {
             if (!err) {
                 res.json(resp);
             } else {
