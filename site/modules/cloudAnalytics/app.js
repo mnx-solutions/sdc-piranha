@@ -59,8 +59,9 @@ module.exports = function execute(scope, app) {
         client.listDatacenters(function(dcerr, dcs) {
             for(var dcname in dcs) {
                 client.setDatacenter(dcname);
-
+                console.log('getting data from ', dcname)
                 client.ListInstrumentations(function (err, resp) {
+                    console.log('received data from ', dcname, err, resp)
                     if (!err) {
                         if(resp.length) {
                             var id = resp[0].id;
