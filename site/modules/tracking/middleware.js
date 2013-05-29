@@ -5,16 +5,16 @@ module.exports = function execute(scope) {
 
     var middleware = function(req, res, next) {
         if(!scope.config.marketo.accountId) {
-            scope.log.fatal('Marketo configuration missing');
+            scope.log.warn('Marketo configuration missing');
         } else {
             if(!res.locals.jss) {
                 res.locals.jss = {};
             }
-            res.locals.jss['marketo'] = 'Munchkin.init("'+ scope.config.marketo.accountId +'");';
+            res.locals.jss.marketo = 'Munchkin.init("'+ scope.config.marketo.accountId +'");';
         }
 
         if(!scope.config.googleAnalytics.identifier) {
-            scope.log.fatal('GoogleAnalytics configuration missing');
+            scope.log.warn('GoogleAnalytics configuration missing');
         } else {
 
             if(!res.locals.jss) {
@@ -22,7 +22,7 @@ module.exports = function execute(scope) {
             }
 
 
-            res.locals.jss['ggoogleAnalytics'] = 'var _gaq = _gaq || [];'+
+            res.locals.jss.googleAnalytics = 'var _gaq = _gaq || [];'+
                 '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifer +'"]); // XXX hardcoded'+
                 '_gaq.push(["_trackPageview"]);'+
                 '(function() {'+

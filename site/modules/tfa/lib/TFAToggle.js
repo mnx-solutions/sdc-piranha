@@ -12,7 +12,7 @@ var sdcClients = require('sdc-clients');
 var capi = new sdcClients.CAPI(config.capishim);
 
 var appKey = 'portal';
-var key =    'useMoreSecurity';
+var key = 'useMoreSecurity';
 
 var set = function (customerUuid, secretkey, callback) {
 

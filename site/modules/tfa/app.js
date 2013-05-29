@@ -12,38 +12,34 @@ module.exports = function execute(scope, app) {
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
 
-        smartCloud.cloud({token: token}, function (err, cloud) {
-            if (err) {
+        var cloud = smartCloud.cloud({token: token});
+        cloud.getAccount(function (err, data) {
+            if(err) {
                 next(err);
                 return;
             }
-            cloud.getAccount(function (err, data) {
+            TFA.get(data.id, function (err, secret) {
                 if(err) {
                     next(err);
                     return;
                 }
-                TFA.get(data.id, function (err, secret) {
-                    if(err) {
-                        next(err);
-                        return;
-                    }
-                    req.session.userId = data.id;
-                    if(!secret) {
+                req.session.userId = data.id;
+                req.session.userName = data.login;
+                if(!secret) {
 
-                        // as sso passes token using ?token=
-                        req.session.token = token;
-                        req.session.save();
+                    // as sso passes token using ?token=
+                    req.session.token = token;
+                    req.session.save();
 
-                        res.redirect(redirectUrl);
-                    } else {
-                        req.session._preToken = token;
-                        req.session._tfaSecret = secret;
-                        req.session._tfaRedirect = redirectUrl;
-                        req.session.save();
+                    res.redirect(redirectUrl);
+                } else {
+                    req.session._preToken = token;
+                    req.session._tfaSecret = secret;
+                    req.session._tfaRedirect = redirectUrl;
+                    req.session.save();
 
-                        res.redirect('/#!/tfa');
-                    }
-                });
+                    res.redirect('/#!/tfa');
+                }
             });
         });
     });
@@ -63,14 +59,14 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/setup', function (req, res, next) {
-        if(!req.session.userId) {
+        if(!req.session.userId || !req.session.userName) {
             res.send(401);
             return;
         }
         req.session._tfaSecret = TFAProvider.generateSecret();
         req.session.save();
 
-        var qrCode = TFAProvider.getQRcode(req.session._tfaSecret, req.session.userId);
+        var qrCode = TFAProvider.getQRcode(req.session._tfaSecret, req.session.userName);
         res.send(qrCode);
     });
 

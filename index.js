@@ -9,7 +9,7 @@ var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
 var util = require('util');
 var utils = require('./lib/utils');
-var SmartCloud = require('./lib/smartCloud');
+var SmartCloud = require('./lib/smartcloud');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
