@@ -107,8 +107,8 @@ module.exports = function execute(scope, app) {
 
     app.post('/ca/instrumentations/:datacenter', function (req, res) {
         var client = req.cloud;
-        console.log('datacenter list and requested datacenter',client.listDatacenters(), req.params.datacenter);
         client.setDatacenter(req.params.datacenter);
+        console.log('current datacenter:', client._currentDC);
         client.CreateInstrumentation(req.body, function (err, resp) {
             // !TODO: Error handling
             if (!err) {
