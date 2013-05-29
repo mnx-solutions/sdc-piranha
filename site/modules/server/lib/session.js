@@ -72,7 +72,7 @@ Session.get = function (req, res, next) {
     } else {
         req._session = new Session({
             id: req.session.id,
-            log: req.scope.log,
+            log: req.log,
             lifespan: (req.scope.config.session && req.scope.config.session.lifespan) || 24 * 60 * 60 * 1000
         });
     }

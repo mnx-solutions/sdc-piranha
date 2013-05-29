@@ -5,7 +5,7 @@ module.exports = function execute(scope) {
 
     var middleware = function(req, res, next) {
         if(!scope.config.marketo.accountId) {
-            scope.log.warn('Marketo configuration missing');
+            req.log.warn('Marketo configuration missing');
         } else {
             if(!res.locals.jss) {
                 res.locals.jss = {};
@@ -14,7 +14,7 @@ module.exports = function execute(scope) {
         }
 
         if(!scope.config.googleAnalytics.identifier) {
-            scope.log.warn('GoogleAnalytics configuration missing');
+            req.log.warn('GoogleAnalytics configuration missing');
         } else {
 
             if(!res.locals.jss) {
