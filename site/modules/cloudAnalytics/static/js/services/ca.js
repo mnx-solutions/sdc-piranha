@@ -2,8 +2,8 @@
 
 
 (function (app) {
-    app.factory('ca', ['$resource', '$timeout', '$http', 'caInstrumentation',
-        function ($resource, $timeout, $http, instrumentation) {
+    app.factory('ca', ['$resource', '$http', 'caInstrumentation',
+        function ($resource, $http, instrumentation) {
 
         var ca = function(){};
         ca.options = {
@@ -91,7 +91,7 @@
                     ca._poll();
                 }
             }
-            $timeout(ca._sync, 1000);
+            setTimeout(ca._sync, 1000);
         }
         ca._sync();
 
