@@ -60,11 +60,8 @@ module.exports = function execute(scope, app) {
             for(var dcname in dcs) {
 
                 (function(dcname) {
-
-                    console.log('getting data from ', dcname)
                     client.setDatacenter(dcname);
                     client.ListInstrumentations(function (err, resp) {
-                        console.log('received data from ', dcname, err, resp)
                         if (!err) {
                             if(resp.length) {
                                 var id = resp[0].id;
@@ -83,7 +80,7 @@ module.exports = function execute(scope, app) {
                                                 res.json(response);
                                             }
                                         } else {
-                                            console.log('get inst value error', err2)
+                                            //TODO: errorhandling
                                         }
                                     });
                                 } else {
@@ -102,7 +99,7 @@ module.exports = function execute(scope, app) {
                             }
 
                         } else {
-                            console.log('list instrumentations error', err)
+                            //TODO: errorhandling
                         }
                     });
                 })(dcname)
