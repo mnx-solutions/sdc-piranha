@@ -58,46 +58,47 @@ module.exports = function execute(scope, app) {
         var responseCount = 0;
         client.listDatacenters(function(dcerr, dcs) {
             for(var dcname in dcs) {
-                client.setDatacenter(dcname);
-                console.log('getting data from ', dcname)
-                client.ListInstrumentations(function (err, resp) {
-                    console.log('received data from ', dcname, err, resp)
-                    if (!err) {
-                        if(resp.length) {
-                            var id = resp[0].id;
-                            for(var iname in resp) {
-                                resp[iname].datacenter = dcname;
-                            }
-                            // poll the most recent value to sync with ca time.
-                            if(!response.time) {
-                                client.GetInstrumentationValue(+id, {}, function(err2, value) {
-                                    if(!err2) {
-                                        response.time = value.start_time;
-                                        response.instrumentations = response.instrumentations.concat(resp);
-                                        responseCount++;
-                                        if(responseCount === Object.keys(dcs).length) {
-                                            res.json(response);
+                (function() {
+                    client.setDatacenter(dcname);
+                    console.log('getting data from ', dcname)
+                    client.ListInstrumentations(function (err, resp) {
+                        console.log('received data from ', dcname, err, resp)
+                        if (!err) {
+                            if(resp.length) {
+                                var id = resp[0].id;
+                                for(var iname in resp) {
+                                    resp[iname].datacenter = dcname;
+                                }
+                                // poll the most recent value to sync with ca time.
+                                if(!response.time) {
+                                    client.GetInstrumentationValue(+id, {}, function(err2, value) {
+                                        if(!err2) {
+                                            response.time = value.start_time;
+                                            response.instrumentations = response.instrumentations.concat(resp);
+                                            responseCount++;
+                                            if(responseCount === Object.keys(dcs).length) {
+                                                res.json(response);
+                                            }
                                         }
+                                    });
+                                } else {
+                                    response.instrumentations = response.instrumentations.concat(resp);
+                                    responseCount++;
+                                    if(responseCount === Object.keys(dcs).length) {
+                                        res.json(response);
                                     }
-                                });
+                                }
+
                             } else {
-                                response.instrumentations = response.instrumentations.concat(resp);
                                 responseCount++;
                                 if(responseCount === Object.keys(dcs).length) {
                                     res.json(response);
                                 }
                             }
 
-                        } else {
-                            responseCount++;
-                            if(responseCount === Object.keys(dcs).length) {
-                                res.json(response);
-                            }
                         }
-
-                    }
-                });
-
+                    });
+                })()
             }
         })
 
