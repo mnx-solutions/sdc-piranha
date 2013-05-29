@@ -58,8 +58,9 @@ module.exports = function execute(scope, app) {
         var responseCount = 0;
         client.listDatacenters(function(dcerr, dcs) {
             for(var dcname in dcs) {
-                (function(dcname) {
-                    client.setDatacenter(dcname);
+                client.setDatacenter(dcname);
+                (function(client, dcname) {
+
                     console.log('getting data from ', dcname)
                     client.ListInstrumentations(function (err, resp) {
                         console.log('received data from ', dcname, err, resp)
@@ -102,7 +103,7 @@ module.exports = function execute(scope, app) {
                             console.log('list instrumentations error', err)
                         }
                     });
-                })(dcname)
+                })(client, dcname)
             }
         })
 
