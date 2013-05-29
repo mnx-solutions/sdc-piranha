@@ -13,7 +13,7 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
 
     $scope.zones = Machine.machine();
 
-    $scope.ranges = [10, 30, 60, 90, 120];
+    $scope.ranges = [10, 30, 60, 90, 120, 150, 180];
 
     // values graphs are watching
     $scope.currentRange = 60;
@@ -88,49 +88,66 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     });
 
     $scope.createDefaultInstrumentations = function() {
-
+        var datacenter = null;
+        for(var i in $scope.zones) {
+            var zone = $scope.zones[i];
+            if(zone.id === $scope.zoneId) {
+                datacenter = zone.datacenter;
+            }
+        }
+        if(!datacenter) {
+            //TODO: error handling;
+        }
         /* pre-defined default intrumentations */
         var oo = [
             [{
                 module: 'cpu',
                 stat: 'usage',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'cpu',
                 stat: 'waittime',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'memory',
                 stat: 'rss',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             },{
                 module: 'memory',
                 stat: 'rss_limit',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'memory',
                 stat: 'reclaimed_bytes',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'zfs',
                 stat: 'dataset_unused_quota',
                 decomposition: [],
-                predicate: {}
+                predicate: {},
+                datacenter: datacenter
             }, {
                 module: 'zfs',
                 stat: 'dataset_quota',
                 decomposition: [],
-                predicate: {}
+                predicate: {},
+                datacenter: datacenter
             }], [{
                 module: 'nic',
                 stat: 'vnic_bytes',
                 decomposition: ['zonename'],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }]
         ];
 
@@ -149,7 +166,6 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
               $scope.ca.createInstrumentations(oo[index], function(errs, inst) {
                   if(!errs.length) {
                       if(!$scope.endtime) {
-                          // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
                           $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
                           tick();
                       }
@@ -181,13 +197,23 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
         decomp.push($scope.current.decomposition.secondary);
         var mod = $scope.current.metric.module;
         var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
+        var datacenter = null;
+        for(var i in $scope.zones) {
+            var zone = $scope.zones[i];
+            if(zone.id === $scope.zoneId) {
+                datacenter = zone.datacenter;
+            }
+        }
+        if(!datacenter) {
+            //TODO: error handling;
+        }
         var options = {
             module: mod,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: predicate
+            predicate: predicate,
+            datacenter: datacenter
         }
-
         $scope.ca.createInstrumentations([ options ], function(errs, instrumentations){
 
             if(!errs.length) {
@@ -199,7 +225,6 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
                 $scope.graphs.push({
                     instrumentations: instrumentations,
                     title: title
-
                 });
             } else {
 
