@@ -14,6 +14,7 @@
                    data-ng-pattern="/^(\d+)$/"
                    data-ng-model="form.cardNumber"
                    data-ng-class="{error: isError('creditCard.cardNumber')}"
+                   autocomplete="on"
                    required>
             <div class="error"
                  data-translate
@@ -42,6 +43,7 @@
                         data-ng-model="form.expMonth"
                         data-ng-class="{error: isError('creditCard.expMonth')}"
                         data-ng-options="value for value in months"
+                        autocomplete="on"
                         required>
                 </select>
             </div>
@@ -55,6 +57,7 @@
                         data-ng-model="form.expYear"
                         data-ng-class="{error: isError('creditCard.expYear')}"
                         data-ng-options="value for value in years"
+                        autocompete="on"
                         required>
 
                 </select>
@@ -83,6 +86,7 @@
                    name="cvv"
                    data-ng-class="{error: isError('creditCard.cvv')}"
                    data-ng-model="form.cvv"
+                   autocomplete="on"
                    required/>
                 <span data-html="true"
                       data-translate-attributes="data-original-title"
@@ -114,6 +118,7 @@
                    data-translate="placeholder"
                    data-ng-class="{error: isError('billToContact.firstName')}"
                    data-ng-model="form.firstName"
+                   autocomplete="on"
                    required>
                 <span data-html="true"
                       data-translate-attributes="data-original-title"
