@@ -42,7 +42,7 @@ module.exports = function execute(scope) {
         updateable.forEach(function (f) {
             data[f] = call.data[f] || null;
         });
-        scope.log.debug('Updating account with', data);
+        call.log.debug('Updating account with', data);
 
         call.cloud.updateAccount(data, call.done.bind(call));
     });
@@ -66,7 +66,7 @@ module.exports = function execute(scope) {
             }
             SignupProgress.setMinProgress(call, 'ssh', function (err2) {
                 if(err2) {
-                    scope.log.error(err2);
+                    call.log.error(err2);
                 }
                 call.done(null, resp);
             });
@@ -75,7 +75,7 @@ module.exports = function execute(scope) {
 
     server.onCall('deleteKey', function(call) {
         // delete ssh key
-        scope.log.debug('server call, delete key:', call.data.fingerprint);
+        call.log.debug('server call, delete key:', call.data.fingerprint);
         call.cloud.deleteKey(call.data.fingerprint, call.done.bind(call));
     });
 };

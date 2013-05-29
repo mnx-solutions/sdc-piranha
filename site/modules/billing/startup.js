@@ -87,7 +87,7 @@ module.exports = function execute(scope) {
     }
 
     function getPaymentMethods(call, cb){
-        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
+        getAccountId(call, call.log.noErr('Failed to get account info', cb, function (id) {
             zuora.payment.get(id, function (err, pms) {
                 if(err) {
                     if(pms && pms.reasons && pms.reasons.length === 1 && pms.reasons[0].split.category.nr === '40') {
@@ -153,7 +153,7 @@ module.exports = function execute(scope) {
                 count++;
                 jsonClient.get('/update/' + user.id, function (err, req, res, obj) {
                     if(err) {
-                        scope.log.error('Something went wrong with billing API', err);
+                        call.log.error('Something went wrong with billing API', err);
                     }
                     //No error handling or nothing here, just let it pass.
                     if(--count === 0) {
@@ -163,14 +163,14 @@ module.exports = function execute(scope) {
             }
             SignupProgress.setMinProgress(call, 'billing', function (err) {
                 if(err) {
-                    scope.log.error(err);
+                    call.log.error(err);
                 }
                 if(--count === 0) {
                     call.done(null, resp);
                 }
             });
         }
-        composeZuora(call, scope.log.noErr('Unable to get Account', call.done, function (obj, user) {
+        composeZuora(call, call.log.noErr('Unable to get Account', call.done, function (obj, user) {
             // Get the account object ready
             obj.creditCard = {};
             Object.keys(call.data).forEach(function (k) {
@@ -218,7 +218,7 @@ module.exports = function execute(scope) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         zuora.account.create(obj, function (accErr, accResp) {
                             if(accResp && accResp.reasons) {
-                                scope.log.error('Zuora account creation failed', accResp.reasons);
+                                call.log.error('Zuora account creation failed', accResp.reasons);
                             }
                             if(accErr) {
                                 accErr.zuora = accResp;
@@ -236,7 +236,7 @@ module.exports = function execute(scope) {
                         delete err['cardHolderInfo.cardHolderName'];
                     }
 
-                    scope.log.error('Failed to save to zuora', err, resp && resp.reasons);
+                    call.log.error('Failed to save to zuora', err, resp && resp.reasons);
                     err.zuora = resp;
                     call.done(err);
                     return;
@@ -248,7 +248,7 @@ module.exports = function execute(scope) {
                 };
                 zuora.account.update(obj.accountNumber, accData, function (accErr, accResp) {
                     if(accErr) {
-                        scope.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
+                        call.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
                     }
                     // Have to remove previous billing methods.
                     getAllButDefaultPaymentMethods(call, function (err, notDefault) {
@@ -258,7 +258,6 @@ module.exports = function execute(scope) {
                         }
                         var count = notDefault.length;
                         if(count < 1) {
-                            console.log('no nonDefault');
                             updateProgress(user, accResp);
                             return;
                         }
@@ -277,7 +276,7 @@ module.exports = function execute(scope) {
     });
 
     function getInvoiceList(call, cb) {
-        getAccountId(call, scope.log.noErr('Failed to get account info', cb, function (id) {
+        getAccountId(call, call.log.noErr('Failed to get account info', cb, function (id) {
             zuora.transaction.getInvoices(id, cb);
         }));
     }

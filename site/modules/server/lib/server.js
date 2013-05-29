@@ -17,7 +17,7 @@ function Server(opts) {
 Server.prototype.onCall = function (name, handler) {
   var self = this;
   if(self._handlers[name]) {
-    self.log.warn("can not have multiple listeners for RPC calls, ignoring");
+    self.log.warn('can not have multiple listeners for RPC calls, ignoring');
     return;
   }
 
@@ -61,23 +61,23 @@ Server.prototype.call = function () {
         var query = req.body;
         var id = req.query.tab;
 
-        if ("object" !== typeof query || !query.id || !query.name || !id) {
-            req.log.warn("Invalid call format", query);
-            res.send(400, "Invalid call format");
+        if ('object' !== typeof query || !query.id || !query.name || !id) {
+            req.log.warn('Invalid call format', query);
+            res.send(400, 'Invalid call format');
             return;
         }
 
-        self.log.debug("Incoming RPC call ", query.name, query.id, id);
+        self.log.debug('Incoming RPC call', query.name, query.id, id);
 
         if (!self._handlers[query.name]) {
-            self.log.warn("Client tried to call unhandled call", query);
-            res.send(501, "Unhandled RPC call", query.name);
+            self.log.warn('Client tried to call unhandled call', query);
+            res.send(501, 'Unhandled RPC call', query.name);
             return;
         }
 
         if(!self._handlers[query.name].verify(query.data)) {
-            req.log.warn({params:query.data}, "Invalid parameters  provided for call %s", query.name);
-            res.send(400, "Invalid parameters provided");
+            req.log.warn({params:query.data}, 'Invalid parameters  provided for call %s', query.name);
+            res.send(400, 'Invalid parameters provided');
             return;
         }
         var opts = query;
