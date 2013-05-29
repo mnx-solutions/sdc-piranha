@@ -1,4 +1,11 @@
-<div class="container-fluid span7 offset2" data-ng-switch="subview" data-ng-cloack>
-    <div data-ng-switch-when="index" data-ng-include="'tfa/static/partials/index.html'"></div>
+<div class="container content-container"  data-ng-switch="subview" data-ng-cloack>
+		<ul class="breadcrumb">
+			<li><a href="#!/dashboard/">Dashboard</a></li>
+			<li><span class="text-gray"> / </span><a href="#!/account/">Account</a></li>
+			<li><span class="text-gray"> / </span><a href="#!/account/edit">Edit Account</a></li>
+			<li class="active"> /  Two Factor Authentication</li>
+			<li class="pull-right"><a class="add-machine" href="#!/instance/add">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
+		</ul>
+   		<div data-ng-switch-when="index" data-ng-include="'tfa/static/partials/index.html'"></div>
 </div>
 <div class="clearfix"></div>

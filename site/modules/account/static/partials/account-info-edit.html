@@ -123,47 +123,55 @@
 			<button class="btn btn-joyent-blue pull-right" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
         </fieldset>
 
-		<fieldset class="span6 pull-right" data-ng-hide="currentStep">
-            <legend data-translate>Change password</legend>
-			<div class="clearfix"></div><br />
-			<p>Popup window will direct you to SSO pages. No sensitive data is exchanged between two sites.</p>
-			<p>Change password will open a popup window. Please ensure you dont have popup blokers active.</p>
+		<div class="span6 pull-right" data-ng-hide="currentStep">
+			<fieldset  data-ng-hide="currentStep">
+	            <legend data-translate>Change password</legend>
+					<div class="clearfix"></div><br />
+					<p>Popup window will direct you to SSO pages. No sensitive data is exchanged between two sites.</p>
+					<p>Change password will open a popup window. Please ensure you dont have popup blokers active.</p>
 			
-			<a data-ng-click="changePassword()" class="btn pull-right" data-translate>Change password</a>
+					<a data-ng-click="changePassword()" class="btn pull-right" data-translate>Change password</a>
+					<div class="clearfix">
+			</fieldset>
+			<div class="clearfix">
+				<br />
+			<div class="clearfix">
+			<fieldset  data-ng-hide="currentStep">
+	           	<legend data-translate>Two factor authentication</legend>
+	           	<div class="clearfix"></div><br />
 
-            <legend data-translate>Two factor authentication</legend>
-            <div class="clearfix"></div><br />
+	            <div data-ng-show="qrImage">
+	                <p>You have enabled two-factor authentication. You will be asked to provide an extra verification code the next time that you login.</p>
+	                <ol>
+	                    <li>Please download 'Google Authenticator' from your phone's App Store.</li>
+	                    <li>
+	                        Scan the QR code below using the application
+	                        <div style="margin: 15px; padding-left: 20px" data-ng-bind-html-unsafe="qrImage">
+	                        </div>
+	                    </li>
 
-            <div data-ng-show="qrImage">
-                <p>You have enabled two-factor authentication. You will be asked to provide an extra verification code the next time that you login.</p>
-                <ol>
-                    <li>Please download 'Google Authenticator' from your phone's App Store.</li>
-                    <li>
-                        Scan the QR code below using the application
-                        <div style="margin: 15px; padding-left: 20px" data-ng-bind-html-unsafe="qrImage">
-                        </div>
-                    </li>
+	                    <li>
+	                        Type the code from your new application below to verify your configuration.<hr />
+	                        <div class="control-group">
+	                            <label class="control-label b" for="otpass">Enter your code</label>
+	                            <div class="controls">
+	                                <input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" />
+	                            </div>
+	                        </div>
+	                    </li>
+	                </ol>
+	                <button class="btn btn-joyent-blue pull-right" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
+	                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaTestLoading"></div>
+	            </div>
 
-                    <li>
-                        Type the code from your new application below to verify your configuration.
-                        <div class="control-group">
-                            <label class="control-label" for="otpass">Your code</label>
-                            <div class="controls">
-                                <input id="otpass" type="text" class="span2" value="" data-ng-model="otpass" />
-                            </div>
-                        </div>
-                    </li>
-                </ol>
-                <button class="btn btn-primary pull-right" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
-                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaTestLoading"></div>
-            </div>
+	            <button data-ng-show="!account.tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn btn-joyent-blue pull-right" data-translate>Enable</button>
+	            <button data-ng-show="account.tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn btn-danger pull-right" data-translate>Disable</button>
 
-            <button data-ng-show="!account.tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn btn-success pull-right" data-translate>Enable</button>
-            <button data-ng-show="account.tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn btn-danger pull-right" data-translate>Disable</button>
+	            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaLoading"></div>
+			</fieldset>
+		</div>
 
-            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaLoading"></div>
-
-		</fieldset>
+		
 
 
 		<div class="clearfix"></div>
