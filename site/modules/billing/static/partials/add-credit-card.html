@@ -1,63 +1,60 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
-<form name="paymentForm" class="row-fluid" autocomplete="on">
+<form name="paymentForm" class="row-fluid" method="POST" action="" autocomplete="on">
 <fieldset class="span6" style="width:340px">
     <legend>Credit card details</legend>
     <div class="control-group">
-        <label class="control-label" for="cardNumber" data-translate>Card number</label>
+        <label class="control-label" for="creditCardNumber" data-translate>Card number</label>
         <div class="controls">
             <input type="text"
-                   id="cardNumber"
-                   name="cardNumber"
+                   id="creditCardNumber"
+                   name="creditCardNumber"
                    size="40"
                    placeholder="Card number"
                    data-translate="placeholder"
                    data-ng-pattern="/^(\d+)$/"
-                   data-ng-model="form.cardNumber"
-                   data-ng-class="{error: isError('creditCard.cardNumber')}"
-                   autocomplete="on"
+                   data-ng-model="form.creditCardNumber"
+                   data-ng-class="{error: isError('creditCard.creditCardNumber')}"
                    required>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.cardNumber')">
+                 data-ng-show="isError('creditCard.creditCardNumber')">
                 Invalid credit card number
             </div>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.cardNumber', 'required')">
+                 data-ng-show="isError('creditCard.creditCardNumber', 'required')">
                 Missing credit card number
             </div>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.cardNumber', 'pattern')">
+                 data-ng-show="isError('creditCard.creditCardNumber', 'pattern')">
                 Invalid symbols (numbers only)
             </div>
         </div>
     </div>
     <div class="container">
         <div class="control-group pull-left">
-            <label class="control-label" for="expMonth" data-translate>Month</label>
+            <label class="control-label" for="expirationMonth" data-translate>Month</label>
             <div class="controls">
-                <select id="expMonth"
-                        name="expMonth"
+                <select id="expirationMonth"
+                        name="expirationMonth"
                         class="date-month"
-                        data-ng-model="form.expMonth"
-                        data-ng-class="{error: isError('creditCard.expMonth')}"
+                        data-ng-model="form.expirationMonth"
+                        data-ng-class="{error: isError('creditCard.expirationMonth')}"
                         data-ng-options="value for value in months"
-                        autocomplete="on"
                         required>
                 </select>
             </div>
         </div>
         <div class="control-group pull-left span3">
-            <label class="control-label" for="expYear" data-translate>Year</label>
+            <label class="control-label" for="expirationYear" data-translate>Year</label>
             <div class="controls">
-                <select id="expYear"
-                        name="expYear"
+                <select id="expirationYear"
+                        name="expirationYear"
                         class="date-year"
-                        data-ng-model="form.expYear"
-                        data-ng-class="{error: isError('creditCard.expYear')}"
+                        data-ng-model="form.expirationYear"
+                        data-ng-class="{error: isError('creditCard.expirationYear')}"
                         data-ng-options="value for value in years"
-                        autocompete="on"
                         required>
 
                 </select>
@@ -68,25 +65,24 @@
     <div class="control-group">
         <div class="error"
              data-translate
-             data-ng-show="isError('creditCard.expMonth')">
+             data-ng-show="isError('creditCard.expirationMonth')">
             Invalid expiration month
         </div>
         <div class="error"
              data-translate
-             data-ng-show="isError('creditCard.expYear')">
+             data-ng-show="isError('creditCard.expirationYear')">
             Invalid expiration year
         </div>
     </div>
     <div class="clearfix"></div>
     <div class="control-group">
-        <label class="control-label" for="cvv" data-translate>CVV</label>
+        <label class="control-label" for="securityCode" data-translate>CCV</label>
         <div class="controls">
             <input type="text"
-                   id="cvv"
-                   name="cvv"
-                   data-ng-class="{error: isError('creditCard.cvv')}"
-                   data-ng-model="form.cvv"
-                   autocomplete="on"
+                   id="securityCode"
+                   name="securityCode"
+                   data-ng-class="{error: isError('creditCard.securityCode')}"
+                   data-ng-model="form.securityCode"
                    required/>
                 <span data-html="true"
                       data-translate-attributes="data-original-title"
@@ -94,15 +90,15 @@
                       data-trigger="hover"
                       data-placement="right"
                       class="tooltip-hover icon-info-sign"
-                      data-original-title="Please the the CVV code on the back of your card. AMEX users, the CVV is on the front of your card."></span>
+                      data-original-title="Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card."></span>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.cvv')">
+                 data-ng-show="isError('creditCard.securityCode')">
                 Invalid security code
             </div>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.cvv', 'required')">
+                 data-ng-show="isError('creditCard.securityCode', 'required')">
                 Missing security code
             </div>
         </div>
@@ -118,7 +114,6 @@
                    data-translate="placeholder"
                    data-ng-class="{error: isError('billToContact.firstName')}"
                    data-ng-model="form.firstName"
-                   autocomplete="on"
                    required>
                 <span data-html="true"
                       data-translate-attributes="data-original-title"
