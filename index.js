@@ -1,6 +1,7 @@
 'use strict';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+process.env.DEBUG = 'express:router';
 
 var config = require('easy-config');
 var express = require('express');
