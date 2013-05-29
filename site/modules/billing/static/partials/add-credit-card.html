@@ -7,7 +7,7 @@
         <div class="controls">
             <input type="text"
                    id="creditCardNumber"
-                   name="creditCardNumber"
+                   name="cardNumber"
                    size="40"
                    placeholder="Card number"
                    data-translate="placeholder"
@@ -37,7 +37,7 @@
             <label class="control-label" for="expirationMonth" data-translate>Month</label>
             <div class="controls">
                 <select id="expirationMonth"
-                        name="expirationMonth"
+                        name="expMonth"
                         class="date-month"
                         data-ng-model="form.expirationMonth"
                         data-ng-class="{error: isError('creditCard.expirationMonth')}"
@@ -50,7 +50,7 @@
             <label class="control-label" for="expirationYear" data-translate>Year</label>
             <div class="controls">
                 <select id="expirationYear"
-                        name="expirationYear"
+                        name="expYear"
                         class="date-year"
                         data-ng-model="form.expirationYear"
                         data-ng-class="{error: isError('creditCard.expirationYear')}"
@@ -80,7 +80,7 @@
         <div class="controls">
             <input type="text"
                    id="securityCode"
-                   name="securityCode"
+                   name="cvc"
                    data-ng-class="{error: isError('creditCard.securityCode')}"
                    data-ng-model="form.securityCode"
                    required/>
