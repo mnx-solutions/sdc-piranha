@@ -177,7 +177,11 @@ module.exports = function execute(scope) {
                 if(k === 'firstName' || k === 'lastName') {
                     return;
                 }
-                var key = ((k === 'creditCardType' && 'cardType') || (k === 'creditCardNumber' && 'cardNumber') || k);
+                var key = ((k === 'creditCardType' && 'cardType')
+                    || (k === 'expMonth' && 'expirationMonth')
+                    || (k === 'expYear' && 'expirationYear')
+                    || (k === 'cvv' && 'securityCode')
+                    || k);
                 obj.creditCard[key] = call.data[k];
             });
             Object.keys(call.data.cardHolderInfo).forEach(function (k) {
@@ -195,7 +199,13 @@ module.exports = function execute(scope) {
             };
             Object.keys(call.data).forEach(function (k) {
                 if(k !== 'firstName' && k !== 'lastName'){
-                    data[k] = call.data[k];
+
+                    var key = ((k === 'cardNumber' && 'creditCardNumber')
+                        || (k === 'expMonth' && 'expirationMonth')
+                        || (k === 'expYear' && 'expirationYear')
+                        || (k === 'cvv' && 'securityCode')
+                        || k);
+                    data[key] = call.data[k];
                 }
             });
             var preErr = null;

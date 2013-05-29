@@ -35,7 +35,7 @@ module.exports = function execute(scope) {
         }
 
         return next();
-    }
+    };
 
     return middleware;
 }
