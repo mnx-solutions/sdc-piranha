@@ -49,7 +49,7 @@ module.exports = function execute(scope, app) {
             res.send(401);
             return;
         }
-        TFA.set(req.session.userId, 'false', function(err, secretkey) {
+        TFA.set(req.session.userId, false, function(err, secretkey) {
             if(err) {
                 res.json(500, {status: 'error', err: err});
                 return;
