@@ -87,6 +87,11 @@ module.exports = function execute(scope, app) {
                                 }
                             }
 
+                        } else {
+                            responseCount++;
+                            if(responseCount === Object.keys(dcs).length) {
+                                res.json(response);
+                            }
                         }
 
                     }
