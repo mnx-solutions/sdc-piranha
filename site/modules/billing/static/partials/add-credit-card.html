@@ -76,13 +76,13 @@
     </div>
     <div class="clearfix"></div>
     <div class="control-group">
-        <label class="control-label" for="cvc" data-translate>CCV</label>
+        <label class="control-label" for="cvv" data-translate>CVV</label>
         <div class="controls">
             <input type="text"
-                   id="cvc"
-                   name="cvc"
-                   data-ng-class="{error: isError('creditCard.cvc')}"
-                   data-ng-model="form.cvc"
+                   id="cvv"
+                   name="cvv"
+                   data-ng-class="{error: isError('creditCard.cvv')}"
+                   data-ng-model="form.cvv"
                    required/>
                 <span data-html="true"
                       data-translate-attributes="data-original-title"
@@ -90,15 +90,15 @@
                       data-trigger="hover"
                       data-placement="right"
                       class="tooltip-hover icon-info-sign"
-                      data-original-title="Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card."></span>
+                      data-original-title="Please the the CVV code on the back of your card. AMEX users, the CVV is on the front of your card."></span>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.securityCode')">
+                 data-ng-show="isError('creditCard.cvv')">
                 Invalid security code
             </div>
             <div class="error"
                  data-translate
-                 data-ng-show="isError('creditCard.securityCode', 'required')">
+                 data-ng-show="isError('creditCard.cvv', 'required')">
                 Missing security code
             </div>
         </div>
