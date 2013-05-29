@@ -177,7 +177,11 @@ module.exports = function execute(scope) {
                 if(k === 'firstName' || k === 'lastName') {
                     return;
                 }
-                var key = ((k === 'creditCardType' && 'cardType') || (k === 'creditCardNumber' && 'cardNumber') || k);
+                var key = ((k === 'creditCardType' && 'cardType')
+                    || (k === 'expMonth' && 'expirationMonth')
+                    || (k === 'expYear' && 'expirationYear')
+                    || (k === 'cvv' && 'securityCode')
+                    || k);
                 obj.creditCard[key] = call.data[k];
             });
             Object.keys(call.data.cardHolderInfo).forEach(function (k) {
