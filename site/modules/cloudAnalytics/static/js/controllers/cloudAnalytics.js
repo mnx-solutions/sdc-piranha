@@ -88,49 +88,66 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
     });
 
     $scope.createDefaultInstrumentations = function() {
-
+        var datacenter = null;
+        for(var i in $scope.zones) {
+            var zone = $scope.zones[i];
+            if(zone.id === $scope.zoneId) {
+                datacenter = zone.datacenter;
+            }
+        }
+        if(!datacenter) {
+            //TODO: error handling;
+        }
         /* pre-defined default intrumentations */
         var oo = [
             [{
                 module: 'cpu',
                 stat: 'usage',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'cpu',
                 stat: 'waittime',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'memory',
                 stat: 'rss',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             },{
                 module: 'memory',
                 stat: 'rss_limit',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'memory',
                 stat: 'reclaimed_bytes',
                 decomposition: [],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }], [{
                 module: 'zfs',
                 stat: 'dataset_unused_quota',
                 decomposition: [],
-                predicate: {}
+                predicate: {},
+                datacenter: datacenter
             }, {
                 module: 'zfs',
                 stat: 'dataset_quota',
                 decomposition: [],
-                predicate: {}
+                predicate: {},
+                datacenter: datacenter
             }], [{
                 module: 'nic',
                 stat: 'vnic_bytes',
                 decomposition: ['zonename'],
-                predicate: { "eq": ["zonename", $scope.zoneId] }
+                predicate: { "eq": ["zonename", $scope.zoneId] },
+                datacenter: datacenter
             }]
         ];
 
