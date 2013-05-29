@@ -13,7 +13,7 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
 
     $scope.zones = Machine.machine();
 
-    $scope.ranges = [10, 30, 60, 90, 120];
+    $scope.ranges = [10, 30, 60, 90, 120, 150, 180];
 
     // values graphs are watching
     $scope.currentRange = 60;
@@ -149,7 +149,6 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
               $scope.ca.createInstrumentations(oo[index], function(errs, inst) {
                   if(!errs.length) {
                       if(!$scope.endtime) {
-                          // TODO: fix timing issue. Something calculates times incorrectly, this -1 is a temporary fix
                           $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
                           tick();
                       }
@@ -181,13 +180,23 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
         decomp.push($scope.current.decomposition.secondary);
         var mod = $scope.current.metric.module;
         var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
+        var datacenter = null;
+        for(var i in $scope.zones) {
+            var zone = $scope.zones[i];
+            if(zone.id === $scope.zoneId) {
+                datacenter = zone.datacenter;
+            }
+        }
+        if(!datacenter) {
+            //TODO: error handling;
+        }
         var options = {
             module: mod,
             stat: $scope.current.metric.stat,
             decomposition: decomp,
-            predicate: predicate
+            predicate: predicate,
+            datacenter: datacenter
         }
-
         $scope.ca.createInstrumentations([ options ], function(errs, instrumentations){
 
             if(!errs.length) {
@@ -199,7 +208,6 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
                 $scope.graphs.push({
                     instrumentations: instrumentations,
                     title: title
-
                 });
             } else {
 

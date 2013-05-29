@@ -50,34 +50,51 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/ca/instrumentations', function (req, res) {
+        var client = req.cloud;
+        var response = {
+            time:null,
+            instrumentations:[]
+        };
+        var responseCount = 0;
+        client.listDatacenters(function(dcerr, dcs) {
+            for(var dcname in dcs) {
+                client.setDatacenter(dcname);
 
-        req.cloud.ListInstrumentations(function (err, resp) {
-            if (!err) {
-                console.log(err);
+                req.cloud.ListInstrumentations(function (err, resp) {
+                    if (!err) {
+                        if(resp.length) {
+                            var id = resp[0].id;
+                            for(var iname in resp) {
+                                resp[iname].datacenter = dcname;
+                            }
+                            // poll the most recent value to sync with ca time.
+                            if(!response.time) {
+                                req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
+                                    if(!err2) {
+                                        response.time = value.start_time;
+                                        response.instrumentations = response.instrumentations.concat(resp);
+                                        responseCount++;
+                                        if(responseCount === Object.keys(dcs).length) {
+                                            res.json(response);
+                                        }
+                                    }
+                                });
+                            } else {
+                                response.instrumentations = response.instrumentations.concat(resp);
+                                responseCount++;
+                                if(responseCount === Object.keys(dcs).length) {
+                                    res.json(response);
+                                }
+                            }
 
-                if(resp.length) {
-                    var id = resp[0].id;
-
-                    // poll the most recent value to sync with ca time.
-                    req.cloud.GetInstrumentationValue(+id, {}, function(err2, value) {
-                        if(!err2) {
-                            res.json({
-                                time: value.start_time,
-                                instrumentations: resp
-                            });
                         }
-                    });
 
-                } else {
-                    res.json({
-                        time:null,
-                        instrumentations:[]
-                    });
-                }
-
+                    }
+                });
 
             }
-        });
+        })
+
     });
 
     app.post('/ca/instrumentations/unblock/:id', function(req, res) {
@@ -88,8 +105,10 @@ module.exports = function execute(scope, app) {
         res.json({});
     })
 
-    app.post('/ca/instrumentations', function (req, res) {
-        req.cloud.CreateInstrumentation(req.body, function (err, resp) {
+    app.post('/ca/instrumentations/:datacenter', function (req, res) {
+        var client = req.cloud;
+        client.setDatacenter(req.params.datacenter);
+        client.CreateInstrumentation(req.body, function (err, resp) {
             // !TODO: Error handling
             if (!err) {
                 res.json(resp);
@@ -99,7 +118,7 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.del('/ca/instrumentations/:id', function(req, res) {
+    app.del('/ca/instrumentations/:datacenter/:id', function(req, res) {
         if(!instrumentationBlock[req.session.token]) {
             instrumentationBlock[req.session.token] = [];
         }
@@ -118,6 +137,24 @@ module.exports = function execute(scope, app) {
 
 
         });
+    });
+
+    app.post('/ca/getHeatmapDetails/:datacenter/:id', function(req, res) {
+        var options = {
+            id: req.params.id,
+            width: req.query.width || 570,
+            height: req.query.height || 180,
+            nbuckets: req.query.nbuckets || 50,
+            duration: req.query.duration || 60,
+            ndatapoints: 1,
+            end_time: req.query.endtime
+        };
+        var client = req.cloud;
+        client.setDatacenter(req.params.datacenter);
+        client.getInstrumentationHeatmapDetails(options, options, function(err, resp) {
+            res.json(resp);
+        });
+
     });
 
     app.post('/ca/getInstrumentations', function(req, res) {
@@ -145,6 +182,7 @@ module.exports = function execute(scope, app) {
             (function() {
                 var instrumentation = instrumentations[instrumentationId];
                 var client = req.cloud;
+                client.setDatacenter(instrumentation.datacenter);
                 var method;
                 var options = {
                     id: instrumentationId

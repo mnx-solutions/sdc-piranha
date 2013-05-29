@@ -22,9 +22,23 @@
                 }
 
                 var ticktime = null;
+                var heatmaptime = null;
                 var graph = false;
                 var legend = null;
+
                 $scope.heatmap;
+
+                //
+                $scope.getHeatmapDetails = function() {
+
+                    ca.getHeatmapDetails({
+                        instrumentation: $scope.instrumentations[0],
+                        endtime: heatmaptime
+                    }, function(values) {
+                        console.log(values);
+                        //'heatmap_details_'+ $scope.$id
+                    })
+                }
 
                 function renderLegend(graph) {
                     legend = true;
@@ -149,7 +163,9 @@
 
                     if(newVal){
                         if(!ticktime) {
-                            ticktime = $scope.$parent.endtime
+
+                            ticktime = $scope.$parent.endtime;
+                            heatmaptime = ticktime;
                         }
 
                         if(!$scope.$parent.frozen) {
@@ -159,6 +175,7 @@
                             } else if (!graph){
                                 updateGraph();
                             }
+                            heatmaptime = ticktime;
                         } else {
                             ticktime++;
                         }
@@ -179,6 +196,7 @@
                         '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
                             '<div class="caOverlaid" >' +
                             '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                            '<div id="heatmap_details_{{$id}}" style="position:absolute;"></div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +

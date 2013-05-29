@@ -191,7 +191,8 @@
                     // set options for polling values
                     var options = {
                         'value-arity': inst['value-arity'],
-                        crtime: createOpts.pollingstart || Math.floor(inst.crtime /1000)
+                        crtime: createOpts.pollingstart || Math.floor(inst.crtime /1000),
+                        datacenter: inst._datacenter
                     }
                     if(heatmap) {
                         options.ndatapoints = createOpts.range || self.range;
@@ -209,7 +210,11 @@
 
             });
         }
+        service.prototype.getHeatmapDetails = function(options, cb){
 
+//            instrumentation: $scope.instrumentations[0],
+//            endtime: heatmaptime
+        }
         service.prototype.createInstrumentations = function(createOpts, cb) {
             var insts = [];
             var errors = [];

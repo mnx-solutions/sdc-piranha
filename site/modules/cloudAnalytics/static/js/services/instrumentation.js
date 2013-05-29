@@ -102,14 +102,21 @@ var instrumentations = {};
             self._uuid = uuid;
             self._createOpts = opts.createOpts;
             self._parent = opts.parent;
+            self._datacenter = self._createOpts.datacenter || opts.init.datacenter;
 
         }
 
         Instrumentation.prototype.getUrl = function () {
             var self = this;
 
-            return  url + '/' + self.id;
+            return  url + '/' + self._datacenter + '/' + self.id;
         };
+
+        Instrumentation.prototype.getCreateUrl = function () {
+            var self = this;
+
+            return  url + '/' + self._datacenter;
+        }
 
         Instrumentation.prototype.init = function (data, callback) {
             var self = this;
@@ -125,7 +132,7 @@ var instrumentations = {};
             } else {
                 $http({
                     method:'POST',
-                    url: url,
+                    url: self.getCreateUrl(),
                     data: self._createOpts
                 })
                 .success(function (data) {
@@ -147,14 +154,11 @@ var instrumentations = {};
             delete(instrumentations[this._uuid]);
             callback = (callback || ng.noop);
             var self = this;
-            console.log('deleting', self.getUrl());
             $http({ method: 'DELETE', url: self.getUrl() })
                 .success(function() {
-                    console.log('delete success');
                     callback();
                 })
                 .error(function() {
-                    console.log('delete error');
                     callback();
                 });
 
