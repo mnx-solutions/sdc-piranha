@@ -146,7 +146,7 @@
                         }
                     }, true);
 
-                    $scope.$watch('form.cardNumber', function (newVal) {
+                    $scope.$watch('form.creditCardNumber', function (newVal) {
                         $scope.form.creditCardType = getCardType(newVal ? newVal.toString() : '');
                     }, true);
 
