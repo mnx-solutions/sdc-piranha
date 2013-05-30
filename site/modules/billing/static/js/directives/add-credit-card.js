@@ -188,19 +188,21 @@
                             if(errs) {
                                 $scope.errs = errs;
                                 $scope.loading = false;
-                                var message = '';
+                                var message = localization.translate(null,
+                                    'billing',
+                                    'Payment information not updated:'
+                                );
+
                                 if(errs._general) {
                                     errs.zuora.reasons.forEach(function (err) {
-                                        message += err.message + '<br/>';
+                                        message += localization.translate(null,
+                                            'billing',
+                                            err.message
+                                        ) + '<br/>';
                                     });
                                 }
 
-                                notification.push(null, { type: 'error' },
-                                    localization.translate(null,
-                                        'billing',
-                                        'Payment information not updated:'
-                                    ) + message
-                                );
+                                notification.push(null, { type: 'error' }, message);
                                 window.scrollTo(0,0);
                             } else {
                                 notification.push(null, { type: 'success' },
