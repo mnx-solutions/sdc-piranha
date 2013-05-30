@@ -1,6 +1,5 @@
 'use strict';
 
-var redis = require('redis');
 var config = require('easy-config');
 
 module.exports = function execute(scope) {
