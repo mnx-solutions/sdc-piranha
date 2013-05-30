@@ -13,6 +13,8 @@ module.exports = function execute(scope, app) {
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
 
         var cloud = smartCloud.cloud({token: token});
+        console.log('here');
+        console.log(cloud);
         cloud.getAccount(function (err, data) {
             if(err) {
                 next(err);
