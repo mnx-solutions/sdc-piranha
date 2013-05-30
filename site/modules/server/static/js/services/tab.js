@@ -32,7 +32,7 @@
                             return _calls[opts];
                         }
                         opts.tab = self;
-                        var call = serverCall.new(opts);
+                        var call = serverCall.create(opts);
                         _calls[call.id] = call;
 
                         return call;

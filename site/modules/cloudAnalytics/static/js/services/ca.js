@@ -236,7 +236,7 @@
         service.prototype.deleteInstrumentation = function(i) {
 
             delete(ca.options.individual[i.id]);
-            ca.instrumentations[i.id].delete(function() {
+            ca.instrumentations[i.id].remove(function() {
                 delete(ca.instrumentations[i.id]);
             });
 //            i.delete();
@@ -333,7 +333,7 @@
                 (function(i) {
                     var inst = ca.instrumentations[i];
                     delete(ca.instrumentations[i]);
-                    inst.delete(function() {
+                    inst.remove(function() {
 
                     });
                 })(i);

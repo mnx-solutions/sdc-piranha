@@ -15,7 +15,8 @@
             '$location',
             'localization',
             '$q',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q) {
+            '$$track',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope, {
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -90,6 +91,17 @@
                             'Billing will start once this instance is created'
                         ), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
+                            $scope.retinfo.done(function(err, job) {
+                              var newMachine = job.__read();
+                                if(newMachine.id) {
+                                    var listMachines = Machine.machine();
+                                    $q.when(listMachines, function() {
+                                        if(listMachines.length == 1) {
+                                            //$$track.marketo_machine_provision(newMachine);
+                                        }
+                                    });
+                                }
+                            });
 
                             $location.path('/instance');
                         });

@@ -238,7 +238,7 @@
                 return self;
             }
             return {
-                new: function(opts) {
+                create: function(opts) {
                     return new Call(opts);
                 }
             };

@@ -149,7 +149,7 @@ var instrumentations = {};
             }
         };
 
-        Instrumentation.prototype.delete = function (callback) {
+        Instrumentation.prototype.remove = function (callback) {
 
             delete(instrumentations[this._uuid]);
             callback = (callback || ng.noop);
