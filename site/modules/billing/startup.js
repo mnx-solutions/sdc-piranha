@@ -4,13 +4,50 @@ var config = require('easy-config');
 var moment = require('moment');
 var zuora = require('zuora').create(config.zuora.api);
 var restify = require('restify');
+var path = require('path');
+var fs = require('fs');
 var jsonClient = null;
+
+var zuoraErrors = null;
 
 if(!config.billing.noUpdate) {
     jsonClient = restify.createJsonClient({url: config.billing.url});
 }
 
-module.exports = function execute(scope) {
+module.exports = function execute(scope, callback) {
+
+    // Here we init the zuora errors (its a mess)
+    fs.readFile(path.join(__dirname, '/data/errors.json'), function (err, data) {
+        if(err) {
+            scope.log.fatal('failed to load error file for zuora', err);
+            process.exit();
+        }
+        zuoraErrors = JSON.parse(data);
+        callback();
+    });
+
+    function updateErrorList(resp, callback) {
+
+        var newErr = false;
+        if(resp && resp.reasons) {
+            resp.reasons.forEach(function (e) {
+                if(!zuoraErrors[e.message]) {
+                    newErr = true;
+                    zuoraErrors[e.message] = e;
+                }
+            });
+            if(newErr) {
+                fs.writeFile(path.join(__dirname, '/data/errors.json'), JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
+                    if(err) {
+                        scope.log.error('Failed to update zuora error file with', zuoraErrors);
+                    }
+                    callback();
+                });
+                return;
+            }
+        }
+        setImmediate(callback);
+    }
 
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
@@ -239,8 +276,10 @@ module.exports = function execute(scope) {
                     }
 
                     call.log.error('Failed to save to zuora', err, resp && resp.reasons);
-                    err.zuora = resp;
-                    call.done(err);
+                    updateErrorList(resp, function () {
+                        err.zuora = resp;
+                        call.done(err);
+                    });
                     return;
                 }
                 // No error - so update the account
@@ -251,6 +290,7 @@ module.exports = function execute(scope) {
                 zuora.account.update(obj.accountNumber, accData, function (accErr, accResp) {
                     if(accErr) {
                         call.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
+                        updateErrorList(accResp, function () {});
                     }
                     // Have to remove previous billing methods.
                     getAllButDefaultPaymentMethods(call, function (err, notDefault) {
