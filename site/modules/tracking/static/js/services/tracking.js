@@ -41,6 +41,14 @@
                     );
                 });
             },
+            marketo_machine_provision: function(machine) {
+                mktoMunchkinFunction(
+                    'provisionFirstMachine',
+                    {
+                        name: machine.name
+                    }
+                );
+            },
             marketo_pageview: function () {
                 //NO http(s):// in the url, use relative paths to the current domain!
                 mktoMunchkinFunction(
