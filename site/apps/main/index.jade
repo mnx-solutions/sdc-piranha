@@ -7,7 +7,9 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     meta(http-equiv="X-UA-Compatible", content="IE=Edge")
     //if lt IE 9
       script(type="text/javascript", src="static/aight.min.js")
-      script(type="text/javascript", src="static/aight.d3.min.js")
+      script(type="text/javascript")
+        window.myCustomTags = [ 'breadcrumb', 'notification', 'mainMenu', 'machineStatus', 'machineName', 'loginForm', 'graph', 'currentCreditCard', 'addCreditCard', 'accountRightMenu','accountAddSshKey', 'accountInfoEdit' ];
+      script(type="text/javascript", src="static/ie-shiv.js")
 
     title(data-ng-bind='windowTitle')
     style(type='text/css') @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}
@@ -47,6 +49,9 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
         script(type='text/javascript')!= source
     each partial in partials
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
+
+    //if lt IE 9
+      script(type="text/javascript", src="static/aight.d3.min.js")
 
     script(type='text/javascript')
         /*if (typeof(Zenbox) !== "undefined") {
