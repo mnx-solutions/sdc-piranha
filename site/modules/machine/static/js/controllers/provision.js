@@ -97,8 +97,7 @@
                                     var listMachines = Machine.machine();
                                     $q.when(listMachines, function() {
                                         if(listMachines.length == 1) {
-                                            console.log('First machine provisioning done', newMachine, listMachines);
-                                            $$track.marketo_machine_provision(newMachine);
+                                            //$$track.marketo_machine_provision(newMachine);
                                         }
                                     });
                                 }
