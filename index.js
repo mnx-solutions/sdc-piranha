@@ -1,7 +1,5 @@
 'use strict';
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
-
 var config = require('easy-config');
 var express = require('express');
 var bunyan = require('bunyan');
