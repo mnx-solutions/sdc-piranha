@@ -149,7 +149,7 @@ var instrumentations = {};
             }
         };
 
-        Instrumentation.prototype.delete = function (callback) {
+        Instrumentation.prototype.remove = function (callback) {
 
             delete(instrumentations[this._uuid]);
             callback = (callback || ng.noop);
@@ -197,10 +197,9 @@ var instrumentations = {};
                     callback(err, inst);
                 });
             } else {
-//
                 $http({
                     method:'POST',
-                    url: 'cloudAnalytics/ca/instrumentations/unblock/' + instrumentations[uuid].id
+                    url: 'cloudAnalytics/ca/instrumentations/unblock/' + instrumentations[uuid]._datacenter + '/' +  instrumentations[uuid].id
                 })
                 .success(function (data) {
                     setTimeout(function() {

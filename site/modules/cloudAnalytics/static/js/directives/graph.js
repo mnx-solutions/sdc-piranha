@@ -28,7 +28,6 @@
 
                 $scope.heatmap;
 
-                //
                 $scope.getHeatmapDetails = function() {
 
                     ca.getHeatmapDetails({
@@ -113,7 +112,6 @@
                 });
 
                 $scope.deleteGraph = function () {
-                    $scope.ca.deletequeue.push($scope.instrumentations[0].id);
                     $scope.ca.deleteInstrumentations($scope.instrumentations);
                 }
 
@@ -124,35 +122,35 @@
                 $scope.ready = false;
 
                 function updateGraph() {
-                        var series = $scope.ca.getSeries(
-                            $scope.instrumentations,
-                            ticktime
-                        );
+                    var series = $scope.ca.getSeries(
+                        $scope.instrumentations,
+                        ticktime
+                    );
 
-                        if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
-                            $scope.heatmap = $scope.ca.instrumentations[$scope.instrumentations[0].id].heatmap;
-                        }
+                    if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
+                        $scope.heatmap = $scope.ca.instrumentations[$scope.instrumentations[0]._datacenter][$scope.instrumentations[0].id].heatmap;
+                    }
 
-                        if(series && series.length) {
-                            if(!graph) {
-                                graph = createGraph(series);
-                                $scope.ready = true;
-                            } else {
-                                graph.series.splice(0, graph.series.length);
-                                graph.series.push.apply(graph.series, series);
-                                graph.render();
-                                if(legend) {
-                                    document.querySelector('#legend_' + $scope.$id).innerHTML = "";
-                                    renderLegend(graph);
-                                }
+                    if(series && series.length) {
+                        if(!graph) {
+                            graph = createGraph(series);
+                            $scope.ready = true;
+                        } else {
+                            graph.series.splice(0, graph.series.length);
+                            graph.series.push.apply(graph.series, series);
+                            graph.render();
+                            if(legend) {
+                                document.querySelector('#legend_' + $scope.$id).innerHTML = "";
+                                renderLegend(graph);
                             }
                         }
+                    }
                 }
 
 
                 $scope.$watch('$parent.currentRange', function(newVal) {
                     if(newVal){
-                        $scope.ca.changeRange([$scope.instrumentations[0].id], $scope.$parent.currentRange);
+                        $scope.ca.changeRange($scope.instrumentations, $scope.$parent.currentRange);
                         if(!$scope.initCa) {
                             updateGraph();
                         }

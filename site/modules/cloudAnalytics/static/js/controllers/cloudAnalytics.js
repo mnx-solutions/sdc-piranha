@@ -36,55 +36,59 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
 
     $scope.$watch('ca.deletequeue.length', function(newvalue){
         if(newvalue) {
-            var id = $scope.ca.deletequeue[0];
-            for( var g in $scope.graphs ) {
-                var graph = $scope.graphs[g];
-                for(var i in graph.instrumentations) {
-                    if( graph.instrumentations[i].id == id) {
-                        $scope.graphs.splice(g, 1);
-                        $scope.ca.deletequeue.splice(0, 1);
-                    }
-                }
+            for(var i in $scope.ca.deletequeue){
+                var inst = $scope.ca.deletequeue[i];
 
+                for( var g in $scope.graphs ) {
+                    var graph = $scope.graphs[g];
+                    for(var i in graph.instrumentations) {
+                        if( graph.instrumentations[i].id === inst.id && graph.instrumentations[i]._datacenter === inst._datacenter) {
+                            $scope.graphs.splice(g, 1);
+                            $scope.ca.deletequeue.splice(0, 1);
+                            $scope.ca.cleanup(inst);
+                        }
+                    }
+
+                }
             }
+
         }
     })
 
-    $scope.ca.describeCa(function (conf){
+    $scope.ca.describeCa(function (err, conf){
+        if(!err) {
+            $scope.conf = conf;
+            $scope.help = $scope.conf.help;
+            $scope.metrics = $scope.conf.metrics;
+            $scope.fields = $scope.conf.fields;
 
-        $scope.conf = conf;
-        $scope.help = $scope.conf.help;
-        $scope.metrics = $scope.conf.metrics;
-        $scope.fields = $scope.conf.fields;
+            $scope.ca.listAllInstrumentations(function(err, time, insts) {
+                if(err) {
+                    // TODO: handle errors
+                    console.log(err);
+                } else {
+                    if(!$scope.endtime && time) {
 
-        $scope.ca.listAllInstrumentations(function(time, insts) {
-
-            if(!$scope.endtime && time) {
-
-                $scope.endtime = time;
-                tick();
-            }
-
-
-            for(var i in insts) {
-
-                $scope.ca.createInstrumentation({
-                    init: insts[i],
-                    pollingstart: time
-                }, function(err, inst) {
-                    if(!err) {
-                        $scope.graphs.push({
-                            instrumentations: [inst],
-                            ca: $scope.ca,
-                            title: $scope.ca.instrumentations[inst.id].graphtitle
-                        });
+                        $scope.endtime = time;
+                        tick();
                     }
 
-                });
+                    for(var i in insts) {
+                        var inst = insts[i];
+                        if(!err) {
+                            $scope.graphs.push({
+                                instrumentations: [inst],
+                                title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
+                            });
+                        }
 
-            }
+                    }
 
-        });
+                }
+
+            });
+        }
+
     });
 
     $scope.createDefaultInstrumentations = function() {
@@ -221,7 +225,7 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
                     $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
                     tick();
                 }
-                var title = $scope.ca.instrumentations[instrumentations[0].id].graphtitle;
+                var title = $scope.ca.instrumentations[instrumentations[0]._datacenter][instrumentations[0].id].graphtitle;
                 $scope.graphs.push({
                     instrumentations: instrumentations,
                     title: title
