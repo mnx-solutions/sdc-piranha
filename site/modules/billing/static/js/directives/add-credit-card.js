@@ -188,19 +188,35 @@
                             if(errs) {
                                 $scope.errs = errs;
                                 $scope.loading = false;
-                                var message = '';
-                                if(errs._general) {
-                                    errs.zuora.reasons.forEach(function (err) {
-                                        message += err.message + '<br/>';
-                                    });
+                                var message = localization.translate(null,
+                                    'billing',
+                                    'Payment information not updated:'
+                                );
+
+                                var addedMessage = '';
+                                var generic = false;
+
+                                errs.zuora.reasons.forEach(function (err) {
+                                    var translated = localization.translate(null,
+                                        'billing',
+                                        err.message
+                                    );
+                                    if(translated === err.message) {
+                                        generic = true;
+                                    }
+                                    if(addedMessage !== '') {
+                                        generic = false;
+                                        addedMessage += '<br/>' + translated;
+                                    } else {
+                                        addedMessage += ' ' + translated;
+                                    }
+                                });
+
+                                if(generic) {
+                                    addedMessage = ' we are unable to verify your credit card details.';
                                 }
 
-                                notification.push(null, { type: 'error' },
-                                    localization.translate(null,
-                                        'billing',
-                                        'Payment information not updated:'
-                                    ) + message
-                                );
+                                notification.push(null, { type: 'error' }, message + addedMessage);
                                 window.scrollTo(0,0);
                             } else {
                                 notification.push(null, { type: 'success' },

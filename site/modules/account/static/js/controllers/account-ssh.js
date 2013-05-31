@@ -20,7 +20,7 @@
             /* ssh key creating popup with custom template */
             var newKeyPopup = function(question, callback) {
                 var title = 'Add new ssh key';
-                var btns = [{result:'cancel', label:'Cancel'}, {result:'add', label:'Add', cssClass: 'btn-primary'}];
+                var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue'}];
                 var templateUrl = 'account/static/template/dialog/message.html';
 
                 $dialog.messageBox(title, question, btns, templateUrl)

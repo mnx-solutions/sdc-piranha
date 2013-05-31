@@ -5,6 +5,7 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
         return {
             priority: 10,
             restrict: 'EA',
+            replace: true,
             template: '<ul class="breadcrumb">' +
                         '<li data-ng-class="{active: navigationPath.length - 1 == $index}" ' +
                              'data-ng-repeat="item in navigationPath">' +
@@ -18,7 +19,7 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                               ' {{item.title}}' +
                           '</span>' +
                         '</li>' +
-						'<li class="pull-right"><a class="add-machine" href="#!/machine/add">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>' +
+						'<li class="pull-right"><a class="add-machine" href="#!/instance/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>' +
                       '</ul>',
 
             controller: function ($scope, $routeParams, route, localization) {

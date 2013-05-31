@@ -8,7 +8,7 @@ var path = require('path');
 var fs = require('fs');
 var jsonClient = null;
 
-var zuoraErrors = null;
+var zuoraErrors = {};
 
 if(!config.billing.noUpdate) {
     jsonClient = restify.createJsonClient({url: config.billing.url});
@@ -17,7 +17,7 @@ if(!config.billing.noUpdate) {
 module.exports = function execute(scope, callback) {
 
     // Here we init the zuora errors (its a mess)
-    fs.readFile(path.join(__dirname, '/data/errors.json'), function (err, data) {
+    fs.readFile(path.join(process.cwd(), '/var/errors.json'), function (err, data) {
         if(err) {
             scope.log.fatal('failed to load error file for zuora', err);
             process.exit();
@@ -37,9 +37,9 @@ module.exports = function execute(scope, callback) {
                 }
             });
             if(newErr) {
-                fs.writeFile(path.join(__dirname, '/data/errors.json'), JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
+                fs.writeFile(path.join(process.cwd(), '/var/errors.json'), JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
                     if(err) {
-                        scope.log.error('Failed to update zuora error file with', zuoraErrors);
+                        scope.log.error('Failed to update zuora error file', err);
                     }
                     callback();
                 });

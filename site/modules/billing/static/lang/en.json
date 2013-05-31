@@ -39,5 +39,6 @@
     "Payment information updated": "Payment information updated",
     "Payment information not updated": "Payment information not updated",
     "Alternative Payment Method on File": "Alternative Payment Method on File",
-    "Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card.": "Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card."
+    "Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card.": "Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card.",
+    "Transaction declined.<br>2 - This transaction has been declined.": "Your credit card information is invalid, please double check"
 }

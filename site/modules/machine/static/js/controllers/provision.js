@@ -15,7 +15,8 @@
             '$location',
             'localization',
             '$q',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q) {
+            '$$track',
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope, {
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -38,7 +39,7 @@
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm: Create Instance';
-                    var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
+                    var btns = [{result:'cancel', label: 'Cancel', cssClass: 'pull-left'}, {result:'ok', label: 'OK', cssClass: 'btn-joyent-blue'}];
 
                     $dialog.messageBox(title, question, btns)
                         .open()
@@ -90,6 +91,17 @@
                             'Billing will start once this instance is created'
                         ), function () {
                             $scope.retinfo = Machine.provisionMachine($scope.data);
+                            $scope.retinfo.done(function(err, job) {
+                              var newMachine = job.__read();
+                                if(newMachine.id) {
+                                    var listMachines = Machine.machine();
+                                    $q.when(listMachines, function() {
+                                        if(listMachines.length == 1) {
+                                            //$$track.marketo_machine_provision(newMachine);
+                                        }
+                                    });
+                                }
+                            });
 
                             $location.path('/instance');
                         });
@@ -189,11 +201,11 @@
                             var lPrice = getNr(dataset.license_price);
                             if(lPrice !== false) {
                                 $scope.packages.forEach(function(p) {
-                                    if(!p.full_price && p.price) {
+                                    if(p.price) {
                                         p.full_price = lPrice + getNr(p.price);
                                         p.full_price = p.full_price.toFixed(3);
                                     }
-                                    if(!p.full_price_month && p.price_month) {
+                                    if(p.price_month) {
                                         p.full_price_month = getNr(p.price_month) + (lPrice * 730);
                                         p.full_price_month = p.full_price_month.toFixed(2);
                                     }

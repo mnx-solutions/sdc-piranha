@@ -131,7 +131,7 @@
 					<p>Change password will open a popup window. Please ensure you dont have popup blokers active.</p>
 			
 					<a data-ng-click="changePassword()" class="btn pull-right" data-translate>Change password</a>
-					<div class="clearfix">
+					<div class="clearfix"></div>
 			</fieldset>
 			<div class="clearfix">
 				<br />
@@ -160,6 +160,7 @@
 	                        </div>
 	                    </li>
 	                </ol>
+                    <div data-ng-show="tfaError" data-translate>Failed to enable TFA</div>
 	                <button class="btn btn-joyent-blue pull-right" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
 	                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaTestLoading"></div>
 	            </div>

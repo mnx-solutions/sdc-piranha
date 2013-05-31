@@ -358,19 +358,6 @@
                 }
             })
         };
-//        _description.load = function() {
-//            var self = this;
-//            this.conf.then(function(r){
-//                self.confReady = r.data;
-//                self.confReady.metrics.forEach(self._labelMetrics);
-//            });
-//            this.help.then(function(r){
-//                self.helpReady = r.data.data;
-//            })
-//        };
-//        if(!_description.confReady) {
-//            _description.load();
-//        }
 
         var ca = function(){};
         ca.request_time = null;

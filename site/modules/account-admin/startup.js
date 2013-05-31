@@ -8,7 +8,6 @@ module.exports = function execute(scope) {
 
     server.onCall('setSignupStep', function (call) {
         // get account using cloudapi
-        console.log(call.data.id, call.data.step);
         SignupProgress.setTokenVal(call.data.id, call.data.step, call.done.bind(call));
     });
 

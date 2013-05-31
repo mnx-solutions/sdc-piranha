@@ -13,7 +13,7 @@
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
 
         service.updateDatasets = function (datacenter) {
-            datacenter = datacenter ? datacenter : 'all';
+            datacenter = datacenter || 'all';
             if (!datasets.index[datacenter]) {
                 datasets.index[datacenter] = {};
                 datasets.list[datacenter] = [];
@@ -65,11 +65,11 @@
         };
 
         service.dataset = function (params) {
-            if (typeof(params) === 'string') {
+            if (typeof params === 'string') {
                 params = { id: params };
             }
 
-            params = params ? params : {};
+            params = params || {};
             if (!params.datacenter) {
                 params.datacenter = 'all';
             }
@@ -84,7 +84,7 @@
                 if (datasets.list[params.datacenter].final) {
                     ret.resolve(datasets.list[params.datacenter]);
                 } else {
-                    datasets.job[datacenter].deferred.then(function (value) {
+                    datasets.job[params.datacenter].deferred.then(function (value) {
                         ret.resolve(value);
                     });
                 }
@@ -104,7 +104,7 @@
             return ret.promise;
         };
 
-        if (!datasets.job['all']) {
+        if (!datasets.job.all) {
             // run updatePackages
             service.updateDatasets();
         }

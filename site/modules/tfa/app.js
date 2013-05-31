@@ -79,6 +79,11 @@ module.exports = function execute(scope, app) {
         var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
         if (req.body.otpass === onetimepass) {
             TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
+                if(err) {
+                    req.log.error('Failed to enable TFA', err);
+                    res.json({status:'error', message: 'Internal error'});
+                    return;
+                }
                 // tfaEnabled will be enabled for their next login
                 delete req.session._tfaSecret;
                 req.session.save();

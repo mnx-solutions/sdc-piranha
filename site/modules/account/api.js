@@ -39,14 +39,17 @@ module.exports = function execute(scope, register, callback) {
                 return;
             }
 
+            var errs = obj.errors.filter(function (el) {
+                return el.code !== 'U01';
+            });
+
             var state = 'start';
-            if(obj.errors && obj.errors.length === 1) {
-                if(obj.errors[0].code.charAt(0) === 'Z'){
-                    state = 'tropo';
-                } else if(obj.errors[0].code === 'U01') {
-                    state = 'completed';
-                }
+            if(errs.length === 0) {
+                state = 'completed';
+            } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') {
+                state = 'tropo';
             }
+
             cb(null, state);
             return;
         });
