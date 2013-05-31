@@ -4,6 +4,7 @@
     app.directive('notification', [ 'notification', function (notification) {
         return {
             restrict: 'EA',
+            replace: true,
 
             link: function (scope) {
             },

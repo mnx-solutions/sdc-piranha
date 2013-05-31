@@ -23,12 +23,13 @@ window.JP.main.service('util', [
             var btns = [
                 {
                     result: 'cancel',
-                    label: 'Cancel'
+                    label: 'Cancel',
+                    cssClass: 'pull-left'
                 },
                 {
                     result:'ok',
                     label: 'OK',
-                    cssClass: 'btn-primary'
+                    cssClass: 'btn-joyent-blue'
                 }
             ];
 

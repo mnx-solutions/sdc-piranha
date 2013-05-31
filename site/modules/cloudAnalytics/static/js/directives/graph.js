@@ -4,6 +4,7 @@
      app.directive('graph', function () {
         return {
             restrict: "E",
+            replace: true,
             scope: {
                 options:'='
             },
@@ -185,7 +186,7 @@
 
             },
             template:
-                '<div class="loading-medium" data-ng-hide="ready"></div>'+
+                '<div><div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div data-ng-show="ready">' +
                     '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
                     '<h3 data-ng-show="options.title">{{options.title}}</h3>' +
@@ -201,7 +202,7 @@
                         '</div>' +
                     '</div>' +
                     '<div id="legend_{{$id}}" style="width:620px"></div>' +
-                '</div><hr />'
+                '</div><hr /></div>'
         };
     });
 }(window.JP.getModule('cloudAnalytics')));
