@@ -39,7 +39,6 @@ module.exports = function execute(scope, app, callback) {
         res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
         redisClient.get(req.params.tropoid, function(err, result) {
-            console.log(arguments);
             var status = result;
             if(status === 'passed') {
                 SignupProgress.setMinProgress(req, 'tropo', function () {

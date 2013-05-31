@@ -21,7 +21,6 @@
 
                 $scope.setStep = function() {
                     Account.setSignupStep(id, $scope.step, function (res) {
-                        console.log(arguments);
                         $scope.currentStep = $scope.step;
                     });
                 };
