@@ -61,8 +61,9 @@ if(!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPat
     throw new TypeError('cloudapi configuration (.keyPath) must be defined');
 }
 
+var logger = bunyan.createLogger(config.log);
 var smartCloud = new SmartCloud({
-    log: bunyan.createLogger(config.log),
+    log: logger,
     api: config.cloudapi
 });
 m.set('smartCloud', smartCloud);
@@ -70,7 +71,11 @@ m.set('smartCloud', smartCloud);
 var libErr = require('./lib/error');
 
 function error(err, req, res, next) {
-    console.log(err);
+    if(err.statusCode === 404) {
+        logger.warn('Requested path not found @' + req.originalUrl);
+    } else {
+        logger.error('Request ended with error', err);
+    }
     libErr(err, req, res, next);
 }
 
