@@ -6,6 +6,7 @@
 
         return {
             restrict: 'E',
+            replace: true,
             scope: {
                 machine: '=machine'
             },

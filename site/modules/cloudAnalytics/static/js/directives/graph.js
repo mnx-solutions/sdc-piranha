@@ -4,6 +4,7 @@
      app.directive('graph', function () {
         return {
             restrict: "E",
+            replace: true,
             scope: {
                 options:'='
             },
