@@ -201,11 +201,11 @@
                             var lPrice = getNr(dataset.license_price);
                             if(lPrice !== false) {
                                 $scope.packages.forEach(function(p) {
-                                    if(!p.full_price && p.price) {
+                                    if(p.price) {
                                         p.full_price = lPrice + getNr(p.price);
                                         p.full_price = p.full_price.toFixed(3);
                                     }
-                                    if(!p.full_price_month && p.price_month) {
+                                    if(p.price_month) {
                                         p.full_price_month = getNr(p.price_month) + (lPrice * 730);
                                         p.full_price_month = p.full_price_month.toFixed(2);
                                     }
