@@ -193,16 +193,30 @@
                                     'Payment information not updated:'
                                 );
 
-                                if(errs._general) {
-                                    errs.zuora.reasons.forEach(function (err) {
-                                        message += localization.translate(null,
-                                            'billing',
-                                            err.message
-                                        ) + '<br/>';
-                                    });
+                                var addedMessage = '';
+                                var generic = false;
+
+                                errs.zuora.reasons.forEach(function (err) {
+                                    var translated = localization.translate(null,
+                                        'billing',
+                                        err.message
+                                    );
+                                    if(translated === err.message) {
+                                        generic = true;
+                                    }
+                                    if(addedMessage !== '') {
+                                        generic = false;
+                                        addedMessage += '<br/>' + translated;
+                                    } else {
+                                        addedMessage += ' ' + translated;
+                                    }
+                                });
+
+                                if(generic) {
+                                    addedMessage = ' we are unable to verify your credit card details.';
                                 }
 
-                                notification.push(null, { type: 'error' }, message);
+                                notification.push(null, { type: 'error' }, message + addedMessage);
                                 window.scrollTo(0,0);
                             } else {
                                 notification.push(null, { type: 'success' },
