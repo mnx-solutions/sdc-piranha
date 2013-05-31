@@ -39,7 +39,7 @@
 
                 var confirm = function (question, callback) {
                     var title = 'Confirm: Create Instance';
-                    var btns = [{result:'cancel', label: 'Cancel'}, {result:'ok', label: 'OK', cssClass: 'btn-primary'}];
+                    var btns = [{result:'cancel', label: 'Cancel', cssClass: 'pull-left'}, {result:'ok', label: 'OK', cssClass: 'btn-joyent-blue'}];
 
                     $dialog.messageBox(title, question, btns)
                         .open()
