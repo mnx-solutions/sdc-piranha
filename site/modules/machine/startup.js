@@ -247,7 +247,7 @@ module.exports = function execute(scope) {
                                 call.done(new Error('Other call changed tags'));
                             }
                         } else {
-                            call.log.error('Cloud polling failed %o', tagsErr);
+                            call.log.error('Cloud polling failed for %s , %o', tagsErr);
                         }
                     }, undefined, true);
                 }, config.polling.machineTags);

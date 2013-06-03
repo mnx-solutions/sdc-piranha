@@ -84,7 +84,7 @@ function Call(opts) {
             value: opts.data
         },
         cloud: {
-            value: opts.cloud
+            value: opts.cloud.separate()
         },
         tab: {
             value: opts.tab
