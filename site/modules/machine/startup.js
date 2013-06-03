@@ -89,13 +89,12 @@ module.exports = function execute(scope) {
     server.onCall('MachineList', function (call) {
         call.log.info('Handling machine list event');
 
-        var cloud = call.cloud;
-        var datacenters = cloud.listDatacenters();
+        var datacenters = call.cloud.listDatacenters();
         var keys = Object.keys(datacenters);
         var count = keys.length;
 
         keys.forEach(function (name) {
-            cloud.setDatacenter(name);
+            var cloud = call.cloud.separate(name);
 
             call.log.debug('List machines for datacenter %s', name);
 
