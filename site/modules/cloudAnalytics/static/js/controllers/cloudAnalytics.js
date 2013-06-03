@@ -38,17 +38,18 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
         if(newvalue) {
             for(var i in $scope.ca.deletequeue){
                 var inst = $scope.ca.deletequeue[i];
-
-                for( var g in $scope.graphs ) {
-                    var graph = $scope.graphs[g];
-                    for(var i in graph.instrumentations) {
-                        if( graph.instrumentations[i].id === inst.id && graph.instrumentations[i]._datacenter === inst._datacenter) {
-                            $scope.graphs.splice(g, 1);
-                            $scope.ca.deletequeue.splice(0, 1);
-                            $scope.ca.cleanup(inst);
+                var graphIndex = $scope.graphs.length;
+                if(graphIndex) {
+                    while(graphIndex--) {
+                        var graph = $scope.graphs[graphIndex];
+                        for(var i in graph.instrumentations) {
+                            if( graph.instrumentations[i].id === inst.id && graph.instrumentations[i]._datacenter === inst._datacenter) {
+                                $scope.graphs.splice(graphIndex, 1);
+                                $scope.ca.deletequeue.splice(0, 1);
+                                $scope.ca.cleanup(inst);
+                            }
                         }
                     }
-
                 }
             }
 

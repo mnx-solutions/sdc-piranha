@@ -42,7 +42,7 @@
             this.ndatapoints = difference || 1;
 
         };
-        _pollOptions.changeRange = function (inst) {
+        _pollOptions.changeRange = function (inst, range) {
             this.individual[inst._datacenter][inst.id].duration = range;
         }
         _pollOptions.remove = function (inst) {
