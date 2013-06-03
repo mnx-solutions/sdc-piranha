@@ -7,7 +7,6 @@ module.exports = function execute(scope, app) {
     var TFA = scope.api('TFA');
 
     app.get('/saveToken/:url', function(req, res, next) {
-
         var token = req.query.token;
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');

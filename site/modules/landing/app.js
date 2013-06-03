@@ -110,7 +110,6 @@ module.exports = function execute(scope, app, callback) {
     });
 
     app.get('/saveToken/:url', function(req, res) {
-
         // redirect to this url after we're done with the token
         var redirectUrl = new Buffer(req.params.url, 'base64').toString('ascii');
 
