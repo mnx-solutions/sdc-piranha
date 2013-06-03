@@ -9,7 +9,6 @@
     <machine-status machine="machine" class="pull-right" style="margin-top:20px"></machine-status>
 	<div class="clearfix"></div>
 </div>
-{{machine}}
 <div class="machine container span8 listing text-medium">
     <fieldset data-ng-show="machine">
         <legend data-translate>Overview</legend>
@@ -34,7 +33,7 @@
         </div>
 
         <div class="container span7">
-            <span class="key span2" data-translate>Image Version</span>
+            <span class="key span2" data-translate>Image version</span>
             <span class="value span5 pull-right">{{dataset.version}}&nbsp;</span>
         </div>
 
@@ -186,11 +185,11 @@
                         <span>{{currentPackage.group}}</span>
                     </span><br />
                     <span data-translate>Memory</span>:
-		            <span data-translate>{{currentPackage.memory | sizeFormat}}</span><br />
+		            <span>{{currentPackage.memory | sizeFormat}}</span><br />
 		            <span data-translate>Disk</span>:
-		            <span data-translate>{{currentPackage.disk | sizeFormat}}</span><br />
+		            <span>{{currentPackage.disk | sizeFormat}}</span><br />
 		            <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
-		            <span data-ng-show="currentPackage.vcpus" data-translate>{{currentPackage.vcpus}}</span>
+		            <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span>
 				</div>
 	        </div>
 
@@ -239,7 +238,7 @@
                 data-toggle="tooltip"
                 data-placement="top"
                 data-html="true"
-                data-original-title="Stopping an instance does not stop billing. <br/>You can restart your instance after you stop your machine."
+                data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
                 data-translate
                 data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                 class="btn btn-small span3 tooltip-hover">Stop</button>
