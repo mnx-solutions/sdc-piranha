@@ -36,23 +36,26 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
 
     $scope.$watch('ca.deletequeue.length', function(newvalue){
         if(newvalue) {
-            for(var i in $scope.ca.deletequeue){
-                var inst = $scope.ca.deletequeue[i];
-                var graphIndex = $scope.graphs.length;
-                if(graphIndex) {
-                    while(graphIndex--) {
-                        var graph = $scope.graphs[graphIndex];
-                        for(var i in graph.instrumentations) {
-                            if( graph.instrumentations[i].id === inst.id && graph.instrumentations[i]._datacenter === inst._datacenter) {
-                                $scope.graphs.splice(graphIndex, 1);
-                                $scope.ca.deletequeue.splice(0, 1);
-                                $scope.ca.cleanup(inst);
+            var queueIndex = $scope.ca.deletequeue.length;
+            if(queueIndex) {
+                while(queueIndex--) {
+
+                    var inst = $scope.ca.deletequeue[queueIndex];
+                    var graphIndex = $scope.graphs.length;
+                    if(graphIndex) {
+                        while(graphIndex--) {
+                            var graph = $scope.graphs[graphIndex];
+                            for(var i in graph.instrumentations) {
+                                if( graph.instrumentations[i].id === inst.id && graph.instrumentations[i]._datacenter === inst._datacenter) {
+                                    $scope.graphs.splice(graphIndex, 1);
+                                }
                             }
                         }
                     }
+                    $scope.ca.deletequeue.splice(queueIndex, 1);
+                    $scope.ca.cleanup(inst);
                 }
             }
-
         }
     })
 
@@ -160,7 +163,7 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
             'CPU: usage',
             'CPU: wait time',
             'Memory: resident set size vs max resident size',
-            'Memory: excess memory reclaimed',
+            'Mtandem ikka emory: excess memory reclaimed',
             'ZFS: used space vs unused quota',
             'Network: utilization'
         ]

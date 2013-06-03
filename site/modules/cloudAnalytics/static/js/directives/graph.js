@@ -27,7 +27,10 @@
                 var graph = false;
                 var legend = null;
 
+
                 $scope.heatmap;
+                $scope.showGraph = true;
+                $scope.loadingText = 'loading...';
 
                 $scope.getHeatmapDetails = function() {
 
@@ -112,6 +115,10 @@
                     }
                 });
 
+                $scope.toggleGraph = function () {
+                    $scope.showGraph = !$scope.showGraph;
+                }
+
                 $scope.deleteGraph = function () {
                     $scope.ca.deleteInstrumentations($scope.instrumentations);
                 }
@@ -148,7 +155,6 @@
                     }
                 }
 
-
                 $scope.$watch('$parent.currentRange', function(newVal) {
                     if(newVal){
                         $scope.ca.changeRange($scope.instrumentations, $scope.$parent.currentRange);
@@ -184,23 +190,31 @@
 
             },
             template:
-                '<div><div class="loading-medium" data-ng-hide="ready"></div>'+
-                '<div data-ng-show="ready">' +
-                    '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
-                    '<h3 data-ng-show="options.title">{{options.title}}</h3>' +
-                    '<button class="btn btn-mini default-margin default-margin-mini" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
-                    '<br/><br/>' +
-                    '<div class="chart_container_{{$id}}" style="position: relative;">' +
-                        '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
-                        '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
-                            '<div class="caOverlaid" >' +
-                            '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
-                            '<div id="heatmap_details_{{$id}}" style="position:absolute;"></div>' +
-                            '</div>' +
+//                '<div><div class="loading-medium" data-ng-hide="ready"></div>'+
+                '<div>' +
+
+    //                    '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
+                        '<div class="btn-group" style="width:620px;">' +
+                            '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:90%;">{{ready && options.title || loadingText}}</button>' +
+                            '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
                         '</div>' +
-                    '</div>' +
-                    '<div id="legend_{{$id}}" style="width:620px"></div>' +
-                '</div><hr /></div>'
+                        '<br/>' +
+                    '<div data-ng-show="showGraph && ready">' +
+                            '<div>' +
+                            '<button class="btn btn-mini default-margin default-margin-mini" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                            '<br/><br/>' +
+                            '<div class="chart_container_{{$id}}" style="position: relative;">' +
+                                '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
+                                '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
+                                    '<div class="caOverlaid" >' +
+                                    '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                                    '<div id="heatmap_details_{{$id}}" style="position:absolute;"></div>' +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>' +
+                            '<div id="legend_{{$id}}" style="width:620px"></div>' +
+                    '</div><hr />' +
+                '</div>'
         };
     });
 }(window.JP.getModule('cloudAnalytics')));
