@@ -55,7 +55,9 @@
         "noUpdate":true
     },
     "googleAnalytics": {
-        "identifier": ""
+        "identifier": "",
+        "t2identifier": "",
+        "domain": "joyentcloud.com"
     },
     "zendesk": {
         "account": "jaan.oras@joyent.com/token",

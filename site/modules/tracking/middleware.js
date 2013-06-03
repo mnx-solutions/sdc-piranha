@@ -23,8 +23,12 @@ module.exports = function execute(scope) {
 
 
             res.locals.jss.googleAnalytics = 'var _gaq = _gaq || [];'+
-                '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifer +'"]); // XXX hardcoded'+
+                '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifier +'"]);'+
                 '_gaq.push(["_trackPageview"]);'+
+                '_gaq.push(["_setDomainName", "'+ scope.config.googleAnalytics.domain +'"]);'+
+                '_gaq.push(["_setAllowLinker", true]);'+
+                '_gaq.push(["t2._setAccount", "'+ scope.config.googleAnalytics.t2identifier +'"]);'+
+                '_gaq.push(["t2._trackPageview"]);'+
                 '(function() {'+
                 '    var ga = document.createElement("script");'+
                 '    ga.type = "text/javascript";'+
@@ -32,6 +36,16 @@ module.exports = function execute(scope) {
                 '    ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";'+
                 '    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);'+
                 '}());';
+
+            res.locals.jss.GAlink = '$(document).ready(function() {'+
+            '$("a").click(function() {'+
+                    'var href = $(this).attr("href");'+
+                    'if (href.indexOf("joyent.com") > -1) {'+
+                        '_gaq.push(["_link", href]);'+
+                        'return false;'+
+                    '}'+
+                '});'+
+            '});';
         }
 
         return next();
