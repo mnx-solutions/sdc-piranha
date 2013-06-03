@@ -23,7 +23,7 @@ module.exports = function execute(scope) {
 
 
             res.locals.jss.googleAnalytics = 'var _gaq = _gaq || [];'+
-                '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifer +'"]); // XXX hardcoded'+
+                '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifier +'"]);'+
                 '_gaq.push(["_trackPageview"]);'+
                 '(function() {'+
                 '    var ga = document.createElement("script");'+
