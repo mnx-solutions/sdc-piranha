@@ -54,6 +54,7 @@ function Call(opts) {
     var _noEmit = false;
     var _bind = false;
     var _session = [];
+    var _done = false;
 
     function wrapEnum(obj) {
         Object.keys(obj).forEach(function (k) {
@@ -185,6 +186,11 @@ function Call(opts) {
         },
         done: {
             value: function (err, result) {
+                if(_done) {
+                    self.log.error('Tried to call done on already done call', err, result);
+                    return;
+                }
+                _done = true;
                 self.update(err, result, true);
             }
         },
