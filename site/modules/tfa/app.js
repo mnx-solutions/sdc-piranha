@@ -26,6 +26,7 @@ module.exports = function execute(scope, app) {
                 req.session.userName = data.login;
                 if(!secret) {
 
+                    req.log.info('User logged in', {userName: req.session.userName, userId: req.session.userId});
                     // as sso passes token using ?token=
                     req.session.token = token;
                     req.session.save();

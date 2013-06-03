@@ -9,6 +9,9 @@ module.exports = function execute(scope) {
             res.send(401);
             return;
         }
+        if(req.session.userId && req.session.userName) {
+            req.log = req.log.child({userName: req.session.userName, userId: req.session.userId});
+        }
         // we have a token, create a new cloudapi object with this
         if(!req.cloud) {
             var _cloud = null;
