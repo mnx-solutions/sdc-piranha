@@ -368,10 +368,6 @@
                         $scope.collapsedMachines[id];
                 };
 
-                $scope.isPrivateIP = function (ip) {
-                    return util.isPrivateIP(ip);
-                };
-
                 if (!$scope.sortingOrder) {
                     $scope.reverse = false;
                     $scope.sortBy('created');
