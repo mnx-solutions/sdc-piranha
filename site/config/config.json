@@ -56,6 +56,7 @@
     },
     "googleAnalytics": {
         "identifier": "",
+        "t2identifier": "",
         "domain": "joyentcloud.com"
     },
     "zendesk": {
