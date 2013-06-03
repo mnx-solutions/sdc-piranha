@@ -327,7 +327,7 @@
 
                 var job = serverTab.call({
                     name: 'MachineTagsList',
-                    data: {uuid: id}
+                    data: {uuid: id, datacenter: m.datacenter}
                 });
 
                 m.tags = job.deferred;
@@ -337,7 +337,7 @@
             function save() {
                 var job = serverTab.call({
                     name: 'MachineTagsSave',
-                    data: { uuid: id, tags: data }
+                    data: { uuid: id, tags: data, datacenter: m.datacenter }
                 });
 
                 job.deferred.then(function (response) {

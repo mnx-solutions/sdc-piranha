@@ -55,21 +55,21 @@ module.exports = function execute(scope) {
 
     function handleCredentials(machine) {
         var systemsToLogins = {
-            "mysql" : ["MySQL", "root"],
-            "pgsql" : ["PostgreSQL", "postgres"],
-            "virtualmin" : ["Virtualmin", "admin"]
+            'mysql' : ['MySQL', 'root'],
+            'pgsql' : ['PostgreSQL', 'postgres'],
+            'virtualmin' : ['Virtualmin', 'admin']
         };
         var credentials = [];
         if (machine.metadata && machine.metadata.credentials) {
             Object.keys(machine.metadata.credentials).forEach(function (username) {
-                var system = systemsToLogins[username] ? systemsToLogins[username][0] : "Operating System";
+                var system = systemsToLogins[username] ? systemsToLogins[username][0] : 'Operating System';
                 var login = systemsToLogins[username] ? systemsToLogins[username][1] : username;
 
                 credentials.push(
                     {
-                        "system" : system,
-                        "username" : login.split('_')[0],
-                        "password" : machine.metadata.credentials[username]
+                        'system' : system,
+                        'username' : login.split('_')[0],
+                        'password' : machine.metadata.credentials[username]
                     }
                 );
             });
@@ -139,8 +139,7 @@ module.exports = function execute(scope) {
     server.onCall('PackageList', function (call) {
         call.log.info('Handling list packages event');
 
-        call.cloud.setDatacenter(call.data.datacenter);
-        call.cloud.listPackages(function (err, data) {
+        call.cloud.separate(call.data.datacenter).listPackages(function (err, data) {
             if (err) {
                 call.error(err);
                 return;
@@ -166,8 +165,7 @@ module.exports = function execute(scope) {
     server.onCall('DatasetList', function (call) {
         call.log.info('Handling list datasets event');
 
-        call.cloud.setDatacenter(call.data.datacenter);
-        call.cloud.listDatasets(function (err, data) {
+        call.cloud.separate(call.data.datacenter).listDatasets(function (err, data) {
             if(err) {
                 call.error(err);
                 return;
@@ -178,10 +176,10 @@ module.exports = function execute(scope) {
                 }
 
                 if(data[i].name) {
-                    for(var k in info.licenses.data["License Portfolio"]) {
-                        var lic = info.licenses.data["License Portfolio"][k];
-                        if(lic["API Name"] == data[i].name) {
-                            data[i].license_price = lic["Pan-Instance Price Uplift"];
+                    for(var k in info.licenses.data['License Portfolio']) {
+                        var lic = info.licenses.data['License Portfolio'][k];
+                        if(lic['API Name'] == data[i].name) {
+                            data[i].license_price = lic['Pan-Instance Price Uplift'];
                         }
                     }
                 }
@@ -201,11 +199,13 @@ module.exports = function execute(scope) {
     /* listMachineTags */
     server.onCall('MachineTagsList', {
         verify: function (data) {
-            return data && "string" === typeof data.uuid;
+            return data &&
+                typeof data.uuid === 'string' &&
+                typeof data.datacenter === 'string';
         },
         handler: function (call) {
             call.log.info('Handling machine tags list call, machine %s', call.data.uuid);
-            call.cloud.listMachineTags(call.data.uuid, call.done.bind(call));
+            call.cloud.separate(call.data.datacenter).listMachineTags(call.data.uuid, call.done.bind(call));
         }
     });
 
@@ -214,7 +214,8 @@ module.exports = function execute(scope) {
         verify: function (data) {
             return data &&
                 typeof data.uuid === 'string' &&
-                typeof data.tags === 'object';
+                typeof data.tags === 'object' &&
+                typeof data.datacenter === 'string';
         },
         handler: function (call) {
             call.log.info('Handling machine tags save call, machine %s', call.data.uuid);
@@ -222,7 +223,9 @@ module.exports = function execute(scope) {
             var newTags = JSON.stringify(call.data.tags);
             var oldTags = null;
 
-            call.cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
+            var cloud = call.cloud.separate(call.data.datacenter);
+
+            cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
                 if(err) {
                     call.log.error(err);
                     call.error(err);
@@ -231,7 +234,7 @@ module.exports = function execute(scope) {
 
                 var timer = setInterval(function () {
                     call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
-                    call.cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
+                    cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
                         if (!tagsErr) {
                             var json = JSON.stringify(tags);
                             if(json === newTags) {
@@ -270,8 +273,7 @@ module.exports = function execute(scope) {
             var machineId = call.data.uuid;
             call.log.info('Handling machine details call, machine %s', machineId);
 
-            call.cloud.setDatacenter(call.data.datacenter);
-            call.cloud.getMachine(machineId, call.done.bind(call));
+            call.cloud.separate(call.data.datacenter).getMachine(machineId, call.done.bind(call));
         }
     });
 
@@ -366,10 +368,10 @@ module.exports = function execute(scope) {
                 var machineId = call.data.uuid;
                 call.log.debug(logVerb + ' machine %s', machineId);
 
-                call.cloud.setDatacenter(call.data.datacenter);
-                call.cloud[func](machineId, function (err) {
+                var cloud = call.cloud.separate(call.data.datacenter);
+                cloud[func](machineId, function (err) {
                     if (!err) {
-                        pollForMachineState(call.cloud, call, machineId, endstate);
+                        pollForMachineState(cloud, call, machineId, endstate);
                     } else {
                         call.log.error(err);
                         call.error(err);
@@ -407,11 +409,11 @@ module.exports = function execute(scope) {
 
             call.log.info('Resizing machine %s', machineId);
 
-            call.cloud.setDatacenter(call.data.datacenter);
+            var cloud = call.cloud.separate(call.data.datacenter);
 
-            call.cloud.resizeMachine(machineId, options, function (err) {
+            cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(call.cloud, call, options.package);
+                    pollForMachinePackageChange(cloud, call, options.package);
                 } else {
                     call.log.error(err);
                     call.error(err);
@@ -440,11 +442,11 @@ module.exports = function execute(scope) {
             call.log.info({options: options}, 'Creating machine %s', call.data.name);
             call.getImmediate(false);
 
-            call.cloud.setDatacenter(call.data.datacenter);
-            call.cloud.createMachine(options, function (err, machine) {
+            var cloud = call.cloud.separate(call.data.datacenter);
+            cloud.createMachine(options, function (err, machine) {
                 if (!err) {
                     call.immediate(null, {machine: machine});
-                    pollForMachineState(call.cloud, call, machine.id, 'running', (60 * 60 * 1000));
+                    pollForMachineState(cloud, call, machine.id, 'running', (60 * 60 * 1000));
                 } else {
                     call.log.error(err);
                     call.immediate(err);
