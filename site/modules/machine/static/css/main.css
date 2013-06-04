@@ -60,9 +60,10 @@
 }
 
 .list-controls {
+    margin-right: 35px;
     margin-bottom: 20px;
 }
 
-.sort .item span {
-
+.list-controls .sort-field {
+    width: 90px;
 }

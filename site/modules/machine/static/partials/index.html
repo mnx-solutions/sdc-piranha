@@ -23,45 +23,53 @@
                 <div class="clearfix"></div>
             </div>
 
+            <div class="list-controls container span5 pull-right">
+                <div class="btn-group">
+                    <button class="sort-field btn btn-mini" data-ng-show="sortField">
+                        <span>
+                            {{sortField.title}}
+                        </span>
+                        <span class="pull-right">
+                            <i class="icon-arrow-up" data-ng-show="reverse"></i>
+                            <i class="icon-arrow-down" data-ng-show="!reverse"></i>
+                        </span>
+                    </button>
+                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
 
+                    <ul class="sort dropdown-menu">
+                        <li class="item" data-ng-repeat="field in sortable">
+                            <a data-ng-click="sortBy(field.value)">
+                                <span data-translate="value">
+                                    {{field.title}}
+                                </span>
+                                <span class="pull-right" data-ng-show="sortField.value == field.value">
+                                    <i class="icon-arrow-up" data-ng-show="reverse"></i>
+                                    <i class="icon-arrow-down" data-ng-show="!reverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-mini"
+                        data-ng-click="changeListType('normal')"
+                        data-ng-class="{'active': listType == 'normal'}">
+                    <i class="icon-align-justify"></i>
+                </button>
+
+                <button type="submit"
+                        class="btn btn-mini"
+                        data-ng-click="changeListType('alternate')"
+                        data-ng-class="{'active': listType == 'alternate'}">
+                    <i class="icon-th-large"></i>
+                </button>
+                <div class="clearfix"></div>
+            </div>
 
             <div class="container span9 text-medium">
-	            <div class="list-controls pull-right" style="margin-top:-26px">
-	                <div class="btn-group">
-	                    <button class="btn btn-mini" data-ng-show="sortField">{{sortField.title}}</button>s
-	                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-	                        <span class="caret"></span>
-	                    </button>
-
-	                    <ul class="sort dropdown-menu">
-	                        <li class="item" data-ng-repeat="field in sortable">
-	                            <a data-ng-click="sortBy(field.value)"
-	                               data-translate="value">
-	                                {{field.title}}
-	                            </a>
-	                            <span data-ng-show="sortField.value == field.value">
-	                                <i class="icon-arrow-up" data-ng-show="reverse"></i>
-	                                <i class="icon-arrow-down" data-ng-show="!reverse"></i>
-	                            </span>
-	                        </li>
-	                    </ul>
-	                </div>
-
-	                <button type="submit"
-	                        class="btn btn-mini"
-	                        data-ng-click="changeListType('normal')"
-	                        data-ng-class="{'active': listType == 'normal'}">
-	                    <i class="icon-align-justify"></i>
-	                </button>
-
-	                <button type="submit"
-	                        class="btn btn-mini"
-	                        data-ng-click="changeListType('alternate')"
-	                        data-ng-class="{'active': listType == 'alternate'}">
-	                    <i class="icon-th-large"></i>
-	                </button>
-	                <div class="clearfix"></div>
-	            </div>
                 <div data-ng-switch="listType">
                     <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
                     <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
