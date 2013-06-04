@@ -24,12 +24,24 @@
                     progress: function (err, job) {
                         var data = job.__read();
 
-                        if (data.err) {
-                            notification.push(data.name, { type: 'error' },
+                        if (err) {
+                            var errRes = null;
+                            if(ng.isArray(data)) {
+                                data.some(function (el) {
+                                    if(el.status === 'error') {
+                                        errRes = el;
+                                        return true;
+                                    }
+                                });
+                            } else {
+                                errRes = data;
+                            }
+
+                            notification.push(errRes.name, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
                                     'Unable to retrieve instances from datacenter {{name}}',
-                                    { name: data.name }
+                                    { name: errRes.name }
                                 )
                             );
                             return;
@@ -56,31 +68,27 @@
                             }
                         }
 
-                        if ((data instanceof Array)) {
+                        if (ng.isArray(data)) {
                             data.forEach(function(chunk) {
-                                chunk.machines.forEach(function (machine) {
-                                    handleChunk(machine);
-                                });
+                                chunk.machines.forEach(handleChunk);
                             });
                         } else if (data.machines) {
-                            data.machines.forEach(function (machine) {
-                                handleChunk(machine);
-                            });
+                            data.machines.forEach(handleChunk);
                         }
                     },
 
                     done: function(err, job) {
-                        var data = job.__read();
-
-                        if (err) {
-                            notification.push(data.name, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve instances from datacenter {{name}}',
-                                    { name: data.name }
-                                )
-                            );
-                        }
+//                        var data = job.__read();
+//
+//                        if (err) {
+//                            notification.push(data.name, { type: 'error' },
+//                                localization.translate(null,
+//                                    'machine',
+//                                    'Unable to retrieve instances from datacenter {{name}}',
+//                                    { name: data.name }
+//                                )
+//                            );
+//                        }
 
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id]) {
