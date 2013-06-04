@@ -467,6 +467,22 @@ th {
 	margin-top:5px;
 }
 
+/*
+	thumbnail begin
+*/
+
+
+.item-list-container.thumbnail .item {
+/*	border:1px solid red;*/
+	border-top:none;
+	padding:5px;
+    font-size:12px;
+}
+
+
+/*
+	thumbnail end
+*/
 
 .crop {
 	display:block;

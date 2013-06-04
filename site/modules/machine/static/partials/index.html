@@ -23,27 +23,24 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="list-controls container span4 pull-right">
-                <button type="submit"
-                        class="btn btn-mini"
-                        data-ng-click="changeListType('normal')"
-                        data-ng-class="{'active': listType == 'normal'}">
-                    <i class="icon-align-justify"></i>
-                </button>
-
-                <button type="submit"
-                        class="btn btn-mini"
-                        data-ng-click="changeListType('alternate')"
-                        data-ng-class="{'active': listType == 'alternate'}">
-                    <i class="icon-th-large"></i>
-                </button>
-                <div class="clearfix"></div>
-            </div>
-
-
 
             <div class="container span9 text-medium">
+	            <div class="list-controls pull-right" style="margin-top:-26px">
+	                <button type="submit"
+	                        class="btn btn-mini"
+	                        data-ng-click="changeListType('normal')"
+	                        data-ng-class="{'active': listType == 'normal'}">
+	                    <i class="icon-align-justify"></i>
+	                </button>
 
+	                <button type="submit"
+	                        class="btn btn-mini"
+	                        data-ng-click="changeListType('alternate')"
+	                        data-ng-class="{'active': listType == 'alternate'}">
+	                    <i class="icon-th-large"></i>
+	                </button>
+	                <div class="clearfix"></div>
+	            </div>
 	
                 <div data-ng-switch="listType">
                     <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
