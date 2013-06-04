@@ -50,6 +50,12 @@
                         var identifier = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
 
                         if (attrs.translate === 'value') {
+                            // Observe value
+                            var valueKey = identifier.replace('{{', '').replace('}}', '');
+                            scope.$watch(valueKey, function (newVal) {
+                                onChange(scope, element, attrs, newVal, countValue);
+                            });
+
                             identifier = $interpolate(identifier)(scope);
                         }
 
