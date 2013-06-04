@@ -3,6 +3,7 @@
 (function (ng, app) {
     app.controller('Machine.IndexController', [
         '$scope',
+        '$cookieStore',
         '$filter',
         '$$track',
         '$dialog',
@@ -13,16 +14,16 @@
         'Package',
         'localization',
         'util',
-        function ($scope, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
             });
 
-            // Sorting
             $scope.listTypes = [ 'normal', 'alternate' ];
-            $scope.listType = 'normal';
 
+            // Sorting
             $scope.sortingOrder = null;
             $scope.reverse = true;
             $scope.sortIcon = {};
@@ -372,6 +373,7 @@
             $scope.changeListType = function (type) {
                 if ($scope.listTypes.indexOf(type) !== -1) {
                     $scope.listType = type;
+                    $cookieStore.put('listType', type);
                 }
             };
 
@@ -379,6 +381,8 @@
                 $scope.reverse = false;
                 $scope.sortBy('created');
             }
+
+            $scope.changeListType($cookieStore.get('listType') || 'normal');
         }
 
     ]);
