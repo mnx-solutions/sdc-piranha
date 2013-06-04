@@ -109,24 +109,23 @@ module.exports = function execute(scope) {
                     call.log.error('List machines failed for datacenter %s; err.message: %s', name, err.message, err);
                     response.status = 'error';
                     response.error = err;
-                    call.update(null, response, true);
-                    return;
+                } else {
+                    machines = machines.filter(function (el) {
+                        return el.state !== 'failed';
+                    });
+
+                    machines.forEach(function (machine, i) {
+                        machine.datacenter = name;
+                        machine.metadata.credentials = handleCredentials(machine);
+                        machines[i] = filterFields(machine);
+                    });
+
+                    response.status = 'complete';
+                    response.machines = machines;
+
+                    call.log.debug('List machines succeeded for datacenter %s', name);
                 }
 
-                machines = machines.filter(function (el) {
-                    return el.state !== 'failed';
-                });
-
-                machines.forEach(function (machine, i) {
-                    machine.datacenter = name;
-                    machine.metadata.credentials = handleCredentials(machine);
-                    machines[i] = filterFields(machine);
-                });
-
-                response.status = 'complete';
-                response.machines = machines;
-
-                call.log.debug('List machines succeeded for datacenter %s', name);
                 call.update(null, response);
 
                 if (--count === 0) {
