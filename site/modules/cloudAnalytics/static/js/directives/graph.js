@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (app, ng, $) {
      app.directive('graph', function () {
         return {
             restrict: "E",
@@ -31,16 +31,43 @@
                 $scope.heatmap;
                 $scope.showGraph = true;
                 $scope.loadingText = 'loading...';
+                $scope.details = null;
 
-                $scope.getHeatmapDetails = function() {
+                $scope.getHeatmapDetails = function(e) {
 
-                    ca.getHeatmapDetails({
-                        instrumentation: $scope.instrumentations[0],
-                        endtime: heatmaptime
-                    }, function(values) {
-                        console.log(values);
-                        //'heatmap_details_'+ $scope.$id
-                    })
+                    var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
+                    if(e && e.offsetX && e.offsetY && heatmaptime) {
+//                        $('#clickpoint_' + $scope.$id).css({'top': e.offsetY, 'left': e.offsetX})
+//                        $(popSelector).popover('hide');
+                        $scope.ca.getHeatmapDetails({
+                            instrumentation: $scope.instrumentations[0],
+                            location:{
+                                x: e.offsetX,
+                                y: e.offsetY
+                            },
+                            range: $scope.$parent.currentRange,
+                            endtime: heatmaptime
+                        }, function(values) {
+                            if(values && values[0], values[0].present && Object.keys(values[0].present)) {
+                                var details = '';
+                                for(var name in values[0].present) {
+                                    details += name + ':' + values[0].present[name] + '<br/>';
+                                }
+                                $scope.details = details;
+                                if(details != '') {
+                                    $(clickpoint).css({'top': e.offsetY, left: e.offsetX});
+                                    $(clickpoint).popover('show');
+                                } else {
+                                    $(clickpoint).popover('hide');
+                                }
+
+                            } else {
+                                $scope.details = null;
+                            }
+                        })
+                    }
+
+
                 }
 
                 function renderLegend(graph) {
@@ -81,7 +108,7 @@
                 function createGraph(series) {
                     var conf = {
                         element: document.querySelector("#chart_" + $scope.$id),
-                        renderer: $scope.renderer,
+                        renderer: $scope.activeRenderer,
                         width: $scope.width || 580,
                         height: $scope.height || 180,
                         series: series
@@ -99,17 +126,17 @@
                     return graph;
                 }
 
-                $scope.renderer = 'bar';
+                $scope.activeRenderer = 'bar';
                 $scope.renderers = [
                     'area',
                     'bar',
                     'line'
                 ];
 
-                $scope.$watch('renderer', function() {
+                $scope.$watch('activeRenderer', function() {
                     if(graph) {
                         graph.configure({
-                            renderer:$scope.renderer
+                            renderer:$scope.activeRenderer
                         });
                         graph.render();
                     }
@@ -124,7 +151,7 @@
                 }
 
                 $scope.changeRenderer = function (renderer) {
-                    $scope.renderer = renderer;
+                    $scope.activeRenderer = renderer;
                 }
 
                 $scope.ready = false;
@@ -142,6 +169,17 @@
                     if(series && series.length) {
                         if(!graph) {
                             graph = createGraph(series);
+                            if($scope.heatmap) {
+                                var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
+                                $(clickpoint).popover({
+                                    title: 'Details',
+                                    html: true,
+                                    trigger: 'manual',
+                                    content:function() {
+                                        return $scope.details;
+                                    }
+                                })
+                            }
                             $scope.ready = true;
                         } else {
                             graph.series.splice(0, graph.series.length);
@@ -170,7 +208,7 @@
                         if(!ticktime) {
 
                             ticktime = $scope.$parent.endtime;
-                            heatmaptime = ticktime;
+                            heatmaptime = ticktime -1;
                         }
 
                         if(!$scope.$parent.frozen) {
@@ -180,7 +218,7 @@
                             } else if (!graph){
                                 updateGraph();
                             }
-                            heatmaptime = ticktime;
+                            heatmaptime = ticktime -1;
                         } else {
                             ticktime++;
                         }
@@ -190,10 +228,7 @@
 
             },
             template:
-//                '<div><div class="loading-medium" data-ng-hide="ready"></div>'+
                 '<div>' +
-
-    //                    '<i data-ng-click="deleteGraph()" class="icon-remove-circle pointer pull-right"></i>' +
                         '<div class="btn-group" style="width:620px;">' +
                             '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:90%;">{{ready && options.title || loadingText}}</button>' +
                             '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
@@ -201,15 +236,20 @@
                         '<br/>' +
                     '<div data-ng-show="showGraph && ready">' +
                             '<div>' +
-                            '<button class="btn btn-mini default-margin default-margin-mini" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                            '<div class="btn-group" data-toggle="buttons-radio">' +
+                                '<button class="btn btn-mini default-margin default-margin-mini {{renderer == activeRenderer && \'active\' || \'\'}}" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                            '</div>' +
                             '<br/><br/>' +
+
                             '<div class="chart_container_{{$id}}" style="position: relative;">' +
+
                                 '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
                                 '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
-                                    '<div class="caOverlaid" >' +
-                                    '<img data-ng-show="heatmap" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
-                                    '<div id="heatmap_details_{{$id}}" style="position:absolute;"></div>' +
-                                    '</div>' +
+                                '<div id="clickpoint" style="position:absolute;height:0px;width:0px;"></div>' +
+                                '<div class="caOverlaid">' +
+
+                                '<img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                                '</div>' +
                                 '</div>' +
                             '</div>' +
                             '<div id="legend_{{$id}}" style="width:620px"></div>' +
@@ -217,4 +257,4 @@
                 '</div>'
         };
     });
-}(window.JP.getModule('cloudAnalytics')));
+}(window.JP.getModule('cloudAnalytics'), window.angular, window.jQuery));
