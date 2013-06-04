@@ -7,14 +7,6 @@ body {
     /*	border:1px solid red;*/
 }
 
-.loading-medium {
-	background-image:url('/static/img/icon-loading-medium.gif');
-	background-position:50% 50%;
-	background-repeat:no-repeat;
-	min-height:50px;
-	max-width:100%;
-	min-width:50px;
-}
 .loading-medium.behind {
 	opacity: 0.65;
     filter: alpha(opacity=65);    
@@ -778,6 +770,25 @@ div .disabled{
 	height:16px;
 	display:block;
 }
+
+.loading-medium {
+	background-image:url('/static/img/icon-loading-medium.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	min-height:60px;
+	max-width:100%;
+	min-width:50px;
+}
+.loading-large {
+	background-image:url('/static/img/icon-loading-large.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	height:100px;
+	min-height:100px;
+	max-width:100%;
+	min-width:50px;
+}
+
 /*
 	from joyent com to dashboard
 */

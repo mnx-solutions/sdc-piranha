@@ -1,5 +1,5 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
-    <div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
+    <div class="loading-large" data-ng-show="loading"></div>
     <div class="container content-container-inner">
         <div class="machines container" data-ng-show="pagedMachines.length || query">
             <data-breadcrumb></data-breadcrumb>
@@ -23,7 +23,8 @@
                 <div class="clearfix"></div>
             </div>
 
-            <div class="container span4 pull-right">
+
+            <div class="container span4 pull-right" style="margin-top:-27px">
                 <button type="submit"
                         class="btn btn-mini"
                         data-ng-click="changeListType('normal')"
@@ -40,7 +41,11 @@
                 <div class="clearfix"></div>
             </div>
 
+
+
             <div class="container span9 text-medium">
+
+	
                 <div data-ng-switch="listType">
                     <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
                     <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
