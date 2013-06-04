@@ -47,19 +47,10 @@
                     return function link (scope, element, attrs) {
                         var countVariable = null;
                         var countValue = 0;
-                        var identifier = null;
-                        var elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
+                        var identifier = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
 
                         if (attrs.translate === 'value') {
-                            elementText = $interpolate(elementText)(scope);
-                        }
-
-                        // Interpolate expression
-                        if (attrs.translateExpression) {
-                            var expression = $interpolate(elementText);
-                            identifier = expression(scope);
-                        } else {
-                            identifier = elementText;
+                            identifier = $interpolate(identifier)(scope);
                         }
 
                         if (attrs.hasOwnProperty('count')) {
