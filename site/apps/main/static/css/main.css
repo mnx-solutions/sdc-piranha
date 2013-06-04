@@ -180,6 +180,14 @@ h4 {
     background-repeat:repeat-x;
     background-size:100% 2px;
 }
+.top-line-colorful {
+	border-top:none;
+    background-image:url('/static/img/stripes-colorful.gif');
+    background-position:0px 0px;
+    background-repeat:repeat-x;
+    background-size:100% 2px;
+}
+
 #image-version {
 }
 
@@ -318,6 +326,9 @@ h5 small {
 }
 .text-medium {
 	font-size:12px;
+}
+.text-large {
+	font-size:14px;
 }
 .bg-blue-lite {
 	background-color: rgb(247, 250, 252);
@@ -473,12 +484,25 @@ th {
 
 
 .item-list-container.thumbnail .item {
-/*	border:1px solid red;*/
-	border-top:none;
+	border:1px solid #ddd;
 	padding:5px;
     font-size:12px;
+	float:left;
+	margin-bottom:5px;
+	height:150px;
+	min-height:200px;
 }
 
+.item-list-container.thumbnail .item .action-container{
+	margin:-5px;
+	margin-top:5px;
+	padding:10px;
+/*	border:1px solid red;*/
+}
+
+.item-list-container.thumbnail .item .action-container button{
+	display:inline-block;
+}
 
 /*
 	thumbnail end
@@ -595,17 +619,6 @@ p.margin-mini {
 .noborder {
     border:none;
 }
-/*.action-container {
-    text-align:right;
-    padding-top:10px;
-    padding-right:8px;
-}
-
-.action-container button {
-    display: block;
-    margin-bottom: 10px;
-}
-*/
 .affix {
     z-index:1 !important;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
