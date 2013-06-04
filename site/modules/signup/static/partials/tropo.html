@@ -5,11 +5,10 @@
         </div>
         <div class="alert alert-info" data-ng-show="tropoRunning">
             <h5>Wait for a phone call.</h5>
-            <p>If you should fail to receive a call please contact our <a href="">support</a></p>
+            <p>If you should fail to receive a call please contact our <a class="support" href="https://help.joyent.com">support</a></p>
         </div>
 
-        <div class="alert alert-error" data-ng-show="error && !tropoRunning">
-            {{error}}
+        <div class="alert alert-error" data-ng-show="error && !tropoRunning" data-ng-bind-html-unsafe="error">
         </div>
 
         <div class="span4">

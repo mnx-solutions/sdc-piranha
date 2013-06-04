@@ -7,6 +7,9 @@
             requestContext.setUpRenderContext('signup.tropo', $scope);
             localization.bind('signup', $scope);
 
+            var errSupport = 'Phone verification failed. Please contact <a class="support" href="https://help.joyent.com">support</a> in order to activate your account';
+            var errTry = 'Phone verification failed. Please check the number and try again';
+
             $scope.randomNumber = 'XXXX';
 
             $scope.account = null;
@@ -31,7 +34,7 @@
                         }
 
                         if($scope.retriesLeft <= 0) {
-                            $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                            $scope.error = errSupport;
                         }
                     });
 
@@ -97,7 +100,7 @@
                         }
 
                         if(!data.success) {
-                            $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
+                            $scope.error = errSupport;
                             $scope.tropoRunning = false;
                             $scope.retriesLeft = 0;
                         } else {
@@ -125,17 +128,13 @@
                                         // TODO: Fail handling
                                         $scope.deleteInterval(interval);
 
-                                        if($scope.retriesLeft <= 0){
-                                            $scope.error = 'Phone verification failed. Please contact support in order to activate your account';
-                                        } else {
-                                            $scope.error = 'Phone verification failed. Please check the number and try again';
-                                        }
+                                        $scope.error = $scope.retriesLeft <= 0 ? errSupport : errTry;
                                     }
 
                                     if(+$scope.tropoPoll === 60) {
                                         $scope.deleteInterval(interval);
 
-                                        $scope.error = 'Phone verification failed. Please check the number and try again';
+                                        $scope.error = errTry;
                                     }
                                 });
                             }, 1000);

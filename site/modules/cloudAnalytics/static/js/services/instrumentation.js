@@ -25,7 +25,12 @@ var instrumentations = {};
             data.forEach(self.addValue.bind(self));
             self.ask = {};
         };
-
+        DataSet.prototype.getValue = function(time) {
+            if(this.map['default'] && this.map['default'][time + '']) {
+                return this.map['default'][time + ''];
+            }
+            return false;
+        };
         DataSet.prototype.addValue = function (value) {
             var self = this;
 
@@ -33,9 +38,11 @@ var instrumentations = {};
                 if(!self.map['default']) {
                     self.map['default'] = {};
                 }
-//                self.map['default'][value.start_time + ''] = value.image;
-//                self.endTime = value.start_time;
-                self.map['default'][value.end_time + ''] = value.image;
+                self.map['default'][value.end_time + ''] = {
+                    hm:value.image,
+                    ymax: value.ymax,
+                    ymin: value.ymin
+                };
                 self.endTime = value.end_time + 1;
             } else if(ng.isObject(value.value)){
                 Object.keys(value.value).forEach(function(k) {
@@ -170,6 +177,10 @@ var instrumentations = {};
 
         Instrumentation.prototype.getValues = function () {
             return this._data.getValues.apply(this._data, arguments);
+        };
+
+        Instrumentation.prototype.getValue = function () {
+            return this._data.getValue.apply(this._data, arguments);
         };
 
         Instrumentation.prototype.hasChanged = function (id) {

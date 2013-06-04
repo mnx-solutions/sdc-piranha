@@ -23,18 +23,6 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-
-                        if (data.err) {
-                            notification.push(data.name, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve instances from datacenter {{name}}',
-                                    { name: data.name }
-                                )
-                            );
-                            return;
-                        }
-
                         function handleChunk (machine) {
                             var old = null;
 
@@ -56,31 +44,45 @@
                             }
                         }
 
-                        if ((data instanceof Array)) {
-                            data.forEach(function(chunk) {
-                                chunk.machines.forEach(function (machine) {
-                                    handleChunk(machine);
-                                });
-                            });
-                        } else if (data.machines) {
-                            data.machines.forEach(function (machine) {
-                                handleChunk(machine);
-                            });
+                        function handleResponse(chunk) {
+                            if(chunk.status === 'error') {
+
+                                notification.push(chunk.name, { type: 'error' },
+                                    localization.translate(null,
+                                        'machine',
+                                        'Unable to retrieve instances from datacenter {{name}}',
+                                        { name: chunk.name }
+                                    )
+                                );
+                                return;
+                            }
+
+                            if(chunk.machines) {
+                                chunk.machines.forEach(handleChunk);
+                            }
+                        }
+
+
+
+                        if (ng.isArray(data)) {
+                            data.forEach(handleResponse);
+                        } else {
+                            handleResponse(data);
                         }
                     },
 
                     done: function(err, job) {
-                        var data = job.__read();
-
-                        if (err) {
-                            notification.push(data.name, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve instances from datacenter {{name}}',
-                                    { name: data.name }
-                                )
-                            );
-                        }
+//                        var data = job.__read();
+//
+//                        if (err) {
+//                            notification.push(data.name, { type: 'error' },
+//                                localization.translate(null,
+//                                    'machine',
+//                                    'Unable to retrieve instances from datacenter {{name}}',
+//                                    { name: data.name }
+//                                )
+//                            );
+//                        }
 
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id]) {
@@ -342,6 +344,14 @@
 
                 job.deferred.then(function (response) {
                     m.tags = response;
+                }, function (err) {
+                    notification.push(m.id + '-tags', { type: 'error' },
+                        localization.translate(null,
+                            'machine',
+                            'Unable to save tags {{message}}',
+                            {message: (err && err.message) || ''}
+                        )
+                    );
                 });
 
                 return job.deferred;

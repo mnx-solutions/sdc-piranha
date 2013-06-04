@@ -1,7 +1,7 @@
 'use strict';
 
 
-(function (app) {
+(function (app, ng) {
     app.factory('ca', ['$resource', '$http', 'caInstrumentation',
         function ($resource, $http, instrumentation) {
 
@@ -25,7 +25,6 @@
                         continue;
                     }
                     var instrumentation = ca.instrumentations.getInstrumentation(datacenter, id);
-
                     if(datapoints[datacenter][id].blocked) {
                         var previous = this.individual[datacenter][id].ndatapoints || this.ndatapoints;
                         this.individual[datacenter][id].ndatapoints = previous + (difference || 1);
@@ -94,9 +93,18 @@
         var _instrumentations = {
             private: {},
             public: {},
-            listUrl: 'cloudAnalytics/ca/instrumentations'
-
+            listUrl: 'cloudAnalytics/ca/instrumentations',
+            heatmapDetailsUrl: 'cloudAnalytics/ca/getHeatmapDetails'
         };
+        _instrumentations.getHeatmapDetails = function (options, cb) {
+
+            var details = $http.post(this.heatmapDetailsUrl + '/' + options.datacenter + '/' + options.id, options);
+
+            details.success(function(res) {
+                cb(res);
+            })
+
+        }
         _instrumentations.getInstrumentation = function (datacenter, id) {
             if(this.public[datacenter] && this.public[datacenter][id]) {
                 return this.public[datacenter][id];
@@ -233,10 +241,12 @@
 
                     for(var dp in series[name]) {
 
-                        var y = (heatmap ? 0 : series[name][dp]);
-
+                        var y = series[name][dp];
+                        if(heatmap) {
+                            y = series[name][dp].ymax || 0;
+                        }
                         if(series[name][dp] !== 0) {
-                            hms = series[name][dp];
+                            hms = series[name][dp].hm;
                         }
 
                         data.push({
@@ -414,7 +424,7 @@
             this.deletequeue = [];
             // view options
             this.range = 60;
-            this.width = 570;
+            this.width = 580;
             this.height = 180;
 
         };
@@ -472,7 +482,24 @@
             ca.instrumentations.remove(i);
         }
         service.prototype.getHeatmapDetails = function(options, cb){
-
+            var inst = options.instrumentation;
+            var opts = this.instrumentations[inst._datacenter][inst.id];
+            var values = inst.getValue(options.endtime);
+            if(values && typeof(values.ymin) != 'undefined' && typeof(values.ymax) != 'undefined') {
+                ng.extend(opts, {
+                    ymin:values.ymin,
+                    ymax:values.ymax
+                })
+            }
+            ng.extend(opts, {
+                datacenter: inst._datacenter,
+                id: inst.id,
+                duration: options.range,
+                endtime: options.endtime,
+                x: options.location.x,
+                y: options.location.y
+            });
+            ca.instrumentations.getHeatmapDetails(opts, cb);
 //            instrumentation: $scope.instrumentations[0],
 //            endtime: heatmaptime
         }
@@ -591,4 +618,4 @@
     }]);
 
 
-}(window.JP.getModule('cloudAnalytics')));
+}(window.JP.getModule('cloudAnalytics'), window.angular));
