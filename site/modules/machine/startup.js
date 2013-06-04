@@ -106,7 +106,7 @@ module.exports = function execute(scope) {
                 };
 
                 if (err) {
-                    call.log.error('List machines failed for datacenter %s; err.message: %s', name, err.message, err);
+                    call.log.error('List machines failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
                     response.status = 'error';
                     response.error = err;
                 } else {
