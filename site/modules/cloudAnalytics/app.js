@@ -152,17 +152,23 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/ca/getHeatmapDetails/:datacenter/:id', function(req, res) {
+
         var options = {
-            id: req.params.id,
-            width: req.query.width || 570,
-            height: req.query.height || 180,
-            nbuckets: req.query.nbuckets || 50,
-            duration: req.query.duration || 60,
+            id: +req.params.id,
+            ymax: req.body.ymax,
+            ymin: req.body.ymin,
+            width: req.body.width || 580,
+            height: req.body.height || 180,
+            nbuckets: req.body.nbuckets || 25,
+            duration: req.body.duration || 60,
             ndatapoints: 1,
-            end_time: req.query.endtime
+            end_time: req.body.endtime,
+            x: req.body.x,
+            y: req.body.y
         };
         var client = req.cloud;
         client.setDatacenter(req.params.datacenter);
+        console.log('getting heatmap details with options: ',options);
         client.getInstrumentationHeatmapDetails(options, options, function(err, resp) {
             res.json(resp);
         });
@@ -220,9 +226,9 @@ module.exports = function execute(scope, app) {
 
                     switch(instrumentation['value-arity']) {
                         case 'numeric-decomposition':
-                            options.width = instrumentation.width || 570;
+                            options.width = instrumentation.width || 580;
                             options.height = instrumentation.height || 180;
-                            options.nbuckets = instrumentation.nbuckets || 50;
+                            options.nbuckets = instrumentation.nbuckets || 25;
                             options.duration = instrumentation.duration || 60;
                             options.hues = instrumentation.hues || 21;
                             options.ndatapoints = 1;
@@ -259,7 +265,6 @@ module.exports = function execute(scope, app) {
                         response.datapoints[datacenter][options.id].blocked = false;
                         rCount++;
                         if(rCount === iCount) {
-
                             res.json(response);
                         }
                     });
