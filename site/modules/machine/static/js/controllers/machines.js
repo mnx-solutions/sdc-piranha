@@ -22,16 +22,26 @@
             });
 
             $scope.listTypes = [ 'normal', 'alternate' ];
+            $scope.listType = $scope.listTypes[0]; // Defaults to 'normal'
 
             // Sorting
             $scope.sortingOrder = null;
             $scope.reverse = true;
             $scope.sortIcon = {};
+
+            $scope.sortable = [
+                { title: 'Name', value: 'label' },
+                { title: 'Datacenter', value: 'datacenter' },
+                { title: 'Created', value: 'created' },
+                { title: 'State', value: 'state' }
+            ];
+            $scope.sortField = $scope.sortable[2];
+
             $scope.loading = true;
 
             // Pagination
             $scope.groupedMachines = [];
-            $scope.itemsPerPage = 10;
+            $scope.itemsPerPage = 15;
             $scope.pagedMachines = [];
             $scope.collapsedMachines = {};
             $scope.maxPages = 5;
@@ -52,9 +62,6 @@
                     $scope.machines = Machine.machine();
                 }
             );
-
-            $scope.checked = {};
-            $scope.ischecked = false;
 
             $scope.$watch('machines', function (machines) {
                 machines.forEach(function (machine) {
@@ -84,21 +91,10 @@
                 Memory: ['memory'],
                 Datacenter: ['datacenter']
             };
+
             $scope.searchable = $scope.searchOptions.Visible;
             $scope.filteredMachines = [];
 
-            var searchMatch = function (haystack, needle) {
-                if (!needle) {
-                    return true;
-                }
-                var helper = haystack;
-                if (ng.isNumber(haystack)) {
-                    helper = haystack.toString();
-                }
-                var subject = helper.toLowerCase();
-
-                return (subject.indexOf(needle.toLowerCase()) !== -1);
-            };
             var _labelMachines = function (machines) {
                 for (var machine in machines) {
                     if (machines[machine].name) {
@@ -110,7 +106,21 @@
 
                 return machines;
             };
+
             var _filter = function (subject) {
+                var searchMatch = function (haystack, needle) {
+                    if (!needle) {
+                        return true;
+                    }
+                    var helper = haystack;
+                    if (ng.isNumber(haystack)) {
+                        helper = haystack.toString();
+                    }
+                    var subject = helper.toLowerCase();
+
+                    return (subject.indexOf(needle.toLowerCase()) !== -1);
+                };
+
                 var ret = $filter('filter')(subject, function (item) {
                     var attrKey;
                     for (attrKey in item) {
@@ -145,20 +155,36 @@
             // Controller methods
             // Sorting
             // change sorting order
-            $scope.sortBy = function (newSortingOrder) {
-                $scope.reverse = !$scope.reverse;
-                var oldSortingOrder = $scope.sortingOrder;
-                $scope.sortingOrder = newSortingOrder;
-                $scope.search((oldSortingOrder != newSortingOrder));
-                $scope.sortIcon = {};
+            $scope.sortBy = function (fieldName) {
+                // Assume that filter method will find least one matching item
+                try {
+                    $scope.sortField = $scope.sortable.filter(function (item) {
+                        return fieldName === item.value;
+                    })[0];
 
+                    $cookieStore.put('sortField', fieldName);
+                    $cookieStore.put('sortDirection', !$scope.reverse);
+                } catch (e) {
+                    // Cannot change sorting field, ignore
+                    return;
+                }
+
+                var oldFieldName = $scope.sortingOrder;
+                $scope.reverse = !$scope.reverse;
+                $scope.sortingOrder = fieldName;
+                $scope.search((oldFieldName != fieldName));
+
+
+                $scope.sortIcon = {};
                 if ($scope.reverse) {
-                    $scope.sortIcon[newSortingOrder] = 'down';
+                    $scope.sortIcon[fieldName] = 'down';
                 } else {
-                    $scope.sortIcon[newSortingOrder] = 'up';
+                    $scope.sortIcon[fieldName] = 'up';
                 }
             };
+
             $scope.loading = true;
+
             // Searching
             $scope.search = function (changePage) {
                 // filter by search term
@@ -173,13 +199,13 @@
                         $scope.reverse);
                 }
 
-                if(changePage || oldMachineCount != $scope.filteredMachines.length)
+                if (changePage || oldMachineCount != $scope.filteredMachines.length) {
                     $scope.currentPage = 0;
+                }
 
                 $scope.groupToPages();
-
                 $scope.$watch('machines.final', function(newval) {
-                    if(newval && $scope.loading) {
+                    if (newval && $scope.loading) {
                         $scope.loading = false;
                     }
                 })
@@ -253,33 +279,6 @@
                 $scope.currentPage = this.n;
             };
 
-            $scope.startAll = function () {
-                for (var machineid in $scope.checked) {
-                    if ($scope.checked[machineid] === true) {
-                        Machine.startMachine(machineid);
-                        $scope.checked[machineid] = false;
-                    }
-                }
-            }
-
-            $scope.stopAll = function () {
-                for (var machineid in $scope.checked) {
-                    if ($scope.checked[machineid] === true) {
-                        Machine.stopMachine(machineid);
-                        $scope.checked[machineid] = false;
-                    }
-                }
-            }
-
-            $scope.restartAll = function () {
-                for (var machineid in $scope.checked) {
-                    if ($scope.checked[machineid] === true) {
-                        Machine.rebootMachine(machineid);
-                        $scope.checked[machineid] = false;
-                    }
-                }
-            }
-
             $scope.startMachine = function (id) {
                 util.confirm(
                     localization.translate(
@@ -348,15 +347,6 @@
                     });
             };
 
-            $scope.showGroupActions = function () {
-                $scope.ischecked = false;
-                for (var machineid in $scope.checked) {
-                    if ($scope.checked[machineid] === true) {
-                        $scope.ischecked = true;
-                    }
-                }
-            };
-
             $scope.toggleMachine = function (id) {
                 if ($scope.isCollapsed(id)) {
                     $scope.collapsedMachines[id] = false;
@@ -378,11 +368,12 @@
             };
 
             if (!$scope.sortingOrder) {
-                $scope.reverse = false;
-                $scope.sortBy('created');
+                $scope.reverse = $cookieStore.get('sortDirection') || false;
+                $scope.sortBy($cookieStore.get('sortField') || $scope.sortField.value);
             }
 
-            $scope.changeListType($cookieStore.get('listType') || 'normal');
+            // Retrieve selected list type from the cookie or use default fallback
+            $scope.changeListType($cookieStore.get('listType') || $scope.listType);
         }
 
     ]);

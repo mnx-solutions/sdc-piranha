@@ -48,12 +48,10 @@
                         var countVariable = null;
                         var countValue = 0;
                         var identifier = null;
-                        var elementText = null;
+                        var elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
 
                         if (attrs.translate === 'value') {
-                            elementText = $interpolate(element.text())(scope);
-                        } else {
-                            elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
+                            elementText = $interpolate(elementText)(scope);
                         }
 
                         // Interpolate expression
