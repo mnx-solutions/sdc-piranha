@@ -714,12 +714,6 @@ div .disabled{
 	margin-top:3px;
 }
 
-.btn,label,.label {
-	text-transform:capitalize;
-}
-
-
-
 .state {
 	margin-right:5px !important;
 }
