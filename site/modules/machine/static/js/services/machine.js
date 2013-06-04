@@ -344,6 +344,14 @@
 
                 job.deferred.then(function (response) {
                     m.tags = response;
+                }, function (err) {
+                    notification.push(m.id + '-tags', { type: 'error' },
+                        localization.translate(null,
+                            'machine',
+                            'Unable to save tags {{message}}',
+                            {message: (err && err.message) || ''}
+                        )
+                    );
                 });
 
                 return job.deferred;

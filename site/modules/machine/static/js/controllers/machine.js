@@ -279,6 +279,8 @@
                     $scope.retinfo.then(function(tags) {
                         $scope.tagcloud = tagcloud(tags);
                         $scope.tagsave = false;
+                    }, function (err) {
+                        $scope.tagsave = false;
                     });
                 };
 
