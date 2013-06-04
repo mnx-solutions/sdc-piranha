@@ -7,14 +7,6 @@ body {
     /*	border:1px solid red;*/
 }
 
-.loading-medium {
-	background-image:url('/static/img/icon-loading-medium.gif');
-	background-position:50% 50%;
-	background-repeat:no-repeat;
-	min-height:50px;
-	max-width:100%;
-	min-width:50px;
-}
 .loading-medium.behind {
 	opacity: 0.65;
     filter: alpha(opacity=65);    
@@ -188,6 +180,14 @@ h4 {
     background-repeat:repeat-x;
     background-size:100% 2px;
 }
+.top-line-colorful {
+	border-top:none;
+    background-image:url('/static/img/stripes-colorful.gif');
+    background-position:0px 0px;
+    background-repeat:repeat-x;
+    background-size:100% 2px;
+}
+
 #image-version {
 }
 
@@ -326,6 +326,9 @@ h5 small {
 }
 .text-medium {
 	font-size:12px;
+}
+.text-large {
+	font-size:14px;
 }
 .bg-blue-lite {
 	background-color: rgb(247, 250, 252);
@@ -475,6 +478,36 @@ th {
 	margin-top:5px;
 }
 
+/*
+	thumbnail begin
+*/
+
+
+.item-list-container.thumbnail .item {
+	border:1px solid #ddd;
+	padding:5px;
+    font-size:12px;
+/*	float:left;*/
+	margin-bottom:5px;
+/*	margin-right:5px;*/
+	height:150px;
+	min-height:200px;
+}
+
+.item-list-container.thumbnail .item .action-container{
+	margin:-5px;
+	margin-top:5px;
+	padding:10px;
+/*	border:1px solid red;*/
+}
+
+.item-list-container.thumbnail .item .action-container button{
+	display:inline-block;
+}
+
+/*
+	thumbnail end
+*/
 
 .crop {
 	display:block;
@@ -587,17 +620,6 @@ p.margin-mini {
 .noborder {
     border:none;
 }
-/*.action-container {
-    text-align:right;
-    padding-top:10px;
-    padding-right:8px;
-}
-
-.action-container button {
-    display: block;
-    margin-bottom: 10px;
-}
-*/
 .affix {
     z-index:1 !important;
     -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
@@ -692,12 +714,6 @@ div .disabled{
 	margin-top:3px;
 }
 
-.btn,label,.label {
-	text-transform:capitalize;
-}
-
-
-
 .state {
 	margin-right:5px !important;
 }
@@ -778,6 +794,25 @@ div .disabled{
 	height:16px;
 	display:block;
 }
+
+.loading-medium {
+	background-image:url('/static/img/icon-loading-medium.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	min-height:60px;
+	max-width:100%;
+	min-width:50px;
+}
+.loading-large {
+	background-image:url('/static/img/icon-loading-large.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	height:100px;
+	min-height:100px;
+	max-width:100%;
+	min-width:50px;
+}
+
 /*
 	from joyent com to dashboard
 */

@@ -47,21 +47,16 @@
                     return function link (scope, element, attrs) {
                         var countVariable = null;
                         var countValue = 0;
-                        var identifier = null;
-                        var elementText = null;
+                        var identifier = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
 
                         if (attrs.translate === 'value') {
-                            elementText = $interpolate(element.text())(scope);
-                        } else {
-                            elementText = element.text().replace(/(\r\n|\n|\r)/gm, '').replace(/\s+/g,' ').trim();
-                        }
+                            // Observe value
+                            var valueKey = identifier.replace('{{', '').replace('}}', '');
+                            scope.$watch(valueKey, function (newVal) {
+                                onChange(scope, element, attrs, newVal, countValue);
+                            });
 
-                        // Interpolate expression
-                        if (attrs.translateExpression) {
-                            var expression = $interpolate(elementText);
-                            identifier = expression(scope);
-                        } else {
-                            identifier = elementText;
+                            identifier = $interpolate(identifier)(scope);
                         }
 
                         if (attrs.hasOwnProperty('count')) {

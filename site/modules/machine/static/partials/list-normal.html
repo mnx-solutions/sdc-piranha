@@ -1,0 +1,133 @@
+<div class="item-list-container">
+    <div class="item header">
+        <span class="span2 text-medium">
+            <span class="pull-left" data-translate>Name</span>
+        </span>
+        <span class="span1 text-medium">
+            <span class="pull-left" data-translate>Datacenter</span>
+        </span>
+
+        <span class="span2 text-medium">
+            <span class="pull-left" data-translate>Created</span>
+        </span>
+
+        <span class="span2 text-medium" data-translate>IP</span>
+
+        <span class="span1 text-medium pull-right">
+            <span class="pull-left" data-translate>State</span>
+        </span>
+        <div class="clearfix"></div>
+    </div>
+
+    <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" class="item">
+        <span class="span2 text-medium crop">
+            <a href="#!/instance/details/{{machine.id}}">{{machine.label}}</a>
+        </span>
+
+        <span class="span1 text-medium">{{machine.datacenter}}</span>
+            <span class="span2 text-medium crop" alt="{{machine.created | fromNow}}"
+                  title="{{machine.created | fromNow}}">
+                {{machine.created | fromNow}}
+            </span>
+
+            <span data-ng-show="machine.primaryIps.length">
+                <span class="span2 text-medium crop">{{machine.primaryIps[0]}}</span>
+            </span>
+
+            <span data-ng-show="!machine.primaryIps.length && machine.ips.length">
+                <span class="span2 text-medium crop">{{machine.ips[0]}}</span>
+            </span>
+
+            <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
+                <machine-status machine="machine"></machine-status>
+            </span>
+        <div class="clearfix"></div>
+
+        <div class="toolbox-help text-small span8"
+             data-ng-hide="machine.state != 'stopped'">
+            <span class="text-error" data-translate>
+                Machine is stopped, but billing will continue. You have to delete machine to cancel billing
+            </span>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div data-ng-hide="isCollapsed(machine.id)" class="toolbox">
+
+            <div class="item pull-left">
+                <div class="span7">
+                    <span class="text-medium key span2 data-translate">Memory</span>
+                    <span class="text-medium value span4">{{machine.memory | sizeFormat}}&nbsp;</span>
+                    <div class="clearfix"></div>
+
+                    <span class="text-medium key span2 data-translate">Disk</span>
+                    <span class="text-medium value span4">{{machine.disk | sizeFormat}}&nbsp;</span>
+                    <div class="clearfix"></div>
+
+                    <span class="text-medium key span2 data-translate">Image</span>
+                    <span class="text-medium value span4">{{machine.dataset.name}}</span>
+                    <div class="clearfix"></div>
+
+                    <span class="text-medium key span2 last" data-translate>IP(s)</span>
+                                        <span class="text-medium value span4 last">
+                                            <span data-ng-repeat="ip in machine.ips">
+                                                <div>{{ip}}</div>
+                                            </span>
+                                        </span>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+
+            <div class="pull-right action-container">
+                <button role="button"
+                        class="btn btn-mini span1 tooltip-hover"
+                        data-ng-disabled="machine.state == 'running' || (machine.job && !machine.job.finished)"
+                        data-ng-click="startMachine(machine.id)"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        data-html="true"
+                        data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
+                        data-translate-attributes="data-original-title"
+                        data-translate>Start</button>
+                <div class="clearfix"></div>
+
+                <button role="button"
+                        class="btn btn-mini span1 tooltip-hover"
+                        data-ng-disabled="machine.state == 'stopped' || (machine.job && !machine.job.finished)"
+                        data-ng-click="stopMachine(machine.id)"
+                        data-translate
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        data-html="true"
+                        data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine.">Stop</button>
+                <div class="clearfix"></div>
+
+                <button role="button"
+                        class="btn btn-mini span1 tooltip-hover"
+                        data-ng-disabled="machine.state != 'stopped' || (machine.job && !machine.job.finished)"
+                        data-ng-click="deleteMachine(machine.id)"
+                        data-translate
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        data-html="true"
+                        data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.">Delete</button>
+                <div class="clearfix"></div>
+
+                <button role="button"
+                        class="btn btn-mini span1 tooltip-hover"
+                        data-ng-disabled="machine.state != 'running' || (machine.job && !machine.job.finished)"
+                        data-ng-click="rebootMachine(machine.id)"
+                        data-translate
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        data-html="true"
+                        data-original-title="Click here to reboot your instance.">Reboot</button>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>

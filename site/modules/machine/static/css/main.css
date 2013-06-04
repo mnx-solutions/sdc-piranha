@@ -58,3 +58,16 @@
 .label-margin-fix {
     margin-left: 0px;
 }
+
+.list-controls {
+    margin-right: 35px;
+    margin-bottom: 20px;
+}
+
+.list-controls .sort-control {
+    width: 90px;
+}
+
+.sort-control-container {
+    margin-top: 2px;
+}
