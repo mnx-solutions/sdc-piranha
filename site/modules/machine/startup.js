@@ -107,7 +107,9 @@ module.exports = function execute(scope) {
 
                 if (err) {
                     call.log.error('List machines failed for datacenter %s; err.message: %s', name, err.message, err);
-                    call.update(err, response, true);
+                    response.status = 'error';
+                    response.error = err;
+                    call.update(null, response, true);
                     return;
                 }
 

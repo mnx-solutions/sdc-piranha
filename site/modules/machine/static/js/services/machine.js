@@ -23,30 +23,6 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
-
-                        if (err) {
-                            var errRes = null;
-                            if(ng.isArray(data)) {
-                                data.some(function (el) {
-                                    if(el.status === 'error') {
-                                        errRes = el;
-                                        return true;
-                                    }
-                                });
-                            } else {
-                                errRes = data;
-                            }
-
-                            notification.push(errRes.name, { type: 'error' },
-                                localization.translate(null,
-                                    'machine',
-                                    'Unable to retrieve instances from datacenter {{name}}',
-                                    { name: errRes.name }
-                                )
-                            );
-                            return;
-                        }
-
                         function handleChunk (machine) {
                             var old = null;
 
@@ -68,12 +44,30 @@
                             }
                         }
 
-                        if (ng.isArray(data)) {
-                            data.forEach(function(chunk) {
+                        function handleResponse(chunk) {
+                            if(chunk.status === 'error') {
+
+                                notification.push(chunk.name, { type: 'error' },
+                                    localization.translate(null,
+                                        'machine',
+                                        'Unable to retrieve instances from datacenter {{name}}',
+                                        { name: chunk.name }
+                                    )
+                                );
+                                return;
+                            }
+
+                            if(chunk.machines) {
                                 chunk.machines.forEach(handleChunk);
-                            });
-                        } else if (data.machines) {
-                            data.machines.forEach(handleChunk);
+                            }
+                        }
+
+
+
+                        if (ng.isArray(data)) {
+                            data.forEach(handleResponse);
+                        } else {
+                            handleResponse(data);
                         }
                     },
 
