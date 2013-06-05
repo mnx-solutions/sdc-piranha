@@ -255,7 +255,7 @@
                             'Rename this instance'
                         ), function () {
                             $$track.event('machine', 'rename');
-                            var job = Machine.renameMachine(machineid, $scope.newInstanceName);
+                            var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                             job.done(function() {
                                $scope.machine.name = $scope.newInstanceName;
