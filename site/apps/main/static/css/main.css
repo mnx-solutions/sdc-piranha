@@ -482,6 +482,16 @@ th {
 	thumbnail begin
 */
 
+.view-type-container {
+/*	border:1px solid red;*/
+	margin-top:-26px;
+	padding:0;
+	
+}
+.view-type-container-top-fix {
+	margin-top:-22px;
+}
+
 
 .item-list-container.thumbnail .item {
 	border:1px solid #ddd;

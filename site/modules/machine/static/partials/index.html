@@ -22,8 +22,9 @@
 
                 <div class="clearfix"></div>
             </div>
-
-            <div class="list-controls container span5 pull-right">
+			
+			<div class="row-fluid">
+            	<div class="list-controls view-type-container span5 pull-right">
                 <div class="sort-control-container btn-group">
                     <button class="sort-control btn btn-mini" data-ng-show="sortField">
                         <span data-translate="value">
@@ -68,8 +69,8 @@
                 </button>
                 <div class="clearfix"></div>
             </div>
-
-            <div class="container span9 text-medium">
+			</div>
+            <div class="container span9 text-medium view-type-container-top-fix">
                 <div data-ng-switch="listType">
                     <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
                     <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
@@ -93,7 +94,7 @@
                 </div>
             </div>
 
-            <div class="pull-right span3 container">
+            <div class="pull-right span3 container view-type-container-top-fix">
                 <button data-ng-click="changeLocation('/instance/create/')"
                         class="create-instance btn btn-joyent-blue btn-large"
                         data-translate>Create Instance</button>
