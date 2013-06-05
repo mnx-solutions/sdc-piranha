@@ -27,6 +27,7 @@
     "Stop all": "Stop all",
     "Running": "Running",
     "Stopped": "Stopped",
+    "Failed": "Failed",
     "State": "State",
     "Name": "Name",
     "Dataset": "Dataset",

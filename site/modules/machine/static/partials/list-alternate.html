@@ -18,6 +18,14 @@
                     </div>
                 </div>
 
+                <div class="ribbon-wrapper pull-right">
+                    <div class="ribbon ribbon-blue"
+                         data-ng-show="machine.state != 'running' && machine.job.error"
+                         data-translate>
+                        Failed
+                    </div>
+                </div>
+
                 <span class="text-large crop">
                     <a href="#!/instance/details/{{machine.id}}"><b>{{machine.label}}</b></a>
                 </span>
