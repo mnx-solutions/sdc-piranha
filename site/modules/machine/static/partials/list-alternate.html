@@ -1,7 +1,7 @@
 <div class="item-list-container thumbnail">
     <div class="row-fluid">
         <span data-ng-repeat="(key, machine) in pagedMachines[currentPage] | orderBy:sortingOrder:reverse">
-            <div class="pointer pull-left item span4">
+            <div class="pointer item span4 {{$index%3 == 2 && 'last' || ''}}">
                 <span class="text-large crop">
                     <a href="#!/instance/details/{{machine.id}}"><b>{{machine.label}}</b></a>
                 </span>
@@ -80,7 +80,8 @@
                 </div>
                 <div class="clearfix"></div>
             </div>
-        </span>
+        	<div data-ng-show="$index%3 == 2" class="clearfix"></div>
+		</span>
         <div class="clearfix"></div>
     </div>
     <div class="clearfix"></div>

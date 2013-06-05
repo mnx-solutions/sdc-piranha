@@ -499,10 +499,20 @@ th {
     font-size:12px;
 /*	float:left;*/
 	margin-bottom:5px;
-/*	margin-right:5px;*/
+	margin-right:2.127659574468085%;
 	height:150px;
 	min-height:200px;
 }
+.item-list-container.thumbnail .last {
+	margin-right:0;
+}
+.item-list-container.thumbnail .item.span4 {
+	width: 31.861702127659576%;
+  *width: 31.861702127659576%;
+}
+
+/*
+*/
 
 .item-list-container.thumbnail .item .action-container{
 	margin:-5px;
