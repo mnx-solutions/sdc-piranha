@@ -192,7 +192,7 @@
 		            <span data-translate>Disk</span>:
 		            <span>{{currentPackage.disk | sizeFormat}}</span><br />
 		            <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
-		            <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span>
+		            <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
 				</div>
 	        </div>
 
@@ -203,7 +203,7 @@
 	                        value="{{package.name}}" class="text-medium">
 	                    Mem: {{package.memory | sizeFormat}}
 	                    Disk: {{package.disk | sizeFormat}}
-	                    <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span>
+	                    <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
 	                </option>
 	            </select>
 

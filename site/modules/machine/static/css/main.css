@@ -71,3 +71,13 @@
 .sort-control-container {
     margin-top: 2px;
 }
+
+.sort-control .order-icon {
+    position: absolute;
+    right: 1px;
+}
+
+.sort .item .order-icon {
+    position: absolute;
+    right: 10px;
+}
