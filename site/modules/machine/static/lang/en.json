@@ -25,6 +25,8 @@
     "A list of your computers and services": "A list of your computers and services",
     "Start all": "Start all",
     "Stop all": "Stop all",
+    "Running": "Running",
+    "Stopped": "Stopped",
     "State": "State",
     "Name": "Name",
     "Dataset": "Dataset",
