@@ -19,7 +19,7 @@
             Machine name is already in use
         </div>
         <div class="pull-left input-append" data-ng-show="changingName">
-            <input class="span2" id="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
+            <input class="span2" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
             <button class="btn" data-ng-click="clickRename()" type="button">Rename</button>
         </div>
     </form>
