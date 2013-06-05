@@ -424,7 +424,7 @@ module.exports = function execute(scope) {
     });
 
     /* RenameMachine */
-    server.onCall('MachineRename'), {
+    server.onCall('MachineRename', {
         verify: function(data) {
             return true;
         },
@@ -446,7 +446,7 @@ module.exports = function execute(scope) {
 
             });
         }
-    }
+    });
 
     /* CreateMachine */
     server.onCall('MachineCreate', {
