@@ -27,7 +27,6 @@
             // Sorting
             $scope.sortingOrder = null;
             $scope.reverse = true;
-            $scope.sortIcon = {};
 
             $scope.sortable = [
                 { title: 'Name', value: 'label' },
@@ -155,7 +154,11 @@
             // Controller methods
             // Sorting
             // change sorting order
-            $scope.sortBy = function (fieldName) {
+            $scope.sortBy = function (fieldName, changeDirection) {
+                if (changeDirection) {
+                    $scope.reverse = !$scope.reverse;
+                }
+
                 // Assume that filter method will find least one matching item
                 try {
                     $scope.sortField = $scope.sortable.filter(function (item) {
@@ -163,24 +166,15 @@
                     })[0];
 
                     $cookieStore.put('sortField', fieldName);
-                    $cookieStore.put('sortDirection', !$scope.reverse);
+                    $cookieStore.put('sortDirection', $scope.reverse);
                 } catch (e) {
                     // Cannot change sorting field, ignore
                     return;
                 }
 
                 var oldFieldName = $scope.sortingOrder;
-                $scope.reverse = !$scope.reverse;
                 $scope.sortingOrder = fieldName;
                 $scope.search((oldFieldName != fieldName));
-
-
-                $scope.sortIcon = {};
-                if ($scope.reverse) {
-                    $scope.sortIcon[fieldName] = 'down';
-                } else {
-                    $scope.sortIcon[fieldName] = 'up';
-                }
             };
 
             $scope.loading = true;
@@ -369,7 +363,7 @@
 
             if (!$scope.sortingOrder) {
                 $scope.reverse = $cookieStore.get('sortDirection') || false;
-                $scope.sortBy($cookieStore.get('sortField') || $scope.sortField.value);
+                $scope.sortBy($cookieStore.get('sortField') || $scope.sortField.value, false);
             }
 
             // Retrieve selected list type from the cookie or use default fallback
