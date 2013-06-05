@@ -25,11 +25,14 @@
                 $scope.machineid = machineid;
                 $scope.machine = Machine.machine(machineid);
                 $scope.loading = true;
+                $scope.changingName = false;
+                $scope.newInstanceName = null;
 
                 // Handle case when machine loading fails or machine uuid is invalid
                 $q.when($scope.machine).then(
                     function () {
                         $scope.loading = false;
+                        $scope.newInstanceName = $scope.machine.name;
                     }, function () {
                         $location.url('/instance');
                         $location.replace();
@@ -237,6 +240,30 @@
                                 $scope.currentPackage = $scope.selectedPackage;
                             });
                     });
+                };
+
+                $scope.clickRename = function() {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Rename instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Rename this instance'
+                        ), function () {
+                            $$track.event('machine', 'rename');
+                            var job = Machine.renameMachine(machineid, $scope.newInstanceName);
+
+                            job.done(function() {
+                               $scope.machine.name = $scope.newInstanceName;
+                               $scope.changingName = false;
+                            });
+
+                        }
+                    );
                 };
 
                 $scope.clickDelete = function () {

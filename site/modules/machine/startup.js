@@ -423,7 +423,32 @@ module.exports = function execute(scope) {
         }
     });
 
-    /* ResizeMachine */
+    /* RenameMachine */
+    server.onCall('MachineRename'), {
+        verify: function(data) {
+            return true;
+        },
+        handler: function(call) {
+
+            var machineId = call.data.uuid;
+            var options = {
+                name: call.data.name
+            };
+
+            var cloud = call.cloud.separate(call.data.datacenter);
+            cloud.renameMachine(machineId, options, function(err) {
+                if(!err) {
+
+                } else {
+                    call.log.error(err);
+                    call.immediate(err);
+                }
+
+            });
+        }
+    }
+
+    /* CreateMachine */
     server.onCall('MachineCreate', {
         verify: function (data) {
             return typeof data === 'object' &&

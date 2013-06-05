@@ -232,6 +232,15 @@
             return fn(uuid);
         };
 
+        service.renameMachine = function(uuid, newName) {
+            var fn = changeState({
+                name: 'MachineRename',
+                data: {name: newName}
+            });
+
+            return fn(uuid);
+        }
+
 
         service.provisionMachine = function (data) {
             var id = window.uuid.v4();

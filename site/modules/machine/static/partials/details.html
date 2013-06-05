@@ -5,7 +5,11 @@
 <data-notification></data-notification>
 
 <div class="page-header">
-    <h1 class="pull-left">{{machine.name}}</h1>
+    <h1 class="pull-left" data-ng-show="!changingName" data-ng-click="changingName = true">{{machine.name}}</h1>
+    <div class="pull-left input-append" data-ng-show="changingName">
+        <input class="span2" id="instanceRename" data-ng-model="newInstanceName" type="text">
+        <button class="btn" data-on-click="clickRename()" type="button">Rename</button>
+    </div>
     <machine-status machine="machine" class="pull-right" style="margin-top:20px"></machine-status>
 	<div class="clearfix"></div>
 </div>
