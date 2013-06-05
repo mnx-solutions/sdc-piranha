@@ -110,7 +110,7 @@
 
         <div class="clearfix"></div>
 
-        <div data-ng-class="{'loading-medium behind': (!tagcloud || tagsave)}">
+        <div>
             <form name="tagForm">
                 <div class="tags container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
                     <div class="tag" data-ng-show="!o.edit">
@@ -132,14 +132,16 @@
                                    placeholder="Key"
                                    data-translate="placeholder"
                                    data-ng-model="o.key"
-                                   data-ng-required="key != tagnr">
+                                   data-ng-required="key != tagnr"
+                                   data-ng-disabled="tagsave">
 
                             <input type="text"
                                    class="input-large tag-value"
                                    placeholder="Value"
                                    data-translate="placeholder"
                                    data-ng-model="o.val"
-                                   data-ng-required="key != tagnr">
+                                   data-ng-required="key != tagnr"
+                                   data-ng-disabled="tagsave">
 
                             <span class="icon-trash pull-right delete"
                                   data-ng-click="removeTag(key)"
@@ -156,7 +158,8 @@
                     <button class="btn btn-joyent-blue pull-right"
                             data-ng-click="clickSaveTags(machine.id)"
                             data-translate
-                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid">Save</button>
+                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
+                    <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
                 </div>
             </form>
 
