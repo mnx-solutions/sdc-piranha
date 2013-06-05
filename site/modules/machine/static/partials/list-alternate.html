@@ -2,6 +2,7 @@
     <div class="row-fluid">
         <span data-ng-repeat="(key, machine) in pagedMachines[currentPage] | orderBy:sortingOrder:reverse">
             <div class="pointer item span4 {{$index%3 == 2 && 'last' || ''}}">
+				<div class="ribbon-wrapper pull-right"><div class="ribbon {{$index%3 == 2 && 'ribbon-blue' || 'ribbon-green'}}">Running</div></div>
                 <span class="text-large crop">
                     <a href="#!/instance/details/{{machine.id}}"><b>{{machine.label}}</b></a>
                 </span>
