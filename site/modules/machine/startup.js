@@ -193,7 +193,7 @@ module.exports = function execute(scope) {
     /* listNetworks */
     server.onCall('NetworksList', function(call) {
         call.log.info('Retrieving networks list');
-        call.cloud.listNetworks(call.done.bind(call));
+        call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
     });
 
 
