@@ -243,9 +243,7 @@
                             </div>
                             <div id="collapseOne" class="accordion-body collapse">
                                 <div class="accordion-inner">
-                                    <input type="checkbox" name="net1" /> Network1 <br />
-                                    <input type="checkbox" name="net2" /> Network2 <br />
-                                    <input type="checkbox" name="net3" /> Network3 <br />
+                                    <input type="checkbox" data-ng-repeat="network in networks" name="network.name" />{{network.name}}
                                 </div>
                             </div>
                         </div>
