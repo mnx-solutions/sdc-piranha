@@ -23,6 +23,7 @@
                     name: 'MachineList',
                     progress: function (err, job) {
                         var data = job.__read();
+
                         function handleChunk (machine) {
                             var old = null;
 
@@ -61,8 +62,6 @@
                                 chunk.machines.forEach(handleChunk);
                             }
                         }
-
-
 
                         if (ng.isArray(data)) {
                             data.forEach(handleResponse);
@@ -357,8 +356,8 @@
                     notification.push(m.id + '-tags', { type: 'error' },
                         localization.translate(null,
                             'machine',
-                            'Unable to save tags {{message}}',
-                            {message: (err && err.message) || ''}
+                            'Unable to save tags: {{message}}',
+                            { message: (err && err.message) || '' }
                         )
                     );
                 });
