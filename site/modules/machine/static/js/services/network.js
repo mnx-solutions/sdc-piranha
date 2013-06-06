@@ -40,12 +40,14 @@
             };
 
             service.network = function (datacenter) {
-                console.log('Calling for networks list');
+                console.log('Calling for networks list', datacenter, networks.job);
                 if (datacenter === true || (datacenter && !networks.job)) {
+                    console.log('Calling update networks');
                     var job = service.updateNetworks(datacenter);
                     return job.deferred;
                 }
 
+                console.log('Doing networks resolving');
                 var ret = $q.defer();
                 if (!datacenter) {
                     if (networks.list.final) {
