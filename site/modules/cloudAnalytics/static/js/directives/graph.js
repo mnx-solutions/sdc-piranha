@@ -138,66 +138,9 @@
                 }
                 function formatHover(y) {
                     return formatUnit(y, true);
-//                    var type = $scope.instrumentations[0].type;
-//                    if(type && typeof(type) === 'object') {
-//                        var unitstr = '';
-//                        if (!type.base) {
-//                            if(type.abbr) {
-//                                unitstr = type.abbr;
-//                            } else if(type.unit) {
-//                                unitstr = type.unit;
-//                            }
-//                        } else {
-//                            var power = type.power || 0;
-//                            var mag = getMagnitude(y, type.base) + power;
-//                            if(units[type.unit]) {
-//                                var unit = units[type.unit].reduce(function(cur, obj) {
-//                                    return (obj.mag <= mag) ? obj : cur;
-//                                });
-//                                mag = unit.mag;
-//                                unitstr = unit.str + (type.abbr || " " + type.unit);
-//
-//                            }
-//                            y = y / Math.pow(type.base, mag - power);
-//                        }
-//
-//                        return y.toFixed(2) + unitstr;
-//                    }
-//
-//                    return y;
                 }
                 function formatYAxis(y) {
                     return formatUnit(y);
-//                    var type = $scope.instrumentations[0].type;
-//                    if(type && typeof(type) === 'object') {
-//                        var unitstr = '';
-//                        if(y === 0) {
-//                            return 0;
-//                        }
-//                        if (!type.base) {
-//                            if(type.abbr) {
-//                                unitstr = type.abbr;
-//                            } else if(type.unit) {
-//                                unitstr = type.unit;
-//                            }
-//                        } else {
-//                            var power = type.power || 0;
-//                            var mag = getMagnitude(y, type.base) + power;
-//                            if(units[type.unit]) {
-//                                var unit = units[type.unit].reduce(function(cur, obj) {
-//                                    return (obj.mag <= mag) ? obj : cur;
-//                                });
-//                                mag = unit.mag;
-//                                unitstr = unit.str + (type.abbr || " " + type.unit);
-//
-//                            }
-//                            y = y / Math.pow(type.base, mag - power);
-//                        }
-//
-//                        return Math.round(y) + unitstr;
-//                    }
-//
-//                    return y;
                 }
                 function renderYAxis(graph) {
                     var axis = new Rickshaw.Graph.Axis.Y( {

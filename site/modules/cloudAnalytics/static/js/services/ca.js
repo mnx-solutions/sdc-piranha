@@ -450,7 +450,6 @@
         service.prototype.describeCa = function(cb) {
 
             ca.description.describe(function(e, v){
-                console.log(arguments)
                 cb(e, v);
             });
         };
