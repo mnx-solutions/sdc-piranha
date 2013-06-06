@@ -86,6 +86,14 @@
                     return false;
                 }
 
+                $scope.selectNetwork = function(id) {
+                    if($scope.networks.indexOf(id) > -1) {
+                        $scope.networks.splice($scope.networks.indexOf(id), 1);
+                    } else {
+                        $scope.networks.push(id);
+                    }
+                }
+
                 $scope.clickProvision = function () {
                     function provision() {
                         confirm(localization.translate(
@@ -93,6 +101,8 @@
                             'machine',
                             'Billing will start once this instance is created'
                         ), function () {
+                            // add networks to data
+                            $scope.data.networks = ($scope.networks.length > 0) ? (($scope.networks.length == 1) ? $scope.networks[0] : $scope.networks) : '';
                             $scope.retinfo = Machine.provisionMachine($scope.data);
                             $scope.retinfo.done(function(err, job) {
                               var newMachine = job.__read();
@@ -168,6 +178,7 @@
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
                     ng.element('#finish-configuration').fadeOut('fast');
+                    ng.element('#network-configuration').fadeOut('fast');
 
                 };
 
