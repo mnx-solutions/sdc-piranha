@@ -14,6 +14,7 @@
             var networks = { job: null, index: {}, list: []};
 
             service.updateNetworks = function (datacenter) {
+                console.log('Updating networks');
                 if (!networks.job || networks.job.finished) {
                     networks.job = serverTab.call({
                         name:'NetworksList',
@@ -39,6 +40,7 @@
             };
 
             service.network = function (datacenter) {
+                console.log('Calling for networks list');
                 if (datacenter === true || (!datacenter && !networks.job)) {
                     var job = service.updateNetworks(datacenter);
                     return job.deferred;
