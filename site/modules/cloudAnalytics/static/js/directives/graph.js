@@ -26,7 +26,22 @@
                 var heatmaptime = null;
                 var graph = false;
                 var legend = null;
-
+                var units = {
+                    'seconds' : [
+                        { mag : -9, str : 'n'},
+                        { mag : -6, str : 'µ' },
+                        { mag : -3, str : 'm' },
+                        { mag : 0, str : ''}
+                    ],
+                    'bytes' : [
+                        { mag : 0, str : ''},
+                        { mag : 10, str : 'K' },
+                        { mag : 20, str : 'M' },
+                        { mag : 30, str : 'G' },
+                        { mag : 40, str : 'T' },
+                        { mag : 50, str : 'P' }
+                    ]
+                };
 
                 $scope.heatmap;
                 $scope.showGraph = true;
@@ -37,8 +52,6 @@
 
                     var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
                     if(e && e.offsetX && e.offsetY && heatmaptime) {
-//                        $('#clickpoint_' + $scope.$id).css({'top': e.offsetY, 'left': e.offsetX})
-//                        $(popSelector).popover('hide');
                         $scope.ca.getHeatmapDetails({
                             instrumentation: $scope.instrumentations[0],
                             location:{
@@ -87,21 +100,72 @@
                     axis.render();
                     return axis;
                 }
+                function formatUnit(y, hover) {
+                    var type = $scope.instrumentations[0].type;
+                    if(type && typeof(type) === 'object') {
+                        var unitstr = '';
+                        if(y === 0) {
+                            return 0;
+                        }
+                        if (!type.base) {
+                            if(type.abbr) {
+                                unitstr = type.abbr;
+                            } else if(type.unit) {
+                                unitstr = type.unit;
+                            }
+                        } else {
+                            var power = type.power || 0;
+                            var mag = getMagnitude(y, type.base) + power;
+                            if(units[type.unit]) {
+                                var unit = units[type.unit].reduce(function(cur, obj) {
+                                    return (obj.mag <= mag) ? obj : cur;
+                                });
+                                mag = unit.mag;
+                                unitstr = unit.str + (type.abbr || " " + type.unit);
 
+                            }
+                            y = y / Math.pow(type.base, mag - power);
+                        }
+                        if(hover) {
+                            y = y.toFixed(2);
+                        } else {
+                            y = Math.round(y);
+                        }
+                        return y + unitstr;
+                    }
+
+                    return y;
+                }
+                function formatHover(y) {
+                    return formatUnit(y, true);
+                }
+                function formatYAxis(y) {
+                    return formatUnit(y);
+                }
                 function renderYAxis(graph) {
                     var axis = new Rickshaw.Graph.Axis.Y( {
                         graph: graph,
                         orientation: 'left',
-                        tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+                        tickFormat: formatYAxis,
                         element: document.getElementById('y_axis_' + $scope.$id)
                     } );
                     axis.render();
                     return axis;
                 }
 
+                function getMagnitude(value, base) {
+                    var magnitude = Math.log(value) / Math.log(base);
+                    if ((Math.abs(Math.round(magnitude) - magnitude)) < 0.000000001) {
+                        magnitude = Math.round(magnitude);
+                    }
+                    return magnitude;
+                }
+
                 function renderHover(graph) {
+
                     new Rickshaw.Graph.HoverDetail( {
-                        graph: graph
+                        graph: graph,
+                        yFormatter:formatHover
                     });
                 }
 
@@ -163,23 +227,23 @@
                     );
 
                     if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
+
                         $scope.heatmap = $scope.ca.instrumentations[$scope.instrumentations[0]._datacenter][$scope.instrumentations[0].id].heatmap;
+                        var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
+                        $(clickpoint).popover({
+                            title: 'Details',
+                            html: true,
+                            trigger: 'manual',
+                            content:function() {
+                                return $scope.details;
+                            }
+                        });
                     }
 
                     if(series && series.length) {
                         if(!graph) {
                             graph = createGraph(series);
-                            if($scope.heatmap) {
-                                var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
-                                $(clickpoint).popover({
-                                    title: 'Details',
-                                    html: true,
-                                    trigger: 'manual',
-                                    content:function() {
-                                        return $scope.details;
-                                    }
-                                })
-                            }
+
                             $scope.ready = true;
                         } else {
                             graph.series.splice(0, graph.series.length);
@@ -241,10 +305,10 @@
                             '</div>' +
                             '<br/><br/>' +
 
-                            '<div class="chart_container_{{$id}}" style="position: relative;">' +
+                            '<div class="chart_container_{{$id}}" style="position: relative;margin-bottom:10px;">' +
 
-                                '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 40px;"></div>' +
-                                '<div id="chart_{{$id}}" style="position: relative; left: 40px;">' +
+                                '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>' +
+                                '<div id="chart_{{$id}}" style="position: relative; left: 50px;">' +
                                 '<div id="clickpoint" style="position:absolute;height:0px;width:0px;"></div>' +
                                 '<div class="caOverlaid">' +
 
@@ -252,7 +316,7 @@
                                 '</div>' +
                                 '</div>' +
                             '</div>' +
-                            '<div id="legend_{{$id}}" style="width:620px"></div>' +
+                            '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:620px"></div>' +
                     '</div><hr />' +
                 '</div>'
         };

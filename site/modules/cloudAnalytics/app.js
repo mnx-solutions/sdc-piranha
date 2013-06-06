@@ -168,7 +168,6 @@ module.exports = function execute(scope, app) {
         };
         var client = req.cloud;
         client.setDatacenter(req.params.datacenter);
-        console.log('getting heatmap details with options: ',options);
         client.getInstrumentationHeatmapDetails(options, options, function(err, resp) {
             res.json(resp);
         });
@@ -176,7 +175,6 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/ca/getInstrumentations', function(req, res) {
-
         var opts = req.body.options;
         var instrumentations = opts.individual;
         var response = {
