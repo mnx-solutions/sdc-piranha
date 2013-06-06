@@ -41,6 +41,11 @@
             this.ndatapoints = difference || 1;
 
         };
+        _pollOptions.reset = function () {
+            this.last_poll_time = null;
+            this.individual = {};
+            this.ndatapoints = 1;
+        }
         _pollOptions.changeRange = function (inst, range) {
             this.individual[inst._datacenter][inst.id].duration = range;
         }
@@ -48,9 +53,7 @@
             delete(this.individual[inst._datacenter][inst.id]);
         };
         _pollOptions.removeAll = function () {
-            this.last_poll_time = null;
-            this.individual = {};
-            this.ndatapoints = 1;
+            this.reset();
         };
 
         _pollOptions.getSendValues = function () {
@@ -80,13 +83,6 @@
             }
             self.individual[inst._datacenter][inst.id] = options;
         }
-
-
-
-
-
-
-
 
 
 
@@ -158,7 +154,10 @@
             }
 
             this._createTitle(inst);
-
+            if(ca.description) {
+                var type = ca.description._getInstrumentationType(inst);
+                inst.type = type;
+            }
             this[collection][inst._datacenter][inst.id] = inst;
         };
         _instrumentations.addPrivate = function (inst) {
@@ -176,6 +175,10 @@
                 inst.remove(function(){
 
                 });
+
+            }
+            if(!Object.keys(this.public).length && !Object.keys(this.private).length) {
+                ca.options.reset();
             }
         };
         _instrumentations.removePrivate = function (inst) {
@@ -316,7 +319,15 @@
 
             return metric;
         };
-
+        _description._getInstrumentationType = function(inst) {
+            for(var m in this.confReady.metrics) {
+                var metric = this.confReady.metrics[m];
+                if(metric.module === inst.module && metric.stat === inst.stat) {
+                    return metric.type && (this.confReady.types[metric.type] || null) || null;
+                }
+            }
+            return null;
+        }
         _description.describe = function(callback) {
 
             var self = this;
@@ -437,7 +448,11 @@
         }
 
         service.prototype.describeCa = function(cb) {
-            ca.description.describe(cb);
+
+            ca.description.describe(function(e, v){
+                console.log(arguments)
+                cb(e, v);
+            });
         };
 
 
@@ -500,8 +515,6 @@
                 y: options.location.y
             });
             ca.instrumentations.getHeatmapDetails(opts, cb);
-//            instrumentation: $scope.instrumentations[0],
-//            endtime: heatmaptime
         }
         service.prototype.createInstrumentations = function(createOpts, cb) {
             var insts = [];

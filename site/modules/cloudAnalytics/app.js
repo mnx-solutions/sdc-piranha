@@ -176,7 +176,7 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/ca/getInstrumentations', function(req, res) {
-
+        console.log('polling instrumentations')
         var opts = req.body.options;
         var instrumentations = opts.individual;
         var response = {
@@ -265,6 +265,7 @@ module.exports = function execute(scope, app) {
                         response.datapoints[datacenter][options.id].blocked = false;
                         rCount++;
                         if(rCount === iCount) {
+                            console.log('responding on polling', response);
                             res.json(response);
                         }
                     });

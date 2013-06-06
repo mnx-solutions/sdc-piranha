@@ -163,7 +163,7 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
             'CPU: usage',
             'CPU: wait time',
             'Memory: resident set size vs max resident size',
-            'Mtandem ikka emory: excess memory reclaimed',
+            'Memory: excess memory reclaimed',
             'ZFS: used space vs unused quota',
             'Network: utilization'
         ]
