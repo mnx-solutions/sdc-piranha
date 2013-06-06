@@ -87,10 +87,10 @@
                 }
 
                 $scope.selectNetwork = function(id) {
-                    if($scope.networks.indexOf(id) > -1) {
-                        $scope.networks.splice($scope.networks.indexOf(id), 1);
+                    if($scope.selectedNetworks.indexOf(id) > -1) {
+                        $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
                     } else {
-                        $scope.networks.push(id);
+                        $scope.selectedNetworks.push(id);
                     }
                 }
 
@@ -102,7 +102,7 @@
                             'Billing will start once this instance is created'
                         ), function () {
                             // add networks to data
-                            $scope.data.networks = ($scope.networks.length > 0) ? (($scope.networks.length == 1) ? $scope.networks[0] : $scope.networks) : '';
+                            $scope.data.networks = ($scope.selectedNetworks.length > 0) ? (($scope.selectedNetworks.length == 1) ? $scope.selectedNetworks[0] : $scope.selectedNetworks) : '';
                             $scope.retinfo = Machine.provisionMachine($scope.data);
                             $scope.retinfo.done(function(err, job) {
                               var newMachine = job.__read();
