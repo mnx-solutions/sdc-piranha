@@ -264,6 +264,7 @@
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
+                        ng.element('#network-configuration').fadeIn('fast');
                         $scope.selectedPackage = id;
                         $scope.selectedPackageInfo = pkg;
 
