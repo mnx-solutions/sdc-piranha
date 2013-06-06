@@ -15,7 +15,7 @@
 
             service.updateNetworks = function (datacenter) {
                 if (!networks.job || networks.job.finished) {
-                    networks.job = networks.call({
+                    networks.job = serverTab.call({
                         name:'NetworksList',
                         data: {datacenter: datacenter},
                         done: function(err, job) {
