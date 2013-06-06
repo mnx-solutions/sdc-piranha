@@ -41,7 +41,7 @@
 
             service.network = function (datacenter) {
                 console.log('Calling for networks list');
-                if (datacenter === true || (!datacenter && !networks.job)) {
+                if (datacenter === true || (datacenter && !networks.job)) {
                     var job = service.updateNetworks(datacenter);
                     return job.deferred;
                 }
