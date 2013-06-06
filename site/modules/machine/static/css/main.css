@@ -81,3 +81,11 @@
     position: absolute;
     right: 10px;
 }
+
+#network-configuration {
+    display:block;
+}
+
+#network-configuration-accordion-group {
+    border:none;
+}
