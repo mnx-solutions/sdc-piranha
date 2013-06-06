@@ -63,8 +63,7 @@ if(!config.cloudapi || !config.cloudapi.keyPath || typeof config.cloudapi.keyPat
 
 var logger = bunyan.createLogger(config.log);
 var smartCloud = new SmartCloud({
-    //log: logger.child({name:"CloudAPI"}),
-    log: logger.child(),
+    log: logger,
     api: config.cloudapi
 });
 m.set('smartCloud', smartCloud);
