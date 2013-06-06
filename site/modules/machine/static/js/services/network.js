@@ -21,6 +21,7 @@
                         data: {datacenter: datacenter},
                         done: function(err, job) {
                             if (err) {
+                                console.log('ERROR:', err);
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
                                     'Unable to retrieve networks list'
