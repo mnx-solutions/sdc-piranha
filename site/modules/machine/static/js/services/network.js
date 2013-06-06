@@ -62,10 +62,10 @@
                 return networks.list.length > 0 ? networks.list : null;
             };
 
-            if(!networks.job) {
-                // run updatePackages
-                service.updateNetworks(null);
-            }
+//            if(!networks.job) {
+//                // run updatePackages
+//                service.updateNetworks(null);
+//            }
 
             return service;
         }]);
