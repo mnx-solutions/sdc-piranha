@@ -233,6 +233,24 @@
 					<div class="clearfix"></div>
                 </div>
 
+                <div id="network-configuration" class="none alert alert-joyent-blue span3">
+                    <div class="accordion" id="networkAccordion">
+                        <div class="accordion-group" id="network-configuration-accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
+                                    <h4>Configure your networks +</h4>
+                                </a>
+                            </div>
+                            <div id="collapseOne" class="accordion-body collapse">
+                                <div class="accordion-inner">
+                                    <input type="checkbox" name="net1" /> Network1 <br />
+                                    <input type="checkbox" name="net2" /> Network2 <br />
+                                    <input type="checkbox" name="net3" /> Network3 <br />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 				<div id="finish-configuration" class="none alert alert-joyent-blue span3">
                     <form name="provisionForm">
                         <h4 data-translate>Name your instance.</h4>

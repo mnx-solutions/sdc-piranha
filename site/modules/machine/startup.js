@@ -190,6 +190,14 @@ module.exports = function execute(scope) {
         });
     });
 
+    /* listNetworks */
+    server.onCall('NetworksList', function(call) {
+        call.log.info('Retrieving networks list');
+        call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
+    });
+
+
+
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datasets event');
@@ -352,6 +360,36 @@ module.exports = function execute(scope) {
         }, (timeout || 5 * 60 * 1000));
     }
 
+    function pollForMachineNameChange(client, call, newName, timeout) {
+        var timer = setInterval(function () {
+            var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
+
+            call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
+            client.getMachine(machineId, function (err, machine) {
+                if (!err) {
+                    if (newName === machine.name) {
+                        call.log.debug('Machine %s renamed to %s as expected, returing call', machineId, newName);
+                        call.done(null, machine);
+                        clearTimeout(timer2);
+                        clearInterval(timer);
+                    } else {
+                        call.log.debug('Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
+                        call.step = { state: 'renaming' };
+                    }
+                } else {
+                    call.log.error(err);
+                    call.error(err);
+                }
+            }, null, null, true);
+        }, config.polling.packageChange);
+
+        var timer2 = setTimeout(function () {
+            call.log.error('Operation timed out');
+            clearInterval(timer);
+            call.error(new Error('Operation timed out'));
+        }, (timeout || 5 * 60 * 1000));
+    }
+
     function changeState(func, logVerb, endstate, opts) {
         if(!opts) {
             opts = {};
@@ -423,7 +461,32 @@ module.exports = function execute(scope) {
         }
     });
 
-    /* ResizeMachine */
+    /* RenameMachine */
+    server.onCall('MachineRename', {
+        verify: function(data) {
+            return true;
+        },
+        handler: function(call) {
+
+            var machineId = call.data.uuid;
+            var options = {
+                name: call.data.name
+            };
+
+            var cloud = call.cloud.separate(call.data.datacenter);
+            cloud.renameMachine(machineId, options, function(err) {
+                if(!err) {
+                    pollForMachineNameChange(cloud, call, options.name, (60 * 60 * 1000));
+                } else {
+                    call.log.error(err);
+                    call.immediate(err);
+                }
+
+            });
+        }
+    });
+
+    /* CreateMachine */
     server.onCall('MachineCreate', {
         verify: function (data) {
             return typeof data === 'object' &&

@@ -9,6 +9,7 @@
             'Machine',
             'Dataset',
             'Datacenter',
+            'Network',
             'Package',
             'Account',
             '$dialog',
@@ -16,7 +17,7 @@
             'localization',
             '$q',
             '$$track',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track) {
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Network, Package, Account, $dialog, $location, localization, $q, $$track) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope, {
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -26,6 +27,8 @@
                 $scope.datacenters = Datacenter.datacenter();
                 $scope.packageTypes = [];
                 $scope.packageType = null;
+                $scope.networks = [];
+                $scope.selectedNetworks = [];
                 $scope.loading = true;
 
                 $scope.showReConfigure = false;
@@ -352,6 +355,12 @@
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;
                             $scope.reloading = (--count > 0);
+                        });
+
+
+                        Network.network(newVal).then(function(networks) {
+                            console.log(networks);
+                            $scope.networks = networks;
                         });
 
                         Package.package({ datacenter: newVal }).then(function (packages) {

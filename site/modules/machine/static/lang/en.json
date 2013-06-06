@@ -110,6 +110,7 @@
     "Unable to retrieve packages list": "Unable to retrieve packages list",
     "Unable to retrieve datasets list": "Unable to retrieve datasets list",
     "Unable to retrieve datacenters list": "Unable to retrieve datacenters list",
+    "Unable to save tags: {{message}}": "Unable to save tags: {{message}}",
     "Need help?": "Need help?",
     "Help will open in new window": "Help will open in new window",
     "per hour": "per hour",

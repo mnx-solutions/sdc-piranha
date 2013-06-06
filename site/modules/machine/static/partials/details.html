@@ -5,7 +5,24 @@
 <data-notification></data-notification>
 
 <div class="page-header">
-    <h1 class="pull-left">{{machine.name}}</h1>
+    <h1 class="pull-left" data-ng-show="!changingName" data-ng-click="changingName = true">{{machine.name}}</h1>
+    <form name="instanceRename">
+        <div class="error"
+             data-ng-show="instanceRename.instanceRename.$error.machineName"
+             data-translate>
+            Invalid machine name
+        </div>
+
+        <div class="error"
+             data-ng-show="instanceRename.instanceRename.$error.machineUnique"
+             data-translate>
+            Machine name is already in use
+        </div>
+        <div class="pull-left input-append" data-ng-show="changingName">
+            <input class="span2" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
+            <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid" type="button">Rename</button>
+        </div>
+    </form>
     <machine-status machine="machine" class="pull-right" style="margin-top:20px"></machine-status>
 	<div class="clearfix"></div>
 </div>
@@ -96,6 +113,13 @@
             </tr>
         </table>
     </fieldset>
+
+    <!--
+    <fieldset>
+        <legend>Networks</legend>
+        <div data-machine-network></div>
+    </fieldset>
+    -->
 
     <fieldset>
         <legend>
