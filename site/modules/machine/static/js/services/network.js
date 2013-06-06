@@ -14,14 +14,12 @@
             var networks = { job: null, index: {}, list: []};
 
             service.updateNetworks = function (datacenter) {
-                console.log('Updating networks');
                 if (!networks.job || networks.job.finished) {
                     networks.job = serverTab.call({
                         name:'NetworksList',
                         data: {datacenter: datacenter},
                         done: function(err, job) {
                             if (err) {
-                                console.log('ERROR:', err);
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
                                     'Unable to retrieve networks list'
@@ -41,14 +39,11 @@
             };
 
             service.network = function (datacenter) {
-                console.log('Calling for networks list', datacenter, networks.job);
                 if (datacenter === true || (datacenter && !networks.job) || (datacenter && networks.job.finished)) {
-                    console.log('Calling update networks');
                     var job = service.updateNetworks(datacenter);
                     return job.deferred;
                 }
 
-                console.log('Doing networks resolving');
                 var ret = $q.defer();
                 if (!datacenter) {
                     if (networks.list.final) {
