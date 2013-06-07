@@ -93,3 +93,7 @@
 #network-configuration-accordion-group {
     border:none;
 }
+
+.disabled-network-selection {
+    color:#b3b3b3;
+}
