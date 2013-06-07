@@ -167,6 +167,7 @@
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
                     $scope.packageType = null;
+                    $scope.selectedNetworks = [];
 
                     var ds = $scope.data.datacenter;
 					var opsys = $scope.data.opsys;
