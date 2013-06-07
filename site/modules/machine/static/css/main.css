@@ -22,6 +22,14 @@
     padding-top: 10px;
 }
 
+.item .state {
+    min-width: 60px;
+}
+
+.item .state .status {
+    padding: 5px 10px 5px 10px;
+}
+
 .machine fieldset {
     margin-bottom: 20px;
 }

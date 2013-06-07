@@ -38,7 +38,7 @@
                 <span class="span2 text-medium crop">{{machine.ips[0]}}</span>
             </span>
 
-            <span class="span1 pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
+            <span class="pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
                 <machine-status machine="machine"></machine-status>
             </span>
         <div class="clearfix"></div>
@@ -69,11 +69,11 @@
                     <div class="clearfix"></div>
 
                     <span class="text-medium key span2 last" data-translate>IP(s)</span>
-                                        <span class="text-medium value span4 last">
-                                            <span data-ng-repeat="ip in machine.ips">
-                                                <div>{{ip}}</div>
-                                            </span>
-                                        </span>
+                        <span class="text-medium value span4 last">
+                            <span data-ng-repeat="ip in machine.ips">
+                                <div>{{ip}}</div>
+                            </span>
+                        </span>
                     <div class="clearfix"></div>
                 </div>
             </div>
