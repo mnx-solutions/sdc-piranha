@@ -346,7 +346,7 @@ module.exports = function execute(scope) {
                     }
                 } else {
                     call.log.error(err);
-                    call.error(err);
+//                    call.error(err);
                 }
             }, null, null, true);
         }, config.polling.packageChange);
@@ -376,7 +376,7 @@ module.exports = function execute(scope) {
                     }
                 } else {
                     call.log.error(err);
-                    call.error(err);
+//                    call.error(err);
                 }
             }, null, null, true);
         }, config.polling.packageChange);
