@@ -245,7 +245,7 @@
                                 <div class="accordion-inner">
                                     <span data-ng-repeat="network in networks">
                                         <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
-                                            <span data-ng-class="(selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1) ? 'disabled-network-selection' : ''">{{network.name}}</span><br />
+                                            <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
                                     </span>
                                 </div>
                             </div>
