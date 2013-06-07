@@ -244,11 +244,12 @@
                             <div id="collapseOne" class="accordion-body collapse">
                                 <div class="accordion-inner">
                                     <span data-ng-repeat="network in networks">
-                                        <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-change="selectNetwork(network.id);" /> {{network.name}}<br />
+                                        <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" /> {{network.name}}<br />
                                     </span>
                                 </div>
                             </div>
                         </div>
+                        Only 2 networks allowed. By default machines have one public and one private network.
                     </div>
                 </div>
 				<div id="finish-configuration" class="none alert alert-joyent-blue span3">
