@@ -183,27 +183,12 @@ module.exports = function execute(scope, callback) {
     server.onCall('addPaymentMethod', function (call) {
 
         function updateProgress(user, resp) {
-            var count = 1;
-            //Update billingAPI
-            if (jsonClient) {
-                count++;
-                jsonClient.get('/update/' + user.id, function (err, req, res, obj) {
-                    if(err) {
-                        call.log.error('Something went wrong with billing API', err);
-                    }
-                    //No error handling or nothing here, just let it pass.
-                    if(--count === 0) {
-                        call.done(null, resp);
-                    }
-                });
-            }
+            call._user = user;
             SignupProgress.setMinProgress(call, 'billing', function (err) {
                 if(err) {
                     call.log.error(err);
                 }
-                if(--count === 0) {
-                    call.done(null, resp);
-                }
+                call.done(null, resp);
             });
         }
         composeZuora(call, call.log.noErr('Unable to get Account', call.done, function (obj, user) {
@@ -255,7 +240,7 @@ module.exports = function execute(scope, callback) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         zuora.account.create(obj, function (accErr, accResp) {
-                            if(accResp && accResp.reasons) {
+                            if(accErr && accResp && accResp.reasons) {
                                 call.log.error('Zuora account creation failed', accResp.reasons);
                             }
                             if(accErr) {
