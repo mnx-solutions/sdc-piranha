@@ -156,7 +156,6 @@ module.exports = function execute(scope, callback) {
         });
     }
 
-
     server.onCall('listPaymentMethods', function (call) {
         getPaymentMethods(call, call.done.bind(call));
     });
@@ -256,7 +255,7 @@ module.exports = function execute(scope, callback) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         zuora.account.create(obj, function (accErr, accResp) {
-                            if(accResp && accResp.reasons) {
+                            if(accErr && accResp && accResp.reasons) {
                                 call.log.error('Zuora account creation failed', accResp.reasons);
                             }
                             if(accErr) {
