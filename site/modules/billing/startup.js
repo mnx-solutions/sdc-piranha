@@ -156,7 +156,6 @@ module.exports = function execute(scope, callback) {
         });
     }
 
-
     server.onCall('listPaymentMethods', function (call) {
         getPaymentMethods(call, call.done.bind(call));
     });

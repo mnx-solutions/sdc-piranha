@@ -187,7 +187,8 @@ function Call(opts) {
         done: {
             value: function (err, result) {
                 if(_done) {
-                    self.log.error('Tried to call done on already done call', err, result);
+                    var stack = new Error().stack;
+                    self.log.error('Tried to call done on already done call', err, result, stack);
                     return;
                 }
                 _done = true;
