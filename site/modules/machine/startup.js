@@ -190,6 +190,12 @@ module.exports = function execute(scope) {
         });
     });
 
+    /* listNetworks */
+    server.onCall('NetworksList', function(call) {
+        call.log.info('Retrieving networks list');
+        call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
+    });
+
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datasets event');

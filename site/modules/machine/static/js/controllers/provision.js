@@ -9,6 +9,7 @@
             'Machine',
             'Dataset',
             'Datacenter',
+            'Network',
             'Package',
             'Account',
             '$dialog',
@@ -16,7 +17,7 @@
             'localization',
             '$q',
             '$$track',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track) {
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Network, Package, Account, $dialog, $location, localization, $q, $$track) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope, {
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -26,6 +27,8 @@
                 $scope.datacenters = Datacenter.datacenter();
                 $scope.packageTypes = [];
                 $scope.packageType = null;
+                $scope.networks = [];
+                $scope.selectedNetworks = [];
                 $scope.loading = true;
 
                 $scope.showReConfigure = false;
@@ -83,6 +86,14 @@
                     return false;
                 }
 
+                $scope.selectNetwork = function(id) {
+                    if($scope.selectedNetworks.indexOf(id) > -1) {
+                        $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
+                    } else {
+                        $scope.selectedNetworks.push(id);
+                    }
+                }
+
                 $scope.clickProvision = function () {
                     function provision() {
                         confirm(localization.translate(
@@ -90,6 +101,8 @@
                             'machine',
                             'Billing will start once this instance is created'
                         ), function () {
+                            // add networks to data
+                            $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
                             $scope.retinfo = Machine.provisionMachine($scope.data);
                             $scope.retinfo.done(function(err, job) {
                               var newMachine = job.__read();
@@ -165,6 +178,7 @@
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
                     ng.element('#finish-configuration').fadeOut('fast');
+                    ng.element('#network-configuration').fadeOut('fast');
 
                 };
 
@@ -261,6 +275,7 @@
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
                         ng.element('#finish-configuration').fadeIn('fast');
+                        ng.element('#network-configuration').fadeIn('fast');
                         $scope.selectedPackage = id;
                         $scope.selectedPackageInfo = pkg;
 
@@ -352,6 +367,12 @@
                             $scope.manyVersions = manyVersions;
                             $scope.selectedVersions = selectedVersions;
                             $scope.reloading = (--count > 0);
+                        });
+
+
+                        Network.network(newVal).then(function(networks) {
+                            console.log(networks);
+                            $scope.networks = networks;
                         });
 
                         Package.package({ datacenter: newVal }).then(function (packages) {

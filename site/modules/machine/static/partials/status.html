@@ -1,0 +1,19 @@
+<div>
+    <span class="status label label-info"
+          data-translate
+          data-ng-class="labelForState(machine.state)"
+          data-ng-show="machine.state.length && !machine.job || machine.job.finished">
+        {{machine.state}}
+    </span>
+
+    <span class="status label label-info"
+          data-translate
+          data-ng-class="btn-danger"
+          data-ng-show="machine.job && machine.job.err">
+        <i class="icon-warning-sign icon-white" data-ng-show="machine.job.err"></i>
+        error
+    </span>
+
+    <span class="loading-small"
+          data-ng-show="machine.job && !machine.job.finished"></span>
+</div>

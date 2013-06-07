@@ -154,7 +154,8 @@
                                     }
                                 })
                                 .error(function (o) {
-                                    self.error(o);
+                                    var err = o || new Error('Internal server error');
+                                    self.error(err);
                                 });
                         }
                     },
