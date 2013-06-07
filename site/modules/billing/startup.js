@@ -255,7 +255,7 @@ module.exports = function execute(scope, callback) {
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
                         zuora.account.create(obj, function (accErr, accResp) {
-                            if(accErr && accResp && accResp.reasons) {
+                            if(accResp && accResp.reasons) {
                                 call.log.error('Zuora account creation failed', accResp.reasons);
                             }
                             if(accErr) {
