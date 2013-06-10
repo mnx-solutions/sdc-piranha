@@ -60,7 +60,7 @@
 								<div class="clearfix"></div>
 							</div>
 							<div class="fixed-position-fix"></div>
-							<div class="item" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:'sequence') | filter:filterDatasets | filter:filterDatasetsByOS">
+							<div class="item" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:'type' | orderBy:'name') | filter:filterDatasets | filter:filterDatasetsByOS">
 								<input class="pull-left"
                                        type="radio"
                                        id="dataset-{{dataset.id}}"
