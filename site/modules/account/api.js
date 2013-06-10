@@ -3,10 +3,19 @@
 var config = require('easy-config');
 var restify = require('restify');
 
-if(!config.billing.url) {
+if(!config.billing.url && !config.billing.noUpdate) {
     throw new Error('Billing.url must be defined in the config');
 }
-var jsonClient = restify.createJsonClient({url: config.billing.url});
+var jsonClient = null;
+if(config.billing.noUpdate) { // Create dummy for noUpdate
+    jsonClient = {
+        'get': function (p, cb) {
+            setImmediate(cb);
+        }
+    };
+} else {
+    jsonClient = restify.createJsonClient({url: config.billing.url});
+}
 
 module.exports = function execute(scope, register, callback) {
     //Compatibility with old version

@@ -6,13 +6,9 @@ var zuora = require('zuora').create(config.zuora.api);
 var restify = require('restify');
 var path = require('path');
 var fs = require('fs');
-var jsonClient = null;
 
 var zuoraErrors = {};
 
-if(!config.billing.noUpdate) {
-    jsonClient = restify.createJsonClient({url: config.billing.url});
-}
 
 module.exports = function execute(scope, callback) {
 
