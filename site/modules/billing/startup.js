@@ -180,6 +180,7 @@ module.exports = function execute(scope, callback) {
     //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
 
+        call.log.debug('Calling addPaymentMethod');
         if(ids[call.__id]) {
             var stack = new Error().stack;
             call.log.error(stack, 'Called twice');
@@ -188,6 +189,7 @@ module.exports = function execute(scope, callback) {
         ids[call.__id] = true;
 
         function updateProgress(user, resp) {
+            call.log.debug('Updating user progress');
             call._user = user;
             SignupProgress.setMinProgress(call, 'billing', function (err) {
                 if(err) {
@@ -240,10 +242,13 @@ module.exports = function execute(scope, callback) {
                 data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
             }
 
+            call.log.debug('Attempting to add cc to zuora');
             // Create payment
             zuora.payment.create(data, function (err, resp) {
+                call.log.debug('Zuora payment.create returned with', err, resp);
                 if(err) {
                     if(resp && resp.reasons.length === 1 && resp.reasons[0].split.field.nr === '01') {
+                        call.log.debug('Attempting to create zuora account');
                         zuora.account.create(obj, function (accErr, accResp) {
                             if(accErr && accResp && accResp.reasons) {
                                 call.log.error('Zuora account creation failed', accResp.reasons);
@@ -253,6 +258,7 @@ module.exports = function execute(scope, callback) {
                                 call.done(accErr);
                                 return;
                             }
+                            call.log.debug('Zuora account creation succeeded');
                             updateProgress(user, accResp);
                         });
                         return;
@@ -276,6 +282,7 @@ module.exports = function execute(scope, callback) {
                     billToContact: obj.billToContact,
                     soldToContact: obj.billToContact
                 };
+                call.log.debug('Attempting to update zuora account');
                 zuora.account.update(obj.accountNumber, accData, function (accErr, accResp) {
                     if(accErr) {
                         call.log.error('Zuora account update failed', accErr, accResp && accResp.reasons);
