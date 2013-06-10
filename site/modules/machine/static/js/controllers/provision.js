@@ -23,6 +23,8 @@
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
                 });
 
+
+                $scope.account = Account.getAccount();
                 $scope.keys = Account.getKeys();
                 $scope.datacenters = Datacenter.datacenter();
                 $scope.packageTypes = [];
@@ -110,7 +112,7 @@
                                     var listMachines = Machine.machine();
                                     $q.when(listMachines, function() {
                                         if(listMachines.length == 1) {
-                                            //$$track.marketo_machine_provision(newMachine);
+                                            $$track.marketo_machine_provision($scope.account);
                                         }
                                     });
                                 }
