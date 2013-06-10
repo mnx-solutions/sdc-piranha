@@ -21,23 +21,7 @@
                 });
             },
 
-            template: '<div class="navbar-inner">' +
-							'<div class="container">' +
-                            '<a href="#!/dashboard/"><div class="brand pull-left shadow-dark"></div></a>' +
-							'<div class="pull-left main-nav">' +
-								'<a href="#!/dashboard/">Dashboard</a>' +
-								'<a href="#!/instance/">Compute</a>' +
-								'<a href="#!/account/">My Account</a>' +
-							'</div>' +
-                            '<div class="pull-right top-menu">' +
-									'<span><a href="//help.joyent.com" target="_blank">Support</a></span>' +
-									'<span><a href="http://wiki.joyent.com/wiki/display/jpc2/JoyentCloud+Home" target="_blank">Docs</a></span>' +
-									// '<span><a href="#!/account">My Account</a></span>' +
-									'<span class="last"><a href="/landing/forgetToken">Sign Out</a></span>' +
-                            		'<div class="clearfix"></div>' +
-                        	'</div>' +
-						'</div>' +
-                      '</div>'
+            templateUrl: 'menu/static/partials/menu.html'
         };
     }]);
 }(window.JP.getModule('Menu')));
