@@ -179,8 +179,17 @@ module.exports = function execute(scope, callback) {
         });
     });
 
+    var ids = {};
+
     //TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
+
+        if(ids[call.__id]) {
+            var stack = new Error().stack;
+            call.log.error(stack, 'Called twice');
+            return;
+        }
+        ids[call.__id] = true;
 
         function updateProgress(user, resp) {
             call._user = user;

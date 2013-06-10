@@ -43,7 +43,9 @@ function Call(opts) {
 
     var self = this;
 
-    self.log = opts.log;
+    self.__id = Math.random().toString(36).substr(2);
+
+    self.log = opts.log.child({call__id: self.__id});
 
     var _index = 0;
     var _status = 'created';
