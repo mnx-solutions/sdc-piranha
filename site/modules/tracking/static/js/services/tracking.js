@@ -41,11 +41,13 @@
                     );
                 });
             },
-            marketo_machine_provision: function(machine) {
+            marketo_machine_provision: function(account) {
+                //NO http(s):// in the url, use relative paths to the current domain!
                 mktoMunchkinFunction(
-                    'provisionFirstMachine',
+                    'visitWebPage',
                     {
-                        name: machine.name
+                        url: '/main/#!/instance/create/success',
+                        params: {email: account.email}
                     }
                 );
             },
