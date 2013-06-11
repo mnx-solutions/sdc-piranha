@@ -156,9 +156,8 @@
             // change sorting order
             var __fieldName;
             $scope.sortBy = function (fieldName, changeDirection) {
-                if (changeDirection) {
-                    $scope.reverse = !$scope.reverse;
-                }
+                $scope.reverse = __fieldName === fieldName;
+                __fieldName = fieldName;
 
                 // Assume that filter method will find least one matching item
                 try {
@@ -179,7 +178,7 @@
 
                 // OLD stuff
                 $scope.sortIcon = {};
-                $scope.sortIcon[fieldName] = __fieldName === fieldName ? 'down' : 'up';
+                $scope.sortIcon[fieldName] = $scope.reverse ? 'down' : 'up';
             };
 
             $scope.loading = true;
