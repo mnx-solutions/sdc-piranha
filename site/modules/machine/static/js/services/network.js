@@ -19,6 +19,8 @@
                         name:'NetworksList',
                         data: {datacenter: datacenter},
                         done: function(err, job) {
+                            // FIXME: Next lines should be uncommented
+                            /*
                             if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
@@ -26,7 +28,7 @@
                                 )));
                                 return;
                             }
-
+                            */
                             var result = job.__read();
 
                             networks.list = result;

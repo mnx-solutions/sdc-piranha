@@ -126,6 +126,13 @@ h4 {
 	
 }
 
+.navbar-inner .user {
+    position: absolute;
+    right: 0;
+    margin-top: 40px;
+    margin-right: 180px;
+}
+
 .navbar-inner .top-menu span {
 	padding-right:10px;
 	padding-left:10px;
