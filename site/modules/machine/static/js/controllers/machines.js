@@ -154,6 +154,7 @@
             // Controller methods
             // Sorting
             // change sorting order
+            var __fieldName;
             $scope.sortBy = function (fieldName, changeDirection) {
                 if (changeDirection) {
                     $scope.reverse = !$scope.reverse;
@@ -175,6 +176,10 @@
                 var oldFieldName = $scope.sortingOrder;
                 $scope.sortingOrder = fieldName;
                 $scope.search((oldFieldName != fieldName));
+
+                // OLD stuff
+                $scope.sortIcon = {};
+                $scope.sortIcon[fieldName] = __fieldName === fieldName ? 'down' : 'up';
             };
 
             $scope.loading = true;
