@@ -931,7 +931,7 @@ div .disabled{
 	padding-left:10px;
 }
 .loading-small {
-	background-image:url('/static/img/icon-loading-small.gif');
+	background-image:url('/static/img/ajax-loader.gif');
 	background-position:50% 50%;
 	background-repeat:no-repeat;
 	width:16px;
