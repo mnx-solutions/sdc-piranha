@@ -156,7 +156,7 @@
             // change sorting order
             var __fieldName;
             $scope.sortBy = function (fieldName, changeDirection) {
-                $scope.reverse = __fieldName === fieldName;
+                $scope.reverse = __fieldName === fieldName ? !$scope.reverse : false;
                 __fieldName = fieldName;
 
                 // Assume that filter method will find least one matching item
