@@ -82,11 +82,11 @@ module.exports = function execute(scope, callback) {
                 }
                 // Create payment
                 zuora.payment.create(data, function (err, resp) {
-                    call.log.debug('Zuora payment.create returned with', err, resp);
                     if(err) {
                         error(err, resp);
                         return;
                     }
+                    call.log.debug('Zuora payment.create returned with', resp);
                     var count = 2;
                     // Payment method added
                     // Have to remove previous billing methods.
