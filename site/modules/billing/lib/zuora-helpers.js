@@ -291,12 +291,9 @@ function createZuoraAccount(call, cb) {
             obj.creditCard[key] = call.data[k];
         });
         zuora.account.create(obj, function (accErr, accResp) {
-            if(accErr && accResp && accResp.reasons) {
-                call.log.error('Zuora account creation failed', accResp.reasons);
-            }
             if(accErr) {
                 accErr.zuora = accResp;
-                cb(accErr);
+                cb(accErr, accResp);
                 return;
             }
             call.log.debug('Zuora account creation succeeded');

@@ -42,7 +42,7 @@ module.exports = function execute(scope, callback) {
         function error(err, resp, msg) {
             call.log.error(msg || 'Failed to save to zuora', err, resp && resp.reasons);
             zHelpers.updateErrorList(scope, resp, function () {
-                err.zuora = resp;
+                err.zuora = err.zuora || resp;
                 call.done(err);
             });
         }
