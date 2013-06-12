@@ -47,10 +47,16 @@ module.exports = function execute(scope, callback) {
             });
         }
 
+        call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if(err) {
                 if(zHelpers.notFound(acc)) {
+                    call.log.debug('Creating new zuora account');
                     zHelpers.createZuoraAccount(call, function (err, data, user) {
+                        if(err) {
+                            error(err, data, 'Zuora account.create failed');
+                            return;
+                        }
                         //Set minimum progress to session and ask billing server to update
                         call.log.debug('Updating user progress');
                         call._user = user;
@@ -63,7 +69,7 @@ module.exports = function execute(scope, callback) {
                     });
                     return;
                 }
-                error(err, acc);
+                error(err, acc, 'Account check with zuora failed');
                 return;
             }
 

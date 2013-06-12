@@ -150,49 +150,67 @@ function compareBillToContacts(zContact, contact) {
 module.exports.compareBillToContacts = compareBillToContacts;
 
 function composeZuoraAccount(call, cb) {
-    call.cloud.getAccount(function (err, data) {
+    composeCreditCardObject(call, function (err, cc) {
         if(err) {
             cb(err);
             return;
         }
-        zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
-            if(err2) {
-                cb(err2);
+        call.cloud.getAccount(function (err, data) {
+            if(err) {
+                cb(err);
                 return;
             }
-            if(arr.length < 1) {
-                cb(new Error('Unable to find necessary product'));
-                return;
-            }
-
-            var ratePlans = {};
-            arr[0].productRatePlans.forEach(function (ratePlan) {
-                ratePlans[ratePlan.name] = ratePlan.id;
-            });
-
-            var obj = {
-                accountNumber: data.id,
-                currency: 'USD',
-                paymentTerm: 'Due Upon Receipt',
-                Category__c: 'Credit Card',
-                billCycleDay: 1,
-                name: data.companyName || ((data.firstName || call.data.firstName) + ' ' + (data.lastName || call.data.lastName)),
-                subscription: {
-                    termType: 'EVERGREEN',
-                    contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
-                    subscribeToRatePlans: [{
-                        productRatePlanId: ratePlans['Free Trial']
-                    }]
-                },
-                invoiceCollect: false
-            };
-            composeBillToContact(call, data, function (err3, billToContact) {
-                if(err3) {
-                    cb(err3);
+            zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
+                if(err2) {
+                    cb(err2);
                     return;
                 }
-                obj.billToContact = billToContact;
-                cb(null, obj, data);
+                if(arr.length < 1) {
+                    cb(new Error('Unable to find necessary product'));
+                    return;
+                }
+
+                var ratePlans = {};
+                arr[0].productRatePlans.forEach(function (ratePlan) {
+                    ratePlans[ratePlan.name] = ratePlan.id;
+                });
+
+                var obj = {
+                    accountNumber: data.id,
+                    currency: 'USD',
+                    paymentTerm: 'Due Upon Receipt',
+                    Category__c: 'Credit Card',
+                    billCycleDay: 1,
+                    name: data.companyName || ((data.firstName || call.data.firstName) + ' ' + (data.lastName || call.data.lastName)),
+                    subscription: {
+                        termType: 'EVERGREEN',
+                        contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
+                        subscribeToRatePlans: [{
+                            productRatePlanId: ratePlans['Free Trial']
+                        }]
+                    },
+                    invoiceCollect: false,
+                    creditCard: {}
+                };
+
+                Object.keys(cc).forEach(function (k) {
+                    if(k === 'firstName' || k === 'lastName') {
+                        return;
+                    }
+                    var key = ((k === 'creditCardType' && 'cardType')
+                        || (k === 'creditCardNumber' && 'cardNumber')
+                        || k);
+                    obj.creditCard[key] = cc[k];
+                });
+
+                composeBillToContact(call, data, function (err3, billToContact) {
+                    if(err3) {
+                        cb(err3);
+                        return;
+                    }
+                    obj.billToContact = billToContact;
+                    cb(null, obj, data);
+                });
             });
         });
     });
@@ -261,7 +279,7 @@ module.exports.deleteAllButDefaultPaymentMethods = deleteAllButDefaultPaymentMet
 
 function createZuoraAccount(call, cb) {
     //User not found so create one
-    composeZuoraAccount(call, call.log.noErr('Unable to get Account', cb, function (obj, user) {
+    composeZuoraAccount(call, call.log.noErr('Unable to compose Account', cb, function (obj, user) {
         obj.creditCard = {};
         Object.keys(call.data).forEach(function (k) {
             if(k === 'firstName' || k === 'lastName') {
