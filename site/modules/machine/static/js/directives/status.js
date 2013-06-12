@@ -3,7 +3,7 @@
 (function (app) {
     app.directive('machineStatus', [ 'localization', function (localization) {
         return {
-            restrict: 'E',
+            restrict: 'EA',
             replace: true,
             scope: {
                 machine: '=machine'
@@ -19,14 +19,10 @@
                         case 'provisioning':
                         case 'stopping':
                             return 'btn-warning';
-                            break;
-
                         case 'running':
                             return 'btn-success';
-
                         case 'stopped':
                             return '';
-
                         default:
                             return 'btn-danger';
                     }

@@ -28,6 +28,7 @@
 
 .status {
     padding: 5px 10px 5px 10px;
+    min-width: 70px;
 }
 
 .status.label {

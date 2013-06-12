@@ -238,7 +238,7 @@
             });
 
             return fn(uuid);
-        }
+        };
 
 
         service.provisionMachine = function (data) {
@@ -282,6 +282,7 @@
                     var index = machines.list.indexOf(machine);
                     delete machines.index[id];
                     machine = job.initial.machine;
+                    machine.datacenter = data.datacenter;
                     machine.job = job.getTracker();
                     machines.index[machine.id] = machine;
                     machines.list[index] = machine;
