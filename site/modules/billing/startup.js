@@ -49,7 +49,7 @@ module.exports = function execute(scope, callback) {
     var SignupProgress = scope.api('SignupProgress');
 
     function composeZuora(call, cb) {
-        call.cloud.getAccount(call, function (err, data) {
+        call.cloud.getAccount(function (err, data) {
             if(err) {
                 cb(err);
                 return;
@@ -102,7 +102,7 @@ module.exports = function execute(scope, callback) {
             });
             return;
         }
-        call.cloud.getAccount(call, function (err, data) {
+        call.cloud.getAccount(function (err, data) {
             cb(err, data && data.id);
         });
     }
