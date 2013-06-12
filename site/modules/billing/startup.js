@@ -48,20 +48,8 @@ module.exports = function execute(scope, callback) {
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
 
-    function getAccount(call, cb) {
-        call.cloud.getAccount(function (err, data) {
-            if(err) {
-                cb(err);
-                return;
-            }
-            call.req.session.userId = data.id;
-            call.req.session.save();
-            cb(null, data);
-        });
-    }
-
     function composeZuora(call, cb) {
-        getAccount(call, function (err, data) {
+        call.cloud.getAccount(call, function (err, data) {
             if(err) {
                 cb(err);
                 return;
@@ -114,7 +102,7 @@ module.exports = function execute(scope, callback) {
             });
             return;
         }
-        getAccount(call, function (err, data) {
+        call.cloud.getAccount(call, function (err, data) {
             cb(err, data && data.id);
         });
     }
