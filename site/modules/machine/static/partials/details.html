@@ -6,7 +6,6 @@
 
 <div class="page-header">
     <h1 class="pull-left">{{machine.name}}</h1>
-    <!--
     <h1 class="pull-left" data-ng-show="!changingName" data-ng-click="changingName = true">{{machine.name}}</h1>
     <form name="instanceRename">
         <div class="error"
@@ -22,10 +21,9 @@
         </div>
         <div class="pull-left input-append" data-ng-show="changingName">
             <input class="span2" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
-            <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid" type="button">Rename</button>
+            <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0" type="button">Rename</button>
         </div>
     </form>
-    -->
     <machine-status machine="machine" class="pull-right" style="margin-top:20px"></machine-status>
 	<div class="clearfix"></div>
 </div>

@@ -261,7 +261,6 @@
                                $scope.machine.name = $scope.newInstanceName;
                                $scope.changingName = false;
                             });
-
                         }
                     );
                 };
