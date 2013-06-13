@@ -195,7 +195,8 @@
                                 var addedMessage = '';
                                 var generic = false;
 
-                                errs.zuora.reasons.forEach(function (err) {
+                                Object.keys(errs).forEach(function (key) {
+                                    var err = errs[key];
                                     var translated = localization.translate(null,
                                         'billing',
                                         err.message
