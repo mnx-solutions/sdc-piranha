@@ -233,15 +233,6 @@
 
         service.renameMachine = function(uuid, newName) {
 
-            if(!newName || newName.length == 0) {
-                notification.push(job.machine.id, { type: 'error' },
-                    localization.translate(null,
-                        'machine',
-                        'Cannot rename machine. Reason: Name empty'
-                    )
-                );
-                return;
-            }
             var fn = changeState({
                 name: 'MachineRename',
                 data: {name: newName}
