@@ -1,6 +1,7 @@
 body {
 	background-color:#e4e7eb;
 }
+
 .brand {
 	background-image: url('/static/img/logo-white.png');
     background-repeat:no-repeat;
@@ -8,9 +9,8 @@ body {
     width:190px;
     height:100px;
     background-color:#375775;
-	left:50%;
-	position:relative;
-	margin-left:-110px;
+    margin-left:auto;
+    margin-right:auto;
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -18,6 +18,7 @@ body {
 }
 
 hr.dark {
+  width:100%;
   border: 0;
   border-bottom: 1px solid #9fa1a4;
 }
@@ -58,43 +59,14 @@ hr.dark {
 	color:#555;
 }
 
-
-.btn-bottom {
-/*	position:relative;*/
-	bottom:0;
-}
-
-.signin-container {
-	margin-top:70px;
-}
 .text-regular {
 	font-weight:normal;
 }
 
-.border {
-	border:1px solid red !important;
-}
-.landing-fixed-container {
-	min-height:200px;
-	max-height:200px;
-	height:200px;
-}
-.landing-fixed-container > p {
-	min-height:40px;
-
-}
 .text-small {
     font-size:11px;
 }
 
-.landing-login-container {
-    margin-left: auto;
-    margin-right: auto;
-    width: 540px;
-    maring-left:10px;
-}
-
-/* override bootstrap .container class */
-.container {
-    width: 540px;
+.signin-form-container {
+    margin-top:30px;
 }

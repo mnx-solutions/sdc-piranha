@@ -13,7 +13,7 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each link in css
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body
-    div(data-ng-switch='subview', class='subview container', data-ng-cloak)
+    div(data-ng-switch='subview', class='subview container-fluid', data-ng-cloak)
         each layout in layouts
             div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController', data-ng-cloak)!= layout.data
 
