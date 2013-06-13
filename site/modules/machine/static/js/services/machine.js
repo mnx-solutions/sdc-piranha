@@ -233,7 +233,7 @@
 
         service.renameMachine = function(uuid, newName) {
 
-            if(newName.length == 0) {
+            if(!newName || newName.length == 0) {
                 notification.push(job.machine.id, { type: 'error' },
                     localization.translate(null,
                         'machine',
