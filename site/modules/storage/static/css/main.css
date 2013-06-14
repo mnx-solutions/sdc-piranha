@@ -1,0 +1,16 @@
+.code {
+    background: #444444;
+    color: #f5f5f5;
+    font-family: Menlo, Menlo-Regular, Inconsolata, Monaco, monospace;
+    font-size: 13px;
+}
+
+.hl {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.res {
+    font-weight: 200;
+    color: #d3d3d3;
+}

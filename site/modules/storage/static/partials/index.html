@@ -11,62 +11,83 @@
         </div>
     </div>
 
-    <h3>Getting started</h3>
-
-    <div class="row">
-        <div class="span8">
-            <p>
-                There are two ways to get started
-            </p>
-
-            <p>1. If you already have at least node.js v0.10 installed you can
-                install the manta CLI and node SDK
-            </p>
-            <pre>npm install -g "manta-node-url"</pre>
-
-            <p>2. If you do not have node.js installed you can use the
-                installer for
-                MAC
-            </p>
-            <a class="btn btn-info">Download for OSX</a>
-
-        </div>
-
-        <div class="span4">
-
-        </div>
-    </div>
 
     <div class="row">
         <div class="span8">
 
             <div class="row">
-                <div>
+                <div class="span8">
+                    <h4>Getting started</h4>
+
+                    <p>
+                        There are two ways to get started
+                    </p>
+
+                    <p>1. If you already have at least node.js v0.10 installed
+                        you can
+                        install the manta CLI and node SDK
+                    </p>
+                    <pre class="code">npm install -g "manta-node-url"</pre>
+
+                    <p>2. If you do not have node.js installed you can use the
+                        installer for
+                        MAC
+                    </p>
+                    <a class="btn btn-info">OSX Installer</a>
+                </div>
+
+                <div class="span4">
+
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="span8">
                     <h4>CLI Example</h4>
-        <pre>
-export MANTA_URL = https://us-east.manta.joyent.com
-export MANTA_USER = {{account.login}}
-export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
-        </pre>
+
+                    <div class="well code">
+                        export MANTA_URL = https://us-east.manta.joyent.com<br/>
+                        export MANTA_USER = {{account.login}}<br/>
+                        export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+                    </div>
+                    <div class="well code">
+                        <span class="hl">$</span> echo "Hello, Manta" >
+                        /tmp/hello.txt<br/>
+                        <span class="hl">$</span> mput -f /tmp/hello.txt
+                        /jill/stor/foo<br/>
+                        <span class="res">/jill/stor/foo [==========================>] 100%</span>
+                        13B<br/>
+                        <span class="hl">$</span> mget /jill/stor/foo<br/>
+                        <span class="res">Hello, Manta</span><br/>
+                        <span class="hl">$</span> mls<br/>
+                        foo<br/>
+                        <span class="hl">$</span> mrm /jill/stor/foo<br/>
+                    </div>
                 </div>
             </div>
 
             <div class="row">
-                <div>
-                    <h4>node.js Example</h4>
-        <pre>
-export MANTA_URL = https://us-east.manta.joyent.com
-export MANTA_USER = {{account.login}}
-export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
-        </pre>
+                <div class="span8">
+                    <h4>MJOB Example</h4>
+
+                    <div class="well code">
+                        export MANTA_URL = https://us-east.manta.joyent.com
+                        export MANTA_USER = {{account.login}}
+                        export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+
+                        XXXXXX
+                    </div>
                 </div>
             </div>
 
         </div>
 
         <div class="span4">
+            <h4>Introduction video</h4>
+
             <iframe id="ytplayer" type="text/html"
-                    src="http://www.youtube.com/embed/watch?v=dQw4w9WgXcQ?autoplay=1&origin=http://example.com"
+                    src="http://www.youtube.com/embed/Tn2jULI7oSs?autoplay=1&loop=1"
                     frameborder="0"/>
 
             <a class="btn btn-info">Manta documentation</a>

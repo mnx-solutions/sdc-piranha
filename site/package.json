@@ -15,7 +15,7 @@
 				"/js/controllers/main-controller.js",
 				"/js/services/request-context.js",
 				"/js/values/render-context.js"
-			],
+            ],
 			"css": [
 				"/vendor/bootstrap/css/bootstrap.css",
                 "/vendor/zendesk/zenbox.css"
