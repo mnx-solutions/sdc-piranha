@@ -1,0 +1,77 @@
+<div class="container" data-ng-controller="StorageController">
+
+    <h3>Introduction</h3>
+
+    <div class="row">
+        <div class="span12">
+            Joyent Manta Storage Service is a cloud service that offers both
+            storage and integrated compute for developers. Using Manta,
+            developers can store and process any amount of data at any time,
+            from any location, without requiring additional compute resources.
+        </div>
+    </div>
+
+    <h3>Getting started</h3>
+
+    <div class="row">
+        <div class="span8">
+            <p>
+                There are two ways to get started
+            </p>
+
+            <p>1. If you already hava aleast node.js v0.10 installed you can
+                install the manta CLI and node SDK
+            </p>
+            <pre>npm install -g "manta-node-url"</pre>
+
+            <p>2. If you do not have doe.js installed you can use the
+                installer for
+                MAC
+            </p>
+            <a class="btn btn-info">Download for OSX</a>
+
+        </div>
+
+        <div class="span4">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="span8">
+
+            <div class="row">
+                <div>
+                    <h4>CLI Example</h4>
+        <pre>
+export MANTA_URL = https://us-east.manta.joyent.com
+export MANTA_USER = {{account.login}}
+export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+        </pre>
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
+                    <h4>node.js Example</h4>
+        <pre>
+export MANTA_URL = https://us-east.manta.joyent.com
+export MANTA_USER = {{account.login}}
+export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+        </pre>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="span4">
+            <iframe id="ytplayer" type="text/html"
+                    src="http://www.youtube.com/embed/watch?v=dQw4w9WgXcQ?autoplay=1&origin=http://example.com"
+                    frameborder="0"/>
+
+            <a class="btn btn-info">Manta documentation</a>
+
+        </div>
+    </div>
+</div>
+</div>
