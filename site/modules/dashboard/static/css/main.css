@@ -1,0 +1,15 @@
+.dashboard-height {
+    min-height:338px;
+    max-height:338px;
+    height:338px;
+}
+.dashboard-splash {
+    margin-right: auto;
+    margin-left: auto;
+    width:620px;
+    height:338px;
+}
+
+.loading-medium {
+    float:left;
+}
