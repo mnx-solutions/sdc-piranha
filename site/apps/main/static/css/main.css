@@ -855,11 +855,7 @@ div .disabled{
 /*	border:1px solid;*/
 	display:block;
 }
-.sizebar-fix-right {
-	border-left:1px solid #ddd;
-	margin-left:-1px;
-	padding-left:10px;
-}
+
 .loading-small {
 	background-image:url('/static/img/ajax-loader.gif');
 	background-position:50% 50%;
