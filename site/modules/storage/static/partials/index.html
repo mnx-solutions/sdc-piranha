@@ -33,7 +33,7 @@
                         installer for
                         MAC
                     </p>
-                    <a class="btn btn-info">OSX Installer</a>
+                    <a class="btn btn-info" href="https://us-east.manta.joyent.com/tjfontaine/public/joyent-node-v0.10.10.pkg">OSX Installer</a>
                 </div>
 
                 <div class="span4">
@@ -55,14 +55,14 @@
                         <span class="hl">$</span> echo "Hello, Manta" >
                         /tmp/hello.txt<br/>
                         <span class="hl">$</span> mput -f /tmp/hello.txt
-                        /jill/stor/foo<br/>
-                        <span class="res">/jill/stor/foo [==========================>] 100%</span>
+                        /{{account.login}}/stor/foo<br/>
+                        <span class="res">/{{account.login}}/stor/foo [==========================>] 100%</span>
                         13B<br/>
-                        <span class="hl">$</span> mget /jill/stor/foo<br/>
+                        <span class="hl">$</span> mget /{{account.login}}/stor/foo<br/>
                         <span class="res">Hello, Manta</span><br/>
                         <span class="hl">$</span> mls<br/>
                         foo<br/>
-                        <span class="hl">$</span> mrm /jill/stor/foo<br/>
+                        <span class="hl">$</span> mrm /{{account.login}}/stor/foo<br/>
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                     src="http://www.youtube.com/embed/Tn2jULI7oSs?autoplay=1&loop=1"
                     frameborder="0"/>
 
-            <a class="btn btn-info">Manta documentation</a>
+            <a class="btn btn-info" href="http://apidocs.joyent.com/manta/">Manta documentation</a>
 
         </div>
     </div>
