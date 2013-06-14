@@ -9,90 +9,97 @@
             developers can store and process any amount of data at any time,
             from any location, without requiring additional compute resources.
         </div>
+
     </div>
 
 
     <div class="row">
-        <div class="span8">
+        <div class="span12">
+            <h4>Getting started</h4>
 
-            <div class="row">
-                <div class="span8">
-                    <h4>Getting started</h4>
+            <p>
+                There are two ways to get started
+            </p>
 
-                    <p>
-                        There are two ways to get started
-                    </p>
+            <p>1. If you already have at least node.js v0.10 installed
+                you can
+                install the manta CLI and node SDK
+            </p>
 
-                    <p>1. If you already have at least node.js v0.10 installed
-                        you can
-                        install the manta CLI and node SDK
-                    </p>
-                    <pre class="code">npm install -g "manta-node-url"</pre>
-
-                    <p>2. If you do not have node.js installed you can use the
-                        installer for
-                        MAC
-                    </p>
-                    <a class="btn btn-info" href="https://us-east.manta.joyent.com/tjfontaine/public/joyent-node-v0.10.10.pkg">OSX Installer</a>
-                </div>
-
-                <div class="span4">
-
-                </div>
+            <div class="well code">npm install -g
+                https://us-east.manta.joyent.com/manta/public/sdks/node-manta.tar.gz
             </div>
 
+            <p>2. If you do not have node.js installed you can use the
+                installer for MAC
+            </p>
+            <a class="btn btn-info"
+               href="https://us-east.manta.joyent.com/tjfontaine/public/joyent-node-v0.10.10.pkg">OSX
+                Installer</a>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="span12">
+            <h4>CLI Example</h4>
+            <h5>Set environment</h5>
+
+            <div class="well code">
+                export MANTA_URL = https://us-east.manta.joyent.com<br/>
+                export MANTA_USER = {{account.login}}<br/>
+                export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+            </div>
             <div class="row">
-                <div class="span8">
-                    <h4>CLI Example</h4>
 
-                    <div class="well code">
-                        export MANTA_URL = https://us-east.manta.joyent.com<br/>
-                        export MANTA_USER = {{account.login}}<br/>
-                        export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
-                    </div>
+                <div class="span8">
+                    <h5>Create, list and delete objects</h5>
+
                     <div class="well code">
                         <span class="hl">$</span> echo "Hello, Manta" >
                         /tmp/hello.txt<br/>
                         <span class="hl">$</span> mput -f /tmp/hello.txt
                         /{{account.login}}/stor/foo<br/>
-                        <span class="res">/{{account.login}}/stor/foo [==========================>] 100%</span>
-                        13B<br/>
-                        <span class="hl">$</span> mget /{{account.login}}/stor/foo<br/>
+                        <span class="res">/{{account.login}}/stor/foo [==========================>] 100% 13B</span>
+                        <br/>
+                        <span class="hl">$</span> mget
+                        /{{account.login}}/stor/foo<br/>
                         <span class="res">Hello, Manta</span><br/>
                         <span class="hl">$</span> mls<br/>
-                        foo<br/>
-                        <span class="hl">$</span> mrm /{{account.login}}/stor/foo<br/>
+                        <span class="res">foo</span><br/>
+                        <span class="hl">$</span> mrm
+                        /{{account.login}}/stor/foo<br/>
                     </div>
                 </div>
-            </div>
+                <div class="span4">
+                    <h5>Example video</h5>
 
-            <div class="row">
-                <div class="span8">
-                    <h4>MJOB Example</h4>
+                    <iframe id="ytplayer" type="text/html"
+                            src="http://www.youtube.com/embed/Tn2jULI7oSs?autoplay=1&loop=1"
+                            frameborder="0"/>
 
-                    <div class="well code">
-                        export MANTA_URL = https://us-east.manta.joyent.com
-                        export MANTA_USER = {{account.login}}
-                        export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+                    <a class="btn btn-info"
+                       href="http://apidocs.joyent.com/manta/">Manta
+                        documentation</a>
 
-                        XXXXXX
-                    </div>
                 </div>
             </div>
+            <h5>Execute jobs</h5>
 
-        </div>
+            <p>This job will copy Treasure Island to Joyent Manta and run a job
+                on Joyent Manta that will count the number of times the word
+                Silver is mentioned
+            </p>
 
-        <div class="span4">
-            <h4>Introduction video</h4>
-
-            <iframe id="ytplayer" type="text/html"
-                    src="http://www.youtube.com/embed/Tn2jULI7oSs?autoplay=1&loop=1"
-                    frameborder="0"/>
-
-            <a class="btn btn-info" href="http://apidocs.joyent.com/manta/">Manta documentation</a>
-
+            <div class="well code">
+                <span class="hl">$</span> curl -sL
+                http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -c 3 -H
+                'content-type: text/plain'
+                /{{account.login}}/stor/treasure_island.txt<br/>
+                <span class="hl">$</span> mfind
+                /{{account.login}}/stor/treasure_island.txt | mjob create -o
+                "grep Silver | wc -l"<br/>
+            </div>
         </div>
     </div>
-</div>
+
 </div>
