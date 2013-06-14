@@ -1,97 +1,101 @@
-<div class="container" data-ng-controller="Dashboard.IndexController">
+<div class="container-fluid" data-ng-controller="Dashboard.IndexController">
     <div class="row-fluid">
-        <ul class="breadcrumb">
-            <li class="active"><span>Dashboard</span></li>
-            <li class="pull-right"><a class="add-machine" href="#!/instance/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
-        </ul>
-    </div>
-    <div class="row-fluid">
-        <div class="span12 page-header">
-            <div class="span5">
-                <h1>Welcome {{account.firstName}}</h1>
+        <div class="span8 offset2">
+            <div class="row-fluid">
+                <ul class="breadcrumb">
+                    <li class="active"><span>Dashboard</span></li>
+                    <li class="pull-right"><a class="add-machine" href="#!/instance/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
+                </ul>
             </div>
-            <div class="span7">
-                <div class="loading-medium" data-ng-show="loading" ></div>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="dashboard-height span5 text-medium bg-blue-lite">
-                <div class="container-fluid ">
-                <h4>
-                    <span>Instance status</span>
-                    <a class="text-small text-regular pull-right" href="#!/instance">All Instances »</a>
-                </h4>
-                <div class="separation-container text-medium">
-                    <div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
-                    <div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
-                    <p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/instance/create/">Create Instance</a></p>
-                </div>
-                <h5 data-ng-show="lastInvoice">Billing</h5>
-                <div class="separation-container text-medium" data-ng-show="lastInvoice">
-                    <p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
-                </div>
+            <div class="row-fluid">
+                <div class="span12 page-header">
+                    <div class="span5">
+                        <h1>Welcome {{account.firstName}}</h1>
+                    </div>
+                    <div class="span7">
+                        <div class="loading-medium" data-ng-show="loading" ></div>
+                    </div>
                 </div>
             </div>
-
-            <div class="dashboard-height span7 pointer dashboard-splash hidden-phone">
-                <iframe data-ng-src="//www.joyent.com/portal/{{campaignId}}-dashboard.html" seamless class="dashboard-splash iframe-no-border"></iframe>
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span12">
-                <hr />
-            </div>
-        </div>
-        <div class="row-fluid">
-            <div class="span4">
+            <div class="row-fluid">
+                <div class="dashboard-height span5 text-medium bg-blue-lite">
+                    <div class="container-fluid ">
                     <h4>
-                        <span>Joyent Blog</span>
-                        <a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>
+                        <span>Instance status</span>
+                        <a class="text-small text-regular pull-right" href="#!/instance">All Instances »</a>
                     </h4>
-                        <div class="separation-container text-medium">
-                            <div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
-                                <span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
-                                <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
+                    <div class="separation-container text-medium">
+                        <div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
+                        <div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
+                        <p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/instance/create/">Create Instance</a></p>
+                    </div>
+                    <h5 data-ng-show="lastInvoice">Billing</h5>
+                    <div class="separation-container text-medium" data-ng-show="lastInvoice">
+                        <p><strong>Your costs from last month ${{lastInvoice.amount || '0'}}</strong><br />
+                    </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-height span7 pointer dashboard-splash hidden-phone">
+                    <iframe data-ng-src="//www.joyent.com/portal/{{campaignId}}-dashboard.html" seamless class="dashboard-splash iframe-no-border"></iframe>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <hr />
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4">
+                        <h4>
+                            <span>Joyent Blog</span>
+                            <a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>
+                        </h4>
+                            <div class="separation-container text-medium">
+                                <div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
+                                    <span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
+                                    <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
+                                </div>
                             </div>
+                        <div>
+                    </div>
+                </div>
+                <div class="span4">
+                    <h4>
+                        <span>Support FAQ</span>
+                        <a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20708936-Community-Help#recent" target="_blank">More »</a>
+
+                    </h4>
+                    <div class="separation-container text-medium">
+                        <div class="row-fluid text-medium" data-ng-repeat="(name, url) in forums">
+                            <div><a  target="_blank" href="{{url}}">{{name}}</a></div>
+                            <!--<p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>-->
                         </div>
+                    </div>
+
                     <div>
-                </div>
-            </div>
-            <div class="span4">
-                <h4>
-                    <span>Support FAQ</span>
-                    <a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20708936-Community-Help#recent" target="_blank">More »</a>
-
-                </h4>
-                <div class="separation-container text-medium">
-                    <div class="row-fluid text-medium" data-ng-repeat="(name, url) in forums">
-                        <div><a  target="_blank" href="{{url}}">{{name}}</a></div>
-                        <!--<p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>-->
                     </div>
                 </div>
 
-                <div>
-                </div>
-            </div>
+                <div class="span4">
+                    <h4>
+                        <span>System Status</span>
+                        <a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">More »</a>
 
-            <div class="span4">
-                <h4>
-                    <span>System Status</span>
-                    <a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">More »</a>
+                    </h4>
+                    <div class="separation-container text-medium">
+                        <div class="row-fluid text-medium" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
+                            <span class="pull-left span3 text-small text-gray">{{topic.created_at | date}}</span>
+                            <span class="pull-left span8"><a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.title}}</a></span>
 
-                </h4>
-                <div class="separation-container text-medium">
-                    <div class="row-fluid text-medium" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-                        <span class="pull-left span3 text-small text-gray">{{topic.created_at | date}}</span>
-                        <span class="pull-left span8"><a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.title}}</a></span>
+                        </div>
+                    </div>
 
+                    <div>
                     </div>
                 </div>
 
-                <div>
-                </div>
             </div>
-
         </div>
     </div>
 </div>

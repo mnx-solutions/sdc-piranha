@@ -1,6 +1,6 @@
-<div class="{{currentStep && 'row-fluid' || 'container span9'}}">
+<div class="{{currentStep && 'row-fluid' || ''}}">
     <form name="accountForm" class="row-fluid">
-        <fieldset class="span6">
+        <fieldset class="span5">
             <legend data-translate data-ng-hide="currentStep">Contact Info</legend>
             <div class="control-group">
                 <label class="control-label" for="email" data-translate>
@@ -22,6 +22,7 @@
                     <div class="error"
                          data-translate
                          data-ng-show="isError('email', 'email')">
+                        Invalid email address
                         Invalid email address
                     </div>
                 </div>
@@ -123,22 +124,17 @@
 			<button class="btn btn-joyent-blue pull-right" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
         </fieldset>
 
-		<div class="span6 pull-right" data-ng-hide="currentStep">
+		<div class="span7 pull-right" data-ng-hide="currentStep">
 			<fieldset  data-ng-hide="currentStep">
 	            <legend data-translate>Change password</legend>
-					<div class="clearfix"></div><br />
 					<p>Popup window will direct you to SSO pages. No sensitive data is exchanged between two sites.</p>
 					<p>Change password will open a popup window. Please ensure you dont have popup blokers active.</p>
-			
+
 					<a data-ng-click="changePassword()" class="btn pull-right" data-translate>Change password</a>
-					<div class="clearfix"></div>
 			</fieldset>
-			<div class="clearfix">
 				<br />
-			<div class="clearfix">
 			<fieldset  data-ng-hide="currentStep">
 	           	<legend data-translate>Two factor authentication</legend>
-	           	<div class="clearfix"></div><br />
 
 	            <div data-ng-show="qrImage">
 	                <p>You have enabled two-factor authentication. You will be asked to provide an extra verification code the next time that you login.</p>
@@ -172,19 +168,11 @@
 			</fieldset>
 		</div>
 
-		
-
-
-		<div class="clearfix"></div>
-        
-        <div class="clearfix" data-ng-show="currentStep"></div>
         <hr data-ng-show="currentStep" />
         <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
 		<button class="btn btn-joyent-blue pull-right"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
-		
+
 
         <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
-
-        <div class="clearfix"></div>
     </form>
 </div>

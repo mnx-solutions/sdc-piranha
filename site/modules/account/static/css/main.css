@@ -45,3 +45,8 @@ input.error, select.error, textarea.error {
     margin-left: 10px;
     padding-top: 21px;
 }
+
+.ssh-key-span {
+    min-height:40px;
+    height:40px;
+}
