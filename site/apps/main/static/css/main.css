@@ -396,8 +396,12 @@ th {
 }
 .item-list-container .item .toolbox{
 	border-top:1px solid #ddd;
-	margin:5px;
+    margin-bottom: 5px;
 }
+.item-list-container-header {
+    padding:5px;
+}
+
 .toolbox .button {
 	width:100%;
 }
