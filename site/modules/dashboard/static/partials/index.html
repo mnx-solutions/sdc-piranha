@@ -23,7 +23,7 @@
                     <span>Instance status</span>
                     <a class="text-small text-regular pull-right" href="#!/instance">All Instances »</a>
                 </h4>
-                <div class="separation-container text-medium">
+                <div class="separation-container separation-container-top text-medium">
                     <div data-ng-show="runningcount" class="text-fix"><i class="icon icon-play"></i> {{runningcount}} Running</div>
                     <div data-ng-show="othercount" class="text-fix"><i class="icon icon-stop"></i> {{othercount}} Stopped</div>
                     <p class="text-fix"><i class="icon icon-plus-sign"></i>&nbsp;&nbsp;<a href="#!/instance/create/">Create Instance</a></p>
@@ -50,7 +50,7 @@
                         <span>Joyent Blog</span>
                         <a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>
                     </h4>
-                        <div class="separation-container text-medium">
+                        <div class="separation-container separation-container-top text-medium">
                             <div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
                                 <span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
                                 <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
@@ -65,7 +65,7 @@
                     <a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20708936-Community-Help#recent" target="_blank">More »</a>
 
                 </h4>
-                <div class="separation-container text-medium">
+                <div class="separation-container separation-container-top text-medium">
                     <div class="row-fluid text-medium" data-ng-repeat="(name, url) in forums">
                         <div><a  target="_blank" href="{{url}}">{{name}}</a></div>
                         <!--<p class="text-small text-gray" data-ng-show="forum.description" style="line-height:1.3em">{{forum.description}}</p>-->
@@ -82,7 +82,7 @@
                     <a class="text-small text-regular pull-right" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">More »</a>
 
                 </h4>
-                <div class="separation-container text-medium">
+                <div class="separation-container separation-container-top text-medium">
                     <div class="row-fluid text-medium" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
                         <span class="pull-left span3 text-small text-gray">{{topic.created_at | date}}</span>
                         <span class="pull-left span8"><a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.title}}</a></span>

@@ -6,6 +6,7 @@
 .machines button.create-instance {
     margin-bottom: 10px;
     width: 100%;
+
 }
 
 .item label p.name {
@@ -55,8 +56,9 @@
     margin-top: 10px;
 }
 .delete {
-    margin-top: 5px;
+/*    margin-top: 5px;
     margin-left: 30px
+*/
 }
 
 .tag input.tag-key {
@@ -64,8 +66,8 @@
 }
 
 .tag input.tag-value {
-    margin-left: 10px;
-    width: 240px;
+/*    margin-left: 10px;
+    width: 240px;*/
 }
 
 .label-margin-fix {
