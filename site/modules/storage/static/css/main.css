@@ -8,9 +8,22 @@
 .hl {
     color: #ffffff;
     font-weight: bold;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    cursor: default;
+
 }
 
 .res {
     font-weight: 200;
     color: #d3d3d3;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    cursor: default;
 }

@@ -8,7 +8,7 @@
             Joyent Manta Storage Service is a cloud service that offers both
             storage and integrated compute for developers. Using Manta,
             developers can store and process any amount of data at any time,
-            from any location, without requiring additional compute resources.
+            from any location, without additional compute resources.
 			<br />
 			<br />
 			<a class="btn btn-info btn-large"
@@ -20,10 +20,11 @@
 		<div class="span5">
             <h3>Example video</h3>
 
-            <iframe id="ytplayer" width="100%" height="250" type="text/html"
-                    src="http://www.youtube.com/embed/Tn2jULI7oSs?autoplay=0&loop=1"
-                    frameborder="0"/>
-
+            <div class="flowplayer">
+                <video>
+                    <source type="video/mp4" src="http://us-east.manta.joyent.com/jason/public/Getting-Started-Joyent-Manta.mp4">
+                </video>
+            </div>
         </div>
         
     </div>
@@ -34,23 +35,23 @@
             <h4>Getting started</h4>
 
             <p>
-                There are two ways to get started
+                There are two ways to get started:
             </p>
 
-            <p>1. If you already have at least node.js v0.10 installed
+            <p>1. If you already have at least node.js 0.8.14 installed
                 you can
                 install the manta CLI and node SDK
             </p>
 
-            <div class="well code">npm install -g
+            <div class="well code">sudo npm install -g
                 https://us-east.manta.joyent.com/manta/public/sdks/node-manta.tar.gz
             </div>
 
             <p>2. If you do not have node.js installed you can use the
-                installer for MAC
+                installer for Mac OS X
             </p>
             <a class="btn btn-info"
-               href="https://us-east.manta.joyent.com/manta/public/sdks/joyent-node-latest.pkg">OSX
+               href="https://us-east.manta.joyent.com/manta/public/sdks/joyent-node-latest.pkg">OS X
                 Installer</a>
         </div>
     </div>
@@ -58,12 +59,14 @@
     <div class="row">
         <div class="span12">
             <h4>CLI Example</h4>
+
+            <p>Once you have installed the Manta CLI, you're ready to go. The following examples are customized with your account information. Just cut and paste.</p>
             <h5>Set environment</h5>
 
             <div class="well code">
-                export MANTA_URL = https://us-east.manta.joyent.com<br/>
-                export MANTA_USER = {{account.login}}<br/>
-                export MANTA_KEY_ID = {{sshKeys[0].fingerprint }}
+                export MANTA_URL=https://us-east.manta.joyent.com<br/>
+                export MANTA_USER={{account.login}}<br/>
+                export MANTA_KEY_ID={{sshKeys[0].fingerprint }}
             </div>
             <div class="row">
 
@@ -90,13 +93,13 @@
             <h5>Execute jobs</h5>
 
             <p>This job will copy Treasure Island to Joyent Manta and run a job
-                on Joyent Manta that will count the number of times the word
-                Silver is mentioned
+                that counts the number of times the word
+                Silver is mentioned.
             </p>
 
             <div class="well code">
                 <span class="hl">$</span> curl -sL
-                http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -c 3 -H
+                http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -H
                 'content-type: text/plain'
                 /{{account.login}}/stor/treasure_island.txt<br/>
                 <span class="hl">$</span> mfind
@@ -104,7 +107,7 @@
                 "grep Silver | wc -l"<br/>
             </div>
 
-            <p>While the CLI uses node.js there are also SDK support for Ruby, Python and Java.</p>
+            <p>While the CLI uses node.js there is also SDK support for Ruby, Python and Java.</p>
         </div>
     </div>
 
