@@ -4,16 +4,16 @@
                         <span class="span3 text-medium sortable"
                               data-ng-click="sortBy('label')"
                               data-ng-switch on="sortIcon.label">
-                            <span class="pull-left" data-translate>Name</span>
-                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
+                            <span class="pull-left machines-list-header" data-translate>Name</span>
+                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
 
 
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('datacenter')"
                               data-ng-switch on="sortIcon.datacenter">
-                            <span class="pull-left" data-translate>Datacenter</span>
+                            <span class="pull-left machines-list-header" data-translate>Datacenter</span>
                             <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                             <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
@@ -21,40 +21,40 @@
                         <span class="span2 text-medium sortable"
                               data-ng-click="sortBy('created')"
                               data-ng-switch on="sortIcon.created">
-                            <span class="pull-left" data-translate>Created</span>
-                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
+                            <span class="pull-left machines-list-header" data-translate>Created</span>
+                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
 
-        				<span class="span2 text-medium" data-translate>IP</span>
+        				<span class="span2 text-medium machines-list-header" data-translate>IP</span>
 
                         <span class="span1 text-medium pull-right sortable"
                               data-ng-click="sortBy('state')"
                               data-ng-switch on="sortIcon.state">
-                            <span class="pull-left" data-translate>State</span>
-                            <i class="icon-arrow-up pull-right" data-ng-switch-when="up"></i>
-                            <i class="icon-arrow-down pull-right" data-ng-switch-when="down"></i>
+                            <span class="pull-left machines-list-header" data-translate>State</span>
+                            <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                            <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                         </span>
     </div>
 
 	
     <div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" class="item row-fluid">
-        <span class="span3 text-medium crop">
+        <span class="span3 text-medium crop machine-list-content">
             <a href="#!/instance/details/{{machine.id}}">{{machine.label}}</a>
         </span>
 
-        <span class="span2 text-medium">{{machine.datacenter}}</span>
-            <span class="span2 text-medium crop" alt="{{machine.created | fromNow}}"
+        <span class="span2 text-medium machine-list-content">{{machine.datacenter}}</span>
+            <span class="span2 text-medium crop machine-list-content" alt="{{machine.created | fromNow}}"
                   title="{{machine.created | fromNow}}">
                 {{machine.created | fromNow}}
             </span>
 
             <span data-ng-show="machine.primaryIps.length">
-                <span class="span2 text-medium crop">{{machine.primaryIps[0]}}</span>
+                <span class="span2 text-medium crop machine-list-content">{{machine.primaryIps[0]}}</span>
             </span>
 
             <span data-ng-show="!machine.primaryIps.length && machine.ips.length">
-                <span class="span2 text-medium crop">{{machine.ips[0]}}</span>
+                <span class="span2 text-medium crop machine-list-content">{{machine.ips[0]}}</span>
             </span>
 
             <span class="pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
