@@ -4,7 +4,6 @@ body {
 }
 .content-container > div {
     min-height: 100%;
-    /*	border:1px solid red;*/
 }
 
 .loading-medium.behind {
@@ -308,13 +307,10 @@ th {
 
 .item-list-container {
 	border:3px solid rgba(135,135,135,0.1);
+	padding-right:2px;
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-}
-.item-list-container .pagination {
-	margin:10px;
-	padding:0px;
 }
 .item-list-container .item.header {
 	text-align:left;
@@ -330,9 +326,8 @@ th {
 .item-list-container .item {
 	border:1px solid #ddd;
 	border-top:none;
-	padding:5px;
-/*    overflow:hidden;*/
     font-size:12px;
+/*	padding:5px 5px 0px 0px;*/
 }
 .item-list-container .item.header {
 	overflow:visible;
@@ -345,10 +340,6 @@ th {
     background:#fff;
 }
 .item-list-container .item .item > span {
-/*    background:#fff;*/
-/*	margin-left:15px;*/
-	margin-left:16px;
-/*	border:1px solid red;*/
 }
 .default-margin {
 	margin:5px;
@@ -403,7 +394,7 @@ th {
 }
 
 .item-list-container .item .action-container{
-	margin-right:5px;
+/*	margin-right:5px;*/
 	margin-top:5px;
 }
 .item-list-container .item .action-container button {
@@ -412,7 +403,13 @@ th {
 }
 .item-list-container .item .toolbox{
 	border-top:1px solid #ddd;
-	margin-top:5px;
+	margin:5px;
+}
+.toolbox .button {
+	width:100%;
+}
+.toolbox{
+/*	display:block;*/
 }
 
 /*
@@ -620,10 +617,6 @@ p.margin-mini {
 .affix { position:fixed; top:280px; bottom: auto;}
 .affix-bottom { position: fixed; top: auto; bottom: 395px;}
 
-/*.action-container .btn, .item .btn {
-    width:50px;
-}
-*/
 .key{
     border-bottom:1px solid #ddd;
     color:#888;
@@ -789,7 +782,7 @@ div .disabled{
 }
 
 .state {
-	margin-right:5px !important;
+/*	margin-right:5px !important;*/
 }
 .btn-mini {
 /*	width:50px !important;*/
