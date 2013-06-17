@@ -11,7 +11,11 @@
             $scope.sshKeys = Account.getKeys(true);
 
             $scope.loading = true;
-
+            $scope.sshKeys.then(function(keys){
+                if (keys.length >0){
+                    $scope.keyId = keys[0].fingerprint;
+                }
+            });
 
         }]);
 }(window.JP.getModule('Storage')));
