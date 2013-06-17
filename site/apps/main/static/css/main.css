@@ -22,15 +22,13 @@ body {
 }
 .tabbable {
 /*	border:none;*/
-	margin-top:-31px;
+/*	margin-top:-31px;*/
 }
 
 .nav-tabs > li {
-/*	border:none;*/
 }
 .nav-tabs > li:hover,.nav-tabs > li a:hover {
 	background-color:#fff;
-/*	border:none;*/
 	
 }
 
@@ -38,11 +36,6 @@ body {
     -webkit-border-radius: 0px;
     -moz-border-radius: 0px;
     border-radius: 0px;
-	
-/*	border-bottom:1px solid #ddd;
-	border-left:1px solid #ddd;
-	border-top:1px solid #fff !important;
-*/
 
 }
 
@@ -842,13 +835,16 @@ div .disabled{
 	border:none;
 }
 .sizebar-fix {
-	margin-top:-20px;
-	padding-top:30px;
-	padding-bottom:30px;
-/*	border:1px solid;*/
+	margin-top:-31px;
 	display:block;
 }
-
+.tabs-right .nav-tabs {
+	margin:0;
+	width:100%;
+}
+.tabs-right .nav-tabs li,.tabs-right .nav-tabs li a {
+	
+}
 .loading-small {
 	background-image:url('/static/img/ajax-loader.gif');
 	background-position:50% 50%;
@@ -882,7 +878,9 @@ div .disabled{
 
 .separation-container {
 	padding:10px 5px 10px 5px;
+	margin-left:-1px;
 	border-top:1px solid rgba(0,0,0,0.1);
+	border-left:1px solid rgba(0,0,0,0.1);
 }
 
 
