@@ -573,8 +573,14 @@
             var self = this;
             ca.instrumentations.listInstrumentations(function(err, time, rawInstrs){
                 console.log(arguments);
-                var count = rawInstrs.length;
-                if(!Object.keys(rawInstrs).length) {
+                var count = 0;
+
+                for(var dc in rawInstrs) {
+                    var rawInstrsList = rawInstrs[dc];
+                    count += rawInstrsList.length;
+                }
+
+                if(!count) {
                     cb(err, time, rawInstrs);
                     return;
                 }
@@ -584,7 +590,8 @@
                     errors.push(err);
                 }
                 for(var dc in rawInstrs) {
-                    var rawInstrsList = rawInstrs[dc]
+                    var rawInstrsList = rawInstrs[dc];
+
                     for(var i in rawInstrsList) {
                         var rawInst = rawInstrsList[i];
 
