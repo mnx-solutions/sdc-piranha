@@ -113,6 +113,8 @@ module.exports = function execute(scope, app) {
                                 responseCount++;
                                 response.instrumentations[dcname] = resp;
                             }
+                        } else {
+                            responseCount++;
                         }
 
                     } else {
