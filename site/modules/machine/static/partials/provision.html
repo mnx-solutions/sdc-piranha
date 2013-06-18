@@ -18,7 +18,7 @@
                         <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="Here are the specs of the instance you're about to launch. Click 'Launch Instance' if okay?"></span>-->
 
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
-                            <div class="active item">
+                            <div class="active item outer-provisioning-item">
                                 <div class="item provisioning-item  header row-fluid">
                                     <div class="btn-group tooltip-hover span3"
                                          data-html="true"
@@ -53,74 +53,73 @@
                                     </div>
 
                                     <div class="span3 offset4">
-                                        <form>
-                                            <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
-                                        </form>
+                                        <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
                                     </div>
                                 </div>
-                                <div class="fixed-position-fix"></div>
-                                <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS">
-                                    <div class="span1">
-                                        <input class="pull-left"
-                                               type="radio"
-                                               id="dataset-{{dataset.id}}"
-                                               name="dataset"
-                                               value="{{selectedVersions[dataset.name].id || dataset.id}}"
-                                               data-ng-checked="selectedDataset.id == dataset.id"
-                                               data-ng-click="selectDataset(selectedDataset)"
-                                               data-ng-model="selectedDataset"  />
-                                    </div>
-                                    <div class="span10">
-                                        <label for="dataset-{{dataset.id}}" class="span12 text-medium">
-                                            <p class="name">
-                                                {{selectedVersions[dataset.name].name || dataset.name}}
-                                            </p>
+                                <div class="item-scrolling">
+                                    <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS">
+                                            <div class="span1 provisioning-carousel-padding-left">
+                                                <input class="pull-left"
+                                                       type="radio"
+                                                       id="dataset-{{dataset.id}}"
+                                                       name="dataset"
+                                                       value="{{selectedVersions[dataset.name].id || dataset.id}}"
+                                                       data-ng-checked="selectedDataset.id == dataset.id"
+                                                       data-ng-click="selectDataset(selectedDataset)"
+                                                       data-ng-model="selectedDataset"  />
+                                            </div>
+                                            <div class="span10 provisioning-carousel-padding-left">
+                                                <label for="dataset-{{dataset.id}}" class="span12 text-medium">
+                                                    <p class="name">
+                                                        {{selectedVersions[dataset.name].name || dataset.name}}
+                                                    </p>
 
-                                            <span class="text-small">
-                                                {{selectedVersions[dataset.name].description || dataset.description}}
+                                                    <span class="text-small">
+                                                        {{selectedVersions[dataset.name].description || dataset.description}}
+                                                    </span>
+
+                                                    <div class="text-small image-container" data-ng-show="manyVersions[dataset.name]">
+                                                        <span class="span3 label-margin-fix">
+                                                            <strong data-translate>Choose image version</strong>
+                                                        </span>
+
+                                                        <div class="btn-group pull-left">
+                                                            <button class="btn btn-mini" data-ng-show="selectedVersions[dataset.name]">
+                                                                {{selectedVersions[dataset.name].version}}
+                                                            </button>
+
+                                                            <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                                                                <span class="caret"></span>
+                                                            </button>
+
+                                                            <ul class="dropdown-menu">
+                                                                <li data-ng-repeat="version in versions[dataset.name]">
+                                                                    <a data-ng-click="selectVersion(dataset.name, version)">
+                                                                        {{version.version}}
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="image-container text-small" data-ng-hide="manyVersions[dataset.name]">
+                                                        <span class="span3 label-margin-fix">
+                                                            <strong data-translate>Image version</strong>
+                                                            {{dataset.version}}
+                                                        </span>
+                                                    </div>
+                                                </label>
+                                            </div>
+
+                                            <span class="span1 provisioning-carousel-padding-left item-select pointer provisioning-arrows" data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
+                                                &raquo;
                                             </span>
 
-                                            <div class="text-small image-container" data-ng-show="manyVersions[dataset.name]">
-                                                <span class="span3 label-margin-fix">
-                                                    <strong data-translate>Choose image version</strong>
-                                                </span>
-
-                                                <div class="btn-group pull-left">
-                                                    <button class="btn btn-mini" data-ng-show="selectedVersions[dataset.name]">
-                                                        {{selectedVersions[dataset.name].version}}
-                                                    </button>
-
-                                                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-                                                        <span class="caret"></span>
-                                                    </button>
-
-                                                    <ul class="dropdown-menu">
-                                                        <li data-ng-repeat="version in versions[dataset.name]">
-                                                            <a data-ng-click="selectVersion(dataset.name, version)">
-                                                                {{version.version}}
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-
-                                            <div class="image-container text-small" data-ng-hide="manyVersions[dataset.name]">
-                                                <span class="span3 label-margin-fix">
-                                                    <strong data-translate>Image version</strong>
-                                                    {{dataset.version}}
-                                                </span>
-                                            </div>
-                                        </label>
                                     </div>
-
-                                    <span class="span1 item-select pointer" data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
-                                        &raquo;
-                                    </span>
-
                                 </div>
                             </div>
 
-                            <div class="item">
+                            <div class="item outer-provisioning-item">
                                 <div class="item provisioning-item header row-fluid">
                                     <div class="btn-group pull-left tooltip-hover span3"
                                          data-toggle="tooltip"
@@ -141,32 +140,30 @@
                                     </div>
 
                                     <div class="span3 offset6">
-                                        <form>
                                             <input type="text"
                                                    class="span12"
                                                    placeholder="Search image"
                                                    data-ng-model="searchPackages"
                                                    data-translate="placeholder" />
-                                        </form>
                                     </div>
                                 </div>
+                                <div class="item-scrolling">
+                                    <div class="item provisioning-item pointer row-fluid"
+                                         data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages">
+                                        <div class="span12">
+                                            <div class="span1 provisioning-carousel-padding-left">
+                                                <input class="pull-left"
+                                                       type="radio"
+                                                       name="tmp"
+                                                       id="package-{{package.id}}"
+                                                       value="{{package.id}}"
+                                                       data-ng-checked="selectedPackage.id == package.id"
+                                                       data-ng-click="selectPackage(package.id)"
+                                                       data-ng-model="selectedPackage"/>
+                                            </div>
 
-                                <div class="item provisioning-item pointer row-fluid"
-                                     data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages">
-                                    <div class="span12">
-                                        <div class="span1">
-                                            <input class="pull-left"
-                                                   type="radio"
-                                                   name="tmp"
-                                                   id="package-{{package.id}}"
-                                                   value="{{package.id}}"
-                                                   data-ng-checked="selectedPackage.id == package.id"
-                                                   data-ng-click="selectPackage(package.id)"
-                                                   data-ng-model="selectedPackage"/>
-                                        </div>
-
-                                        <label for="package-{{package.id}}">
-                                            <span class="span9 text-medium">
+                                            <label for="package-{{package.id}}">
+                                            <span class="span9 text-medium provisioning-carousel-padding-left">
                                                 <p class="name">
                                                     {{package.short_name}}
                                                 </p>
@@ -176,15 +173,17 @@
                                                 </span>
                                             </span>
 
-                                            <span class="price span2 text-medium align-right">
+                                            <span class="price span2 text-medium align-right provisioning-carousel-padding-left">
                                                 <p class="size b">${{package.full_price || package.price}}</p>
                                                 <p class="text-small text-gray" data-translate>per hour</p>
                                             </span>
 
-                                        </label>
-                                    </div>
+                                            </label>
+                                        </div>
 
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>

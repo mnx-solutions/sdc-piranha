@@ -115,11 +115,30 @@
 }
 
 .provisioning-carousel-inner-box {
-    padding:5px;
+    /*padding:5px;*/
+    margin-top:10px;
 }
 .provisioning-item {
-    padding: 5px;
+    /*padding: 5px;*/
+    /*max-width: 750px;*/
 }
 .reconfigure-btn {
     margin-top:10px;
+}
+.item-scrolling {
+    min-height: 470px;
+    max-height: 470px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.outer-provisioning-item {
+
+}
+.provisioning-carousel-padding-left {
+    padding-left:10px;
+}
+
+.provisioning-arrows {
+    line-height: 1.7;
 }

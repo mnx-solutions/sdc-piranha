@@ -299,7 +299,7 @@ th {
 
 
 .item-list-container {
-	border:3px solid rgba(135,135,135,0.1);
+	/*border:3px solid rgba(135,135,135,0.1);*/
 	padding-right:2px;
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -316,11 +316,14 @@ th {
 	border-top:1px solid #ddd;
 }
 
-.item-list-container .item {
+.item-list-container {
+
+}
+.provisioning-item {
 	border:1px solid #ddd;
 	border-top:none;
     font-size:12px;
-    /*padding: 5px;*/
+    padding-top: 5px;
 }
 .item-list-container .item.header {
 	overflow:visible;
@@ -346,7 +349,6 @@ th {
 }
 
 .item-list-container .item .item.header {
-    margin-top:-2px;
 }
 
 .item.selected {
@@ -372,13 +374,8 @@ th {
 /*	border:none;*/
 /*	border:1px solid red !important;*/
 }
-.carousel-inner .item.header{
-/*	width:608px;
-	margin-left:-5px;
-	margin-top:-10px;
-	position:fixed;
-	top:0px;*/
-	height:40px;
+.carousel-inner .item.header {
+	min-height:40px;
 	padding-top:10px;
 }
 
