@@ -110,17 +110,18 @@ module.exports = function execute(scope, app) {
                                     }
                                 });
                             } else {
+                                responseCount++;
                                 response.instrumentations[dcname] = resp;
                             }
                         }
 
                     } else {
+                        responseCount++;
                         req.log.warn(err);
                         errors.push('Failed to get instrumentation list for ' + dcname);
                     }
 
                     if(response.time) {
-                        responseCount++;
                         console.log('response check',responseCount, Object.keys(dcs).length);
                         if(responseCount === Object.keys(dcs).length) {
                             console.log('responding', response, errors);
