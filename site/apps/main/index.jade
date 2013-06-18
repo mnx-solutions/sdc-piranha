@@ -6,11 +6,8 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(http-equiv="X-UA-Compatible", content="IE=Edge")
     //if lt IE 9
-      script(type="text/javascript", src="static/aight.min.js")
       script(type="text/javascript")
-        window.myCustomTags = [ 'breadcrumb', 'notification', 'mainMenu', 'machineStatus', 'machineName', 'loginForm', 'graph', 'currentCreditCard', 'addCreditCard', 'accountRightMenu','accountAddSshKey', 'accountInfoEdit' ];
-      script(type="text/javascript", src="static/ie-shiv.js")
-
+        window.top.location.href = '/old-browser';
     title(data-ng-bind='windowTitle')
     style(type='text/css') @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}
     each link in css
@@ -22,7 +19,6 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
 
       each layout in layouts
         div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
-
     div(class='JoyentPortal-module-menu')
         div(class="container footer")
              div(class="brand pull-left")            
@@ -50,14 +46,11 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each partial in partials
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
 
-    //if lt IE 9
-      script(type="text/javascript", src="static/aight.d3.min.js")
-
     script(type='text/javascript')
         if (typeof(Zenbox) !== "undefined") {
           Zenbox.init({
-            dropboxID:   "20175628",
-            url:         "https://zetazoft.zendesk.com",
+            dropboxID:   "20078915",
+            url:         "https://joyentcloud.zendesk.com",
             tabTooltip:  "Support",
             tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support.png",
             tabColor:    "#375675",

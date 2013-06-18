@@ -107,6 +107,7 @@ module.exports = function execute(scope, app) {
             delete req.session._tfaRedirect;
             req.session.save();
 
+            req.log.info('User logged in', {userName: req.session.userName, userId: req.session.userId});
             res.send({status:'ok', redirect:redirect});
         } else {
             res.send({status:'error'});

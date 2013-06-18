@@ -5,10 +5,15 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     meta(name='fragment',content='!')
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     title(data-ng-bind='windowTitle') MAIN
+    //if lt IE 9
+      script(type="text/javascript")
+        window.top.location.href = '/old-browser';
+
+    style(type='text/css') @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}
     each link in css
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body
-    div(data-ng-switch='subview', class='subview container', data-ng-cloak)
+    div(data-ng-switch='subview', class='subview container-fluid', data-ng-cloak)
         each layout in layouts
             div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController', data-ng-cloak)!= layout.data
 

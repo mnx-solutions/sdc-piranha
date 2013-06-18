@@ -1,27 +1,24 @@
-<div class="landing-login-container" data-ng-controller="LandingPageController" data-ng-cloack>
-		<div class="brand pull-left"></div>
-		<div class="clearfix"></div>
-		<div class="signin-container">
-			
-			<form method="POST" class="form-inline">
-				
-				<div class="pull-left span6 landing-fixed-container">
-					<hr class="dark" />
-					<h3 class="text-regular pull-left" style="margin-top:-2px" data-translate>Already a customer?</h3>
-					<button  class="btn btn-bottom btn-joyent-blue btn-large pull-right" data-ng-click="login();" type="button" data-translate>Sign in</button>
-					<div class="clearfix"></div>
-					<hr class="dark" />
-					<h3 class="text-regular pull-left" data-translate>New to Joyent?</h3>
-					<h3 class="text-regular pull-right"><a class="landing-create-account-link" data-ng-click="signup();" data-translate>Create an Account</a></h3>
-					<div class="clearfix"></div>
-					<hr class="dark" />
-					<a href="#" class="text-small pull-right forgotPassword" data-ng-click="passreset();" data-translate>Forgot Password</a>
-				</div>
-			</form>
-			<div class="clearfix"></div>
-			
-		</div>
-		<div class="clearfix"></div>
-		
-	</div>
-	<div class="clearfix"></div>
+<div class="container" data-ng-controller="LandingPageController" data-ng-cloack>
+    <div class="span3 offset4">
+        <div class="brand"></div>
+    </div>
+
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="row-fluid">
+				<hr class="dark" />
+				<span class="text-large span7" data-translate>Already a customer?</span>
+				<span class="span4"><button  class="btn btn-bottom btn-joyent-blue btn-large pull-right" data-ng-click="login();" type="button" data-translate>Sign in</button></span>
+            </div>
+            <div class="row-fluid">
+				<hr class="dark" />
+				<span class="text-large span5" data-translate>New to Joyent?</span>
+				<span class="text-large text-right span6" ><a class="landing-create-account-link" data-ng-click="signup();" data-translate>Create an Account</a></span>
+            </div>
+            <div class="row-fluid">
+				<hr class="dark" />
+				<a href="#" class="text-small pull-right forgotPassword" data-ng-click="passreset();" data-translate>Forgot Password</a>
+            </div>
+        </div>
+    </div>
+</div>

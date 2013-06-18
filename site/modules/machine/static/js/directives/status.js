@@ -1,18 +1,24 @@
 'use strict';
 
 (function (app) {
-
-    app.directive('machineStatus', function () {
-
+    app.directive('machineStatus', [ 'localization', function (localization) {
         return {
-            restrict: 'E',
+            restrict: 'EA',
             replace: true,
             scope: {
                 machine: '=machine'
             },
+
+            controller: function($scope, $element, $attrs, $transclude) {
+                localization.bind('machine', $scope);
+            },
+
             link: function (scope) {
                 scope.labelForState = function (state) {
                     switch (state) {
+                        case 'provisioning':
+                        case 'stopping':
+                            return 'btn-warning';
                         case 'running':
                             return 'btn-success';
                         case 'stopped':
@@ -22,12 +28,8 @@
                     }
                 };
             },
-			//<span class="status label label-info">Started</span>
-            template: '<div><span class="status label label-info" ng-class="labelForState(machine.state)" ng-show="!machine.job || machine.job.finished">' +
-                '{{machine.state}}</span>' +
-                '<span class="loading-small" ng-show="machine.job && !machine.job.finished">' +
-                '</span>' +
-				'<i class="icon-warning-sign icon-white" ng-show="machine.job.err"></i></div>'
+
+            templateUrl: 'machine/static/partials/status.html'
         };
-    });
+    }]);
 }(window.JP.getModule('Machine')));

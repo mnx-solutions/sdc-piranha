@@ -41,13 +41,13 @@
                             url: '/account/payment'
                         }];
                 },
-                template: '<div class="pull-right">' +
+                template: '<div class="sizebar-fix">' +
                     '<div class="tabbable tabs-right">' +
-                    '<ul class="nav nav-tabs span3">' +
+                    '<ul class="nav nav-tabs">' +
                     '<li data-ng-repeat="(k, v) in (pages | orderBy:\'sequence\')" class="{{hash == v.url && \'active\' || \'\'}}"><a href="#!{{v.url}}" data-translate="value">{{v.name}}</a></li>' +
                     '</ul>' +
                     '</div>' +
-                    '</div>'
+                    '<div class="clearfix"></div></div>'
             };
         }]);
 }(window.JP.getModule('Account')));

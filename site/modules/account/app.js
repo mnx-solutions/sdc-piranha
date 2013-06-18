@@ -85,7 +85,7 @@ module.exports = function execute(scope, app, callback) {
 
     app.get('/key-generator.sh', function(req, res, next) {
         // replace username in the script with correct one
-        var data = keyGen.replace('{{username}}', 'admin');
+        var data = keyGen.replace('{{username}}', '');
 
         res.set('Content-type', 'application/x-sh');
         res.send(data);

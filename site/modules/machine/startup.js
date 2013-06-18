@@ -196,8 +196,6 @@ module.exports = function execute(scope) {
         call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
     });
 
-
-
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datasets event');
@@ -348,7 +346,7 @@ module.exports = function execute(scope) {
                     }
                 } else {
                     call.log.error(err);
-                    call.error(err);
+//                    call.error(err);
                 }
             }, null, null, true);
         }, config.polling.packageChange);
@@ -378,7 +376,7 @@ module.exports = function execute(scope) {
                     }
                 } else {
                     call.log.error(err);
-                    call.error(err);
+//                    call.error(err);
                 }
             }, null, null, true);
         }, config.polling.packageChange);
@@ -500,7 +498,8 @@ module.exports = function execute(scope) {
             var options = {
                 name: call.data.name,
                 package: call.data.package,
-                dataset: call.data.dataset
+                dataset: call.data.dataset,
+                networks: call.data.networks
             };
 
             call.log.info({options: options}, 'Creating machine %s', call.data.name);

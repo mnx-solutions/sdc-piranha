@@ -242,6 +242,11 @@
                     });
                 };
 
+                $scope.enableRename = function(name) {
+                    $scope.changingName = true;
+                    $scope.newInstanceName = name;
+                };
+
                 $scope.clickRename = function() {
                     util.confirm(
                         localization.translate(
@@ -261,7 +266,6 @@
                                $scope.machine.name = $scope.newInstanceName;
                                $scope.changingName = false;
                             });
-
                         }
                     );
                 };

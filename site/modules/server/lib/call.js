@@ -43,7 +43,9 @@ function Call(opts) {
 
     var self = this;
 
-    self.log = opts.log;
+    self.__id = Math.random().toString(36).substr(2);
+
+    self.log = opts.log.child({call__id: self.__id});
 
     var _index = 0;
     var _status = 'created';
@@ -187,7 +189,8 @@ function Call(opts) {
         done: {
             value: function (err, result) {
                 if(_done) {
-                    self.log.error('Tried to call done on already done call', err, result);
+                    var stack = new Error().stack;
+                    self.log.error('Tried to call done on already done call', err, result, stack);
                     return;
                 }
                 _done = true;

@@ -12,7 +12,6 @@
         'localization',
 
         function (BillingService, $q, $http, $rootScope, Account, notification, localization) {
-
             return {
                 restrict: 'A',
                 replace: true,
@@ -185,7 +184,7 @@
                         $scope.loading = true;
 
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
-                            if(errs) {
+                            if (errs) {
                                 $scope.errs = errs;
                                 $scope.loading = false;
                                 var message = localization.translate(null,
@@ -196,7 +195,8 @@
                                 var addedMessage = '';
                                 var generic = false;
 
-                                errs.zuora.reasons.forEach(function (err) {
+                                Object.keys(errs).forEach(function (key) {
+                                    var err = errs[key];
                                     var translated = localization.translate(null,
                                         'billing',
                                         err.message

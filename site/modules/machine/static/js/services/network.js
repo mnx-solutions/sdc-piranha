@@ -19,6 +19,8 @@
                         name:'NetworksList',
                         data: {datacenter: datacenter},
                         done: function(err, job) {
+                            // FIXME: Next lines should be uncommented
+                            /*
                             if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
@@ -26,7 +28,7 @@
                                 )));
                                 return;
                             }
-
+                            */
                             var result = job.__read();
 
                             networks.list = result;
@@ -39,7 +41,7 @@
             };
 
             service.network = function (datacenter) {
-                if (datacenter === true || (!datacenter && !networks.job)) {
+                if (datacenter === true || (datacenter && !networks.job) || (datacenter && networks.job.finished)) {
                     var job = service.updateNetworks(datacenter);
                     return job.deferred;
                 }
@@ -62,10 +64,10 @@
                 return networks.list.length > 0 ? networks.list : null;
             };
 
-            if(!networks.job) {
-                // run updatePackages
-                service.updateNetworks(null);
-            }
+//            if(!networks.job) {
+//                // run updatePackages
+//                service.updateNetworks(null);
+//            }
 
             return service;
         }]);

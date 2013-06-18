@@ -1,11 +1,9 @@
-<div class="container-fluid content-container" data-ng-controller="Machine.DetailsController">
-<div class="container content-container-inner">
-<div class="container form-horisontal">
+<div class="container" data-ng-controller="Machine.DetailsController">
 <data-breadcrumb></data-breadcrumb>
 <data-notification></data-notification>
 
 <div class="page-header">
-    <h1 class="pull-left" data-ng-show="!changingName" data-ng-click="changingName = true">{{machine.name}}</h1>
+    <h1 class="pull-left" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
     <form name="instanceRename">
         <div class="error"
              data-ng-show="instanceRename.instanceRename.$error.machineName"
@@ -20,72 +18,73 @@
         </div>
         <div class="pull-left input-append" data-ng-show="changingName">
             <input class="span2" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
-            <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid" type="button">Rename</button>
+            <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0" type="button">Rename</button>
         </div>
     </form>
-    <machine-status machine="machine" class="pull-right" style="margin-top:20px"></machine-status>
+    <machine-status machine="machine" class="pull-right"></machine-status>
 	<div class="clearfix"></div>
 </div>
-<div class="machine container span8 listing text-medium">
+<div class="row">
+<div class="machine span8 listing text-medium">
     <fieldset data-ng-show="machine">
         <legend data-translate>Overview</legend>
-        <div class="container span7">
-            <span class="key span2" data-translate>UUID</span>
-            <span class="value span5 pull-right">{{machine.id}}&nbsp;</span>
+		<div class="row-fluid">
+           	<span class="span4 key" data-translate>UUID</span>
+           	<span class="span8 value pull-right">{{machine.id}}&nbsp;</span>
+		</div>
+        <div data-ng-show="machine.name" class="row-fluid">
+            <span class="key span4" data-translate>Instance name</span>
+            <span class="value span8 pull-right">{{machine.name}}&nbsp;</span>
         </div>
 
-        <div data-ng-show="machine.name" class="container span7">
-            <span class="key span2" data-translate>Instance name</span>
-            <span class="value span5 pull-right">{{machine.name}}&nbsp;</span>
+        <div class="row-fluid">
+            <span class="key span4" data-translate>Type</span>
+            <span class="value span8 pull-right">{{machine.type}}&nbsp;</span>
         </div>
 
-        <div class="container span7">
-            <span class="key span2" data-translate>Type</span>
-            <span class="value span5 pull-right">{{machine.type}}&nbsp;</span>
+        <div class="row-fluid">
+            <span class="key span4" data-translate>Image</span>
+            <span class="value span8 pull-right">{{dataset.name}}&nbsp;</span>
         </div>
 
-        <div class="container span7">
-            <span class="key span2" data-translate>Image</span>
-            <span class="value span5 pull-right">{{dataset.name}}&nbsp;</span>
+        <div class="row-fluid">
+            <span class="key span4" data-translate>Image version</span>
+            <span class="value span8 pull-right">{{dataset.version}}&nbsp;</span>
         </div>
 
-        <div class="container span7">
-            <span class="key span2" data-translate>Image version</span>
-            <span class="value span5 pull-right">{{dataset.version}}&nbsp;</span>
+        <div class="row-fluid">
+            <span class="key span4" data-translate>Memory</span>
+            <span class="value span8 pull-right">{{machine.memory | sizeFormat}}&nbsp;</span>
         </div>
 
-        <div class="container span7">
-            <span class="key span2" data-translate>Memory</span>
-            <span class="value span5 pull-right">{{machine.memory | sizeFormat}}&nbsp;</span>
+        <div class="row-fluid">
+            <span class="key span4" data-translate>Disk</span>
+            <span class="value span8 pull-right">{{machine.disk | sizeFormat}}&nbsp;</span>
         </div>
 
-        <div class="container span7">
-            <span class="key span2" data-translate>Disk</span>
-            <span class="value span5 pull-right">{{machine.disk | sizeFormat}}&nbsp;</span>
+        <div class="row-fluid" data-ng-show="machine.ips">
+            <span class="key span4" data-translate>IP addresses</span>
+             <span class="value span8 pull-right">
+                 <span data-ng-repeat="ip in machine.ips">{{ip}}&nbsp;</span>
+             </span>
         </div>
 
-        <div class="container span7" data-ng-show="machine.ips">
-            <span class="key span2" data-translate>IP addresses</span>
-                            <span class="value span5 pull-right">
-                                <span data-ng-repeat="ip in machine.ips">{{ip}}&nbsp;</span>
-                            </span>
-        </div>
-
-        <div class="container span7" data-ng-show="machine.created">
-            <span class="key span2" data-translate>Created</span>
-                            <span class="value span5 pull-right">
+        <div class="row-fluid" data-ng-show="machine.created">
+            <span class="key span4" data-translate>Created</span>
+                            <span class="value span8 pull-right">
                                 {{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}&nbsp;
                             </span>
         </div>
 
-        <div class="container span7" data-ng-show="machine.datacenter">
-            <span class="key span2" data-translate>Datacenter</span>
-            <span class="value span5 pull-right">{{machine.datacenter}}&nbsp;</span>
+        <div class="row-fluid" data-ng-show="machine.datacenter">
+            <span class="key span4" data-translate>Datacenter</span>
+            <span class="value span8 pull-right">{{machine.datacenter}}&nbsp;</span>
         </div>
 
-        <div class="container span7" data-ng-show="machine.primaryIps.length">
-            <span class="key span2" data-translate>Login</span>
-            <span class="value span5 pull-right">ssh root@{{machine.primaryIps[0]}}&nbsp;</span>
+        <div class="row-fluid" data-ng-show="machine.primaryIps.length">
+            <span class="key span4" data-translate>Login</span>
+            <span class="value span8 pull-right" data-ng-show="machine.os != 'windows'">ssh root@{{machine.primaryIps[0]}}&nbsp;</span>
+            <span class="value span8 pull-right" data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIps[0]}}&nbsp;</span>
         </div>
     </fieldset>
 
@@ -114,13 +113,6 @@
         </table>
     </fieldset>
 
-    <!--
-    <fieldset>
-        <legend>Networks</legend>
-        <div data-machine-network></div>
-    </fieldset>
-    -->
-
     <fieldset>
         <legend>
             <span data-translate>Tags</span>
@@ -136,22 +128,22 @@
 
         <div>
             <form name="tagForm">
-                <div class="tags container span7" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
-                    <div class="tag" data-ng-show="!o.edit">
-                        <span class="key span3" data-ng-class="{error: o.conflict}">{{o.key}}</span>
-                        <span class="value span4" data-ng-class="{error: o.conflict}">
+                <div class="tags" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
+                    <div class="tag row-fluid" data-ng-show="!o.edit">
+                        <span class="key span5" data-ng-class="{error: o.conflict}">{{o.key}}</span>
+                        <span class="value span5" data-ng-class="{error: o.conflict}">
                             {{o.val}}
                             <span class="icon-trash pull-right delete"
                                   data-ng-click="removeTag(key)"
                                   data-ng-show="!tagsave"
                                   ></span>
-                            <div class="clearfix"></div>
+                            <!-- <div class="clearfix"></div> -->
                         </span>
                     </div>
 
                     <div class="tag editable muted" data-ng-show="o.edit">
-                        <div data-ng-class="{error: o.conflict}" class="controls control-group" >
-                            <input class="input-large tag-key"
+                        <div data-ng-class="{error: o.conflict}" class="row-fluid tag" >
+                            <input class="span5"
                                    type="text"
                                    placeholder="Key"
                                    data-translate="placeholder"
@@ -160,7 +152,7 @@
                                    data-ng-disabled="tagsave">
 
                             <input type="text"
-                                   class="input-large tag-value"
+                                   class="span5"
                                    placeholder="Value"
                                    data-translate="placeholder"
                                    data-ng-model="o.val"
@@ -172,13 +164,13 @@
                                   data-ng-show="key != tagnr && !tagsave">
                             </span>
                         </div>
-                        <div class="clearfix"></div>
+                        <!-- <div class="clearfix"></div> -->
                     </div>
 
-                    <div class="clearfix"></div>
+                    <!-- <div class="clearfix"></div> -->
                 </div>
 
-                <div class="tags container span7">
+                <div class="tags row-fluid">
                     <button class="btn btn-joyent-blue pull-right"
                             data-ng-click="clickSaveTags(machine.id)"
                             data-translate
@@ -244,7 +236,6 @@
 
     <div class="clearfix"></div>
 </div>
-
 <div class="span4 pull-right" style="margin-top:40px">
     <div class="well well-small shadow">
 	<div class="row-fluid">
@@ -316,8 +307,7 @@
     </div>
     <div class="clearfix"></div>
 </div>
-<div class="clearfix"></div>
-</div>
+
 </div>
 <div class="clearfix"></div>
 </div>

@@ -67,7 +67,7 @@ Server.prototype.call = function () {
             return;
         }
 
-        self.log.debug('Incoming RPC call', query.name, query.id, id);
+        self.log.debug({queryName: query.name, queryId: query.id, tabId: id},'Incoming RPC call');
 
         if (!self._handlers[query.name]) {
             self.log.warn('Client tried to call unhandled call', query);

@@ -1,6 +1,5 @@
-<div class="container-fluid content-container" data-ng-controller="Machine.IndexController">
+<div data-ng-controller="Machine.IndexController">
     <div class="loading-large" data-ng-show="loading"></div>
-    <div class="container content-container-inner">
         <div class="machines container" data-ng-show="pagedMachines.length || query">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
@@ -22,94 +21,47 @@
 
                 <div class="clearfix"></div>
             </div>
-			
-			<div class="row-fluid">
-            	<div class="list-controls view-type-container span5 pull-right">
-                <div class="sort-control-container btn-group">
-                    <button class="sort-control btn btn-mini" data-ng-show="sortField">
-                        <span data-translate="value">
-                            {{sortField.title}}
-                        </span>
-                        <span class="order-icon">
-                            <i class="icon-arrow-up" data-ng-show="reverse"></i>
-                            <i class="icon-arrow-down" data-ng-show="!reverse"></i>
-                        </span>
-                    </button>
-                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-                        <span class="caret"></span>
-                    </button>
 
-                    <ul class="sort dropdown-menu">
-                        <li class="item" data-ng-repeat="field in sortable">
-                            <a data-ng-click="sortBy(field.value, true)">
-                                <span data-translate="value">
-                                    {{field.title}}
-                                </span>
-                                <span class="order-icon" data-ng-show="sortField.value == field.value">
-                                    <i class="icon-arrow-up" data-ng-show="reverse"></i>
-                                    <i class="icon-arrow-down" data-ng-show="!reverse"></i>
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="row">
+				<div class="span9">
+	                <div data-ng-switch="listType">
+	                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
+	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
+	                </div>
 
-                <button type="submit"
-                        class="btn btn-mini"
-                        data-ng-click="changeListType('normal')"
-                        data-ng-class="{'active': listType == 'normal'}">
-                    <i class="icon-align-justify"></i>
-                </button>
-
-                <button type="submit"
-                        class="btn btn-mini"
-                        data-ng-click="changeListType('alternate')"
-                        data-ng-class="{'active': listType == 'alternate'}">
-                    <i class="icon-th-large"></i>
-                </button>
-                <div class="clearfix"></div>
-            </div>
-			</div>
-            <div class="container span9 text-medium view-type-container-top-fix">
-                <div data-ng-switch="listType">
-                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
-                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
-                </div>
-
-                <div class="pagination pagination-small pagination-centered span8">
-                    <ul>
-                        <li data-ng-class="{disabled: currentPage == 0}">
-                            <a href ng-click="prevPage()" data-translate>« Prev</a>
-                        </li>
-                        <li data-ng-repeat="n in range()"
-                            data-ng-class="{active: n == currentPage}"
-                            data-ng-click="setPage()">
-                            <a href ng-bind="n + 1">1</a>
-                            <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
-                        </li>
-                        <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
-                            <a href ng-click="nextPage()" data-translate>Next »</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="pull-right span3 container view-type-container-top-fix">
-                <button data-ng-click="changeLocation('/instance/create/')"
-                        class="create-instance btn btn-joyent-blue btn-large"
-                        data-translate>Create Instance</button>
-                <div class="clearfix"></div>
-
-                <div class="alert alert-joyent-blue">
-                    <h4 data-translate>Need help?</h4>
-                    <p class="text-medium" data-translate>Help will open in new window</p>
-                    <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
-                        <div class="input-append">
-                            <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
-                            <button type="submit" class="btn" data-translate>Search</button>
-                        </div>
-                    </form>
-                </div>
+	                <div class="pagination pagination-small pagination-centered">
+	                    <ul>
+	                        <li data-ng-class="{disabled: currentPage == 0}">
+	                            <a href ng-click="prevPage()" data-translate>« Prev</a>
+	                        </li>
+	                        <li data-ng-repeat="n in range()"
+	                            data-ng-class="{active: n == currentPage}"
+	                            data-ng-click="setPage()">
+	                            <a href ng-bind="n + 1">1</a>
+	                            <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
+	                        </li>
+	                        <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+	                            <a href ng-click="nextPage()" data-translate>Next »</a>
+	                        </li>
+	                    </ul>
+	                </div>
+				</div>
+				
+	            <div class="pull-right span3">
+	                <button data-ng-click="changeLocation('/instance/create/')"
+	                        class="create-instance btn btn-joyent-blue btn-large"
+	                        data-translate>Create Instance</button>
+		                <div class="alert alert-joyent-blue">
+		                    <h4 data-translate>Need help?</h4>
+		                    <p class="text-medium" data-translate>Help will open in new window</p>
+		                    <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
+		                        <div class="input-append">
+		                            <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
+		                            <button type="submit" class="btn" data-translate>Search</button>
+		                        </div>
+		                    </form>
+		                </div>
+	            </div>
             </div>
         </div>
 
@@ -125,7 +77,5 @@
                 <div class="clearfix"></div>
             </div>
         </div>
-        <div class="clearfix"></div>
-    </div>
 </div>
 

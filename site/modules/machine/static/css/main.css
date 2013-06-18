@@ -6,6 +6,7 @@
 .machines button.create-instance {
     margin-bottom: 10px;
     width: 100%;
+
 }
 
 .item label p.name {
@@ -20,6 +21,19 @@
 
 .item label span.price {
     padding-top: 10px;
+}
+
+.item .state {
+    min-width: 60px;
+}
+
+.status {
+    padding: 5px 10px 5px 10px;
+    min-width: 85px;
+}
+
+.status.label {
+    text-transform: capitalize;
 }
 
 .machine fieldset {
@@ -42,8 +56,9 @@
     margin-top: 10px;
 }
 .delete {
-    margin-top: 5px;
+/*    margin-top: 5px;
     margin-left: 30px
+*/
 }
 
 .tag input.tag-key {
@@ -51,8 +66,8 @@
 }
 
 .tag input.tag-value {
-    margin-left: 10px;
-    width: 240px;
+/*    margin-left: 10px;
+    width: 240px;*/
 }
 
 .label-margin-fix {
@@ -60,7 +75,7 @@
 }
 
 .list-controls {
-    margin-right: 35px;
+    margin-right: 55px;
     margin-bottom: 20px;
 }
 
@@ -82,10 +97,29 @@
     right: 10px;
 }
 
-#network-configuration {
-    display:block;
-}
-
 #network-configuration-accordion-group {
     border:none;
+}
+
+.disabledNetworkSelection {
+    color:#b3b3b3;
+}
+
+.machines-list-header {
+    padding: 5px;
+}
+
+.machine-list-content {
+    padding-top:5px;
+    padding-left:5px;
+}
+
+.provisioning-carousel-inner-box {
+    padding:5px;
+}
+.provisioning-item {
+    padding: 5px;
+}
+.reconfigure-btn {
+    margin-top:10px;
 }

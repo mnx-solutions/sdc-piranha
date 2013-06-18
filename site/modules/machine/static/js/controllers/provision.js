@@ -9,7 +9,6 @@
             'Machine',
             'Dataset',
             'Datacenter',
-            'Network',
             'Package',
             'Account',
             '$dialog',
@@ -17,21 +16,24 @@
             'localization',
             '$q',
             '$$track',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Network, Package, Account, $dialog, $location, localization, $q, $$track) {
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope, {
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
                 });
 
+
+                $scope.account = Account.getAccount();
                 $scope.keys = Account.getKeys();
                 $scope.datacenters = Datacenter.datacenter();
                 $scope.packageTypes = [];
                 $scope.packageType = null;
-                $scope.networks = [];
-                $scope.selectedNetworks = [];
+                //$scope.networks = [];
+                //$scope.selectedNetworks = [];
                 $scope.loading = true;
 
                 $scope.showReConfigure = false;
+                $scope.showFinishConfiguration = false;
 
                 $q.all([
                     $q.when($scope.keys),
@@ -86,6 +88,16 @@
                     return false;
                 }
 
+                /*
+                $scope.selectNetwork = function(id) {
+                    if($scope.selectedNetworks.indexOf(id) > -1) {
+                        $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
+                    } else {
+                        $scope.selectedNetworks.push(id);
+                    }
+                }
+                */
+
                 $scope.clickProvision = function () {
                     function provision() {
                         confirm(localization.translate(
@@ -93,6 +105,8 @@
                             'machine',
                             'Billing will start once this instance is created'
                         ), function () {
+                            // add networks to data
+                            //$scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
                             $scope.retinfo = Machine.provisionMachine($scope.data);
                             $scope.retinfo.done(function(err, job) {
                               var newMachine = job.__read();
@@ -100,7 +114,7 @@
                                     var listMachines = Machine.machine();
                                     $q.when(listMachines, function() {
                                         if(listMachines.length == 1) {
-                                            //$$track.marketo_machine_provision(newMachine);
+                                            $$track.marketo_machine_provision($scope.account);
                                         }
                                     });
                                 }
@@ -153,10 +167,12 @@
 
                 $scope.reconfigure = function () {
                     $scope.showReConfigure = false;
+                    $scope.showFinishConfiguration = false;
                     //$scope.selectedDataset = null;
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
                     $scope.packageType = null;
+                    //$scope.selectedNetworks = [];
 
                     var ds = $scope.data.datacenter;
 					var opsys = $scope.data.opsys;
@@ -167,7 +183,7 @@
 					};
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
-                    ng.element('#finish-configuration').fadeOut('fast');
+                    //ng.element('#network-configuration').fadeOut('fast');
 
                 };
 
@@ -188,6 +204,8 @@
                         } else {
                             $scope.datasetType = dataset.type;
                         }
+
+
 
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
@@ -263,7 +281,9 @@
                 $scope.selectPackage = function (id) {
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
-                        ng.element('#finish-configuration').fadeIn('fast');
+
+                        $scope.showFinishConfiguration = true;
+                        //ng.element('#network-configuration').fadeIn('fast');
                         $scope.selectedPackage = id;
                         $scope.selectedPackageInfo = pkg;
 
@@ -357,11 +377,12 @@
                             $scope.reloading = (--count > 0);
                         });
 
-
+                        /*
                         Network.network(newVal).then(function(networks) {
                             console.log(networks);
                             $scope.networks = networks;
                         });
+                        */
 
                         Package.package({ datacenter: newVal }).then(function (packages) {
                             var packageTypes = [];
