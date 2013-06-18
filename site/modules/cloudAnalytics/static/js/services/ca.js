@@ -207,6 +207,7 @@
 
         _instrumentations.listInstrumentations = function (callback) {
             var self = this;
+            console.log('list instrumentations called');
             var list = $http.get(self.listUrl);
             list.then(function(r) {
                 console.log(r);

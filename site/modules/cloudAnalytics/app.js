@@ -99,7 +99,7 @@ module.exports = function execute(scope, app) {
                                         errors.push('Failed to get instrumentation time from ' + dcname);
                                     }
                                     responseCount++;
-
+                                    console.log('response check',responseCount, Object.keys(dcs).length);
                                     if(responseCount === Object.keys(dcs).length) {
                                         console.log('responding', response, errors)
                                         res.json({
@@ -120,9 +120,10 @@ module.exports = function execute(scope, app) {
                     }
 
                     if(response.time) {
-                        console.log('responding', response, errors)
                         responseCount++;
+                        console.log('response check',responseCount, Object.keys(dcs).length);
                         if(responseCount === Object.keys(dcs).length) {
+                            console.log('responding', response, errors);
                             res.json({
                                 err: errors,
                                 res: response
