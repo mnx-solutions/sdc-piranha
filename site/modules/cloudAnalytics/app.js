@@ -116,14 +116,12 @@ module.exports = function execute(scope, app) {
                         errors.push('Failed to get instrumentation list for ' + dcname);
                     }
 
-                    if(response.time) {
-                        if(responseCount === Object.keys(dcs).length) {
-                            res.json({
-                                err: errors,
-                                res: response
-                            });
-                            return;
-                        }
+                    if(responseCount === Object.keys(dcs).length) {
+                        res.json({
+                            err: errors,
+                            res: response
+                        });
+                        return;
                     }
 
                 });
