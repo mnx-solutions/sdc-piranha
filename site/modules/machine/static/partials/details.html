@@ -24,7 +24,7 @@
     <machine-status machine="machine" class="pull-right"></machine-status>
 	<div class="clearfix"></div>
 </div>
-<div class="row">
+<div class="row-fluid">
 <div class="machine span8 listing text-medium">
     <fieldset data-ng-show="machine">
         <legend data-translate>Overview</legend>
@@ -193,7 +193,7 @@
         <p data-ng-show="datasetType != 'smartos' && machine.type != 'smartmachine' " data-translate>
             To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.
         </p>
-		
+
 		<div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="well well-small" data-ng-class="{'loading-medium': isResizing}">
 	        <div class="span2 container arrow-to" data-ng-show="currentPackage">
 				<div>
@@ -212,9 +212,9 @@
 				</div>
 	        </div>
 
-			<div style="width:250px" data-ng-class="{'pull-right': currentPackage}">
+			<div data-ng-class="{'pull-right': currentPackage}">
 				<h6 class="control-label" data-translate>Resize Instance type</h6>
-	            <select name="resize" ui-select2 data-ng-model="selectedPackageName" style="width:250px">
+	            <select name="resize" ui-select2 data-ng-model="selectedPackageName">
 	                <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
 	                        value="{{package.name}}" class="text-medium">
 	                    Mem: {{package.memory | sizeFormat}}
@@ -231,7 +231,7 @@
 			</div>
 			<div class="clearfix"></div>
 		</div>
-		
+
     </fieldset>
 
     <div class="clearfix"></div>
