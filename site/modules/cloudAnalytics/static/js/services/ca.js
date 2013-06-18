@@ -209,7 +209,7 @@
             var self = this;
             var list = $http.get(self.listUrl);
             list.then(function(r) {
-
+                console.log(r);
                 var errs = r.data.err.join('<br/>');
                 var res = r.data.res;
 
