@@ -62,7 +62,7 @@ module.exports = function execute(scope, app) {
         var errors = [];
         var response = {
             time:null,
-            instrumentations:[]
+            instrumentations:{}
         };
         var responseCount = 0;
         console.log('listing instrumentations');
@@ -76,67 +76,68 @@ module.exports = function execute(scope, app) {
                 });
                 return;
             }
+            var handleDC = function(client, dcname) {
+                console.log('listing instrumentations for', dcname)
+                client.ListInstrumentations(function (err, resp) {
+                    console.log('got instrumentations list ', dcname, err, resp)
+                    if (!err) {
+                        if(resp.length) {
+                            var id = resp[0].id;
+                            for(var iname in resp) {
+                                resp[iname].datacenter = dcname;
+                            }
+                            // poll the most recent value to sync with ca time.
+                            if(!response.time) {
+                                console.log('get instrumentations value for', dcname)
+                                client.GetInstrumentationValue(+id, {}, function(err2, value) {
+                                    console.log('got instrumentations value for', dcname)
+                                    if(!err2) {
+                                        response.time = value.start_time;
+                                        response.instrumentations[dcname] = resp;
+                                    } else {
+                                        req.log.warn(err2);
+                                        errors.push('Failed to get instrumentation time from ' + dcname);
+                                    }
+                                    responseCount++;
+
+                                    if(responseCount === Object.keys(dcs).length) {
+                                        console.log('responding', response, errors)
+                                        res.json({
+                                            err: errors,
+                                            res:response
+                                        });
+                                        return;
+                                    }
+                                });
+                            } else {
+                                response.instrumentations[dcname] = resp;
+                            }
+                        }
+
+                    } else {
+                        req.log.warn(err);
+                        errors.push('Failed to get instrumentation list for ' + dcname);
+                    }
+
+                    if(response.time) {
+                        console.log('responding', response, errors)
+                        responseCount++;
+                        if(responseCount === Object.keys(dcs).length) {
+                            res.json({
+                                err: errors,
+                                res: response
+                            });
+                            return;
+                        }
+                    }
+
+                });
+            }
             for(var dcname in dcs) {
 
                 var dcClient = client.separate(dcname);
                 console.log('using dcname', dcname);
-                (function(client, dcname) {
-                    console.log('listing instrumentations for', dcname)
-                    client.ListInstrumentations(function (err, resp) {
-                        console.log('got instrumentations list ', err, resp)
-                        if (!err) {
-                            if(resp.length) {
-                                var id = resp[0].id;
-                                for(var iname in resp) {
-                                    resp[iname].datacenter = dcname;
-                                }
-                                // poll the most recent value to sync with ca time.
-                                if(!response.time) {
-                                    console.log('get instrumentations value for', dcname)
-                                    client.GetInstrumentationValue(+id, {}, function(err2, value) {
-                                        console.log('got instrumentations value for', dcname)
-                                        if(!err2) {
-                                            response.time = value.start_time;
-                                            response.instrumentations = response.instrumentations.concat(resp);
-                                        } else {
-                                            req.log.warn(err2);
-                                            errors.push('Failed to get instrumentation time from ' + dcname);
-                                        }
-                                        responseCount++;
-
-                                        if(responseCount === Object.keys(dcs).length) {
-                                            console.log('responding', response, errors)
-                                            res.json({
-                                                err: errors,
-                                                res:response
-                                            });
-                                            return;
-                                        }
-                                    });
-                                } else {
-                                    response.instrumentations = response.instrumentations.concat(resp);
-                                }
-                            }
-
-                        } else {
-                            req.log.warn(err);
-                            errors.push('Failed to get instrumentation list for ' + dcname);
-                        }
-
-                        if(response.time) {
-                            console.log('responding', response, errors)
-                            responseCount++;
-                            if(responseCount === Object.keys(dcs).length) {
-                                res.json({
-                                    err: errors,
-                                    res: response
-                                });
-                                return;
-                            }
-                        }
-
-                    });
-                })(dcClient, dcname)
+                handleDC(dcClient, dcname);
             }
         })
 

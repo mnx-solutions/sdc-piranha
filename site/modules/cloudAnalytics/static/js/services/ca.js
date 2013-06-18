@@ -571,9 +571,9 @@
         service.prototype.listAllInstrumentations = function(cb) {
             var self = this;
             ca.instrumentations.listInstrumentations(function(err, time, rawInstrs){
-
+                console.log(arguments);
                 var count = rawInstrs.length;
-                if(!rawInstrs.length) {
+                if(!Object.keys(rawInstrs).length) {
                     cb(err, time, rawInstrs);
                     return;
                 }
@@ -582,32 +582,33 @@
                 if(err) {
                     errors.push(err);
                 }
-                for(var i in rawInstrs) {
-                    var rawInst = rawInstrs[i];
+                for(var dc in rawInstrs) {
+                    var rawInstrsList = rawInstrs[dc]
+                    for(var i in rawInstrsList) {
+                        var rawInst = rawInstrsList[i];
 
-                    if(!ca.options.last_poll_time){
-                        ca.options.last_poll_time = time;
-                    }
-                    self.createInstrumentation({
-                        init: rawInst,
-                        pollinstart: time
-                    }, function (err2, inst) {
-                        count--;
-                        if(err2) {
-                            errors.push(err2);
-                        } else {
-                            instrumentations.push(inst);
+                        if(!ca.options.last_poll_time){
+                            ca.options.last_poll_time = time;
                         }
-
-                        if(!count) {
-                            if(!errors.length) {
-                                errors = null;
+                        self.createInstrumentation({
+                            init: rawInst,
+                            pollinstart: time
+                        }, function (err2, inst) {
+                            count--;
+                            if(err2) {
+                                errors.push(err2);
+                            } else {
+                                instrumentations.push(inst);
                             }
-                            cb(errors, time, instrumentations);
-                        }
-                    })
 
-
+                            if(!count) {
+                                if(!errors.length) {
+                                    errors = null;
+                                }
+                                cb(errors, time, instrumentations);
+                            }
+                        })
+                    }
                 }
 
             });
