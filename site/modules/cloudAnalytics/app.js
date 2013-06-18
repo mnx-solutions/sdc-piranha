@@ -65,9 +65,9 @@ module.exports = function execute(scope, app) {
             instrumentations:[]
         };
         var responseCount = 0;
-
+        console.log('listing instrumentations')
         client.listDatacenters(function(dcerr, dcs) {
-
+            console.log('list dcs', dcs)
             if(dcerr) {
                 req.log.warn(dcerr);
                 res.json({
@@ -79,10 +79,11 @@ module.exports = function execute(scope, app) {
             for(var dcname in dcs) {
 
                 var dcClient = client.separate(dcname);
-
+                console.log('using dcname ', dcname)
                 (function(client, dcname) {
+                    console.log('listing instrumentations for', dcname)
                     client.ListInstrumentations(function (err, resp) {
-
+                        console.log('got instrumentations list ', err, resp)
                         if (!err) {
                             if(resp.length) {
                                 var id = resp[0].id;
@@ -91,7 +92,9 @@ module.exports = function execute(scope, app) {
                                 }
                                 // poll the most recent value to sync with ca time.
                                 if(!response.time) {
+                                    console.log('get instrumentations value for', dcname)
                                     client.GetInstrumentationValue(+id, {}, function(err2, value) {
+                                        console.log('got instrumentations value for', dcname)
                                         if(!err2) {
                                             response.time = value.start_time;
                                             response.instrumentations = response.instrumentations.concat(resp);
@@ -102,6 +105,7 @@ module.exports = function execute(scope, app) {
                                         responseCount++;
 
                                         if(responseCount === Object.keys(dcs).length) {
+                                            console.log('responding', response, errors)
                                             res.json({
                                                 err: errors,
                                                 res:response
@@ -120,7 +124,7 @@ module.exports = function execute(scope, app) {
                         }
 
                         if(response.time) {
-
+                            console.log('responding', response, errors)
                             responseCount++;
                             if(responseCount === Object.keys(dcs).length) {
                                 res.json({
