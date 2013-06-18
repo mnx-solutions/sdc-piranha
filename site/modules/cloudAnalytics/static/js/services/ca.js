@@ -207,10 +207,8 @@
 
         _instrumentations.listInstrumentations = function (callback) {
             var self = this;
-            console.log('list instrumentations called');
             var list = $http.get(self.listUrl);
             list.then(function(r) {
-                console.log(r);
                 var errs = r.data.err.join('<br/>');
                 var res = r.data.res;
 
@@ -572,7 +570,6 @@
         service.prototype.listAllInstrumentations = function(cb) {
             var self = this;
             ca.instrumentations.listInstrumentations(function(err, time, rawInstrs){
-                console.log(arguments);
                 var count = 0;
 
                 for(var dc in rawInstrs) {
