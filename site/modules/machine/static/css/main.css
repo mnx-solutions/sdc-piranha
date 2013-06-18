@@ -113,3 +113,13 @@
     padding-top:5px;
     padding-left:5px;
 }
+
+.provisioning-carousel-inner-box {
+    padding:5px;
+}
+.provisioning-item {
+    padding: 5px;
+}
+.reconfigure-btn {
+    margin-top:10px;
+}

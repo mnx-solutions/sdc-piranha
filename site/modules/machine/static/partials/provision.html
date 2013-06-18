@@ -1,293 +1,288 @@
 <div class="container-fluid content-container" data-ng-controller="Machine.ProvisionController">
 	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="container content-container-inner" data-ng-hide="loading">
-        <div class="container" data-ng-show="keys.length">
-            <data-breadcrumb></data-breadcrumb>
-            <data-notification></data-notification>
+        <div class="row-fluid" data-ng-show="keys.length">
+            <div data-breadcrumb></div>
+            <div data-notification></div>
 
             <div class="page-header">
-                <h1 class="pull-left" data-translate>Create Instance</h1>
-				<div class="clearfix"></div>
+                <h1 data-translate>Create Instance</h1>
             </div>
 
-            <div class="span8 container">
-                <div id="myCarousel" class="carousel slide">
-                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of software package or system do you need?"></span>-->
-                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of instance do you need?"></span>-->
-                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="How many CPU, how much memory or disk do you need?"></span>-->
-                    <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="Here are the specs of the instance you're about to launch. Click 'Launch Instance' if okay?"></span>-->
+            <div class="row-fluid">
+                <div class="span8">
+                    <div id="myCarousel" class="carousel slide">
+                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of software package or system do you need?"></span>-->
+                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of instance do you need?"></span>-->
+                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="How many CPU, how much memory or disk do you need?"></span>-->
+                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="Here are the specs of the instance you're about to launch. Click 'Launch Instance' if okay?"></span>-->
 
-                    <div class="carousel-inner item-list-container" data-ng-class="{'loading-medium':reloading}">
-						<div class="active item">
-                            <div class="item header">
-                                <div class="btn-group tooltip-hover" style="width:150px"
-                                     data-html="true"
-                                     data-toggle="tooltip"
-                                     data-placement="right"
-                                     data-original-title="Filter by zone">
-                                    <button class="btn" data-ng-show="data.datacenter">{{data.datacenter}}</button>
-                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li data-ng-repeat="datacenter in datacenters">
-                                            <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
-                                        </li>
-                                    </ul>
+                        <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
+                            <div class="active item">
+                                <div class="item provisioning-item  header row-fluid">
+                                    <div class="btn-group tooltip-hover span3"
+                                         data-html="true"
+                                         data-toggle="tooltip"
+                                         data-placement="right"
+                                         data-original-title="Filter by zone">
+                                        <button class="btn" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="datacenter in datacenters">
+                                                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="btn-group tooltip-hover span2 hidden-phone"
+                                         data-html="true"
+                                         data-toggle="tooltip"
+                                         data-placement="right"
+                                         data-original-title="Filter by operating system">
+                                        <button class="btn" data-ng-show="data.opsys">{{data.opsys}}</button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="opsys in operating_systems">
+                                                <a data-ng-click="selectOpsys(opsys)">{{opsys}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="span3 offset4">
+                                        <form>
+                                            <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                        </form>
+                                    </div>
                                 </div>
+                                <div class="fixed-position-fix"></div>
+                                <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS">
+                                    <div class="span1">
+                                        <input class="pull-left"
+                                               type="radio"
+                                               id="dataset-{{dataset.id}}"
+                                               name="dataset"
+                                               value="{{selectedVersions[dataset.name].id || dataset.id}}"
+                                               data-ng-checked="selectedDataset.id == dataset.id"
+                                               data-ng-click="selectDataset(selectedDataset)"
+                                               data-ng-model="selectedDataset"  />
+                                    </div>
+                                    <div class="span10">
+                                        <label for="dataset-{{dataset.id}}" class="span12 text-medium">
+                                            <p class="name">
+                                                {{selectedVersions[dataset.name].name || dataset.name}}
+                                            </p>
 
-                                <div class="btn-group tooltip-hover"
-                                     data-html="true"
-                                     data-toggle="tooltip"
-                                     data-placement="right"
-                                     data-original-title="Filter by operating system">
-                                    <button class="btn" data-ng-show="data.opsys">{{data.opsys}}</button>
-                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li data-ng-repeat="opsys in operating_systems">
-                                            <a data-ng-click="selectOpsys(opsys)">{{opsys}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                            <span class="text-small">
+                                                {{selectedVersions[dataset.name].description || dataset.description}}
+                                            </span>
 
-                                <div class="pull-right">
-                                    <form class="navbar-form pull-left">
-                                        <input type="text" class="span3" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
-                                    </form>
-                                </div>
-								<div class="clearfix"></div>
-							</div>
-							<div class="fixed-position-fix"></div>
-							<div class="item" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS">
-								<input class="pull-left"
-                                       type="radio"
-                                       id="dataset-{{dataset.id}}"
-                                       name="dataset"
-                                       value="{{selectedVersions[dataset.name].id || dataset.id}}"
-                                       data-ng-checked="selectedDataset.id == dataset.id"
-                                       data-ng-click="selectDataset(selectedDataset)"
-                                       data-ng-model="selectedDataset"  />
+                                            <div class="text-small image-container" data-ng-show="manyVersions[dataset.name]">
+                                                <span class="span3 label-margin-fix">
+                                                    <strong data-translate>Choose image version</strong>
+                                                </span>
 
-								<label for="dataset-{{dataset.id}}" class="span6 text-medium">
-									<p class="name">
-                                        {{selectedVersions[dataset.name].name || dataset.name}}
-                                    </p>
+                                                <div class="btn-group pull-left">
+                                                    <button class="btn btn-mini" data-ng-show="selectedVersions[dataset.name]">
+                                                        {{selectedVersions[dataset.name].version}}
+                                                    </button>
 
-									<span class="text-small">
-                                        {{selectedVersions[dataset.name].description || dataset.description}}
+                                                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                                                        <span class="caret"></span>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu">
+                                                        <li data-ng-repeat="version in versions[dataset.name]">
+                                                            <a data-ng-click="selectVersion(dataset.name, version)">
+                                                                {{version.version}}
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                            <div class="image-container text-small" data-ng-hide="manyVersions[dataset.name]">
+                                                <span class="span3 label-margin-fix">
+                                                    <strong data-translate>Image version</strong>
+                                                    {{dataset.version}}
+                                                </span>
+                                            </div>
+                                        </label>
+                                    </div>
+
+                                    <span class="span1 item-select pointer" data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
+                                        &raquo;
                                     </span>
 
-                                    <div class="text-small image-container" data-ng-show="manyVersions[dataset.name]">
-                                        <span class="span2 label-margin-fix">
-                                            <strong data-translate>Choose image version</strong>
-                                        </span>
+                                </div>
+                            </div>
 
-                                        <div class="btn-group pull-left">
-                                            <button class="btn btn-mini" data-ng-show="selectedVersions[dataset.name]">
-                                                {{selectedVersions[dataset.name].version}}
-                                            </button>
+                            <div class="item">
+                                <div class="item provisioning-item header row-fluid">
+                                    <div class="btn-group pull-left tooltip-hover span3"
+                                         data-toggle="tooltip"
+                                         data-placement="right"
+                                         data-original-title="Filter by instance type">
+                                        <button class="btn" data-translate data-ng-show="!packageType">Package Types</button>
+                                        <button class="btn" data-ng-show="packageType">{{packageType}}</button>
 
-                                            <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
-                                                <span class="caret"></span>
-                                            </button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
 
-                                            <ul class="dropdown-menu">
-                                                <li data-ng-repeat="version in versions[dataset.name]">
-                                                    <a data-ng-click="selectVersion(dataset.name, version)">
-                                                        {{version.version}}
-                                                    </a>
-                                                </li>
-                                            </ul>
+                                        <ul class="dropdown-menu">
+                                            <li data-ng-repeat="package in packageTypes">
+                                                <a data-ng-click="selectPackageType(package)">{{package}}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="span3 offset6">
+                                        <form>
+                                            <input type="text"
+                                                   class="span12"
+                                                   placeholder="Search image"
+                                                   data-ng-model="searchPackages"
+                                                   data-translate="placeholder" />
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <div class="item provisioning-item pointer row-fluid"
+                                     data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages">
+                                    <div class="span12">
+                                        <div class="span1">
+                                            <input class="pull-left"
+                                                   type="radio"
+                                                   name="tmp"
+                                                   id="package-{{package.id}}"
+                                                   value="{{package.id}}"
+                                                   data-ng-checked="selectedPackage.id == package.id"
+                                                   data-ng-click="selectPackage(package.id)"
+                                                   data-ng-model="selectedPackage"/>
+                                        </div>
+
+                                        <label for="package-{{package.id}}">
+                                            <span class="span9 text-medium">
+                                                <p class="name">
+                                                    {{package.short_name}}
+                                                </p>
+
+                                                <span class="text-small">
+                                                    {{package.description}}
+                                                </span>
+                                            </span>
+
+                                            <span class="price span2 text-medium align-right">
+                                                <p class="size b">${{package.full_price || package.price}}</p>
+                                                <p class="text-small text-gray" data-translate>per hour</p>
+                                            </span>
+
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="span3">
+                    <div data-ng-show="showReConfigure" class="alert alert-joyent-gray row-fluid" id="pricing" style="padding-bottom:10px !important;">
+
+                        <h4 data-translate>Selected configuration</h4>
+                        <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
+                        <br/>
+
+                        <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
+                            <div class="row-fluid">
+                                <b style="width:90px;display:inline-block" data-translate>Datacenter</b> {{data.datacenter}}<br/>
+                                <b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
+                                <b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
+                                <span data-ng-show="selectedPackageInfo.vcpus">
+                                    <b style="width:90px;display:inline-block" data-translate>vCPUs</b> {{selectedPackageInfo.vcpus}}<span data-ng-show="selectedPackageInfo.type == 'smartos'"> and bursting</span><br />
+                                </span>
+                            </div>
+
+                            <div class="row-fluid price-container">
+                                <div class="span6 text-center">
+                                    <h5 data-translate>Hourly $</h5>
+                                    <b style="font-size:26px">{{selectedPackageInfo.full_price || selectedPackageInfo.price}}</b>
+                                    <!-- <span data-translate>USD</span><br/> -->
+                                </div>
+                                <div class="span6 text-center">
+                                    <h5 data-translate>Est. Monthly $</h5>
+                                    <b style="font-size:26px">
+                                    {{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <a class="btn pull-left reconfigure-btn" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">&#171; Change Configuration</a>
+                        <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
+                        </div>
+
+
+
+                        <!--
+                        <div id="network-configuration" class="none alert alert-joyent-blue span3">
+                            <div class="accordion" id="networkAccordion">
+                                <div class="accordion-group" id="network-configuration-accordion-group">
+                                    <div class="accordion-heading">
+                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
+                                            <h4>Configure networks +</h4>
+                                        </a>
+                                    </div>
+                                    <div id="collapseOne" class="accordion-body collapse">
+                                        <div class="accordion-inner">
+                                            <span data-ng-repeat="network in networks">
+                                                <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
+                                                    <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                                            </span>
                                         </div>
                                     </div>
-
-                                    <div class="image-container text-small" data-ng-hide="manyVersions[dataset.name]">
-                                        <span class="span5 label-margin-fix">
-                                            <strong data-translate>Image version</strong>
-                                            {{dataset.version}}
-                                        </span>
-                                    </div>
-								</label>
-
-								<span class="span1 item-select pointer" data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
-									&raquo;
-								</span>
-
-								<div class="clearfix"></div>
-							</div>
-							<div class="clearfix"></div>
+                                </div>
+                                Only 2 networks allowed. By default machines have one public and one private network.
+                            </div>
                         </div>
-                        
-						<div class="item">
-							<div class="item header">
-                                <div class="btn-group pull-left tooltip-hover"
-                                     data-toggle="tooltip"
-                                     data-placement="right"
-                                     data-original-title="Filter by instance type">
-                                    <button class="btn" data-translate data-ng-show="!packageType">Package Types</button>
-                                    <button class="btn" data-ng-show="packageType">{{packageType}}</button>
+                        -->
 
-                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                        <span class="caret"></span>
-                                    </button>
+                    </div>
+                    <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue row-fluid">
+                        <form name="provisionForm">
+                            <h4 data-translate>Name your instance.</h4>
+                            <span data-translate>This is optional.</span>
+                            <div class="error"
+                                 data-ng-show="provisionForm.machineName.$error.machineName"
+                                 data-translate>
+                                Invalid machine name
+                            </div>
 
-                                    <ul class="dropdown-menu">
-                                        <li data-ng-repeat="package in packageTypes">
-                                            <a data-ng-click="selectPackageType(package)">{{package}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                            <div class="error"
+                                 data-ng-show="provisionForm.machineName.$error.machineUnique"
+                                 data-translate>
+                                Machine name is already in use
+                            </div>
+                            <br />
+                            <input name="machineName"
+                                   type="text"
+                                   placeholder="Name of your instance"
+                                   data-ng-model="data.name"
+                                   data-machine-name
+                                   data-machine-unique />
 
-                                <div class="pull-right">
-                                    <form class="navbar-form pull-left">
-                                        <input type="text"
-                                               class="span3"
-                                               placeholder="Search image"
-                                               data-ng-model="searchPackages"
-                                               data-translate="placeholder" />
-                                    </form>
-                                </div>
-
-								<div class="clearfix"></div>
-							</div>
-
-							<div class="fixed-position-fix"></div>
-							<div class="item pointer"
-                                 data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages">
-								<input class="pull-left"
-                                       type="radio"
-                                       name="tmp"
-                                       id="package-{{package.id}}"
-                                       value="{{package.id}}"
-                                       data-ng-checked="selectedPackage.id == package.id"
-                                       data-ng-click="selectPackage(package.id)"
-                                       data-ng-model="selectedPackage"/>
-
-								<label for="package-{{package.id}}">
-									<span class="span5 text-medium">
-                                        <p class="name">
-                                            {{package.short_name}}
-                                        </p>
-
-                                        <span class="text-small">
-                                            {{package.description}}
-                                        </span>
-									</span>
-
-									<span class="price span2 text-medium align-right">
-										<p class="size b">${{package.full_price || package.price}}</p>
-										<p class="text-small text-gray" data-translate>per hour</p>
-									</span>
-									
-								</label>
-
-								<div class="clearfix"></div>
-							</div>
-                        </div> 
+                            <button class="btn btn-joyent-blue"
+                                    data-ng-disabled="provisionForm.$invalid"
+                                    data-ng-click="clickProvision()"
+                                    data-translate>Create instance</button>
+                        </form>
                     </div>
                 </div>
             </div>
-
-            <div class="span4 pull-right">
-                <div data-ng-show="showReConfigure" class="alert alert-joyent-gray span3" id="pricing" style="padding-bottom:10px !important;">
-
-                    <h4 data-translate>Selected configuration</h4>
-                    <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
-                    <br/>
-
-                    <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
-						<div class="row-fluid">
-                            <b style="width:90px;display:inline-block" data-translate>Datacenter</b> {{data.datacenter}}<br/>
-                        	<b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
-                        	<b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
-                            <span data-ng-show="selectedPackageInfo.vcpus">
-                                <b style="width:90px;display:inline-block" data-translate>vCPUs</b> {{selectedPackageInfo.vcpus}}<span data-ng-show="selectedPackageInfo.type == 'smartos'"> and bursting</span><br />
-                            </span>
-						</div>
-
-                        <div class="row-fluid price-container">
-                            <div class="span6 text-center">
-                                <h5 data-translate>Hourly $</h5>
-                                <b style="font-size:26px">{{selectedPackageInfo.full_price || selectedPackageInfo.price}}</b>
-                                <!-- <span data-translate>USD</span><br/> -->
-                            </div>
-                            <div class="span6 text-center">
-                                <h5 data-translate>Est. Monthly $</h5>
-                                <b style="font-size:26px">
-                                {{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-
-
-					<div class="clearfix"></div><br />
-                    <a class="btn pull-left" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">&#171; Change Configuration</a>
-					<div class="clearfix"></div>
-                    <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
-						<div class="clearfix"></div>
-                    </div>
-					
-					<div class="clearfix"></div>
-                </div>
-
-                <!--
-                <div id="network-configuration" class="none alert alert-joyent-blue span3">
-                    <div class="accordion" id="networkAccordion">
-                        <div class="accordion-group" id="network-configuration-accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
-                                    <h4>Configure networks +</h4>
-                                </a>
-                            </div>
-                            <div id="collapseOne" class="accordion-body collapse">
-                                <div class="accordion-inner">
-                                    <span data-ng-repeat="network in networks">
-                                        <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
-                                            <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        Only 2 networks allowed. By default machines have one public and one private network.
-                    </div>
-                </div>
-                -->
-
-				<div id="finish-configuration" class="none alert alert-joyent-blue span3">
-                    <form name="provisionForm">
-                        <h4 data-translate>Name your instance.</h4>
-						<span data-translate>This is optional.</span>
-                        <div class="error"
-                             data-ng-show="provisionForm.machineName.$error.machineName"
-                             data-translate>
-                            Invalid machine name
-                        </div>
-
-                        <div class="error"
-                             data-ng-show="provisionForm.machineName.$error.machineUnique"
-                             data-translate>
-                            Machine name is already in use
-                        </div>
-
-                        <input name="machineName"
-                               type="text"
-                               placeholder="Name of your instance"
-                               data-ng-model="data.name"
-                               data-machine-name
-                               data-machine-unique />
-
-                        <button class="btn btn-joyent-blue"
-                                data-ng-disabled="provisionForm.$invalid"
-                                data-ng-click="clickProvision()"
-                                data-translate>Create instance</button>
-                    </form>
-                </div>
-
-            </div>
-            <div class="clearfix"></div>
         </div>
 
         <div class="container" data-ng-show="keys.length == 0">
@@ -297,10 +292,8 @@
                     <div>I see you have no SSH keys configured.</div>
                 </div>
                 <a class="btn btn-joyent-blue pull-right alert-global" href="#!/account/ssh" data-translate>Add a SSH key</a>
-                <div class="clearfix"></div>
             </div>
         </div>
 
-        <div class="clearfix"></div>
     </div>
 </div>

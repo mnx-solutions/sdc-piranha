@@ -33,6 +33,7 @@
                 $scope.loading = true;
 
                 $scope.showReConfigure = false;
+                $scope.showFinishConfiguration = false;
 
                 $q.all([
                     $q.when($scope.keys),
@@ -166,6 +167,7 @@
 
                 $scope.reconfigure = function () {
                     $scope.showReConfigure = false;
+                    $scope.showFinishConfiguration = false;
                     //$scope.selectedDataset = null;
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
@@ -181,7 +183,6 @@
 					};
 
                     ng.element('.carousel-inner').scrollTop($scope.previousPos);
-                    ng.element('#finish-configuration').fadeOut('fast');
                     //ng.element('#network-configuration').fadeOut('fast');
 
                 };
@@ -203,6 +204,8 @@
                         } else {
                             $scope.datasetType = dataset.type;
                         }
+
+
 
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
@@ -278,7 +281,8 @@
                 $scope.selectPackage = function (id) {
                     $scope.data.name = null;
                     Package.package({ id: id, datacenter: $scope.data.datacenter }).then(function (pkg) {
-                        ng.element('#finish-configuration').fadeIn('fast');
+
+                        $scope.showFinishConfiguration = true;
                         //ng.element('#network-configuration').fadeIn('fast');
                         $scope.selectedPackage = id;
                         $scope.selectedPackageInfo = pkg;

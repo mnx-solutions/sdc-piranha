@@ -320,7 +320,7 @@ th {
 	border:1px solid #ddd;
 	border-top:none;
     font-size:12px;
-/*	padding:5px 5px 0px 0px;*/
+    /*padding: 5px;*/
 }
 .item-list-container .item.header {
 	overflow:visible;
