@@ -65,9 +65,9 @@ module.exports = function execute(scope, app) {
             instrumentations:[]
         };
         var responseCount = 0;
-        console.log('listing instrumentations')
+        console.log('listing instrumentations');
         client.listDatacenters(function(dcerr, dcs) {
-            console.log('list dcs', dcs)
+            console.log('list dcs', dcs);
             if(dcerr) {
                 req.log.warn(dcerr);
                 res.json({
@@ -79,7 +79,7 @@ module.exports = function execute(scope, app) {
             for(var dcname in dcs) {
 
                 var dcClient = client.separate(dcname);
-                console.log('using dcname ', dcname)
+                console.log('using dcname', dcname);
                 (function(client, dcname) {
                     console.log('listing instrumentations for', dcname)
                     client.ListInstrumentations(function (err, resp) {
