@@ -1,6 +1,6 @@
 <div class="item-list-container">
 
-    <div class="item header row-fluid">
+    <div class="item header row-fluid machine-list-item">
                         <span class="span3 text-medium sortable"
                               data-ng-click="sortBy('label')"
                               data-ng-switch on="sortIcon.label">
@@ -42,7 +42,7 @@
         <span class="span3 text-medium crop machine-list-content">
             <a href="#!/instance/details/{{machine.id}}">{{machine.label}}</a>
         </span>
-
+r
         <span class="span2 text-medium machine-list-content">{{machine.datacenter}}</span>
             <span class="span2 text-medium crop machine-list-content" alt="{{machine.created | fromNow}}"
                   title="{{machine.created | fromNow}}">
@@ -57,7 +57,7 @@
                 <span class="span2 text-medium crop machine-list-content">{{machine.ips[0]}}</span>
             </span>
 
-            <span class="pull-right state pointer" data-ng-click="toggleMachine(machine.id)">
+            <span class="pull-right machine-list-state state pointer" data-ng-click="toggleMachine(machine.id)">
                 <div data-machine-status machine="machine"></div>
             </span>
         <div class="clearfix"></div>

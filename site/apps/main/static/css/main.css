@@ -316,13 +316,12 @@ th {
 	border-top:1px solid #ddd;
 }
 
-.item-list-container {
-
+.item {
+    border:1px solid #ddd;
+    border-top:none;
+    font-size:12px;
 }
 .provisioning-item {
-	border:1px solid #ddd;
-	border-top:none;
-    font-size:12px;
     padding-top: 5px;
 }
 .item-list-container .item.header {

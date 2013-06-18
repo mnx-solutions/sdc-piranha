@@ -113,6 +113,10 @@
     padding-top:5px;
     padding-left:5px;
 }
+.machine-list-state {
+    padding-right:5px;
+    padding-top:2px;
+}
 
 .provisioning-carousel-inner-box {
     /*padding:5px;*/
