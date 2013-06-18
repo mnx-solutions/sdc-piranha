@@ -1,15 +1,14 @@
 'use strict';
 
 (function (app, ng, $) {
-     app.directive('graph', function () {
+     app.directive('graph', function (notification, ca) {
         return {
             restrict: "E",
             replace: true,
             scope: {
                 options:'='
             },
-            link: function ($scope, ca){
-
+            link: function ($scope){
                 $scope.instrumentations = $scope.options.instrumentations;
                 $scope.initCa = true;
                 if ($scope.$parent.ca) {
@@ -60,22 +59,26 @@
                             },
                             range: $scope.$parent.currentRange,
                             endtime: heatmaptime
-                        }, function(values) {
-                            if(values && values[0], values[0].present && Object.keys(values[0].present)) {
-                                var details = '';
-                                for(var name in values[0].present) {
-                                    details += name + ':' + values[0].present[name] + '<br/>';
-                                }
-                                $scope.details = details;
-                                if(details != '') {
-                                    $(clickpoint).css({'top': e.offsetY, left: e.offsetX});
-                                    $(clickpoint).popover('show');
-                                } else {
-                                    $(clickpoint).popover('hide');
-                                }
-
+                        }, function(err, values) {
+                            if(err) {
+                                notification.push( 'ca', { type: 'error' }, err);
                             } else {
-                                $scope.details = null;
+                                if(values && values[0] && values[0].present && Object.keys(values[0].present)) {
+                                    var details = '';
+                                    for(var name in values[0].present) {
+                                        details += name + ':' + values[0].present[name] + '<br/>';
+                                    }
+                                    $scope.details = details;
+                                    if(details != '') {
+                                        $(clickpoint).css({'top': e.offsetY, left: e.offsetX});
+                                        $(clickpoint).popover('show');
+                                    } else {
+                                        $(clickpoint).popover('hide');
+                                    }
+
+                                } else {
+                                    $scope.details = null;
+                                }
                             }
                         })
                     }
@@ -221,6 +224,7 @@
                 $scope.ready = false;
 
                 function updateGraph() {
+
                     var series = $scope.ca.getSeries(
                         $scope.instrumentations,
                         ticktime
@@ -270,12 +274,12 @@
 
                     if(newVal){
                         if(!ticktime) {
-
                             ticktime = $scope.$parent.endtime;
                             heatmaptime = ticktime -1;
                         }
 
                         if(!$scope.$parent.frozen) {
+
                             if(graph && $scope.ca.polltime() > ticktime && !$scope.initCa) {
                                 updateGraph();
                                 ticktime++;

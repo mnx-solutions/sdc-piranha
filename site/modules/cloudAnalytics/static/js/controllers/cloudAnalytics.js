@@ -3,9 +3,9 @@
 (function (app, ng) {
     app.controller(
             'cloudController',
-            ['$scope', 'ca', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            ['$scope', 'ca', 'notification', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
 
-function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
+function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
     var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
 
@@ -66,31 +66,28 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
             $scope.metrics = $scope.conf.metrics;
             $scope.fields = $scope.conf.fields;
 
-            $scope.ca.listAllInstrumentations(function(err, time, insts) {
-                if(err) {
-                    // TODO: handle errors
-                    console.log(err);
-                } else {
-                    if(!$scope.endtime && time) {
+            $scope.ca.listAllInstrumentations(function(listErr, time, insts) {
 
-                        $scope.endtime = time;
-                        tick();
-                    }
+                if(!$scope.endtime && time) {
+                    $scope.endtime = time;
+                    tick();
+                }
 
-                    for(var i in insts) {
-                        var inst = insts[i];
-                        if(!err) {
-                            $scope.graphs.push({
-                                instrumentations: [inst],
-                                title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
-                            });
-                        }
+                if(listErr) {
+                    notification.push( 'ca', { type: 'error' }, listErr);
+                }
 
-                    }
-
+                for(var i in insts) {
+                    var inst = insts[i];
+                    $scope.graphs.push({
+                        instrumentations: [inst],
+                        title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
+                    });
                 }
 
             });
+        } else {
+            notification.push( 'ca', { type: 'error' }, err);
         }
 
     });
@@ -104,7 +101,10 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
             }
         }
         if(!datacenter) {
-            //TODO: error handling;
+            notification.push( 'ca', { type: 'error' },
+                'no datacenter specified'
+            );
+            return;
         }
         /* pre-defined default intrumentations */
         var oo = [
@@ -181,6 +181,20 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
                           instrumentations: inst,
                           title: ot[index]
                       });
+                  } else {
+                      var errors = '';
+                      var datacenter = null;
+                      for(var e in errs) {
+                          var err = errs[e];
+                          errors += err.message ? (err.message + ' ') : 'error ';
+                          if(err.datacenter) {
+                              datacenter = err.datacenter;
+                          }
+                      }
+
+                      notification.push( 'ca', { type: 'error' },
+                          datacenter ? datacenter + ': ' + errors : errors
+                      );
                   }
               });
             })(opt);
@@ -197,7 +211,6 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
 
 
     $scope.createInstrumentation = function(){
-
         var decomp = [];
         if($scope.current.decomposition.primary)
         decomp.push($scope.current.decomposition.primary);
@@ -223,7 +236,6 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
             datacenter: datacenter
         }
         $scope.ca.createInstrumentations([ options ], function(errs, instrumentations){
-
             if(!errs.length) {
                 if(!$scope.endtime) {
                     $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
@@ -235,7 +247,19 @@ function ($scope, ca, $routeParams, Machine, $q, instrumentation, $timeout) {
                     title: title
                 });
             } else {
+                var errors = '';
+                var datacenter = null;
+                for(var e in errs) {
+                    var err = errs[e];
+                    errors += err.message ? (err.message + ' ') : 'error ';
+                    if(err.datacenter) {
+                        datacenter = err.datacenter;
+                    }
+                }
 
+                notification.push( 'ca', { type: 'error' },
+                    datacenter ? datacenter + ': ' + errors : errors
+                );
             }
         });
 

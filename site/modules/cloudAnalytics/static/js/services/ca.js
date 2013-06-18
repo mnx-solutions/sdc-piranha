@@ -21,10 +21,12 @@
 
             for(var datacenter in datapoints) {
                 for (var id in datapoints[datacenter]) {
+                    var instrumentation = ca.instrumentations.getInstrumentation(datacenter, id);
+
                     if(datapoints[datacenter][id].err){
                         continue;
                     }
-                    var instrumentation = ca.instrumentations.getInstrumentation(datacenter, id);
+
                     if(datapoints[datacenter][id].blocked) {
                         var previous = this.individual[datacenter][id].ndatapoints || this.ndatapoints;
                         this.individual[datacenter][id].ndatapoints = previous + (difference || 1);
@@ -97,7 +99,7 @@
             var details = $http.post(this.heatmapDetailsUrl + '/' + options.datacenter + '/' + options.id, options);
 
             details.success(function(res) {
-                cb(res);
+                cb(res.err, res.res);
             })
 
         }
@@ -206,12 +208,15 @@
         _instrumentations.listInstrumentations = function (callback) {
             var self = this;
             var list = $http.get(self.listUrl);
-
             list.then(function(r) {
-                if(typeof(r.data.time) != 'undefined' && typeof(r.data.instrumentations) != 'undefined') {
-                    callback(null, r.data.time, r.data.instrumentations);
+
+                var errs = r.data.err.join('<br/>');
+                var res = r.data.res;
+
+                if(typeof(res.time) != 'undefined' && typeof(res.instrumentations) != 'undefined') {
+                    callback(errs, res.time, res.instrumentations);
                 } else {
-                    callback('error retrieving list of instrumentations');
+                    callback(errs);
                 }
             });
         }
@@ -236,6 +241,7 @@
                 });
 
                 var times = series._timestamps;
+
                 series._timestamps = undefined;
 
                 for(var name in series) {
@@ -245,6 +251,7 @@
                     for(var dp in series[name]) {
 
                         var y = series[name][dp];
+
                         if(heatmap) {
                             y = series[name][dp].ymax || 0;
                         }
@@ -294,13 +301,6 @@
         }
 
 
-
-
-
-
-
-
-
         var _description = {
             help: $http.get('cloudAnalytics/ca/help'),
             conf: $http.get('cloudAnalytics/ca'),
@@ -340,14 +340,15 @@
             }
             var count = 0;
             self.conf.then(function(r){
-                self.confReady = r.data;
+                self.confReady = r.data.res;
                 count++;
                 if(count === 2) {
                     if(!self.helpReady || !self.confReady) {
-                        callback({
-                            message: 'configuration not loaded!'
-                        });
-                        return
+                        callback('configuartion not loaded!');
+                        return;
+                    } else if(r.data.err){
+                        callback(r.data.err)
+                        return;
                     }
 
                     if(!self.confReady.help) {
@@ -454,7 +455,6 @@
             });
         };
 
-
         service.prototype.createInstrumentation  = function(createOpts, cb) {
 
             if(!createOpts.init) {
@@ -484,7 +484,6 @@
                     cb(err, inst)
 
                 } else {
-                    console.log('err', err);
                     cb(err, inst);
                 }
 
@@ -516,6 +515,7 @@
             ca.instrumentations.getHeatmapDetails(opts, cb);
         }
         service.prototype.createInstrumentations = function(createOpts, cb) {
+
             var insts = [];
             var errors = [];
             var self = this;
@@ -569,20 +569,19 @@
         }
 
         service.prototype.listAllInstrumentations = function(cb) {
-
             var self = this;
             ca.instrumentations.listInstrumentations(function(err, time, rawInstrs){
-                if(err) {
-                    cb(err);
-                    return;
-                }
+
                 var count = rawInstrs.length;
                 if(!rawInstrs.length) {
-                    cb(null, time, rawInstrs);
+                    cb(err, time, rawInstrs);
                     return;
                 }
                 var instrumentations = [];
                 var errors = [];
+                if(err) {
+                    errors.push(err);
+                }
                 for(var i in rawInstrs) {
                     var rawInst = rawInstrs[i];
 

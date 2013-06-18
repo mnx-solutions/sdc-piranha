@@ -5,7 +5,6 @@ var instrumentations = {};
 (function (ng, app) {
     app.factory('caInstrumentation', ['$resource', '$timeout', '$http', 'MD5', function ($resource, $timeout, $http, MD5) {
         var url = 'cloudAnalytics/ca/instrumentations';
-//        var instrumentations = {};
 
         function DataSet(opts) {
             if(!(this instanceof DataSet)) {
@@ -143,15 +142,13 @@ var instrumentations = {};
                     data: self._createOpts
                 })
                 .success(function (data) {
-                    Object.keys(data).forEach(function (k) {
-                        self[k] = data[k];
+                    var response = data.res;
+                    var error = data.err;
+                    Object.keys(response).forEach(function (k) {
+                        self[k] = response[k];
                     });
-                    self._data = new DataSet({startTime: data.crtime});
-                    callback();
-                })
-                .error(function (err) {
-                    self._err = err;
-                    callback(err);
+                    self._data = new DataSet({startTime: response.crtime});
+                    callback(error);
                 });
             }
         };
@@ -202,9 +199,16 @@ var instrumentations = {};
             var uuid = _getUUID(opts);
             if(!instrumentations[uuid]) {
                 var inst = new Instrumentation(uuid, opts);
-                instrumentations[uuid] = inst;
 
                 inst.init(opts.init, function (err) {
+                    if(err) {
+                        if(inst._datacenter) {
+                            err.datacenter = inst._datacenter;
+                        }
+                        callback(err);
+                        return;
+                    }
+                    instrumentations[uuid] = inst;
                     callback(err, inst);
                 });
             } else {

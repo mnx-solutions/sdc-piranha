@@ -45,25 +45,44 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/ca', function (req, res) {
+
         req.cloud.DescribeAnalytics(function (err, resp) {
-        if (!err) {
-                res.json(resp);
+            var e = null;
+            if(err) {
+                req.log.warn(err);
+                e = 'Failed to get Cloud Analytics metrics';
             }
+
+            res.json({err:e, res:resp});
         });
     });
 
     app.get('/ca/instrumentations', function (req, res) {
         var client = req.cloud;
+        var errors = [];
         var response = {
             time:null,
             instrumentations:[]
         };
         var responseCount = 0;
+
         client.listDatacenters(function(dcerr, dcs) {
+
+            if(dcerr) {
+                req.log.warn(dcerr);
+                res.json({
+                    err:['Failed to get Datacenter list'],
+                    res: response
+                });
+                return;
+            }
             for(var dcname in dcs) {
-                (function(dcname) {
-                    client.setDatacenter(dcname);
+
+                var dcClient = client.separate(dcname);
+
+                (function(client, dcname) {
                     client.ListInstrumentations(function (err, resp) {
+
                         if (!err) {
                             if(resp.length) {
                                 var id = resp[0].id;
@@ -72,39 +91,48 @@ module.exports = function execute(scope, app) {
                                 }
                                 // poll the most recent value to sync with ca time.
                                 if(!response.time) {
-                                    client.setDatacenter(dcname);
                                     client.GetInstrumentationValue(+id, {}, function(err2, value) {
                                         if(!err2) {
                                             response.time = value.start_time;
                                             response.instrumentations = response.instrumentations.concat(resp);
-                                            responseCount++;
-                                            if(responseCount === Object.keys(dcs).length) {
-                                                res.json(response);
-                                            }
                                         } else {
-                                            //TODO: errorhandling
+                                            req.log.warn(err2);
+                                            errors.push('Failed to get instrumentation time from ' + dcname);
+                                        }
+                                        responseCount++;
+
+                                        if(responseCount === Object.keys(dcs).length) {
+                                            res.json({
+                                                err: errors,
+                                                res:response
+                                            });
+                                            return;
                                         }
                                     });
                                 } else {
                                     response.instrumentations = response.instrumentations.concat(resp);
-                                    responseCount++;
-                                    if(responseCount === Object.keys(dcs).length) {
-                                        res.json(response);
-                                    }
-                                }
-
-                            } else {
-                                responseCount++;
-                                if(responseCount === Object.keys(dcs).length) {
-                                    res.json(response);
                                 }
                             }
 
                         } else {
-                            //TODO: errorhandling
+                            req.log.warn(err);
+                            errors.push('Failed to get instrumentation list for ' + dcname);
                         }
+
+                        if(response.time) {
+
+                            responseCount++;
+                            if(responseCount === Object.keys(dcs).length) {
+                                res.json({
+                                    err: errors,
+                                    res: response
+                                });
+                                return;
+                            }
+                        }
+
                     });
-                })(dcname)
+                })(dcClient, dcname)
             }
         })
 
@@ -122,12 +150,12 @@ module.exports = function execute(scope, app) {
         var client = req.cloud;
         client.setDatacenter(req.params.datacenter);
         client.CreateInstrumentation(req.body, function (err, resp) {
-            // !TODO: Error handling
-            if (!err) {
-                res.json(resp);
-            } else {
-                res.send(500, err);
+            var e = null;
+            if(err) {
+                req.log.warn(err);
+                e = req.params.datacenter + 'Failed to create instrumentation';
             }
+            res.json({err: e, res:resp});
         });
     });
 
@@ -143,11 +171,12 @@ module.exports = function execute(scope, app) {
         var client = req.cloud;
         client.setDatacenter(req.params.datacenter);
         client.DeleteInstrumentation(+req.params.id, function (err, resp) {
-            if (!err) {
-                res.json(resp);
-            } else {
-                res.send(err);
+            var e = null;
+            if(err) {
+                req.log.warn(err);
+                e = 'Failed to delete instrumentation';
             }
+            res.json({err:e, res:resp});
         });
     });
 
@@ -169,11 +198,16 @@ module.exports = function execute(scope, app) {
         var client = req.cloud;
         client.setDatacenter(req.params.datacenter);
         client.getInstrumentationHeatmapDetails(options, options, function(err, resp) {
-            res.json(resp);
+            var e = null;
+            if(err) {
+                req.log.warn(err);
+                e = 'Failed to get heatmap details';
+            }
+            res.json({err:e, res:resp});
         });
 
     });
-
+    var errorC = 0;
     app.post('/ca/getInstrumentations', function(req, res) {
         var opts = req.body.options;
         var instrumentations = opts.individual;
@@ -232,7 +266,6 @@ module.exports = function execute(scope, app) {
                             options.ndatapoints = 1;
                             options.end_time = options.start_time;
                             delete options.start_time;
-                            //options.start_time = options.start_time - options.duration;
                             method = 'GetInstrumentationHeatmap';
                             break;
                         case 'scalar':
@@ -246,6 +279,10 @@ module.exports = function execute(scope, app) {
                             break;
                     }
                     client[method](options, options, function(err, resp) {
+                        errorC++;
+//                        if(errorC == 20) {
+//                           err = 'asdfsadfs';
+//                        }
                         if(!response.datapoints[datacenter]) {
                             response.datapoints[datacenter] = {};
                         }
@@ -256,9 +293,13 @@ module.exports = function execute(scope, app) {
                                 response.end_time += instrumentation.duration || 60;
                             }
                         } else {
+                            req.log.warn(err);
                             response.datapoints[datacenter][options.id] = {
-                                err: err
+                                err: 'Failed to get datapoint info'
                             };
+                            if(!response.end_time) {
+                                response.end_time = options.start_time + options.ndatapoints;
+                            }
                         }
                         response.datapoints[datacenter][options.id].blocked = false;
                         rCount++;
