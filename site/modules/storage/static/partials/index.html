@@ -18,10 +18,13 @@
         <div class="span5">
             <h5>Getting Started</h5>
 
-            <video class="span5" controls>
-                <source type="video/mp4"
-                        src="storage/static/data/setup.mp4">
-            </video>
+            <div class="span5">
+                <div id="setup-vid" data-ng-click="openVideo()">
+                    <img src="storage/static/img/thumb.png">
+                    <div class="playbutton"/>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -70,7 +73,8 @@
             </div>
 
             <div data-ng-show="sshKeys.length==0" class="alert alert-warning">
-                You dont have any SSH keys configured, you need a SSH key to use Manta.
+                You dont have any SSH keys configured, you need a SSH key to use
+                Manta.
                 <a href="#!/account/ssh" data-translate>Add a SSH key</a>
             </div>
 
