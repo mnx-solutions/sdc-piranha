@@ -14,8 +14,9 @@
 				"/js/http-auth-interceptor.js",
 				"/js/controllers/main-controller.js",
 				"/js/services/request-context.js",
-				"/js/values/render-context.js"
-			],
+				"/js/values/render-context.js",
+                "//releases.flowplayer.org/5.4.2/flowplayer.min.js"
+            ],
 			"css": [
 				"/vendor/bootstrap/css/bootstrap.css",
                 "/vendor/zendesk/zenbox.css"
