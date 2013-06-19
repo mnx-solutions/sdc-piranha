@@ -8,7 +8,7 @@
 
 }
 .main-nav {
-    width:350px;
+    width:450px;
     margin-top:10px;
     float:left;
 }
@@ -45,7 +45,6 @@
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-
 }
 
 .navbar-inner .user {
