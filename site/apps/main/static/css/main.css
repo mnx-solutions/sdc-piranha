@@ -714,8 +714,8 @@ p.margin-mini {
 }
 
 .carousel-inner {
-    min-height:530px;
-    max-height:530px;
+    min-height:560px;
+    max-height:560px;
     overflow-y:auto;
 }
 
