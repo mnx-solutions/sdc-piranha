@@ -36,7 +36,7 @@
     position:absolute;
     z-index:10;
     background-color:#375775;
-    background-image: url('/static/img/logo-white.png');
+    background-image: url('../img/logo-white.png');
     background-repeat:no-repeat;
     background-position:50% 60%;
     width:190px;

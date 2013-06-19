@@ -1,9 +1,5 @@
-body {
-	background-color:#e4e7eb;
-}
-
 .brand {
-	background-image: url('/static/img/logo-white.png');
+	background-image: url('../img/logo-white.png');
     background-repeat:no-repeat;
     background-position:50% 60%;
     width:190px;
@@ -24,7 +20,7 @@ hr.dark {
 }
 
 .btn-joyent-blue,.btn-joyent-blue:hover {
-	background-image:url('/static/img/bg-button-blue.png');
+	background-image:url('../img/bg-button-blue.png');
 	background-position:50% 50%;
 	background-repeat:repeat-x;
 	color:#fff;

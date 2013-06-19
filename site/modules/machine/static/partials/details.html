@@ -1,6 +1,6 @@
 <div class="container" data-ng-controller="Machine.DetailsController">
-<data-breadcrumb></data-breadcrumb>
-<data-notification></data-notification>
+<div data-breadcrumb></div>
+<div data-notification></div>
 
 <div class="page-header">
     <h1 class="pull-left" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
@@ -21,7 +21,7 @@
             <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0" type="button">Rename</button>
         </div>
     </form>
-    <machine-status machine="machine" class="pull-right"></machine-status>
+    <div machine-status machine="machine" class="pull-right"></div>
 	<div class="clearfix"></div>
 </div>
 <div class="row-fluid">
@@ -293,7 +293,7 @@
         <p data-translate>Help will open in new window</p>
         <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
             <div class="input-append">
-                <input type="text" name="q" class="span2 search-query" placeholder="Search">
+                <input type="text" name="q" class="span10 search-query" placeholder="Search">
                 <button type="submit" class="btn" data-translate>Search</button>
             </div>
         </form>

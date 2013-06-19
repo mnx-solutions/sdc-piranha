@@ -1,3 +1,6 @@
 .landing-create-account-link {
     cursor: pointer;
 }
+body {
+    background-color:#e4e7eb;
+}
