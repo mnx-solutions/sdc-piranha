@@ -145,3 +145,12 @@
 .provisioning-arrows {
     line-height: 1.7;
 }
+
+.provisioning-header-left-button {
+    padding-left:9px;
+}
+
+.provisioning-header-search {
+    padding-right:9px;
+    padding-left:9px;
+}
