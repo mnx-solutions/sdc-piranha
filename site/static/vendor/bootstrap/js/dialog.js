@@ -268,8 +268,8 @@ dialogModule.provider("$dialog", function(){
       // * `result`: the result to pass to the `close` method of the dialog when the button is clicked
       // * `label`: the label of the button
       // * `cssClass`: additional css class(es) to apply to the button for styling
-      messageBox: function(title, message, buttons){
-        return new Dialog({templateUrl: 'template/dialog/message.html', controller: 'MessageBoxController', resolve:
+      messageBox: function(title, message, buttons, template){
+        return new Dialog({templateUrl: template?template:'template/dialog/message.html', controller: 'MessageBoxController', resolve:
           {model: function() {
             return {
               title: title,
