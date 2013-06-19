@@ -15,7 +15,8 @@
             "machine",
             "tracking",
             "dashboard",
-            "tfa"
+            "tfa",
+            "storage"
         ],
 		"auth": true,
         "error": true,
