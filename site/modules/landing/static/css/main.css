@@ -68,6 +68,9 @@ hr.dark {
 
 .signin-form-container {
     margin-top:30px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    float:none;
 }
 .border {
 	border:1px solid red !important;
