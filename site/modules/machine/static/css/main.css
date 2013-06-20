@@ -167,3 +167,62 @@
 .reconfigure-box {
     padding: 15px;
 }
+
+.machine-name {
+    margin:2px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    border: 1px solid #ffffff;
+    width: 300px;
+}
+
+.machine-name:hover {
+    background: white;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
+
+
+.machine-name-edit {
+    margin:2px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-family: inherit;
+    font-weight: normal;
+    line-height: 20px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    color: inherit;
+    text-rendering: optimizelegibility;
+    line-height: 40px;
+    font-size: 38.5px;
+    height:40px;
+    width: 300px;
+    border-radius: 4px 4px 0px 4px;
+}
+
+.machine-edit-form {
+    margin: 0px;
+    padding: 0px;
+}
+
+.machine-edit {
+    position: relative;
+}
+
+.machine-edit-buttons {
+    background: white;
+    border: #d3d3d3 solid 1px;
+    border-top: 0px;
+    padding:3px;
+    border-radius: 0px 0px 4px 4px;
+    position: absolute;
+    right: 2px;
+    top: 100%;
+}

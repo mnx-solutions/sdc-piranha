@@ -247,7 +247,15 @@
                     $scope.newInstanceName = name;
                 };
 
+                $scope.cancelRename = function() {
+                    $scope.changingName = false;
+                }
+
                 $scope.clickRename = function() {
+                    if ($scope.machine.name == $scope.newInstanceName) {
+                        return;
+                    }
+
                     util.confirm(
                         localization.translate(
                             $scope,
