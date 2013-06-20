@@ -1,11 +1,12 @@
 doctype 5
 html(lang='en',data-ng-app='JoyentPortal')
-  head
-    meta(charset='utf-8')
-    meta(name='fragment',content='!')
-    meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title Your browser is not supported!
+    head
+      meta(charset='utf-8')
+      meta(name='fragment',content='!')
+      meta(name="viewport", content="width=device-width, initial-scale=1.0")
+      link(rel='stylesheet',href='/static/css/error.css',type='text/css')
+      title Your browser is not supported!
 
-    body
-      div We are sorry to tell you this but the browser you are using is not supported by our site
-
+      body.error-body
+        div.error-well
+          div.error-text Your browser is not supported!
