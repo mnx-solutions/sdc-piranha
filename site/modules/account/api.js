@@ -22,7 +22,7 @@ module.exports = function execute(scope, register, callback) {
 
     var api = {};
 
-    var steps = ['start', 'tropo', 'billing','ssh'];
+    var steps = ['start', 'billing','ssh'];
 
     function getFromBilling(method, userId, cb) {
         jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {
@@ -53,7 +53,7 @@ module.exports = function execute(scope, register, callback) {
             if(errs.length === 0) {
                 state = 'completed';
             } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') {
-                state = 'tropo';
+                state = 'billing';
             }
 
             cb(null, state);

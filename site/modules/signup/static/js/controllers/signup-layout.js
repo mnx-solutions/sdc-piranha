@@ -12,7 +12,7 @@
 					billing:"Payment Method",
 					ssh:"SSH Key"
 				};
-				$scope.steps = ['tropo', 'billing','ssh'];
+				$scope.steps = ['billing','ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.campaignId = $cookies.campaignId;
