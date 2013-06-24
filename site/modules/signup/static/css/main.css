@@ -27,7 +27,7 @@
 	position:absolute;
 	z-index:10;
 	background-color:#375775;
-    background-image: url('/static/img/logo-white.png');
+    background-image: url('../img/logo-white.png');
     background-repeat:no-repeat;
     background-position:50% 60%;
     width:190px;
@@ -76,16 +76,9 @@ h1 {
     color:#888;
 }
 
-.loading-medium {
-	background-image:url('/static/img/icon-loading-medium.gif');
-	background-position:50% 50%;
-	background-repeat:no-repeat;
-	min-height:50px;
-	max-width:100%;
-	min-width:50px;
-}
+
 .footer .brand {
-	background-image: url('/static/img/logo-gray.png');
+	background-image: url('../img/logo-gray.png');
     background-repeat:no-repeat;
     background-position:50% 60%;
     width:120px;

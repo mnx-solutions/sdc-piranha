@@ -19,5 +19,5 @@ h3 {
 }*/
 [class^="icon-"],
 [class*=" icon-"] {
-    background-image: url("/static/img/glyphicons-halflings.png");
+    background-image: url("../img/glyphicons-halflings.png");
 }
