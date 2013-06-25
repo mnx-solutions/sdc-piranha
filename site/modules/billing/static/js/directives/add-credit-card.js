@@ -236,18 +236,18 @@
 
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (errs) {
-                                $scope.errs = errs.reasons;
+                                $scope.errs = errs.zuora.reasons;
                                 $scope.loading = false;
                                 var message = localization.translate(null,
                                     'billing',
-                                    'Sorry, there was an issue with the credit card information you gave us, please review the information for accuracy.'
+                                    'Payment information not updated:'
                                 );
 
                                 var addedMessage = '';
                                 var generic = false;
 
-                                Object.keys(errs).forEach(function (key) {
-                                    var err = errs[key];
+                                Object.keys($scope.errs).forEach(function (key) {
+                                    var err = $scope.errs[key];
                                     var translated = localization.translate(null,
                                         'billing',
                                         err.message
@@ -267,7 +267,7 @@
                                     addedMessage = ' we are unable to verify your credit card details.';
                                 }
 
-                                notification.push(null, { type: 'error' }, message);
+                                notification.push(null, { type: 'error' }, message + addedMessage);
                                 window.scrollTo(0,0);
                             } else {
                                 Account.updateAccount({
