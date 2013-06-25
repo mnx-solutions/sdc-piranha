@@ -20,7 +20,7 @@
             <div class="span9">
                 <div class="row-fluid">
                     <!-- Part shown when user have no keys -->
-                    <div class="span10 ssh-add-span" data-ng-show="keys.length <= 0">
+                    <div class="ssh-add-span" data-ng-show="keys.length <= 0">
                         <div class="alert alert-joyent-blue">
                             <span data-translate>You have to add SSH key to start creating instances.</span>
                         </div>
@@ -59,19 +59,19 @@
                 <div class="row-fluid">
 
                     <!-- Part shown when user has keys -->
-                    <div data-ng-show="keys.length > 0" class="span10">
+                    <div data-ng-show="keys.length > 0">
                         <div class="item-list-container">
                             <div class="item header row-fluid">
                                 <span class="span12 item-list-container-header">Key Name / UUID</span>
                             </div>
 
                             <div class="item row-fluid" data-ng-repeat="key in keys">
-                        <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
-                            <span class="span12 item-list-container-header">{{key.name.length > 0 && key.name != key.fingerprint && (key.name + ' / ') || ''}}{{key.fingerprint}}</span>
-                        </span>
+                                <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
+                                    <span class="span12 title">{{key.name.length > 0 && key.name != key.fingerprint && (key.name + ' / ') || ''}}{{key.fingerprint}}</span>
+                                </span>
 
                                 <div data-ng-show="openKeyDetails == $index" class="toolbox span11">
-                                    <div class="item span10">
+                                    <div class="item">
                                         <div class="row-fluid">
                                             <span class="text-medium key span3" data-translate>Fingerpint</span>
                                             <span class="text-medium value span9">{{key.fingerprint}}</span>
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
 
-                            <div data-ng-show="addsshKey">
+                            <div data-ng-show="addsshKey" style="margin: 10px">
                                 <button data-ng-click="addNewKey()"
                                         data-ng-disabled="createPending"
                                         data-translate>Add SSH key</button>
