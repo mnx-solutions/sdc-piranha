@@ -4,7 +4,9 @@
 	</div>
 </div>
 <div class="container">
-	<div class="brand pull-left"></div>
+    <div data-notification></div>
+
+    <div class="brand pull-left"></div>
 	<div class="clearfix"></div>
 	<ul class="nav nav-tabs" data-ng-show="steps">
 
@@ -12,7 +14,6 @@
 	        <a>{{stepNames[s]}}</a>
 	    </li>
 	</ul>
-    <div data-notification></div>
 	<div class="signup-progress-container" data-ng-switch="subview">
 
             <div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>

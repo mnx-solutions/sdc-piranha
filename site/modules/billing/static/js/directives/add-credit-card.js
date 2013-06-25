@@ -236,7 +236,7 @@
 
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (errs) {
-                                $scope.errs = errs;
+                                $scope.errs = errs.reasons;
                                 $scope.loading = false;
                                 var message = localization.translate(null,
                                     'billing',
