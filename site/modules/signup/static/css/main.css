@@ -114,3 +114,11 @@ h1 {
 .cancel-signup-link {
     cursor:pointer;
 }
+
+select.date-month, select.date-year {
+    width: 70px;
+}
+
+#phone {
+    width: 145px;
+}
