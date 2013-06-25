@@ -53,7 +53,9 @@ select.date-month, select.date-year {
     min-height:40px;
     height:40px;
 }
-
+.ssh-add-button {
+    margin-bottom:10px;
+}
 .ssh-add-span {
     margin-bottom:20px;
 }
