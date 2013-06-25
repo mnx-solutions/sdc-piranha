@@ -104,7 +104,7 @@
                 });
             };
 
-            $scope.deleteKey = function(name, fingerprint) {
+            $scope.deleteKey = function (name, fingerprint) {
                 util.confirm(null, localization.translate($scope, null,
                     'Are you sure you want to delete "{{name}}" SSH key',
                     {

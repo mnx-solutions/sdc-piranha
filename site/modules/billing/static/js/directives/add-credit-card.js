@@ -46,6 +46,7 @@
                         return '';
                     }
 
+                    $scope.phone = {};
                     $scope.form = {
                         cardHolderInfo: {
                         }
@@ -185,6 +186,10 @@
                     $q.when(Account.getAccount(true), function (account) {
                     $q.when($http.get('account/countryCodes'), function(data) {
                         $scope.countryCodes = data.data;
+                        $scope.phone = {
+                            number: account.phone.replace(new RegExp(/[^0-9#\*]/g), ''),
+                            country: account.country
+                        };
 
                         account.country = $scope.isoToObj(account.country.iso3  || account.country);
                         $scope.selectedCountryCode = account.country.areaCode;
@@ -262,19 +267,31 @@
                                 notification.push(null, { type: 'error' }, message + addedMessage);
                                 window.scrollTo(0,0);
                             } else {
-                                notification.push(null, { type: 'success' },
-                                    localization.translate(null,
-                                        'billing',
-                                        'Payment information updated'
-                                    )
-                                );
+                                Account.updateAccount({
+                                    country: $scope.phone.country.iso3,
+                                    phone: $scope.phone.number
+                                }).then(function () {
+                                    notification.push(null, { type: 'success' },
+                                        localization.translate(null,
+                                            'billing',
+                                            'Payment information updated'
+                                        )
+                                    );
 
-                                $scope.errs = null;
-                                var cc = BillingService.getDefaultCreditCard();
+                                    $scope.errs = null;
+                                    var cc = BillingService.getDefaultCreditCard();
 
-                                $q.when(cc, function (credit) {
-                                    $scope.loading = false;
-                                    $rootScope.$broadcast('creditCardUpdate', credit);
+                                    $q.when(cc, function (credit) {
+                                        $scope.loading = false;
+                                        $rootScope.$broadcast('creditCardUpdate', credit);
+                                    });
+                                }, function () {
+                                    notification.push(null, { type: 'error' },
+                                        localization.translate(null,
+                                            'billing',
+                                            'Payment information not updated'
+                                        )
+                                    );
                                 });
                             }
                         });

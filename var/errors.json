@@ -1,3 +1,94 @@
 {
-
+  "Invalid parameter(s): 'country,phone'.": {
+    "code": 51020021,
+    "message": "Invalid parameter(s): 'country,phone'.",
+    "human": "REST API: POSTAccountCreditCard,_general - Unknown field in request",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTAccountCreditCard",
+        "nr": "102"
+      },
+      "field": {
+        "name": "_general",
+        "nr": "00"
+      },
+      "category": {
+        "name": "Unknown field in request",
+        "nr": "21"
+      }
+    }
+  },
+  "Invalid parameter(s): 'account'.": {
+    "code": 51020021,
+    "message": "Invalid parameter(s): 'account'.",
+    "human": "REST API: POSTAccountCreditCard,_general - Unknown field in request",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTAccountCreditCard",
+        "nr": "102"
+      },
+      "field": {
+        "name": "_general",
+        "nr": "00"
+      },
+      "category": {
+        "name": "Unknown field in request",
+        "nr": "21"
+      }
+    }
+  },
+  "'creditCard.cardNumber' invalid credit card number": {
+    "code": 51020220,
+    "message": "'creditCard.cardNumber' invalid credit card number",
+    "human": "REST API: POSTAccountCreditCard,creditCard.cardNumber - Invalid format or value",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTAccountCreditCard",
+        "nr": "102"
+      },
+      "field": {
+        "name": "creditCard.cardNumber",
+        "nr": "02"
+      },
+      "category": {
+        "name": "Invalid format or value",
+        "nr": "20"
+      }
+    }
+  },
+  "'creditCard.securityCode' should be a 3- or 4-digit number.": {
+    "code": 51020520,
+    "message": "'creditCard.securityCode' should be a 3- or 4-digit number.",
+    "human": "REST API: POSTAccountCreditCard,creditCard.securityCode - Invalid format or value",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTAccountCreditCard",
+        "nr": "102"
+      },
+      "field": {
+        "name": "creditCard.securityCode",
+        "nr": "05"
+      },
+      "category": {
+        "name": "Invalid format or value",
+        "nr": "20"
+      }
+    }
+  }
 }
