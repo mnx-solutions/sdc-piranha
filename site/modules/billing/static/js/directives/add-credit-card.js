@@ -96,6 +96,7 @@
                         } else {
 
                             $q.when(Account.getAccount(), function(account) {
+
                                 var form = $scope.form.cardHolderInfo;
                                 form.zipCode = account.postalCode;
                                 form.city = account.city;
@@ -179,6 +180,48 @@
 
                         return isPresent;
                     };
+
+                    // begin temp tropo removal
+                    $q.when(Account.getAccount(true), function (account) {
+                    $q.when($http.get('account/countryCodes'), function(data) {
+                        $scope.countryCodes = data.data;
+
+                        account.country = $scope.isoToObj(account.country.iso3  || account.country);
+                        $scope.selectedCountryCode = account.country.areaCode;
+
+                        $scope.account = account;
+                    })
+                    });
+
+                    $scope.isoToObj = function(iso) {
+                        if(!$scope.countryCodes){
+                            return;
+                        }
+                        var selected = null;
+                        var usa = null;
+
+                        $scope.countryCodes.some(function (el) {
+                            if(el.iso3 === 'USA') {
+                                usa = el;
+                            }
+                            if(el.iso3 === iso) {
+                                selected = el;
+                                return true;
+                            }
+                        });
+
+                        return selected || usa;
+                    };
+
+                    $http.get('account/countryCodes').success(function (data) {
+                        $scope.countryCodes = data;
+                    });
+
+                    $scope.$watch('account.country', function(newVal) {
+                        $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
+                    });
+
+                    // end temp tropo fix
 
                     $scope.submitForm = function() {
                         $scope.loading = true;

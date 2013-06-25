@@ -354,6 +354,31 @@
                     </div>
                 </div>
             </div>
+
+            <div class="control-group">
+
+            <div class="controls">
+                <label class="control-label" for="countyCode" data-translate>Phone nr</label>
+
+                <select
+                        data-ng-style="countryStyle"
+                        data-ng-model="account.country"
+                        name="countryCode"
+                        id="countryCode"
+                        data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
+                </select>
+                <br />
+                <div class="input-prepend">
+                    <span class="add-on" style="width:50px"><font data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</font></span>
+                    <input  type="text"
+                           id="phone"
+                           name="phone"
+                           data-ng-model="account.phone"
+                           required/>
+                </div>
+            </div>
+                </div>
+
         </fieldset>
         <div class="clearfix"></div>
         <div>
