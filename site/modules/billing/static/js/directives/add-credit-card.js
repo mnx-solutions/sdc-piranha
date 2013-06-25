@@ -188,13 +188,14 @@
                     $q.when(Account.getAccount(true), function (account) {
                     $q.when($http.get('account/countryCodes'), function(data) {
                         $scope.countryCodes = data.data;
+
+                        account.country = $scope.isoToObj(account.country);
+                        $scope.selectedCountryCode = account.country.areaCode;
+
                         $scope.phone = {
                             number: account.phone.replace(new RegExp(/[^0-9#\*]/g), ''),
                             country: account.country
                         };
-
-                        account.country = $scope.isoToObj(account.country.iso3  || account.country);
-                        $scope.selectedCountryCode = account.country.areaCode;
 
                         $scope.account = account;
                     })
