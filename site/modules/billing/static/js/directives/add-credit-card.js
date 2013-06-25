@@ -240,7 +240,7 @@
                                 $scope.loading = false;
                                 var message = localization.translate(null,
                                     'billing',
-                                    'Payment information not updated:'
+                                    'Sorry, there was an issue with the credit card information you gave us, please review the information for accuracy.'
                                 );
 
                                 var addedMessage = '';
@@ -267,7 +267,7 @@
                                     addedMessage = ' we are unable to verify your credit card details.';
                                 }
 
-                                notification.push(null, { type: 'error' }, message + addedMessage);
+                                notification.push(null, { type: 'error' }, message);
                                 window.scrollTo(0,0);
                             } else {
                                 Account.updateAccount({
