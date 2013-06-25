@@ -47,6 +47,8 @@
                     }
 
                     $scope.phone = {};
+                    $scope.selectedCountryCode = '1'; // default to USA
+
                     $scope.form = {
                         cardHolderInfo: {
                         }
@@ -222,7 +224,7 @@
                         $scope.countryCodes = data;
                     });
 
-                    $scope.$watch('account.country', function(newVal) {
+                    $scope.$watch('phone.country', function(newVal) {
                         $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                     });
 
