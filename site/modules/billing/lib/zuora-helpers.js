@@ -139,6 +139,10 @@ countries.forEach(function (el) {
 
 function compareBillToContacts(zContact, contact) {
 
+    if (!zContact) {
+        return false;
+    }
+
     return Object.keys(contact).some(function (k) {
         if(k === 'country') {
             return zContact[k] === indexedCountries[contact[k]];
