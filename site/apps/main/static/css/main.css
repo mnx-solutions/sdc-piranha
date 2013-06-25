@@ -382,22 +382,6 @@ th {
 /*	height:30px;*/
 }
 
-.item-list-container .item .action-container{
-/*	margin-right:5px;*/
-	margin-top:5px;
-}
-.item-list-container .item .action-container button {
-	display:block;
-	margin-top:3px;
-}
-.item-list-container .item .toolbox{
-	border-top:1px solid #ddd;
-    margin-bottom: 5px;
-}
-.item-list-container-header {
-    padding:5px;
-}
-
 .toolbox .button {
 	width:100%;
 }

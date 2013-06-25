@@ -61,3 +61,37 @@ select.date-month, select.date-year {
 .sizebar-fix-right {
     margin-left:10px;
 }
+
+.item .title {
+    padding: 10px;
+}
+
+.item .key {
+    border-bottom: 1px solid #ddd;
+    color: #888;
+    padding-left: 10px;
+}
+
+.item .value {
+    text-align: left !important;
+    border-bottom: 1px solid #ddd;
+    min-width: 300px;
+    padding: 0 10px 0 10px;
+}
+
+.item-list-container-header {
+    padding: 10px;
+}
+
+.item-list-container .item .action-container {
+    /*	margin-right:5px;*/
+    margin-top:5px;
+}
+.item-list-container .item .action-container button {
+    display:block;
+    margin-top:3px;
+}
+.item-list-container .item .toolbox {
+    border-top:1px solid #ddd;
+    margin-bottom: 5px;
+}
