@@ -43,7 +43,9 @@
                             datacenters.index[key] = datacenter;
 
                             if (datacenters.search[key]) {
-                                datacenters.search[key].resolve(p);
+                                datacenters.search[key].forEach(function (r) {
+                                    r.resolve(datacenter);
+                                });
                                 delete datacenters.search[key];
                             }
 
@@ -82,12 +84,12 @@
                     service.updateDatacenters();
 
                     if(!datacenters.search[id]) {
-                        datacenters.search[id] = ret;
+                        datacenters.search[id] = [];
                     }
+                    datacenters.search[id].push(ret);
                 } else {
                     ret.resolve(datacenters.index[id]);
                 }
-
             }
 
             return ret.promise;

@@ -21,7 +21,7 @@
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
             });
 
-            $scope.listTypes = [ 'normal', 'alternate' ];
+            $scope.listTypes = [ 'normal', 'alternate', 'grid'];
             $scope.listType = $scope.listTypes[0]; // Defaults to 'normal'
 
             // Sorting
@@ -372,6 +372,62 @@
 
             // Retrieve selected list type from the cookie or use default fallback
             $scope.changeListType($cookieStore.get('listType') || $scope.listType);
+
+            //--- GRID ---//
+            $scope.gridMachines = Machine.machine(); // In case we want to modify the transition later somehow
+            $scope.gridMachinesOrder = 'sequence';
+            $scope.orderGridMachinesBy = function (prop) {
+                console.log(prop);
+                $scope.gridMachinesOrder = prop.id;
+            };
+
+            $scope.gridProps = [
+                {
+                    id: 'name',
+                    name: 'Name',
+                    sequence: 1,
+                    active: true
+                },
+                {
+                    id: '_Dataset',
+                    id2: 'name',
+                    name: "Image name",
+                    sequence: 2,
+                    active: true
+                },
+                {
+                    id: '_Package',
+                    id2: 'name',
+                    name: "Package name",
+                    sequence: 3,
+                    active: true
+                },
+                {
+                    id: 'memory',
+                    name: 'Memory',
+                    sequence: 4,
+                    active: true
+                },
+                {
+                    id: 'datacenter',
+                    name: 'Datacenter',
+                    sequence: 5,
+                    active: true
+                },
+                {
+                    id: 'ips',
+                    name: 'IP-s',
+                    sequence: 6,
+                    active: true
+                },
+                {
+                    id: 'created',
+                    name: 'Created at',
+                    sequence: 7,
+                    active: true
+                }
+            ];
+
         }
 
     ]);

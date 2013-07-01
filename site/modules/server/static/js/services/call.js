@@ -112,8 +112,11 @@
                             _chunked = data.chunked;
                             self.result(data.result);
                             _status = data.status;
-                            self.error(data.error);
-                            self.status();
+                            if(data.error) {
+                                self.error(data.error);
+                            } else if(_status !== 'updated'){
+                                self.status();
+                            }
                         }
                     },
                     initialize: {
@@ -203,7 +206,7 @@
 
                             var i = index === undefined ? _index : index;
                             var r = _result.slice(i);
-                            if (index !== undefined) {
+                            if (index === undefined) {
                                 _index += r.length;
                             }
                             return r;

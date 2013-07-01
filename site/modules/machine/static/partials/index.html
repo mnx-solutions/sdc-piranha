@@ -19,14 +19,27 @@
                            data-translate="placeholder" />
                 </form>
 
+                <ul class="nav nav-tabs pull-right">
+                    <li class="{{listType == 'normal' && 'active' || ''}}">
+                        <button class="btn btn-link" data-ng-click="changeListType('normal');">Normal</button>
+                    </li>
+                    <li class="{{listType == 'alternate' && 'active' || ''}}">
+                        <button class="btn btn-link" data-ng-click="changeListType('alternate');">Alt.</button>
+                    </li>
+                    <li class="{{listType == 'grid' && 'active' || ''}}">
+                        <button class="btn btn-link" data-ng-click="changeListType('grid');">Grid</button>
+                    </li>
+                </ul>
+
                 <div class="clearfix"></div>
             </div>
 
             <div class="row">
-				<div class="span9">
+				<div class="{{listType == 'grid' && 'span12' || 'span9'}}">
 	                <div data-ng-switch="listType">
 	                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
 	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
+                        <div data-ng-switch-when="grid" data-ng-include="'machine/static/partials/list-grid.html'"></div>
 	                </div>
 
 	                <div class="pagination pagination-small pagination-centered">
@@ -47,7 +60,7 @@
 	                </div>
 				</div>
 				
-	            <div class="pull-right span3">
+	            <div class="pull-right span3" data-ng-show="listType != 'grid'">
 	                <button data-ng-click="changeLocation('/instance/create/')"
 	                        class="create-instance btn btn-joyent-blue btn-large"
 	                        data-translate>Create Instance</button>

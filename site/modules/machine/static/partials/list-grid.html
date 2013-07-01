@@ -1,0 +1,30 @@
+<div class="row">
+    <div class="btn-group pull-right">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+            <span data-translate>Properties</span>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <li data-ng-repeat="prop in gridProps | orderBy:sequence">
+                <label class="checkbox" style="padding-left:30px;">
+                    <input type="checkbox" data-ng-model="prop.active" />
+                    <span data-translate-value>{{prop.name}}</span>
+                </label>
+            </li>
+        </ul>
+    </div>
+</div>
+<table class="table table-bordered">
+    <thead>
+        <th>#</th>
+        <th data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}">
+            <button class="btn btn-link" data-ng-click="orderGridMachinesBy(prop)" data-translate-value>{{prop.name}}</button>
+        </th>
+    </thead>
+    <tbody>
+        <tr data-ng-repeat="object in gridMachines | orderBy:'gridMachinesOrder'">
+            <td>{{$index +1}}</td>
+            <td data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}">{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</td>
+        </tr>
+    </tbody>
+</table>
