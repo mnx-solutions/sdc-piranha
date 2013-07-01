@@ -9,7 +9,7 @@
 
             $scope.loading = true;
             $scope.account = Account.getAccount();
-            $scope.sshKeys = Account.getKeys(true);
+            $scope.sshKeys = Account.getKeys();
 
             $q.all([
                 $scope.account,
