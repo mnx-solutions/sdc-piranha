@@ -57,7 +57,7 @@
                     $scope.loading = false;
                     $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                     $scope.years = [];
-                    $scope.prev = BillingService.getDefaultCreditCard();
+                    $scope.prev = $scope.prev || BillingService.getDefaultCreditCard();
                     $scope.useExisting = false;
 
                     $scope.saveButton = 'Submit';
