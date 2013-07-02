@@ -27,7 +27,7 @@
                 $scope.creditCard = cc;
             });
 
-            $scope.creditCard = BillingService.getDefaultCreditCard();
+            $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
 
         }
     ]);
