@@ -17,14 +17,29 @@
 <table class="table table-bordered">
     <thead>
         <th>#</th>
-        <th data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}">
-            <button class="btn btn-link" data-ng-click="orderGridMachinesBy(prop)" data-translate-value>{{prop.name}}</button>
+        <th data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}" style="vertical-align: middle; text-align: center;">
+            <button class="btn btn-link" data-ng-click="orderGridMachinesBy(prop)">
+                <table class="table table-condensed">
+                    <tr>
+                        <td data-translate-value style="border:0px; text-align:center; vertical-align: middle;">{{prop.name}}</td>
+                        <td style="border:0px; text-align:center; vertical-align: middle;">
+                            <i class="icon-arrow-up" data-ng-show="!gridReverseOrder" data-ng-style="gridMachinesOrder.id == prop.id && {visibility:'visible'} || {visibility: 'hidden'} "></i>
+                            <i class="icon-arrow-down" data-ng-show="gridReverseOrder"  data-ng-style="gridMachinesOrder.id == prop.id && {visibility:'visible'} || {visibility: 'hidden'} "></i>
+                        </td>
+                    </tr>
+                </table>
+            </button>
+            <input type="text" data-ng-model="prop.filter"/>
         </th>
     </thead>
     <tbody>
-        <tr data-ng-repeat="object in gridMachines | orderBy:'gridMachinesOrder'">
+        <tr data-ng-repeat="object in gridMachines | orderBy:orderGridMachines:gridReverseOrder | filter:matchesFilter" data-ng-show="isOnPage($index)">
             <td>{{$index +1}}</td>
-            <td data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}">{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</td>
+            <td data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
+                <div data-ng-switch-when="status" data-machine-status machine="object"></div>
+                <div data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</div>
+            </td>
         </tr>
     </tbody>
 </table>
+<div data-ng-show="lastPage > 1" data-pagination data-num-pages="lastPage" data-current-page="gridPage" data-max-size="gridMaxPages" data-on-select-page="changePage(page)"></div>

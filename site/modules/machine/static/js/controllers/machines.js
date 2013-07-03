@@ -376,9 +376,58 @@
             //--- GRID ---//
             $scope.gridMachines = Machine.machine(); // In case we want to modify the transition later somehow
             $scope.gridMachinesOrder = 'sequence';
+            $scope.gridReverseOrder = false;
+            $scope.gridItemsPerPage = 15;
+            $scope.gridPage = 1;
+            $scope.gridMaxPages = 5;
+
+            $scope.getLastPage = function () {
+                return Math.ceil($scope.gridMachines.length / $scope.gridItemsPerPage);
+            };
+            $scope.lastPage = $scope.getLastPage();
+
+
+            $scope.isOnPage = function(index) {
+                return (index >= $scope.gridItemsPerPage * ($scope.gridPage - 1)) && (index < ($scope.gridItemsPerPage * $scope.gridPage))
+            };
             $scope.orderGridMachinesBy = function (prop) {
-                console.log(prop);
-                $scope.gridMachinesOrder = prop.id;
+                if(prop.id === $scope.gridMachinesOrder.id) {
+                    $scope.gridReverseOrder = !$scope.gridReverseOrder;
+                } else {
+                    $scope.gridReverseOrder = false;
+                }
+                $scope.gridMachinesOrder = prop;
+            };
+
+            $scope.orderGridMachines = function (obj) {
+                var prop = $scope.gridMachinesOrder;
+                if(prop === 'string') {
+                    return obj[prop];
+                }
+                if(prop.id2) {
+                    return obj[prop.id][prop.id2];
+                }
+                return obj[prop.id];
+            };
+
+            $scope.matchesFilter = function (obj) {
+                return !$scope.gridProps.some(function (el) {
+                    if(!el.active || !el.filter) {
+                        return false;
+                    }
+                    var subject = el.id2 && obj[el.id][el.id2] || obj[el.id];
+
+                    if (ng.isNumber(subject)) {
+                        subject = subject.toString();
+                    }
+                    var needle = el.filter.toLowerCase();
+
+                    return (subject.indexOf(needle) === -1);
+                });
+            };
+
+            $scope.changePage = function (t) {
+                $scope.gridPage = t;
             };
 
             $scope.gridProps = [
@@ -424,6 +473,12 @@
                     id: 'created',
                     name: 'Created at',
                     sequence: 7,
+                    active: true
+                },
+                {
+                    id: 'status',
+                    name: 'Status',
+                    sequence: 8,
                     active: true
                 }
             ];

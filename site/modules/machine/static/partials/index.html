@@ -42,7 +42,7 @@
                         <div data-ng-switch-when="grid" data-ng-include="'machine/static/partials/list-grid.html'"></div>
 	                </div>
 
-	                <div class="pagination pagination-small pagination-centered">
+	                <div class="pagination pagination-small pagination-centered" data-ng-show="listType != 'grid'">
 	                    <ul>
 	                        <li data-ng-class="{disabled: currentPage == 0}">
 	                            <a href ng-click="prevPage()" data-translate>« Prev</a>
