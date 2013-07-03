@@ -65,7 +65,7 @@
                     if($scope.nextStep) {
                         $scope.saveButton = 'Next';
                     }
-                    $scope.countries = $scope.countries || $http.get('billing/countries');
+                    $scope.countries = $http.get('billing/countries');
                     var statesP = $http.get('billing/states');
 
                     $q.when($scope.prev, function (prev) {
