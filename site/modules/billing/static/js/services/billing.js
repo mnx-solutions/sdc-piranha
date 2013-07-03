@@ -5,6 +5,8 @@
     app.factory('BillingService', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
+        var creditCard = {};
+
         service.getPaymentMethods = function () {
             var call = serverTab.call({
                 name: 'listPaymentMethods',
@@ -17,14 +19,18 @@
         };
 
         service.getDefaultCreditCard = function () {
-            var call = serverTab.call({
-                name: 'defaultCreditCard',
-                data: {},
-                done: function (err, job) {
+            if(!creditCard) {
+                    var call = serverTab.call({
+                    name: 'defaultCreditCard',
+                    data: {},
+                    done: function (err, job) {
 
-                }
-            });
-            return call.deferred;
+                    }
+                });
+                return call.deferred;
+            } else {
+                return creditCard;
+            }
         };
 
         service.addPaymentMethod = function (data, callback) {
