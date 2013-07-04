@@ -237,7 +237,17 @@
 
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (errs) {
-                                $scope.errs = errs.zuora.reasons;
+                                if(errs.zuora) {
+                                    $scope.errs = errs.zuora.reasons;
+                                } else {
+                                    $scope.errs = {};
+                                }
+
+                                for(var i in errs) {
+                                    if(typeof errs[i] !== 'object') {
+                                        $scope.errs[i] = errs[i];
+                                    }
+                                }
 
                                 $scope.loading = false;
                                 var message = localization.translate(null,
@@ -250,20 +260,27 @@
 
                                 Object.keys($scope.errs).forEach(function (key) {
                                     var err = $scope.errs[key];
-                                    var translated = localization.translate(null,
-                                        'billing',
-                                        err.message
-                                    );
-                                    if(translated === err.message) {
-                                        generic = true;
-                                    }
-                                    if(addedMessage !== '') {
-                                        generic = false;
-                                        addedMessage += '<br/>' + translated;
-                                    } else {
-                                        addedMessage += ' ' + translated;
+
+                                    if(typeof err === 'object') {
+                                        var translated = localization.translate(null,
+                                            'billing',
+                                            err.message
+                                        );
+                                        if(translated === err.message) {
+                                            generic = true;
+                                        }
+                                        if(addedMessage !== '') {
+                                            generic = false;
+                                            addedMessage += '<br/>' + translated;
+                                        } else {
+                                            addedMessage += ' ' + translated;
+                                        }
                                     }
                                 });
+
+                                if(addedMessage == '') {
+                                    generic = true;
+                                }
 
                                 if(generic) {
                                     addedMessage = ' we are unable to verify your credit card details.';
