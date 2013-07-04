@@ -8,3 +8,7 @@ input.error, select.error, textarea.error {
 select.date-month, select.date-year {
     width: 70px;
 }
+
+.red-asterix {
+    color: #900;
+}
