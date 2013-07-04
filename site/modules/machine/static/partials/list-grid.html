@@ -18,22 +18,22 @@
     <thead>
         <th>#</th>
         <th data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}" style="vertical-align: middle; text-align: center;">
-            <button class="btn btn-link" data-ng-click="orderGridMachinesBy(prop)">
                 <table class="table table-condensed">
                     <tr>
                         <td data-translate-value style="border:0px; text-align:center; vertical-align: middle;">{{prop.name}}</td>
                         <td style="border:0px; text-align:center; vertical-align: middle;">
-                            <i class="icon-arrow-up" data-ng-show="!gridReverseOrder" data-ng-style="gridMachinesOrder.id == prop.id && {visibility:'visible'} || {visibility: 'hidden'} "></i>
-                            <i class="icon-arrow-down" data-ng-show="gridReverseOrder"  data-ng-style="gridMachinesOrder.id == prop.id && {visibility:'visible'} || {visibility: 'hidden'} "></i>
+                            <div class="btn-group">
+                                <button class="btn" data-ng-click="orderGridMachinesBy(prop, false)" data-ng-class="{active: gridOrder.indexOf(prop.order) != -1}"><i class="icon-arrow-up"></i></button>
+                                <button class="btn" data-ng-click="orderGridMachinesBy(prop, true)" data-ng-class="{active: gridOrder.indexOf(prop.rorder) != -1}"><i class="icon-arrow-down"></i></button>
+                            </div>
                         </td>
                     </tr>
                 </table>
-            </button>
             <input type="text" data-ng-model="prop.filter"/>
         </th>
     </thead>
     <tbody>
-        <tr data-ng-repeat="object in gridMachines | orderBy:orderGridMachines:gridReverseOrder | filter:matchesFilter" data-ng-show="isOnPage($index)">
+        <tr data-ng-repeat="object in gridMachines | orderBy:gridOrder | filter:matchesFilter" data-ng-show="isOnPage($index)">
             <td>{{$index +1}}</td>
             <td data-ng-repeat="prop in gridProps | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
                 <div data-ng-switch-when="status" data-machine-status machine="object"></div>
@@ -42,4 +42,4 @@
         </tr>
     </tbody>
 </table>
-<div data-ng-show="lastPage > 1" data-pagination data-num-pages="lastPage" data-current-page="gridPage" data-max-size="gridMaxPages" data-on-select-page="changePage(page)"></div>
+<div data-pagination data-num-pages="lastPage" data-current-page="gridPage" data-max-size="gridMaxPages" data-on-select-page="changePage(page)"></div>

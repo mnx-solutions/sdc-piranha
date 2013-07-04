@@ -376,38 +376,43 @@
             //--- GRID ---//
             $scope.gridMachines = Machine.machine(); // In case we want to modify the transition later somehow
             $scope.gridMachinesOrder = 'sequence';
-            $scope.gridReverseOrder = false;
             $scope.gridItemsPerPage = 15;
             $scope.gridPage = 1;
             $scope.gridMaxPages = 5;
 
-            $scope.getLastPage = function () {
-                return Math.ceil($scope.gridMachines.length / $scope.gridItemsPerPage);
-            };
-            $scope.lastPage = $scope.getLastPage();
+            $scope.gridOrder = [];
 
+            $scope.getLastPage = function (update) {
+                var lastPage =  Math.ceil($filter('filter')($scope.gridMachines, $scope.matchesFilter).length / $scope.gridItemsPerPage);
+                if(update) {
+                    $scope.lastPage = lastPage;
+                }
+                return lastPage;
+            };
+            $scope.$watch('gridMachines', $scope.getLastPage.bind($scope, true), true);
+            $scope.$watch('gridProps', $scope.getLastPage.bind($scope, true), true);
 
             $scope.isOnPage = function(index) {
                 return (index >= $scope.gridItemsPerPage * ($scope.gridPage - 1)) && (index < ($scope.gridItemsPerPage * $scope.gridPage))
             };
-            $scope.orderGridMachinesBy = function (prop) {
-                if(prop.id === $scope.gridMachinesOrder.id) {
-                    $scope.gridReverseOrder = !$scope.gridReverseOrder;
-                } else {
-                    $scope.gridReverseOrder = false;
-                }
-                $scope.gridMachinesOrder = prop;
+
+            $scope.clearOrder = function () {
+                $scope.gridOrder = [];
             };
 
-            $scope.orderGridMachines = function (obj) {
-                var prop = $scope.gridMachinesOrder;
-                if(prop === 'string') {
-                    return obj[prop];
+            $scope.orderGridMachinesBy = function (prop, reverse) {
+                var existed = null;
+                if($scope.gridOrder.indexOf(prop.order) !== -1) {
+                    existed = 'order';
+                    delete $scope.gridOrder[$scope.gridOrder.indexOf(prop.order)];
                 }
-                if(prop.id2) {
-                    return obj[prop.id][prop.id2];
+                if($scope.gridOrder.indexOf(prop.rorder) !== -1) {
+                    existed = 'rorder';
+                    delete $scope.gridOrder[$scope.gridOrder.indexOf(prop.rorder)];
                 }
-                return obj[prop.id];
+                if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
+                    $scope.gridOrder.push(reverse ? prop.rorder : prop.order);
+                }
             };
 
             $scope.matchesFilter = function (obj) {
@@ -434,56 +439,59 @@
                 {
                     id: 'name',
                     name: 'Name',
-                    sequence: 1,
-                    active: true
+                    sequence: 1
                 },
                 {
                     id: '_Dataset',
                     id2: 'name',
                     name: "Image name",
-                    sequence: 2,
-                    active: true
+                    sequence: 2
                 },
                 {
                     id: '_Package',
                     id2: 'name',
                     name: "Package name",
-                    sequence: 3,
-                    active: true
+                    sequence: 3
                 },
                 {
                     id: 'memory',
                     name: 'Memory',
-                    sequence: 4,
-                    active: true
+                    sequence: 4
                 },
                 {
                     id: 'datacenter',
                     name: 'Datacenter',
-                    sequence: 5,
-                    active: true
+                    sequence: 5
                 },
                 {
                     id: 'ips',
                     name: 'IP-s',
-                    sequence: 6,
-                    active: true
+                    sequence: 6
                 },
                 {
                     id: 'created',
                     name: 'Created at',
-                    sequence: 7,
-                    active: true
+                    sequence: 7
                 },
                 {
                     id: 'status',
                     name: 'Status',
-                    sequence: 8,
-                    active: true
+                    sequence: 8
                 }
             ];
 
+            $scope.gridProps.forEach(function (el) {
+                el.active = true;
+                if(!el.id2) {
+                    el.order = el.id;
+                    el.rorder = '-' + el.id;
+                } else {
+                    el.order = el.id + '.' + el.id2;
+                    el.rorder = '-' + el.id + '.' + el.id2;
+                }
+            });
         }
+
 
     ]);
 }(window.angular, window.JP.getModule('Machine')));
