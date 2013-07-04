@@ -18,17 +18,17 @@
                            required>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('creditCard.creditCardNumber')">
+                         data-ng-show="isError('creditCard.creditCardNumber') || (formSubmitted && isError('creditCard.creditCardNumber'))">
                         Invalid credit card number
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('creditCard.creditCardNumber', 'required')">
+                         data-ng-show="isError('creditCard.creditCardNumber', 'required') || (formSubmitted && isError('creditCard.creditCardNumber', 'required'))">
                         Missing credit card number
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('creditCard.creditCardNumber', 'pattern')">
+                         data-ng-show="isError('creditCard.creditCardNumber', 'pattern') || (formSubmitted && isError('creditCard.creditCardNumber', 'pattern'))">
                         Invalid symbols (numbers only)
                     </div>
                 </div>

@@ -59,6 +59,7 @@
                     $scope.years = [];
                     $scope.prev = $scope.prev || BillingService.getDefaultCreditCard();
                     $scope.useExisting = false;
+                    $scope.formSubmitted = false;
 
                     $scope.saveButton = 'Submit';
 
@@ -232,6 +233,7 @@
 
                     $scope.submitForm = function() {
                         $scope.loading = true;
+                        $scope.formSubmitted = true;
 
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (errs) {
