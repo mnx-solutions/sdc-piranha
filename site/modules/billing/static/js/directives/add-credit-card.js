@@ -239,9 +239,6 @@
                             if (errs) {
                                 $scope.errs = errs.zuora.reasons;
 
-                                errs.splice(errs.indexOf('zuora'), 1);
-                                $scope.errs = $scope.errs.concat(errs);
-
                                 $scope.loading = false;
                                 var message = localization.translate(null,
                                     'billing',
@@ -253,21 +250,18 @@
 
                                 Object.keys($scope.errs).forEach(function (key) {
                                     var err = $scope.errs[key];
-
-                                    if(typeof err === 'object') {
-                                        var translated = localization.translate(null,
-                                            'billing',
-                                            err.message
-                                        );
-                                        if(translated === err.message) {
-                                            generic = true;
-                                        }
-                                        if(addedMessage !== '') {
-                                            generic = false;
-                                            addedMessage += '<br/>' + translated;
-                                        } else {
-                                            addedMessage += ' ' + translated;
-                                        }
+                                    var translated = localization.translate(null,
+                                        'billing',
+                                        err.message
+                                    );
+                                    if(translated === err.message) {
+                                        generic = true;
+                                    }
+                                    if(addedMessage !== '') {
+                                        generic = false;
+                                        addedMessage += '<br/>' + translated;
+                                    } else {
+                                        addedMessage += ' ' + translated;
                                     }
                                 });
 
