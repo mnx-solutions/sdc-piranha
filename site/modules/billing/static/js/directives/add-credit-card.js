@@ -168,7 +168,7 @@
                                 }
                             }
                         } else {
-                            if ($scope.errs && ($scope.errs[field])) {
+                            if (($scope.errs && ($scope.errs[field])) || $scope.formSubmitted) {
                                 return true;
                             }
                         }
