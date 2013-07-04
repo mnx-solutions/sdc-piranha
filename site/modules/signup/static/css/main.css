@@ -122,3 +122,7 @@ select.date-month, select.date-year {
 #phone {
     width: 145px;
 }
+
+.red-asterix {
+    color: red;
+}
