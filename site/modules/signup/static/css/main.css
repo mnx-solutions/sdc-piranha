@@ -126,3 +126,8 @@ select.date-month, select.date-year {
 .red-asterix {
     color: red;
 }
+
+.error {
+    font-weight: bold;
+    color: red;
+}

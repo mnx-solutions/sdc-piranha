@@ -244,7 +244,7 @@
                     </select>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('country') || (formSubmitted && paymentForm.country.$invalid || !paymentForm.country.$error.required)">
+                         data-ng-show="isError('country') || (formSubmitted && paymentForm.country.$invalid && !paymentForm.country.$error.required)">
                         Invalid country
                     </div>
                     <div class="error"
