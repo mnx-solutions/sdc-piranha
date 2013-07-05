@@ -249,7 +249,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('country', 'required')">
+                         data-ng-show="isError('country', 'required') || (formSubmitted && paymentForm.country.$error.required)">
                         Missing country
                     </div>
                 </div>
@@ -275,7 +275,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('city', 'required')">
+                         data-ng-show="isError('city', 'required') || (formSubmitted && paymentForm.city.$error.required)">
                         Missing city
                     </div>
                 </div>
@@ -291,7 +291,6 @@
                            data-translate="placeholder"
                            data-ng-class="{error: isError('state')}"
                            data-ng-model="form.cardHolderInfo.state"
-                           required
                            data-ng-disabled="useExisting">
                     <div class="error"
                          data-translate
@@ -324,7 +323,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('state', 'required')">
+                         data-ng-show="isError('state', 'required') || (formSubmitted && paymentForm.state.$error.required)">
                         Missing state
                     </div>
                 </div>
@@ -349,7 +348,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('zipCode', 'required')">
+                         data-ng-show="isError('zipCode', 'required') || (formSubmitted && paymentForm.zipCode.$error.required)">
                         Missing Zip code
                     </div>
                 </div>
@@ -357,7 +356,7 @@
 
             <div class="control-group" data-ng-show="currentStep">
                 <div class="controls">
-                    <label class="control-label" for="countyCode"><span class="red-asterix">* </span><span data-translate>Phone nr</span></label>
+                    <label class="control-label" for="countryCode"><span class="red-asterix">* </span><span data-translate>Phone nr</span></label>
 
                     <select
                             data-ng-style="countryStyle"
@@ -374,6 +373,11 @@
                                name="phone"
                                data-ng-model="phone.number"
                                required/>
+                    </div>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('phone', 'required') || (formSubmitted && paymentForm.phone.$error.required)">
+                        Missing Phone number
                     </div>
                 </div>
             </div>
