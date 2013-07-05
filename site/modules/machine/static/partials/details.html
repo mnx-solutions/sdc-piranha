@@ -88,10 +88,7 @@
             <tr data-ng-repeat="(key,credential) in machine.metadata.credentials">
                 <td>{{credential.system}}</td>
                 <td>{{credential.username}}</td>
-                <td>
-                    <span data-ng-show="isPasswordVisible(key)">************</span>
-                    <span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span>
-                </td>
+                <td><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span></td>
                 <td nowrap>
                     <a class="show-password" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">[ Show ]</a>
                     <a class="show-password" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">[ Hide ]</a>
