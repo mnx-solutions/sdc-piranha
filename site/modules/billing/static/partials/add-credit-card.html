@@ -244,7 +244,7 @@
                     </select>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('country')">
+                         data-ng-show="isError('country') || (formSubmitted && paymentForm.country.$invalid)">
                         Invalid country
                     </div>
                     <div class="error"
@@ -270,7 +270,7 @@
                            data-ng-disabled="useExisting">
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('city')">
+                         data-ng-show="isError('city') || (formSubmitted && paymentForm.city.$invalid)">
                         Invalid city
                     </div>
                     <div class="error"
@@ -318,7 +318,7 @@
                     </select>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('state')">
+                         data-ng-show="isError('state') || (formSubmitted && paymentForm.state.$invalid)">
                         Invalid state
                     </div>
                     <div class="error"
@@ -343,7 +343,7 @@
                            data-ng-disabled="useExisting">
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('zipCode')">
+                         data-ng-show="isError('zipCode') || (formSubmitted && paymentForm.zipCode.$invalid)">
                         Invalid Zip code
                     </div>
                     <div class="error"
@@ -376,7 +376,12 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('phone', 'required') || (formSubmitted && paymentForm.phone.$error.required)">
+                         data-ng-show="isError('phone') ||  isError('phone', 'required') || (formSubmitted && paymentForm.phone.$invalid)">
+                        Invalid Phone number
+                    </div>
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('phone') ||  isError('phone', 'required') || (formSubmitted && paymentForm.phone.$error.required)">
                         Missing Phone number
                     </div>
                 </div>
