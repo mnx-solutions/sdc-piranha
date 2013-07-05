@@ -249,7 +249,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('country', 'required') || (formSubmitted && paymentForm.country.$error.required)">
+                         data-ng-show="isError('country', 'required') || isError('country', 'submitRequired')">
                         Missing country
                     </div>
                 </div>
@@ -275,7 +275,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('city', 'required') || (formSubmitted && paymentForm.city.$error.required)">
+                         data-ng-show="isError('city', 'required') || isError('city', 'submitRequired')">
                         Missing city
                     </div>
                 </div>
@@ -323,7 +323,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('state', 'required') || (formSubmitted && paymentForm.state.$error.required)">
+                         data-ng-show="isError('state', 'required') || isError('state', 'submitRequired')">
                         Missing state
                     </div>
                 </div>
@@ -348,7 +348,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('zipCode', 'required') || (formSubmitted && paymentForm.zipCode.$error.required)">
+                         data-ng-show="isError('zipCode', 'required') || isError('zipCode', 'submitRequired')">
                         Missing Zip code
                     </div>
                 </div>
@@ -376,12 +376,12 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('phone') ||  isError('phone', 'required') || (formSubmitted && paymentForm.phone.$invalid && !paymentForm.phone.$error.required)">
+                         data-ng-show="isError('phone') || (formSubmitted && paymentForm.phone.$invalid && !paymentForm.phone.$error.required)">
                         Invalid Phone number
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('phone') ||  isError('phone', 'required') || (formSubmitted && paymentForm.phone.$error.required)">
+                         data-ng-show="isError('phone', 'required') || isError('phone', 'submitRequired')">
                         Missing Phone number
                     </div>
                 </div>

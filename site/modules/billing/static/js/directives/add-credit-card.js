@@ -173,6 +173,10 @@
                             }
                         }
 
+                        if($scope.formSubmitted && $scope.paymentForm[field].required && errorType == 'submitRequired') {
+                            return true;
+                        }
+
                         if ($scope.paymentForm[field].$dirty) {
                             Object.keys($scope.paymentForm[field].$error).some(function (key) {
                                 if ($scope.paymentForm[field].$error[key] && key === errorType) {
