@@ -14,8 +14,9 @@
         'Package',
         'localization',
         'util',
+        '$http',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $http) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -474,7 +475,7 @@
                     sequence: 7
                 },
                 {
-                    id: 'status',
+                    id: 'state',
                     name: 'Status',
                     sequence: 8
                 }
@@ -490,6 +491,47 @@
                     el.rorder = '-' + el.id + '.' + el.id2;
                 }
             });
+
+            function getJSONData() {
+                var filtered = $filter('filter')($scope.gridMachines, $scope.matchesFilter);
+                var ordered = $filter('orderBy')(filtered, $scope.gridOrder);
+
+                var filteredP = $filter('filter')($scope.gridProps, {active:true});
+                var orderedP = $filter('orderBy')(filteredP, 'sequence');
+
+                var orderInfo = [];
+                orderedP.forEach(function (p) {
+                    orderInfo.push(p.name);
+                });
+                var final = [];
+                ordered.forEach(function (el) {
+                    var obj = {};
+                    orderedP.forEach(function (p) {
+                        if(p.id2) {
+                            obj[p.name] = el[p.id][p.id2];
+                        } else {
+                            obj[p.name] = el[p.id];
+                        }
+                    });
+                    final.push(obj);
+                });
+
+                return {
+                    data: final,
+                    order: orderInfo
+                };
+            }
+
+            $scope.export = function (format) {
+                $http.post('machine/export', getJSONData())
+                    .success(function (id) {
+                        $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '"></iframe>';
+                    })
+                    .error(function () {
+                        console.log('err', arguments);
+                    });
+            }
+
         }
 
 
