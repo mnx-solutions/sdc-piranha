@@ -173,7 +173,7 @@
                             }
                         }
 
-                        if($scope.formSubmitted && $scope.paymentForm[field].required && errorType == 'submitRequired') {
+                        if($scope.formSubmitted && $scope.paymentForm[field].$error.required && errorType == 'submitRequired') {
                             return true;
                         }
 
