@@ -23,7 +23,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('creditCard.creditCardNumber', 'required')">
+                         data-ng-show="isError('creditCard.creditCardNumber', 'required') || isError('creditCardNumber', 'submitRequired')">
                         Missing credit card number
                     </div>
                     <div class="error"
@@ -67,12 +67,12 @@
             <div class="control-group">
                 <div class="error"
                      data-translate
-                     data-ng-show="isError('creditCard.expirationMonth')">
+                     data-ng-show="isError('creditCard.expirationMonth') || isError('expirationMonth', 'submitRequired')">
                     Invalid expiration month
                 </div>
                 <div class="error"
                      data-translate
-                     data-ng-show="isError('creditCard.expirationYear')">
+                     data-ng-show="isError('creditCard.expirationYear') || isError('expirationYear', 'submitRequired')">
                     Invalid expiration year
                 </div>
             </div>
@@ -100,7 +100,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('creditCard.securityCode', 'required')">
+                         data-ng-show="isError('creditCard.securityCode', 'required') || isError('securityCode', 'submitRequired')">
                         Missing security code
                     </div>
                 </div>
@@ -132,7 +132,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('billToContact.firstName', 'required')">
+                         data-ng-show="isError('billToContact.firstName', 'required') || isError('firstName', 'submitRequired')">
                         Missing first name
                     </div>
                 </div>
@@ -164,7 +164,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('billToContact.lastName', 'required')">
+                         data-ng-show="isError('billToContact.lastName', 'required') || isError('lastName', 'submitRequired')">
                         Missing last name
                     </div>
                 </div>

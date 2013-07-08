@@ -239,88 +239,94 @@
                         $scope.loading = true;
                         $scope.formSubmitted = true;
 
-                        BillingService.addPaymentMethod($scope.form, function (errs, job) {
-                            if (errs) {
-                                if(errs.zuora) {
-                                    $scope.errs = errs.zuora.reasons;
-                                } else {
-                                    $scope.errs = {};
-                                }
+                        if(!$scope.paymentForm.$invalid) {
 
-                                for(var i in errs) {
-                                    if(typeof errs[i] !== 'object') {
-                                        $scope.errs[i] = errs[i];
+                            BillingService.addPaymentMethod($scope.form, function (errs, job) {
+                                if (errs) {
+                                    if(errs.zuora) {
+                                        $scope.errs = errs.zuora.reasons;
+                                    } else {
+                                        $scope.errs = {};
                                     }
-                                }
 
-                                $scope.loading = false;
-                                var message = localization.translate(null,
-                                    'billing',
-                                    'Payment information not updated:'
-                                );
-
-                                var addedMessage = '';
-                                var generic = false;
-
-                                Object.keys($scope.errs).forEach(function (key) {
-                                    var err = $scope.errs[key];
-
-                                    if(typeof err === 'object') {
-                                        var translated = localization.translate(null,
-                                            'billing',
-                                            err.message
-                                        );
-                                        if(translated === err.message) {
-                                            generic = true;
-                                        }
-                                        if(addedMessage !== '') {
-                                            generic = false;
-                                            addedMessage += '<br/>' + translated;
-                                        } else {
-                                            addedMessage += ' ' + translated;
+                                    for(var i in errs) {
+                                        if(typeof errs[i] !== 'object') {
+                                            $scope.errs[i] = errs[i];
                                         }
                                     }
-                                });
 
-                                if(addedMessage == '') {
-                                    generic = true;
-                                }
-
-                                if(generic) {
-                                    addedMessage = ' we are unable to verify your credit card details.';
-                                }
-
-                                notification.push(null, { type: 'error' }, message + addedMessage);
-                                window.scrollTo(0,0);
-                            } else {
-                                Account.updateAccount({
-                                    country: $scope.phone.country.iso3,
-                                    phone: $scope.phone.number
-                                }).then(function () {
-                                    notification.push(null, { type: 'success' },
-                                        localization.translate(null,
-                                            'billing',
-                                            'Payment information updated'
-                                        )
+                                    $scope.loading = false;
+                                    var message = localization.translate(null,
+                                        'billing',
+                                        'Payment information not updated:'
                                     );
 
-                                    $scope.errs = null;
-                                    var cc = BillingService.getDefaultCreditCard();
+                                    var addedMessage = '';
+                                    var generic = false;
 
-                                    $q.when(cc, function (credit) {
-                                        $scope.loading = false;
-                                        $rootScope.$broadcast('creditCardUpdate', credit);
+                                    Object.keys($scope.errs).forEach(function (key) {
+                                        var err = $scope.errs[key];
+
+                                        if(typeof err === 'object') {
+                                            var translated = localization.translate(null,
+                                                'billing',
+                                                err.message
+                                            );
+                                            if(translated === err.message) {
+                                                generic = true;
+                                            }
+                                            if(addedMessage !== '') {
+                                                generic = false;
+                                                addedMessage += '<br/>' + translated;
+                                            } else {
+                                                addedMessage += ' ' + translated;
+                                            }
+                                        }
                                     });
-                                }, function () {
-                                    notification.push(null, { type: 'error' },
-                                        localization.translate(null,
-                                            'billing',
-                                            'Payment information not updated'
-                                        )
-                                    );
-                                });
-                            }
-                        });
+
+                                    if(addedMessage == '') {
+                                        generic = true;
+                                    }
+
+                                    if(generic) {
+                                        addedMessage = ' we are unable to verify your credit card details.';
+                                    }
+
+                                    notification.push(null, { type: 'error' }, message + addedMessage);
+                                    window.scrollTo(0,0);
+                                } else {
+                                    Account.updateAccount({
+                                        country: $scope.phone.country.iso3,
+                                        phone: $scope.phone.number
+                                    }).then(function () {
+                                        notification.push(null, { type: 'success' },
+                                            localization.translate(null,
+                                                'billing',
+                                                'Payment information updated'
+                                            )
+                                        );
+
+                                        $scope.errs = null;
+                                        var cc = BillingService.getDefaultCreditCard();
+
+                                        $q.when(cc, function (credit) {
+                                            $scope.loading = false;
+                                            $rootScope.$broadcast('creditCardUpdate', credit);
+                                        });
+                                    }, function () {
+                                        notification.push(null, { type: 'error' },
+                                            localization.translate(null,
+                                                'billing',
+                                                'Payment information not updated'
+                                            )
+                                        );
+                                    });
+                                }
+                            });
+                        } else {
+                            $scope.loading = false;
+                        }
+
                     };
                 },
                 templateUrl: 'billing/static/partials/add-credit-card.html'
