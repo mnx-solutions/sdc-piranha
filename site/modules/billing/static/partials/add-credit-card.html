@@ -280,8 +280,8 @@
                     </div>
                 </div>
             </div>
-            <div data-ng-switch="stateSel">
-                <div class="control-group" data-ng-default>
+            <div data-ng-switch on="!!stateSel">
+                <div class="control-group" data-ng-switch-default>
                     <label class="control-label" for="state" data-translate>State</label>
                     <div class="controls">
                         <input type="text"
@@ -305,7 +305,7 @@
                     </div>
                 </div>
 
-                <div class="control-group" data-ng-switch-when="true">
+                <div class="control-group" data-ng-show="true">
                     <label class="control-label" for="stateSel"><span class="red-asterix">* </span><span data-translate>State</span></label>
                     <div class="controls">
                         <select id="stateSel"
