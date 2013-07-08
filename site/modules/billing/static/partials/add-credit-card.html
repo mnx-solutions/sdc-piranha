@@ -280,51 +280,52 @@
                     </div>
                 </div>
             </div>
-
-            <div class="control-group" data-ng-show="!stateSel">
-                <label class="control-label" for="state" data-translate>State</label>
-                <div class="controls">
-                    <input type="text"
-                           id="state"
-                           name="state"
-                           placeholder="State"
-                           data-translate="placeholder"
-                           data-ng-class="{error: isError('state')}"
-                           data-ng-model="form.cardHolderInfo.state"
-                           data-ng-disabled="useExisting">
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('state')">
-                        Invalid state
-                    </div>
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('state', 'required')">
-                        Missing state
+            <div data-ng-switch="stateSel">
+                <div class="control-group" data-ng-default>
+                    <label class="control-label" for="state" data-translate>State</label>
+                    <div class="controls">
+                        <input type="text"
+                               id="state"
+                               name="state"
+                               placeholder="State"
+                               data-translate="placeholder"
+                               data-ng-class="{error: isError('state')}"
+                               data-ng-model="form.cardHolderInfo.state"
+                               data-ng-disabled="useExisting">
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('state')">
+                            Invalid state
+                        </div>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('state', 'required')">
+                            Missing state
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="control-group" data-ng-show="stateSel">
-                <label class="control-label" for="stateSel"><span class="red-asterix">* </span><span data-translate>State</span></label>
-                <div class="controls">
-                    <select id="stateSel"
-                            name="state"
-                            data-ng-class="{error: isError('state')}"
-                            data-ng-model="form.cardHolderInfo.state"
-                            required
-                            data-ng-disabled="useExisting">
-                        <option data-ng-repeat="(k, v) in stateSel" value="{{k}}" data-ng-selected="k == form.cardHolderInfo.state">{{v}}</option>
-                    </select>
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('state') || (formSubmitted && paymentForm.state.$invalid && !paymentForm.state.$error.required)">
-                        Invalid state
-                    </div>
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('state', 'required') || isError('state', 'submitRequired')">
-                        Missing state
+                <div class="control-group" data-ng-switch-when="true">
+                    <label class="control-label" for="stateSel"><span class="red-asterix">* </span><span data-translate>State</span></label>
+                    <div class="controls">
+                        <select id="stateSel"
+                                name="state"
+                                data-ng-class="{error: isError('state')}"
+                                data-ng-model="form.cardHolderInfo.state"
+                                required
+                                data-ng-disabled="useExisting">
+                            <option data-ng-repeat="(k, v) in stateSel" value="{{k}}" data-ng-selected="k == form.cardHolderInfo.state">{{v}}</option>
+                        </select>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('state') || (formSubmitted && paymentForm.state.$invalid && !paymentForm.state.$error.required)">
+                            Invalid state
+                        </div>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('state', 'required') || isError('state', 'submitRequired')">
+                            Missing state
+                        </div>
                     </div>
                 </div>
             </div>
