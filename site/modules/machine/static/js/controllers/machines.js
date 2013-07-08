@@ -14,9 +14,8 @@
         'Package',
         'localization',
         'util',
-        '$http',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $http) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -374,68 +373,8 @@
             // Retrieve selected list type from the cookie or use default fallback
             $scope.changeListType($cookieStore.get('listType') || $scope.listType);
 
-            //--- GRID ---//
-            $scope.gridMachines = Machine.machine(); // In case we want to modify the transition later somehow
-            $scope.gridMachinesOrder = 'sequence';
-            $scope.gridItemsPerPage = 15;
-            $scope.gridPage = 1;
-            $scope.gridMaxPages = 5;
-
+            $scope.gridMachines = Machine.machine();
             $scope.gridOrder = [];
-
-            $scope.getLastPage = function (update) {
-                var lastPage =  Math.ceil($filter('filter')($scope.gridMachines, $scope.matchesFilter).length / $scope.gridItemsPerPage);
-                if(update) {
-                    $scope.lastPage = lastPage;
-                }
-                return lastPage;
-            };
-            $scope.$watch('gridMachines', $scope.getLastPage.bind($scope, true), true);
-            $scope.$watch('gridProps', $scope.getLastPage.bind($scope, true), true);
-
-            $scope.isOnPage = function(index) {
-                return (index >= $scope.gridItemsPerPage * ($scope.gridPage - 1)) && (index < ($scope.gridItemsPerPage * $scope.gridPage))
-            };
-
-            $scope.clearOrder = function () {
-                $scope.gridOrder = [];
-            };
-
-            $scope.orderGridMachinesBy = function (prop, reverse) {
-                var existed = null;
-                if($scope.gridOrder.indexOf(prop.order) !== -1) {
-                    existed = 'order';
-                    delete $scope.gridOrder[$scope.gridOrder.indexOf(prop.order)];
-                }
-                if($scope.gridOrder.indexOf(prop.rorder) !== -1) {
-                    existed = 'rorder';
-                    delete $scope.gridOrder[$scope.gridOrder.indexOf(prop.rorder)];
-                }
-                if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
-                    $scope.gridOrder.push(reverse ? prop.rorder : prop.order);
-                }
-            };
-
-            $scope.matchesFilter = function (obj) {
-                return !$scope.gridProps.some(function (el) {
-                    if(!el.active || !el.filter) {
-                        return false;
-                    }
-                    var subject = el.id2 && obj[el.id][el.id2] || obj[el.id];
-
-                    if (ng.isNumber(subject)) {
-                        subject = subject.toString();
-                    }
-                    var needle = el.filter.toLowerCase();
-
-                    return (subject.indexOf(needle) === -1);
-                });
-            };
-
-            $scope.changePage = function (t) {
-                $scope.gridPage = t;
-            };
-
             $scope.gridProps = [
                 {
                     id: 'name',
@@ -480,57 +419,6 @@
                     sequence: 8
                 }
             ];
-
-            $scope.gridProps.forEach(function (el) {
-                el.active = true;
-                if(!el.id2) {
-                    el.order = el.id;
-                    el.rorder = '-' + el.id;
-                } else {
-                    el.order = el.id + '.' + el.id2;
-                    el.rorder = '-' + el.id + '.' + el.id2;
-                }
-            });
-
-            function getJSONData() {
-                var filtered = $filter('filter')($scope.gridMachines, $scope.matchesFilter);
-                var ordered = $filter('orderBy')(filtered, $scope.gridOrder);
-
-                var filteredP = $filter('filter')($scope.gridProps, {active:true});
-                var orderedP = $filter('orderBy')(filteredP, 'sequence');
-
-                var orderInfo = [];
-                orderedP.forEach(function (p) {
-                    orderInfo.push(p.name);
-                });
-                var final = [];
-                ordered.forEach(function (el) {
-                    var obj = {};
-                    orderedP.forEach(function (p) {
-                        if(p.id2) {
-                            obj[p.name] = el[p.id][p.id2];
-                        } else {
-                            obj[p.name] = el[p.id];
-                        }
-                    });
-                    final.push(obj);
-                });
-
-                return {
-                    data: final,
-                    order: orderInfo
-                };
-            }
-
-            $scope.export = function (format) {
-                $http.post('machine/export', getJSONData())
-                    .success(function (id) {
-                        $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '"></iframe>';
-                    })
-                    .error(function () {
-                        console.log('err', arguments);
-                    });
-            }
 
         }
 

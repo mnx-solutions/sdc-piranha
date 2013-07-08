@@ -39,7 +39,7 @@
 	                <div data-ng-switch="listType">
 	                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
 	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
-                        <div data-ng-switch-when="grid" data-ng-include="'machine/static/partials/list-grid.html'"></div>
+                        <div data-ng-switch-when="grid" data-grid-view data-props="gridProps" data-objects="gridMachines" data-per-page="50" data-order="gridOrder"></div>
 	                </div>
 
 	                <div class="pagination pagination-small pagination-centered" data-ng-show="listType != 'grid'">
