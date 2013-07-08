@@ -173,7 +173,12 @@
                             }
                         }
 
-                        if($scope.formSubmitted && $scope.paymentForm[field].$error.required && errorType == 'submitRequired') {
+                        if($scope.formSubmitted && $scope.paymentForm[field] && $scope.paymentForm[field].$error.required && errorType == 'submitRequired') {
+                            return true;
+                        }
+
+                        // state validation fix
+                        if(field == 'state' && errorType == 'submitRequired' && $scope.paymentForm[field].$modelValue === "") {
                             return true;
                         }
 
