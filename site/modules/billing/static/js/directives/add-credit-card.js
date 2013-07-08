@@ -178,7 +178,7 @@
                         }
 
                         // state validation fix
-                        if(field == 'state' && errorType == 'submitRequired' && $scope.paymentForm[field].$modelValue === "") {
+                        if(field == 'state' && errorType == 'submitRequired' && $scope.formSubmitted && $scope.paymentForm[field].$modelValue === "") {
                             return true;
                         }
 
