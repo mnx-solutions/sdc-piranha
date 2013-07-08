@@ -78,7 +78,7 @@
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="securityCode"><span class="red-asterix">* </span><span data-translate>CCV</span></label>
+                <label class="control-label" for="securityCode"><span class="red-asterix">* </span><span data-translate>Credit card verification (CCV) code</span></label>
                 <div class="controls">
                     <input type="text"
                            id="securityCode"
@@ -345,19 +345,19 @@
                     <div class="error"
                          data-translate
                          data-ng-show="isError('zipCode') || (formSubmitted && paymentForm.zipCode.$invalid && !paymentForm.zipCode.$error.required)">
-                        Invalid Zip code
+                        Invalid zip code
                     </div>
                     <div class="error"
                          data-translate
                          data-ng-show="isError('zipCode', 'required') || isError('zipCode', 'submitRequired')">
-                        Missing Zip code
+                        Missing zip code
                     </div>
                 </div>
             </div>
 
             <div class="control-group" data-ng-show="currentStep">
                 <div class="controls">
-                    <label class="control-label" for="countryCode"><span class="red-asterix">* </span><span data-translate>Phone nr</span></label>
+                    <label class="control-label" for="countryCode"><span class="red-asterix">* </span><span data-translate>Phone number</span></label>
 
                     <select
                             data-ng-style="countryStyle"
@@ -378,12 +378,12 @@
                     <div class="error"
                          data-translate
                          data-ng-show="isError('phone') || (formSubmitted && paymentForm.phone.$invalid && !paymentForm.phone.$error.required)">
-                        Invalid Phone number
+                        Invalid phone number
                     </div>
                     <div class="error"
                          data-translate
                          data-ng-show="isError('phone', 'required') || isError('phone', 'submitRequired')">
-                        Missing Phone number
+                        Missing phone number
                     </div>
                 </div>
             </div>
@@ -391,6 +391,7 @@
         </fieldset>
         <div class="clearfix"></div>
         <div>
+            <div class="asterix-info">* Indicates the field is required</div>
             <div class="clearfix" data-ng-show="currentStep"></div>
             <hr data-ng-show="currentStep" />
             <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</a>

@@ -131,3 +131,7 @@ select.date-month, select.date-year {
     font-weight: bold;
     color: red;
 }
+
+.asterix-info {
+    color: #b3b3b3;
+}
