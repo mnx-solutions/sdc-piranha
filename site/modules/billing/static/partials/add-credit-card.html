@@ -179,7 +179,7 @@
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="addressLine1" data-translate>Address line 1</label>
+                <label class="control-label" for="addressLine1"><span class="red-asterix">* </span><span data-translate>Address line 1</span></label>
                 <div class="controls">
                     <input type="text"
                            id="addressLine1"
@@ -187,6 +187,7 @@
                            data-ng-class="{error: isError('addressLine1')}"
                            data-ng-model="form.cardHolderInfo.addressLine1"
                            size="255"
+                           required
                            data-ng-disabled="useExisting"/>
                         <span data-html="true"
                               data-translate-attributes="data-original-title"
@@ -202,7 +203,7 @@
                     </div>
                     <div class="error"
                          data-translate
-                         data-ng-show="isError('addressLine1', 'required')">
+                         data-ng-show="isError('addressLine1', 'required') || isError('addressLine1', 'submitRequired')">
                         Missing address 1 line
                     </div>
                 </div>
