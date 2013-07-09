@@ -6,7 +6,16 @@ html(lang='en',data-ng-app='JoyentPortal')
       meta(name="viewport", content="width=device-width, initial-scale=1.0")
       link(rel='stylesheet',href='/static/css/error.css',type='text/css')
       title Your browser is not supported!
-
-      body.error-body
-        div.error-well
-          div.error-text Your browser is not supported!
+     body(class='error-body')
+          div(class='brand')
+          div(class='content')
+               h1() Browser error
+               p() Your browser is not supported!
+          div(class='footer')
+              a(href="http://joyent.com/", target="_blank") Joyent.com
+              a(href="http://joyent.com/tos", target="_blank") Terms of Service
+              a(href="http://joyent.com/company/policies", target="_blank") Policies
+              a(href="http://joyent.com/company/security-and-compliance", target="_blank") Compliance
+              a(href="https://help.joyent.com/forums/20715782-current-system-status", target="_blank") System Status
+              a(href="http://apidocs.joyent.com/cloudapi/", target="_blank") API
+              a &copy; 2013 Joyent, Inc.
