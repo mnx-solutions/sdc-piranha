@@ -15,7 +15,7 @@
                            data-ng-pattern="/^(\d+)$/"
                            data-ng-model="form.creditCardNumber"
                            data-ng-class="{error: isError('creditCard.creditCardNumber')}"
-                           required>
+                           data-ng-required="true">
                     <div class="error"
                          data-translate
                          data-ng-show="isError('creditCard.creditCardNumber') || isError('creditCard.cardNumber') || isError('creditCard.cardType')">
@@ -43,7 +43,7 @@
                             data-ng-model="form.expirationMonth"
                             data-ng-class="{error: isError('creditCard.expirationMonth')}"
                             data-ng-options="value for value in months"
-                            required>
+                            data-ng-required="true">
                     </select>
                 </div>
             </div>
@@ -57,7 +57,7 @@
                             data-ng-model="form.expirationYear"
                             data-ng-class="{error: isError('creditCard.expirationYear')}"
                             data-ng-options="value for value in years"
-                            required>
+                            data-ng-required="true">
 
                     </select>
                 </div>
@@ -85,7 +85,7 @@
                            name="securityCode"
                            data-ng-class="{error: isError('creditCard.securityCode')}"
                            data-ng-model="form.securityCode"
-                           required/>
+                           data-ng-required="true" />
                         <span data-html="true"
                               data-translate-attributes="data-original-title"
                               data-toggle="tooltip"
@@ -117,7 +117,7 @@
                            data-translate="placeholder"
                            data-ng-class="{error: isError('billToContact.firstName')}"
                            data-ng-model="form.firstName"
-                           required>
+                           data-ng-required="true">
                         <span data-html="true"
                               data-translate-attributes="data-original-title"
                               data-toggle="tooltip"
@@ -149,7 +149,7 @@
                            data-translate="placeholder"
                            data-ng-class="{error: isError('billToContact.lastName')}"
                            data-ng-model="form.lastName"
-                           required />
+                           data-ng-required="true" />
                         <span data-html="true"
                               data-translate-attributes="data-original-title"
                               data-toggle="tooltip"
@@ -187,7 +187,7 @@
                            data-ng-class="{error: isError('addressLine1')}"
                            data-ng-model="form.cardHolderInfo.addressLine1"
                            size="255"
-                           required
+                           data-ng-required="true"
                            data-ng-disabled="useExisting"/>
                         <span data-html="true"
                               data-translate-attributes="data-original-title"
@@ -240,7 +240,7 @@
                             data-ng-class="{error: isError('country')}"
                             data-ng-model="form.cardHolderInfo.country"
                             data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                            required
+                            data-ng-required="true"
                             data-ng-disabled="useExisting">
                     </select>
                     <div class="error"
@@ -267,7 +267,7 @@
                            data-translate="placeholder"
                            data-ng-class="{error: isError('city')}"
                            data-ng-model="form.cardHolderInfo.city"
-                           required
+                           data-ng-required="true"
                            data-ng-disabled="useExisting">
                     <div class="error"
                          data-translate
@@ -313,7 +313,7 @@
                                 name="state"
                                 data-ng-class="{error: isError('state')}"
                                 data-ng-model="form.cardHolderInfo.state"
-                                required
+                                data-ng-required="true"
                                 data-ng-disabled="useExisting">
                             <option data-ng-repeat="(k, v) in stateSel" value="{{k}}" data-ng-selected="k == form.cardHolderInfo.state">{{v}}</option>
                         </select>
@@ -341,7 +341,7 @@
                            data-translate="placeholder"
                            data-ng-class="{error: isError('zipCode')}"
                            data-ng-model="form.cardHolderInfo.zipCode"
-                           required
+                           data-ng-required="true"
                            data-ng-disabled="useExisting">
                     <div class="error"
                          data-translate
@@ -374,7 +374,7 @@
                                id="phone"
                                name="phone"
                                data-ng-model="phone.number"
-                               required/>
+                               data-ng-required="true"/>
                     </div>
                     <div class="error"
                          data-translate
