@@ -283,7 +283,7 @@
             </div>
             <div data-ng-switch on="!!stateSel">
                 <div class="control-group" data-ng-switch-default>
-                    <label class="control-label" for="state" data-translate>State</label>
+                    <label class="control-label" for="state"><span class="red-asterix">* </span><span data-translate>State</span></label>
                     <div class="controls">
                         <input type="text"
                                id="state"
@@ -292,7 +292,8 @@
                                data-translate="placeholder"
                                data-ng-class="{error: isError('state')}"
                                data-ng-model="form.cardHolderInfo.state"
-                               data-ng-disabled="useExisting">
+                               data-ng-disabled="useExisting"
+                               data-ng-required="true">
                         <div class="error"
                              data-translate
                              data-ng-show="isError('state')">
@@ -300,7 +301,7 @@
                         </div>
                         <div class="error"
                              data-translate
-                             data-ng-show="isError('state', 'required')">
+                             data-ng-show="isError('state', 'required') || isError('state', 'submitRequired')">
                             Missing state
                         </div>
                     </div>
