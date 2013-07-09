@@ -34,11 +34,13 @@
                                         get: function () {
                                             if(!p) {
                                                 p = {};
-                                                $q.when(Package.package(machine.package), function (pack) {
-                                                    Object.keys(pack).forEach(function (k) {
-                                                        p[k] = pack[k];
+                                                if(machine.package) {
+                                                    $q.when(Package.package(machine.package), function (pack) {
+                                                        Object.keys(pack).forEach(function (k) {
+                                                            p[k] = pack[k];
+                                                        });
                                                     });
-                                                });
+                                                }
                                             }
                                             return p;
 
@@ -48,11 +50,13 @@
                                         get: function () {
                                             if(!i) {
                                                 i = {};
-                                                Dataset.dataset(machine.image).then(function (dataset) {
-                                                    Object.keys(dataset).forEach(function (k) {
-                                                        i[k] = dataset[k];
+                                                if(machine.image) {
+                                                    Dataset.dataset(machine.image).then(function (dataset) {
+                                                        Object.keys(dataset).forEach(function (k) {
+                                                            i[k] = dataset[k];
+                                                        });
                                                     });
-                                                });
+                                                }
                                             }
                                             return i;
                                         }

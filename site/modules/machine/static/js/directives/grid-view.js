@@ -61,10 +61,10 @@
             $scope.propOn = !$scope.propOn;
         };
         function getJSONData() {
-            var filtered = $filter('filter')($scope.gridMachines, $scope.matchesFilter);
-            var ordered = $filter('orderBy')(filtered, $scope.gridOrder);
+            var filtered = $filter('filter')($scope.objects, $scope.matchesFilter);
+            var ordered = $filter('orderBy')(filtered, $scope.order);
 
-            var filteredP = $filter('filter')($scope.gridProps, {active:true});
+            var filteredP = $filter('filter')($scope.props, {active:true});
             var orderedP = $filter('orderBy')(filteredP, 'sequence');
 
             var orderInfo = [];
