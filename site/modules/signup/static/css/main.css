@@ -122,16 +122,3 @@ select.date-month, select.date-year {
 #phone {
     width: 145px;
 }
-
-.red-asterix {
-    color: red;
-}
-
-.error {
-    font-weight: bold;
-    color: red;
-}
-
-.asterix-info {
-    color: #b3b3b3;
-}
