@@ -62,3 +62,16 @@ h3 {
     background-color:transparent !important;
     padding-right:20px;
 }
+
+.red-asterix {
+    color: red;
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+}
+
+.asterix-info {
+    color: #b3b3b3;
+}
