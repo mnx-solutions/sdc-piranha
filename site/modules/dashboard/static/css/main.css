@@ -1,11 +1,11 @@
 .dashboard-height {
-    min-height:338px;
-    max-height:338px;
-    height:338px;
+    min-height:340px;
+    max-height:340px;
+    height:340px;
 }
 .dashboard-splash {
     width:620px;
-    height:338px;
+    height:340px;
 }
 
 .loading-medium {
