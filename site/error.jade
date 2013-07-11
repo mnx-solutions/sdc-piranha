@@ -12,11 +12,21 @@ html(lang='en',data-ng-app='JoyentPortal')
                 title Internal server error
 
         link(rel='stylesheet',href='/static/css/error.css',type='text/css')
-    case statusCode
-        when 404
-            body(class='error-body')
-            div(class='splash error-404')
-
-        default
-            body(class='error-body')
-            div(class='splash')
+     body(class='error-body')
+          div(class='error-brand')
+          div(class='error-container')
+           case statusCode
+            when 404
+                 h1(class='error-h1') 404 Error
+                 p(class='error-p') Unfortunatelly the page you are<br />looking for could not be found.
+            default
+                 h1(class='error-h1') General Error
+                 p(class='error-p') System encountered an error.<br />Nothing specific can be told at this point.
+          div(class='error-footer')
+              a(href="http://joyent.com/", target="_blank") Joyent.com
+              a(href="http://joyent.com/tos", target="_blank") Terms of Service
+              a(href="http://joyent.com/company/policies", target="_blank") Policies
+              a(href="http://joyent.com/company/security-and-compliance", target="_blank") Compliance
+              a(href="https://help.joyent.com/forums/20715782-current-system-status", target="_blank") System Status
+              a(href="http://apidocs.joyent.com/cloudapi/", target="_blank") API
+              a &copy; 2013 Joyent, Inc.
