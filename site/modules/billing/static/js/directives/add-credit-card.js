@@ -267,6 +267,7 @@
                                     );
 
                                     var addedMessage = '';
+                                    var fieldErrors = '';
                                     var generic = false;
 
                                     Object.keys($scope.errs).forEach(function (key) {
@@ -286,6 +287,12 @@
                                             } else {
                                                 addedMessage += ' ' + translated;
                                             }
+                                        } else {
+                                            if(fieldErrors !== '') {
+                                                fieldErrors += '<br />'+ key +': '+ err;
+                                            } else {
+                                                fieldErrors += ' '+ key +': '+ err;
+                                            }
                                         }
                                     });
 
@@ -293,7 +300,9 @@
                                         generic = true;
                                     }
 
-                                    if(generic) {
+                                    if(generic && fieldErrors !== '') {
+                                        addedMessage = fieldErrors;
+                                    } else {
                                         addedMessage = ' we are unable to verify your credit card details.';
                                     }
 
