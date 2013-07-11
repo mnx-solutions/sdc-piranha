@@ -3,56 +3,56 @@
 var Handler = require('./handler');
 
 function Server(opts) {
-  if(!(this instanceof Server)) {
-    return new Server(opts);
-  }
+    if(!(this instanceof Server)) {
+        return new Server(opts);
+    }
 
-  this._handlers = {};
-  if(!opts.log || typeof opts.log !== 'object'){
-    throw new TypeError('Opts.log is a required parameter, must be object');
-  }
-  this.log = opts.log;
+    this._handlers = {};
+    if(!opts.log || typeof opts.log !== 'object'){
+        throw new TypeError('Opts.log is a required parameter, must be object');
+    }
+    this.log = opts.log;
 }
 
 Server.prototype.onCall = function (name, handler) {
-  var self = this;
-  if(self._handlers[name]) {
-    self.log.warn('can not have multiple listeners for RPC calls, ignoring');
-    return;
-  }
+    var self = this;
+    if(self._handlers[name]) {
+        self.log.warn('can not have multiple listeners for RPC calls, ignoring');
+        return;
+    }
 
-  if(handler.constructor.name !== 'Handler') {
-    handler = new Handler(handler);
-  }
-  self._handlers[name] = handler;
+    if(handler.constructor.name !== 'Handler') {
+        handler = new Handler(handler);
+    }
+    self._handlers[name] = handler;
 };
 
 Server.prototype.query = function () {
-      return function(req, res) {
-          var id = req.query.tab;
-          if (!req._session._processing(id) && !req._session._readable(id)) {
-              res.send(204);
-              return;
-          }
+    return function(req, res) {
+        var id = req.query.tab;
+        if (!req._session._processing(id) && !req._session._readable(id)) {
+            res.send(204);
+            return;
+        }
 
-          var timeout = null;
-          function send() {
-              if(timeout) {
-                  clearTimeout(timeout);
-              }
-              res.json(200, {results:req._session.read(req, id)});
-          }
-          if(req._session._readable(id)) {
-              send();
-          } else {
-              timeout = setTimeout(function () {
-                  req._session.getTab(id).removeListener('readable', send);
-                  res.send(200, '');
-              }, 30000);
+        var timeout = null;
+        function send() {
+            if(timeout) {
+                clearTimeout(timeout);
+            }
+            res.json(200, {results:req._session.read(req, id)});
+        }
+        if(req._session._readable(id)) {
+            send();
+        } else {
+            timeout = setTimeout(function () {
+                req._session.getTab(id).removeListener('readable', send);
+                res.send(200, '');
+            }, 30000);
 
-              req._session.getTab(id).once('readable', send);
-          }
-      };
+            req._session.getTab(id).once('readable', send);
+        }
+    };
 };
 
 Server.prototype.call = function () {
@@ -75,11 +75,12 @@ Server.prototype.call = function () {
             return;
         }
 
-        if(!self._handlers[query.name].verify(query.data)) {
-            req.log.warn({params:query.data}, 'Invalid parameters  provided for call %s', query.name);
+        if (!self._handlers[query.name].verify(query.data)) {
+            req.log.warn({params:query.data}, 'Invalid parameters provided for call %s', query.name);
             res.send(400, 'Invalid parameters provided');
             return;
         }
+
         var opts = query;
         opts.cloud = req.cloud;
         opts.handler = self._handlers[query.name];
@@ -88,7 +89,7 @@ Server.prototype.call = function () {
 
         var call = req._session.call(id, opts);
 
-        if(!call.immediate) {
+        if (!call.immediate) {
             res.send(202);
         }
     };

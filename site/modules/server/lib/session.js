@@ -54,7 +54,7 @@ Session.prototype.getTab = function (id) {
         throw new TypeError('Tab id missing');
     }
     if (!this._tabs[id]) {
-        this._tabs[id] = new Tab({id:id, log: this.log});
+        this._tabs[id] = new Tab({ id: id, log: this.log, lifespan: this._lifespan });
     }
     return this._tabs[id];
 };
@@ -73,7 +73,7 @@ Session.get = function (req, res, next) {
         req._session = new Session({
             id: req.session.id,
             log: req.log,
-            lifespan: (req.scope.config.session && req.scope.config.session.lifespan) || 24 * 60 * 60 * 1000
+            lifespan: 10000
         });
     }
     next();

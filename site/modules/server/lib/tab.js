@@ -50,7 +50,7 @@ Tab.prototype.call = function (opts) {
     opts.log = logger;
     opts.tab = self;
     opts.remove = function (c) {
-        self._history.push(c);
+        //self._history.push(c);
         delete self._calls[c.id];
     };
     var call = new Call(opts);
@@ -72,7 +72,7 @@ Tab.prototype.call = function (opts) {
         self._calls[call.id] = call;
         self.processing = true;
     } else {
-        self._history.push(call);
+        //self._history.push(call);
     }
 
     return call;
@@ -98,7 +98,7 @@ Tab.prototype.read = function (req){
             }
             delete self._calls[key];
             call.removeAllListeners();
-            self._history.push(call);
+            //self._history.push(call);
         }
     });
 
