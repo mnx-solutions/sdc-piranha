@@ -186,19 +186,19 @@
 
                     // begin temp tropo removal
                     $q.when(Account.getAccount(true), function (account) {
-                    $q.when($http.get('account/countryCodes'), function(data) {
-                        $scope.countryCodes = data.data;
+                        $q.when($http.get('account/countryCodes'), function(data) {
+                            $scope.countryCodes = data.data;
 
-                        account.country = $scope.isoToObj(account.country);
-                        $scope.selectedCountryCode = account.country.areaCode;
+                            account.country = $scope.isoToObj(account.country);
+                            $scope.selectedCountryCode = account.country.areaCode;
 
-                        $scope.phone = {
-                            number: account.phone.replace(new RegExp(/[^0-9#\*]/g), ''),
-                            country: account.country
-                        };
+                            $scope.phone = {
+                                number: account.phone.replace(new RegExp(/[^0-9#\*]/g), ''),
+                                country: account.country
+                            };
 
-                        $scope.account = account;
-                    })
+                            $scope.account = account;
+                        });
                     });
 
                     $scope.isoToObj = function(iso) {

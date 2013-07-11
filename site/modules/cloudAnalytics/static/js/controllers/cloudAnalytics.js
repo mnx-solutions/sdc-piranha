@@ -7,7 +7,7 @@
 
 function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout) {
     //requestContext.setUpRenderContext('cloudAnalytics', $scope);
-    var zoneId = ($routeParams.machine) ? $routeParams.machine : null;
+    var zoneId = ($routeParams.machine) ? $routeParams.machine : null; //REVIEW: Why you no shorthand?
 
     $scope.zoneId = zoneId;
 
@@ -19,7 +19,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
     $scope.currentRange = 60;
     $scope.endtime = null;
     $scope.frozen = false;
-    $scope.ca = new ca();
+    $scope.ca = new ca(); //REVIEW: Constructor name
 
     $scope.current = {
         metric:null,
@@ -28,7 +28,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             secondary: null,
             secondaryF: []
         }
-    }
+    };
     $scope.graphs = [];
     $scope.help = null;
     $scope.croppedModule = true;
@@ -166,7 +166,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             'Memory: excess memory reclaimed',
             'ZFS: used space vs unused quota',
             'Network: utilization'
-        ]
+        ];
 
         for(var opt in oo) {
 
@@ -200,19 +200,19 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             })(opt);
 
         }
-    }
+    };
 
-    $scope.expandMetric = function() {
+    $scope.expandMetric = function() { //REVIEW: Confusing name
         $scope.croppedMetric = !$scope.croppedMetric;
-    }
+    };
     $scope.expandModule = function() {
         $scope.croppedModule = !$scope.croppedModule;
-    }
+    };
 
 
     $scope.createInstrumentation = function(){
         var decomp = [];
-        if($scope.current.decomposition.primary)
+        if($scope.current.decomposition.primary) //REVIEW: Why no {}, hard to read
         decomp.push($scope.current.decomposition.primary);
         if($scope.current.decomposition.secondary)
         decomp.push($scope.current.decomposition.secondary);
@@ -234,7 +234,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             decomposition: decomp,
             predicate: predicate,
             datacenter: datacenter
-        }
+        };
         $scope.ca.createInstrumentations([ options ], function(errs, instrumentations){
             if(!errs.length) {
                 if(!$scope.endtime) {
@@ -263,7 +263,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             }
         });
 
-    }
+    } //REVIEW: Where are ;
 
     $scope.deleteAllInstrumentations = function() {
         $scope.graphs = [];

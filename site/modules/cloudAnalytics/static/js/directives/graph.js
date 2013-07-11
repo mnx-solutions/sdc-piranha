@@ -42,7 +42,7 @@
                     ]
                 };
 
-                $scope.heatmap;
+                $scope.heatmap; //REVIEW: Wut?
                 $scope.showGraph = true;
                 $scope.loadingText = 'loading...';
                 $scope.details = null;
@@ -124,7 +124,7 @@
                                     return (obj.mag <= mag) ? obj : cur;
                                 });
                                 mag = unit.mag;
-                                unitstr = unit.str + (type.abbr || " " + type.unit);
+                                unitstr = unit.str + (type.abbr || " " + type.unit); //REVIEW: " vs '
 
                             }
                             y = y / Math.pow(type.base, mag - power);

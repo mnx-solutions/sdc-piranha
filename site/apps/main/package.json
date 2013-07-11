@@ -16,7 +16,8 @@
             "tracking",
             "dashboard",
             "tfa",
-            "storage"
+            "storage",
+            "timeout"
         ],
 		"auth": true,
         "error": true,

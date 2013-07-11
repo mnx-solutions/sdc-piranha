@@ -5,7 +5,6 @@
     app.factory('AccountAdmin', ['$http','$q', 'serverTab', function ($http, $q, serverTab) {
         var service = {};
 
-        var account = null;
         service.getSignupStep = function(id) {
 
             var deferred = $q.defer();

@@ -122,7 +122,7 @@
                                     'Key successfully deleted'
                                 )
                             );
-
+                            //REVIEW: Why you no fix?
                             // FIXME: Bad, bad, bad
                             $timeout(function () {
                                 $scope.updateKeys();

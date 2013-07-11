@@ -11,7 +11,7 @@ window.JP.set('urlHashbang', window.location.hash);
 
             var oldHashbang = window.JP.get('urlHashbang');
 
-            if(oldHashbang == '#!/' || !oldHashbang || oldHashbang == '') {
+            if(oldHashbang === '#!/' || !oldHashbang || oldHashbang === '') {
                 oldHashbang = '#!/dashboard';
             }
             $scope.login = function() {

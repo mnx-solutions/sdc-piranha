@@ -49,7 +49,7 @@ module.exports = function execute(scope, app, callback) {
                 return;
             }
 
-            redisClient.get(req.params.uuid +'_tropo', function(err, result) {
+            redisClient.get(req.params.uuid +'_tropo', function(err, result) { //REVIEW: If you do this anyways why not do it in one place
                 res.json({sessionId: req.params.tropoid, status: status, retries: result});
             });
         });

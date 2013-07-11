@@ -29,7 +29,7 @@
          * @returns {Deferred} Returns a new instance of deferred.
          */
         service.getAccount = function(noCache) {
-            if(!noCache)
+            if(!noCache) // Why no {} ?
                 noCache = false;
 
             var deferred = $q.defer();

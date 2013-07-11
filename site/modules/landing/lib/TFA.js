@@ -1,6 +1,7 @@
 'use strict';
 var toggle = require('./TFAToggle');
 var tfaProvider = require('./TFAProvider');
+var util = require('util');
 
 /**
  * if toggling security to a new value,
@@ -8,7 +9,9 @@ var tfaProvider = require('./TFAProvider');
  *   and  show the secret key QR code for this session
  */
 var updateMoreSecurity = function (req, res, next) {
-    if (!req.body.account) return next();
+    if (!req.body.account) {
+        return next();
+    }
 
     var enableTFA = req.body.account.security && !(req.session.tfaEnabled || req.session.visibleSecretKey);
     var disableTFA = !req.body.account.security && (req.session.tfaEnabled || req.session.visibleSecretKey);

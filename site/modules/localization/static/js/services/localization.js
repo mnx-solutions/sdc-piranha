@@ -215,6 +215,8 @@
                             //console.warn('TRANSLATE: ' + identifier);
                             return this._format(identifier, params);
                         }
+                    } else {
+                        return this._format(identifier, params);
                     }
                 }
             };
