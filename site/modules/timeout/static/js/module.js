@@ -1,7 +1,7 @@
 'use strict';
 
 window.JP.createModule('timeout', [ 'notification' ])
-    .run(function($dialog, $http, localization, $rootScope) {
+    .run(function($dialog, $http, localization) {
         var sInteraction = Date.now();
         var uInteraction = Date.now();
         var listening = false;
@@ -10,6 +10,7 @@ window.JP.createModule('timeout', [ 'notification' ])
         function userTimeout() {
             uInteraction = Date.now();
         }
+        //Toggle listening for clicks anywhere on screen to see if user is active
         function listenClick(stop) {
             if(stop && listening) {
                 window.jQuery('body').off('click', userTimeout);
@@ -25,8 +26,8 @@ window.JP.createModule('timeout', [ 'notification' ])
             listenClick();
         }
 
+        //Create a call to server to keep session from timing out
         function updateTimeout() {
-            console.log(sInteraction, uInteraction);
             $http.get('timeout/check').success(function () {
                 console.log('Updated sTimeout');
             });
@@ -35,8 +36,9 @@ window.JP.createModule('timeout', [ 'notification' ])
             window.location.href = '/landing/forgetToken';
         }
 
+        //Create a dialog to show to the user allowing them to keep the session alive
         function showWarning() {
-            listenClick(true);
+            listenClick(true); // Stop listening to clicks otherwise session continuing would be default
             var title = localization.translate(
                 'timeout',
                 null,
@@ -66,6 +68,7 @@ window.JP.createModule('timeout', [ 'notification' ])
                 .then(function (result) {
                     switch(result) {
                         case 'ok':
+                            //User opted to stay logged in so refresh server session and start listening to clicks
                             updateTimeout();
                             listenClick();
                             messageBox = null;
@@ -80,10 +83,8 @@ window.JP.createModule('timeout', [ 'notification' ])
 
         window.JP.set('timeoutRefresh', serverTimeout);
 
-
         function checkTimeout() {
-            var cInteraction = uInteraction > sInteraction ? uInteraction : sInteraction;
-            console.log((Date.now() - sInteraction));
+            var cInteraction = uInteraction > sInteraction ? uInteraction : sInteraction; //Use the latest interaction
             if(Date.now() - sInteraction > 15 * 60 * 1000) {
                 logout();
             } else if(!messageBox && (Date.now() - cInteraction) > (12 * 60 * 1000)) {
@@ -94,9 +95,10 @@ window.JP.createModule('timeout', [ 'notification' ])
                 }
             }
         }
-        var interval = setInterval(checkTimeout, 1000);
+        setInterval(checkTimeout, 1000);
 
 
+        //Check if we need to update server session every minute
         setInterval(function () {
             if(uInteraction > sInteraction) {
                 updateTimeout();
