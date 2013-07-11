@@ -67,7 +67,8 @@ h3 {
     color: red;
 }
 
-.error {
+/* this is div specific to avoid colouring inputs */
+div.error {
     font-weight: bold;
     color: red;
 }
