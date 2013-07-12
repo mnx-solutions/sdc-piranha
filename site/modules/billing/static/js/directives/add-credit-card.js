@@ -246,6 +246,11 @@
 
                         if(!$scope.paymentForm.$invalid) {
 
+                            // remove state from submittable form fields to avoid Zuora error on empty state
+                            if($scope.form.cardHolderInfo.state === '') {
+                                delete $scope.form.cardHolderInfo.state;
+                            }
+
                             BillingService.addPaymentMethod($scope.form, function (errs, job) {
                                 if (errs) {
                                     if(errs.zuora) {
