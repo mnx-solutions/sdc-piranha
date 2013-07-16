@@ -196,7 +196,6 @@
 
                 $scope.selectDataset = function (id) {
                     Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
-                        console.log(dataset);
                         if (dataset.type == 'virtualmachine') {
                             $scope.datasetType = 'kvm';
                         } else if (dataset.type == 'smartmachine') {
