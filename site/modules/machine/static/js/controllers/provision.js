@@ -16,12 +16,13 @@
             'localization',
             '$q',
             '$$track',
-            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track) {
+            'util',
+
+            function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.provision', $scope, {
                     title: localization.translate(null, 'machine', 'Create Instances on Joyent')
                 });
-
 
                 $scope.account = Account.getAccount();
                 $scope.keys = Account.getKeys();
@@ -41,19 +42,6 @@
                 ]).then(function () {
                     $scope.loading = false;
                 });
-
-                var confirm = function (question, callback) {
-                    var title = 'Confirm: Create Instance';
-                    var btns = [{result:'cancel', label: 'Cancel', cssClass: 'pull-left'}, {result:'ok', label: 'OK', cssClass: 'btn-joyent-blue'}];
-
-                    $dialog.messageBox(title, question, btns)
-                        .open()
-                        .then(function(result){
-                            if(result === 'ok'){
-                                callback();
-                            }
-                        });
-                };
 
                 $scope.data = {};
                 $scope.selectedDataset = null;
@@ -100,28 +88,34 @@
 
                 $scope.clickProvision = function () {
                     function provision() {
-                        confirm(localization.translate(
-                            $scope,
-                            'machine',
-                            'Billing will start once this instance is created'
-                        ), function () {
-                            // add networks to data
-                            //$scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                            $scope.retinfo = Machine.provisionMachine($scope.data);
-                            $scope.retinfo.done(function(err, job) {
-                              var newMachine = job.__read();
-                                if(newMachine.id) {
-                                    var listMachines = Machine.machine();
-                                    $q.when(listMachines, function() {
-                                        if(listMachines.length == 1) {
-                                            $$track.marketo_machine_provision($scope.account);
-                                        }
-                                    });
-                                }
-                            });
+                        util.confirm(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Confirm: Create Instance'
+                            ),
+                            localization.translate(
+                                $scope,
+                                'machine',
+                                'Billing will start once this instance is created'
+                            ), function () {
+                                // add networks to data
+                                //$scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
+                                $scope.retinfo = Machine.provisionMachine($scope.data);
+                                $scope.retinfo.done(function(err, job) {
+                                    var newMachine = job.__read();
+                                    if(newMachine.id) {
+                                        var listMachines = Machine.machine();
+                                        $q.when(listMachines, function() {
+                                            if(listMachines.length == 1) {
+                                                $$track.marketo_machine_provision($scope.account);
+                                            }
+                                        });
+                                    }
+                                });
 
-                            $location.path('/instance');
-                        });
+                                $location.path('/instance');
+                            });
                     }
 
                     if (!$scope.data.datacenter) {
@@ -140,7 +134,6 @@
                 };
 
                 $scope.selectDatacenter = function (name) {
-
                     if (!name && !$scope.data.datacenter) {
                         Datacenter.datacenter().then(function (datacenters) {
                             if (datacenters.length > 0) {
@@ -154,11 +147,9 @@
                 };
 
                 $scope.selectOpsys = function (name) {
-
                     if (name && (name !== $scope.data.opsys)) {
                         $scope.data.opsys = name;
                     }
-
                 };
 
                 $scope.sortPackages = function (pkg) {
@@ -204,8 +195,6 @@
                             $scope.datasetType = dataset.type;
                         }
 
-
-
                         ng.element('#next').trigger('click');
                         ng.element('#step-configuration').fadeIn('fast');
 
@@ -215,7 +204,6 @@
 
                         $scope.data.dataset = dataset.id;
                         $scope.searchText = '';
-
 
                         if($scope.packages && dataset.license_price) {
                             var lPrice = getNr(dataset.license_price);
@@ -332,7 +320,6 @@
 
                 // Watch datacenter change
                 $scope.$watch('data.datacenter', function (newVal) {
-
                     if (newVal) {
                         $scope.reloading = true;
                         var count = 2;

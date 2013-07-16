@@ -13,11 +13,5 @@ window.JP.main.config([
             title: 'Create Instance',
             action: 'machine.provision'
         });
-    }]);
-
-window.JP.main.run(['Menu', function (Menu) {
-        // Menu.register({
-        //     name: 'Compute',
-        //     link: 'machine'
-        // });
-    }]);
+    }
+]);
