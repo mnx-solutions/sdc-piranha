@@ -366,6 +366,9 @@ module.exports = function execute(scope) {
             client.getMachine(machineId, function (err, machine) {
                 if (!err) {
                     if (newName === machine.name) {
+                        if(machine.package == '') {
+                            call.log.error('Machine %s package is empty after rename!', machineId);
+                        }
                         call.log.debug('Machine %s renamed to %s as expected, returing call', machineId, newName);
                         call.done(null, machine);
                         clearTimeout(timer2);
