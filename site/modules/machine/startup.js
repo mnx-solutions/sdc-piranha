@@ -366,7 +366,7 @@ module.exports = function execute(scope) {
                         call.done(null, machine);
                         clearInterval(timer);
                         clearTimeout(timerTimeout);
-                    } else {
+                    } else if(newName) {
                         call.log.debug('Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
                         call.step = { state: 'renaming' };
                     }
