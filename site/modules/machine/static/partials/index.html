@@ -45,7 +45,8 @@
 	                        </li>
 	                    </ul>
 
-                        <div class="pagination-show-all" data-ng-click="showAll()">Show all</div>
+                        <div class="pagination-show-all" data-ng-show="showAllActive" data-ng-click="showAll()">Show all</div>
+                        <div class="pagination-show-all" data-ng-show="!showAllActive" data-ng-click="showPages()">Show pages</div>
 	                </div>
 				</div>
 				

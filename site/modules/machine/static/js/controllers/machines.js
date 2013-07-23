@@ -43,6 +43,7 @@
             $scope.itemsPerPage = 15;
             $scope.pagedMachines = [];
             $scope.collapsedMachines = {};
+            $scope.showAllActive = false;
             $scope.maxPages = 5;
             $scope.currentPage = 0;
             $scope.machines = Machine.machine();
@@ -267,8 +268,17 @@
                 $scope.itemsPerPage = 9999;
                 $scope.maxPages = 1;
                 $scope.currentPage = 0;
+                $scope.showAllActive = true;
                 $scope.groupToPages();
             };
+
+            $scope.showPages = function() {
+                $scope.itemsPerPage = 15;
+                $scope.maxPages = 5;
+                $scope.currentPage = 0;
+                $scope.showAllActive = false;
+                $scope.groupToPages();
+            }
 
             $scope.prevPage = function () {
                 if ($scope.currentPage > 0) {
