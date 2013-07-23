@@ -230,3 +230,10 @@
     margin-top:78px;
     margin-bottom:0px;
 }
+
+.pagination-show-all {
+    font-size:11px;
+    cursor: pointer;
+    text-decoration: underline;
+    color:#30566a;
+}
