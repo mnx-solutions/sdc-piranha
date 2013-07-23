@@ -266,7 +266,7 @@
             $scope.showAll = function() {
                 $scope.itemsPerPage = 9999;
                 $scope.maxPages = 1;
-                $scope.currentPage = 1;
+                $scope.currentPage = 0;
                 $scope.groupToPages();
             };
 
