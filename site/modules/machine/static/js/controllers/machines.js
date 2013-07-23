@@ -261,6 +261,15 @@
                 return ret;
             };
 
+
+            // put all machines to one page
+            $scope.showAll = function() {
+                $scope.itemsPerPage = 9999;
+                $scope.maxPages = 1;
+                $scope.currentPage = 1;
+                $scope.groupToPages();
+            };
+
             $scope.prevPage = function () {
                 if ($scope.currentPage > 0) {
                     $scope.currentPage--;
