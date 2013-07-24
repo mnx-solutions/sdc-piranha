@@ -14,8 +14,9 @@
         'Package',
         'localization',
         'util',
+        '$http',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $http) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -278,7 +279,19 @@
                 $scope.currentPage = 0;
                 $scope.showAllActive = false;
                 $scope.groupToPages();
-            }
+            };
+
+            /* export current machines */
+            $scope.exportDetails = function() {
+                $http.post('machine/export', getJSONData())
+                    .success(function (id) {
+                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/' + format + '"></iframe>';
+                    })
+                    .error(function () {
+                        console.log('err', arguments);
+                    });
+            };
+
 
             $scope.prevPage = function () {
                 if ($scope.currentPage > 0) {

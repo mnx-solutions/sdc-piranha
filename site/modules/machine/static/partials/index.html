@@ -47,6 +47,9 @@
 
                         <div class="pagination-show-all" data-ng-show="!showAllActive" data-ng-click="showAll()">Show all</div>
                         <div class="pagination-show-all" data-ng-show="showAllActive" data-ng-click="showPages()">Show pages</div>
+                        <div class="pagination-show-all" data-ng-click="exportDetails()">Export .csv</div>
+
+                        <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
 	                </div>
 				</div>
 				
