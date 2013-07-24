@@ -283,7 +283,7 @@
 
             /* export current machines */
             $scope.exportDetails = function() {
-                $http.post('machine/export', getJSONData())
+                $http.post('machine/export', {'data': $scope.machines})
                     .success(function (id) {
                         $scope.exportIframe = '<iframe src="machine/export/' + id + '/' + format + '"></iframe>';
                     })
