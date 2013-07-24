@@ -284,14 +284,25 @@
             /* export current machines */
             $scope.exportDetails = function() {
                 var order = [];
+                var ignoredValues = ['metadata'];
+                var exportData = $scope.machines;
 
                 if($scope.machines[0]) {
                     Object.keys($scope.machines[0]).forEach(function(key) {
-                        order.push(key);
+                        // if it's not an ignored fiel
+                        if(ignoredValues.indexOf(key) === -1)
+                            order.push(key);
                     });
                 }
 
-                $http.post('machine/export', {data: $scope.machines, order: order})
+                // filter out ignored fields
+                exportData.forEach(function(el) {
+                    ignoredValues.forEach(function(e) {
+                        delete el[e];
+                    });
+                });
+
+                $http.post('machine/export', {data: exportData, order: order})
                     .success(function (id) {
                         $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
                     })
