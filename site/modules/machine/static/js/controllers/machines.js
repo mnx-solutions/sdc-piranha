@@ -283,7 +283,15 @@
 
             /* export current machines */
             $scope.exportDetails = function() {
-                $http.post('machine/export', {'data': $scope.machines})
+                var order = [];
+
+                if($scope.machines[0]) {
+                    Object.keys($scope.machines[0]).forEach(function(key) {
+                        order.push(key);
+                    });
+                }
+
+                $http.post('machine/export', {data: $scope.machines, order: order})
                     .success(function (id) {
                         $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
                     })
