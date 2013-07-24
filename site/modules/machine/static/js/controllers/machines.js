@@ -285,7 +285,7 @@
             $scope.exportDetails = function() {
                 $http.post('machine/export', {'data': $scope.machines})
                     .success(function (id) {
-                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/' + format + '"></iframe>';
+                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
                     })
                     .error(function () {
                         console.log('err', arguments);
