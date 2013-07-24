@@ -5,7 +5,7 @@
     app.factory('BillingService', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
         var service = {};
 
-        var creditCard = {};
+        var creditCard = null;
 
         service.getPaymentMethods = function () {
             var call = serverTab.call({
