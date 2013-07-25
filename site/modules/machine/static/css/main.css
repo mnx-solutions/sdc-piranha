@@ -237,3 +237,8 @@
     text-decoration: underline;
     color:#30566a;
 }
+
+.machine-details-info {
+    padding-left:5px;
+    border: none;
+}

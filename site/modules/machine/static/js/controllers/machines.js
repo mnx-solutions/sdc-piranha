@@ -289,7 +289,7 @@
 
                 if($scope.machines[0]) {
                     Object.keys($scope.machines[0]).forEach(function(key) {
-                        // if it's not an ignored fiel
+                        // if it's not an ignored field
                         if(ignoredValues.indexOf(key) === -1)
                             order.push(key);
                     });
