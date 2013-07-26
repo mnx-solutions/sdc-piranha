@@ -9,7 +9,9 @@
                 requestContext.setUpRenderContext('error.index', $scope);
 
                 $scope.$on('errorContextChanged', function (scope, context) {
-                    $scope.error = context.getContext().err;
+                    if (context) {
+                        $scope.error = context.getContext().err;
+                    }
                 });
 
                 $scope.error = errorContext.getContext().err;

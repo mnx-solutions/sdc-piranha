@@ -18,7 +18,7 @@
 
                                 if (!attr || attr.length !== 0 || attr === 'no-value') {
                                     attrs.$observe(attr,
-                                        function (value) {
+                                        function () {
                                             element.attr(attr, localization.translate(
                                                 localization.resolveScope(scope),
                                                 attrs.translateModule,

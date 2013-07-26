@@ -180,13 +180,11 @@
     width: 300px;
 }
 
-
-/*.machine-name:hover {*/
-    /*background: white;*/
-    /*border: 1px solid #cccccc;*/
-    /*border-radius: 4px;*/
-/*}*/
-
+.machine-name:hover {
+    background: white;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+}
 
 .machine-name-edit {
     margin:2px;
@@ -231,4 +229,24 @@
 .resize-button {
     margin-top:78px;
     margin-bottom:0px;
+}
+
+.pagination-show-all {
+    font-size:11px;
+    cursor: pointer;
+    text-decoration: underline;
+    color:#30566a;
+}
+
+.machine-details-info {
+    padding-left:5px;
+    border: none;
+}
+
+.state-sortable-header {
+    margin-right: 15px;
+}
+
+.export-csv-button {
+    float:right;
 }

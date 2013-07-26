@@ -110,11 +110,6 @@
 
                 <div class="span8 provisioning-carousel-span">
                     <div id="myCarousel" class="carousel slide">
-                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of software package or system do you need?"></span>-->
-                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="What type of instance do you need?"></span>-->
-                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="How many CPU, how much memory or disk do you need?"></span>-->
-                        <!--<span class="tooltip-hover" data-html="true" data-toggle="tooltip" data-placement="right" data-original-title="Here are the specs of the instance you're about to launch. Click 'Launch Instance' if okay?"></span>-->
-
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
                                 <div class="item provisioning-item  header row-fluid">
@@ -163,8 +158,7 @@
                                                        name="dataset"
                                                        value="{{selectedVersions[dataset.name].id || dataset.id}}"
                                                        data-ng-checked="selectedDataset.id == dataset.id"
-                                                       data-ng-click="selectDataset(selectedDataset)"
-                                                       data-ng-model="selectedDataset"  />
+                                                       data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))" />
                                             </div>
                                             <div class="span10 provisioning-carousel-padding-left">
                                                 <label for="dataset-{{dataset.id}}" class="span12 text-medium">

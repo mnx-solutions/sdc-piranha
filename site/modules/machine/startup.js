@@ -284,104 +284,99 @@ module.exports = function execute(scope) {
         }
     });
 
-    function pollForMachineState(client, call, machineId, state, timeout) {
-        var timer = setInterval(function () {
-            call.log.debug('Polling for machine %s to become %s', machineId, state);
-            client.getMachine(machineId, function (err, machine) {
-                if (err) {
+
+    /**
+     * Waits for machine state, package or name change
+     * @param {Object} client
+     * @param {Object} call - machine ID is taken from call.data.uuid or call.data if it's a string
+     * @param {Number} [timeout=300000] - timeout in milliseconds, defaults to 5m
+     * @param {String} [state=null]
+     * @param {Object} [sdcpackage=null]
+     * @param {String} [newName=null]
+     */
+    function pollForMachineStateChange(client, call, timeout, state, sdcpackage, newName) {
+        var timer = setInterval(function() {
+            var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
+
+            // acknowledge what are we doing to logs
+            if(state)
+                call.log.debug('Polling for machine %s to become %s', machineId, state);
+
+            if(sdcpackage)
+                call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage);
+
+            if(newName)
+                call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
+
+
+            client.getMachine(machineId, function(err, machine) {
+
+                if(err) {
                     // in case we're waiting for deletion a http 410(Gone) is good enough
-                    if ( err.statusCode === 410 && state === 'deleted')
-                    {
+                    if (err.statusCode === 410 && state === 'deleted') {
                         call.log.debug('Machine %s is deleted, returning call', machineId);
                         call.done(null, machine);
                         clearInterval(timer);
-                        clearTimeout(timer2);
+                        clearTimeout(timerTimeout);
                         return;
                     }
 
                     call.log.error({error:err}, 'Cloud polling failed');
                     call.error(err);
                     clearInterval(timer);
-                    clearTimeout(timer2);
-                } else if (machine.state === 'failed') {
+                    clearTimeout(timerTimeout);
+                } else if(machine.state === 'failed') {
+                    call.log.error('Machine %s fell into failed state', machineId);
                     call.done(new Error('Machine fell into failed state'));
                     clearInterval(timer);
-                    clearTimeout(timer2);
+                    clearTimeout(timerTimeout);
                 } else {
-                    if (state === machine.state) {
+                    // machine state check
+                    if(state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         call.done(null, machine);
-                        clearInterval(timer);
-                        clearTimeout(timer2);
-                    } else {
+                        clearTimeout(timer);
+                        clearInterval(timerTimeout);
+                    } else if(state && state !== machine.state) {
                         call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
                         call.step = {state: machine.state};
                     }
                 }
-            }, null, null, true);
-        }, config.polling.machineState);
 
-        var timer2 = setTimeout(function () {
-            call.log.error('Operation timed out');
-            clearInterval(timer);
-            call.error(new Error('Operation timed out'));
-        }, (timeout || 5 * 60 * 1000));
-    }
-
-    function pollForMachinePackageChange(client, call, sdcpackage, timeout) {
-        var timer = setInterval(function () {
-            var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
-
-            call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage);
-            client.getMachine(machineId, function (err, machine) {
-                if (!err) {
-                    if (sdcpackage === machine.package) {
+                if(!err) {
+                    // resize check
+                    if(sdcpackage && sdcpackage === machine.package) {
                         call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
                         call.done(null, machine);
-                        clearTimeout(timer2);
                         clearInterval(timer);
-                    } else {
+                        clearTimeout(timerTimeout);
+                    } else if(sdcpackage) {
                         call.log.debug('Machine %s package is %s, waiting for %s', machineId, machine.package, sdcpackage);
                         call.step = { state: 'resizing' };
                     }
-                } else {
-                    call.log.error(err);
-//                    call.error(err);
-                }
-            }, null, null, true);
-        }, config.polling.packageChange);
 
-        var timer2 = setTimeout(function () {
-            call.log.error('Operation timed out');
-            clearInterval(timer);
-            call.error(new Error('Operation timed out'));
-        }, (timeout || 5 * 60 * 1000));
-    }
+                    // name change check
+                    if (newName && newName === machine.name) {
 
-    function pollForMachineNameChange(client, call, newName, timeout) {
-        var timer = setInterval(function () {
-            var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
-
-            call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
-            client.getMachine(machineId, function (err, machine) {
-                if (!err) {
-                    if (newName === machine.name) {
+                        // make sure machine package didn't go lost
+                        if(machine.package == '') {
+                            call.log.error('Machine %s package is empty after rename!', machineId);
+                        }
                         call.log.debug('Machine %s renamed to %s as expected, returing call', machineId, newName);
                         call.done(null, machine);
-                        clearTimeout(timer2);
                         clearInterval(timer);
-                    } else {
+                        clearTimeout(timerTimeout);
+                    } else if(newName) {
                         call.log.debug('Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
                         call.step = { state: 'renaming' };
                     }
-                } else {
-                    call.log.error(err);
-//                    call.error(err);
                 }
-            }, null, null, true);
-        }, config.polling.packageChange);
 
-        var timer2 = setTimeout(function () {
+            }, null, null, true);
+        }, config.polling.machineState);
+
+        // timeout, so we wouldn't poll cloudapi forever
+        var timerTimeout = setTimeout(function() {
             call.log.error('Operation timed out');
             clearInterval(timer);
             call.error(new Error('Operation timed out'));
@@ -408,7 +403,7 @@ module.exports = function execute(scope) {
                 var cloud = call.cloud.separate(call.data.datacenter);
                 cloud[func](machineId, function (err) {
                     if (!err) {
-                        pollForMachineState(cloud, call, machineId, endstate);
+                        pollForMachineStateChange(cloud, call, null, endstate, null, null);
                     } else {
                         call.log.error(err);
                         call.error(err);
@@ -450,7 +445,8 @@ module.exports = function execute(scope) {
 
             cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
-                    pollForMachinePackageChange(cloud, call, options.package);
+                    // poll for machine package change (resize)
+                    pollForMachineStateChange(cloud, call, null, null, options.package, null);
                 } else {
                     call.log.error(err);
                     call.error(err);
@@ -474,7 +470,8 @@ module.exports = function execute(scope) {
             var cloud = call.cloud.separate(call.data.datacenter);
             cloud.renameMachine(machineId, options, function(err) {
                 if(!err) {
-                    pollForMachineNameChange(cloud, call, options.name, (60 * 60 * 1000));
+                    // poll for machine name change (rename)
+                    pollForMachineStateChange(cloud, call, (60 * 60 * 1000), null, null, options.name);
                 } else {
                     call.log.error(err);
                     call.immediate(err);
@@ -509,7 +506,10 @@ module.exports = function execute(scope) {
             cloud.createMachine(options, function (err, machine) {
                 if (!err) {
                     call.immediate(null, {machine: machine});
-                    pollForMachineState(cloud, call, machine.id, 'running', (60 * 60 * 1000));
+                    call.data.uuid = machine.id;
+
+                    // poll for machine status to get running (provisioning)
+                    pollForMachineStateChange(cloud, call, (60 * 60 * 1000), 'running', null, null);
                 } else {
                     call.log.error(err);
                     call.immediate(err);

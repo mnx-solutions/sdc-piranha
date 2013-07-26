@@ -27,8 +27,7 @@ module.exports = function execute(scope) {
                 return;
             }
 
-            // FIXME: Temporary fix to allow ssh keygenerator download
-            if (/key\-generator\.sh$/.test(req.originalUrl)) {
+            if (req.originalUrl === '/main/account/key-generator.sh') {
                 next();
                 return;
             }
