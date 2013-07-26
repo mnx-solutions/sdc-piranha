@@ -67,7 +67,7 @@
                         $scope.saveButton = 'Next';
                     }
                     $scope.countries = $http.get('billing/countries');
-                    var statesP = $http.get('billing/states');
+                    var statesPromise = $http.get('billing/states');
 
                     $q.when($scope.prev, function (prev) {
                         if(prev && prev.cardHolderInfo) {
@@ -75,20 +75,20 @@
                                 $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];
                             });
 
-                            $scope.countries.then(function (cs) {
-                                cs.data.some(function (el){
-                                    if(el.name === prev.cardHolderInfo.country) {
-                                        $scope.form.cardHolderInfo.country = el.iso3;
+                            $scope.countries.then(function (countries) {
+                                countries.data.some(function (country){
+                                    if(country.name === prev.cardHolderInfo.country) {
+                                        $scope.form.cardHolderInfo.country = country.iso3;
                                         return true;
                                     }
                                 });
                                 var country = $scope.form.cardHolderInfo.country;
                                 if(country === 'CAN' || country === 'USA') {
-                                    statesP.then(function (allStates) {
+                                    statesPromise.then(function (allStates) {
                                         var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
-                                        Object.keys(states).some(function (el) {
-                                            if(states[el] === prev.cardHolderInfo.state) {
-                                                $scope.form.cardHolderInfo.state = el;
+                                        Object.keys(states).some(function (state) {
+                                            if(states[state] === prev.cardHolderInfo.state) {
+                                                $scope.form.cardHolderInfo.state = state;
                                                 return true;
                                             }
                                         });
@@ -137,12 +137,12 @@
                             $scope.form.cardHolderInfo.state = '';
                         }
                         if(newVal === 'USA') {
-                            statesP.then(function(res) {
+                            statesPromise.then(function(res) {
                                 $scope.stateSel = res.data.us.obj;
                             });
 
                         } else if (newVal === 'CAN') {
-                            statesP.then(function(res) {
+                            statesPromise.then(function(res) {
                                 $scope.stateSel = res.data.canada.obj;
                             });
                         } else {
@@ -173,12 +173,12 @@
                             }
                         }
 
-                        if($scope.formSubmitted && $scope.paymentForm[field] && $scope.paymentForm[field].$error.required && errorType == 'submitRequired') {
+                        if($scope.formSubmitted && $scope.paymentForm[field] && $scope.paymentForm[field].$error.required && errorType === 'submitRequired') {
                             return true;
                         }
 
                         // state validation fix
-                        if(field == 'state' && errorType == 'submitRequired' && $scope.formSubmitted && $scope.paymentForm[field].$modelValue === "") {
+                        if(field === 'state' && errorType === 'submitRequired' && $scope.formSubmitted && $scope.paymentForm[field].$modelValue === "") {
                             return true;
                         }
 
@@ -326,9 +326,7 @@
                                         );
 
                                         $scope.errs = null;
-                                        var cc = BillingService.getDefaultCreditCard();
-
-                                        $q.when(cc, function (credit) {
+                                        $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                             $scope.loading = false;
                                             $rootScope.$broadcast('creditCardUpdate', credit);
                                         });

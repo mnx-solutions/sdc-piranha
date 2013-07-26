@@ -30,7 +30,8 @@ Server.prototype.onCall = function (name, handler) {
 Server.prototype.query = function () {
     return function(req, res) {
         var id = req.query.tab;
-        if (!req._session._processing(id) && !req._session._readable(id)) {
+        var isSessionReadable = req._session._readable(id);
+        if (!req._session._processing(id) && !isSessionReadable) {
             res.send(204);
             return;
         }
@@ -42,7 +43,7 @@ Server.prototype.query = function () {
             }
             res.json(200, {results:req._session.read(req, id)});
         }
-        if(req._session._readable(id)) {
+        if(isSessionReadable) {
             send();
         } else {
             timeout = setTimeout(function () {

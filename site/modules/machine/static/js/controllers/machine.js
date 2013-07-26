@@ -82,6 +82,7 @@
                         keys.forEach(function (k) {
                             delete val[k].conflict;
 
+                            // Delete the element if there is no key and value and it is not the last tag row
                             if (!val[k].key && !val[k].val && old && old[k] && !old[k].key && !old[k].val && +k !== +$scope.tagnr) {
                                 delete val[k];
                             } else if (val[k].key) {
@@ -99,10 +100,13 @@
                         }
 
                         if(keys.length > 1) {
-                            var nextToLast = keys[keys.length -2];
-                            if(!val[nextToLast].key && !val[nextToLast].val && !val[$scope.tagnr].val && !val[$scope.tagnr].key) {
+                            var nextToLastKey = keys[keys.length - 2];
+                            var nextToLast = val[nextToLastKey];
+                            var last = val[$scope.tagnr];
+                            // Remove last tag if both nextToLast and last tag element have missing keys and values
+                            if(!nextToLast.key && !nextToLast.val && !last.val && !last.key) {
                                 delete val[$scope.tagnr];
-                                $scope.tagnr = +nextToLast;
+                                $scope.tagnr = +nextToLastKey;
                             }
                         }
                     }
