@@ -246,3 +246,7 @@
 .state-sortable-header {
     margin-right: 15px;
 }
+
+.export-csv-button {
+    float:right;
+}
