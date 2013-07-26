@@ -50,9 +50,9 @@ module.exports = function execute(scope, register, callback) {
             });
 
             var state = 'start';
-            if(errs.length === 0) {
+            if(errs.length === 0) { // The only error was provisioning flag - letting through
                 state = 'completed';
-            } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') {
+            } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') { // There was only a billing error
                 state = 'billing';
             }
 
@@ -113,7 +113,7 @@ module.exports = function execute(scope, register, callback) {
     api.setSignupStep = function (call, step, cb) {
         function updateBilling(req) {
             function update(userId) {
-                jsonClient.get('/update/' + userId, function (err, req2, res2, obj) {
+                jsonClient.get('/update/' + userId, function (err) {
                     if(err) {
                         call.log.error('Something went wrong with billing API', err);
                     }
@@ -154,7 +154,10 @@ module.exports = function execute(scope, register, callback) {
                 cb(err);
                 return;
             }
-            if(oldStep === 'completed' || oldStep === 'complete' || steps.indexOf(step) <= steps.indexOf(oldStep) || (steps.indexOf(step) - steps.indexOf(oldStep) > 1)) {
+            var isCompleted = oldStep === 'completed' || oldStep === 'complete';
+            var isAStepBackwards = steps.indexOf(step) <= steps.indexOf(oldStep);
+            var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
+            if(isCompleted || isAStepBackwards || isALeap) {
                 cb();
                 return;
             }

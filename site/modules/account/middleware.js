@@ -5,7 +5,6 @@ var config = require('easy-config');
 module.exports = function execute(scope) {
 
     var SignupProgress = scope.api('SignupProgress');
-    var ends = ['completed','complete'];
 
     function returnPage(req, res, next, step) {
         if(req.session.signupStep !== step) {
@@ -13,7 +12,7 @@ module.exports = function execute(scope) {
             req.session.save();
         }
 
-        if(ends.indexOf(step) > -1) {
+        if(step === 'completed') {
             return next();
         }
 
@@ -35,7 +34,7 @@ module.exports = function execute(scope) {
             }
 
             if (/^\/signup/.test(req.originalUrl)) {
-                if (ends.indexOf(step) > -1) {
+                if (step === 'completed') {
                     res.redirect('/main/');
                     return;
                 }
