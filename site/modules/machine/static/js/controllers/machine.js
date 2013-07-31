@@ -252,7 +252,6 @@
                 };
 
                 $scope.cancelRename = function() {
-                    $scope.newInstanceName = name;
                     $scope.changingName = false;
                 };
 
