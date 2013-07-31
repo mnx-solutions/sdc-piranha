@@ -252,8 +252,9 @@
                 };
 
                 $scope.cancelRename = function() {
+                    $scope.newInstanceName = name;
                     $scope.changingName = false;
-                }
+                };
 
                 $scope.clickRename = function() {
                     if ($scope.machine.name == $scope.newInstanceName) {
