@@ -262,6 +262,10 @@
         <a href="#!/cloudAnalytics/{{machine.id}}"><img src="/static/img/analytics-small.png" hspace="10" vspace="20" border="0"></a>
     </div>
     <div class="clearfix"></div>
+    <div class="alert alert-success shadow">
+        <button class="btn btn-success" data-ng-click="clickCreateImage()" data-translate data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'">Create image from this instance</button>
+        <span>Machine must be in stopped state to create an image</span>
+    </div>
 </div>
 
 </div>

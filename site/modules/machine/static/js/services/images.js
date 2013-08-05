@@ -44,9 +44,12 @@
                 return images.job;
             };
 
-            service.image = function(id) {
+            service.image = function(force, id) {
 
-                if(!id && !images.list.final) {
+                if(!force)
+                    force = false;
+
+                if(!id && !images.list.final || force) {
                     var job = service.updateImages();
                     return job.deferred;
                 }
@@ -64,6 +67,20 @@
                 }
 
                 return ret.promise;
+            };
+
+
+            service.createImage = function(machineId) {
+
+                var newImage = serverTab.call({
+                    name: 'ImageCreate',
+                    data: { machineId: machineId },
+                    done: function(err, job) {
+                        // !TODO: Image has been created, handle this
+                    }
+                });
+
+                return newImage.job;
             };
 
             return service;

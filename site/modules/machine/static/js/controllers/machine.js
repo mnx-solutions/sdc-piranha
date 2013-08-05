@@ -8,13 +8,14 @@
             'Dataset',
             'Machine',
             'Package',
+            'Image',
             '$dialog',
             '$$track',
             'localization',
             '$q',
             '$location',
             'util',
-            function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, $location, util) {
+            function ($scope, requestContext, Dataset, Machine, Package, Image, $dialog, $$track, localization, $q, $location, util) {
                 localization.bind('machine', $scope);
                 requestContext.setUpRenderContext('machine.details', $scope, {
                     title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -244,6 +245,10 @@
                                 $scope.currentPackage = $scope.selectedPackage;
                             });
                     });
+                };
+
+                $scope.clickCreateImage = function() {
+                    var job = Image.createImage($scope.machineid);
                 };
 
                 $scope.enableRename = function(name) {

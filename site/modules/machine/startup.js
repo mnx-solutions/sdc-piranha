@@ -522,6 +522,37 @@ module.exports = function execute(scope) {
 
     /* Images */
 
+    /* CreateImage */
+    server.onCall('ImageCreate', {
+        verify: function(data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('machineId');
+        },
+        handler: function(call) {
+            var options = {
+                machine: call.data.machineId,
+                name: 'My Image', // !TODO: Must be able to define name on create
+                version: '1.0.0', // !TODO: Must be able to define version on create
+                description: 'Testing image creation'
+            };
+
+            call.log.info({options: options}, 'Creating image %s', options.name);
+            call.getImmediate(false);
+
+            call.cloud.createImageFromMachine(options, function(err, image) {
+                if(!err) {
+                    call.immediate(null, {image: image});
+                    call.data.uuid = image.id;
+                    call.done(null, image);
+                } else {
+                    call.log.error(err);
+                    call.immediate(err);
+                }
+            });
+
+        }
+    });
+
     /*images list */
     /* listNetworks */
     server.onCall('ImagesList', function(call) {

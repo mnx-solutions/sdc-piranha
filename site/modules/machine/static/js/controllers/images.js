@@ -20,7 +20,7 @@
                 title: localization.translate(null, 'machine', 'My images')
             });
 
-            $scope.images = Image.image();
+            $scope.images = Image.image(true);
             $scope.loading = true;
 
             $q.when($scope.images).then(
