@@ -75,8 +75,14 @@
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
                     data: { machineId: machineId },
-                    done: function(err, job) {
-                        // !TODO: Image has been created, handle this
+                    done: function(err, image) {
+                        notification.push(image.name, { type: 'success' },
+                            localization.translate(null,
+                                'machine',
+                                'Image "{{name}}" successfully created',
+                                { name: image.name }
+                            )
+                        );
                     }
                 });
 
