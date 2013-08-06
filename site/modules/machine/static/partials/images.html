@@ -2,12 +2,40 @@
     <div class="loading-large" data-ng-show="loading"></div>
 
     <div class="machines container" data-ng-show="images.length">
-        <data-breadcrumb></data-breadcrumb>
-        <data-notification></data-notification>
+        <div  data-breadcrumb></div>
+        <div data-notification></div>
 
 
-        <div data-ng-repeat="image in images">
-            <div class="image-name">{{image.name}} - {{image.description}}</div>
-        </div>
+        <div class="item-list-container">
+
+            <div class="item header row-fluid machine-list-item">
+                <span class="span4 text-medium sortable">
+                    <span class="pull-left machines-list-header" data-translate>Name</span>
+                </span>
+
+                <span class="span6 text-medium sortable">
+                    <span class="pull-left machines-list-header" data-translate>Description</span>
+                </span>
+
+                <span class="span2 text-medium sortable">
+                    <span class="pull-left machines-list-header" data-translate>Name</span>
+                </span>
+            </div>
+
+
+            <div data-ng-repeat="image in images" class="item row-fluid">
+                <span class="span4 text-medium crop machine-list-content">
+                      {{image.name}}
+                  </span>
+
+                  <span class="span6 text-medium crop machine-list-content">
+                      {{image.description}}
+                  </span>
+
+                  <span class="span2 text-medium crop machine-list-content">
+                      {{image.version}}
+                  </span>
+            </div>
+        </div>  
     </div>
 </div>

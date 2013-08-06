@@ -1,12 +1,12 @@
 <div data-ng-controller="Machine.IndexController">
     <div class="loading-large" data-ng-show="loading"></div>
         <div class="machines container" data-ng-show="pagedMachines.length || query">
-            <data-breadcrumb></data-breadcrumb>
-            <data-notification></data-notification>
+            <div data-breadcrumb></div>
+            <div data-notification></div>
 
             <div class="page-header">
                 <h1 class="pull-left" data-translate>Instances</h1>
-                <div ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
+                <div data-ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>
 
                 <form class="form-search pull-right">
                     <input type="search"
@@ -32,7 +32,7 @@
 	                <div class="pagination pagination-small pagination-centered">
 	                    <ul>
 	                        <li data-ng-class="{disabled: currentPage == 0}">
-	                            <a href ng-click="prevPage()" data-translate>« Prev</a>
+	                            <a href data-ng-click="prevPage()" data-translate>« Prev</a>
 	                        </li>
 	                        <li data-ng-repeat="n in range()"
 	                            data-ng-class="{active: n == currentPage}"
@@ -82,7 +82,7 @@
         </div>
 
         <div class="machines container" data-ng-hide="(pagedMachines.length || loading || query)">
-            <data-notification></data-notification>
+            <div data-notification></div>
 
             <div class="alert alert-joyent-blue alert-global">
                 <div class="pull-left">
