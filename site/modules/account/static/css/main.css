@@ -97,3 +97,12 @@ select.date-month, select.date-year {
     border-top:1px solid #ddd;
     margin-bottom: 5px;
 }
+.orange-asterix {
+    color:#ff6600;
+}
+.required-text {
+    font-size: 14px;
+}
+#paymentForm tr td{
+    padding:10px;
+}

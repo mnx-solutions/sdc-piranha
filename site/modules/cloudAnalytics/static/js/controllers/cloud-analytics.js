@@ -107,7 +107,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             return;
         }
         /* pre-defined default intrumentations */
-        var oo = [
+        var dOptions = [
             [{
                 module: 'cpu',
                 stat: 'usage',
@@ -159,7 +159,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             }]
         ];
 
-        var ot = [
+        var dTitles = [
             'CPU: usage',
             'CPU: wait time',
             'Memory: resident set size vs max resident size',
@@ -168,10 +168,10 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             'Network: utilization'
         ]
 
-        for(var opt in oo) {
+        for(var opt in dOptions) {
 
           (function(index) {
-              $scope.ca.createInstrumentations(oo[index], function(errs, inst) {
+              $scope.ca.createInstrumentations(dOptions[index], function(errs, inst) {
                   if(!errs.length) {
                       if(!$scope.endtime) {
                           $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
@@ -179,7 +179,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                       }
                       $scope.graphs.push({
                           instrumentations: inst,
-                          title: ot[index]
+                          title: dTitles[index]
                       });
                   } else {
                       var errors = '';
@@ -304,8 +304,8 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
         $scope.croppedMetric = true;
         $scope.croppedModule = true;
         if($scope.current.decomposition.primary) {
-            var currentType =$scope.conf.fields[$scope.current.decomposition.primary].type;
-            var currentArity =$scope.conf.types[currentType].arity;
+            var currentType = $scope.conf.fields[$scope.current.decomposition.primary].type;
+            var currentArity = $scope.conf.types[currentType].arity;
             $scope.current.decomposition.secondaryF = [];
             $scope.current.decomposition.secondary = null;
             for(var f in $scope.current.metric.fields){
@@ -323,7 +323,6 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
     }
 
     function tick(){
-
         $scope.endtime++;
 
         $timeout(tick, 1000);
