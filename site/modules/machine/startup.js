@@ -495,8 +495,8 @@ module.exports = function execute(scope) {
             var options = {
                 name: call.data.name,
                 package: call.data.package,
-                dataset: call.data.dataset,
-                networks: call.data.networks
+                dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
+                networks: call.data.networks,
             };
 
             call.log.info({options: options}, 'Creating machine %s', call.data.name);
