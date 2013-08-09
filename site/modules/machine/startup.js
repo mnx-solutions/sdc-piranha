@@ -517,4 +517,15 @@ module.exports = function execute(scope) {
             });
         }
     });
+
+
+
+    /* Images */
+
+    /*images list */
+    /* listNetworks */
+    server.onCall('ImagesList', function(call) {
+        call.log.info('Retrieving images list');
+        call.cloud.listImages(call.done.bind(call));
+    });
 };

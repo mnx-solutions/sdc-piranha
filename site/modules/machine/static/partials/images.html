@@ -1,0 +1,13 @@
+<div class="container" data-ng-controller="Machine.ImagesController">
+    <div class="loading-large" data-ng-show="loading"></div>
+
+    <div class="machines container" data-ng-show="images.length">
+        <data-breadcrumb></data-breadcrumb>
+        <data-notification></data-notification>
+
+
+        <div data-ng-repeat="image in images">
+            <div class="image-name">{{image.name}} - {{image.description}}</div>
+        </div>
+    </div>
+</div>
