@@ -119,6 +119,32 @@
 
     <fieldset>
         <legend>
+            <span data-translate>Create image</span>
+            <small data-translate>Create new image from instance</small>
+        </legend>
+
+        <p class="text-small muted" data-translate>
+            Machine needs to be stopped in order to create image from it. Later you can provision new machines from this image.
+        </p>
+
+        <div class="clearfix"></div>
+
+        <div>
+            <form name="tagForm">
+            <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
+            <input type="text" placeholder="Image description" name="imageDescription" data-ng-model="imageDescription" value="" />
+            <br />
+            <button class="btn btn-joyent-blue pull-right"
+                    data-ng-click="clickCreateImage()"
+                    data-translate
+                    data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || machine.state != 'stopped'">Create image</button>
+            </form>
+
+        </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>
             <span data-translate>Tags</span>
             <small data-translate>Add tags for convenient instance searching</small>
         </legend>
@@ -262,10 +288,6 @@
         <a href="#!/cloudAnalytics/{{machine.id}}"><img src="/static/img/analytics-small.png" hspace="10" vspace="20" border="0"></a>
     </div>
     <div class="clearfix"></div>
-    <div class="alert alert-success shadow">
-        <button class="btn btn-success" data-ng-click="clickCreateImage()" data-translate data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'">Create image from this instance</button>
-        <span>Machine must be in stopped state to create an image</span>
-    </div>
 </div>
 
 </div>

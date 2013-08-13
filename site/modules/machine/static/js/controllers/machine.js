@@ -248,7 +248,7 @@
                 };
 
                 $scope.clickCreateImage = function() {
-                    var job = Image.createImage($scope.machineid);
+                    $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
                 };
 
                 $scope.enableRename = function(name) {

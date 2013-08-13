@@ -531,9 +531,9 @@ module.exports = function execute(scope) {
         handler: function(call) {
             var options = {
                 machine: call.data.machineId,
-                name: 'My Image', // !TODO: Must be able to define name on create
-                version: '1.0.0', // !TODO: Must be able to define version on create
-                description: 'Testing image creation'
+                name: (call.data.name || 'My Image'),
+                version: '1.0.0', // We default to version 1.0.0
+                description: (call.data.description || 'Default image description')
             };
 
             call.log.info({options: options}, 'Creating image %s', options.name);

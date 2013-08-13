@@ -70,17 +70,17 @@
             };
 
 
-            service.createImage = function(machineId) {
+            service.createImage = function(machineId, name, description) {
 
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
-                    data: { machineId: machineId },
+                    data: { machineId: machineId, name: name, description: description },
                     done: function(err, image) {
                         notification.push(image.name, { type: 'success' },
                             localization.translate(null,
                                 'machine',
                                 'Image "{{name}}" successfully created',
-                                { name: image.name }
+                                { name: image.data.name }
                             )
                         );
                     }
