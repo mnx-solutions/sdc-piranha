@@ -23,10 +23,3 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'account.invoices'
         });
 }]);
-
-window.JP.main.run(['Menu', function (Menu) {
-    Menu.register({
-        name: 'Account',
-        link: 'account'
-    });
-}]);

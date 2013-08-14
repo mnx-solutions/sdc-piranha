@@ -11,10 +11,3 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'cloudAnalytics.index'
         });
 }]);
-
-window.JP.main.run(['Menu', function (Menu) {
-    Menu.register({
-        name: 'Cloud Analytics',
-        link: 'cloudAnalytics'
-    });
-}]);

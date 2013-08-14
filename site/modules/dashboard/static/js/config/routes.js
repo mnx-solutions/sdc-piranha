@@ -8,6 +8,3 @@ window.JP.main.config([
             action: 'dashboard.index'
         });
     }]);
-
-window.JP.main.run(['Menu', function (Menu) {
-    }]);
