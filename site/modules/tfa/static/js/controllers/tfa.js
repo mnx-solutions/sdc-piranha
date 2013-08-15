@@ -15,7 +15,11 @@
                     //Should never reach this
                     $scope.success = true;
                 }, function (err) {
-                    $scope.error = err || 'Redirecting to login';
+                    if (err) {
+                        $scope.error = 'Invalid one time password';
+                    } else {
+                        $scope.error = 'Redirecting to login';
+                    }
                 });
             };
         }]);
