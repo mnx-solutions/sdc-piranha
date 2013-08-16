@@ -4,7 +4,13 @@
 }
 
 .machines button.create-instance {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+
+}
+
+.machines button.list-my-images {
+    margin-bottom: 20px;
     width: 100%;
 
 }
