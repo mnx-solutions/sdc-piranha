@@ -7,23 +7,34 @@
 
 
         <div class="item-list-container">
-
             <div class="item header row-fluid machine-list-item">
-                <span class="span4 text-medium sortable">
-                    <span class="pull-left machines-list-header" data-translate>Name</span>
+                <span class="span4 text-medium sortable"
+                      data-ng-click="sortBy('name')"
+                      data-ng-switch on="sortIcon.name">
+                      <span class="pull-left machines-list-header" data-translate>Name</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span4 text-medium sortable">
-                    <span class="pull-left machines-list-header" data-translate>Description</span>
+                <span class="span4 text-medium sortable"
+                      data-ng-click="sortBy('description')"
+                      data-ng-switch on="sortIcon.description">
+                      <span class="pull-left machines-list-header" data-translate>Description</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span4 text-medium sortable">
-                    <span class="pull-left machines-list-header" data-translate>Version</span>
+                <span class="span4 text-medium sortable"
+                      data-ng-click="sortBy('version')"
+                      data-ng-switch on="sortIcon.version">
+                      <span class="pull-left machines-list-header" data-translate>Version</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
             </div>
 
 
-            <div data-ng-repeat="image in images" class="item row-fluid">
+            <div data-ng-repeat="image in pagedImages[currentPage] | orderBy:sortingOrder:reverse" class="item row-fluid">
                 <span class="span4 text-medium crop machine-list-content">
                       {{image.name}}
                   </span>
@@ -37,5 +48,37 @@
                   </span>
             </div>
         </div>  
+    </div>
+    <div class="pagination pagination-small pagination-centered">
+        <ul>
+            <li data-ng-class="{disabled: currentPage == 0}">
+                <a href data-ng-click="prevPage()" data-translate>« Prev</a>
+            </li>
+            <li data-ng-repeat="n in range()"
+                data-ng-class="{active: n == currentPage}"
+                data-ng-click="setPage()">
+                <a href data-ng-bind="n + 1">1</a>
+                <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
+            </li>
+            <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+                <a href data-ng-click="nextPage()" data-translate>Next »</a>
+            </li>
+            <li data-ng-show="!showAllActive">
+                <a href data-ng-click="showAll()" data-translate>List all</a>
+            </li>
+            <li data-ng-show="showAllActive">
+                <a href data-ng-click="showPages()" data-translate>View pages</a>
+            </li>
+        </ul>
+        <button role="button"
+                class="btn btn-mini button tooltip-hover export-csv-button"
+                data-ng-click="exportDetails()"
+                data-translate
+                data-translate-attributes="data-original-title"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-html="true"
+                data-original-title="Export machine list in .csv">Export .csv</button>
+        <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
     </div>
 </div>

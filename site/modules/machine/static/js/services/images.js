@@ -14,11 +14,11 @@
 
             service.updateImages = function() {
                 if(!images.list.final) {
-                    images.job.finished = false;
+//                    images.job.finished = false;
                     images.job = serverTab.call({
                         name: 'ImagesList',
                         done: function(err, job) {
-                            images.job.finished = true;
+//                            images.job.finished = true;
 
                             if(err) {
                                 errorContext.emit(new Error(localization.translate(null,
