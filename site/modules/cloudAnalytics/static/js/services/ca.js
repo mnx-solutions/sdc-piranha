@@ -2,8 +2,8 @@
 
 
 (function (app, ng) {
-    app.factory('ca', ['$resource', '$http', 'caInstrumentation',
-        function ($resource, $http, instrumentation) {
+    app.factory('ca', ['$resource', '$http', '$q', 'caInstrumentation',
+        function ($resource, $http, $q, instrumentation) {
 
         var _pollOptions = {
             last_poll_time: null,
@@ -31,7 +31,7 @@
                         var previous = this.individual[datacenter][id].ndatapoints || this.ndatapoints;
                         this.individual[datacenter][id].ndatapoints = previous + (difference || 1);
                     } else if(instrumentation) {
-                        delete(this.individual[datacenter][id].ndatapoints);
+                        delete this.individual[datacenter][id].ndatapoints;
                         instrumentation.addValues(datapoints[datacenter][id]);
                     }
                 }
@@ -52,7 +52,7 @@
             this.individual[inst._datacenter][inst.id].duration = range;
         }
         _pollOptions.remove = function (inst) {
-            delete(this.individual[inst._datacenter][inst.id]);
+            delete this.individual[inst._datacenter][inst.id];
         };
         _pollOptions.removeAll = function () {
             this.reset();
@@ -115,8 +115,9 @@
             return false;
         };
         _instrumentations._getStatLabel = function (stat) {
-            for(var m in ca.description.confReady.metrics) {
-                var metric = ca.description.confReady.metrics[m];
+            var conf = ca.description.configuration;
+            for(var m in conf.metrics) {
+                var metric = conf.metrics[m];
                 if(metric.stat == stat) {
                     return metric.label;
                 }
@@ -125,15 +126,17 @@
         }
         _instrumentations._getDecompositionLabels = function (decompositions) {
             var response = [];
+            var conf = ca.description.configuration;
             for(var d in decompositions) {
                 var decomposition = decompositions[d];
-                response.push(ca.description.confReady.fields[decomposition].label);
+                response.push(conf.fields[decomposition].label);
             }
             return response;
         }
         _instrumentations._getMetricLabel = function (mod, stat) {
-            for( var m in ca.description.confReady.metrics) {
-                var metric = ca.description.confReady.metrics[m];
+            var conf = ca.description.configuration;
+            for( var m in conf.metrics) {
+                var metric = conf.metrics[m];
                 if(metric.module === mod && metric.stat === stat) {
                     return metric.labelHtml;
                 }
@@ -170,9 +173,9 @@
         };
         _instrumentations.remove = function (inst) {
             if(this.public[inst._datacenter] && this.public[inst._datacenter][inst.id]) {
-                delete(this.public[inst._datacenter][inst.id]);
+                delete this.public[inst._datacenter][inst.id];
                 if(!Object.keys(this.public[inst._datacenter]).length) {
-                    delete(this.public[inst._datacenter]);
+                    delete this.public[inst._datacenter];
                 }
                 inst.remove(function(){
 
@@ -185,9 +188,9 @@
         };
         _instrumentations.removePrivate = function (inst) {
             if(this.private[inst._datacenter] && this.private[inst._datacenter][inst.id]) {
-                delete(this.private[inst._datacenter][inst.id]);
+                delete this.private[inst._datacenter][inst.id];
                 if(!Object.keys(this.private[inst._datacenter]).length) {
-                    delete(this.private[inst._datacenter]);
+                    delete this.private[inst._datacenter];
                 }
             }
         };
@@ -301,28 +304,30 @@
 
 
         var _description = {
-            help: $http.get('cloudAnalytics/ca/help'),
-            conf: $http.get('cloudAnalytics/ca'),
-            confReady: null,
-            helpReady: null
+            helpPromise: $http.get('cloudAnalytics/ca/help'),
+            descriptionPromise: $http.get('cloudAnalytics/ca'),
+            configuration: null
         };
         _description._labelMetrics = function (metric) {
+
             var fieldsArr = metric.fields;
             var labeledFields = [];
+            var conf = ca.description.configuration;
             for(var f in fieldsArr) {
-                labeledFields[fieldsArr[f]] = ca.description.confReady.fields[fieldsArr[f]].label;
+                labeledFields[fieldsArr[f]] = conf.fields[fieldsArr[f]].label;
             }
             metric.fields = labeledFields;
-            var moduleName = ca.description.confReady.modules[metric.module].label;
+            var moduleName = conf.modules[metric.module].label;
             metric.labelHtml = moduleName + ': ' + metric.label;
 
             return metric;
         };
         _description._getInstrumentationType = function(inst) {
-            for(var m in this.confReady.metrics) {
-                var metric = this.confReady.metrics[m];
+            var conf = this.configuration;
+            for(var m in conf.metrics) {
+                var metric = conf.metrics[m];
                 if(metric.module === inst.module && metric.stat === inst.stat) {
-                    return metric.type && (this.confReady.types[metric.type] || null) || null;
+                    return metric.type && (conf.types[metric.type] || null) || null;
                 }
             }
             return null;
@@ -330,54 +335,24 @@
         _description.describe = function(callback) {
 
             var self = this;
-            if(self.confReady && self.helpReady) {
-                if(!self.confReady.help) {
-                    self.confReady.help = self.helpReady;
-                }
-                callback(null, self.confReady);
-                return;
-            }
-            var count = 0;
-            self.conf.then(function(r){
-                self.confReady = r.data.res;
-                count++;
-                if(count === 2) {
-                    if(!self.helpReady || !self.confReady) {
-                        callback('configuartion not loaded!');
-                        return;
-                    } else if(r.data.err){
-                        callback(r.data.err)
-                        return;
-                    }
 
-                    if(!self.confReady.help) {
-                        self.confReady.help = self.helpReady;
-                    }
-                    self.confReady.metrics.forEach(self._labelMetrics);
-                    callback(null, self.confReady);
+            var configuration = $q.all([ self.descriptionPromise, self.helpPromise ]);
+
+            configuration.then(function(response){
+                var description = response[0].data;
+                var help = response[1].data.data;
+                var err = description.err;
+                if(err) {
+                    callback(err);
                     return;
                 }
+
+                self.configuration = description.res;
+                self.configuration.help = help;
+                self.configuration.metrics.forEach(self._labelMetrics);
+
+                callback(null, self.configuration);
             });
-
-            self.help.then(function(r){
-                self.helpReady = r.data.data;
-                count++;
-                if(count === 2) {
-                    if(!self.helpReady || !self.confReady) {
-                        callback({
-                            message: 'configuration not loaded!'
-                        });
-                        return
-                    }
-
-                    if(!self.confReady.help) {
-                        self.confReady.help = self.helpReady;
-                    }
-                    self.confReady.metrics.forEach(self._labelMetrics);
-                    callback(null, self.confReady);
-                    return;
-                }
-            })
         };
 
         var ca = function(){};
@@ -489,7 +464,7 @@
             });
         }
         service.prototype.cleanup = function (i) {
-            delete(this.instrumentations[i._datacenter][i.id]);
+            delete this.instrumentations[i._datacenter][i.id];
             ca.options.remove(i);
             ca.instrumentations.remove(i);
         }

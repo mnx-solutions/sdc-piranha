@@ -58,6 +58,7 @@
                 'event:forceUpdate',
                 function () {
                     $scope.image = Image.image(true);
+                    $scope.loading = false;
                 }
             );
 

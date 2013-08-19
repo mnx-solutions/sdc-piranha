@@ -68,7 +68,6 @@
             $rootScope.$on(
                 'forceUpdate',
                 function (){
-                    console.log('broadcasting - update');
                     $scope.$broadcast('event:forceUpdate');
                 }
             );

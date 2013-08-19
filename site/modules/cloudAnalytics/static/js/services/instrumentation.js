@@ -155,7 +155,7 @@ var instrumentations = {};
 
         Instrumentation.prototype.remove = function (callback) {
 
-            delete(instrumentations[this._uuid]);
+            delete instrumentations[this._uuid];
             callback = (callback || ng.noop);
             var self = this;
             $http({ method: 'DELETE', url: self.getUrl() })

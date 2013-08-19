@@ -1,15 +1,22 @@
 'use strict';
 var instrumentationBlock = {};
 
+// default heatmap values for different requests
+var HEATMAP_WIDTH = 580;
+var HEATMAP_HEIGHT = 180;
+var HEATMAP_NBUCKETS = 25;
+var HEATMAP_DURATION = 60;
+var HEATMAP_HUES = 21;
+
 module.exports = function execute(scope, app) {
 
     var info = scope.api('Info');
 
-    function removeBlocked(token, isd) {
+    function removeBlocked(token, instrs) {
 
         if(!instrumentationBlock[token]) {
             return {
-                valid:isd,
+                valid:instrs,
                 blocked:[]
             };
         }
@@ -17,17 +24,17 @@ module.exports = function execute(scope, app) {
         var ret = {};
         var blocked = {};
 
-        for(var d in isd) {
-            var is = isd[d];
+        for(var d in instrs) {
+            var instr = instrs[d];
             if(!ret[d]) {
                 ret[d] = {};
             }
-            for(var i in is) {
+            for(var i in instr) {
                 if(i) {
                     if(instrumentationBlock[token].indexOf(i + d) === -1) {
-                        ret[d][i] = is[i];
+                        ret[d][i] = instr[i];
                     } else {
-                        blocked[d][i] = is[i];
+                        blocked[d][i] = instr[i];
                     }
                 }
             }
@@ -157,17 +164,24 @@ module.exports = function execute(scope, app) {
     });
 
     app.del('/ca/instrumentations/:datacenter/:id', function(req, res) {
-        if(!instrumentationBlock[req.session.token]) {
-            instrumentationBlock[req.session.token] = [];
+
+        var token = req.session.token;
+        var id = req.params.id;
+        var datacenter = req.params.datacenter;
+        var name = id + datacenter;
+
+        if(!instrumentationBlock[token]) {
+            instrumentationBlock[token] = [];
         }
 
-        instrumentationBlock[req.session.token].push(req.params.id + req.params.datacenter);
+        instrumentationBlock[token].push(name);
         setTimeout(function(){
-            instrumentationBlock[req.session.token].splice(instrumentationBlock[req.session.token].indexOf(req.params.id + req.params.datacenter), 1);
+            instrumentationBlock[token].splice(instrumentationBlock[token].indexOf(name), 1);
         }, 5000)
+
         var client = req.cloud;
-        client.setDatacenter(req.params.datacenter);
-        client.DeleteInstrumentation(+req.params.id, function (err, resp) {
+        client.setDatacenter(datacenter);
+        client.DeleteInstrumentation(+id, function (err, resp) {
             var e = null;
             if(err) {
                 req.log.warn(err);
@@ -183,10 +197,10 @@ module.exports = function execute(scope, app) {
             id: +req.params.id,
             ymax: req.body.ymax,
             ymin: req.body.ymin,
-            width: req.body.width || 580,
-            height: req.body.height || 180,
-            nbuckets: req.body.nbuckets || 25,
-            duration: req.body.duration || 60,
+            width: req.body.width || HEATMAP_WIDTH,
+            height: req.body.height || HEATMAP_HEIGHT,
+            nbuckets: req.body.nbuckets || HEATMAP_NBUCKETS,
+            duration: req.body.duration || HEATMAP_DURATION,
             ndatapoints: 1,
             end_time: req.body.endtime,
             x: req.body.x,
@@ -252,14 +266,13 @@ module.exports = function execute(scope, app) {
 
                     options.start_time = opts.last_poll_time || instrumentation.crtime;
 
-
                     switch(instrumentation['value-arity']) {
                         case 'numeric-decomposition':
-                            options.width = instrumentation.width || 580;
-                            options.height = instrumentation.height || 180;
-                            options.nbuckets = instrumentation.nbuckets || 25;
-                            options.duration = instrumentation.duration || 60;
-                            options.hues = instrumentation.hues || 21;
+                            options.width = instrumentation.width || HEATMAP_WIDTH;
+                            options.height = instrumentation.height || HEATMAP_HEIGHT;
+                            options.nbuckets = instrumentation.nbuckets || HEATMAP_NBUCKETS;
+                            options.duration = instrumentation.duration || HEATMAP_DURATION;
+                            options.hues = instrumentation.hues || HEATMAP_HUES;
                             options.ndatapoints = 1;
                             options.end_time = options.start_time;
                             delete options.start_time;
@@ -277,9 +290,6 @@ module.exports = function execute(scope, app) {
                     }
                     client[method](options, options, function(err, resp) {
                         errorC++;
-//                        if(errorC == 20) {
-//                           err = 'asdfsadfs';
-//                        }
                         if(!response.datapoints[datacenter]) {
                             response.datapoints[datacenter] = {};
                         }
@@ -287,7 +297,7 @@ module.exports = function execute(scope, app) {
                             response.datapoints[datacenter][options.id] = resp;
                             response.end_time = resp[resp.length - 1].start_time + 1;
                             if(instrumentation['value-arity'] === 'numeric-decomposition') {
-                                response.end_time += instrumentation.duration || 60;
+                                response.end_time += instrumentation.duration || HEATMAP_DURATION;
                             }
                         } else {
                             req.log.warn(err);

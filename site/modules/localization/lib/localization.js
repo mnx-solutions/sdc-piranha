@@ -96,7 +96,7 @@ Localization.prototype.isSupportedLocale = function (locale) {
 Localization.prototype.setLocale = function (req, locale) {
     if (this.isSupportedLocale(locale)) {
         if (req.session) {
-            req.log.debug('Change session locale from %s to %s',
+            req.log.trace('Change session locale from %s to %s',
                 req.session.locale, locale);
 
             req.session.locale = locale;
@@ -170,7 +170,7 @@ Localization.prototype.getLocaleDefinitions = function (module, locale) {
  * @param filePath
  */
 Localization.prototype.load = function (module, lng, filePath) {
-    this._log.debug('Load localizations for module: %s; file: %s; language: %s',
+    this._log.trace('Load localizations for module: %s; file: %s; language: %s',
         module, filePath, lng);
 
     if (this._translations.mod[module] &&
@@ -218,11 +218,11 @@ Localization.prototype.getLocaleParser = function () {
 
         // Find user locale from the cookie
         if (req.cookies.hasOwnProperty('locale')) {
-            req.log.debug('Reading locale from language cookie');
+            req.log.trace('Reading locale from language cookie');
 
             var locale = Localization._parseLocaleIdentifier(req.cookies.locale);
             if (self.isSupportedLocale(locale.group)) {
-                req.log.debug('Locale found from language cookie; lang: %s',
+                req.log.trace('Locale found from language cookie; lang: %s',
                     locale.group);
 
                 self.setLocale(req, locale.group);
@@ -239,7 +239,7 @@ Localization.prototype.getLocaleParser = function () {
 
         // Find user locale from 'accept-language" header
         if (req.headers.hasOwnProperty('accept-language')) {
-            req.log.debug('Reading locale from request language header');
+            req.log.trace('Reading locale from request language header');
 
             var locales = [];
             var acceptLanguage = req.headers['accept-language'];
@@ -263,7 +263,7 @@ Localization.prototype.getLocaleParser = function () {
                 // TODO: Region support
                 var result = self.setLocale(req, locale.group);
                 if (result) {
-                    req.log.debug('Locale found from request language header;' +
+                    req.log.trace('Locale found from request language header;' +
                         'lang: %s', locale.group);
                 }
 

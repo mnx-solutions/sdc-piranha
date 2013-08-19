@@ -44,8 +44,6 @@
                             }
                         });
                     } catch(e) {
-                        console.log($scope.data);
-                        console.log(e);
                         $scope.message = 'INVALID JSON';
                         return;
                     }

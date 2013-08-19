@@ -122,3 +122,12 @@ select.date-month, select.date-year {
 #phone {
     width: 145px;
 }
+.orange-asterix {
+    color:#ff6600;
+}
+.required-text {
+    font-size: 14px;
+}
+#paymentForm tr td{
+    padding:10px;
+}

@@ -12,13 +12,13 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each link in css
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body()
-    div(data-main-menu, class='JoyentPortal-module-menu')
+    div(data-main-menu, class='modulizer-module-menu')
     //div(data-notification, class='JoyentPortal-module-notification')
     div(data-ng-switch='subview', class='subview container-fluid ng-cloak', ng-cloak)
 
       each layout in layouts
-        div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
-    div(class='JoyentPortal-module-menu')
+        div(data-ng-switch-when='#{layout.module}',class='modulizer-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
+    div(class='modulizer-module-menu')
         div(class="container footer")
              div(class="brand pull-left")
              div(class="pull-left")

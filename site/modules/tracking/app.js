@@ -4,6 +4,7 @@ var crypto = require('crypto');
 
 module.exports = function execute(scope, app) {
 
+    //returns sha1 hash for given email address and private key
     app.get('/sha/:email', function(req, res) {
         var privatekey = scope.config.marketo.apikey;
 

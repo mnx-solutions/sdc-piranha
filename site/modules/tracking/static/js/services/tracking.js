@@ -20,6 +20,7 @@
                     _gaq.push(['_trackTiming', category, variable, time]);
                 }
             },
+            //create marketing lead in marketo
             marketing_lead: function (account) {
                 var enc_email = '';
                 $http.get('/tracking/sha/' + account.email).success(function (data, status) {
@@ -41,6 +42,7 @@
                     );
                 });
             },
+            //inform marketo about machine provisioned
             marketo_machine_provision: function(account) {
                 //NO http(s):// in the url, use relative paths to the current domain!
                 mktoMunchkinFunction(
@@ -51,6 +53,7 @@
                     }
                 );
             },
+            //inform marketo about pageview
             marketo_pageview: function () {
                 //NO http(s):// in the url, use relative paths to the current domain!
                 mktoMunchkinFunction(
@@ -61,6 +64,7 @@
                     }
                 );
             },
+            //inform marketo about link clicked
             marketo_clicklink: function () {
                 //NO http(s):// in the link, use relative paths to the current domain!
                 mktoMunchkinFunction(
