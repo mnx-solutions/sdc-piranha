@@ -22,7 +22,7 @@
     "tropo": {
       "token": ""
     },
-    "static":{
+    "assets":{
         "js": {
             "concat": ["use-strict-rm"],
             "cache": "all",

@@ -1,6 +1,6 @@
 {
 	"em": {
-		"pre": {
+		"static": {
 			"js": [
                 "//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
                 "/vendor/bootstrap/js/bootstrap.min.js",

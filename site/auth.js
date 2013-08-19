@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = function execute(scope) {
-    return function (req, res, next) {
-        var smartCloud = scope.get('smartCloud');
+    var smartCloud = scope.get('smartCloud');
 
+    return function mainAuth(req, res, next) {
         if (!req.session.token) {
             // token missing, don't allow the request
 
