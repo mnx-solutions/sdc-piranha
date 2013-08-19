@@ -59,6 +59,16 @@
                                     data-ng-required="true">
 
                             </select>
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('creditCard.expirationYear') || isError('creditCard.expirationMonth')">
+                                Invalid credit card number
+                            </div>
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('creditCard.expirationYear', 'required') || isError('expirationYear', 'submitRequired') || isError('creditCard.expirationMonth', 'required') || isError('expirationMonth', 'submitRequired')">
+                                Missing expiration info
+                            </div>
                         </div>
                     </td>
                 </tr>
