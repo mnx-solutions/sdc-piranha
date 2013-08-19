@@ -20,7 +20,7 @@
         <div class="item-list-container">
 
             <div class="item header row-fluid machine-list-item">
-                <span class="span4 text-medium sortable"
+                <span class="span2 text-medium sortable"
                       data-ng-click="sortBy('name')"
                       data-ng-switch on="sortIcon.name">
                       <span class="pull-left machines-list-header" data-translate>Name</span>
@@ -28,18 +28,34 @@
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span4 text-medium sortable"
-                      data-ng-click="sortBy('description')"
-                      data-ng-switch on="sortIcon.description">
-                      <span class="pull-left machines-list-header" data-translate>Description</span>
+                <span class="span2 text-medium sortable"
+                      data-ng-click="sortBy('version')"
+                      data-ng-switch on="sortIcon.version">
+                      <span class="pull-left machines-list-header" data-translate>Version</span>
                       <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span4 text-medium sortable"
-                      data-ng-click="sortBy('version')"
-                      data-ng-switch on="sortIcon.version">
-                      <span class="pull-left machines-list-header" data-translate>Version</span>
+                <span class="span2 text-medium sortable"
+                      data-ng-click="sortBy('published_at')"
+                      data-ng-switch on="sortIcon.published_at">
+                      <span class="pull-left machines-list-header" data-translate>Published at</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+                <span class="span2 text-medium sortable"
+                      data-ng-click="sortBy('os')"
+                      data-ng-switch on="sortIcon.os">
+                      <span class="pull-left machines-list-header" data-translate>OS</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+                <span class="span2 text-medium sortable"
+                      data-ng-click="sortBy('description')"
+                      data-ng-switch on="sortIcon.description">
+                      <span class="pull-left machines-list-header" data-translate>Description</span>
                       <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
@@ -47,16 +63,24 @@
 
 
             <div data-ng-repeat="image in pagedImages[currentPage] | orderBy:sortingOrder:reverse" class="item row-fluid">
-                <span class="span4 text-medium crop machine-list-content">
+                <span class="span2 text-medium crop machine-list-content">
                       {{image.name}}
                   </span>
 
-                  <span class="span4 text-medium crop machine-list-content">
-                      {{image.description}}
+                  <span class="span2 text-medium crop machine-list-content">
+                      {{image.version}}
                   </span>
 
-                  <span class="span4 text-medium crop machine-list-content">
-                      {{image.version}}
+                  <span class="span2 text-medium crop machine-list-content">
+                      {{image.published_at}}
+                  </span>
+
+                  <span class="span2 text-medium crop machine-list-content">
+                      {{image.os}}
+                  </span>
+
+                  <span class="span2 text-medium crop machine-list-content">
+                      {{image.description}}
                   </span>
             </div>
         </div>  
