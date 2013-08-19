@@ -59,6 +59,10 @@
                       <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
+
+                <span class="span2 text-medium">
+                      <span class="pull-left machines-list-header" data-translate>Delete</span>
+                </span>
             </div>
 
 
@@ -81,6 +85,18 @@
 
                   <span class="span2 text-medium crop machine-list-content">
                       {{image.description}}
+                  </span>
+
+                  <span class="span2 text-medium crop machine-list-content">
+                    <button role="button"
+                            data-ng-click="clickDelete(image.id)"
+                            data-translate
+                            data-translate-attributes="data-original-title"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            data-html="true"
+                            data-ng-class="btn-danger"
+                            class="btn btn-small span3 tooltip-hover">Delete</button>
                   </span>
             </div>
         </div>  

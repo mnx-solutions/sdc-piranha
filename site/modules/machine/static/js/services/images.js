@@ -89,6 +89,17 @@
                 return newImage.job;
             };
 
+            service.deleteImage = function(image) {
+
+                serverTab.call({
+                    name: 'ImageDelete',
+                    data: { id: image },
+                    done: function(err, job) {
+                    }
+                });
+
+            };
+
             return service;
         }]);
 }(window.JP.getModule('Machine')));

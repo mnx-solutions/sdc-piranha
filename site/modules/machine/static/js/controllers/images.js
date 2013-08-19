@@ -304,6 +304,18 @@
                 $scope.sortBy($cookieStore.get('imageSortField') || $scope.sortField.value, false);
             }
 
+            $scope.clickDelete = function (image) {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete image'
+                    ), function () {
+                        $$track.event('image', 'delete');
+                        Images.deleteImage(image);
+                    });
+            };
+
         }
     ])
 }(window.angular, window.JP.getModule('Machine')));
