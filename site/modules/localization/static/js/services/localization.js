@@ -227,8 +227,6 @@
             }
 
             var lang = window.JP.get('lang');
-            console.log(lang);
-            console.log(service.getLocale());
             service._init(lang.locales); // Init
             service._load(lang[service.getLocale()]);
 

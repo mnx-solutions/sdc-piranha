@@ -307,7 +307,7 @@
                         $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
                     })
                     .error(function () {
-                        console.log('err', arguments);
+                        console.error('err', arguments);
                     });
             };
 

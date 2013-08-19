@@ -25,7 +25,6 @@
 
             $q.when($scope.images).then(
                 function () {
-                    console.log($scope.images);
                     $scope.loading = false;
                 }
             );
