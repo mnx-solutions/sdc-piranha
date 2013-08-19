@@ -70,7 +70,7 @@
                 ],
                 Visible: [
                     'description', 'id', 'name',
-                    'version'
+                    'version', 'os', 'published_at'
                 ],
                 Name: ['id', 'name'],
                 Type: ['type']
