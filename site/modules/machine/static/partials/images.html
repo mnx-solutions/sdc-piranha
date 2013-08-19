@@ -5,8 +5,20 @@
         <div  data-breadcrumb></div>
         <div data-notification></div>
 
+        <form class="form-search pull-right">
+            <input type="search"
+                   class="span3"
+                   name="search"
+                   id="search"
+                   placeholder="Search images"
+                   data-ng-model="query"
+                   data-ng-change="search()"
+                   data-translate="placeholder" />
+        </form>
 
+        <div class="clearfix"></div>
         <div class="item-list-container">
+
             <div class="item header row-fluid machine-list-item">
                 <span class="span4 text-medium sortable"
                       data-ng-click="sortBy('name')"

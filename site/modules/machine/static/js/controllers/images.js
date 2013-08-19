@@ -23,6 +23,7 @@
             $scope.imagePromise = Image.image(true);
             $scope.loading = true;
             $scope.images = [];
+
             $q.when($scope.imagePromise).then(
                 function (data) {
                     // TODO: images promise logic should be like machines
@@ -36,14 +37,12 @@
             $scope.sortingOrder = null;
             $scope.reverse = true;
 
-            // TODO: should be made images specific, when search included
             $scope.sortable = [
-                { title: 'Name', value: 'label' },
-                { title: 'Datacenter', value: 'datacenter' },
-                { title: 'Created', value: 'created' },
-                { title: 'State', value: 'state' }
+                { title: 'Name', value: 'name' },
+                { title: 'Description', value: 'description' },
+                { title: 'Version', value: 'version' }
             ];
-            $scope.sortField = $scope.sortable[2];
+            $scope.sortField = $scope.sortable[0];
 
             $scope.loading = true;
 
@@ -63,23 +62,18 @@
             );
 
             // Searching
-            // TODO: should be made images specific, when search included
             $scope.searchOptions = {
                 All: [
-                    'created', 'id', 'name',
-                    'type', 'dataset', 'ips',
-                    'memory', 'disk', 'metadata',
-                    'datacenter'
+                    'description', 'id', 'name',
+                    'type', 'os', 'published_at',
+                    'requirements', 'version'
                 ],
                 Visible: [
-                    'created', 'id', 'name',
-                    'ips', 'datacenter'
+                    'description', 'id', 'name',
+                    'version'
                 ],
                 Name: ['id', 'name'],
-                Type: ['type'],
-                Ip: ['ips'],
-                Memory: ['memory'],
-                Datacenter: ['datacenter']
+                Type: ['type']
             };
 
             $scope.searchable = $scope.searchOptions.Visible;
