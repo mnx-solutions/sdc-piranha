@@ -19,6 +19,7 @@
     "smartdc": "git://github.com/joyent/node-smartdc.git",
     "vasync": "1.3.x",
     "easy-config": "0.1.10",
+    "easy-asset": "git+ssh://git@github.com:joyent/node-easy-asset.git",
     "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
     "connect-redis": "*",
     "file-pointer": "0.0.x",
