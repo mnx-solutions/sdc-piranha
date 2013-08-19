@@ -37,7 +37,7 @@
                         },
                         {
                             sequence: 3,
-                            name: 'Payment',
+                            name: 'Billing',
                             url: '/account/payment'
                         }];
                 },
