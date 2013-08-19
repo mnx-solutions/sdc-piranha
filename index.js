@@ -34,10 +34,7 @@ app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
 });
 
-var oldBrowser = require('./lib/oldBrowser');
-app.get('/old-browser', function(req, res, next) {
-   oldBrowser(req, res, next);
-});
+app.get('/old-browser', require('./lib/oldBrowser'));
 
 redirect(app); //Add redirects for old urls
 
