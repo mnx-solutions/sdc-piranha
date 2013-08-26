@@ -288,10 +288,10 @@
                                 $scope.errs = {};
                                 Object.keys(errs)
                                     .filter(function (k) {
-                                        return typeof errs[k] === 'object';
+                                        return typeof errs[k] !== 'object';
                                     })
-                                    .map(function (k) {
-                                        return errs[k];
+                                    .forEach(function (k) {
+                                        $scope.errs[k] = errs[k];
                                     });
                             }
 
