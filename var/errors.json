@@ -90,5 +90,27 @@
         "nr": "20"
       }
     }
+  },
+  "'securityCode' should be a 3- or 4-digit number.": {
+    "code": 52000620,
+    "message": "'securityCode' should be a 3- or 4-digit number.",
+    "human": "REST API: POSTPaymentMethod,06 - Invalid format or value",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTPaymentMethod",
+        "nr": "200"
+      },
+      "field": {
+        "nr": "06"
+      },
+      "category": {
+        "name": "Invalid format or value",
+        "nr": "20"
+      }
+    }
   }
 }
