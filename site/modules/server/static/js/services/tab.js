@@ -28,9 +28,11 @@
                         if (!opts) {
                             return _calls;
                         }
-                        if (typeof opts === 'string'){
+
+                        if (typeof opts === 'string') {
                             return _calls[opts];
                         }
+
                         opts.tab = self;
                         var call = serverCall.create(opts);
                         _calls[call.id] = call;
@@ -43,12 +45,14 @@
                         if (!call) {
                             return _history;
                         }
+
                         if (typeof call === 'string') {
                             call = self.call(call);
-                            if(!call) {
+                            if (!call) {
                                 return;
                             }
                         }
+
                         $$track.timing('Task', call.name, call.execTime);
                         _history.push(call);
                         delete _calls[call.id];
@@ -63,25 +67,25 @@
                                 timeout: 40000,
                                 method: 'get',
                                 url: 'server/call',
-                                params: {tab: self.id, rnd: Math.floor(Math.random()*123456)}
+                                params: {tab: self.id, rnd: Math.floor(Math.random() * 123456)}
                             })
-                                .success(function (data, code) {
-                                    eventer.$emit('polled');
-                                    polling = false;
-                                    errorPollingLength = 500;
+                            .success(function (data, code) {
+                                eventer.$emit('polled');
+                                polling = false;
+                                errorPollingLength = 500;
 
-                                    if (code === 200) {
-                                        self.results(data);
-                                        setTimeout(self.poll, 100);
-                                    } else if (code === 204) {
-                                        if (Object.keys(_calls).length) {
-                                        }
+                                if (code === 200) {
+                                    self.results(data);
+                                    setTimeout(self.poll, 100);
+                                } else if (code === 204) {
+                                    if (Object.keys(_calls).length) {
                                     }
-                                })
-                                .error(function() {
-                                    polling = false;
-                                    eventer.$emit('error');
-                                });
+                                }
+                            })
+                            .error(function() {
+                                polling = false;
+                                eventer.$emit('error');
+                            });
                         }
                     }
                 },
@@ -113,15 +117,6 @@
                 if (notification.isVisible(self)) {
                     //eventer.$emit(true, 'forceUpdate');
                 }
-
-                /*
-                 notification.push(self, { timeout: 5000 },
-                 localization.translate(null,
-                 'server',
-                 'Reconnected to polling service'
-                 )
-                 );
-                 */
             });
 
             self.$on('error', function () {

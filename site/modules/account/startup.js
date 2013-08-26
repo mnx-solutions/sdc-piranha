@@ -13,23 +13,26 @@ module.exports = function execute(scope) {
     server.onCall('getAccount', function (call) {
         // get account using cloudapi
         call.cloud.getAccount(function (err, data) {
-            if(err) {
+            if (err) {
                 call.done(err);
                 return;
             }
+
             var response = {};
             accountFields.forEach(function (field) {
                 response[field] = data[field] || '';
 
-                if(field === 'phone') {
+                if (field === 'phone') {
                     response[field] = response[field].replace(/[^0-9\.]+/g, '');
                 }
             });
+
             TFA.get(data.id, function (err, secret) {
-                if(err) {
+                if (err) {
                     call.done(err);
                     return;
                 }
+
                 response.tfaEnabled = !!secret;
                 call.done(null, response);
             });
@@ -42,16 +45,15 @@ module.exports = function execute(scope) {
         updateable.forEach(function (f) {
             data[f] = call.data[f] || null;
         });
-        call.log.debug('Updating account with', data);
 
+        call.log.debug('Updating account with', data);
         call.cloud.updateAccount(data, call.done.bind(call));
     });
 
     server.onCall('listKeys', function(call) {
         // get account ssh keys
-
-        if(call.data.noCache) {
-            call.cloud.listKeys({login: 'my'}, call.done.bind(call), call.data.noCache);
+        if (call.data.noCache) {
+            call.cloud.listKeys({ login: 'my' }, call.done.bind(call), call.data.noCache);
         } else {
             call.cloud.listKeys(call.done.bind(call));
         }

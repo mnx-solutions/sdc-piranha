@@ -37,7 +37,7 @@
                 var defer = $q.defer();
                 $http.post('tfa/login', {otpass:otpass})
                     .success(function (data) {
-                        if(data.status === 'ok') {
+                        if (data.status === 'ok') {
                             window.location = data.redirect;
                             defer.resolve(data);
                         } else {
@@ -55,7 +55,7 @@
                 var defer = $q.defer();
                 $http.get('tfa/remove')
                     .success(function (data) {
-                        if(data.status === 'ok') {
+                        if (data.status === 'ok') {
                             defer.resolve(data);
                         } else {
                             defer.reject(data);
