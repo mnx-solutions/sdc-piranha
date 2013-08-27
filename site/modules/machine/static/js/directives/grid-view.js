@@ -18,6 +18,16 @@
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
 
+        $scope.openDetails = {};
+
+        $scope.toggleDetails = function (id) {
+            $scope.openDetails[id] = !$scope.openDetails[id];
+        };
+
+        $scope.areDetailsShown = function (id) {
+            return $scope.openDetails[id];
+        };
+
         $scope.clearOrder = function () {
             $scope.order = [];
         };
@@ -32,21 +42,48 @@
                 existed = 'rorder';
                 delete $scope.order[$scope.order.indexOf(prop.rorder)];
             }
-            if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
+            if(reverse === undefined) {
+                if(!existed) {
+                    $scope.order.push(prop.order);
+                } else if(existed === 'order'){
+                    $scope.order.push(prop.rorder);
+                }
+            } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
                 $scope.order.push(reverse ? prop.rorder : prop.order);
             }
         };
 
         $scope.matchesFilter = function (obj) {
-            return !$scope.props.some(function (el) {
+            var all = true;
+            if($scope.filterAll) {
+                all = $scope.props.some(function (el) {
+                    if(!el.active) {
+                        return false;
+                    }
+
+                    var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+
+                    if (ng.isNumber(subject)) {
+                        subject = subject.toString();
+                    }
+
+                    var needle = $scope.filterAll.toLowerCase();
+
+                    return (subject.indexOf(needle) !== -1);
+                });
+            }
+
+            return all && !$scope.props.some(function (el) {
                 if(!el.active || !el.filter) {
                     return false;
                 }
-                var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id];
+
+                var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                 if (ng.isNumber(subject)) {
                     subject = subject.toString();
                 }
+
                 var needle = el.filter.toLowerCase();
 
                 return (subject.indexOf(needle) === -1);
@@ -113,7 +150,10 @@
             scope: {
                 order: '=',
                 props: '=',
-                objects: '='
+                detailProps: '=',
+                objects: '=',
+                actionButtons:'=',
+                filterAll: '='
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',

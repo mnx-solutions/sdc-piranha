@@ -1,56 +1,81 @@
-<div>
-    <div class="row-fluid well" style="padding: 5px 0;">
-        <div style="text-align: center;">
-            <button class="btn btn-link" data-ng-click="showProps()" data-translate>Properties</button>
+<div class="item-list-container">
+
+    <div class="item header row-fluid machine-list-item">
+        <span data-ng-repeat="prop in props | orderBy:sequence"
+              class="text-medium sortable"
+              data-ng-class="{span3: $index == 0, 'span1 pull-right state-sortable-header': $index == (props.length -1), span2: ($index > 0 && $index < props.length -1)}"
+              data-ng-click="orderGridMachinesBy(prop)">
+            <span class="pull-left machines-list-header" data-translate-value>{{prop.name}}</span>
+            <i class="icon-arrow-up" data-ng-show="order.indexOf(prop.rorder) != -1"></i>
+            <i class="icon-arrow-down" data-ng-show="order.indexOf(prop.order) != -1"></i>
+        </span>
+
+    </div>
+
+
+    <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" class="item row-fluid">
+        <span class="text-medium crop"
+              data-ng-class="{'span3 machine-list-content': $index == 0, 'pull-right machine-list-state state pointer': $index == (props.length -1), 'span2  machine-list-content': ($index > 0 && $index < props.length -1)}"
+              data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
+            <a data-ng-switch-when="label" href="#!/instance/details/{{object.id}}">{{object.label}}</a>
+            <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
+                <div data-machine-status machine="object"></div>
+            </span>
+            <span data-ng-switch-when="created">{{object[prop.id] | dateTime}}</span>
+            <span data-ng-switch-when="ips" class="span2">
+                <span data-ng-show="object.primaryIps.length">{{object.primaryIps[0]}}</span>
+                <span data-ng-show="!object.primaryIps.length && object.ips.length">{{object.ips[0]}}</span>
+            </span>
+            <span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>
+        </span>
+
+        <div class="clearfix"></div>
+
+        <div class="toolbox-help text-small span8"
+             data-ng-hide="object.state != 'stopped'">
+            <span class="text-error" data-translate>
+                Machine is stopped, but billing will continue. You have to delete machine to cancel billing
+            </span>
+            <div class="clearfix"></div>
         </div>
-        <hr data-ng-show="propOn" />
-        <div class="span3" data-ng-repeat="prop in props | orderBy:sequence" data-ng-show="propOn" style="margin-left:15px;">
-            <div>
-                <label class="checkbox" style="padding-left:30px;">
-                    <input type="checkbox" data-ng-model="prop.active" />
-                    <span data-translate-value>{{prop.name}}</span>
-                </label>
+        <div class="clearfix"></div>
+
+        <div data-ng-show="areDetailsShown(object.id)" class="toolbox">
+            <div class="item machine-details-info" data-ng-class="{span10: actionButtons.length, span12: !actionButtons.length}">
+                <div data-ng-repeat="prop in detailProps | orderBy:sequence" class="row-fluid">
+                    <span class="text-medium key span4" data-ng-class="{last: $index == (detailProps.length -1) }" data-translate-value>{{prop.name}}</span>
+                    <span class="text-medium value span6" data-ng-class="{last: $index == (detailProps.length -1) }" data-ng-switch="prop.id">
+                        <span data-ng-switch-when="memory">{{object.memory | sizeFormat}}&nbsp;</span>
+                        <span data-ng-switch-when="disk">{{object.memory | sizeFormat}}&nbsp;</span>
+                        <span data-ng-switch-when="ips">
+                            <span data-ng-repeat="ip in object.ips">
+                                <div>{{ip}}</div>
+                            </span>
+                        </span>
+                        <span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>
+                    </span>
+                </div>
             </div>
-            <div class="input-append" data-ng-show="prop.active">
-                <input class="input-mini" type="text" data-ng-model="prop.filter"/>
-                <button class="btn" data-ng-click="orderGridMachinesBy(prop, false)" data-ng-class="{active: order.indexOf(prop.order) != -1}"><i class="icon-arrow-up"></i></button>
-                <button class="btn" data-ng-click="orderGridMachinesBy(prop, true)" data-ng-class="{active: order.indexOf(prop.rorder) != -1}"><i class="icon-arrow-down"></i></button>
+
+            <div class="pull-right action-container span2" data-ng-show="actionButtons.length">
+                <div data-ng-repeat="btn in actionButtons | orderBy:sequence">
+                    <div data-action-button data-action-fn="btn.action" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
+                    <div class="clearfix"></div>
+                </div>
             </div>
+            <div class="clearfix"></div>
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span12">
-            <table class="table table-bordered">
-                <thead>
-                <th>#</th>
-                <th data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" style="vertical-align: middle; text-align: center;">
-                    <span data-translate>{{prop.name}}</span>
-                </th>
-                </thead>
-                <tbody>
-                <tr data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)">
-                    <td>{{$index +1}}</td>
-                    <td data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
-                        <div data-ng-switch-when="state" data-machine-status machine="object"></div>
-                        <div data-ng-switch-when="created">{{object[prop.id] | dateTime}}</div>
-                        <div data-ng-switch-when="ips">{{object[prop.id] | jsonArray}}</div>
-                        <div data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span6 offset3" style="text-align: center;">
+        <div class="span6 offset3 pagination pagination-small pagination-centered" style="text-align: center;">
             <div style="margin:0;" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
         </div>
-        <div class="span3 pull-right">
-            <div class="btn-group pull-right">
-                <button class="btn" data-ng-click="export('json')" data-translate>JSON</button>
-                <button class="btn" data-ng-click="export('csv')" data-translate>CSV</button>
-            </div>
-        </div>
+        <!--<div class="span3 pull-right">-->
+            <!--<div class="btn-group pull-right">-->
+                <!--<button class="btn" data-ng-click="export('json')" data-translate>JSON</button>-->
+                <!--<button class="btn" data-ng-click="export('csv')" data-translate>CSV</button>-->
+            <!--</div>-->
+        <!--</div>-->
     </div>
     <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 </div>

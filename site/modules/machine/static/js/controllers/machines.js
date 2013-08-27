@@ -22,40 +22,16 @@
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
             });
 
-            $scope.listTypes = [ 'normal', 'alternate', 'grid'];
-            $scope.listType = $scope.listTypes[0]; // Defaults to 'normal'
+//            $scope.listTypes = [ 'normal', 'alternate', 'grid'];
+//            $scope.listType = $scope.listTypes[0]; // Defaults to 'normal'
 
-            // Sorting
-            $scope.sortingOrder = null;
-            $scope.reverse = true;
-
-            $scope.sortable = [
-                { title: 'Name', value: 'label' },
-                { title: 'Datacenter', value: 'datacenter' },
-                { title: 'Created', value: 'created' },
-                { title: 'State', value: 'state' }
-            ];
-            $scope.sortField = $scope.sortable[2];
+            $scope.listType = 'grid';
 
             $scope.loading = true;
 
             // Pagination
-            $scope.groupedMachines = [];
-            $scope.itemsPerPage = 15;
-            $scope.pagedMachines = [];
-            $scope.collapsedMachines = {};
-            $scope.showAllActive = false;
-            $scope.maxPages = 5;
-            $scope.currentPage = 0;
             $scope.machines = Machine.machine();
             $scope.packages = Package.package();
-
-            $q.all([
-                    $q.when($scope.machines),
-                    $q.when($scope.packages)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
 
             $scope.$on(
                 'event:forceUpdate',
@@ -66,223 +42,18 @@
 
             $scope.$watch('machines', function (machines) {
                 machines.forEach(function (machine) {
-                    Dataset.dataset(machine.image).then(function (dataset) {
-                        machine.dataset = dataset;
-                    });
+                    machine.label = machine.name || machine.id;
                 });
-
-                $scope.search();
             }, true);
 
-            // Searching
-            $scope.searchOptions = {
-                All: [
-                    'created', 'id', 'name',
-                    'type', 'dataset', 'ips',
-                    'memory', 'disk', 'metadata',
-                    'datacenter'
-                ],
-                Visible: [
-                    'created', 'id', 'name',
-                    'ips', 'datacenter'
-                ],
-                Name: ['id', 'name'],
-                Type: ['type'],
-                Ip: ['ips'],
-                Memory: ['memory'],
-                Datacenter: ['datacenter']
-            };
-
-            $scope.searchable = $scope.searchOptions.Visible;
-            $scope.filteredMachines = [];
-
-            var _labelMachines = function (machines) {
-                for (var machine in machines) {
-                    if (machines[machine].name) {
-                        machines[machine].label = machines[machine].name;
-                    } else {
-                        machines[machine].label = machines[machine].id;
-                    }
-                }
-
-                return machines;
-            };
-
-            var _filter = function (subject) {
-                var searchMatch = function (haystack, needle) {
-                    if (!needle) {
-                        return true;
-                    }
-
-                    var helper = haystack;
-                    if (ng.isNumber(haystack)) {
-                        helper = haystack.toString();
-                    }
-
-                    var subject = helper.toLowerCase();
-                    return (subject.indexOf(needle.toLowerCase()) !== -1);
-                };
-
-                var ret = $filter('filter')(subject, function (item) {
-                    var attrKey;
-                    for (attrKey in item) {
-                        var attr = item[attrKey];
-                        if ($scope.searchable.indexOf(attrKey) === -1) {
-                            continue;
-                        }
-
-                        // handle up to 2 dimensional searching
-                        if (ng.isObject(attr) || ng.isArray(attr)) {
-                            var child;
-                            for (child in attr) {
-                                if (ng.isString(attr[child]) || ng.isNumber(attr[child])) {
-                                    if (searchMatch(attr[child], $scope.query)) {
-                                        return true;
-                                    }
-                                }
-                            }
-
-                        } else if (ng.isString(attr) || ng.isNumber(attr)) {
-                            if (searchMatch(attr, $scope.query)) {
-                                return true;
-                            }
-                        }
-                    }
-
-                    return (false);
-                });
-
-                return (_labelMachines(ret));
-            };
-
-            // Controller methods
-            // Sorting
-            // change sorting order
-            var __fieldName;
-            $scope.sortBy = function (fieldName, changeDirection) {
-                $scope.reverse = __fieldName === fieldName ? !$scope.reverse : false;
-                __fieldName = fieldName;
-
-                // Assume that filter method will find least one matching item
-                try {
-                    $scope.sortField = $scope.sortable.filter(function (item) {
-                        return fieldName === item.value;
-                    })[0];
-
-                    $cookieStore.put('sortField', fieldName);
-                    $cookieStore.put('sortDirection', $scope.reverse);
-                } catch (e) {
-                    // Cannot change sorting field, ignore
-                    return;
-                }
-
-                var oldFieldName = $scope.sortingOrder;
-                $scope.sortingOrder = fieldName;
-                $scope.search((oldFieldName != fieldName));
-
-                // OLD stuff
-                $scope.sortIcon = {};
-                $scope.sortIcon[fieldName] = $scope.reverse ? 'down' : 'up';
-            };
-
-            $scope.loading = true;
-
-            // Searching
-            $scope.search = function (changePage) {
-                // filter by search term
-                var oldMachineCount = $scope.filteredMachines.length;
-                $scope.filteredMachines = _filter($scope.machines);
-
-                // take care of the sorting order
-                if ($scope.sortingOrder !== '') {
-                    $scope.filteredMachines = $filter('orderBy')(
-                        $scope.filteredMachines,
-                        $scope.sortingOrder,
-                        $scope.reverse);
-                }
-
-                if (changePage || oldMachineCount != $scope.filteredMachines.length) {
-                    $scope.currentPage = 0;
-                }
-
-                $scope.groupToPages();
-                $scope.$watch('machines.final', function(newval) {
-                    if (newval && $scope.loading) {
+            $scope.$watch('machines.final', function (final) {
+                if(final) {
+                    $q.when($scope.packages, function () {
                         $scope.loading = false;
-                    }
-                })
-            };
-
-            // Pagination
-            // calculate page in place
-            $scope.groupToPages = function () {
-                $scope.pagedMachines = [];
-
-                var i;
-                for (i = 0; i < $scope.filteredMachines.length; i++) {
-                    var index = Math.floor(i / $scope.itemsPerPage);
-                    if (i % $scope.itemsPerPage === 0) {
-                        $scope.pagedMachines[index] = [$scope.filteredMachines[i]];
-                    } else {
-                        $scope.pagedMachines[index].push($scope.filteredMachines[i]);
-                    }
+                    });
                 }
-            };
+            });
 
-            // get pagination range
-            $scope.range = function () {
-                var ret = [];
-
-                var start = $scope.currentPage - Math.floor($scope.maxPages / 2);
-                var end = $scope.currentPage + Math.ceil($scope.maxPages / 2);
-
-                if (end > $scope.pagedMachines.length) {
-                    end = $scope.pagedMachines.length;
-                    if (end - $scope.maxPages >= 0) {
-                        start = end - $scope.maxPages;
-                    }
-                }
-
-                if (start < 0) {
-                    start = 0;
-                    if (start + $scope.maxPages <= $scope.pagedMachines.length) {
-                        end = start + $scope.maxPages;
-                    }
-                }
-
-                // add first page
-                ret.push(0);
-                for (var i = start; i < end; i++) {
-                    // don't duplicate first or last page
-                    if(i != 0 && i != $scope.pagedMachines.length-1)
-                        ret.push(i);
-                }
-
-                // add last page
-                if ($scope.pagedMachines.length > 1) {
-                    ret.push($scope.pagedMachines.length-1);
-                }
-
-                return ret;
-            };
-
-
-            // put all machines to one page
-            $scope.showAll = function() {
-                $scope.itemsPerPage = 9999;
-                $scope.maxPages = 1;
-                $scope.currentPage = 0;
-                $scope.showAllActive = true;
-                $scope.groupToPages();
-            };
-
-            $scope.showPages = function() {
-                $scope.itemsPerPage = 15;
-                $scope.maxPages = 5;
-                $scope.currentPage = 0;
-                $scope.showAllActive = false;
-                $scope.groupToPages();
-            };
 
             /* export current machines */
             $scope.exportDetails = function() {
@@ -313,22 +84,6 @@
                     .error(function () {
                         console.error('err', arguments);
                     });
-            };
-
-            $scope.prevPage = function () {
-                if ($scope.currentPage > 0) {
-                    $scope.currentPage--;
-                }
-            };
-
-            $scope.nextPage = function () {
-                if ($scope.currentPage < $scope.pagedMachines.length - 1) {
-                    $scope.currentPage++;
-                }
-            };
-
-            $scope.setPage = function () {
-                $scope.currentPage = this.n;
             };
 
             $scope.startMachine = function (id) {
@@ -399,78 +154,102 @@
                     });
             };
 
-            $scope.toggleMachine = function (id) {
-                if ($scope.isCollapsed(id)) {
-                    $scope.collapsedMachines[id] = false;
-                } else {
-                    $scope.collapsedMachines[id] = true;
-                }
-            };
-
-            $scope.isCollapsed = function (id) {
-                return !$scope.collapsedMachines.hasOwnProperty(id) ||
-                    $scope.collapsedMachines[id];
-            };
-
-            $scope.changeListType = function (type) {
-                if ($scope.listTypes.indexOf(type) !== -1) {
-                    $scope.listType = type;
-                    $cookieStore.put('listType', type);
-                }
-            };
-
-            if (!$scope.sortingOrder) {
-                $scope.reverse = $cookieStore.get('sortDirection') || false;
-                $scope.sortBy($cookieStore.get('sortField') || $scope.sortField.value, false);
-            }
-
-            // Retrieve selected list type from the cookie or use default fallback
-            $scope.changeListType($cookieStore.get('listType') || $scope.listType);
-
-            $scope.gridMachines = Machine.machine();
             $scope.gridOrder = [];
             $scope.gridProps = [
                 {
-                    id: 'name',
+                    id: 'label',
                     name: 'Name',
                     sequence: 1
+                },
+                {
+                    id: 'datacenter',
+                    name: 'Datacenter',
+                    sequence: 2
+                },
+                {
+                    id: 'created',
+                    name: 'Created at',
+                    sequence: 3
+                },
+                {
+                    id: 'ips',
+                    name: 'IP-s',
+                    sequence: 4
+                },
+                {
+                    id: 'state',
+                    name: 'Status',
+                    sequence: 5
+                }
+            ];
+            $scope.gridDetailProps = [
+                {
+                    id: 'memory',
+                    name: 'Memory',
+                    sequence: 1
+                },
+                {
+                    id: 'disk',
+                    name: 'Disk',
+                    sequence: 2
                 },
                 {
                     id: '_Dataset',
                     id2: 'name',
                     name: "Image name",
-                    sequence: 2
-                },
-                {
-                    id: '_Package',
-                    id2: 'name',
-                    name: "Package name",
                     sequence: 3
-                },
-                {
-                    id: 'memory',
-                    name: 'Memory',
-                    sequence: 4
-                },
-                {
-                    id: 'datacenter',
-                    name: 'Datacenter',
-                    sequence: 5
                 },
                 {
                     id: 'ips',
                     name: 'IP-s',
-                    sequence: 6
+                    sequence: 4
+                }
+            ];
+
+            $scope.gridActionButtons = [
+                {
+                    label: 'Start',
+                    disabled: function (object) {
+                        return object.state == 'running' || (object.job && !object.job.finished);
+                    },
+                    action: function (object) {
+                        $scope.startMachine(object.id);
+                    },
+                    tooltip: 'Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.',
+                    sequence: 1
                 },
                 {
-                    id: 'created',
-                    name: 'Created at',
-                    sequence: 7
+                    label: 'Stop',
+                    disabled: function (object) {
+                        return object.state == 'stopped' || (object.job && !object.job.finished);
+                    },
+                    action: function (object) {
+                        $scope.stopMachine(object.id);
+                    },
+                    tooltip: 'Stopping an instance does not stop billing. You can restart your instance after you stop your machine.',
+                    sequence: 2
                 },
                 {
-                    id: 'state',
-                    name: 'Status',
-                    sequence: 8
+                    label: 'Delete',
+                    disabled: function (object) {
+                        return object.state != 'stopped' || (object.job && !object.job.finished);
+                    },
+                    action: function (object) {
+                        $scope.deleteMachine(object.id);
+                    },
+                    tooltip: 'You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.',
+                    sequence: 3
+                },
+                {
+                    label: 'Reboot',
+                    disabled: function (object) {
+                        return object.state !== 'running' || (object.job && !object.job.finished);
+                    },
+                    action: function (object) {
+                        $scope.rebootMachine(object.id);
+                    },
+                    tooltip: 'Click here to reboot your instance.',
+                    sequence: 4
                 }
             ];
 

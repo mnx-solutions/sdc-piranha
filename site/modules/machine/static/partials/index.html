@@ -1,6 +1,6 @@
 <div data-ng-controller="Machine.IndexController">
     <div class="loading-large" data-ng-show="loading"></div>
-        <div class="machines container" data-ng-show="pagedMachines.length || query">
+        <div class="machines container" data-ng-show="machines.length || query">
             <data-breadcrumb></data-breadcrumb>
             <data-notification></data-notification>
 
@@ -15,54 +15,16 @@
                            id="search"
                            placeholder="Search instances"
                            data-ng-model="query"
-                           data-ng-change="search()"
                            data-translate="placeholder" />
                 </form>
-
-                <ul class="nav nav-tabs pull-right">
-                    <li class="{{listType == 'normal' && 'active' || ''}}">
-                        <button class="btn btn-link" data-ng-click="changeListType('normal');">Normal</button>
-                    </li>
-                    <li class="{{listType == 'alternate' && 'active' || ''}}">
-                        <button class="btn btn-link" data-ng-click="changeListType('alternate');">Alt.</button>
-                    </li>
-                    <li class="{{listType == 'grid' && 'active' || ''}}">
-                        <button class="btn btn-link" data-ng-click="changeListType('grid');">Grid</button>
-                    </li>
-                </ul>
 
                 <div class="clearfix"></div>
             </div>
 
             <div class="row">
-				<div class="{{listType == 'grid' && 'span12' || 'span9'}}">
-	                <div data-ng-switch="listType">
-	                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
-	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
-                        <div data-ng-switch-when="grid" data-grid-view data-props="gridProps" data-objects="gridMachines" data-per-page="50" data-order="gridOrder"></div>
-	                </div>
-
-	                <div class="pagination pagination-small pagination-centered" data-ng-show="listType != 'grid'">
-	                    <ul>
-	                        <li data-ng-class="{disabled: currentPage == 0}">
-	                            <a href ng-click="prevPage()" data-translate>« Prev</a>
-	                        </li>
-	                        <li data-ng-repeat="n in range()"
-	                            data-ng-class="{active: n == currentPage}"
-	                            data-ng-click="setPage()">
-	                            <a href data-ng-bind="n + 1">1</a>
-	                            <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
-	                        </li>
-	                        <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
-	                            <a href data-ng-click="nextPage()" data-translate>Next »</a>
-	                        </li>
-                            <li data-ng-show="!showAllActive">
-                                <a href data-ng-click="showAll()" data-translate>List all</a>
-                            </li>
-                            <li data-ng-show="showAllActive">
-                                <a href data-ng-click="showPages()" data-translate>View pages</a>
-                            </li>
-	                    </ul>
+				<div class="span9">
+	                <div data-grid-view data-props="gridProps" data-detail-props="gridDetailProps" data-action-buttons="gridActionButtons" data-objects="machines" data-per-page="15" data-order="gridOrder" data-filter-all="query"></div>
+	                <div class="row">
                         <button role="button"
                                 class="btn btn-mini button tooltip-hover export-csv-button"
                                 data-ng-click="exportDetails()"
@@ -74,9 +36,15 @@
                                 data-original-title="Export machine list in .csv">Export .csv</button>
                         <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
 	                </div>
+                            <!--<li data-ng-show="!showAllActive">-->
+                                <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->
+                            <!--</li>-->
+                            <!--<li data-ng-show="showAllActive">-->
+                                <!--<a href data-ng-click="showPages()" data-translate>View pages</a>-->
+                            <!--</li>-->
 				</div>
 				
-	            <div class="pull-right span3" data-ng-show="listType != 'grid'">
+	            <div class="pull-right span3">
 	                <button data-ng-click="changeLocation('/instance/create/')"
 	                        class="create-instance btn btn-joyent-blue btn-large"
 	                        data-translate>Create Instance</button>
@@ -94,7 +62,7 @@
             </div>
         </div>
 
-        <div class="machines container" data-ng-hide="(pagedMachines.length || loading || query)">
+        <div class="machines container" data-ng-hide="(machines.length || loading || query)">
             <data-notification></data-notification>
 
             <div class="alert alert-joyent-blue alert-global">
