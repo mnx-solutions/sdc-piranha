@@ -50,13 +50,6 @@
             $scope.machines = Machine.machine();
             $scope.packages = Package.package();
 
-            $q.all([
-                    $q.when($scope.machines),
-                    $q.when($scope.packages)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
-
             $scope.$on(
                 'event:forceUpdate',
                 function () {
@@ -73,6 +66,14 @@
 
                 $scope.search();
             }, true);
+
+            $scope.$watch('machines.final', function(final) {
+                if(final) {
+                    $scope.packages.then(function () {
+                        $scope.loading = false;
+                    });
+                }
+            });
 
             // Searching
             $scope.searchOptions = {
