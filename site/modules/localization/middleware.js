@@ -22,12 +22,12 @@ module.exports = function execute(scope) {
         }
 
         if (!res.locals.jss) {
-            res.locals.jss = {};
+            res.locals.jss = [];
         }
 
         var compiledLocalizations = localization.getCompiled(req);
         Object.keys(compiledLocalizations).forEach(function (key) {
-            res.locals.jss[key] = compiledLocalizations[key];
+            res.locals.jss.push(compiledLocalizations[key]);
         });
 
         return next();
