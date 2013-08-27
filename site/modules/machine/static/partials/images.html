@@ -20,7 +20,7 @@
         <div class="item-list-container">
 
             <div class="item header row-fluid machine-list-item">
-                <span class="span2 text-medium sortable"
+                <span class="span3 text-medium sortable"
                       data-ng-click="sortBy('name')"
                       data-ng-switch on="sortIcon.name">
                       <span class="pull-left machines-list-header" data-translate>Name</span>
@@ -28,7 +28,7 @@
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span2 text-medium sortable"
+                <span class="span4 text-medium sortable"
                       data-ng-click="sortBy('version')"
                       data-ng-switch on="sortIcon.version">
                       <span class="pull-left machines-list-header" data-translate>Version</span>
@@ -36,7 +36,7 @@
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span2 text-medium sortable"
+                <span class="span3 text-medium sortable"
                       data-ng-click="sortBy('published_at')"
                       data-ng-switch on="sortIcon.published_at">
                       <span class="pull-left machines-list-header" data-translate>Published at</span>
@@ -44,60 +44,63 @@
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span2 text-medium sortable"
-                      data-ng-click="sortBy('os')"
-                      data-ng-switch on="sortIcon.os">
-                      <span class="pull-left machines-list-header" data-translate>OS</span>
-                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                <span class="text-medium pull-right sortable state-sortable-header"
+                      data-ng-click="sortBy('state')"
+                      data-ng-switch on="sortIcon.state">
+                          <span class="pull-left machines-list-header" data-translate>State</span>
+                          <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                          <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span2 text-medium sortable"
-                      data-ng-click="sortBy('description')"
-                      data-ng-switch on="sortIcon.description">
-                      <span class="pull-left machines-list-header" data-translate>Description</span>
-                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
-                </span>
-
-                <span class="span2 text-medium">
-                      <span class="pull-left machines-list-header" data-translate>Delete</span>
-                </span>
             </div>
 
 
             <div data-ng-repeat="image in pagedImages[currentPage] | orderBy:sortingOrder:reverse" class="item row-fluid">
-                <span class="span2 text-medium crop machine-list-content">
-                      {{image.name}}
-                  </span>
+                <span class="span3 text-medium crop machine-list-content">
+                  {{image.name}}
+                </span>
 
-                  <span class="span2 text-medium crop machine-list-content">
-                      {{image.version}}
-                  </span>
+                <span class="span4 text-medium crop machine-list-content">
+                  {{image.version}}
+                </span>
 
-                  <span class="span2 text-medium crop machine-list-content">
-                      {{image.published_at}}
-                  </span>
+                <span class="span3 text-medium crop machine-list-content">
+                  {{image.published_at}}
+                </span>
 
-                  <span class="span2 text-medium crop machine-list-content">
-                      {{image.os}}
-                  </span>
+                <span class="pull-right machine-list-state state pointer" data-ng-click="toggleImage(image.id)">
+                    <div>
+                        <span class="status label label-info pull-right btn-success">
+                            <span data-translate>state</span>
+                        </span>
+                    </div>
+                </span>
 
-                  <span class="span2 text-medium crop machine-list-content">
-                      {{image.description}}
-                  </span>
+                <div data-ng-hide="isCollapsed(image.id)" class="toolbox">
+                    <div class="item span10 machine-details-info">
+                        <div class="row-fluid">
+                            <span class="text-medium key span4 data-translate">Os</span>
+                            <span class="text-medium value span7">{{image.os}}&nbsp;</span>
+                        </div>
+                        <div class="row-fluid">
+                            <span class="text-medium key span4 data-translate">Description</span>
+                            <span class="text-medium value span7">{{image.description}}&nbsp;</span>
+                        </div>
+                        <div class="row-fluid">
+                            <span class="text-medium key span4 data-translate">Public</span>
+                            <span class="text-medium value span7">Yes</span>
+                        </div>
+                    </div>
 
-                  <span class="span2 text-medium crop machine-list-content">
-                    <button role="button"
-                            data-ng-click="clickDelete(image.id)"
-                            data-translate
-                            data-translate-attributes="data-original-title"
-                            data-toggle="tooltip"
-                            data-placement="top"
-                            data-html="true"
-                            data-ng-class="btn-danger"
-                            class="btn btn-small span3 tooltip-hover">Delete</button>
-                  </span>
+                    <div class="pull-right action-container span2">
+                        <button role="button"
+                                class="btn btn-mini button"
+                                data-ng-click="clickDelete(image)"
+                                data-placement="right"
+                                data-translate>Delete</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
             </div>
         </div>  
     </div>
@@ -112,7 +115,7 @@
                 <a href data-ng-bind="n + 1">1</a>
                 <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
             </li>
-            <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+            <li data-ng-class="{disabled: currentPage == pagedImages.length - 1}">
                 <a href data-ng-click="nextPage()" data-translate>Next »</a>
             </li>
             <li data-ng-show="!showAllActive">
@@ -130,7 +133,7 @@
                 data-toggle="tooltip"
                 data-placement="right"
                 data-html="true"
-                data-original-title="Export machine list in .csv">Export .csv</button>
+                data-original-title="Export image list in .csv">Export .csv</button>
         <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
     </div>
 </div>

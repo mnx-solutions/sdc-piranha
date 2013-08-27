@@ -50,6 +50,7 @@
             $scope.itemsPerPage = 15;
             $scope.pagedImages = [];
             $scope.showAllActive = false;
+            $scope.collapsedImages = {};
             $scope.maxPages = 5;
             $scope.currentPage = 0;
 
@@ -234,7 +235,7 @@
             };
 
 
-            // put all machines to one page
+            // put all images to one page
             $scope.showAll = function() {
                 $scope.itemsPerPage = 9999;
                 $scope.maxPages = 1;
@@ -251,7 +252,7 @@
                 $scope.groupToPages();
             };
 
-            /* export current machines */
+            /* export current images */
             $scope.exportDetails = function() {
                 var order = [];
                 var ignoredValues = ['$$hashKey'];
@@ -304,6 +305,18 @@
                 $scope.sortBy($cookieStore.get('imageSortField') || $scope.sortField.value, false);
             }
 
+            $scope.toggleImage = function (id) {
+                if ($scope.isCollapsed(id)) {
+                    $scope.collapsedImages[id] = false;
+                } else {
+                    $scope.collapsedImages[id] = true;
+                }
+            };
+
+            $scope.isCollapsed = function (id) {
+                return !$scope.collapsedImages.hasOwnProperty(id) ||
+                    $scope.collapsedImages[id];
+            };
             $scope.clickDelete = function (image) {
                 util.confirm(
                     localization.translate(
