@@ -22,11 +22,6 @@
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
             });
 
-//            $scope.listTypes = [ 'normal', 'alternate', 'grid'];
-//            $scope.listType = $scope.listTypes[0]; // Defaults to 'normal'
-
-            $scope.listType = 'grid';
-
             $scope.loading = true;
 
             // Pagination
@@ -53,38 +48,6 @@
                     });
                 }
             });
-
-
-            /* export current machines */
-            $scope.exportDetails = function() {
-                var order = [];
-                var ignoredValues = ['metadata'];
-                var exportData = $scope.machines;
-
-                if ($scope.machines[0]) {
-                    Object.keys($scope.machines[0]).forEach(function(key) {
-                        // if it's not an ignored field
-                        if (ignoredValues.indexOf(key) === -1) {
-                            order.push(key);
-                        }
-                    });
-                }
-
-                // filter out ignored fields
-                exportData.forEach(function(el) {
-                    ignoredValues.forEach(function(e) {
-                        delete el[e];
-                    });
-                });
-
-                $http.post('machine/export', {data: exportData, order: order})
-                    .success(function (id) {
-                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
-                    })
-                    .error(function () {
-                        console.error('err', arguments);
-                    });
-            };
 
             $scope.startMachine = function (id) {
                 util.confirm(
@@ -210,7 +173,7 @@
                 {
                     label: 'Start',
                     disabled: function (object) {
-                        return object.state == 'running' || (object.job && !object.job.finished);
+                        return object.state === 'running' || (object.job && !object.job.finished);
                     },
                     action: function (object) {
                         $scope.startMachine(object.id);
@@ -221,7 +184,7 @@
                 {
                     label: 'Stop',
                     disabled: function (object) {
-                        return object.state == 'stopped' || (object.job && !object.job.finished);
+                        return object.state === 'stopped' || (object.job && !object.job.finished);
                     },
                     action: function (object) {
                         $scope.stopMachine(object.id);
@@ -232,7 +195,7 @@
                 {
                     label: 'Delete',
                     disabled: function (object) {
-                        return object.state != 'stopped' || (object.job && !object.job.finished);
+                        return object.state !== 'stopped' || (object.job && !object.job.finished);
                     },
                     action: function (object) {
                         $scope.deleteMachine(object.id);
@@ -252,6 +215,10 @@
                     sequence: 4
                 }
             ];
+
+            $scope.exportFields = {
+                ignore: ['metadata']
+            };
 
         }
 

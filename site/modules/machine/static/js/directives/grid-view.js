@@ -101,29 +101,26 @@
             var filtered = $filter('filter')($scope.objects, $scope.matchesFilter);
             var ordered = $filter('orderBy')(filtered, $scope.order);
 
-            var filteredP = $filter('filter')($scope.props, {active:true});
-            var orderedP = $filter('orderBy')(filteredP, 'sequence');
-
-            var orderInfo = [];
-            orderedP.forEach(function (p) {
-                orderInfo.push(p.name);
-            });
+            var order = ($scope.objects[0] && Object.keys($scope.objects[0])) || [];
             var final = [];
+            if($scope.exportFields.ignore) {
+                order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
+            }
+            if($scope.exportFields.fields) {
+                order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
+            }
+
             ordered.forEach(function (el) {
                 var obj = {};
-                orderedP.forEach(function (p) {
-                    if(p.id2) {
-                        obj[p.name] = el[p.id][p.id2];
-                    } else {
-                        obj[p.name] = el[p.id];
-                    }
+                order.forEach(function (id) {
+                    obj[id] = el[id];
                 });
                 final.push(obj);
             });
 
             return {
                 data: final,
-                order: orderInfo
+                order: order
             };
         }
 
@@ -153,7 +150,8 @@
                 detailProps: '=',
                 objects: '=',
                 actionButtons:'=',
-                filterAll: '='
+                filterAll: '=',
+                exportFields: '='
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',

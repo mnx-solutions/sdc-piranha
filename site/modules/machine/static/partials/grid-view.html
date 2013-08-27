@@ -70,12 +70,26 @@
         <div class="span6 offset3 pagination pagination-small pagination-centered" style="text-align: center;">
             <div style="margin:0;" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
         </div>
-        <!--<div class="span3 pull-right">-->
-            <!--<div class="btn-group pull-right">-->
-                <!--<button class="btn" data-ng-click="export('json')" data-translate>JSON</button>-->
-                <!--<button class="btn" data-ng-click="export('csv')" data-translate>CSV</button>-->
-            <!--</div>-->
-        <!--</div>-->
+        <div class="span3 pull-right pagination">
+            <div class="btn-group pull-right">
+                <!--<button class="btn btn-mini"-->
+                        <!--data-translate-attributes="data-original-title"-->
+                        <!--data-toggle="tooltip"-->
+                        <!--data-placement="right"-->
+                        <!--data-html="true"-->
+                        <!--data-original-title="Export machine list in .json"-->
+                        <!--data-ng-click="export('json')"-->
+                        <!--data-translate>JSON</button>-->
+                <button class="btn btn-mini"
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="right"
+                        data-html="true"
+                        data-original-title="Export machine list in .csv"
+                        data-ng-click="export('csv')"
+                        data-translate>Export .csv</button>
+            </div>
+        </div>
     </div>
     <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 </div>

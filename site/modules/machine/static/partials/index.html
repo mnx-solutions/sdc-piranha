@@ -23,19 +23,8 @@
 
             <div class="row">
 				<div class="span9">
-	                <div data-grid-view data-props="gridProps" data-detail-props="gridDetailProps" data-action-buttons="gridActionButtons" data-objects="machines" data-per-page="15" data-order="gridOrder" data-filter-all="query"></div>
-	                <div class="row">
-                        <button role="button"
-                                class="btn btn-mini button tooltip-hover export-csv-button"
-                                data-ng-click="exportDetails()"
-                                data-translate
-                                data-translate-attributes="data-original-title"
-                                data-toggle="tooltip"
-                                data-placement="right"
-                                data-html="true"
-                                data-original-title="Export machine list in .csv">Export .csv</button>
-                        <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
-	                </div>
+	                <div data-grid-view data-props="gridProps" data-detail-props="gridDetailProps" data-action-buttons="gridActionButtons" data-objects="machines" data-per-page="15" data-order="gridOrder" data-filter-all="query" data-export-fields="exportFields"></div>
+
                             <!--<li data-ng-show="!showAllActive">-->
                                 <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->
                             <!--</li>-->
