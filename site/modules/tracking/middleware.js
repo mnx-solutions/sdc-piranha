@@ -4,25 +4,21 @@ module.exports = function execute(scope) {
 
 
     var middleware = function(req, res, next) {
+        if(!res.locals.jss) {
+            res.locals.jss = [];
+        }
+
         if(!scope.config.marketo.accountId) {
             req.log.warn('Marketo configuration missing');
         } else {
-            if(!res.locals.jss) {
-                res.locals.jss = {};
-            }
-            res.locals.jss.marketo = 'Munchkin.init("'+ scope.config.marketo.accountId +'");';
+            res.locals.jss.push('Munchkin.init("'+ scope.config.marketo.accountId +'");');
         }
 
         if(!scope.config.googleAnalytics.identifier) {
             req.log.warn('GoogleAnalytics configuration missing');
         } else {
 
-            if(!res.locals.jss) {
-                res.locals.jss = {};
-            }
-
-
-            res.locals.jss.googleAnalytics = 'var _gaq = _gaq || [];'+
+            var googleAnalytics = 'var _gaq = _gaq || [];'+
                 '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifier +'"]);'+
                 '_gaq.push(["_trackPageview"]);'+
                 '_gaq.push(["_setDomainName", "'+ scope.config.googleAnalytics.domain +'"]);'+
@@ -37,7 +33,7 @@ module.exports = function execute(scope) {
                 '    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);'+
                 '}());';
 
-            res.locals.jss.GAlink = '$(document).ready(function() {'+
+            var GAlink = '$(document).ready(function() {'+
             '$("a").click(function() {'+
                     'var href = $(this).attr("href");'+
                     'if (href.indexOf("joyent.com") > -1) {'+
@@ -46,6 +42,9 @@ module.exports = function execute(scope) {
                     '}'+
                 '});'+
             '});';
+
+            res.locals.jss.push(googleAnalytics);
+            res.locals.jss.push(GAlink);
         }
 
         return next();

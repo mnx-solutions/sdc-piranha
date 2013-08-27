@@ -27,7 +27,6 @@
                         }
 
                         var result = job.__read();
-
                         Object.keys(result).forEach(function (key) {
                             var datacenter = {
                                 name: key,

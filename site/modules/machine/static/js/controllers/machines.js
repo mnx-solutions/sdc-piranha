@@ -14,8 +14,9 @@
         'Package',
         'localization',
         'util',
+        '$http',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $http) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -43,6 +44,7 @@
             $scope.itemsPerPage = 15;
             $scope.pagedMachines = [];
             $scope.collapsedMachines = {};
+            $scope.showAllActive = false;
             $scope.maxPages = 5;
             $scope.currentPage = 0;
             $scope.machines = Machine.machine();
@@ -111,12 +113,13 @@
                     if (!needle) {
                         return true;
                     }
+
                     var helper = haystack;
                     if (ng.isNumber(haystack)) {
                         helper = haystack.toString();
                     }
-                    var subject = helper.toLowerCase();
 
+                    var subject = helper.toLowerCase();
                     return (subject.indexOf(needle.toLowerCase()) !== -1);
                 };
 
@@ -148,6 +151,7 @@
 
                     return (false);
                 });
+
                 return (_labelMachines(ret));
             };
 
@@ -238,27 +242,77 @@
                         start = end - $scope.maxPages;
                     }
                 }
+
                 if (start < 0) {
                     start = 0;
                     if (start + $scope.maxPages <= $scope.pagedMachines.length) {
                         end = start + $scope.maxPages;
                     }
                 }
-                var i;
 
                 // add first page
                 ret.push(0);
-                for (i = start; i < end; i++) {
+                for (var i = start; i < end; i++) {
                     // don't duplicate first or last page
                     if(i != 0 && i != $scope.pagedMachines.length-1)
                         ret.push(i);
                 }
 
                 // add last page
-                if($scope.pagedMachines.length > 1)
+                if ($scope.pagedMachines.length > 1) {
                     ret.push($scope.pagedMachines.length-1);
+                }
 
                 return ret;
+            };
+
+
+            // put all machines to one page
+            $scope.showAll = function() {
+                $scope.itemsPerPage = 9999;
+                $scope.maxPages = 1;
+                $scope.currentPage = 0;
+                $scope.showAllActive = true;
+                $scope.groupToPages();
+            };
+
+            $scope.showPages = function() {
+                $scope.itemsPerPage = 15;
+                $scope.maxPages = 5;
+                $scope.currentPage = 0;
+                $scope.showAllActive = false;
+                $scope.groupToPages();
+            };
+
+            /* export current machines */
+            $scope.exportDetails = function() {
+                var order = [];
+                var ignoredValues = ['metadata'];
+                var exportData = $scope.machines;
+
+                if ($scope.machines[0]) {
+                    Object.keys($scope.machines[0]).forEach(function(key) {
+                        // if it's not an ignored field
+                        if (ignoredValues.indexOf(key) === -1) {
+                            order.push(key);
+                        }
+                    });
+                }
+
+                // filter out ignored fields
+                exportData.forEach(function(el) {
+                    ignoredValues.forEach(function(e) {
+                        delete el[e];
+                    });
+                });
+
+                $http.post('machine/export', {data: exportData, order: order})
+                    .success(function (id) {
+                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
+                    })
+                    .error(function () {
+                        console.error('err', arguments);
+                    });
             };
 
             $scope.prevPage = function () {

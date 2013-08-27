@@ -12,12 +12,9 @@ window.JP.main.config([
         }).when('/instance/create', {
             title: 'Create Instance',
             action: 'machine.provision'
+        }).when('/instance/images', {
+            title: 'Images',
+            action: 'machine.images'
         });
-    }]);
-
-window.JP.main.run(['Menu', function (Menu) {
-        // Menu.register({
-        //     name: 'Compute',
-        //     link: 'machine'
-        // });
-    }]);
+    }
+]);

@@ -6,7 +6,9 @@ module.exports = function execute(scope) {
     var extend = scope.get('utils').extend;
     var localization = new Localization(extend(
         scope.config.localization,
-        { log: scope.log }
+        {
+            log: scope.log
+        }
     ));
 
     var middleware = function (req, res, next) {
@@ -20,13 +22,13 @@ module.exports = function execute(scope) {
         }
 
         if (!res.locals.jss) {
-            res.locals.jss = localization.getCompiled(req);
-        } else {
-            var comp = localization.getCompiled(req);
-            Object.keys(comp).forEach(function (key) {
-                res.locals.jss[key] = comp[key];
-            });
+            res.locals.jss = [];
         }
+
+        var compiledLocalizations = localization.getCompiled(req);
+        Object.keys(compiledLocalizations).forEach(function (key) {
+            res.locals.jss.push(compiledLocalizations[key]);
+        });
 
         return next();
     };

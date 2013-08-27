@@ -6,7 +6,7 @@ var redis = require('redis');
 var config = require('easy-config');
 var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var fs = require('fs');
-var countryCodes = require('./data/countryCodes');
+var countryCodes = require('./data/country-codes');
 
 
 redisClient.auth(config.redis.password, function() {});
@@ -38,8 +38,7 @@ module.exports = function execute(scope, app, callback) {
         // set no-cache headers for IE 10 fix
         res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
-        redisClient.get(req.params.tropoid, function(err, result) {
-            var status = result;
+        redisClient.get(req.params.tropoid, function(err, status) {
             if(status === 'passed') {
                 SignupProgress.setMinProgress(req, 'tropo', function () {
                     redisClient.get(req.params.uuid +'_tropo', function(err, result) {

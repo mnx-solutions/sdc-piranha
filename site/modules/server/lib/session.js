@@ -6,20 +6,16 @@ var Tab = require('./tab');
 var sessions = {};
 
 function Session(opts) {
-    if(!(this instanceof Session)) {
+    if (!(this instanceof Session)) {
         return new Session(opts);
     }
 
     events.EventEmitter.call(this);
 
     var self = this;
-
     self.id = opts.id;
-
     self._tabs = {};
-
     self._lifespan = opts.lifespan;
-
     self.log = opts.log;
 
     setTimeout(function () {
@@ -53,9 +49,11 @@ Session.prototype.getTab = function (id) {
     if (!id) {
         throw new TypeError('Tab id missing');
     }
+
     if (!this._tabs[id]) {
-        this._tabs[id] = new Tab({id:id, log: this.log});
+        this._tabs[id] = new Tab({ id: id, log: this.log, lifespan: this._lifespan });
     }
+
     return this._tabs[id];
 };
 
@@ -67,13 +65,14 @@ Session.get = function (req, res, next) {
         next(err);
         return;
     }
-    if(sessions[req.session.id]) {
+
+    if (sessions[req.session.id]) {
         req._session = sessions[req.session.id];
     } else {
         req._session = new Session({
             id: req.session.id,
             log: req.log,
-            lifespan: (req.scope.config.session && req.scope.config.session.lifespan) || 24 * 60 * 60 * 1000
+            lifespan: (req.scope.config.session && req.scope.config.session.lifespan) || 60 * 60 * 1000 // Default is 1 hour
         });
     }
     next();

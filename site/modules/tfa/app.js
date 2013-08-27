@@ -13,18 +13,21 @@ module.exports = function execute(scope, app) {
 
         var cloud = smartCloud.cloud({token: token});
         cloud.getAccount(function (err, data) {
-            if(err) {
+            if (err) {
                 next(err);
                 return;
             }
+
             TFA.get(data.id, function (err, secret) {
-                if(err) {
+                if (err) {
                     next(err);
                     return;
                 }
+
                 req.session.userId = data.id;
                 req.session.userName = data.login;
-                if(!secret) {
+
+                if (!secret) {
 
                     req.log.info('User logged in', {userName: req.session.userName, userId: req.session.userId});
                     // as sso passes token using ?token=
@@ -45,24 +48,27 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/remove', function (req, res, next) {
-        if(!req.session.token || !req.session.userId) {
+        if (!req.session.token || !req.session.userId) {
             res.send(401);
             return;
         }
+
         TFA.set(req.session.userId, false, function(err, secretkey) {
-            if(err) {
+            if (err) {
                 res.json(500, {status: 'error', err: err});
                 return;
             }
-            res.json({status:'ok'});
+
+            res.json({ status: 'ok' });
         });
     });
 
     app.get('/setup', function (req, res, next) {
-        if(!req.session.userId || !req.session.userName) {
+        if (!req.session.userId || !req.session.userName) {
             res.send(401);
             return;
         }
+
         req.session._tfaSecret = TFAProvider.generateSecret();
         req.session.save();
 
@@ -71,7 +77,7 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/setup', function (req, res, next) {
-        if(!req.session._tfaSecret || !req.session.userId) {
+        if (!req.session._tfaSecret || !req.session.userId) {
             res.send(401);
             return;
         }
@@ -79,11 +85,12 @@ module.exports = function execute(scope, app) {
         var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
         if (req.body.otpass === onetimepass) {
             TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
-                if(err) {
+                if (err) {
                     req.log.error('Failed to enable TFA', err);
                     res.json({status:'error', message: 'Internal error'});
                     return;
                 }
+
                 // tfaEnabled will be enabled for their next login
                 delete req.session._tfaSecret;
                 req.session.save();
@@ -95,22 +102,24 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/login', function (req, res, next) {
-        if(!req.session._tfaSecret || !req.session.userId) {
+        if (!req.session._tfaSecret || !req.session.userId) {
             res.send(401);
             return;
         }
+
         var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
         if (req.body.otpass === onetimepass) {
             req.session.token = req.session._preToken;
             delete req.session._preToken;
+
             var redirect = req.session._tfaRedirect;
             delete req.session._tfaRedirect;
             req.session.save();
 
             req.log.info('User logged in', {userName: req.session.userName, userId: req.session.userId});
-            res.send({status:'ok', redirect:redirect});
+            res.send({ status: 'ok', redirect: redirect});
         } else {
-            res.send({status:'error'});
+            res.send({ status: 'error'});
         }
     });
 };

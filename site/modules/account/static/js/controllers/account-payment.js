@@ -2,8 +2,10 @@
 
 (function (app) {
     app.controller(
-        'Account.PaymentController',
-        ['$scope', 'requestContext', '$http', 'BillingService', function ($scope, requestContext, $http, BillingService) {
-            requestContext.setUpRenderContext('account.payment', $scope);
-        }]);
+        'Account.PaymentController', [
+            '$scope',
+            'requestContext',
+            function ($scope, requestContext) {
+                requestContext.setUpRenderContext('account.payment', $scope);
+            }]);
 }(window.JP.getModule('Account')));

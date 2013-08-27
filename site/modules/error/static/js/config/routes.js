@@ -7,4 +7,5 @@ window.JP.main.config([
             title: 'Error',
             action: 'error.index'
         });
-    }]);
+    }
+]);

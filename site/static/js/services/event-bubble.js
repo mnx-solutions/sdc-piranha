@@ -14,6 +14,7 @@ window.JP.main.service(
                 $s.$on = function (event, listener) {
                     eventList[event] = eventList[event] || [];
                     var count = 0;
+                    // Bind event to the scope that would stop propagation upwards
                     var unregister = $on.call($s, event, function (e) {
                         if(++count === eventList[event].length) {
                             e.stopPropagation();
@@ -21,6 +22,7 @@ window.JP.main.service(
                         }
                         listener.apply($s, Array.prototype.slice.call(arguments, 1));
                     });
+                    // Create unregister function and push it to the event stack
                     var wrapper = function () {
                         delete eventList[event][eventList[event].indexOf(wrapper)];
                         return unregister();
@@ -40,7 +42,7 @@ window.JP.main.service(
                         args = [arg1, arg2, arg3, arg4];
                     }
                     if(!force && (!eventList[event] || eventList[event].length < 1)){
-                        return false;
+                        return false; // No listeners and no propagation
                     }
 
                     $emit.apply($s, args);

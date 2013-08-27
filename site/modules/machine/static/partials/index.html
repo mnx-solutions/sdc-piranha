@@ -50,13 +50,29 @@
 	                        <li data-ng-repeat="n in range()"
 	                            data-ng-class="{active: n == currentPage}"
 	                            data-ng-click="setPage()">
-	                            <a href ng-bind="n + 1">1</a>
+	                            <a href data-ng-bind="n + 1">1</a>
 	                            <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
 	                        </li>
 	                        <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
-	                            <a href ng-click="nextPage()" data-translate>Next »</a>
+	                            <a href data-ng-click="nextPage()" data-translate>Next »</a>
 	                        </li>
+                            <li data-ng-show="!showAllActive">
+                                <a href data-ng-click="showAll()" data-translate>List all</a>
+                            </li>
+                            <li data-ng-show="showAllActive">
+                                <a href data-ng-click="showPages()" data-translate>View pages</a>
+                            </li>
 	                    </ul>
+                        <button role="button"
+                                class="btn btn-mini button tooltip-hover export-csv-button"
+                                data-ng-click="exportDetails()"
+                                data-translate
+                                data-translate-attributes="data-original-title"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                data-html="true"
+                                data-original-title="Export machine list in .csv">Export .csv</button>
+                        <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
 	                </div>
 				</div>
 				

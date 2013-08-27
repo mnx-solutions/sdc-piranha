@@ -13,15 +13,11 @@ function Tab(opts) {
     events.EventEmitter.call(this);
 
     var self = this;
-
     self.id = opts.id;
-
     self._calls = {};
     self._changed = [];
     self._lifespan = opts.lifespan;
-
     self._history = [];
-
     self.log = opts.log;
 
     self.readable = false;
@@ -43,16 +39,19 @@ util.inherits(Tab, events.EventEmitter);
 Tab.prototype.call = function (opts) {
     var self = this;
     var logger = self.log.child({req_id: opts.id, call: opts.name});
+
     if (self._calls[opts.id]) {
         logger.error('Call id already in Tab, ignoring', opts);
         return false;
     }
+
     opts.log = logger;
     opts.tab = self;
     opts.remove = function (c) {
-        self._history.push(c);
+        //self._history.push(c);
         delete self._calls[c.id];
     };
+
     var call = new Call(opts);
 
     function updated(name) {
@@ -64,15 +63,13 @@ Tab.prototype.call = function (opts) {
 
     if (!call.willFinish) {
         call.on('updated', updated('updated'));
-
         call.on('finished', updated('finished'));
-
         call.on('error', updated('error'));
 
         self._calls[call.id] = call;
         self.processing = true;
     } else {
-        self._history.push(call);
+        //self._history.push(call);
     }
 
     return call;
@@ -91,14 +88,15 @@ Tab.prototype.read = function (req){
     keys.forEach(function (key) {
         var call = self._calls[key];
         result.push(call.status());
-        if(call.finished) {
+
+        if (call.finished) {
             var fn = call.session();
             if(fn) {
                 fn(req);
             }
             delete self._calls[key];
             call.removeAllListeners();
-            self._history.push(call);
+            //self._history.push(call);
         }
     });
 
@@ -114,6 +112,7 @@ Tab.prototype._readable = function () {
     if (self.readable) {
         return;
     }
+
     self.readable = true;
     self.emit('readable');
 };

@@ -33,6 +33,7 @@ function getQRcode (secretkey, keyname) {
     if (!secretkey){
         return '';
     }
+
     //var name = 'Joyent (' + keyname.replace('/', '') + ')';
     var name = (keyname || 'my') + '@joyent';
     return 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl='

@@ -37,7 +37,7 @@
             $scope.openKeyDetails = null;
 
             $scope.setOpenDetails = function(id) {
-                if(id === $scope.openKeyDetails) {
+                if($scope.openKeyDetails === id) {
                     $scope.openKeyDetails = null;
                 } else {
                     $scope.openKeyDetails = id;

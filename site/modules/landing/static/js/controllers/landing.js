@@ -4,16 +4,20 @@
 window.JP.set('urlHashbang', window.location.hash);
 
 (function (app) {
-    app.controller(
-        'LandingPageController',
-        ['$scope', '$window', 'Landing', 'localization', function ($scope, $window, Landing, localization) {
+    app.controller('LandingPageController', [
+        '$scope',
+        '$window',
+        'Landing',
+        'localization',
+
+        function ($scope, $window, Landing, localization) {
             localization.bind('landing', $scope);
 
             var oldHashbang = window.JP.get('urlHashbang');
-
             if(oldHashbang === '#!/' || !oldHashbang || oldHashbang === '') {
                 oldHashbang = '#!/dashboard';
             }
+
             $scope.login = function() {
                 var urlOpts = {
                     'method': 'login',

@@ -86,14 +86,35 @@ select.date-month, select.date-year {
 }
 
 .item-list-container .item .action-container {
-    /*	margin-right:5px;*/
     margin-top:5px;
 }
+
 .item-list-container .item .action-container button {
     display:block;
     margin-top:3px;
 }
+
 .item-list-container .item .toolbox {
     border-top:1px solid #ddd;
     margin-bottom: 5px;
+}
+
+.orange-asterix {
+    color:#ff6600;
+}
+
+.required-text {
+    font-size: 14px;
+}
+
+#paymentForm tr td {
+    padding:10px;
+}
+
+#paymentForm .error {
+    color: #FF6600;
+}
+
+#paymentForm input[type="text"]:focus:invalid {
+    border-color: #FF6600;
 }

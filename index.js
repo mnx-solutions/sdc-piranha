@@ -1,9 +1,9 @@
 'use strict';
 
+//var agent = require('webkit-devtools-agent');
 var config = require('easy-config');
 var express = require('express');
 var bunyan = require('bunyan');
-var Rack = require('easy-asset').Rack;
 var Modulizer = require('express-modulizer');
 var util = require('util');
 var utils = require('./lib/utils');
@@ -34,15 +34,11 @@ app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
 });
 
-app.get('/old-browser', require('./lib/oldBrowser'));
+app.get('/old-browser', require('./lib/old-browser'));
 
 redirect(app); //Add redirects for old urls
 
-var rack = new Rack();
-rack.addMiddleware(app);
-
 var log = bunyan.createLogger(config.log);
-var compiler = require('./lib/compiler')(rack, config);
 
 var opts = {
     root: 'site',
@@ -50,7 +46,7 @@ var opts = {
     log: log,
     main: app,
     extensions: config.extensions,
-    compiler: compiler,
+    assets: config.assets,
     apps: ['main','landing','signup','tropo']
 };
 
@@ -77,6 +73,7 @@ function error(err, req, res, next) {
         logger.warn('Requested path not found @' + req.originalUrl);
     } else {
         logger.error('Request ended with error', err);
+        console.log(err.stack);
     }
     libErr(err, req, res, next);
 }

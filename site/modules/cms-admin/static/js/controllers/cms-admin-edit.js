@@ -23,17 +23,17 @@
 
                 $scope.saveData = function() {
                     $scope.error = null;
-                    var d = null;
+                    var data = null;
                     try {
                         if($scope.el.type === 'json'){
-                            d = JSON.parse($scope.data);
+                            data = JSON.parse($scope.data);
                         } else {
-                            d = {
+                            data = {
                                 data: $('#editor').html()
                             };
-                            $scope.data = d.data;
+                            $scope.data = data.data;
                         }
-                        CMSService.setData(id, d, function (err) {
+                        CMSService.setData(id, data, function (err) {
                             if(err) {
                                 $scope.message = 'FAILED TO SAVE';
                             } else {
@@ -44,8 +44,6 @@
                             }
                         });
                     } catch(e) {
-                        console.log($scope.data);
-                        console.log(e);
                         $scope.message = 'INVALID JSON';
                         return;
                     }

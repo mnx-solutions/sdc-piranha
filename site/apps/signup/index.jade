@@ -9,7 +9,7 @@ html(lang='en',data-ng-app='JoyentPortal',id="ng-app", data-ng-controller='MainC
   body()
     div(data-ng-switch='subview', class='ng-cloak', ng-cloak)
       each layout in layouts
-        div(data-ng-switch-when='#{layout.module}',class='JoyentPortal-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
+        div(data-ng-switch-when='#{layout.module}',class='modulizer-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
 
     each link in js
       script(type='text/javascript',src='#{link._url}')
@@ -32,6 +32,8 @@ html(lang='en',data-ng-app='JoyentPortal',id="ng-app", data-ng-controller='MainC
             a(href="http://joyent.com/company/security-and-compliance", target="_blank") Compliance
           li
             a(href="https://help.joyent.com/forums/20715782-current-system-status", target="_blank") System Status
+          li
+            a(href="http://apidocs.joyent.com/cloudapi/", target="_blank") API
           li
             a &copy; 2013 Joyent, Inc.
 

@@ -48,7 +48,7 @@
                  */
                 _load: function (done) {
                     if (typeof done === 'function') {
-                      $http.get('/localization/translations').success(function (data, status) {
+                      $http.get('/localization/translations').success(function (data) {
                         translations = data;
                         $rootScope.$broadcast('localization:change');
                         done();
@@ -66,12 +66,13 @@
                  * @param originScope origin scope for the registred module
                  * @returns {}
                  */
-                _find: function (originScope, debug) {
-
+                _find: function (originScope) {
+                    // Search through contexts
                     for (var i = 0, c = contexts.length; i < c; i++) {
                         var context = contexts[i];
                         var scope = context.scope;
 
+                        // Find matching scope
                         while (scope) {
                             if (scope === originScope) {
                                 break;
@@ -80,6 +81,7 @@
                             scope = scope.$parent || null;
                         }
 
+                        // If scope was found, return module
                         if (scope) {
                             return context.module;
                         }

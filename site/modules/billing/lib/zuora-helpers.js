@@ -25,6 +25,7 @@ function init(callback) {
 module.exports.init = init;
 
 function notFound(resp) {
+    // Return true if there is only one error and it is in the not found category.
     return (resp && resp.reasons && resp.reasons.length === 1 && resp.reasons[0].split.category.nr === '40');
 }
 
@@ -61,11 +62,13 @@ function composeCreditCardObject(call, cb) {
         accountKey: call.req.session.userId,
         defaultPaymentMethod: true
     };
+    // Copy all properties except first and last name
     Object.keys(call.data).forEach(function (k) {
         if(k !== 'firstName' && k !== 'lastName'){
             data[k] = call.data[k];
         }
     });
+    // Check if both first and last name are set
     var preErr = null;
     if(!call.data.firstName || call.data.firstName.trim() === ''){
         preErr = {
@@ -76,12 +79,14 @@ function composeCreditCardObject(call, cb) {
         preErr = preErr || {};
         preErr.lastName = 'String is empty';
     }
+    // Everything seems valid so set cardHolderName and return the data
     if (!preErr) {
         data.cardHolderInfo.cardHolderName = call.data.firstName + ' ' + call.data.lastName;
         setImmediate(cb.bind(cb, null, data));
         return;
     }
 
+    // Make a call to zuora with cardHolderName missing to find out what other errors there are
     zuora.payment.create(data, function (err, resp) { // Should never pass
         Object.keys(preErr).forEach(function (k) {
             err[k] = preErr[k];
@@ -143,6 +148,7 @@ function compareBillToContacts(zContact, contact) {
         return false;
     }
 
+    // Check if all properties match
     return Object.keys(contact).some(function (k) {
         if(k === 'country') {
             return zContact[k] === indexedCountries[contact[k]];
@@ -164,6 +170,7 @@ function composeZuoraAccount(call, cb) {
                 cb(err);
                 return;
             }
+            // Find the trial product
             zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
                 if(err2) {
                     cb(err2);

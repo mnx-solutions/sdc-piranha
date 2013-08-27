@@ -383,7 +383,9 @@ th {
 }
 
 .toolbox .button {
-	width:100%;
+	width:95%;
+    margin-bottom:3px;
+    margin-top:2px;
 }
 .toolbox{
 /*	display:block;*/
@@ -968,4 +970,19 @@ iframe {
 
 .notification-wrapper {
     padding-top: 15px;
+}
+
+/* add-credit-card directive CSS */
+
+.red-asterix {
+    color: red;
+}
+
+.error {
+    font-weight: bold;
+    color: red;
+}
+
+.asterix-info {
+    color: #b3b3b3;
 }

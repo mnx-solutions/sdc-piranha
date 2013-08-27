@@ -5,15 +5,14 @@ var config = require('easy-config');
 module.exports = function execute(scope) {
 
     var SignupProgress = scope.api('SignupProgress');
-    var ends = ['completed','complete'];
 
     function returnPage(req, res, next, step) {
-        if(req.session.signupStep !== step) {
+        if (req.session.signupStep !== step) {
             req.session.signupStep = step;
             req.session.save();
         }
 
-        if(ends.indexOf(step) > -1) {
+        if (step === 'completed') {
             return next();
         }
 
@@ -28,17 +27,17 @@ module.exports = function execute(scope) {
                 return;
             }
 
-            // FIXME: Temporary fix to allow ssh keygenerator download
-            if (/key\-generator\.sh$/.test(req.originalUrl)) {
+            if (req.originalUrl === '/main/account/key-generator.sh') {
                 next();
                 return;
             }
 
             if (/^\/signup/.test(req.originalUrl)) {
-                if (ends.indexOf(step) > -1) {
+                if (step === 'completed') {
                     res.redirect('/main/');
                     return;
                 }
+
                 next();
                 return;
             }
