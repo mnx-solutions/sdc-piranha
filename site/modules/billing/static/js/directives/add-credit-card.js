@@ -23,7 +23,7 @@
 
                 link: function ($scope) {
                     function getCardType(number){
-                        if(!number) {
+                        if (!number) {
                             return '';
                         }
 
@@ -66,28 +66,30 @@
                     if($scope.nextStep) {
                         $scope.saveButton = 'Next';
                     }
+
                     $scope.countries = $http.get('billing/countries');
                     var statesPromise = $http.get('billing/states');
 
                     $q.when($scope.prev, function (prev) {
-                        if(prev && prev.cardHolderInfo) {
-                            ['addressLine1','addressLine2','country','state','city','zipCode'].forEach(function (key) {
+                        if (prev && prev.cardHolderInfo) {
+                            [ 'addressLine1','addressLine2','country','state','city','zipCode' ].forEach(function (key) {
                                 $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];
                             });
 
                             $scope.countries.then(function (countries) {
                                 countries.data.some(function (country){
-                                    if(country.name === prev.cardHolderInfo.country) {
+                                    if (country.name === prev.cardHolderInfo.country) {
                                         $scope.form.cardHolderInfo.country = country.iso3;
                                         return true;
                                     }
                                 });
+
                                 var country = $scope.form.cardHolderInfo.country;
-                                if(country === 'CAN' || country === 'USA') {
+                                if (country === 'CAN' || country === 'USA') {
                                     statesPromise.then(function (allStates) {
                                         var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
                                         Object.keys(states).some(function (state) {
-                                            if(states[state] === prev.cardHolderInfo.state) {
+                                            if (states[state] === prev.cardHolderInfo.state) {
                                                 $scope.form.cardHolderInfo.state = state;
                                                 return true;
                                             }
@@ -98,33 +100,32 @@
 
                             $scope.useExistingPossible = $scope.useExisting = true;
                         } else {
-
                             $q.when(Account.getAccount(), function(account) {
-
                                 var form = $scope.form.cardHolderInfo;
                                 form.zipCode = account.postalCode;
                                 form.city = account.city;
                                 form.state = account.state;
                                 form.addressLine1 = account.address;
-                                if(account.country.length === 3) {
+
+                                if (account.country.length === 3) {
                                     form.country = account.country;
                                 } else {
                                     form.country = 'USA';
                                 }
 
                                 $scope.useExistingPossible = true;
-                                ['zipCode','city','state','addressLine1','country'].some(function (e) {
+
+                                [ 'zipCode','city','state','addressLine1','country' ].some(function (e) {
                                     if(!form[e] || form[e] === '') {
                                         $scope.useExistingPossible = false;
                                         return true;
                                     }
                                 });
+
                                 $scope.useExisting = $scope.useExistingPossible;
                             });
                         }
                     });
-
-
 
                     var c = (new Date()).getFullYear();
                     var i = c;
@@ -133,16 +134,16 @@
                     }
 
                     $scope.$watch('form.cardHolderInfo.country', function (newVal, oldVal) {
-                        if(oldVal === 'USA' || oldVal === 'CAN'){
+                        if (oldVal === 'USA' || oldVal === 'CAN'){
                             $scope.form.cardHolderInfo.state = '';
                         }
-                        if(newVal === 'USA') {
-                            statesPromise.then(function(res) {
+
+                        if (newVal === 'USA') {
+                            statesPromise.then(function (res) {
                                 $scope.stateSel = res.data.us.obj;
                             });
-
                         } else if (newVal === 'CAN') {
-                            statesPromise.then(function(res) {
+                            statesPromise.then(function (res) {
                                 $scope.stateSel = res.data.canada.obj;
                             });
                         } else {
@@ -173,12 +174,18 @@
                             }
                         }
 
-                        if($scope.formSubmitted && $scope.paymentForm[field] && $scope.paymentForm[field].$error.required && errorType === 'submitRequired') {
+                        if ($scope.formSubmitted &&
+                            $scope.paymentForm[field] &&
+                            $scope.paymentForm[field].$error.required &&
+                            errorType === 'submitRequired') {
                             return true;
                         }
 
                         // state validation fix
-                        if(field === 'state' && errorType === 'submitRequired' && $scope.formSubmitted && $scope.paymentForm[field].$modelValue === "") {
+                        if (field === 'state' &&
+                            errorType === 'submitRequired' &&
+                            $scope.formSubmitted &&
+                            $scope.paymentForm[field].$modelValue === '') {
                             return true;
                         }
 
@@ -211,17 +218,19 @@
                     });
 
                     $scope.isoToObj = function(iso) {
-                        if(!$scope.countryCodes){
+                        if (!$scope.countryCodes){
                             return;
                         }
+
                         var selected = null;
                         var usa = null;
 
                         $scope.countryCodes.some(function (el) {
-                            if(el.iso3 === 'USA') {
+                            if (el.iso3 === 'USA') {
                                 usa = el;
                             }
-                            if(el.iso3 === iso) {
+
+                            if (el.iso3 === iso) {
                                 selected = el;
                                 return true;
                             }
@@ -244,13 +253,13 @@
                         $scope.loading = true;
                         $scope.formSubmitted = true;
 
-                        if($scope.paymentForm.$invalid) {
+                        if ($scope.paymentForm.$invalid) {
                             $scope.loading = false;
                             return;
                         }
 
                         // remove state from submittable form fields to avoid Zuora error on empty state
-                        if($scope.form.cardHolderInfo.state === '') {
+                        if ($scope.form.cardHolderInfo.state === '') {
                             delete $scope.form.cardHolderInfo.state;
                         }
 
@@ -282,7 +291,8 @@
                                 });
                                 return;
                             }
-                            if(errs.zuora) {
+
+                            if (errs.zuora) {
                                 $scope.errs = errs.zuora.reasons;
                             } else {
                                 $scope.errs = {};
@@ -305,11 +315,12 @@
                             Object.keys($scope.errs).forEach(function (key) {
                                 var err = $scope.errs[key];
 
-                                if(typeof err === 'object') {
+                                if (typeof err === 'object') {
                                     var translated = localization.translate(null, 'billing', err.message);
-                                    if(translated === err.message) {
+                                    if (translated === err.message) {
                                         return;
                                     }
+
                                     generic = false;
                                     addedMessage += (addedMessage === '' ? ' ' : '<br/>') + translated;
 
@@ -317,13 +328,13 @@
                                     var tKey = localization.translate(null, 'billing', key);
                                     var tMessage = localization.translate(null, 'billing', err);
 
-                                    if(tKey.charAt(0) !== '_') {
+                                    if (tKey.charAt(0) !== '_') {
                                         fieldErrors += (fieldErrors === '' ? ' ' : '<br/>') + tKey + ':' + tMessage;
                                     }
                                 }
                             });
 
-                            if(generic && fieldErrors !== '') {
+                            if (generic && fieldErrors !== '') {
                                 addedMessage = fieldErrors;
                             } else {
                                 addedMessage = ' we are unable to verify your credit card details.';

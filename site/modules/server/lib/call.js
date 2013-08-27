@@ -6,28 +6,34 @@ var util = require('util');
 function deepCompare(a, b) {
     var tA = typeof a;
     var tB = typeof b;
+
     if (tA !== tB) {
         return false;
     }
-    if(a === null && b === null) {
+
+    if (a === null && b === null) {
         return true;
     }
-    if(a === null || b === null) {
+
+    if (a === null || b === null) {
         return false;
     }
+
     if (tA === 'object') {
         var aKeys = Object.keys(a);
         var bKeys = Object.keys(b);
 
-        if(aKeys.length !== bKeys.length) {
+        if (aKeys.length !== bKeys.length) {
             return false;
         }
+
         var ret = true;
         aKeys.forEach(function (k) {
-            if(!deepCompare(a[k], b[k])){
+            if (!deepCompare(a[k], b[k])){
                 ret = false;
             }
         });
+
         return ret;
     }
 
@@ -35,16 +41,14 @@ function deepCompare(a, b) {
 }
 
 function Call(opts) {
-    if(!(this instanceof Call)) {
+    if (!(this instanceof Call)) {
         return new Call(opts);
     }
 
     events.EventEmitter.call(this);
 
     var self = this;
-
     self.__id = Math.random().toString(36).substr(2);
-
     self.log = opts.log.child({call__id: self.__id});
 
     var _index = 0;
@@ -68,10 +72,11 @@ function Call(opts) {
     var final = false;
 
     function emit(event, data) {
-        if(!final && !_noEmit) {
+        if (!final && !_noEmit) {
             self.emit(event, self.err, data);
         }
-        if(self.finished) {
+
+        if (self.finished) {
             final = true;
         }
     }
@@ -100,13 +105,15 @@ function Call(opts) {
         },
         session: {
             value: function (fn) {
-                if(fn) {
+                if (fn) {
                     _session.push(fn);
                     return;
                 }
-                if(_session.length < 1) {
+
+                if (_session.length < 1) {
                     return false;
                 }
+
                 return function (req) {
                     _session.forEach(function (fn) {
                         fn(req);
@@ -115,11 +122,14 @@ function Call(opts) {
             }
         },
         step: {
-            get: function () { return _step.length < 1 ? null : _step[_step.length -1]; },
+            get: function () {
+                return _step.length < 1 ? null : _step[_step.length -1];
+            },
             set: function (s) {
                 var old = self.step;
                 _step.push(s);
-                if(!deepCompare(old, s)) {
+
+                if (!deepCompare(old, s)) {
                     self.status('updated');
                 }
             }
@@ -133,9 +143,10 @@ function Call(opts) {
                 if (done && _result.length < 1) {
                     _result = data;
                 } else {
-                    if(data) {
+                    if (data) {
                         _result.push(data);
                     }
+
                     _chunked = true;
                 }
                 self.status(done ? 'finished' : 'updated');
@@ -149,16 +160,17 @@ function Call(opts) {
         },
         __read: {
             value: function (index) {
-
                 if (!_chunked) {
                     return _result;
                 }
 
                 var i = index === undefined ? _index : index;
                 var r = _result.slice(i);
+
                 if (index === undefined) {
                     _index += r.length;
                 }
+
                 return r;
             }
         },
@@ -173,13 +185,13 @@ function Call(opts) {
         update: {
             value: function(err, result, done) { // Hack to ensure that events are binded
                 function update() {
-                    if(err) {
+                    if (err) {
                         return self.error(err);
                     }
                     self.result(result, done);
                 }
 
-                if(!_bind) {
+                if (!_bind) {
                     setImmediate(update);
                 } else {
                     update();
@@ -188,11 +200,12 @@ function Call(opts) {
         },
         done: {
             value: function (err, result) {
-                if(_done) {
+                if (_done) {
                     var stack = new Error().stack;
                     self.log.error('Tried to call done on already done call', err, result, stack);
                     return;
                 }
+
                 _done = true;
                 self.update(err, result, true);
             }
@@ -210,14 +223,17 @@ function Call(opts) {
                 if (done) {
                     self.willFinish = true;
                 }
+
                 self.immediate = function (err, data) {
                     _noEmit = true;
                     _status = 'initialized';
+
                     if (err) {
                         self.removeAllListeners();
                         opts.remove(self);
                         self.error(err);
                     }
+
                     if (done) {
                         self.result(data, done);
                         opts.res.send(self.status());
@@ -267,6 +283,5 @@ function Call(opts) {
 }
 
 util.inherits(Call, events.EventEmitter);
-
 
 module.exports = Call;

@@ -20,11 +20,12 @@
                 link: function ($scope) {
                     $scope.hash = $location.path();
 
-                    $scope.pages = [{
-                        sequence: 1,
-                        name: 'Summary',
-                        url: '/account'
-                    },
+                    $scope.pages = [
+                        {
+                            sequence: 1,
+                            name: 'Summary',
+                            url: '/account'
+                        },
                         {
                             sequence: 4,
                             name: 'SSH keys',
@@ -39,7 +40,8 @@
                             sequence: 3,
                             name: 'Billing',
                             url: '/account/payment'
-                        }];
+                        }
+                    ];
                 },
                 template: '<div class="sizebar-fix">' +
                     '<div class="tabbable tabs-right">' +

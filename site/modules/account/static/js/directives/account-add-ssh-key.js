@@ -13,6 +13,10 @@
                 replace: true,
                 scope: true,
 
+                controller: function($scope, $element, $attrs, $transclude) {
+                    localization.bind('account', $scope);
+                },
+
                 link: function ($scope) {
                     $scope.newKey = {};
 
@@ -30,7 +34,12 @@
                                     $scope.nextStep();
                                 }
                             } else {
-                                $scope.error = 'Failed to add new key. Reason: '+ (key.message || '') +' '+ (key.code || '');
+                                $scope.error = localization.translate($scope, null,
+                                    'Failed to add new key: {{message}}',
+                                    {
+                                        message: (key.message || '') + ' ' + (key.code || '')
+                                    }
+                                );
 
                             }
 

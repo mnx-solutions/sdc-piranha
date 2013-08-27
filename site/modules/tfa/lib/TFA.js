@@ -8,7 +8,9 @@ var tfaProvider = require('./TFAProvider');
  *   and  show the secret key QR code for this session
  */
 var updateMoreSecurity = function (req, res, next) {
-    if (!req.body.account) return next();
+    if (!req.body.account) {
+        return next();
+    }
 
     var enableTFA = req.body.account.security && !(req.session.tfaEnabled || req.session.visibleSecretKey);
     var disableTFA = !req.body.account.security && (req.session.tfaEnabled || req.session.visibleSecretKey);
@@ -19,6 +21,7 @@ var updateMoreSecurity = function (req, res, next) {
         toggle.set(req.session.uuid, false);
         next();
     }
+
     if (enableTFA) {
         tfaProvider.generateSecret(req.session.uuid, function (err, secretkey) {
             // store & show secret key for ONLY this session
@@ -26,6 +29,7 @@ var updateMoreSecurity = function (req, res, next) {
             res.redirect('/account/twofactor');
         });
     }
+
     if (!disableTFA && !enableTFA) {
         next();
     }
@@ -35,6 +39,7 @@ var showInstructions = function (req, res, next) {
     if (!req.session.visibleSecretKey) {
         return next();
     }
+
     res.render(
         util.view("account/twofactorInstructions.ejs"),
         {
@@ -74,6 +79,7 @@ var setSecurityCheckbox = function (req, account) {
     if (req.session.tfaEnabled || req.session.visibleSecretKey) {
         account.security = 'true'
     }
+
     return account;
 };
 
@@ -95,6 +101,7 @@ var showChallenge = function (req, res, next) {
     if (sess.username && sess.tfaEnabled && !sess.tfaVerified) {
         return res.render(util.view("account/twofactor.ejs"), {layout: util.view('layouts/layout_unauth')});
     }
+
     next();
 };
 
