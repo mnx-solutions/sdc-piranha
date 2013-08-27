@@ -15,7 +15,6 @@ var appKey = 'portal';
 var key = 'useMoreSecurity';
 
 var set = function (customerUuid, secretkey, callback) {
-
     if (!customerUuid) {
         if(callback) {
             setImmediate(function () {

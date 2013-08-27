@@ -28,8 +28,6 @@
                     $scope.loading = false;
                 }
             );
-
-
         }
     ])
 }(window.JP.getModule('Machine')));

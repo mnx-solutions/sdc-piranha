@@ -3,27 +3,30 @@
 var Handler = require('./handler');
 
 function Server(opts) {
-    if(!(this instanceof Server)) {
+    if (!(this instanceof Server)) {
         return new Server(opts);
     }
 
     this._handlers = {};
-    if(!opts.log || typeof opts.log !== 'object'){
+
+    if (!opts.log || typeof opts.log !== 'object') {
         throw new TypeError('Opts.log is a required parameter, must be object');
     }
+
     this.log = opts.log;
 }
 
 Server.prototype.onCall = function (name, handler) {
     var self = this;
-    if(self._handlers[name]) {
+    if (self._handlers[name]) {
         self.log.warn('can not have multiple listeners for RPC calls, ignoring');
         return;
     }
 
-    if(handler.constructor.name !== 'Handler') {
+    if (handler.constructor.name !== 'Handler') {
         handler = new Handler(handler);
     }
+
     self._handlers[name] = handler;
 };
 
@@ -31,6 +34,7 @@ Server.prototype.query = function () {
     return function(req, res) {
         var id = req.query.tab;
         var isSessionReadable = req._session._readable(id);
+
         if (!req._session._processing(id) && !isSessionReadable) {
             res.send(204);
             return;
@@ -38,11 +42,13 @@ Server.prototype.query = function () {
 
         var timeout = null;
         function send() {
-            if(timeout) {
+            if (timeout) {
                 clearTimeout(timeout);
             }
-            res.json(200, {results:req._session.read(req, id)});
+
+            res.json(200, { results: req._session.read(req, id) });
         }
+
         if(isSessionReadable) {
             send();
         } else {
@@ -62,10 +68,13 @@ Server.prototype.call = function () {
         var query = req.body;
         var id = req.query.tab;
 
-        if ('object' !== typeof query || !query.id || !query.name || !id) {
-            req.log.warn('Invalid call format', query);
-            res.send(400, 'Invalid call format');
-            return;
+        if ('object' !== typeof query ||
+            !query.id ||
+            !query.name ||
+            !id) {
+                req.log.warn('Invalid call format', query);
+                res.send(400, 'Invalid call format');
+                return;
         }
 
         self.log.debug({queryName: query.name, queryId: query.id, tabId: id},'Incoming RPC call');

@@ -7,12 +7,12 @@ module.exports = function execute(scope) {
     var SignupProgress = scope.api('SignupProgress');
 
     function returnPage(req, res, next, step) {
-        if(req.session.signupStep !== step) {
+        if (req.session.signupStep !== step) {
             req.session.signupStep = step;
             req.session.save();
         }
 
-        if(step === 'completed') {
+        if (step === 'completed') {
             return next();
         }
 
@@ -37,6 +37,7 @@ module.exports = function execute(scope) {
                     res.redirect('/main/');
                     return;
                 }
+
                 next();
                 return;
             }

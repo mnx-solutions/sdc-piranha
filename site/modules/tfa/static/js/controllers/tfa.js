@@ -1,9 +1,13 @@
 'use strict';
 
 (function (app) {
-    app.controller(
-        'TFAController',
-        ['$scope', 'localization', 'requestContext', 'TFAService', function ($scope, localization, requestContext, TFAService) {
+    app.controller('TFAController', [
+        '$scope',
+        'localization',
+        'requestContext',
+        'TFAService',
+
+        function ($scope, localization, requestContext, TFAService) {
             requestContext.setUpRenderContext('tfa.index', $scope);
             localization.bind('tfa', $scope);
 

@@ -16,7 +16,7 @@
 
             $scope.openDetails = null;
             $scope.setOpenDetails = function(id) {
-                if(id === $scope.openDetails) {
+                if ($scope.openDetails === id) {
                     $scope.openDetails = null;
                 } else {
                     $scope.openDetails = id;

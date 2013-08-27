@@ -4,28 +4,24 @@ var crypto = require('crypto');
 var fs = require('fs');
 
 module.exports = function execute(scope, app, callback) {
-
     var config = scope.config.sso;
     var privateKey = null;
 
-    if(!config) {
+    if (!config) {
         scope.log.fatal('SSO config missing');
         process.exit();
     }
 
     function sendToSSO(req, res, method, redirectUrl, redirect, campaignId) {
-
         // returnUrl will save the token and then redirect
-
         // req.protocol returned wrong protocol in some browsers
         var protocol = 'https';
 
-        if(app.settings.env === 'development' || app.settings.env === 'staging') {
+        if (app.settings.env === 'development' || app.settings.env === 'staging') {
             protocol = req.protocol;
         }
 
-        var baseUrl = new Buffer(protocol +'://'+ req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
-
+        var baseUrl = new Buffer(protocol + '://' + req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
         var returnUrl = protocol +'://'+ req.headers.host +'/tfa/saveToken/'+ baseUrl +'/';
         var ssoUrl = config.url +'/'+ method;
 
@@ -46,13 +42,13 @@ module.exports = function execute(scope, app, callback) {
 
         // do we have campaign id?
         var campaignUrl = '';
-        if(campaignId || req.cookies.campaignId) {
+        if (campaignId || req.cookies.campaignId) {
            campaignUrl = '&cid='+ (campaignId || req.cookies.campaignId);
         }
 
         var url = '';
         // with signup mehtod, the url looks somewhat different
-        if(req.body.method === 'signup') {
+        if( req.body.method === 'signup') {
             var queryObj = {
                 'keyid': config.keyId,
                 'nonce': nonce,
@@ -65,10 +61,12 @@ module.exports = function execute(scope, app, callback) {
         } else {
             url = ssoUrl +'?'+ querystring;
         }
-        if(redirect) {
+
+        if (redirect) {
             res.redirect(url);
             return;
         }
+
         res.json({url: url});
     }
 
