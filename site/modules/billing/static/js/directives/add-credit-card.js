@@ -272,7 +272,7 @@
                                     notification.push(null, { type: 'success' },
                                         localization.translate(null,
                                             'billing',
-                                            'Payment information updated'
+                                            'Billing information updated'
                                         )
                                     );
 
@@ -285,7 +285,7 @@
                                     notification.push(null, { type: 'error' },
                                         localization.translate(null,
                                             'billing',
-                                            'Payment information not updated'
+                                            'Billing information not updated'
                                         )
                                     );
                                 });
@@ -306,7 +306,7 @@
                             }
 
                             $scope.loading = false;
-                            var message = localization.translate(null, 'billing', 'Payment information not updated:');
+                            var message = localization.translate(null, 'billing', 'Billing information not updated:');
 
                             var addedMessage = '';
                             var fieldErrors = '';

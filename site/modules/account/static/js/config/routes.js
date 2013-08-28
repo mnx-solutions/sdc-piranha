@@ -15,7 +15,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'account.ssh'
         })
         .when('/account/payment', {
-            title: 'Payment information',
+            title: 'Billing information',
             action: 'account.payment'
         })
         .when('/account/invoices', {
