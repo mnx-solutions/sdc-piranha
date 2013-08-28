@@ -39,7 +39,7 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/verify/:code', function (req, res, next) {
-        var isVerified = req.session.code && req.params.code == req.session.code;
+        var isVerified = req.session.maxmindCode && req.params.code == req.session.maxmindCode;
         //TODO: Store user "phone verified" status in UFDS
         serve(res, isVerified ? 'Code ok': 'Code is wrong', isVerified);
     });
