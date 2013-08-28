@@ -77,7 +77,7 @@
                 </span>
 
                 <div data-ng-hide="isCollapsed(image.id)" class="toolbox">
-                    <div class="item span10 machine-details-info">
+                    <div class="item machine-details-info" data-ng-class="{span12: image.public, span10: !image.public}">
                         <div class="row-fluid">
                             <span class="text-medium key span4 data-translate">Os</span>
                             <span class="text-medium value span7">{{image.os}}&nbsp;</span>
@@ -87,12 +87,12 @@
                             <span class="text-medium value span7">{{image.description}}&nbsp;</span>
                         </div>
                         <div class="row-fluid">
-                            <span class="text-medium key span4 data-translate">Public</span>
-                            <span class="text-medium value span7">Yes</span>
+                            <span class="text-medium key span4 last" data-translate>Public</span>
+                            <span class="text-medium value span7 last" data-translate-value>{{image.public && 'Yes' || 'No'}}</span>
                         </div>
                     </div>
 
-                    <div class="pull-right action-container span2" style="width:110px;">
+                    <div class="pull-right action-container span2" style="width:110px;" data-ng-hide="image.public">
                         <button role="button"
                                 class="btn btn-mini button"
                                 data-ng-click="clickDelete(image)"

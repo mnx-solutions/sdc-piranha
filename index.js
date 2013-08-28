@@ -1,4 +1,7 @@
 'use strict';
+console.log(process.cwd());
+console.log(__dirname);
+console.log(__filename);
 
 //var agent = require('webkit-devtools-agent');
 var config = require('easy-config');
