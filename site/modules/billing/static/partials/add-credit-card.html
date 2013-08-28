@@ -1,7 +1,7 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
     <form name="paymentForm" novalidate="" class="row-fluid" id="paymentForm">
 
-    <legend>Credit card details <span class="orange-asterix pull-right required-text">* required</span></legend>
+    <legend>Credit Card Details <span class="orange-asterix pull-right required-text">* required</span></legend>
         <table>
             <tbody>
                 <tr>
@@ -12,8 +12,6 @@
                                id="creditCardNumber"
                                name="creditCardNumber"
                                size="40"
-                               placeholder="Card number"
-                               data-translate="placeholder"
                                data-ng-pattern="/^(\d+)$/"
                                data-ng-model="form.creditCardNumber"
                                data-ng-class="{error: isError('creditCard.creditCardNumber')}"
@@ -81,6 +79,7 @@
                             <input type="text"
                                    id="securityCode"
                                    name="securityCode"
+                                   maxlength="4"
                                    data-ng-class="{error: isError('creditCard.securityCode')}"
                                    data-ng-model="form.securityCode"
                                    data-ng-required="true" />
@@ -90,7 +89,7 @@
                               data-trigger="hover"
                               data-placement="right"
                               class="tooltip-hover icon-info-sign"
-                              data-original-title="Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card."></span>
+                              data-original-title="Please find the CCV code on the back of your card. AMEX users, the CCV is on the front of your card."></span>
                             <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.securityCode')">
@@ -110,9 +109,7 @@
                         <input type="text"
                                id="firstName"
                                name="firstName"
-                               placeholder="First name"
                                size="50"
-                               data-translate="placeholder"
                                data-ng-class="{error: isError('billToContact.firstName')}"
                                data-ng-model="form.firstName"
                                data-ng-required="true">
@@ -142,9 +139,7 @@
                             <input type="text"
                                    id="lastName"
                                    name="lastName"
-                                   placeholder="Last name"
                                    size="50"
-                                   data-translate="placeholder"
                                    data-ng-class="{error: isError('billToContact.lastName')}"
                                    data-ng-model="form.lastName"
                                    data-ng-required="true" />
@@ -170,7 +165,7 @@
                 </tr>
             </tbody>
         </table>
-    <legend>Billing information</legend>
+    <legend>Billing Address</legend>
         <table>
             <tbody>
                 <tr>
@@ -272,8 +267,6 @@
                                    id="city"
                                    name="city"
                                    size="40"
-                                   placeholder="City"
-                                   data-translate="placeholder"
                                    data-ng-class="{error: isError('city')}"
                                    data-ng-model="form.cardHolderInfo.city"
                                    data-ng-required="true"
@@ -299,8 +292,6 @@
                                 <input type="text"
                                        id="state"
                                        name="state"
-                                       placeholder="State"
-                                       data-translate="placeholder"
                                        data-ng-class="{error: isError('state')}"
                                        data-ng-model="form.cardHolderInfo.state"
                                        data-ng-disabled="useExisting">
@@ -346,8 +337,6 @@
                             <input type="text"
                                    id="zipCode"
                                    name="zipCode"
-                                   placeholder="Zip"
-                                   data-translate="placeholder"
                                    data-ng-class="{error: isError('zipCode')}"
                                    data-ng-model="form.cardHolderInfo.zipCode"
                                    data-ng-required="true"

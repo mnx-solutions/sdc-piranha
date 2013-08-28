@@ -7,7 +7,6 @@ module.exports = function execute(scope) {
         if(!res.locals.jss) {
             res.locals.jss = [];
         }
-
         if(!scope.config.marketo.accountId) {
             req.log.warn('Marketo configuration missing');
         } else {
@@ -17,7 +16,6 @@ module.exports = function execute(scope) {
         if(!scope.config.googleAnalytics.identifier) {
             req.log.warn('GoogleAnalytics configuration missing');
         } else {
-
             var googleAnalytics = 'var _gaq = _gaq || [];'+
                 '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifier +'"]);'+
                 '_gaq.push(["_trackPageview"]);'+
@@ -42,7 +40,6 @@ module.exports = function execute(scope) {
                     '}'+
                 '});'+
             '});';
-
             res.locals.jss.push(googleAnalytics);
             res.locals.jss.push(GAlink);
         }
