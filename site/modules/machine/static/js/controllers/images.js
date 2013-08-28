@@ -328,7 +328,6 @@
                         Images.deleteImage(image);
                     });
             };
-
         }
     ])
 }(window.angular, window.JP.getModule('Machine')));

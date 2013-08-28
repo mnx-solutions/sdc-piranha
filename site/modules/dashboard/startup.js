@@ -15,7 +15,6 @@ module.exports = function execute(scope) {
         auth: config.zendesk.account + ':' + config.zendesk.token
     });
 
-
     function zendDeskCall(call, path, objectName) {
         if (cache[path] && ((Date.now() - cache[path].lastSuccess) < cacheTTL)) {
             call.log.debug("Returning Zendesk " + objectName + " from cache ");

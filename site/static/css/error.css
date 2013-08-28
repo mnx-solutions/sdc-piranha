@@ -23,7 +23,14 @@
 .error-container {
 	text-align:center;
  }
- 
+.error-container a {
+    color:#999;
+    text-decoration: none;
+}
+.error-container a:hover {
+    color:#777;
+    text-decoration:underline;
+}
 
 .error-h1 {
 	font-size:4em;
@@ -43,6 +50,8 @@
 .error-footer:hover a{
 	color:#777;
 }
+
+.error-footer span,
 .error-footer a {
     color:#999;
     background-color:transparent !important;

@@ -1,7 +1,6 @@
 'use strict';
 
 (function (ng, app) {
-
     app.factory('serverCall', [
         '$http',
         '$rootScope',
@@ -77,12 +76,20 @@
                         value: deferred.promise
                     },
                     step: {
-                        get: function () { return _step.length < 1 ? null : _step[_step.length -1]; },
-                        set: function (s) { _step.push(s); }
+                        get: function () {
+                            return _step.length < 1 ? null : _step[_step.length -1];
+                        },
+                        set: function (s) {
+                            _step.push(s);
+                        }
                     },
                     err: {
-                        get: function () { return _error.length < 1 ? null : _error[_error.length -1]; },
-                        set: function (s) { _error.push(s); }
+                        get: function () {
+                            return _error.length < 1 ? null : _error[_error.length -1];
+                        },
+                        set: function (s) {
+                            _error.push(s);
+                        }
                     },
                     result: {
                         value: function (data) {
@@ -93,10 +100,14 @@
                         }
                     },
                     chunked: {
-                        get: function () { return _chunked; }
+                        get: function () {
+                            return _chunked;
+                        }
                     },
                     finished: {
-                        get: function () { return _status === 'finished' || _status === 'error'; }
+                        get: function () {
+                            return _status === 'finished' || _status === 'error';
+                        }
                     },
                     error: {
                         value: function(err) {
@@ -121,14 +132,17 @@
                             self.step = data.step;
                             _status = data.status;
                             self.error(data.error);
-                            if(data.result) {
+
+                            if (data.result) {
                                 self.result(data.result);
                             }
-                            if(data.data) {
+
+                            if (data.data) {
                                 self.initial = data.data;
                             }
+
                             self.status();
-                            if(!self.finished) {
+                            if (!self.finished) {
                                 self.tab.poll();
                             }
                         }
@@ -144,19 +158,21 @@
                                     name: self.name,
                                     data: self.data
                                 },
-                                params: {tab: self.tab.id}
+                                params: {
+                                    tab: self.tab.id
+                                }
                             })
-                                .success(function (data, code) {
-                                    if (code === 202) {
-                                        self.tab.poll();
-                                    } else {
-                                        self.initialize(data);
-                                    }
-                                })
-                                .error(function (o) {
-                                    var err = o || new Error('Internal server error');
-                                    self.error(err);
-                                });
+                            .success(function (data, code) {
+                                if (code === 202) {
+                                    self.tab.poll();
+                                } else {
+                                    self.initialize(data);
+                                }
+                            })
+                            .error(function (o) {
+                                var err = o || new Error('Internal server error');
+                                self.error(err);
+                            });
                         }
                     },
                     status: {
@@ -164,6 +180,7 @@
                             if (status) {
                                 _status = status;
                             }
+
                             emit(_status, self);
                             return;
                         }
@@ -180,9 +197,10 @@
                     },
                     done: {
                         value: function (cb, errCb) {
-                            if(!errCb) {
+                            if (!errCb) {
                                 errCb = cb;
                             }
+
                             eventer.$on('finished', cb);
                             eventer.$on('error', errCb);
                         }
@@ -193,7 +211,9 @@
                         }
                     },
                     execTime: {
-                        get: function () { return !_endTime ? null : _endTime - _startTime; }
+                        get: function () {
+                            return !_endTime ? null : _endTime - _startTime;
+                        }
                     },
                     __read: {
                         value: function (index) {
@@ -203,22 +223,27 @@
 
                             var i = index === undefined ? _index : index;
                             var r = _result.slice(i);
+
                             if (index !== undefined) {
                                 _index += r.length;
                             }
+
                             return r;
                         }
                     },
                     getTracker: {
                         value: function() {
-
                             var jobTracker = {};
                             var obj = {};
-                            ['id','name','data','finished','deferred'].forEach(function (k) {
+
+                            [ 'id', 'name', 'data', 'finished', 'deferred' ].forEach(function (k) {
                                 obj[k] = {
-                                    get: function() { return self[k]; }
+                                    get: function() {
+                                        return self[k];
+                                    }
                                 };
                             });
+
                             obj.getJob = {value: function () { return self; }};
 
                             Object.defineProperties(jobTracker, wrapEnum(obj));
@@ -226,18 +251,23 @@
                         }
                     }
                 }));
+
                 if (opts.progress) {
                     self.progress(opts.progress);
                 }
+
                 if (opts.done) {
                     self.done(opts.done, opts.error);
                 }
+
                 if (opts.initialized) {
                     self.initialized(opts.initialized);
                 }
+
                 self.start();
                 return self;
             }
+
             return {
                 create: function(opts) {
                     return new Call(opts);

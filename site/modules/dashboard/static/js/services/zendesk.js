@@ -14,12 +14,10 @@
             var systemStatusTopics = false;
             var softwareUpdateTopics = false;
 
-
-
             service.getForumsList = function() {
                 var deferred = $q.defer();
 
-                if(!forums) {
+                if (!forums) {
                     serverTab.call({
                         name: 'ZendeskForumList',
                         progress: function(err, job) {
@@ -36,15 +34,12 @@
                 return deferred.promise;
             };
 
-
             service.getSystemStatusTopics = function() {
                 var deferred = $q.defer();
 
-                if(!systemStatusTopics) {
+                if (!systemStatusTopics) {
                     serverTab.call({
                         name: 'ZendeskSystemStatusTopics',
-                        progress: function(err, job) {
-                        },
                         done: function(err, job) {
                             systemStatusTopics = job.__read();
                             deferred.resolve(systemStatusTopics);
@@ -55,16 +50,14 @@
                 }
 
                 return deferred.promise;
-            }
+            };
 
             service.getSoftwareUpdateTopics = function() {
                 var deferred = $q.defer();
 
-                if(!softwareUpdateTopics) {
+                if (!softwareUpdateTopics) {
                     serverTab.call({
                         name: 'ZendeskPackagesUpdateTopics',
-                        progress: function(err, job) {
-                        },
                         done: function(err, job) {
                             softwareUpdateTopics = job.__read();
                             deferred.resolve(softwareUpdateTopics);
