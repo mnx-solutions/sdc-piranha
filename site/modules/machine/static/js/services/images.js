@@ -14,11 +14,11 @@
 
             service.updateImages = function() {
                 if(!images.list.final) {
-                    images.job.finished = false;
+//                    images.job.finished = false;
                     images.job = serverTab.call({
                         name: 'ImagesList',
                         done: function(err, job) {
-                            images.job.finished = true;
+//                            images.job.finished = true;
 
                             if(err) {
                                 errorContext.emit(new Error(localization.translate(null,
@@ -44,9 +44,12 @@
                 return images.job;
             };
 
-            service.image = function(id) {
+            service.image = function(force, id) {
 
-                if(!id && !images.list.final) {
+                if(!force)
+                    force = false;
+
+                if(!id && !images.list.final || force) {
                     var job = service.updateImages();
                     return job.deferred;
                 }
@@ -64,6 +67,47 @@
                 }
 
                 return ret.promise;
+            };
+
+
+            service.createImage = function(machineId, name, description) {
+
+                var newImage = serverTab.call({
+                    name: 'ImageCreate',
+                    data: { machineId: machineId, name: name, description: description },
+                    done: function(err, image) {
+                        if (!err) {
+                            notification.push(image.name, { type: 'success' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Image "{{name}}" successfully created',
+                                    { name: image.data.name }
+                                )
+                            );
+                        } else {
+                            notification.push(image.name, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to create image "{{name}}"',
+                                    { name: image.data.name }
+                                )
+                            );
+                        }
+                    }
+                });
+
+                return newImage.job;
+            };
+
+            service.deleteImage = function(image) {
+
+                serverTab.call({
+                    name: 'ImageDelete',
+                    data: { id: image },
+                    done: function(err, job) {
+                    }
+                });
+
             };
 
             return service;

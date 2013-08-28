@@ -2,12 +2,134 @@
     <div class="loading-large" data-ng-show="loading"></div>
 
     <div class="machines container" data-ng-show="images.length">
-        <data-breadcrumb></data-breadcrumb>
-        <data-notification></data-notification>
+        <div  data-breadcrumb></div>
+        <div data-notification></div>
+
+        <form class="form-search pull-right">
+            <input type="search"
+                   class="span3"
+                   name="search"
+                   id="search"
+                   placeholder="Search images"
+                   data-ng-model="query"
+                   data-ng-change="search()"
+                   data-translate="placeholder" />
+        </form>
+
+        <div class="clearfix"></div>
+        <div class="item-list-container">
+
+            <div class="item header row-fluid machine-list-item">
+                <span class="span3 text-medium sortable"
+                      data-ng-click="sortBy('name')"
+                      data-ng-switch on="sortIcon.name">
+                      <span class="pull-left machines-list-header" data-translate>Name</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+                <span class="span4 text-medium sortable"
+                      data-ng-click="sortBy('version')"
+                      data-ng-switch on="sortIcon.version">
+                      <span class="pull-left machines-list-header" data-translate>Version</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+                <span class="span3 text-medium sortable"
+                      data-ng-click="sortBy('published_at')"
+                      data-ng-switch on="sortIcon.published_at">
+                      <span class="pull-left machines-list-header" data-translate>Published at</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+                <span class="text-medium pull-right sortable state-sortable-header"
+                      data-ng-click="sortBy('state')"
+                      data-ng-switch on="sortIcon.state">
+                          <span class="pull-left machines-list-header" data-translate>State</span>
+                          <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                          <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+            </div>
 
 
-        <div data-ng-repeat="image in images">
-            <div class="image-name">{{image.name}} - {{image.description}}</div>
-        </div>
+            <div data-ng-repeat="image in pagedImages[currentPage] | orderBy:sortingOrder:reverse" class="item row-fluid">
+                <span class="span3 text-medium crop machine-list-content">
+                  {{image.name}}
+                </span>
+
+                <span class="span4 text-medium crop machine-list-content">
+                  {{image.version}}
+                </span>
+
+                <span class="span3 text-medium crop machine-list-content">
+                  {{image.published_at}}
+                </span>
+
+                <span class="pull-right machine-list-state state pointer" data-ng-click="toggleImage(image.id)">
+                    <div data-object-state data-object="image" data-type="image"></div>
+                </span>
+
+                <div data-ng-hide="isCollapsed(image.id)" class="toolbox">
+                    <div class="item machine-details-info" data-ng-class="{span12: image.public, span10: !image.public}">
+                        <div class="row-fluid">
+                            <span class="text-medium key span4 data-translate">Os</span>
+                            <span class="text-medium value span7">{{image.os}}&nbsp;</span>
+                        </div>
+                        <div class="row-fluid">
+                            <span class="text-medium key span4 data-translate">Description</span>
+                            <span class="text-medium value span7">{{image.description}}&nbsp;</span>
+                        </div>
+                        <div class="row-fluid">
+                            <span class="text-medium key span4 last" data-translate>Public</span>
+                            <span class="text-medium value span7 last" data-translate-value>{{image.public && 'Yes' || 'No'}}</span>
+                        </div>
+                    </div>
+
+                    <div class="pull-right action-container span2" style="width:110px;" data-ng-hide="image.public">
+                        <button role="button"
+                                class="btn btn-mini button"
+                                data-ng-click="clickDelete(image)"
+                                data-placement="right"
+                                data-translate>Delete</button>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>  
+    </div>
+    <div class="pagination pagination-small pagination-centered">
+        <ul>
+            <li data-ng-class="{disabled: currentPage == 0}">
+                <a href data-ng-click="prevPage()" data-translate>« Prev</a>
+            </li>
+            <li data-ng-repeat="n in range()"
+                data-ng-class="{active: n == currentPage}"
+                data-ng-click="setPage()">
+                <a href data-ng-bind="n + 1">1</a>
+                <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
+            </li>
+            <li data-ng-class="{disabled: currentPage == pagedImages.length - 1}">
+                <a href data-ng-click="nextPage()" data-translate>Next »</a>
+            </li>
+            <li data-ng-show="!showAllActive && images.length > itemsPerPage">
+                <a href data-ng-click="showAll()" data-translate>List all</a>
+            </li>
+            <li data-ng-show="showAllActive">
+                <a href data-ng-click="showPages()" data-translate>View pages</a>
+            </li>
+        </ul>
+        <button role="button"
+                class="btn btn-mini button tooltip-hover export-csv-button"
+                data-ng-click="exportDetails()"
+                data-translate
+                data-translate-attributes="data-original-title"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-html="true"
+                data-original-title="Export image list in .csv">Export .csv</button>
+        <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
     </div>
 </div>

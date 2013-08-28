@@ -67,3 +67,13 @@
 .navbar-inner .top-menu span a {
     color:#375775;
 }
+
+.tiny-link-text {
+    text-decoration: none;
+    font-size: 10px;
+    color: #666;
+}
+
+.tiny-link-text:hover {
+    text-decoration: underline;
+}

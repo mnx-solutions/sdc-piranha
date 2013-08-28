@@ -13,8 +13,8 @@
         '$q',
         '$location',
         'util',
-
-        function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, $location, util) {
+        'Image',
+        function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, $location, util, Image) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -254,6 +254,10 @@
                     });
             };
 
+            $scope.clickCreateImage = function() {
+                $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
+            };
+
             $scope.enableRename = function(name) {
                 $scope.changingName = true;
                 $scope.newInstanceName = name;
@@ -367,6 +371,14 @@
                     return (!$scope.currentPackage.type && item.group === 'High CPU') || (item.group === $scope.currentPackage.group);
                 }
                 return false;
+            };
+
+            var ending = '-image-creation';
+            $scope.canCreateImage = function (name) {
+                return name &&
+                    typeof name === 'string' &&
+                    name.length >= ending.length &&
+                    name.indexOf(ending, name.length - ending.length) !== -1;
             };
         }
 
