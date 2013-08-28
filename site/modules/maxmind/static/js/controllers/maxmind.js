@@ -3,12 +3,12 @@
 (function (app) {
     app.controller(
         'MaxMind.IndexController',
-        ['$scope', 'Account', 'localization', 'requestContext', '$http', '$q', function ($scope, Account, localization, requestContext, $http, $q) {
+        ['$scope', 'Account', 'localization', 'requestContext', 'notification', '$http', '$q',
+            function ($scope, Account, localization, requestContext, notification, $http, $q) {
             requestContext.setUpRenderContext('maxmind.index', $scope);
             localization.bind('maxmind', $scope);
 
             var errSupport = 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support';
-            var errTry = 'Phone verification failed. Incorrect PIN code. Please try again';
 
             $scope.account = null;
 
@@ -61,13 +61,30 @@
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
                 $http.get('/main/maxmind/call/%2B' + $scope.selectedCountryCode + $scope.account.phone).success(function (data) {
-                    $scope.callInProgress = data.success;
+                    $scope.callInProgress = true; // Should be data.success
+                    if (!data.success) {
+                        notification.push(null, { type: 'error' }, data.message);
+                    }
                 });
             };
 
             $scope.verifyPin = function () {
                 $http.get('/main/maxmind/verify/' + $scope.pin).success(function (data) {
                     var verified = data.success;
+                    if (verified) {
+                        notification.push(null, { type: 'success' },
+                            localization.translate($scope, null,
+                                'Verification successfull. Should now redirect to billing'
+                            )
+                        );
+                    } else {
+                        console.log('Invalid PIN');
+                        notification.push(null, { type: 'error' },
+                            localization.translate($scope, null,
+                                'Phone verification failed. Incorrect PIN code. Please try again'
+                            )
+                        );
+                    }
                 });
             };
 

@@ -1,9 +1,6 @@
 <div class="container-fluid" data-ng-controller="MaxMind.IndexController">
     <div class="container">
-        <div class="alert alert-info" data-ng-show="tropoRunning">
-        </div>
-        <div class="alert alert-error" data-ng-show="error && !tropoRunning" data-ng-bind-html-unsafe="error">
-        </div>
+        <div data-notification></div>
         <div class="row">
             <div class="span12">
                 <h1>Identity Verification by Phone</h1>

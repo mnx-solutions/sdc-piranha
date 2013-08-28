@@ -28,6 +28,8 @@ module.exports = function execute(scope, app) {
                 var isCalling = data.indexOf('err') == -1;
                 if (isCalling) {
                     req.session.maxmindRetries++;
+                } else {
+                    data = data.substring(4); // Skip 'err='
                 }
                 serve(res, data, isCalling);
             });
