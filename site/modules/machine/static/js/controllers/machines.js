@@ -309,7 +309,7 @@
 
                 $http.post('machine/export', {data: exportData, order: order})
                     .success(function (id) {
-                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv"></iframe>';
+                        $scope.exportIframe = '<iframe src="machine/export/' + id + '/csv/machine"></iframe>';
                     })
                     .error(function () {
                         console.error('err', arguments);

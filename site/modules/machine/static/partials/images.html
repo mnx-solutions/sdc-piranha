@@ -118,7 +118,7 @@
             <li data-ng-class="{disabled: currentPage == pagedImages.length - 1}">
                 <a href data-ng-click="nextPage()" data-translate>Next »</a>
             </li>
-            <li data-ng-show="!showAllActive">
+            <li data-ng-show="!showAllActive && images.length > itemsPerPage">
                 <a href data-ng-click="showAll()" data-translate>List all</a>
             </li>
             <li data-ng-show="showAllActive">
