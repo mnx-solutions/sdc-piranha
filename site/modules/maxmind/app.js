@@ -34,7 +34,7 @@ module.exports = function execute(scope, app) {
                 serve(res, data, isCalling);
             });
         } else {
-            serve(res, 'No more retries', false);
+            serve(res, 'Phone verification failed. Your account has been locked. Please contact support', false);
         }
     });
 

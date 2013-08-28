@@ -8,8 +8,6 @@
             requestContext.setUpRenderContext('maxmind.index', $scope);
             localization.bind('maxmind', $scope);
 
-            var errSupport = 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support';
-
             $scope.account = null;
 
             $scope.callInProgress = false;
