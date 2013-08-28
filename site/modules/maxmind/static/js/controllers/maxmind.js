@@ -75,8 +75,13 @@
                                 'Verification successfull. Should now redirect to billing'
                             )
                         );
+                        Account.updateAccount({
+                            country: $scope.account.country.iso3,
+                            phone: $scope.account.phone
+                        }).then(function(newAcc) {
+                            //$scope.nextStep();
+                        });
                     } else {
-                        console.log('Invalid PIN');
                         notification.push(null, { type: 'error' },
                             localization.translate($scope, null,
                                 'Phone verification failed. Incorrect PIN code. Please try again'
