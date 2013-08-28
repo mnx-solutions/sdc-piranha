@@ -263,9 +263,9 @@
                 notification.push(id, { type: 'error' },
                     localization.translate(null,
                         'machine',
-                        'Unable to create instance '+ (instanceName ? instanceName : ''),
+                        'Unable to create instance {{name}}',
                         {
-                            name: data.name
+                            name: (instanceName ? instanceName : '')
                         }
                     ) +' '+ ((err.message) ? '<br />'+ err.message : '')
                 );
