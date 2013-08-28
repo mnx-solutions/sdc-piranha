@@ -76,13 +76,23 @@
                     name: 'ImageCreate',
                     data: { machineId: machineId, name: name, description: description },
                     done: function(err, image) {
-                        notification.push(image.name, { type: 'success' },
-                            localization.translate(null,
-                                'machine',
-                                'Image "{{name}}" successfully created',
-                                { name: image.data.name }
-                            )
-                        );
+                        if (!err) {
+                            notification.push(image.name, { type: 'success' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Image "{{name}}" successfully created',
+                                    { name: image.data.name }
+                                )
+                            );
+                        } else {
+                            notification.push(image.name, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to create image "{{name}}"',
+                                    { name: image.data.name }
+                                )
+                            );
+                        }
                     }
                 });
 
