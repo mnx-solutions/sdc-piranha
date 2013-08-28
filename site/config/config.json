@@ -1,40 +1,36 @@
 {
     "server": {
-      "port": 3000
+        "port": 3000
     },
     "log": {
-      "name": "piranha",
-      "level": "debug"
+        "name": "piranha",
+        "level": "debug"
     },
     "cloudapi": {
+        "url": "https://cloudapi-westx.piranha.ee",
+        "username": "admin",
+        "keyId": "eb:df:26:24:bd:54:b9:58:2d:58:87:7f:36:e6:71:22",
+        "keyPath": "/Users/stealth/.ssh/id_rsa",
+        "REJECT_UNAUTHORIZED":true
+    },
+    "sso": {
+        "url": "https://sso-westx.piranha.ee",
+        "keyPath": "/Users/stealth/.ssh/id_rsa",
+        "keyId": "/admin/keys/eb:df:26:24:bd:54:b9:58:2d:58:87:7f:36:e6:71:22"
+    },
+    "tropo": {
+        "token": ""
     },
     "localization": {
         "defaultLocale": "en",
         "locales": [ "en", "et" ]
     },
     "redis": {
-        "host": "redis-gtint.piranha.ee",
+        "host": "localhost",
         "port": 6379,
-        "db": 1,
+        "db": 2,
         "signupDB": 5,
         "password": ""
-    },
-    "tropo": {
-      "token": ""
-    },
-    "assets":{
-        "js": {
-            "concat": ["use-strict-rm"],
-            "cache": "all",
-            "ext": "js",
-            "transform": ["use-strict-add","uglify-js","gzip"]
-        },
-        "css": {
-            "concat":true,
-            "cache": "all",
-            "ext": "css",
-            "transform": ["less", "sqwish", "gzip"]
-        }
     },
     "zuora": {
         "tenantID": "11333",
@@ -54,11 +50,6 @@
         "url":"",
         "noUpdate":true
     },
-    "googleAnalytics": {
-        "identifier": "",
-        "t2identifier": "",
-        "domain": "joyentcloud.com"
-    },
     "zendesk": {
         "account": "jaan.oras@joyent.com/token",
         "token"  : "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ",
@@ -68,17 +59,30 @@
         "packageUpdatePath" : "/api/v2/forums/21147498/topics.json"
     },
     "marketo": {
-        "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8",
         "accountId": ""
     },
-    "polling": {
-        "machineTags": 5000,
-        "machineState": 10000,
-        "packageChange": 1000
+    "googleAnalytics": {
+        "identifier": "",
+        "t2identifier": ""
+    },
+    "assets":{
+        "js": {
+            "concat": ["use-strict-rm"],
+            "cache": "all",
+            "ext": "js",
+            "transform": ["gzip"]
+        },
+        "css": {
+            "concat":true,
+            "cache": "all",
+            "ext": "css",
+            "transform": ["less", "gzip"],
+            "watch":false
+        }
     },
     "capishim": {
-        "username":"",
-        "password":"",
-        "url":""
+        "username":"asdsad",
+        "password":"sadsad",
+        "url":"https://localhost"
     }
 }

@@ -1,0 +1,52 @@
+<div class="container-fluid" data-ng-controller="MaxMind.IndexController">
+    <div class="container">
+        <div class="page-header">
+            <h1>Phone confirmation <small>You'll receive a call. Enter the number below</small></h1>
+        </div>
+        <div class="alert alert-info" data-ng-show="tropoRunning">
+            <h5>Wait for a phone call.</h5>
+            <p>If you should fail to receive a call please contact our <a class="support" href="https://help.joyent.com">support</a></p>
+        </div>
+
+        <div class="alert alert-error" data-ng-show="error && !tropoRunning" data-ng-bind-html-unsafe="error">
+        </div>
+
+        <div class="span4">
+            <div class="control-group">
+                <h4>Please enter your phone number</h4>
+                After you enter your phone number, you will receive an automated call where you have to type in the confirmation code.<br /><br />
+                <div class="controls">
+                    <select
+                            data-ng-style="countryStyle"
+                            data-ng-model="account.country"
+                            style="width:255px"
+                            name="countryCode"
+                            id="countryCode"
+                            data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
+                    </select>
+                    <br />
+                    <div class="input-prepend">
+                        <span class="add-on" style="width:50px"><font data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</font></span>
+                        <input style="width:180px" type="text"
+                               id="phone"
+                               name="phone"
+                               data-ng-model="account.phone"
+                               required/>
+                    </div>
+                    <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
+                </div>
+
+                <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="!error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Call</button>
+                <button class="btn btn-success pull-right span1" style="margin-right:45px" data-ng-click="makeCall()" data-ng-show="error && !tropoRunning && retriesLeft > 0" data-ng-disabled="!account || !account.phone || !account.country">Retry</button>
+                <p class="text-gray text-small pull-left" data-ng-show="error && !tropoRunning && retriesLeft > 0">You have {{retriesLeft}} retries left</p>
+            </div>
+        </div>
+        <div class="well well-small span6 align-center text-huge pull-right" data-ng-show="tropoRunning">
+            <b>{{randomNumber}}</b>
+        </div>
+        <div class="clearfix"></div>
+        <hr />
+        <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Click here to return to homepage</a>
+        <div class="clearfix"></div>
+    </div>
+</div>
