@@ -231,7 +231,7 @@
                 var props = [ 'name', 'description' ];
                 for (var i = 0, c = props.length; i < c; i++) {
                     var val = item[props[i]];
-                    if (val.match($scope.searchText)) {
+                    if (val && val.match($scope.searchText)) {
                         return true;
                     }
                 }
