@@ -5,18 +5,16 @@
         'MaxMind.IndexController',
         ['$scope', 'Account', 'localization', 'requestContext', '$http', '$q', function ($scope, Account, localization, requestContext, $http, $q) {
             requestContext.setUpRenderContext('maxmind.index', $scope);
-            localization.bind('signup', $scope);
+            localization.bind('maxmind', $scope);
 
-            var errSupport = 'Phone verification failed. Please contact <a class="support" href="https://help.joyent.com">support</a> in order to activate your account';
-            var errTry = 'Phone verification failed. Please check the number and try again';
-
-            $scope.randomNumber = 'XXXX';
+            var errSupport = 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support';
+            var errTry = 'Phone verification failed. Incorrect PIN code. Please try again';
 
             $scope.account = null;
 
-            $scope.tropoRunning = false;
-            $scope.tropoPoll = 0;
-            $scope.retriesLeft = 3;
+            $scope.callInProgress = false;
+
+            $scope.pin = null;
 
             $scope.countryCodes = null;
             $scope.selectedCountryCode = '1'; // default to USA
@@ -25,19 +23,7 @@
             $scope.setAccount = function() {
                 $q.when(Account.getAccount(true), function (account) {
                     $scope.account = account;
-
                     account.country = $scope.isoToObj(account.country);
-
-                    $http.get('/signup/account/tropoRetries/'+ account.id).success(function(data) {
-                        if(data.retries && data.retries !== null) {
-                            $scope.retriesLeft = (3-data.retries);
-                        }
-
-                        if($scope.retriesLeft <= 0) {
-                            $scope.error = errSupport;
-                        }
-                    });
-
                     if ($scope.account.phone) {
                         $scope.phone = $scope.account.phone;
                     }
@@ -50,10 +36,8 @@
                 if(!$scope.countryCodes){
                     return;
                 }
-
                 var selected = null;
                 var usa = null;
-
                 $scope.countryCodes.some(function (el) {
                     if(el.iso3 === 'USA') {
                         usa = el;
@@ -74,26 +58,24 @@
                 $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
             });
 
-            $scope.filterUndefinedAreas = function (country) {
-                return !!country.areaCode;
-            };
-
-            $scope.deleteInterval = function(interval) {
-                $scope.tropoPoll = 0;
-                $scope.tropoRunning = false;
-                clearInterval(interval);
-            };
-
             $scope.makeCall = function() {
-                $scope.phoneVerification();
+                $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
+                $http.get('/main/maxmind/call/%2B' + $scope.selectedCountryCode + $scope.account.phone).success(function (data) {
+                    $scope.callInProgress = data.success;
+                });
             };
 
-            $scope.phoneVerification = function() {
-                // clean the phone number
+            $scope.verifyPin = function () {
+                $http.get('/main/maxmind/verify/' + $scope.pin).success(function (data) {
+                    var verified = data.success;
+                });
+            };
+
+            /*$scope.phoneVerification = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
 
-                if(!$scope.tropoRunning && $scope.currentStep === 'tropo') {
-                    $scope.tropoRunning = true;
+                if(!$scope.callInProgress && $scope.currentStep === 'tropo') {
+                    $scope.callInProgress = true;
                     $http.get('/tropo/tropo/'+ $scope.selectedCountryCode + $scope.account.phone +'/'+ $scope.account.id).success(function(data) {
                         if(data.retries) {
                             $scope.retriesLeft = (3-data.retries);
@@ -101,7 +83,7 @@
 
                         if(!data.success) {
                             $scope.error = errSupport;
-                            $scope.tropoRunning = false;
+                            $scope.callInProgress = false;
                             $scope.retriesLeft = 0;
                         } else {
                             $scope.randomNumber = data.randomNumber;
@@ -125,7 +107,6 @@
                                     }
 
                                     if(data.status === 'failed') {
-                                        // TODO: Fail handling
                                         $scope.deleteInterval(interval);
 
                                         $scope.error = $scope.retriesLeft <= 0 ? errSupport : errTry;
@@ -141,7 +122,7 @@
                         }
                     });
                 }
-            };
+            };*/
 
 
         }]);
