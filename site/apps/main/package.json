@@ -15,6 +15,7 @@
             "menu",
             "tracking",
             "dashboard",
+            "maxmind",
             "tfa",
             "storage"
         ],

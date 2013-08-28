@@ -5,6 +5,9 @@ window.JP.main.config(['$routeProvider', function ($routeProvider) {
             .when('/start', {
                 action: 'signup.index'
             })
+            .when('/maxmind', {
+                action: 'signup.maxmind'
+            })
             .when('/accountInfo', {
                 action: 'signup.accountInfo'
             })
