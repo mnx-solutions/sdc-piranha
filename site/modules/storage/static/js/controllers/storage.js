@@ -21,25 +21,13 @@
                 var d = $dialog.dialog({
                     backdrop: true,
                     keyboard: true,
-                    dialogClass: "video",
+                    dialogClass: 'video',
                     backdropClick: true,
-                    template: '<div flow-player=""><video autoplay><source type="video/mp4" src="storage/static/data/setup.mp4"></video></div>',
-                    controller: "DialogController"
+                    template: '<iframe src="http://player.vimeo.com/video/68515490" width="640" height="320" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>',
+                    controller: 'StorageDialogController'
                 });
                 d.open();
-            }
+            };
 
         }]);
-}(window.JP.getModule('Storage')));
-
-
-(function (app) {
-    app.controller(
-        'DialogController',['$scope', 'dialog',
-        function($scope, dialog) {
-            $scope.close = function () {
-                dialog.close();
-            };
-        }]
-    );
 }(window.JP.getModule('Storage')));
