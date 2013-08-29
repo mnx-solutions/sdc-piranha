@@ -1,6 +1,6 @@
 {
 	"em": {
-        "route": "/instance",
+        "route": "/compute",
 		"auth": true,
         "pre": {
             "js": [

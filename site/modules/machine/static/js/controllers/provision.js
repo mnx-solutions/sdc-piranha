@@ -100,7 +100,7 @@
                                 }
                             });
 
-                            $location.path('/instance');
+                            $location.path('/compute');
                         });
                 }
 
