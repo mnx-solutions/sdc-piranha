@@ -57,8 +57,16 @@
             $scope.$on(
                 'event:forceUpdate',
                 function () {
-                    $scope.image = Image.image(true);
-                    $scope.loading = false;
+                    $scope.imagePromise = Image.image(true);
+                    $q.when($scope.imagePromise).then(
+                        function (data) {
+                            $scope.images = [];
+                            // TODO: images promise logic should be like machines
+                            $scope.images.push.apply($scope.images, data);
+                            $scope.search();
+                            $scope.loading = false;
+                        }
+                    );
                 }
             );
 
