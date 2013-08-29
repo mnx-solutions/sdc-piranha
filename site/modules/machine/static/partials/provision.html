@@ -145,12 +145,28 @@
                                         </ul>
                                     </div>
 
-                                    <div class="span3 offset4 provisioning-header-search">
+                                    <div class="btn-group tooltip-hover span2 hidden-phone"
+                                         data-html="true"
+                                         data-toggle="tooltip"
+                                         data-placement="right"
+                                         data-original-title="Filter by visibility">
+                                        <button class="btn">{{visibilityFilter}}</button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a data-ng-click="selectVisibility(null);">All</a></li>
+                                            <li><a data-ng-click="selectVisibility(true);">Public</a></li>
+                                            <li><a data-ng-click="selectVisibility(false);">Private</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="span3 offset2 provisioning-header-search">
                                         <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
-                                    <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS">
+                                    <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
                                             <div class="span1 provisioning-carousel-padding-left">
                                                 <input class="pull-left"
                                                        type="radio"
