@@ -17,7 +17,7 @@
         function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Image, localization, util, $http) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.images', $scope, {
-                title: localization.translate(null, 'machine', 'My images')
+                title: localization.translate(null, 'machine', 'Image List')
             });
 
             $scope.imagePromise = Image.image(true);

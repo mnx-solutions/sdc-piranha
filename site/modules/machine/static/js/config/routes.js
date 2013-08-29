@@ -16,7 +16,7 @@ window.JP.main.config([
             title: 'Create Instance',
             action: 'machine.provision'
         }).when('/images', {
-            title: 'Images',
+            title: 'Image List',
             action: 'machine.images'
         });
     }
