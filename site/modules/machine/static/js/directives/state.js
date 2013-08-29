@@ -7,7 +7,7 @@
             replace: true,
             scope: {
                 object: '=object',
-                type: '=type'
+                type: '@'
             },
 
             controller: function($scope) {

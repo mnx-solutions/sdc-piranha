@@ -23,7 +23,16 @@
 
             <div class="row">
 				<div class="span9">
-	                <div data-grid-view data-props="gridProps" data-detail-props="gridDetailProps" data-action-buttons="gridActionButtons" data-objects="machines" data-per-page="15" data-order="gridOrder" data-filter-all="query" data-export-fields="exportFields"></div>
+	                <div data-grid-view
+                         data-props="gridProps"
+                         data-detail-props="gridDetailProps"
+                         data-action-buttons="gridActionButtons"
+                         data-objects="machines"
+                         data-per-page="15"
+                         data-order="gridOrder"
+                         data-filter-all="{{query}}"
+                         data-export-fields="exportFields"
+                         data-objects-type="machine"></div>
 
                             <!--<li data-ng-show="!showAllActive">-->
                                 <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->

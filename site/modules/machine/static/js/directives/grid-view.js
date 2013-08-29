@@ -133,6 +133,23 @@
                     console.log('err', arguments);
                 });
         };
+
+        $scope.getActionButtons = function (object) {
+            if(!object) {
+                return $scope.actionButtons;
+            }
+
+            return $scope.actionButtons.filter(function (btn) {
+                if(btn.show === undefined) {
+                    return true;
+                }
+                if(typeof btn.show === 'function') {
+                    return btn.show(object);
+                }
+
+                return !!btn.show;
+            });
+        };
     }])
     .constant('gridConfig', {
         perPage: 15,
@@ -150,8 +167,9 @@
                 detailProps: '=',
                 objects: '=',
                 actionButtons:'=',
-                filterAll: '=',
-                exportFields: '='
+                filterAll: '@',
+                exportFields: '=',
+                objectsType: '@'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',

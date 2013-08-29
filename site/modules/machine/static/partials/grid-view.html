@@ -19,7 +19,7 @@
               data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
             <a data-ng-switch-when="label" href="#!/instance/details/{{object.id}}">{{object.label}}</a>
             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
-                <div data-machine-status machine="object"></div>
+                <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
             </span>
             <span data-ng-switch-when="created">{{object[prop.id] | dateTime}}</span>
             <span data-ng-switch-when="ips" class="span2">
@@ -41,7 +41,7 @@
         <div class="clearfix"></div>
 
         <div data-ng-show="areDetailsShown(object.id)" class="toolbox">
-            <div class="item machine-details-info" data-ng-class="{span10: actionButtons.length, span12: !actionButtons.length}">
+            <div class="item machine-details-info" data-ng-class="{span10: getActionButtons(object).length, span12: !getActionButtons(object).length}">
                 <div data-ng-repeat="prop in detailProps | orderBy:sequence" class="row-fluid">
                     <span class="text-medium key span4" data-ng-class="{last: $index == (detailProps.length -1) }" data-translate-value>{{prop.name}}</span>
                     <span class="text-medium value span6" data-ng-class="{last: $index == (detailProps.length -1) }" data-ng-switch="prop.id">
@@ -57,9 +57,9 @@
                 </div>
             </div>
 
-            <div class="pull-right action-container span2" data-ng-show="actionButtons.length">
-                <div data-ng-repeat="btn in actionButtons | orderBy:sequence">
-                    <div data-action-button data-action-fn="btn.action" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
+            <div class="pull-right action-container span2" data-ng-show="getActionButtons(object).length">
+                <div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
+                    <div data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
                     <div class="clearfix"></div>
                 </div>
             </div>
