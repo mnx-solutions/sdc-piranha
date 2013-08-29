@@ -41,5 +41,6 @@
     "Alternative Payment Method on File": "Alternative Payment Method on File",
     "Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card.": "Please the the CCV code on the back of your card. AMEX users, the CCV is on the front of your card.",
     "Transaction declined.<br>2 - This transaction has been declined.": "Sorry, there was an issue with the credit card information you gave us, please review the information for accuracy.",
-    "Error processing transaction.<br>35 - An error occurred during processing. Call Merchant Service Provider." : "We are unable to verify your credit card details. Please check the information and try again."
+    "Error processing transaction.<br>35 - An error occurred during processing. Call Merchant Service Provider." : "We are unable to verify your credit card details. Please check the information and try again.",
+    "We are unable to verify your credit card details.": "We are unable to verify your credit card details. Please check the information and try again."
 }
