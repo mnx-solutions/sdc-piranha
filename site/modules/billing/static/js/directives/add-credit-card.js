@@ -337,7 +337,7 @@
                             if (generic && fieldErrors !== '') {
                                 addedMessage = fieldErrors;
                             } else {
-                                addedMessage = ' we are unable to verify your credit card details.';
+                                addedMessage = ' ' + localization.translate(null, 'billing', 'We are unable to verify your credit card details.');
                             }
 
                             notification.push(null, { type: 'error' }, message + addedMessage);
