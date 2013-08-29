@@ -64,8 +64,8 @@
                   {{image.version}}
                 </span>
 
-                <span class="span3 text-medium crop machine-list-content">
-                  {{image.published_at}}
+                <span class="span3 text-medium crop machine-list-content" ng-model="dateTimeFormat">
+                  {{image.published_at | dateTime}}
                 </span>
 
                 <span class="pull-right machine-list-state state pointer" data-ng-click="toggleImage(image.id)">
