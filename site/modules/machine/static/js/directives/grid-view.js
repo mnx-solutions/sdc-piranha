@@ -11,11 +11,21 @@
         };
         $scope.$watch('objects', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
+        $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
 
         $scope.getLastPage(true);
 
         $scope.isOnPage = function(index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
+        };
+
+        $scope.showAll = function () {
+            $scope.oldPerPage = $scope.perPage;
+            $scope.perPage = 10000;
+        };
+
+        $scope.showPaginated = function () {
+            $scope.perPage = $scope.oldPerPage;
         };
 
         $scope.openDetails = {};

@@ -28,12 +28,9 @@
                 function (data) {
                     // TODO: images promise logic should be like machines
                     $scope.images.push.apply($scope.images, data);
-                    $scope.search();
                     $scope.loading = false;
                 }
             );
-
-            $scope.loading = true;
 
             $scope.$on(
                 'event:forceUpdate',

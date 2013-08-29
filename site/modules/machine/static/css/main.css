@@ -256,3 +256,7 @@
 .export-csv-button {
     float:right;
 }
+
+.grid-view-pagination {
+    margin:0;
+}
