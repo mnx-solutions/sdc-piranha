@@ -13,8 +13,9 @@
             var service = {};
             var images = { job: {}, list: {}};
 
-            service.updateImages = function() {
-                if(!images.list.final) {
+            service.updateImages = function (force) {
+                if (!images.list.final || force) {
+                    console.log('fetch');
 //                    images.job.finished = false;
                     images.job = serverTab.call({
                         name: 'ImagesList',
@@ -51,7 +52,7 @@
                     force = false;
 
                 if(!id && !images.list.final || force) {
-                    var job = service.updateImages();
+                    var job = service.updateImages(force);
                     return job.deferred;
                 }
 
@@ -99,11 +100,11 @@
                 return newImage.job;
             };
 
-            service.deleteImage = function(image) {
+            service.deleteImage = function (image) {
 
                 serverTab.call({
                     name: 'ImageDelete',
-                    data: { id: image.id },
+                    data: { imageId: image.id },
                     done: function(err, job) {
                         if (!err) {
                             notification.push(image, { type: 'success' },
@@ -113,6 +114,7 @@
                                     { name: image.name }
                                 )
                             );
+
                             $rootScope.$emit('forceUpdate');
                         } else {
                             notification.push(image, { type: 'error' },

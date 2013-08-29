@@ -540,7 +540,7 @@ module.exports = function execute(scope) {
             client.getImage(imageId, function (err, image) {
                 if (err) {
                     // in case we're waiting for deletion a http 410(Gone) is good enough
-                    if (err.statusCode === 410 && state === 'deleted') {
+                    if (err.statusCode === 404 && state === 'deleted') {
                         call.log.debug('Image %s is deleted, returning call', imageId);
                         call.done(null, image);
                         clearInterval(timer);
@@ -548,7 +548,7 @@ module.exports = function execute(scope) {
                         return;
                     }
 
-                    call.log.error({error:err}, 'Cloud polling failed');
+                    call.log.error({ error:err }, 'Cloud polling failed');
                     call.error(err);
                     clearInterval(timer);
                     clearTimeout(timerTimeout);
@@ -611,10 +611,27 @@ module.exports = function execute(scope) {
     });
 
     /* DeleteImage */
-    server.onCall('ImageDelete', function(call) {
-        // delete image
-        call.log.debug('server call, delete image:', call.data.id);
-        call.cloud.deleteImage(call.data.id, call.done.bind(call));
+    server.onCall('ImageDelete', {
+        verify: function(data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('imageId');
+        },
+
+        handler: function(call) {
+            call.log.info('Deleting image %s', call.data.imageId);
+
+            var cloud = call.cloud.separate(call.data.datacenter);
+            call.cloud.deleteImage(call.data.imageId, function(err) {
+                if (!err) {
+                    call.data.uuid = call.data.imageId;
+                    pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
+                } else {
+                    call.log.error(err);
+                    call.done(err);
+                }
+            });
+
+        }
     });
 
     /*images list */
