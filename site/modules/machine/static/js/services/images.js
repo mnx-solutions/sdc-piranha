@@ -72,7 +72,6 @@
 
 
             service.createImage = function(machineId, name, description) {
-
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
                     data: { machineId: machineId, name: name, description: description },

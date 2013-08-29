@@ -603,7 +603,7 @@ module.exports = function execute(scope) {
                     pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'active', null, null);
                 } else {
                     call.log.error(err);
-                    call.immediate(err);
+                    call.done(err);
                 }
             });
 
