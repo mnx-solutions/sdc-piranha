@@ -83,7 +83,7 @@ module.exports = function(grunt) {
 
         },
         jasmineNode: {
-            directory: './'
+            directory: './test/spec'
         },
         jasmine: {
             tests: {
@@ -212,7 +212,7 @@ module.exports = function(grunt) {
 
             var done = this.async();
             var dir = grunt.config('jasmineNode.directory');
-            var command = 'node ./test/jasmine-wrapper.js ' + dir + ' --verbose';
+            var command = 'node ./node_modules/jasmine-node/lib/jasmine-node/cli.js ' + dir + ' --verbose';
 
             exec(command, function(testError, stdout, stderr) {
                 if (stderr) {
@@ -338,6 +338,7 @@ module.exports = function(grunt) {
 //  grunt.registerTask('clean', '');
     grunt.registerTask('prepush', ['jsLint', 'jsStyle', 'test']);
     grunt.registerTask('test', ['jasmineNode', 'jasmine']);
+    grunt.registerTask('unit', ['jasmineNode']);
 //  grunt.registerTask('release', ['jsLint', 'jsStyle test']);
 
 };
