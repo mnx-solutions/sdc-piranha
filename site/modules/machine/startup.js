@@ -169,7 +169,7 @@ module.exports = function execute(scope) {
     server.onCall('DatasetList', function (call) {
         call.log.info('Handling list datasets event');
 
-        call.cloud.separate(call.data.datacenter).listDatasets(function (err, data) {
+        call.cloud.separate(call.data.datacenter).listImages(function (err, data) {
             if (err) {
                 call.error(err);
                 return;
