@@ -7,7 +7,8 @@
         'localization',
         'notification',
         'errorContext',
-        function (serverTab, $q, localization, notification, errorContext) {
+        '$rootScope',
+        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
 
             var service = {};
             var images = { job: {}, list: {}};
@@ -113,6 +114,7 @@
                                     { name: image.name }
                                 )
                             );
+                            $rootScope.$emit('forceUpdate');
                         } else {
                             notification.push(image, { type: 'error' },
                                 localization.translate(null,
