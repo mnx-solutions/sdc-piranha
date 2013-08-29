@@ -611,7 +611,7 @@ module.exports = function execute(scope) {
     });
 
     /* DeleteImage */
-    server.onCall('imageDelete', function(call) {
+    server.onCall('ImageDelete', function(call) {
         // delete image
         call.log.debug('server call, delete image:', call.data.id);
         call.cloud.deleteImage(call.data.id, call.done.bind(call));

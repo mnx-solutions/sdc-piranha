@@ -57,8 +57,16 @@
             $scope.$on(
                 'event:forceUpdate',
                 function () {
-                    $scope.image = Image.image(true);
-                    $scope.loading = false;
+                    $scope.imagePromise = Image.image(true);
+                    $q.when($scope.imagePromise).then(
+                        function (data) {
+                            $scope.images = [];
+                            // TODO: images promise logic should be like machines
+                            $scope.images.push.apply($scope.images, data);
+                            $scope.search();
+                            $scope.loading = false;
+                        }
+                    );
                 }
             );
 
@@ -323,9 +331,14 @@
                         $scope,
                         null,
                         'Confirm: Delete image'
+                    ),
+                    localization.translate(
+                        $scope,
+                        'machine',
+                        'Are you sure you want to delete this image'
                     ), function () {
                         $$track.event('image', 'delete');
-                        Images.deleteImage(image);
+                        Image.deleteImage(image);
                     });
             };
         }

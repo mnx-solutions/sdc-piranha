@@ -7,7 +7,8 @@
         'localization',
         'notification',
         'errorContext',
-        function (serverTab, $q, localization, notification, errorContext) {
+        '$rootScope',
+        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
 
             var service = {};
             var images = { job: {}, list: {}};
@@ -103,10 +104,28 @@
 
                 serverTab.call({
                     name: 'ImageDelete',
-                    data: { id: image },
+                    data: { id: image.id },
                     done: function(err, job) {
+                        if (!err) {
+                            notification.push(image, { type: 'success' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Image "{{name}}" successfully deleted',
+                                    { name: image.name }
+                                )
+                            );
+                            $rootScope.$emit('forceUpdate');
+                        } else {
+                            notification.push(image, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to delete image "{{name}}"',
+                                    { name: image.name }
+                                )
+                            );
+                        }
                     }
-                });
+            });
 
             };
 
