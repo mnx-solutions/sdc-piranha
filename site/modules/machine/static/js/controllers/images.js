@@ -323,9 +323,14 @@
                         $scope,
                         null,
                         'Confirm: Delete image'
+                    ),
+                    localization.translate(
+                        $scope,
+                        'machine',
+                        'Are you sure you want to delete this image'
                     ), function () {
                         $$track.event('image', 'delete');
-                        Images.deleteImage(image);
+                        Image.deleteImage(image);
                     });
             };
         }

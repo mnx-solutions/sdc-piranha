@@ -103,10 +103,27 @@
 
                 serverTab.call({
                     name: 'ImageDelete',
-                    data: { id: image },
+                    data: { id: image.id },
                     done: function(err, job) {
+                        if (!err) {
+                            notification.push(image, { type: 'success' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Image "{{name}}" successfully deleted',
+                                    { name: image.name }
+                                )
+                            );
+                        } else {
+                            notification.push(image, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to delete image "{{name}}"',
+                                    { name: image.name }
+                                )
+                            );
+                        }
                     }
-                });
+            });
 
             };
 
