@@ -27,9 +27,6 @@
             $q.when($scope.imagePromise).then(
                 function (data) {
                     // TODO: images promise logic should be like machines
-                    //console.log('refresh');
-                    //console.log(data);
-                    $scope.images = [];
                     $scope.images.push.apply($scope.images, data);
                     $scope.search();
                     $scope.loading = false;
@@ -61,6 +58,15 @@
                 'event:forceUpdate',
                 function () {
                     $scope.imagePromise = Image.image(true);
+                    $q.when($scope.imagePromise).then(
+                        function (data) {
+                            $scope.images = [];
+                            // TODO: images promise logic should be like machines
+                            $scope.images.push.apply($scope.images, data);
+                            $scope.search();
+                            $scope.loading = false;
+                        }
+                    );
                 }
             );
 

@@ -15,7 +15,6 @@
 
             service.updateImages = function (force) {
                 if (!images.list.final || force) {
-                    console.log('fetch');
 //                    images.job.finished = false;
                     images.job = serverTab.call({
                         name: 'ImagesList',
