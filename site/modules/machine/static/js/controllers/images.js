@@ -26,12 +26,20 @@
 
             $q.when($scope.imagePromise).then(
                 function (data) {
+                    var fdata = data.filter(function(a) {
+                        if(!a.public) {
+                            return true;
+                        }
+                        return false;
+                    });
                     // TODO: images promise logic should be like machines
-                    $scope.images.push.apply($scope.images, data);
+                    $scope.images.push.apply($scope.images, fdata);
                     $scope.search();
                     $scope.loading = false;
                 }
             );
+
+
 
             // Sorting
             $scope.sortingOrder = null;
@@ -62,7 +70,13 @@
                         function (data) {
                             $scope.images = [];
                             // TODO: images promise logic should be like machines
-                            $scope.images.push.apply($scope.images, data);
+                            var fdata = data.filter(function(a) {
+                                if(!a.public) {
+                                    return true;
+                                }
+                                return false;
+                            });
+                            $scope.images.push.apply($scope.images, fdata);
                             $scope.search();
                             $scope.loading = false;
                         }

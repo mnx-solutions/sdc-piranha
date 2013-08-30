@@ -39,7 +39,7 @@
                 <span class="span3 text-medium sortable"
                       data-ng-click="sortBy('published_at')"
                       data-ng-switch on="sortIcon.published_at">
-                      <span class="pull-left machines-list-header" data-translate>Published at</span>
+                      <span class="pull-left machines-list-header" data-translate>Date</span>
                       <i class="icon-arrow-up" data-ng-switch-when="up"></i>
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
@@ -81,10 +81,6 @@
                         <div class="row-fluid">
                             <span class="text-medium key span4 data-translate">Description</span>
                             <span class="text-medium value span7">{{image.description}}&nbsp;</span>
-                        </div>
-                        <div class="row-fluid">
-                            <span class="text-medium key span4 last" data-translate>Public</span>
-                            <span class="text-medium value span7 last" data-translate-value>{{image.public && 'Yes' || 'No'}}</span>
                         </div>
                     </div>
 
