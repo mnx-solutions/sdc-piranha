@@ -11,3 +11,8 @@
 .loading-medium {
     float:left;
 }
+
+.dashboard-splash-iframe {
+    overflow: hidden;
+    
+}
