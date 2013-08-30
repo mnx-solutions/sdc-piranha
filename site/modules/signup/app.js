@@ -45,6 +45,9 @@ module.exports = function execute(scope, app) {
 
     app.get('/maxmind/verify/:code', function (req, res) {
         var isVerified = req.session.maxmindCode && req.params.code == req.session.maxmindCode;
+        if (isVerified) {
+            req.session.signupStep = 'billing';
+        }
         res.json({message: isVerified ? 'Code ok': 'Code is wrong', success: Boolean(isVerified)});
     });
 };
