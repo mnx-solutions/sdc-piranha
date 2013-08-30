@@ -297,7 +297,8 @@
 
         <div class="span6" >
             <h6 class="control-label" data-translate>Resize Instance type</h6>
-            <select name="resize" ui-select2 data-ng-model="selectedPackageName">
+            <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName" data-placeholder="Select package to resize to">
+                <option value=""></option>
                 <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
                         value="{{package.name}}" class="text-medium">
                     Mem: {{package.memory | sizeFormat}}
