@@ -31,7 +31,7 @@
 
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
-            $scope.visibilityFilter = 'All';
+            $scope.visibilityFilter = 'Public';
 
             $q.all([
                     $q.when($scope.keys),
@@ -43,7 +43,7 @@
             $scope.data = {};
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
-            $scope.selectedVisibility = null;
+            $scope.selectedVisibility = true; // defaults to Public true
             $scope.previousPos = 0;
 
             // version number comparison
