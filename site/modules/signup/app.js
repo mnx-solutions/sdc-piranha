@@ -6,6 +6,8 @@ var restify = require('restify');
 var maxmindLicense = 'bQg6oKXwLfWj';
 
 module.exports = function execute(scope, app) {
+    var SignupProgress = scope.api('SignupProgress');
+
     app.get('/ssh-key-generator', function (req, res, next) {
         fs.readFile(__dirname + '/static/partial/ssh-key-generator.html', function (err, data) {
             if (err) {
@@ -46,8 +48,11 @@ module.exports = function execute(scope, app) {
     app.get('/maxmind/verify/:code', function (req, res) {
         var isVerified = req.session.maxmindCode && req.params.code == req.session.maxmindCode;
         if (isVerified) {
-            req.session.signupStep = 'billing';
+            SignupProgress.setMinProgress(req, 'maxmind', function() {
+                res.json({message: 'Phone verification successful', success: true});
+            });
+        } else {
+            res.json({message: 'Phone verification failed. Incorrect PIN code. Please try again', success: false});
         }
-        res.json({message: isVerified ? 'Code ok': 'Code is wrong', success: Boolean(isVerified)});
     });
 };
