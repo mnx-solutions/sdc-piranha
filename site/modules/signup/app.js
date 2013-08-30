@@ -21,11 +21,6 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    var serve = function (res, message, isSuccess) {
-        res.json({message: message, success: Boolean(isSuccess)});
-        res.end();
-    };
-
     app.get('/maxmind/call/:phone', function (req, res) {
         var code = Math.random().toString(10).substr(2,4);
         req.session.maxmindCode = code;
@@ -41,15 +36,15 @@ module.exports = function execute(scope, app) {
                 } else {
                     data = data.substring(4); // Skip 'err='
                 }
-                serve(res, data, isCalling);
+                res.json({message: data, success: Boolean(isCalling)});
             });
         } else {
-            serve(res, 'Phone verification failed. Your account has been locked. Please contact support', false);
+            res.json({message: 'Phone verification failed. Your account has been locked. Please contact support', success: false});
         }
     });
 
     app.get('/maxmind/verify/:code', function (req, res) {
         var isVerified = req.session.maxmindCode && req.params.code == req.session.maxmindCode;
-        serve(res, isVerified ? 'Code ok': 'Code is wrong', isVerified);
+        res.json({message: isVerified ? 'Code ok': 'Code is wrong', success: Boolean(isVerified)});
     });
 };

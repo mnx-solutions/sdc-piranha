@@ -58,7 +58,7 @@
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-                $http.get('/signup/maxmind/call/%2B' + $scope.selectedCountryCode + $scope.account.phone).success(function (data) {
+                $http.get('/signup/signup/maxmind/call/%2B' + $scope.selectedCountryCode + $scope.account.phone).success(function (data) {
                     $scope.callInProgress = true; // Should be data.success
                     if (!data.success) {
                         notification.push(null, { type: 'error' }, data.message);
@@ -67,14 +67,9 @@
             };
 
             $scope.verifyPin = function () {
-                $http.get('/signup/maxmind/verify/' + $scope.pin).success(function (data) {
+                $http.get('/signup/signup/maxmind/verify/' + $scope.pin).success(function (data) {
                     var verified = data.success;
                     if (verified) {
-                        notification.push(null, { type: 'success' },
-                            localization.translate($scope, null,
-                                'Verification successfull. Should now redirect to billing'
-                            )
-                        );
                         Account.updateAccount({
                             country: $scope.account.country.iso3,
                             phone: $scope.account.phone
