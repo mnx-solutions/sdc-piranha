@@ -88,6 +88,7 @@
                         <button role="button"
                                 class="btn btn-mini button"
                                 data-ng-click="clickDelete(image)"
+                                data-ng-disabled="image.job && !image.job.finished"
                                 data-placement="right"
                                 data-translate>Delete</button>
                     </div>

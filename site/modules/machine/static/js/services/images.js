@@ -15,13 +15,10 @@
 
             service.updateImages = function (force) {
                 if (!images.list.final || force) {
-//                    images.job.finished = false;
                     images.job = serverTab.call({
                         name: 'ImagesList',
-                        done: function(err, job) {
-//                            images.job.finished = true;
-
-                            if(err) {
+                        done: function (err, job) {
+                            if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
                                     'Unable to retrieve images list'
@@ -62,7 +59,7 @@
                         ret.resolve(images.list);
                     } else {
                         images.job.deferred.then(function (value) {
-                           ret.resolve(value);
+                            ret.resolve(value);
                         });
                     }
                 }
@@ -96,12 +93,12 @@
                     }
                 });
 
-                return newImage.job;
+                return newImage;
             };
 
             service.deleteImage = function (image) {
-
-                serverTab.call({
+                image.state = 'deleting'; // Override state manually
+                image.job = serverTab.call({
                     name: 'ImageDelete',
                     data: { imageId: image.id },
                     done: function(err, job) {
@@ -125,8 +122,9 @@
                             );
                         }
                     }
-            });
+                });
 
+                return image;
             };
 
             return service;

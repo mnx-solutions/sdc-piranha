@@ -129,14 +129,23 @@
         <div class="clearfix"></div>
 
         <div>
+            <div class="loading-medium span1 pull-right"
+                 data-ng-show="imageJob && !imageJob.finished"></div>
             <form name="tagForm">
-            <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
-            <input type="text" placeholder="Image description (optional)" name="imageDescription" data-ng-model="imageDescription" value="" />
-            <br />
-            <button class="btn btn-joyent-blue pull-right"
-                    data-ng-click="clickCreateImage()"
-                    data-translate
-                    data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || machine.state != 'stopped'">Create Image</button>
+                <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
+                <input type="text" placeholder="Image description (optional)"
+                       name="imageDescription"
+                       data-ng-model="imageDescription"
+                       value="" />
+                <br />
+                <button class="btn btn-joyent-blue pull-right"
+                        data-ng-click="clickCreateImage()"
+                        data-translate
+                        data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || machine.state != 'stopped'">
+                    Create Image
+                </button>
+                <div class="loading-medium span1 pull-right"
+                     data-ng-show="imageJob && !imageJob.finished"></div>
             </form>
             <br />
             <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>

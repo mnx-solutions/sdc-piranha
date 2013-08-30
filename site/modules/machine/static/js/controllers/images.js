@@ -20,26 +20,18 @@
                 title: localization.translate(null, 'machine', 'Image List')
             });
 
-            $scope.imagePromise = Image.image(true);
+            $scope.imagesJob = Image.image(true);
             $scope.loading = true;
             $scope.images = [];
 
-            $q.when($scope.imagePromise).then(
+            $q.when($scope.imagesJob).then(
                 function (data) {
-                    var fdata = data.filter(function(a) {
-                        if(!a.public) {
-                            return true;
-                        }
-                        return false;
-                    });
                     // TODO: images promise logic should be like machines
-                    $scope.images.push.apply($scope.images, fdata);
+                    $scope.images.push.apply($scope.images, data);
                     $scope.search();
                     $scope.loading = false;
                 }
             );
-
-
 
             // Sorting
             $scope.sortingOrder = null;
@@ -65,18 +57,12 @@
             $scope.$on(
                 'event:forceUpdate',
                 function () {
-                    $scope.imagePromise = Image.image(true);
-                    $q.when($scope.imagePromise).then(
+                    $scope.imagesJob = Image.image(true);
+                    $q.when($scope.imagesJob).then(
                         function (data) {
                             $scope.images = [];
                             // TODO: images promise logic should be like machines
-                            var fdata = data.filter(function(a) {
-                                if(!a.public) {
-                                    return true;
-                                }
-                                return false;
-                            });
-                            $scope.images.push.apply($scope.images, fdata);
+                            $scope.images.push.apply($scope.images, data);
                             $scope.search();
                             $scope.loading = false;
                         }
@@ -352,7 +338,7 @@
                         'Are you sure you want to delete this image'
                     ), function () {
                         $$track.event('image', 'delete');
-                        Image.deleteImage(image);
+                        $scope.imageJob = Image.deleteImage(image);
                     });
             };
         }
