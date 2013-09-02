@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'MaxMindController',
-        ['$scope', 'Account', 'localization', 'requestContext', 'notification', '$http', '$q',
-            function ($scope, Account, localization, requestContext, notification, $http, $q) {
+        ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'MaxMind', '$q',
+            function ($scope, Account, localization, requestContext, notification, MaxMind, $q) {
             requestContext.setUpRenderContext('signup.maxmind', $scope);
             localization.bind('signup', $scope);
 
@@ -48,7 +48,7 @@
                 return selected || usa;
             };
 
-            $http.get('account/countryCodes').success(function (data) {
+            MaxMind.getCountries().then(function (data) {
                 $scope.countryCodes = data;
             });
 
@@ -58,8 +58,8 @@
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-                $http.get('/signup/signup/maxmind/call/%2B' + $scope.selectedCountryCode + $scope.account.phone).success(function (data) {
-                    $scope.callInProgress = true; // Should be data.success
+                MaxMind.makeCall($scope.selectedCountryCode + $scope.account.phone).then(function (data) {
+                    $scope.callInProgress = data.success;
                     if (!data.success) {
                         notification.push(null, { type: 'error' }, data.message);
                     }
@@ -67,7 +67,7 @@
             };
 
             $scope.verifyPin = function () {
-                $http.get('/signup/signup/maxmind/verify/' + $scope.pin).success(function (data) {
+                MaxMind.verify($scope.pin).then(function (data) {
                     var verified = data.success;
                     if (verified) {
                         Account.updateAccount({
