@@ -48,7 +48,7 @@
                 return selected || usa;
             };
 
-            MaxMind.getCountries().success(function (data) {
+            MaxMind.getCountries().then(function (data) {
                 $scope.countryCodes = data;
             });
 
@@ -58,7 +58,7 @@
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-                MaxMind.makeCall($scope.selectedCountryCode + $scope.account.phone).success(function (data) {
+                MaxMind.makeCall($scope.selectedCountryCode + $scope.account.phone).then(function (data) {
                     $scope.callInProgress = data.success;
                     if (!data.success) {
                         notification.push(null, { type: 'error' }, data.message);
@@ -67,7 +67,7 @@
             };
 
             $scope.verifyPin = function () {
-                MaxMind.verify($scope.pin).success(function (data) {
+                MaxMind.verify($scope.pin).then(function (data) {
                     var verified = data.success;
                     if (verified) {
                         Account.updateAccount({
