@@ -1,31 +1,27 @@
 
-<div class="page-header span12">
+<div class="page-header">
     <h1 class="pull-left" data-translate>Two Factor Authentication</h1>
-	<div class="clearfix"></div>
 </div>
+<div class="clearfix"></div>
 
-<div data-ng-controller="TFAController">
-    <form>
-		<fieldset>
-	        <div class="control-group">
-	            <label class="control-label" for="otpass" data-translate>One time password</label>
-	            <div class="controls">
-	                <input type="text" data-ng-model="otpass" placeholder="One time password" />
-	            </div>
-	        </div>
-	        <div>
-	            <button class="btn btn-joyent-blue" data-ng-click="login()" data-translate>Login</button>
-	        </div>
-		</fieldset>
-    </form>
-
-    <div data-ng-show="success">
-        Logging in successful. Redirecting...
+<div class="row" data-ng-controller="TFAController">
+    <div class="span4 offset1"></div>
+        <form class="form-horizontal">
+            <fieldset>
+                <div class="control-group">
+                    <label class="control-label" for="otpass" data-translate>One time password</label>
+                    <div class="controls">
+                        <input type="text" id="otpass" data-ng-model="otpass" placeholder="One time password" />
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-joyent-blue" data-ng-click="login()" data-translate>Login</button>
+                </div>
+            </fieldset>
+        </form>
+    
+        <div data-ng-show="success">
+            Logging in successful. Redirecting...
+        </div>
     </div>
-
-    <!--
-    <div data-ng-show="error">
-        {{error}}
-    </div>
-    -->
 </div>
