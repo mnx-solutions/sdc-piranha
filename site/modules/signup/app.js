@@ -48,7 +48,7 @@ module.exports = function execute(scope, app) {
     app.get('/maxmind/verify/:code', function (req, res) {
         var isVerified = req.session.maxmindCode && req.params.code == req.session.maxmindCode;
         if (isVerified) {
-            SignupProgress.setMinProgress(req, 'maxmind', function() {
+            SignupProgress.setMinProgress(req, 'phone', function() {
                 res.json({message: 'Phone verification successful', success: true});
             });
         } else {

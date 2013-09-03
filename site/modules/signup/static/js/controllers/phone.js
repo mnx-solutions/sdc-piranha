@@ -48,7 +48,7 @@
                 return selected || usa;
             };
 
-            Phone.getCountries().then(function (data) {
+            Phone.getCountries().success(function (data) {
                 $scope.countryCodes = data;
             });
 
@@ -58,16 +58,17 @@
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-                Phone.makeCall($scope.selectedCountryCode + $scope.account.phone).then(function (data) {
+                Phone.makeCall($scope.selectedCountryCode + $scope.account.phone).success(function (data) {
                     $scope.callInProgress = data.success;
                     if (!data.success) {
-                        notification.push(null, { type: 'error' }, data.message);
+                        notification.dismiss('phone');
+                        notification.push('phone', { type: 'error' }, data.message);
                     }
                 });
             };
 
             $scope.verifyPin = function () {
-                Phone.verify($scope.pin).then(function (data) {
+                Phone.verify($scope.pin).success(function (data) {
                     var verified = data.success;
                     if (verified) {
                         Account.updateAccount({
@@ -78,7 +79,8 @@
                         });
                     } else {
                         $scope.callInProgress = false;
-                        notification.push(null, { type: 'error' },
+                        notification.dismiss('phone');
+                        notification.push('phone', { type: 'error' },
                             localization.translate($scope, null,
                                 'Phone verification failed. Incorrect PIN code. Please try again'
                             )

@@ -8,7 +8,7 @@
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
-                    maxmind: "Phone confirmation",
+                    phone: "Phone confirmation",
                     billing:"Payment Method",
                     ssh:"SSH Key"
                 };
