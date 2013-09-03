@@ -53,7 +53,7 @@
             });
 
             $scope.$watch('account.country', function(newVal) {
-                $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
+                $scope.selectedCountryCode = (newVal && newVal.areaCode) || '';
             });
 
             $scope.makeCall = function() {
