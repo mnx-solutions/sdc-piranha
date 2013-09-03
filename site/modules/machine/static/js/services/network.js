@@ -43,7 +43,6 @@
 
             service.getNetwork = function(datacenter, id) {
                 var d = $q.defer();
-                console.log(networksInfo);
                 if(networksInfo[datacenter] && networksInfo[datacenter][id]) {
                     d.resolve(networksInfo[datacenter][id]);
                 } else {
@@ -51,7 +50,6 @@
                         name: 'getNetwork',
                         data: {uuid: id, datacenter: datacenter},
                         done: function(err, job) {
-                            console.log('NEtwork done', job.__read());
                             var res = job.__read();
 
                             if(!networksInfo[datacenter])
