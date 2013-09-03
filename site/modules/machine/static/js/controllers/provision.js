@@ -9,6 +9,7 @@
         'Datacenter',
         'Package',
         'Account',
+        'Network',
         '$dialog',
         '$location',
         'localization',
@@ -16,7 +17,7 @@
         '$$track',
         'util',
 
-        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, $dialog, $location, localization, $q, $$track, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -25,6 +26,7 @@
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
             $scope.datacenters = Datacenter.datacenter();
+            $scope.networks = [];
             $scope.packageTypes = [];
             $scope.packageType = null;
             $scope.loading = true;
@@ -42,6 +44,7 @@
             $scope.data = {};
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
+            $scope.selectedNetworks = [];
             $scope.previousPos = 0;
 
             // version number comparison
@@ -72,6 +75,14 @@
                 return false;
             }
 
+            $scope.selectNetwork = function(id) {
+                if($scope.selectedNetworks.indexOf(id) > -1) {
+                    $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
+                } else {
+                    $scope.selectedNetworks.push(id);
+                }
+            }
+
             $scope.clickProvision = function () {
                 function provision() {
                     util.confirm(
@@ -86,7 +97,7 @@
                             'Billing will start once this instance is created'
                         ), function () {
                             // add networks to data
-                            //$scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
+                            $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
                             $scope.retinfo = Machine.provisionMachine($scope.data);
                             $scope.retinfo.done(function(err, job) {
                                 var newMachine = job.__read();
@@ -149,7 +160,7 @@
                 $scope.selectedPackage = null;
                 $scope.selectedPackageInfo = null;
                 $scope.packageType = null;
-                //$scope.selectedNetworks = [];
+                $scope.selectedNetworks = [];
 
                 var ds = $scope.data.datacenter;
                 var opsys = $scope.data.opsys;
@@ -160,6 +171,7 @@
                 };
 
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
+                ng.element('#network-configuration').fadeOut('fast');
             };
 
             function getNr(el) {
@@ -260,6 +272,7 @@
                     $scope.selectedPackageInfo = pkg;
 
                     $scope.data.package = pkg.id;
+                    ng.element('#network-configuration').fadeIn('fast');
                 });
             };
 
@@ -353,6 +366,10 @@
                         $scope.manyVersions = manyVersions;
                         $scope.selectedVersions = selectedVersions;
                         $scope.reloading = (--count > 0);
+                    });
+
+                    Network.network(newVal).then(function(networks) {
+                        $scope.networks = networks;
                     });
 
                     Package.package({ datacenter: newVal }).then(function (packages) {
