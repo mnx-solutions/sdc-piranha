@@ -73,7 +73,7 @@
                 }
 
                 return false;
-            }
+            };
 
             $scope.selectNetwork = function(id) {
                 if($scope.selectedNetworks.indexOf(id) > -1) {
@@ -81,7 +81,7 @@
                 } else {
                     $scope.selectedNetworks.push(id);
                 }
-            }
+            };
 
             $scope.clickProvision = function () {
                 function provision() {
