@@ -80,11 +80,7 @@
                     } else {
                         $scope.callInProgress = false;
                         notification.dismiss('phone');
-                        notification.push('phone', { type: 'error' },
-                            localization.translate($scope, null,
-                                'Phone verification failed. Incorrect PIN code. Please try again'
-                            )
-                        );
+                        notification.push('phone', { type: 'error' }, data.message);
                     }
                 });
             };

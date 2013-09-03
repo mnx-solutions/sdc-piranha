@@ -4,6 +4,9 @@ var fs = require('fs');
 var mustache = require('mustache');
 var restify = require('restify');
 var maxmindLicense = 'bQg6oKXwLfWj';
+var callMaxRetries = 3;
+var wrongPinMessage = 'Phone verification failed. Incorrect PIN code. Please try again';
+var wrongPinLockedMessage = 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support';
 
 module.exports = function execute(scope, app) {
     var SignupProgress = scope.api('SignupProgress');
@@ -27,7 +30,7 @@ module.exports = function execute(scope, app) {
         var code = Math.random().toString(10).substr(2,4);
         req.session.maxmindCode = code;
         req.session.maxmindRetries = req.session.maxmindRetries || 0;
-        if (req.session.maxmindRetries <= 3) {
+        if (req.session.maxmindRetries < callMaxRetries) {
             var client = restify.createStringClient({url: 'https://api.maxmind.com'});
             var encodedPhone = encodeURIComponent(req.params.phone);
             var url = '/app/telephone_http?l=' + maxmindLicense + '&phone=' + encodedPhone + '&verify_code=' + code;
@@ -38,7 +41,7 @@ module.exports = function execute(scope, app) {
                 } else {
                     data = data.substring(4); // Skip 'err='
                 }
-                res.json({message: data, success: Boolean(isCalling)});
+                res.json({message: data, success: isCalling, locked: false});
             });
         } else {
             res.json({message: 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support', success: false});
@@ -52,7 +55,8 @@ module.exports = function execute(scope, app) {
                 res.json({message: 'Phone verification successful', success: true});
             });
         } else {
-            res.json({message: 'Phone verification failed. Incorrect PIN code. Please try again', success: false});
+            var message = req.session.maxmindRetries == callMaxRetries ? wrongPinLockedMessage : wrongPinMessage;
+            res.json({message: message, success: false});
         }
     });
 };
