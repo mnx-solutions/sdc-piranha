@@ -117,6 +117,33 @@
         </table>
     </fieldset>
 
+    <fieldset data-ng-show="networks.length >= 1">
+        <legend>
+            <span data-translate>Networks</span>
+            <small data-translate>Instance networks</small>
+        </legend>
+
+        <div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Public</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="network in networks" data-ng-show="network.id">
+                        <td>{{$index+1}}.</td>
+                        <td>{{network.name}}</td>
+                        <td>{{network.id}}</td>
+                        <td>{{network.public}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
     <fieldset>
         <legend>
             <span data-translate>Tags</span>

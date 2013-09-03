@@ -285,6 +285,18 @@ module.exports = function execute(scope) {
         }
     });
 
+    /* GetNetwork */
+    server.onCall('getNetwork', {
+        verify: function(data) {
+            return data && typeof data.uuid === 'string';
+        },
+        handler: function(call) {
+            var networkId = call.data.uuid;
+            call.log.info('Handling network call, network %s', networkId);
+            call.cloud.separate(call.data.datacenter).getNetwork(networkId, call.done.bind(call));
+        }
+    });
+
     /**
      * Waits for machine state, package or name change
      * @param {Object} client
