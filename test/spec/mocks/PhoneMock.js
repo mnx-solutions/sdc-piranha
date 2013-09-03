@@ -1,4 +1,4 @@
-var MaxMindMock = function () {
+var PhoneMock = function () {
     var self = this;
     inject(function ($q) {
         self.getCountries = function () {

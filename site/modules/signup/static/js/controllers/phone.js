@@ -2,10 +2,10 @@
 
 (function (app) {
     app.controller(
-        'MaxMindController',
-        ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'MaxMind', '$q',
-            function ($scope, Account, localization, requestContext, notification, MaxMind, $q) {
-            requestContext.setUpRenderContext('signup.maxmind', $scope);
+        'PhoneController',
+        ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'Phone', '$q',
+            function ($scope, Account, localization, requestContext, notification, Phone, $q) {
+            requestContext.setUpRenderContext('signup.phone', $scope);
             localization.bind('signup', $scope);
 
             $scope.account = null;
@@ -48,26 +48,30 @@
                 return selected || usa;
             };
 
-            MaxMind.getCountries().then(function (data) {
+            Phone.getCountries().success(function (data) {
                 $scope.countryCodes = data;
             });
 
             $scope.$watch('account.country', function(newVal) {
-                $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
+                $scope.selectedCountryCode = (newVal && newVal.areaCode) || '';
             });
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-                MaxMind.makeCall($scope.selectedCountryCode + $scope.account.phone).then(function (data) {
+                Phone.makeCall($scope.selectedCountryCode + $scope.account.phone).success(function (data) {
                     $scope.callInProgress = data.success;
                     if (!data.success) {
-                        notification.push(null, { type: 'error' }, data.message);
+                        notification.dismiss('phone');
+                        notification.push('phone', { type: 'error' }, data.message);
+                    } else if (data.skip) {
+                        notification.dismiss('phone');
+                        $scope.nextStep();
                     }
                 });
             };
 
             $scope.verifyPin = function () {
-                MaxMind.verify($scope.pin).then(function (data) {
+                Phone.verify($scope.pin).success(function (data) {
                     var verified = data.success;
                     if (verified) {
                         Account.updateAccount({
@@ -77,11 +81,9 @@
                             $scope.nextStep();
                         });
                     } else {
-                        notification.push(null, { type: 'error' },
-                            localization.translate($scope, null,
-                                'Phone verification failed. Incorrect PIN code. Please try again'
-                            )
-                        );
+                        $scope.callInProgress = false;
+                        notification.dismiss('phone');
+                        notification.push('phone', { type: 'error' }, data.message);
                     }
                 });
             };

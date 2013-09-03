@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.factory('MaxMind', [
+    app.factory('Phone', [
         '$http',
         '$q',
         function ($http) {

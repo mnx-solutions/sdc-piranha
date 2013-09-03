@@ -144,6 +144,12 @@ module.exports = function(grunt) {
                     ]
                 }
             ] //groups of documentation to parse
+        },
+
+        karma: {
+            unit: {
+                configFile: 'test/karma.conf.js'
+            }
         }
     });
     grunt.loadNpmTasks('grunt-docular');
@@ -332,13 +338,15 @@ module.exports = function(grunt) {
 
     });
 
+    grunt.loadNpmTasks('grunt-karma');
+
 // register tasks as they should be in the makefile
     grunt.registerTask('default', ['jsLint', 'jsStyle', 'test']);
     grunt.registerTask('check', ['jsLint', 'jsStyle']);
 //  grunt.registerTask('clean', '');
     grunt.registerTask('prepush', ['jsLint', 'jsStyle', 'test']);
     grunt.registerTask('test', ['jasmineNode', 'jasmine']);
-    grunt.registerTask('unit', ['jasmineNode']);
+    grunt.registerTask('unit', ['karma']);
 //  grunt.registerTask('release', ['jsLint', 'jsStyle test']);
 
 };
