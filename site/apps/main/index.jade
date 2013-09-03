@@ -12,15 +12,17 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each link in css
         link(rel='stylesheet',href='#{link._url}',type='text/css')
   body()
-    div(data-main-menu, class='modulizer-module-menu')
+    div(data-main-menu, class='modulizer-module-menu header navbar navbar-inverse navbar-fixed-top')
+    div(data-main-left, id='leftPanel')
     //div(data-notification, class='JoyentPortal-module-notification')
-    div(data-ng-switch='subview', class='subview container-fluid ng-cloak', ng-cloak)
+    div(data-ng-switch='subview', class='subview-dash container-fluid ng-cloak', ng-cloak)
 
       each layout in layouts
         div(data-ng-switch-when='#{layout.module}',class='modulizer-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data
     div(class='modulizer-module-menu')
-        div(class="container footer")
-             div(class="brand pull-left")
+        div(class="container")
+        div(class="footer")
+             //div(class="brand pull-left")
              div(class="pull-left")
                     ul(class="nav")
                         li
@@ -35,9 +37,8 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
                             a(href="https://help.joyent.com/forums/20715782-current-system-status", target="_blank") System Status
                         li
                             a(href="http://apidocs.joyent.com/cloudapi/", target="_blank") API
-                        li
-                            a &copy; 2013 Joyent, Inc.
-
+                div(class="pull-right nav")
+                    a &copy; 2013 Joyent, Inc.
             div(class="clearfix")
 
     each link in js
@@ -47,14 +48,3 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each partial in partials
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
 
-    script(type='text/javascript')
-        if (typeof(Zenbox) !== "undefined") {
-          Zenbox.init({
-            dropboxID:   "20078915",
-            url:         "https://joyentcloud.zendesk.com",
-            tabTooltip:  "Support",
-            tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support.png",
-            tabColor:    "#375675",
-            tabPosition: "Right"
-          });
-        }

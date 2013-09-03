@@ -77,16 +77,24 @@ h4 {
 }
 
 .footer {
-	padding-top:10px;
-	border-top:1px solid #d4d7d9;
-	margin-bottom:45px;
+    /*font-size: 11px;*/
+    padding-top: 10px;
+    /*border-top: 1px solid #d4d7d9;*/
+    padding-left: 185px;
+    background-color: #ededed;
+    height: 60px;
+	/*padding-top:10px;*/
+	/*border-top:1px solid #d4d7d9;*/
+	/*margin-bottom:45px;*/
 }
 .footer .nav {
 	padding-top:8px;
+    font-size:12px;
+    margin-left: 10px;
+
 }
 .footer .nav li {
 	float:left;
-	font-size:11px;
 }
 .footer a {
     color:#999;

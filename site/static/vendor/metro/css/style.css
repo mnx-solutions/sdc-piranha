@@ -1,0 +1,78 @@
+.navbar-inverse .navbar-inner {
+    background-color: transparent !important;
+    background-image: none !important;
+    background-repeat: no-repeat !important;
+    border: none !important;
+}
+.navbar .nav.pull-right {
+    float: right;
+    margin-right: 0;
+    padding: 8px;
+}
+/*.container-fluid {*/
+    /*padding-right: 20px;*/
+    /*padding-left: 40px;*/
+/*}*/
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    list-style: none;
+    text-shadow: none;
+    padding: 0px;
+    margin: 0px;
+    -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    font-family: "Segoe UI",Helvetica, Arial, sans-serif;
+    border: 1px solid #ddd;
+}
+.open>.dropdown-menu {
+    display: block;
+}
+.dropdown-menu li > a {
+    padding: 6px 0 6px 13px;
+    color: #333333;
+    text-decoration: none;
+    display: block;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    white-space: nowrap;
+}
+.icon-signout{
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    *margin-right: .3em;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url(../../bootstrap/img/glyphicons-halflings.png);
+    background-position: -384px 0;
+    background-repeat: no-repeat;
+}
+.modulizer-module-left {
+    position: fixed;
+    height: 100%;
+    width: 175px;
+    background-color: #3d3d3d;
+}
+.subview-dash{
+    padding-top: 55px;
+    padding-left: 180px;
+    float: left;
+}
+.leftpanel-small{
+    padding-left: 55px !important;
+}
+.navbar-inner .container-fluid {
+    min-width: 548px;
+}
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
+    width: 1000px;
+}
