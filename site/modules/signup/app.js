@@ -26,6 +26,13 @@ module.exports = function execute(scope, app) {
         });
     });
 
+    var messageFilter = function (message) {
+        if (message.indexOf('PhoneNumber Parameter') != -1 || message.indexOf('Unable to parse phone number') != -1) {
+            message = 'The phone number is incorrect';
+        }
+        return message;
+    };
+
     app.get('/maxmind/call/:phone', function (req, res) {
         var code = Math.random().toString(10).substr(2,4);
         req.session.maxmindCode = code;
@@ -39,7 +46,7 @@ module.exports = function execute(scope, app) {
                 if (isCalling) {
                     req.session.maxmindRetries++;
                 } else {
-                    data = data.substring(4); // Skip 'err='
+                    data = messageFilter(data.substring(4)); // Skip 'err='
                 }
                 res.json({message: data, success: isCalling, locked: false});
             });
