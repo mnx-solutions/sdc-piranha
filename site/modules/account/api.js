@@ -24,7 +24,7 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
 module.exports = function execute(scope, register, callback) {
     //Compatibility with old version
     var api = {};
-    var steps = [ 'start', 'maxmind', 'billing','ssh' ];
+    var steps = [ 'start', 'phone', 'billing','ssh' ];
 
     function getFromBilling(method, userId, cb) {
         jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {

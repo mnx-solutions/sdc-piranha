@@ -2,10 +2,10 @@
 
 (function (app) {
     app.controller(
-        'MaxMindController',
-        ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'MaxMind', '$q',
-            function ($scope, Account, localization, requestContext, notification, MaxMind, $q) {
-            requestContext.setUpRenderContext('signup.maxmind', $scope);
+        'PhoneController',
+        ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'Phone', '$q',
+            function ($scope, Account, localization, requestContext, notification, Phone, $q) {
+            requestContext.setUpRenderContext('signup.phone', $scope);
             localization.bind('signup', $scope);
 
             $scope.account = null;
@@ -48,7 +48,7 @@
                 return selected || usa;
             };
 
-            MaxMind.getCountries().then(function (data) {
+            Phone.getCountries().then(function (data) {
                 $scope.countryCodes = data;
             });
 
@@ -58,7 +58,7 @@
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-                MaxMind.makeCall($scope.selectedCountryCode + $scope.account.phone).then(function (data) {
+                Phone.makeCall($scope.selectedCountryCode + $scope.account.phone).then(function (data) {
                     $scope.callInProgress = data.success;
                     if (!data.success) {
                         notification.push(null, { type: 'error' }, data.message);
@@ -67,7 +67,7 @@
             };
 
             $scope.verifyPin = function () {
-                MaxMind.verify($scope.pin).then(function (data) {
+                Phone.verify($scope.pin).then(function (data) {
                     var verified = data.success;
                     if (verified) {
                         Account.updateAccount({
@@ -77,6 +77,7 @@
                             $scope.nextStep();
                         });
                     } else {
+                        $scope.callInProgress = false;
                         notification.push(null, { type: 'error' },
                             localization.translate($scope, null,
                                 'Phone verification failed. Incorrect PIN code. Please try again'

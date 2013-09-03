@@ -41,7 +41,7 @@ module.exports = function execute(scope, app) {
                 res.json({message: data, success: Boolean(isCalling)});
             });
         } else {
-            res.json({message: 'Phone verification failed. Your account has been locked. Please contact support', success: false});
+            res.json({message: 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support', success: false});
         }
     });
 
