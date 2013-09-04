@@ -87,6 +87,10 @@
                 <div data-ng-hide="isCollapsed(image.id)" class="toolbox">
                     <div class="item machine-details-info" data-ng-class="{span12: image.public, span10: !image.public}">
                         <div class="row-fluid">
+                            <span class="text-medium key span4 data-translate">UUID</span>
+                            <span class="text-medium value span7">{{image.id}}&nbsp;</span>
+                        </div>
+                        <div class="row-fluid">
                             <span class="text-medium key span4 data-translate">Os</span>
                             <span class="text-medium value span7">{{image.os}}&nbsp;</span>
                         </div>
