@@ -1,47 +1,47 @@
 {
-  "author": "TBD",
-  "name": "piranha",
-  "description": "SDC7 Client Portal",
-  "version": "0.0.1",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com/joyent/piranha.git"
-  },
-  "main": "site/index.js",
-  "dependencies": {
-    "send": "*",
-    "bunyan": "*",
-    "uglify-js": "*",
-    "sqwish": "*",
-    "express": "3.x",
-    "less": "*",
-    "jade": "*",
-    "smartdc": "git://github.com/joyent/node-smartdc.git",
-    "vasync": "1.3.x",
-    "easy-config": "0.1.10",
-    "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
-    "connect-redis": "*",
-    "file-pointer": "0.0.x",
-    "foldermap": "0.3.x",
-    "redis": "*",
-    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
-    "moment": "*",
-    "xml2js": "*",
-    "mustache": "*",
-    "tropo-webapi-node": "*",
-    "restify": "*",
-    "speakeasy": "*",
-    "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#6eeb33048670ed18b463482d343cd683712b42c4"
-  },
-  "devDependencies": {
-    "grunt": ">=0.4.0",
-    "grunt-contrib-jasmine": "*",
-    "jasmine-node": "*",
-    "grunt-docular": "~0.1.1"
-  },
-  "optionalDependencies": {},
-  "engines": {
-    "node": ">=0.10.0"
-  },
-  "private": true
+    "author": "TBD",
+    "name": "piranha",
+    "description": "SDC7 Client Portal",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com/joyent/piranha.git"
+    },
+    "main": "site/index.js",
+    "dependencies": {
+        "send": "*",
+        "bunyan": "*",
+        "uglify-js": "*",
+        "sqwish": "*",
+        "express": "3.x",
+        "less": "*",
+        "jade": "*",
+        "smartdc": "git://github.com/joyent/node-smartdc.git",
+        "vasync": "1.3.x",
+        "easy-config": "0.1.10",
+        "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
+        "connect-redis": "*",
+        "file-pointer": "0.0.x",
+        "foldermap": "0.3.x",
+        "redis": "*",
+        "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
+        "moment": "*",
+        "xml2js": "*",
+        "mustache": "*",
+        "tropo-webapi-node": "*",
+        "restify": "*",
+        "speakeasy": "*",
+        "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea"
+    },
+    "devDependencies": {
+        "grunt": ">=0.4.0",
+        "grunt-contrib-jasmine": "*",
+        "jasmine-node": "*",
+        "grunt-docular": "~0.1.1"
+    },
+    "optionalDependencies": {},
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "private": true
 }
