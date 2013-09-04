@@ -1,31 +1,7 @@
 
-<div class="page-header">
-    <h1 class="pull-left" data-translate>Two Factor Authentication</h1>
-</div>
-<div class="clearfix"></div>
+<form class="form-signin" data-ng-controller="TFAController">
+    <h2 class="form-signin-heading" data-translate>Two Factor Authentication</h2>
 
-<div class="row" data-ng-controller="TFAController">
-    <div class="span4 offset1">
-        <form class="form-horizontal">
-            <fieldset>
-                <div class="control-group">
-                    <label class="control-label" for="otpass" data-translate>One time password</label>
-                    <div class="controls">
-                        <input type="text" id="otpass" data-ng-model="otpass" placeholder="One time password" />
-                    </div>
-                </div>
-                <div>
-                    <button class="btn btn-joyent-blue" data-ng-click="login()" data-translate>Login</button>
-                </div>
-            </fieldset>
-        </form>
-
-        <div data-ng-show="success">
-            Logging in successful. Redirecting...
-        </div>
-
-        <div data-ng-show="error">
-            {{error}}
-        </div>
-    </div>
-</div>
+    <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password">
+    <button class="btn btn-large btn-primary" type="submit" data-translate>Sign in</button>
+</form>
