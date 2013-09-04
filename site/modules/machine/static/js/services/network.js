@@ -12,6 +12,7 @@
 
             var service = {};
             var networks = { job: null, index: {}, list: []};
+            var networksInfo = {};
 
             service.updateNetworks = function (datacenter) {
                 if (!networks.job || networks.job.finished) {
@@ -38,6 +39,30 @@
                 }
 
                 return networks.job;
+            };
+
+            service.getNetwork = function(datacenter, id) {
+                var d = $q.defer();
+                if(networksInfo[datacenter] && networksInfo[datacenter][id]) {
+                    d.resolve(networksInfo[datacenter][id]);
+                } else {
+                    var job = serverTab.call({
+                        name: 'getNetwork',
+                        data: {uuid: id, datacenter: datacenter},
+                        done: function(err, job) {
+                            var res = job.__read();
+
+                            if(!networksInfo[datacenter])
+                                networksInfo[datacenter] = {};
+
+                            networksInfo[datacenter][id] = res;
+                            d.resolve(res);
+                        }
+                    });
+                }
+
+
+                return d.promise;
             };
 
             service.network = function (datacenter) {

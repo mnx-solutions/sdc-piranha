@@ -142,7 +142,6 @@
             <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
         </div>
     </fieldset>
-
     <fieldset>
         <legend>
             <span data-translate>Tags</span>
@@ -213,7 +212,33 @@
         </div>
         <div class="clearfix"></div>
     </fieldset>
+    <fieldset data-ng-show="networks.length >= 1">
+        <legend>
+            <span data-translate>Networks</span>
+            <small data-translate>Instance networks</small>
+        </legend>
 
+        <div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Public</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr data-ng-repeat="network in networks" data-ng-show="network.id">
+                    <td>{{$index+1}}.</td>
+                    <td>{{network.name}}</td>
+                    <td>{{network.id}}</td>
+                    <td>{{network.public}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </fieldset>
 
 
     <div class="clearfix"></div>
@@ -323,7 +348,8 @@
 
         <div class="span6" >
             <h6 class="control-label" data-translate>Resize Instance type</h6>
-            <select name="resize" ui-select2 data-ng-model="selectedPackageName">
+            <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName" data-placeholder="Select package to resize to">
+                <option value=""></option>
                 <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
                         value="{{package.name}}" class="text-medium">
                     Mem: {{package.memory | sizeFormat}}
