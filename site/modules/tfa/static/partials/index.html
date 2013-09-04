@@ -3,5 +3,10 @@
     <h2 class="form-signin-heading" data-translate>Two Factor Authentication</h2>
 
     <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password">
-    <button class="btn btn-large btn-primary" type="submit" data-translate>Sign in</button>
+
+    <div data-ng-show="success" data-translate>Logging in successful. Redirecting...</div>
+
+    <div data-ng-show="error">{{error}}</div>
+
+    <button class="btn btn-large btn-primary" type="submit" data-ng-click="login()" data-translate>Sign in</button>
 </form>
