@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (ng, app) {
     app.factory('Image', [
         'serverTab',
         '$q',
@@ -11,12 +11,48 @@
         function (serverTab, $q, localization, notification, errorContext, $rootScope) {
 
             var service = {};
-            var images = { job: {}, list: {}};
+            var images = {index: {}, job: {}, list: []};
 
             service.updateImages = function (force) {
                 if (!images.list.final || force) {
                     images.job = serverTab.call({
                         name: 'ImagesList',
+                        progress: function imagesProgress(err, job) {
+
+                            var data = job.__read();
+
+                            function handleChunk (image) {
+
+                                if(!images.index[image.id]) {
+                                    images.index[image.id] = image;
+                                    images.list.push(image);
+                                }
+                            }
+
+                            function handleResponse(chunk) {
+                                if(chunk.status === 'error') {
+
+                                    notification.push(chunk.name, { type: 'error' },
+                                        localization.translate(null,
+                                            'machine',
+                                            'Unable to retrieve images from datacenter {{name}}',
+                                            { name: chunk.name }
+                                        )
+                                    );
+                                    return;
+                                }
+
+                                if(chunk.images) {
+                                    chunk.images.forEach(handleChunk);
+                                }
+                            }
+
+                            if (ng.isArray(data)) {
+                                data.forEach(handleResponse);
+                            } else {
+                                handleResponse(data);
+                            }
+                        },
                         done: function (err, job) {
                             if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
@@ -26,14 +62,6 @@
                                 return;
                             }
 
-                            var result = job.__read();
-                            images.list = {};
-                            images.list.images = [];
-
-                            result.forEach(function(e) {
-                                images.list.images.push(e);
-                            });
-
                             images.list.final = true;
                         }
                     });
@@ -42,29 +70,31 @@
                 return images.job;
             };
 
-            service.image = function(force, id) {
-
-                if(!force)
-                    force = false;
-
-                if(!id && !images.list.final || force) {
-                    var job = service.updateImages(force);
-                    return job.deferred;
+            service.image = function(id) {
+                if (id === true || (!id && !images.job)) {
+                    service.updateImages();
+                    return images.list;
                 }
 
-                var ret = $q.defer();
-
-                if(!id) {
-                    if(images.list.final) {
-                        ret.resolve(images.list);
-                    } else {
-                        images.job.deferred.then(function (value) {
-                            ret.resolve(value);
-                        });
-                    }
+                if (!id) {
+                    return images.list;
                 }
 
-                return ret.promise;
+                if (!images.index[id]) {
+                    service.updateImages();
+                }
+
+//                if (!images.index[id] || (images.job && !images.job.finished)) {
+//                    var ret = $q.defer();
+//                    if (!machines.search[id]) {
+//                        machines.search[id] = [];
+//                    }
+//                    machines.search[id].push(ret);
+//
+//                    return ret.promise;
+//                }
+
+                return images.index[id];
             };
 
 
@@ -129,4 +159,4 @@
 
             return service;
         }]);
-}(window.JP.getModule('Machine')));
+}(window.angular, window.JP.getModule('Machine')));

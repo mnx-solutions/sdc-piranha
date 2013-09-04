@@ -23,6 +23,10 @@
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
 
+            var imageid = requestContext.getParam('imageid');
+            $scope.preSelectedImageId = imageid;
+
+
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
             $scope.datacenters = Datacenter.datacenter();
@@ -203,6 +207,8 @@
 
                     $scope.data.dataset = dataset.id;
                     $scope.searchText = '';
+
+                    console.log('Packages', $scope.packages);
 
                     if ($scope.packages && dataset.license_price) {
                         var lPrice = getNr(dataset.license_price);
@@ -417,7 +423,12 @@
                         $scope.packages = packages;
                         $scope.searchPackages = '';
                         $scope.reloading = (--count > 0);
+
+
+                        if($scope.preSelectedImageId)
+                            $scope.selectDataset($scope.preSelectedImageId);
                     });
+
                 }
             });
 
