@@ -28,7 +28,15 @@
                       <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </span>
 
-                <span class="span4 text-medium sortable"
+                <span class="span3 text-medium sortable"
+                      data-ng-click="sortBy('description')"
+                      data-ng-switch on="sortIcon.description">
+                      <span class="pull-left machines-list-header" data-translate>Description</span>
+                      <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                      <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </span>
+
+                <span class="span1 text-medium sortable"
                       data-ng-click="sortBy('version')"
                       data-ng-switch on="sortIcon.version">
                       <span class="pull-left machines-list-header" data-translate>Version</span>
@@ -60,7 +68,11 @@
                   {{image.name}}
                 </span>
 
-                <span class="span4 text-medium crop machine-list-content">
+                <span class="span3 text-medium crop machine-list-content">
+                  {{image.description}}
+                </span>
+
+                <span class="span1 text-medium crop machine-list-content">
                   {{image.version}}
                 </span>
 
