@@ -7,20 +7,18 @@
         'localization',
         'notification',
         'errorContext',
-        function (serverTab, $q, localization, notification, errorContext) {
+        '$rootScope',
+        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
 
             var service = {};
             var images = { job: {}, list: {}};
 
-            service.updateImages = function() {
-                if(!images.list.final) {
-//                    images.job.finished = false;
+            service.updateImages = function (force) {
+                if (!images.list.final || force) {
                     images.job = serverTab.call({
                         name: 'ImagesList',
-                        done: function(err, job) {
-//                            images.job.finished = true;
-
-                            if(err) {
+                        done: function (err, job) {
+                            if (err) {
                                 errorContext.emit(new Error(localization.translate(null,
                                     'machine',
                                     'Unable to retrieve images list'
@@ -50,7 +48,7 @@
                     force = false;
 
                 if(!id && !images.list.final || force) {
-                    var job = service.updateImages();
+                    var job = service.updateImages(force);
                     return job.deferred;
                 }
 
@@ -61,7 +59,7 @@
                         ret.resolve(images.list);
                     } else {
                         images.job.deferred.then(function (value) {
-                           ret.resolve(value);
+                            ret.resolve(value);
                         });
                     }
                 }
@@ -71,7 +69,6 @@
 
 
             service.createImage = function(machineId, name, description) {
-
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
                     data: { machineId: machineId, name: name, description: description },
@@ -96,18 +93,38 @@
                     }
                 });
 
-                return newImage.job;
+                return newImage;
             };
 
-            service.deleteImage = function(image) {
-
-                serverTab.call({
+            service.deleteImage = function (image) {
+                image.state = 'deleting'; // Override state manually
+                image.job = serverTab.call({
                     name: 'ImageDelete',
-                    data: { id: image },
+                    data: { imageId: image.id },
                     done: function(err, job) {
+                        if (!err) {
+                            notification.push(image, { type: 'success' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Image "{{name}}" successfully deleted',
+                                    { name: image.name }
+                                )
+                            );
+
+                            $rootScope.$emit('forceUpdate');
+                        } else {
+                            notification.push(image, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to delete image "{{name}}"',
+                                    { name: image.name }
+                                )
+                            );
+                        }
                     }
                 });
 
+                return image;
             };
 
             return service;

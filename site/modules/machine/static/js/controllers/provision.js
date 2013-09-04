@@ -33,6 +33,7 @@
 
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
+            $scope.visibilityFilter = 'Public';
 
             $q.all([
                     $q.when($scope.keys),
@@ -45,6 +46,7 @@
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
+            $scope.selectedVisibility = true; // defaults to Public true
             $scope.previousPos = 0;
 
             // version number comparison
@@ -262,6 +264,32 @@
                 }
 
                 return false;
+            };
+
+            $scope.filterDatasetsByVisibility = function(item) {
+                if($scope.selectedVisibility === false || $scope.selectedVisibility === true) {
+                    var val = item['public'];
+                    if(val === $scope.selectedVisibility) {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+
+                return false;
+            };
+
+            $scope.selectVisibility = function(type) {
+                if(type === null)
+                    $scope.visibilityFilter = 'All';
+
+                if(type === true)
+                    $scope.visibilityFilter = 'Public';
+
+                if(type === false)
+                    $scope.visibilityFilter = 'Private';
+
+                $scope.selectedVisibility = type;
             };
 
             $scope.selectPackage = function (id) {

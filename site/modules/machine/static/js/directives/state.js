@@ -23,20 +23,25 @@
                             case 'provisioning':
                             case 'stopping':
                                 return 'btn-warning';
+
                             case 'running':
                                 return 'btn-success';
+
                             case 'stopped':
                                 return '';
+
                             default:
                                 return 'btn-danger';
                         }
                     } else {
+                        console.log('stae: ' + state);
                         switch (state) {
                             case 'active':
                                 return 'btn-success';
+
+                            default:
                             case 'stopped':
                                 return '';
-                            default:
                         }
                     }
                 };
