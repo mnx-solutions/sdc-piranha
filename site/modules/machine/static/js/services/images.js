@@ -24,6 +24,10 @@
                             function handleChunk (image) {
                                 var old = null;
 
+
+                                if(image.public)
+                                    return;
+
                                 if (images.index[image.id]) {
                                     old = images.list.indexOf(images.index[image.id]);
                                 }
