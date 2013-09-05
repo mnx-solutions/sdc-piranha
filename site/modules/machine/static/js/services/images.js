@@ -11,7 +11,7 @@
         function (serverTab, $q, localization, notification, errorContext, $rootScope) {
 
             var service = {};
-            var images = {index: {}, job: {}, list: []};
+            var images = {index: {}, job: {}, list: [], search: {}};
 
             service.updateImages = function (force) {
                 if (!images.list.final || force) {
@@ -22,10 +22,25 @@
                             var data = job.__read();
 
                             function handleChunk (image) {
+                                var old = null;
 
-                                if(!images.index[image.id]) {
-                                    images.index[image.id] = image;
+                                if (images.index[image.id]) {
+                                    old = images.list.indexOf(images.index[image.id]);
+                                }
+
+                                images.index[image.id] = image;
+
+                                if (images.search[image.id]) {
+                                    images.search[image.id].forEach(function (r) {
+                                        r.resolve(image);
+                                    });
+                                    delete images.search[image.id];
+                                }
+
+                                if (old === null) {
                                     images.list.push(image);
+                                } else {
+                                    images.list[old] = image;
                                 }
                             }
 
@@ -84,15 +99,15 @@
                     service.updateImages();
                 }
 
-//                if (!images.index[id] || (images.job && !images.job.finished)) {
-//                    var ret = $q.defer();
-//                    if (!machines.search[id]) {
-//                        machines.search[id] = [];
-//                    }
-//                    machines.search[id].push(ret);
-//
-//                    return ret.promise;
-//                }
+                if (!images.index[id] || (images.job && !images.job.finished)) {
+                    var ret = $q.defer();
+                    if (!images.search[id]) {
+                        images.search[id] = [];
+                    }
+                    images.search[id].push(ret);
+
+                    return ret.promise;
+                }
 
                 return images.index[id];
             };

@@ -265,7 +265,6 @@
 
             $scope.clickCreateImage = function() {
                 $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
-                console.log($scope.imageJob);
             };
 
             $scope.enableRename = function(name) {

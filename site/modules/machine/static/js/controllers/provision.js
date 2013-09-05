@@ -10,6 +10,7 @@
         'Package',
         'Account',
         'Network',
+        'Image',
         '$dialog',
         '$location',
         'localization',
@@ -17,14 +18,17 @@
         '$$track',
         'util',
 
-        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
 
-            var imageid = requestContext.getParam('imageid');
-            $scope.preSelectedImageId = imageid;
+            $scope.preSelectedImageId = requestContext.getParam('imageid');
+            $scope.preSelectedImage = null;
+
+            if($scope.preSelectedImageId)
+                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
 
 
             $scope.account = Account.getAccount();
@@ -41,7 +45,8 @@
 
             $q.all([
                     $q.when($scope.keys),
-                    $q.when($scope.datacenters)
+                    $q.when($scope.datacenters),
+                    $q.when($scope.preSelectedImage)
                 ]).then(function () {
                     $scope.loading = false;
                 });
@@ -207,8 +212,6 @@
 
                     $scope.data.dataset = dataset.id;
                     $scope.searchText = '';
-
-                    console.log('Packages', $scope.packages);
 
                     if ($scope.packages && dataset.license_price) {
                         var lPrice = getNr(dataset.license_price);
@@ -432,8 +435,16 @@
                 }
             });
 
+            // if we have pre-selected image, select correct datacenter
             if (!$scope.data.datacenter) {
-                $scope.selectDatacenter();
+                if($scope.preSelectedImageId) {
+                    // wait until we have the pre-selected image (loading will not finish before it anyway)
+                    $q.when($scope.preSelectedImage).then(function(image) {
+                        $scope.selectDatacenter(image.datacenter);
+                    });
+                } else {
+                    $scope.selectDatacenter();
+                }
             }
 
             if (!$scope.data.opsys) {

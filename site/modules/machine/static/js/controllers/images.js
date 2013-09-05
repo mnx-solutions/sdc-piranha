@@ -118,6 +118,20 @@
 
             $scope.gridActionButtons = [
                 {
+                    label: 'Create instance',
+                    disabled: function (object) {
+                        return false;
+                    },
+                    action: function (object) {
+                        $scope.provisionInstance(object);
+                    },
+                    show: function (object) {
+                        return true;
+                    },
+                    tooltip: 'Provision instance using this image.',
+                    sequence: 1
+                },
+                {
                     label: 'Delete',
                     disabled: function (object) {
                         return false;
@@ -129,20 +143,6 @@
                         return !object.public;
                     },
                     tooltip: 'You will not be able to create any instances with this image after this.',
-                    sequence: 1
-                },
-                {
-                    label: 'Provision',
-                    disabled: function (object) {
-                        return false;
-                    },
-                    action: function (object) {
-                        $scope.provisionInstance(object);
-                    },
-                    show: function (object) {
-                        return true;
-                    },
-                    tooltip: 'Provision instance using this image.',
                     sequence: 2
                 }
             ];
