@@ -72,7 +72,7 @@
                     } else {
                         notification.replace('phone', { type: 'success' }, data.message);
                     }
-                })
+                });
             };
 
             $scope.verifyPin = function () {

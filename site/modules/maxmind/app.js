@@ -30,17 +30,17 @@ module.exports = function execute(scope, app) {
             message = serviceMessages.phoneIncorrect;
         }
         return message;
-    };
+    }
 
     function lockAccount(req, res, callback) {
         Metadata.set(req.session.userId, 'verificationStatus', 'Locked', callback);
-    };
+    }
 
     function skipVerification(req, res) {
         SignupProgress.setMinProgress(req, 'phone', function() {
             res.json({message: 'Phone verification successful', success: true, skip: true});
         });
-    };
+    }
 
     app.get('/call/:phone', function (req, res) {
         var code = Math.random().toString(10).substr(2,4);
@@ -62,7 +62,7 @@ module.exports = function execute(scope, app) {
                     req.session.maxmindRetries++;
                     res.json({message: serviceMessages.calling, success: true});
                 } else {
-                    if (data.indexOf('Insufficient') != -1) {
+                    if (data.indexOf('Insufficient') !== -1) {
                         req.session.maxmindServiceFails++;
                         res.json({message: serviceMessages.serviceFailed, success: false});
                         return;
