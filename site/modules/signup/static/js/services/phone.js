@@ -6,14 +6,35 @@
         '$q',
         function ($http) {
             var service = {};
-            service.getCountries = function () {
-                return $http.get('account/countryCodes');
+            var unavailableError = 'Service is unavailable';
+            service.getCountries = function (callback) {
+                return $http.get('account/countryCodes').success(function (countries) {
+                    callback(null, countries);
+                }).error(function (err) {
+                    callback(err || unavailableError);
+                });
             };
-            service.makeCall = function(phone) {
-                return $http.get('/signup/signup/maxmind/call/%2B' + phone);
+            service.makeCall = function(phone, callback) {
+                return $http.get('maxmind/call/%2B' + phone).success(function (resultObj) {
+                    if (resultObj.success) {
+                        callback(null, resultObj);
+                    } else {
+                        callback(resultObj.message);
+                    }
+                }).error(function (err) {
+                    callback(err || unavailableError);
+                });
             };
-            service.verify = function (pin) {
-                return $http.get('/signup/signup/maxmind/verify/' + pin);
+            service.verify = function (pin, callback) {
+                return $http.get('maxmind/verify/' + pin).success(function (resultObj) {
+                    if (resultObj.success) {
+                        callback(null, resultObj);
+                    } else {
+                        callback(resultObj.message);
+                    }
+                }).error(function (err) {
+                    callback(err  || unavailableError);
+                });
             };
             return service;
         }]);

@@ -123,10 +123,7 @@
                                 )
                             );
 
-                            // FIXME: Bad, bad, bad
-                            $timeout(function () {
-                                $scope.updateKeys();
-                            }, 1000);
+                            $scope.updateKeys();
                         });
                     });
             };

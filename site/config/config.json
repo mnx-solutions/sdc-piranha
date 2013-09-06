@@ -80,5 +80,8 @@
         "username":"",
         "password":"",
         "url":""
+    },
+    "maxmind": {
+        "licenseId": "bQg6oKXwLfWj"
     }
 }

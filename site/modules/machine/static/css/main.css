@@ -250,3 +250,33 @@
 .export-csv-button {
     float:right;
 }
+
+.key {
+    border-bottom:1px solid #ddd;
+    color:#888;
+    margin-left:0px;
+}
+
+.value {
+    text-align: left !important;
+    border-bottom: 1px solid #ddd;
+    min-width: 300px;
+}
+
+.key.error, .value.error {
+    border-bottom: 1px solid #b94a48;
+    color: #b94a48;
+}
+
+.key, .value {
+    padding: 3px 0px 3px 0px;
+    float: left;
+}
+
+.tag.editable input {
+    width: 85%;
+}
+
+.tag.editable .key, .tag.editable .value {
+    border-bottom: none;
+}
