@@ -6,13 +6,13 @@
         ['$scope', 'requestContext', '$location', '$cookies',
             function ($scope, requestContext, $location, $cookies) {
                 requestContext.setUpRenderContext('signup', $scope);
-				
-				$scope.stepNames = {
-					tropo:"Phone confirmation",
-					billing:"Payment Method",
-					ssh:"SSH Key"
-				};
-				$scope.steps = ['billing','ssh'];
+                
+                $scope.stepNames = {
+                    phone: "Phone confirmation",
+                    billing:"Payment Method",
+                    ssh:"SSH Key"
+                };
+                $scope.steps = ['phone', 'billing', 'ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.campaignId = $cookies.campaignId;
@@ -57,10 +57,10 @@
                 $scope.nextStep();
 
                 $scope.signOut = function() {
-					var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
-					if(msg){
-						window.location = '/landing/forgetToken';
-					}
+                    var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
+                    if(msg){
+                        window.location = '/landing/forgetToken';
+                    }
                     return false;
                 };
             }
