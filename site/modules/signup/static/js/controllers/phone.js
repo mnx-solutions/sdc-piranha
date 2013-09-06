@@ -18,6 +18,7 @@
             $scope.selectedCountryCode = '1'; // default to USA
             $scope.phone = null;
 
+            //FIXME: Why the setAccount function wrapper here??
             $scope.setAccount = function() {
                 $q.when(Account.getAccount(true), function (account) {
                     $scope.account = account;
@@ -48,6 +49,7 @@
                 return selected || usa;
             };
 
+            //FIXME: What if you error? Shouldn't error handling be in the service?
             Phone.getCountries().success(function (data) {
                 $scope.countryCodes = data;
             });
@@ -58,6 +60,8 @@
 
             $scope.makeCall = function() {
                 $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
+
+                //FIXME: What if the request fails?
                 Phone.makeCall($scope.selectedCountryCode + $scope.account.phone).success(function (data) {
                     $scope.callInProgress = data.success;
                     if (!data.success) {

@@ -3,6 +3,11 @@
 var fs = require('fs');
 var mustache = require('mustache');
 var restify = require('restify');
+
+//FIXME: FIRST AND FOREMOST: Why isn't maxmind in a separate module ??
+
+
+//FIXME: Why is this not in the configuration
 var maxmindLicense = 'bQg6oKXwLfWj';
 var limits = {
     calls: 3,
@@ -17,6 +22,8 @@ var errorMessages = {
 
 module.exports = function execute(scope, app) {
     var SignupProgress = scope.api('SignupProgress');
+    //FIXME: You have copied this from TFA, there is no need to use an api approach if it is not used in other modules
+    // Just require the file
     var Metadata = scope.api('Metadata');
 
     app.get('/ssh-key-generator', function (req, res, next) {
@@ -34,7 +41,13 @@ module.exports = function execute(scope, app) {
         });
     });
 
+    //FIXME: We use function declaration method f.e 'function messageFilter(message)',
+    // that creates a function with a name and it is seen in the stack trace.
+    // Creating a function as 'var messageFilter = function (message)',
+    // creates an anonymous function which has no name in the stack trace.
+
     var messageFilter = function (message) {
+        // Always use !== or === instead of != or ==
         if (message.indexOf('PhoneNumber Parameter') != -1 || message.indexOf('Unable to parse phone number') != -1) {
             message = errorMessages.phoneIncorrect;
         }
@@ -59,7 +72,10 @@ module.exports = function execute(scope, app) {
         if (req.session.maxmindServiceFails >= limits.serviceFails) {
             skipVerification(req, res);
         } else if (req.session.maxmindRetries < limits.calls) {
+            //FIXME: Why create a new client every time? The same client could be used for all requests
             var client = restify.createStringClient({url: 'https://api.maxmind.com'});
+
+
             var encodedPhone = encodeURIComponent(req.params.phone);
             var url = '/app/telephone_http?l=' + maxmindLicense + '&phone=' + encodedPhone + '&verify_code=' + code;
             client.get(url, function(err, creq, cres, data) {
@@ -68,6 +84,8 @@ module.exports = function execute(scope, app) {
                     res.json({message: errorMessages.serviceFailed, success: false});
                     return;
                 }
+                //FIXME: You are expecting 'err' on start position, so search for === 0,
+                // something might change later on and the string occurs somewhere else as well messing up code
                 var isCalling = data.indexOf('err') == -1;
                 if (isCalling) {
                     req.session.maxmindRetries++;
@@ -93,6 +111,7 @@ module.exports = function execute(scope, app) {
         if (isVerified) {
             skipVerification(req, res);
         } else {
+            //FIXME: Why a separate variable and what if the limit goes over?
             var shouldLock = req.session.maxmindRetries == limits.calls;
             if (shouldLock) {
                 lockAccount(req, res, function () {
