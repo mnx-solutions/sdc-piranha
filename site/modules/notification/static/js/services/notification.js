@@ -184,6 +184,20 @@
             },
 
             /**
+             * Replace all notifications for the given context with new one
+             *
+             * @public
+             * @event notification:change
+             * @param ctx notification context
+             * @param opts notification options
+             * @param message notification message
+             */
+            replace: function (ctx, opts, message) {
+                this.dismiss(ctx);
+                this.push(ctx, opts, message);
+            },
+
+            /**
              * Dismiss notification at stack index
              *
              * @public

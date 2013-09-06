@@ -22,6 +22,8 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
 }
 
 module.exports = function execute(scope, register, callback) {
+    register('Metadata', require('./lib/metadata'));
+
     //Compatibility with old version
     var api = {};
     var steps = [ 'start', 'phone', 'billing','ssh' ];
