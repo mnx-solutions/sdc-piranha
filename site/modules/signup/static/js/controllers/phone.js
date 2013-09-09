@@ -8,21 +8,22 @@
             requestContext.setUpRenderContext('signup.phone', $scope);
             localization.bind('signup', $scope);
 
-            $scope.account = null;
-
-            $scope.callInProgress = false;
-
             $scope.pin = null;
 
             $scope.countryCodes = null;
-            $scope.selectedCountryCode = '1'; // default to USA
+            $scope.country = null;
             $scope.phone = null;
 
+            $scope.selectedCountryCode = '1';
+
+            $scope.verified = false;
+
             $q.when(Account.getAccount(true), function (account) {
-                $scope.account = account;
-                account.country = $scope.isoToObj(account.country);
-                if ($scope.account.phone) {
-                    $scope.phone = $scope.account.phone;
+                if (!$scope.phone) {
+                    $scope.phone = account.phone || '';
+                }
+                if (!$scope.country || $scope.country.iso3 === 'USA') {
+                    $scope.country = $scope.isoToObj(account.country);
                 }
             });
 
@@ -50,22 +51,24 @@
                     return;
                 }
                 $scope.countryCodes = countries;
+                $scope.country = $scope.isoToObj();
             });
 
-            $scope.$watch('account.country', function(newVal) {
+            $scope.$watch('country', function(newVal) {
                 $scope.selectedCountryCode = (newVal && newVal.areaCode) || '';
             });
 
             $scope.makeCall = function() {
-                $scope.account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
+                if (!$scope.selectedCountryCode) {
+                    return;
+                }
+                $scope.phone = $scope.phone.replace(new RegExp(/[^0-9#\*]/g), '');
 
-                Phone.makeCall($scope.selectedCountryCode + $scope.account.phone, function (err, data) {
+                Phone.makeCall($scope.selectedCountryCode + $scope.phone, function (err, data) {
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
-                        $scope.callInProgress = false;
                         return;
                     }
-                    $scope.callInProgress = true;
                     if (data.skip) {
                         notification.dismiss('phone');
                         $scope.nextStep();
@@ -76,18 +79,24 @@
             };
 
             $scope.verifyPin = function () {
+                if (!$scope.pin) {
+                    return;
+                }
                 Phone.verify($scope.pin, function (err, data) {
                     if (err) {
-                        $scope.callInProgress = false;
                         notification.replace('phone', { type: 'error' }, err);
                         return;
                     }
-                    Account.updateAccount({
-                        country: $scope.account.country.iso3,
-                        phone: $scope.account.phone
-                    }).then(function(newAcc) {
-                        $scope.nextStep();
-                    });
+                    if (!$scope.verified) {
+                        $scope.verified = true;
+                        Account.updateAccount({
+                            country: $scope.country.iso3,
+                            phone: $scope.phone
+                        }).then(function () {
+                            notification.dismiss('phone');
+                            $scope.nextStep();
+                        });
+                    }
                 });
             };
         }]);
