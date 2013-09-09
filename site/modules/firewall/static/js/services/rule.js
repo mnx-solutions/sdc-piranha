@@ -12,38 +12,161 @@
         function (serverTab, $rootScope, $q, localization, notification) {
 
             var service = {};
-            var rule = { job: null, index: {}, list: [], search: {} };
+            var rules = { job: null, index: {}, map: {}, list: [], search: {} };
+
+            service.createRule = function (rule) {
+                rule.uuid = window.uuid.v4();
+
+                // Store rule
+                rules.list.push(rule);
+                rules.index[rule.uuid] = rule;
+
+                function showError (err) {
+                    console.log('error');
+                    console.log(err);
+                    notification.push(rule.uuid, { type: 'error' },
+                        localization.translate(null,
+                            'firewall',
+                            'Unable to a create rule: {{error}}',
+                            {
+                                error: (err.message) ? '<br />' + err.message : ''
+                            }
+                        )
+                    );
+
+                    rules.list.splice(rules.list.indexOf(rule), 1);
+                    delete rules.index[rule.uuid];
+                }
+
+                // Create a new rule
+                var job = serverTab.call({
+                    name: 'RuleCreate',
+                    data: rule,
+                    done: function(err, job) {
+                        if (err) {
+                            showError(err);
+                            return;
+                        }
+
+                        var data = job.__read();
+                    },
+
+                    error: function(err, job) {
+                        if (err && Object.keys(err).length > 0) {
+                            showError(err);
+                            return;
+                        }
+                    }
+                });
+
+                rule.job = job.getTracker();
+                return job;
+            };
+
+            service.updateState = function (action) {
+                return function (rule) {
+                    function showError (err) {
+                        notification.push(rule.uuid, { type: 'error' },
+                            localization.translate(null,
+                                'firewall',
+                                'Unable to update rule: {{error}}',
+                                {
+                                    error: (err.message) ? '<br />' + err.message : ''
+                                }
+                            )
+                        );
+                    }
+
+                    // Create a new rule
+                    var job = serverTab.call({
+                        name: action || 'RuleUpdate',
+                        data: rule,
+                        done: function(err, job) {
+                            if (err) {
+                                showError(err);
+                                return;
+                            }
+
+                            var data = job.__read();
+                        },
+
+                        error: function(err, job) {
+                            if (err && Object.keys(err).length > 0) {
+                                showError(err);
+                                return;
+                            }
+                        }
+                    });
+
+                    rule.job = job.getTracker();
+                    return job;
+                }
+            };
+
+            service.updateRule = service.updateState('RuleUpdate');
+            service.deleteRule = service.updateState('RuleDelete');
+            service.enableRule = service.updateState('RuleEnable');
+            service.disableRule = service.updateState('RuleDisable');
+
+            service.rule = function (id) {
+                if (id === true || (!id && !rules.job)) {
+                    service.updateRules();
+                    return rules.list;
+                }
+
+                if (!id) {
+                    return rules.list;
+                }
+
+                if (!rules.index[id]) {
+                    service.updateRules();
+                }
+
+                if (!rules.index[id] || (rules.job && !rules.job.finished)) {
+                    if (!rules.search[id]) {
+                        rules.search[id] = $q.defer();
+                    }
+
+                    return rules.search[id].promise;
+                }
+
+                return rules.index[id];
+            };
 
             service.updateRules = function () {
-                console.log('updateRules');
-                if (!rule.job || rule.job.finished) {
-                    rule.list.final = false;
-                    rule.job = serverTab.call({
+                if (!rules.job || rules.job.finished) {
+                    rules.list.final = false;
+                    rules.job = serverTab.call({
                         name: 'RuleList',
                         progress: function (err, job) {
                             var data = job.__read();
+                            var name = data.hasOwnProperty('name') ? data.name : null;
 
                             function handleChunk (rule) {
-                                /*
                                 var old = null;
 
-                                if (rule.index[machine.id]) {
-                                    old = rule.list.indexOf(rule.index[machine.id]);
+                                if (rules.index[rule.id]) {
+                                    old = rules.list.indexOf(rules.index[rule.id]);
                                 }
 
-                                rule.index[machine.id] = machine;
+                                rules.index[rule.id] = rule;
 
-                                if (rule.search[machine.id]) {
-                                    rule.search[machine.id].resolve(machine);
-                                    delete rule.search[machine.id];
+                                if (rules.search[rule.id]) {
+                                    rules.search[rule.id].resolve(rule);
+                                    delete rules.search[rule.id];
                                 }
 
                                 if (old === null) {
-                                    rule.list.push(machine);
+                                    rules.list.push(rules);
                                 } else {
-                                    rule.list[old] = machine;
+                                    rules.list[old] = rule;
                                 }
-                                */
+
+                                if (!rules.map[name]) {
+                                    rules.map[name] = [];
+                                }
+
+                                rules.map[name].push(rule);
                             }
 
                             function handleResponse(chunk) {
@@ -71,16 +194,33 @@
                         },
 
                         done: function(err, job) {
-                            console.log(arguments);
-                            rule.list.final = true;
+                            rules.list.final = true;
                         }
                     });
                 }
 
-                return rule.job;
+                return rules.job;
             };
 
-            service.updateRules();
+            if (!rules.job) {
+                service.updateRules();
+
+                /*
+                var rule = {
+                    datacenter: 'us-beta-4',
+                    enabled: true,
+                    rule: 'FROM any TO any ALLOW tcp PORT 80',
+                    parsed: {
+                        from: [ [ 'wildcard', 'any' ] ],
+                        to: [ [ 'wildcard', 'any' ] ],
+                        action: 'allow',
+                        protocol: { name: 'tcp', targets: [ 80 ] }
+                    }
+                };
+
+                service.createRule(rule);
+                */
+            }
 
             return service;
         }]);

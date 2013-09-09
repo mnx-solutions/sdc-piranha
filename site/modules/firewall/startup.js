@@ -64,15 +64,46 @@ module.exports = function execute (scope) {
     server.onCall('RuleCreate', {
         verify: function (data) {
             return typeof data === 'object' &&
+                data.hasOwnProperty('datacenter') &&
                 data.hasOwnProperty('enabled') &&
-                data.hasOwnProperty('rule');
+                data.hasOwnProperty('parsed');
         },
 
         handler: function (call) {
             call.log.info('Create firewall rule');
-            call.cloud.createFwRule({
+            var cloud = call.cloud.separate(call.data.datacenter);
+
+            cloud.createFwRule({
                 enabled: call.data.enabled,
-                rule: call.data.rule
+                rule: fwrule.create(call.data).text()
+            }, function (err, rules) {
+                console.log(arguments);
+                if (err) {
+                    call.log.error(err);
+                    call.done(null, err);
+                } else {
+                    call.done(rules);
+                }
+            });
+        }
+    });
+
+    server.onCall('RuleUpdate', {
+        verify: function (data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('uuid') &&
+                data.hasOwnProperty('datacenter') &&
+                data.hasOwnProperty('enabled') &&
+                data.hasOwnProperty('parsed');
+        },
+
+        handler: function (call) {
+            call.log.info('Update firewall rule ' + call.data.uuid);
+            var cloud = call.cloud.separate(call.data.datacenter);
+
+            cloud.updateFwRule(call.data.uuid, {
+                enabled: call.data.enabled,
+                rule: fwrule.create(call.data).text()
             }, function (err, rules) {
                 if (err) {
                     call.log.error(err);
@@ -87,14 +118,16 @@ module.exports = function execute (scope) {
     server.onCall('RuleDelete', {
         verify: function (data) {
             return typeof data === 'object' &&
-                data.hasOwnProperty('ruleId');
+                data.hasOwnProperty('datacenter') &&
+                data.hasOwnProperty('uuid');
         },
 
         handler: function (call) {
-            var ruleId = call.data.ruleId;
+            var uuid = call.data.uuid;
+            var cloud = call.cloud.separate(call.data.datacenter);
 
-            call.log.info('Disable firewall rule ' + ruleId);
-            call.cloud.deleteFwRule(ruleId, function (err, rules) {
+            call.log.info('Disable firewall rule ' + uuid);
+            cloud.deleteFwRule(uuid, function (err, rules) {
                 if (err) {
                     call.log.error(err);
                     call.done(null, err);
@@ -108,14 +141,16 @@ module.exports = function execute (scope) {
     server.onCall('RuleEnable', {
         verify: function (data) {
             return typeof data === 'object' &&
-                data.hasOwnProperty('ruleId');
+                data.hasOwnProperty('datacenter') &&
+                data.hasOwnProperty('uuid');
         },
 
         handler: function (call) {
-            var ruleId = call.data.ruleId;
+            var uuid = call.data.uuid;
+            var cloud = call.cloud.separate(call.data.datacenter);
 
-            call.log.info('Enable firewall rule ' + ruleId);
-            call.cloud.enableFwRule(ruleId, function (err, rules) {
+            call.log.info('Enable firewall rule ' + uuid);
+            cloud.enableFwRule(uuid, function (err, rules) {
                 if (err) {
                     call.log.error(err);
                     call.done(null, err);
@@ -129,14 +164,16 @@ module.exports = function execute (scope) {
     server.onCall('RuleDisable', {
         verify: function (data) {
             return typeof data === 'object' &&
-                data.hasOwnProperty('ruleId');
+                data.hasOwnProperty('datacenter') &&
+                data.hasOwnProperty('uuid');
         },
 
         handler: function (call) {
-            var ruleId = call.data.ruleId;
+            var uuid = call.data.uuid;
+            var cloud = call.cloud.separate(call.data.datacenter);
 
-            call.log.info('Disable firewall rule ' + ruleId);
-            call.cloud.disableFwRule(ruleId, function (err, rules) {
+            call.log.info('Disable firewall rule ' + uuid);
+            cloud.disableFwRule(uuid, function (err, rules) {
                 if (err) {
                     call.log.error(err);
                     call.done(null, err);
@@ -161,13 +198,14 @@ module.exports = function execute (scope) {
             cloud.listFwRules(function (err, rules) {
                 var response = {
                     name: name,
-                    status: 'pending',
                     rules: []
                 };
 
                 // Serialize rules
                 rules.forEach(function (rule) {
-                    rule.serialized = fwrule.parse(rule.rule);
+                    rule.datacenter = name;
+                    rule.parsed = fwrule.parse(rule.rule);
+                    rule.uuid = rule.id;
                 });
 
                 if (err) {
