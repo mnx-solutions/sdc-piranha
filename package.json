@@ -28,7 +28,6 @@
     "moment": "*",
     "xml2js": "*",
     "mustache": "*",
-    "tropo-webapi-node": "*",
     "restify": "*",
     "speakeasy": "*",
     "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea"

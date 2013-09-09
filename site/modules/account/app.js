@@ -23,43 +23,6 @@ module.exports = function execute(scope, app, callback) {
 
     var SignupProgress = scope.api('SignupProgress');
 
-    /**
-     * @ngdoc method
-     * @name account.function:api#/tropo/tropoid
-     * @methodOf account.service:api
-     *
-     * @param {String} tropoid Tropo id
-     *
-     * @description
-     * Get tropo id
-     *
-     */
-    app.get('/tropo/:tropoid/:uuid', function(req, res) {
-        // set no-cache headers for IE 10 fix
-        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-
-        redisClient.get(req.params.tropoid, function(err, status) {
-            if(status === 'passed') {
-                SignupProgress.setMinProgress(req, 'tropo', function () {
-                    redisClient.get(req.params.uuid +'_tropo', function(err, result) {
-                        res.json({sessionId: req.params.tropoid, status: status, retries: result});
-                    });
-                });
-                return;
-            }
-
-            redisClient.get(req.params.uuid +'_tropo', function(err, result) {
-                res.json({sessionId: req.params.tropoid, status: status, retries: result});
-            });
-        });
-    });
-
-    app.get('/tropoRetries/:uuid', function(req, res) {
-        redisClient.get(req.params.uuid +'_tropo', function(err, result) {
-            res.json({retries: result});
-        });
-    });
-
     app.get('/countryCodes',function(req, res) {
         var data = countryCodes.getArray(config.zuora.api.validation.countries);
         data.forEach(function (el) {

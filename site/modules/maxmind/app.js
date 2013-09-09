@@ -33,12 +33,15 @@ module.exports = function execute(scope, app) {
     }
 
     function lockAccount(req, res, callback) {
+        scope.log.warn('User account is locked', {userId: req.session.userId});
         Metadata.set(req.session.userId, 'verificationStatus', 'Locked', callback);
     }
 
     function skipVerification(req, res) {
+        var message = 'Phone verification successful';
+        scope.log.info(message, {userId: req.session.userId});
         SignupProgress.setMinProgress(req, 'phone', function() {
-            res.json({message: 'Phone verification successful', success: true, skip: true});
+            res.json({message: message, success: true, skip: true});
         });
     }
 
@@ -48,6 +51,7 @@ module.exports = function execute(scope, app) {
         req.session.maxmindRetries = req.session.maxmindRetries || 0;
         req.session.maxmindServiceFails = req.session.maxmindServiceFails || 0;
         if (req.session.maxmindServiceFails >= limits.serviceFails) {
+            scope.log.error('Maxmind phone verification service cannot be reached after 3 attempts', {userId: req.session.userId});
             skipVerification(req, res);
         } else if (req.session.maxmindRetries < limits.calls) {
             var encodedPhone = encodeURIComponent(req.params.phone);
@@ -58,6 +62,7 @@ module.exports = function execute(scope, app) {
                     res.json({message: serviceMessages.serviceFailed, success: false});
                     return;
                 }
+                scope.log.info('Calling user phone', {userId: req.session.userId, phone: req.params.phone});
                 if (data.indexOf('err') !== 0) {
                     req.session.maxmindRetries++;
                     res.json({message: serviceMessages.calling, success: true});
@@ -68,6 +73,7 @@ module.exports = function execute(scope, app) {
                         return;
                     }
                     var errorMessage = messageFilter(data.substring(4)); // Skip 'err='
+                    scope.log.info('Phone verification error', {error: errorMessage, phone: req.params.phone});
                     res.json({message: errorMessage, success: false});
                 }
             });
@@ -87,6 +93,8 @@ module.exports = function execute(scope, app) {
                     res.json({message: serviceMessages.wrongPinLocked, success: false});
                 });
             } else {
+                scope.log.info('User entered wrong pin', {userId: req.session.userId,
+                    generatedPin: req.session.maxmindCode, enteredPin: req.params.code});
                 res.json({message: serviceMessages.wrongPin, success: false});
             }
         }

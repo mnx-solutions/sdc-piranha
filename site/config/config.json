@@ -19,9 +19,6 @@
         "signupDB": 5,
         "password": ""
     },
-    "tropo": {
-      "token": ""
-    },
     "assets":{
         "js": {
             "concat": ["use-strict-rm"],
