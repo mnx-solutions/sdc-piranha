@@ -8,7 +8,6 @@ module.exports = function execute (scope) {
 
     server.onCall('MachineFirewallEnable', {
         verify: function (data) {
-            console.log(data);
             return data && data.hasOwnProperty('machineId');
         },
 
@@ -54,9 +53,9 @@ module.exports = function execute (scope) {
         call.cloud.listMachineRules(machineId, function (err, rules) {
             if (err) {
                 call.log.error(err);
-                call.done(null, err);
+                call.done(err);
             } else {
-                call.done(rules);
+                call.done(null, rules);
             }
         });
     });
@@ -80,9 +79,9 @@ module.exports = function execute (scope) {
                 console.log(arguments);
                 if (err) {
                     call.log.error(err);
-                    call.done(null, err);
+                    call.done(err);
                 } else {
-                    call.done(rules);
+                    call.done(null, rules);
                 }
             });
         }
@@ -107,9 +106,9 @@ module.exports = function execute (scope) {
             }, function (err, rules) {
                 if (err) {
                     call.log.error(err);
-                    call.done(null, err);
+                    call.done(err);
                 } else {
-                    call.done(rules);
+                    call.done(null, rules);
                 }
             });
         }
@@ -130,9 +129,9 @@ module.exports = function execute (scope) {
             cloud.deleteFwRule(uuid, function (err, rules) {
                 if (err) {
                     call.log.error(err);
-                    call.done(null, err);
+                    call.done(err);
                 } else {
-                    call.done(rules);
+                    call.done(null, rules);
                 }
             });
         }
@@ -153,9 +152,9 @@ module.exports = function execute (scope) {
             cloud.enableFwRule(uuid, function (err, rules) {
                 if (err) {
                     call.log.error(err);
-                    call.done(null, err);
+                    call.done(err);
                 } else {
-                    call.done(rules);
+                    call.done(err, rules);
                 }
             });
         }
@@ -176,9 +175,9 @@ module.exports = function execute (scope) {
             cloud.disableFwRule(uuid, function (err, rules) {
                 if (err) {
                     call.log.error(err);
-                    call.done(null, err);
+                    call.done(err);
                 } else {
-                    call.done(rules);
+                    call.done(null, rules);
                 }
             });
         }
