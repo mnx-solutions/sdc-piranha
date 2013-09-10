@@ -144,29 +144,39 @@
                         </span>
                     </div>
 
-                    <div class="tag editable muted" data-ng-show="o.edit">
+                    <div class="tag editable" data-ng-show="o.edit">
                         <div data-ng-class="{error: o.conflict}" class="tag row-fluid">
                             <span class="key span5">
-                                <input type="text"
-                                       placeholder="Key"
-                                       data-translate="placeholder"
-                                       data-ng-model="o.key"
-                                       data-ng-required="key != tagnr"
-                                       data-ng-disabled="tagsave">
+                                <span class="span3 tag-label">
+                                    <label>Key <span class="required-asterix">*</span></label>
+                                </span>
+                                <span class="span9">
+                                    <input type="text"
+                                           placeholder="Key"
+                                           data-translate="placeholder"
+                                           data-ng-model="o.key"
+                                           data-ng-required="key != tagnr"
+                                           data-ng-disabled="tagsave">
+                                </span>
                             </span>
 
                             <span class="value span5">
-                                <input type="text"
-                                       placeholder="Value"
-                                       data-translate="placeholder"
-                                       data-ng-model="o.val"
-                                       data-ng-required="key != tagnr"
-                                       data-ng-disabled="tagsave">
+                                <span class="span3 tag-label">
+                                    <label>Value <span class="required-asterix">*</span></label>
+                                </span>
+                                <span class="span9">
+                                    <input type="text"
+                                           placeholder="Value"
+                                           data-translate="placeholder"
+                                           data-ng-model="o.val"
+                                           data-ng-required="key != tagnr"
+                                           data-ng-disabled="tagsave">
 
-                                                            <span class="icon-trash pull-right delete"
-                                                                  data-ng-click="removeTag(key)"
-                                                                  data-ng-show="key != tagnr && !tagsave">
-                            </span>
+                                                                <span class="icon-trash pull-right delete"
+                                                                      data-ng-click="removeTag(key)"
+                                                                      data-ng-show="key != tagnr && !tagsave">
+                                                                </span>
+                                </span>
                             </span>
                         </div>
                         <!-- <div class="clearfix"></div> -->
