@@ -156,7 +156,7 @@
             $scope.reconfigure = function () {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
-                //$scope.selectedDataset = null;
+                $scope.selectedDataset = null;
                 $scope.selectedPackage = null;
                 $scope.selectedPackageInfo = null;
                 $scope.packageType = null;
