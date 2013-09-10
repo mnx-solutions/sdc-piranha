@@ -30,7 +30,7 @@
 	                </div>
 
 	                <div class="pagination pagination-small pagination-centered">
-	                    <ul>
+	                    <ul data-ng-show="range()[1]">
 	                        <li data-ng-class="{disabled: currentPage == 0}">
 	                            <a href ng-click="prevPage()" data-translate>« Prev</a>
 	                        </li>
@@ -58,7 +58,8 @@
                                 data-toggle="tooltip"
                                 data-placement="right"
                                 data-html="true"
-                                data-original-title="Export machine list in .csv">Export .csv</button>
+                                data-original-title="Export machine list in .csv"
+                                style="margin-bottom: 20px">Export .csv</button>
                         <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
 	                </div>
 				</div>
