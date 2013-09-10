@@ -194,6 +194,7 @@ module.exports = function execute (scope) {
         keys.forEach(function (name) {
             var cloud = call.cloud.separate(name);
             call.log.debug('List rules for datacenter %s', name);
+
             cloud.listFwRules(function (err, rules) {
                 var response = {
                     name: name,

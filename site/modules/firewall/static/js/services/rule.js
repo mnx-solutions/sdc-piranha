@@ -6,10 +6,11 @@
         'serverTab',
         '$rootScope',
         '$q',
+        '$timeout',
         'localization',
         'notification',
 
-        function (serverTab, $rootScope, $q, localization, notification) {
+        function (serverTab, $rootScope, $q, $timeout, localization, notification) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
@@ -60,7 +61,7 @@
                 });
 
                 rule.job = job.getTracker();
-                return job;
+                return job.deferred;
             };
 
             service.updateState = function (action) {
@@ -99,7 +100,7 @@
                     });
 
                     rule.job = job.getTracker();
-                    return job;
+                    return job.deferred;
                 }
             };
 
@@ -109,28 +110,64 @@
             service.disableRule = service.updateState('RuleDisable');
 
             service.rule = function (id) {
-                if (id === true || (!id && !rules.job)) {
-                    service.updateRules();
-                    return rules.list;
-                }
+                var deferred = $q.defer();
 
-                if (!id) {
-                    return rules.list;
-                }
+                $timeout(function () {
+                    // Map
+                    if (!id) {
+                        if (!rules.job) {
+                            service.updateRules().then(function () {
+                                deferred.resolve(rules.map);
+                            }, function (err) {
+                                deferred.reject(err);
+                            });
+                        }
 
-                if (!rules.index[id]) {
-                    service.updateRules();
-                }
-
-                if (!rules.index[id] || (rules.job && !rules.job.finished)) {
-                    if (!rules.search[id]) {
-                        rules.search[id] = $q.defer();
+                        if (rules.job && !rules.job.finished) {
+                            rules.job.deferred.then(function () {
+                                deferred.resolve(rules.map);
+                            }, function (err) {
+                                deferred.reject(err);
+                            });
+                        } else if (rules.job && rules.job.finished) {
+                           deferred.resolve(rules.map);
+                        }
                     }
 
-                    return rules.search[id].promise;
-                }
+                    // Rule
+                    if (!rules.index[id]) {
+                        if (!rules.job) {
+                            service.updateRules();
+                        }
 
-                return rules.index[id];
+                        if (rules.job && !rules.job.finished) {
+                            if (!rules.search[id]) {
+                                rules.search[id] = $q.defer();
+                            }
+
+                            // Reject/resolve search promise automatically (10s)
+                            var resolver = $timeout(function () {
+                                deferred.reject(new Error('Rule not found'));
+                                $timeout.cancel(resolver);
+                            }, 10000);
+
+                            // Wrap promise handler
+                            rules.search[id].promise.then(function () {
+                                deferred.resolve(rules.index[id]);
+                                $timeout.cancel(resolver);
+                            }, function (err) {
+                                deferred.reject(err);
+                                $timeout.cancel(resolver);
+                            });
+                        } else {
+                            deferred.reject(new Error('Rule not found'));
+                        }
+                    } else {
+                        deferred.resolve(rules.index[id]);
+                    }
+                }, 0);
+
+                return deferred.promise;
             };
 
             service.updateRules = function () {
@@ -140,9 +177,8 @@
                         name: 'RuleList',
                         progress: function (err, job) {
                             var data = job.__read();
-                            var name = data.hasOwnProperty('name') ? data.name : null;
 
-                            function handleChunk (rule) {
+                            function handleChunk (name, rule) {
                                 var old = null;
 
                                 if (rules.index[rule.id]) {
@@ -157,7 +193,7 @@
                                 }
 
                                 if (old === null) {
-                                    rules.list.push(rules);
+                                    rules.list.push(rule);
                                 } else {
                                     rules.list[old] = rule;
                                 }
@@ -182,7 +218,9 @@
                                 }
 
                                 if (chunk.rules) {
-                                    chunk.rules.forEach(handleChunk);
+                                    chunk.rules.forEach(function (rule) {
+                                        handleChunk(chunk.name, rule);
+                                    });
                                 }
                             }
 
@@ -199,27 +237,11 @@
                     });
                 }
 
-                return rules.job;
+                return rules.job.deferred;
             };
 
             if (!rules.job) {
                 service.updateRules();
-
-                /*
-                var rule = {
-                    datacenter: 'us-beta-4',
-                    enabled: true,
-                    rule: 'FROM any TO any ALLOW tcp PORT 80',
-                    parsed: {
-                        from: [ [ 'wildcard', 'any' ] ],
-                        to: [ [ 'wildcard', 'any' ] ],
-                        action: 'allow',
-                        protocol: { name: 'tcp', targets: [ 80 ] }
-                    }
-                };
-
-                service.createRule(rule);
-                */
             }
 
             return service;
