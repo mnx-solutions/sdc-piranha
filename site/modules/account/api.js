@@ -21,7 +21,7 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
     });
 }
 
-module.exports = function execute(scope, register, callback) {
+module.exports = function execute(scope, register) {
     register('Metadata', require('./lib/metadata'));
 
     //Compatibility with old version
@@ -197,5 +197,4 @@ module.exports = function execute(scope, register, callback) {
     };
 
     register('SignupProgress', api);
-    setImmediate(callback);
 };
