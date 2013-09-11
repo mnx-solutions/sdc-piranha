@@ -1,0 +1,152 @@
+<div class="container-fluid" data-ng-controller="Firewall.IndexController">
+    <div class="container">
+        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter as datacenter for (datacenter, rules) in rulesByDatacenter"></select>
+        <h1 class="pull-left">Firewall rules for {{datacenter}}</h1>
+        <div class="clearfix"></div>
+
+        <div class="item header row-fluid">
+            <span class="span4 text-medium sortable"
+                  data-ng-click="sortBy('label')"
+                  data-ng-switch on="sortIcon.from">
+                <span class="pull-left" data-translate>From</span>
+                <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+            </span>
+
+
+            <span class="span4 text-medium sortable"
+                  data-ng-click="sortBy('datacenter')"
+                  data-ng-switch on="sortIcon.to">
+                <span class="pull-left" data-translate>To</span>
+                <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+            </span>
+
+            <span class="span1 text-medium sortable"
+                  data-ng-click="sortBy('created')"
+                  data-ng-switch on="sortIcon.action">
+                <span class="pull-left" data-translate>Action</span>
+                <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+            </span>
+
+            <span class="span1 text-medium" data-translate>Protocol</span>
+
+            <span class="span1 text-medium pull-right sortable state-sortable-header"
+                  data-ng-click="sortBy('state')"
+                  data-ng-switch on="sortIcon.status">
+                <span class="pull-left" data-translate>Status</span>
+                <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+            </span>
+        </div>
+
+
+        <div data-ng-repeat="rule in rules" class="item row-fluid">
+            <span class="span4 text-medium">
+                <span data-ng-show="rule.from.length">
+                    <span data-ng-repeat="from in rule.from">{{from|targetInfo}}<br/></span>
+                </span>
+            </span>
+            <span class="span4 text-medium">
+                <span data-ng-show="rule.to.length">
+                    <span data-ng-repeat="to in rule.to">{{to[0]}}: {{to[1]}}<br/></span>
+                </span>
+            </span>
+            <span class="span1 text-medium">{{rule.action}}</span>
+            <span class="span1 text-medium">
+                {{rule.protocol.name}} <br/>
+                targets: <br/><span data-ng-repeat="target in rule.protocol.targets">{{target}}<br/></span>
+            </span>
+            <span class="span1 text-medium pull-right">{{rule.status}}</span>
+        </div>
+
+        <div>
+            <h3>Create New Rule</h3>
+            <div class="item header row-fluid">
+                <span class="span4 text-medium">
+                    <span class="pull-left" data-translate>From</span>
+                </span>
+
+                <span class="span4 text-medium">
+                    <span class="pull-left" data-translate>To</span>
+                </span>
+
+                <span class="span2 text-medium">
+                    <span class="pull-left" data-translate>Action</span>
+                </span>
+
+                <span class="span2 text-medium" data-translate>Protocol</span>
+
+                <span class="span1 text-medium pull-right">
+                    <span class="pull-left" data-translate>Status</span>
+                </span>
+            </div>
+
+            <div data-ng-model="data" class="item row-fluid">
+                <span class="span4 text-medium">
+                    <span data-ng-show="data.from.length">
+                        <span data-ng-repeat="from in data.from">
+                            {{from|targetInfo}} <span data-ng-hide="from[0] == 'wildcard'" data-ng-click="removeFrom($index)">[ x ]</span>
+                            <br/>
+                        </span>
+                    </span>
+                    <select data-ng-model="current.fromType" data-ng-options="target.value as target.title for (key, target) in targetTypes"></select><br/>
+                    <span data-ng-switch="current.fromType">
+                        <span data-ng-switch-when="wildcard">
+                            <span data-ng-click="addAnyFrom()">USE ANY</span>
+                        </span>
+                        <span data-ng-switch-when="tag">
+                            <span>Tag name: </span><input data-ng-model="current.from" /><br/>
+                            <span data-ng-show="current.from">Tag value (optional): <input data-ng-model="current.fromTagValue" /></span>
+                            <span data-ng-click="addFrom()">ADD</span>
+                        </span>
+                        <span data-ng-switch-default>
+                            {{current.fromType}}: <input data-ng-model="current.from" /><br/>
+                            <span data-ng-click="addFrom()">ADD</span>
+                        </span>
+
+                    </span>
+                </span>
+                <span class="span4 text-medium">
+                    <span data-ng-show="data.to.length">
+                        <span data-ng-repeat="to in data.to">
+                            {{to|targetInfo}} <span data-ng-hide="to[0] == 'wildcard'" data-ng-click="removeTo($index)">[ x ]</span>
+                            <br/>
+                        </span>
+                    </span>
+                    <select data-ng-model="current.toType" data-ng-options="target.value as target.title for (key, target) in targetTypes"></select><br/>
+                    <span data-ng-switch="current.toType">
+                        <span data-ng-switch-when="wildcard">
+                            <span data-ng-click="addAnyTo()">USE ANY</span>
+                        </span>
+                        <span data-ng-switch-when="tag">
+                            <span>Tag name: </span><input data-ng-model="current.to" /><br/>
+                            <span data-ng-show="current.to">Tag value (optional): <input data-ng-model="current.toTagValue" /></span>
+                            <span data-ng-click="addTo()">ADD</span>
+                        </span>
+                        <span data-ng-switch-default>
+                            {{current.toType}}: <input data-ng-model="current.to" /><br/>
+                            <span data-ng-click="addTo()">ADD</span>
+                        </span>
+
+                    </span>
+                </span>
+                <span class="span2 text-medium"><select style="width:70px;" data-ng-model="data.action" data-ng-options="action.value as action.title for (key, action) in actions"></select></span>
+                <span class="span2 text-medium">
+                    <select style="width:70px;" data-ng-model="data.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/>
+                    <span data-ng-show="data.protocol.name && data.protocol.name != 'icmp'">
+                        ports: <br/><span data-ng-repeat="target in data.protocol.targets">{{target}}<br/></span>
+                        <input data-ng-model="currentPort" /><br/>
+                        <span data-ng-click="addPort()">ADD</span>
+                    </span>
+                </span>
+                <span class="span1 text-medium pull-right">
+                    <select style="width:70px;" data-ng-model="data.status" data-ng-options="status.value as status.title for (key, status) in states"></select>
+                </span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
