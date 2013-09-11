@@ -75,17 +75,28 @@ module.exports = function execute (scope) {
             cloud.createFwRule({
                 enabled: call.data.enabled,
                 rule: fwrule.create(call.data).text()
-            }, function (err, rules) {
+            }, function (err, rule) {
                 if (err) {
-                    setInterval(function () {
-                        cloud.getFwRule(call.data.parsed.uuid, function () {
-                           console.log(arguments);
-                        });
-                    }, 100);
                     call.log.error(err);
                     call.done(err);
                 } else {
-                    call.done(null, rules);
+                    // Poll for rule
+                    var poll = setInterval(function () {
+                        cloud.getFwRule(rule.id, function (err, rule) {
+                            if (!err) {
+                                call.done(null, rule);
+                                clearInterval(poll);
+                            }
+                        });
+                    }, 500);
+
+                    // When timeout reached
+                    setTimeout(function () {
+                        var err = new Error('Rule not created');
+                        call.log.error(err);
+                        call.done(err);
+                        clearInterval(poll);
+                    }, 10000);
                 }
             });
         }
@@ -222,7 +233,6 @@ module.exports = function execute (scope) {
                     call.log.debug('List rules succeeded for datacenter %s', name);
                 }
 
-                console.log('PROGrESS!!!!');
                 call.update(null, response);
 
                 if (--count === 0) {

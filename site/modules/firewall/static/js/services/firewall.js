@@ -71,7 +71,7 @@
                 }
             };
 
-            service.disable('a8c79f9a-176d-4ce3-8d09-013df04fca60');
+            //service.disable('a8c79f9a-176d-4ce3-8d09-013df04fca60');
 
             return service;
         }]);

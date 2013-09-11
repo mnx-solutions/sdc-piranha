@@ -196,7 +196,7 @@
                                 if (!rules.map[name]) {
                                     rules.map[name] = [];
                                 }
-                                
+
                                 if (old === null) {
                                     rules.list.push(rule);
                                     rules.map[name].push(rule);
@@ -242,26 +242,20 @@
 
             if (!rules.job) {
                 service.updateRules();
-                service.rule().then(function (data) {
-                    console.log(data);
-                    //console.log('COUNT: ' + data[0].rules.length);
-                });
 
-                /*
                 var rule = {
                     datacenter: 'us-beta-4',
                     enabled: true,
                     rule: 'FROM any TO any ALLOW tcp PORT 80',
                     parsed: {
-                        from: [ [ 'wildcard', 'any' ] ],
-                        to: [ [ 'wildcard', 'any' ] ],
+                        from: [ [ 'any', 'e5bf6641-4d5e-4ec8-a062-8b4ee4bc7410' ] ],
+                        to: [ [ 'any', 'c800fdb2-6519-4f57-862e-ed06e2cb6a02' ] ],
                         action: 'allow',
                         protocol: { name: 'tcp', targets: [ 80 ] }
                     }
                 };
 
                 service.createRule(rule);
-                */
             }
 
             return service;
