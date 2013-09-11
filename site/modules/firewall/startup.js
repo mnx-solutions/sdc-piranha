@@ -70,8 +70,8 @@ module.exports = function execute (scope) {
 
         handler: function (call) {
             call.log.info('Create firewall rule');
-            var cloud = call.cloud.separate(call.data.datacenter);
 
+            var cloud = call.cloud.separate(call.data.datacenter);
             cloud.createFwRule({
                 enabled: call.data.enabled,
                 rule: fwrule.create(call.data).text()
@@ -81,17 +81,21 @@ module.exports = function execute (scope) {
                     call.done(err);
                 } else {
                     // Poll for rule
+                    var timeout = null;
                     var poll = setInterval(function () {
+                        call.log.info('Polling firewall rule');
+
                         cloud.getFwRule(rule.id, function (err, rule) {
                             if (!err) {
                                 call.done(null, rule);
                                 clearInterval(poll);
+                                clearTimeout(timeout);
                             }
                         });
                     }, 500);
 
                     // When timeout reached
-                    setTimeout(function () {
+                    timeout = setTimeout(function () {
                         var err = new Error('Rule not created');
                         call.log.error(err);
                         call.done(err);
