@@ -7,6 +7,7 @@
       "level": "debug"
     },
     "cloudapi": {
+        "DCCallTimeout": 5000
     },
     "localization": {
         "defaultLocale": "en",
