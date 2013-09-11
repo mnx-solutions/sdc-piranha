@@ -53,7 +53,7 @@
                     },
 
                     error: function(err, job) {
-                        if (err && Object.keys(err).length > 0) {
+                        if (err) {
                             showError(err);
                             return;
                         }
@@ -92,7 +92,7 @@
                         },
 
                         error: function(err, job) {
-                            if (err && Object.keys(err).length > 0) {
+                            if (err) {
                                 showError(err);
                                 return;
                             }
