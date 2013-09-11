@@ -243,6 +243,7 @@
             if (!rules.job) {
                 service.updateRules();
 
+                /*
                 var rule = {
                     datacenter: 'us-beta-4',
                     enabled: true,
@@ -256,6 +257,7 @@
                 };
 
                 service.createRule(rule);
+                */
             }
 
             return service;
