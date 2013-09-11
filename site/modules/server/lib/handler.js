@@ -29,11 +29,15 @@ Handler.prototype.verify = function (data) {
 Handler.prototype.call = function (context) {
     var self = this;
 
-    if(self._timeout) {
+    if (self._timeout) {
         context.timeout(self._timeout);
     }
 
-    this._handler(context);
+    try {
+        this._handler(context);
+    } catch (err) {
+        context.error(err);
+    }
 };
 
 module.exports = Handler;
