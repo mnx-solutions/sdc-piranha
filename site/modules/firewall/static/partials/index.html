@@ -58,11 +58,11 @@
             </span>
             <span class="span1 text-medium">{{rule.enabled}}</span>
             <span class="span1 text-medium pointer" data-ng-click="editRule(rule)">Edit</span>
-            <span class="span1 text-medium pointer" data-ng-click="deleteRule()">Delete</span>
+            <span class="span1 text-medium pointer" data-ng-click="deleteRule(rule)">Delete</span>
         </div>
 
         <div data-ng-model="data">
-            <h3>{{data.id && 'Edit rule '+ data.id || 'Create New Rule' }}</h3>
+            <h3>{{data.uuid && 'Edit rule '+ data.uuid || 'Create New Rule' }}</h3>
             <div class="item row-fluid">
                 <h4>From</h4><hr/>
                 <div>
@@ -146,7 +146,8 @@
                 </div>
 
                 <div class="clearfix"></div><hr/>
-                <span class="pointer" data-ng-click="createRule()">{{data.id && 'Update rule' || 'Create Rule' }}</span>
+                <span class="pointer" data-ng-hide="data.uuid" data-ng-click="createRule()">Create Rule</span>
+                <span class="pointer" data-ng-show="data.uuid" data-ng-click="updateRule()">Update Rule</span>
             </div>
 
 
