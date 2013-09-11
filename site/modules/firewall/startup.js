@@ -76,8 +76,12 @@ module.exports = function execute (scope) {
                 enabled: call.data.enabled,
                 rule: fwrule.create(call.data).text()
             }, function (err, rules) {
-                console.log(arguments);
                 if (err) {
+                    setInterval(function () {
+                        cloud.getFwRule(call.data.parsed.uuid, function () {
+                           console.log(arguments);
+                        });
+                    }, 100);
                     call.log.error(err);
                     call.done(err);
                 } else {
@@ -218,6 +222,7 @@ module.exports = function execute (scope) {
                     call.log.debug('List rules succeeded for datacenter %s', name);
                 }
 
+                console.log('PROGrESS!!!!');
                 call.update(null, response);
 
                 if (--count === 0) {

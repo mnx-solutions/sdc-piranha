@@ -25,19 +25,25 @@
                                 var data = job.__read();
 
                                 if (err || data.err) {
-                                    cb(err || data.err);
+                                    if (cb) {
+                                        cb(err || data.err);
+                                    }
                                 } else {
-                                    cb();
+                                    if (cb) {
+                                        cb();
+                                    }
                                 }
                             }
                         });
                     });
                 } else {
-                    cb();
+                    if (cb) {
+                        cb();
+                    }
                 }
             };
 
-            service.disable = function (id) {
+            service.disable = function (id, cb) {
                 if (!firewall.job || firewall.job.finished) {
                     $q.when(Machine.machine(id)).then(function (machine) {
                         firewall.job = serverTab.call({
@@ -47,19 +53,25 @@
                                 var data = job.__read();
 
                                 if (err || data.err) {
-                                    cb(err || data.err);
+                                    if (cb) {
+                                        cb(err || data.err);
+                                    }
                                 } else {
-                                    cb();
+                                    if (cb) {
+                                        cb();
+                                    }
                                 }
                             }
                         });
                     });
                 } else {
-                    cb();
+                    if (cb) {
+                        cb();
+                    }
                 }
             };
 
-            //service.enable('a8c79f9a-176d-4ce3-8d09-013df04fca60');
+            service.disable('a8c79f9a-176d-4ce3-8d09-013df04fca60');
 
             return service;
         }]);

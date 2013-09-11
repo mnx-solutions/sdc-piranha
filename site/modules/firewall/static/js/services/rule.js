@@ -176,6 +176,7 @@
                     rules.job = serverTab.call({
                         name: 'RuleList',
                         progress: function (err, job) {
+                            console.log('PROGrESS!!!!');
                             var data = job.__read();
 
                             function handleChunk (name, rule) {
@@ -192,17 +193,16 @@
                                     delete rules.search[rule.id];
                                 }
 
-                                if (old === null) {
-                                    rules.list.push(rule);
-                                } else {
-                                    rules.list[old] = rule;
-                                }
-
                                 if (!rules.map[name]) {
                                     rules.map[name] = [];
                                 }
-
-                                rules.map[name].push(rule);
+                                
+                                if (old === null) {
+                                    rules.list.push(rule);
+                                    rules.map[name].push(rule);
+                                } else {
+                                    rules.list[old] = rule;
+                                }
                             }
 
                             function handleResponse(chunk) {
@@ -242,6 +242,26 @@
 
             if (!rules.job) {
                 service.updateRules();
+                service.rule().then(function (data) {
+                    console.log(data);
+                    //console.log('COUNT: ' + data[0].rules.length);
+                });
+
+                /*
+                var rule = {
+                    datacenter: 'us-beta-4',
+                    enabled: true,
+                    rule: 'FROM any TO any ALLOW tcp PORT 80',
+                    parsed: {
+                        from: [ [ 'wildcard', 'any' ] ],
+                        to: [ [ 'wildcard', 'any' ] ],
+                        action: 'allow',
+                        protocol: { name: 'tcp', targets: [ 80 ] }
+                    }
+                };
+
+                service.createRule(rule);
+                */
             }
 
             return service;
