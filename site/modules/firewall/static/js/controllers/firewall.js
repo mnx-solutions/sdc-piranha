@@ -20,22 +20,61 @@
         'localization',
         'rule',
         '$q',
+        'Machine',
 
-        function ($scope, requestContext, localization, rule, $q) {
+        function ($scope, requestContext, localization, rule, $q, Machine) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
+
             $scope.loading = true;
+            $scope.vms = [];
+            $scope.tags = [];
 
-            $scope.rulesByDatacenter = {
-            };
+            function extractIDs(machines) {
+                for(var m in machines) {
+                    var machine = machines[m];
+                    if(ng.isObject(machine)) {
 
-            $scope.datacenter = 'US-EAST';
-            $scope.rules = $scope.rulesByDatacenter[$scope.datacenter].rules;
+                        if(Object.keys(machine.tags).length) {
+                            for(var tag in machine.tags) {
+                                if($scope.tags.indexOf(tag) === -1) {
+                                    $scope.tags.push(tag);
+                                }
+                            }
+                        }
+                        $scope.vms.push(machine.id)
+                    }
+                }
+
+            }
+
+
+            $scope.machines = Machine.machine();
+            $scope.rulesByDatacenter = rule.rule();
+            $q.all([
+                $q.when($scope.machines),
+                $q.when($scope.rulesByDatacenter)
+            ]).then(function(lists){
+                $scope.loading = false;
+
+                $scope.$watch('datacenter', function(dc){
+                    if(dc) {
+
+                        $scope.rules = lists[1][$scope.datacenter];
+
+                        if(lists[0].length) {
+                            extractIDs(lists[0]);
+                        }
+                    }
+                });
+            });
+
+            $scope.datacenter = 'us-beta-4';
 
             $scope.targetTypes = [{
                 value:'wildcard',
-                title: 'any'
+                title: 'Any'
             },{
                 value:'ip',
                 title: 'IP'
@@ -59,10 +98,10 @@
             }];
 
             $scope.states = [{
-                value:'enabled',
+                value: true,
                 title:'Enabled'
             },{
-                value:'disabled',
+                value: false,
                 title:'Disabled'
             }];
 
@@ -77,23 +116,21 @@
                 title:'ICMP'
             }];
 
-            $scope.$watch('datacenter', function(dc){
-                if(dc) {
-                    $scope.rules = $scope.rulesByDatacenter[$scope.datacenter].rules;
-                }
-            });
+
 
             $scope.data = {};
             $scope.resetData = function () {
                 $scope.data.id = null;
-                $scope.data.from = [['wildcard', 'any']];
-                $scope.data.to = [['wildcard', 'any']];
-                $scope.data.action = 'allow';
-                $scope.data.protocol = {
+                $scope.data.datacenter = $scope.datacenter;
+                $scope.data.parsed = {};
+                $scope.data.parsed.from = [['wildcard', 'any']];
+                $scope.data.parsed.to = [['wildcard', 'any']];
+                $scope.data.parsed.action = 'allow';
+                $scope.data.parsed.protocol = {
                     name:'tcp',
                     targets:[]
                 };
-                $scope.data.status = 'disabled';
+                $scope.data.enabled = false;
             };
             $scope.resetData();
 
@@ -111,7 +148,7 @@
             $scope.currentPort = null;
 
             $scope.addPort =function() {
-                $scope.data.protocol.targets.push($scope.currentPort);
+                $scope.data.parsed.protocol.targets.push($scope.currentPort);
                 $scope.currentPort = null;
             }
 
@@ -126,16 +163,16 @@
                     data = [data, tagValue];
                 }
 
-                if($scope.data[direction].length == 1 && $scope.data[direction][0][0] == 'wildcard') {
-                    $scope.data[direction] = [];
+                if($scope.data.parsed[direction].length == 1 && $scope.data.parsed[direction][0][0] == 'wildcard') {
+                    $scope.data.parsed[direction] = [];
                 }
 
-                $scope.data[direction].push([type, data]);
+                $scope.data.parsed[direction].push([type, data]);
 
                 $scope.resetCurrent();
             }
             function clearTarget(direction) {
-                $scope.data[direction] = [];
+                $scope.data.parsed[direction] = [];
             }
             $scope.addFrom = function() {
                 addTarget('from');
@@ -152,16 +189,38 @@
                 addTarget('to');
             }
             $scope.removeFrom = function(i) {
-                $scope.data.from.splice(i, 1);
-                if(!$scope.data.from.length) {
+                $scope.data.parsed.from.splice(i, 1);
+                if(!$scope.data.parsed.from.length) {
                     $scope.addAnyFrom();
                 }
             }
             $scope.removeTo = function(i) {
-                $scope.data.to.splice(i, 1);
-                if(!$scope.data.to.length) {
+                $scope.data.parsed.to.splice(i, 1);
+                if(!$scope.data.parsed.to.length) {
                     $scope.addAnyTo();
                 }
+            }
+
+            $scope.createRule = function() {
+                var rulePromise = rule.createRule($scope.data);
+                $q.when(rulePromise).then(function(){
+                    console.log('argh', arguments);
+                })
+            }
+
+            $scope.editRule = function(r) {
+                $scope.data.id = r.id;
+                $scope.data.datacenter = r.datacenter;
+                $scope.data.parsed = {
+                    from: r.parsed.from,
+                    to: r.parsed.to,
+                    action: r.parsed.action,
+                    protocol: r.parsed.protocol
+                };
+                $scope.data.enabled = r.enabled;
+            }
+            $scope.deleteRule = function(r) {
+                console.log('delete rule', r.id);
             }
 
         }
