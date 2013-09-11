@@ -9,6 +9,7 @@
         'Package',
         'Network',
         'rule',
+        'firewall',
         '$dialog',
         '$$track',
         'localization',
@@ -16,7 +17,7 @@
         '$location',
         'util',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, $dialog, $$track, localization, $q, $location, util) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $dialog, $$track, localization, $q, $location, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
