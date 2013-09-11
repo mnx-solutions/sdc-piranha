@@ -70,22 +70,37 @@ module.exports = function execute (scope) {
 
         handler: function (call) {
             call.log.info('Create firewall rule');
-            var cloud = call.cloud.separate(call.data.datacenter);
 
+            var cloud = call.cloud.separate(call.data.datacenter);
             cloud.createFwRule({
                 enabled: call.data.enabled,
                 rule: fwrule.create(call.data).text()
-            }, function (err, rules) {
+            }, function (err, rule) {
                 if (err) {
-                    setInterval(function () {
-                        cloud.getFwRule(call.data.parsed.uuid, function () {
-                           console.log(arguments);
-                        });
-                    }, 100);
                     call.log.error(err);
                     call.done(err);
                 } else {
-                    call.done(null, rules);
+                    // Poll for rule
+                    var timeout = null;
+                    var poll = setInterval(function () {
+                        call.log.info('Polling firewall rule');
+
+                        cloud.getFwRule(rule.id, function (err, rule) {
+                            if (!err) {
+                                call.done(null, rule);
+                                clearInterval(poll);
+                                clearTimeout(timeout);
+                            }
+                        });
+                    }, 500);
+
+                    // When timeout reached
+                    timeout = setTimeout(function () {
+                        var err = new Error('Rule not created');
+                        call.log.error(err);
+                        call.done(err);
+                        clearInterval(poll);
+                    }, 10000);
                 }
             });
         }
@@ -222,7 +237,6 @@ module.exports = function execute (scope) {
                     call.log.debug('List rules succeeded for datacenter %s', name);
                 }
 
-                console.log('PROGrESS!!!!');
                 call.update(null, response);
 
                 if (--count === 0) {

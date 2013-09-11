@@ -53,7 +53,7 @@
                     },
 
                     error: function(err, job) {
-                        if (err && Object.keys(err).length > 0) {
+                        if (err) {
                             showError(err);
                             return;
                         }
@@ -92,7 +92,7 @@
                         },
 
                         error: function(err, job) {
-                            if (err && Object.keys(err).length > 0) {
+                            if (err) {
                                 showError(err);
                                 return;
                             }
@@ -196,7 +196,7 @@
                                 if (!rules.map[name]) {
                                     rules.map[name] = [];
                                 }
-                                
+
                                 if (old === null) {
                                     rules.list.push(rule);
                                     rules.map[name].push(rule);
@@ -242,10 +242,6 @@
 
             if (!rules.job) {
                 service.updateRules();
-                service.rule().then(function (data) {
-                    console.log(data);
-                    //console.log('COUNT: ' + data[0].rules.length);
-                });
 
                 /*
                 var rule = {
