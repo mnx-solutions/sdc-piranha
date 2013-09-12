@@ -435,3 +435,6 @@
 .span_date{
     width: 13%;
 }
+.icon-info-sign, .icon-warning-sign, .icon-question-sign{
+    background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
+}
