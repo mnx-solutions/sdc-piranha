@@ -120,7 +120,7 @@
 
             $scope.data = {};
             $scope.resetData = function () {
-                $scope.data.id = null;
+                $scope.data.uuid = null;
                 $scope.data.datacenter = $scope.datacenter;
                 $scope.data.parsed = {};
                 $scope.data.parsed.from = [['wildcard', 'any']];
@@ -204,12 +204,13 @@
             $scope.createRule = function() {
                 var rulePromise = rule.createRule($scope.data);
                 $q.when(rulePromise).then(function(){
-                    console.log('argh', arguments);
+                    console.log('create response', arguments);
                 })
             }
 
             $scope.editRule = function(r) {
-                $scope.data.id = r.id;
+
+                $scope.data.uuid = r.uuid;
                 $scope.data.datacenter = r.datacenter;
                 $scope.data.parsed = {
                     from: r.parsed.from,
@@ -219,8 +220,20 @@
                 };
                 $scope.data.enabled = r.enabled;
             }
+            $scope.updateRule = function() {
+//                var a = rule.updateRule($scope.data);
+//
+//                a.then(function(){
+//                    console.log('update rule', arguments)
+//                })
+
+            }
             $scope.deleteRule = function(r) {
-                console.log('delete rule', r.id);
+                var a = rule.deleteRule(r);
+                a.then(function(){
+                    console.log('delete rule', arguments)
+                })
+
             }
 
         }
