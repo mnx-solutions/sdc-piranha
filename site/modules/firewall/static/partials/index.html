@@ -77,15 +77,29 @@
                         <form name="fromForm">
                             <span data-ng-switch="current.fromType">
                                     <span data-ng-switch-when="wildcard">
-                                        <span class="pointer" data-ng-click="addAnyFrom()">USE ANY</span>
+                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid">USE ANY</button>
                                     </span>
                                     <span data-ng-switch-when="tag">
                                         <span>Tag name: </span><input data-ng-model="current.from" /><br/>
                                         <span data-ng-show="current.from">Tag value (optional): <input data-ng-model="current.fromTagValue" /></span>
-                                        <span class="pointer" data-ng-click="addFrom()">ADD</span>
+                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
                                     </span>
                                     <span data-ng-switch-default>
-                                        {{current.fromType}}: <input name="fromValue" data-ng-model="current.from" data-ip/><br/>
+                                        <!-- due to the nature of directives, we need another switch here -->
+                                        {{current.fromType}}:
+                                        <span data-ng-switch="current.fromType">
+                                            <span data-ng-switch-when="subnet">
+                                                <input name="fromValue" data-ng-model="current.from" data-ip/>
+                                            </span>
+                                            <span data-ng-switch-when="ip">
+                                                <input name="fromValue" data-ng-model="current.from" data-ip/>
+                                            </span>
+                                            <span data-ng-switch-default>
+                                                <input name="fromValue" data-ng-model="current.from" /><br/>
+                                            </span>
+                                            <br/>
+                                        </span>
+                                        <!-- directives switch end -->
                                         <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
                                     </span>
                             </span>
