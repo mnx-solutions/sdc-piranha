@@ -8,19 +8,19 @@
         <!--</div>-->
         <div class="row-fluid">
             <div class="span12 page-header">
-                <div class="span5">
+                <div class="span">
                     <!--<h1>Welcome {{account.firstName}}</h1>-->
-                    <h2>Dashboard</h2>
+                    <h3 class="page-title">Dashboard</h3>
                 </div>
-                <div class="span7">
-                    <div class="loading-medium" data-ng-show="loading" ></div>
-                </div>
+                <!--<div class="span7">-->
+                    <!--<div class="loading-medium" data-ng-show="loading" ></div>-->
+                <!--</div>-->
             </div>
         </div>
 
 
         <!--<div class="container-fluid" id="dashboard">-->
-        <div style="width: 1000px;">
+        <div style="padding-top: 20px">
             <!-- BEGIN DASHBOARD STATS -->
             <div class="_row-fluid">
                 <div class="_span" style="margin: 0">
@@ -45,12 +45,12 @@
                                 paused
                             </div>
                         </div>
-                        <a class="more" href="javascript: jQuery(document).ready(function() {hideAllPage();$('#2menu').addClass('active');$('#compute').show();})">
+                        <a class="more" href="#">
                             view compute details <i class="m-icon-white-arrow"></i>
                         </a>
                     </div>
                     <div class="dashboard-stat-btn">
-                        <a class="more" data-toggle="modal" href="#!/instance/create"><button type="button" class="btn btn_stat orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create
+                        <a class="more" data-toggle="modal" href="#confirm"><button type="button" class="btn btn_stat orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create
                             Compute Instance</b></button></a>
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                             </div>
                         </div>
                         <a class="more "
-                           href="javascript:jQuery(document).ready(function() {hideAllPage();$('#3menu').addClass('active');$('#storage').show();})">
+                           href="#!/storage">
                             manage storage <i class="m-icon-white-arrow"></i>
                         </a>
                     </div>
@@ -149,7 +149,7 @@
                                     <span class="pull-left span12">{{entry.publishedDate | date}} <a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
                                 </div>
                             </div>
-                            <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://joyent.com/blog" target="_blank" style="margin-top: 10px;">
+                            <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://www.joyent.com/blog" target="_blank" style="margin-top: 10px;">
                                 More News</a>
                             </div>
                             <div class="line-spacer"></div>
@@ -211,7 +211,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" data-tabindex="1" class="btn">No</button>
-                <button type="button" data-dismiss="modal" data-tabindex="2" onclick="jQuery(document).ready(function() {hideAllPage();$('#4menu').addClass('active');$('#newinstance').show();})" class="btn orange">Yes</button>
+                <button type="button" data-dismiss="modal" data-tabindex="2" onclick="jQuery(document).ready(function() {$('#confirm').modal('hide');location.href='#!/instance/create';})" class="btn orange">Yes</button>
             </div>
         </div>
 
@@ -276,7 +276,7 @@
             <!--<div class="span4">-->
                     <!--<h4>-->
                         <!--<span>Joyent Blog</span>-->
-                        <!--<a class="text-small text-regular pull-right" href="http://joyent.com/blog" target="_blank">More »</a>-->
+                        <!--<a class="text-small text-regular pull-right" href="http://www.joyent.com/blog" target="_blank">More »</a>-->
                     <!--</h4>-->
                         <!--<div class="separation-container separation-container-top text-medium">-->
                             <!--<div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">-->
