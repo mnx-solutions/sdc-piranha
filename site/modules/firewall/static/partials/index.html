@@ -67,28 +67,29 @@
                 <h4>From</h4><hr/>
                 <div>
                     <span class="span10 text-medium">
-                    <span data-ng-show="data.parsed.from.length">
-                        <span data-ng-repeat="from in data.parsed.from">
-                            {{from|targetInfo}} <span data-ng-hide="from[0] == 'wildcard'" class="pointer" data-ng-click="removeFrom($index)">[ x ]</span>
-                            <br/>
+                        <span data-ng-show="data.parsed.from.length">
+                            <span data-ng-repeat="from in data.parsed.from">
+                                {{from|targetInfo}} <span data-ng-hide="from[0] == 'wildcard'" class="pointer" data-ng-click="removeFrom($index)">[ x ]</span>
+                                <br/>
+                            </span>
                         </span>
-                    </span>
-                    <select data-ng-model="current.fromType" data-ng-options="target.value as target.title for (key, target) in targetTypes"></select><br/>
-                    <span data-ng-switch="current.fromType">
-                        <span data-ng-switch-when="wildcard">
-                            <span class="pointer" data-ng-click="addAnyFrom()">USE ANY</span>
-                        </span>
-                        <span data-ng-switch-when="tag">
-                            <span>Tag name: </span><input data-ng-model="current.from" /><br/>
-                            <span data-ng-show="current.from">Tag value (optional): <input data-ng-model="current.fromTagValue" /></span>
-                            <span class="pointer" data-ng-click="addFrom()">ADD</span>
-                        </span>
-                        <span data-ng-switch-default>
-                            {{current.fromType}}: <input data-ng-model="current.from" /><br/>
-                            <span class="pointer" data-ng-click="addFrom()">ADD</span>
-                        </span>
-
-                    </span>
+                        <select data-ng-model="current.fromType" data-ng-options="target.value as target.title for (key, target) in targetTypes"></select><br/>
+                        <form name="fromForm">
+                            <span data-ng-switch="current.fromType">
+                                    <span data-ng-switch-when="wildcard">
+                                        <span class="pointer" data-ng-click="addAnyFrom()">USE ANY</span>
+                                    </span>
+                                    <span data-ng-switch-when="tag">
+                                        <span>Tag name: </span><input data-ng-model="current.from" /><br/>
+                                        <span data-ng-show="current.from">Tag value (optional): <input data-ng-model="current.fromTagValue" /></span>
+                                        <span class="pointer" data-ng-click="addFrom()">ADD</span>
+                                    </span>
+                                    <span data-ng-switch-default>
+                                        {{current.fromType}}: <input name="fromValue" data-ng-model="current.from" data-ip/><br/>
+                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                    </span>
+                            </span>
+                        </form>
                     </span>
                 </div>
                 <div class="clearfix"></div><hr/>
