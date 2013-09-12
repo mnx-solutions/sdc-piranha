@@ -92,12 +92,19 @@
         "url":""
     },
     "maxmind": {
-        "url": "https://api.maxmind.com",
+        "phoneApiUrl": "https://api.maxmind.com",
+        "fraudApiUrl": "https://minfraud.maxmind.com",
         "licenseId": "bQg6oKXwLfWj",
         "limits" : {
             "calls": 3,
             "serviceFails": 3,
             "pinTries": 3
-        }
+        },
+        "fraudLimits": {
+            "fullyOperational": 33,
+            "mustVerifyPhone": 66
+        },
+        "tmpClientIp": "8.8.8.8",
+        "tmpRiskScore": 70
     }
 }

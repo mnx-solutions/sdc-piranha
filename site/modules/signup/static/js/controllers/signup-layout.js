@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies',
-            function ($scope, requestContext, $location, $cookies) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'MinFraud', 'Process',
+            function ($scope, requestContext, $location, $cookies, MinFraud, Process) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
@@ -12,7 +12,7 @@
                     billing:"Payment Method",
                     ssh:"SSH Key"
                 };
-                $scope.steps = ['phone', 'billing', 'ssh'];
+                $scope.steps = ['billing', 'phone', 'ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.campaignId = $cookies.campaignId;
@@ -23,12 +23,22 @@
                 };
 
                 $scope.nextStep = function () {
+                    if ($scope.currentStep === 'blocked') return; // 'blocked' is a virtual step not in sequence
                     var i = $scope.steps.indexOf($scope.currentStep);
                     if(++i < $scope.steps.length) {
                         $scope.setStep($scope.steps[i]);
                     } else {
                         window.location.href = '/main';
                     }
+                };
+
+                $scope.updateStep = function () {
+                    Process.getPreviousStep(function (err, step) {
+                        if (!err) {
+                            $scope.setStep(step);
+                            $scope.nextStep();
+                        }
+                    });
                 };
 
                 $scope.skipSsh = function() {
@@ -49,10 +59,6 @@
                     }
                     i++;
                 }, true);
-
-                $scope.$on('creditCardUpdate', function () {
-                    $scope.nextStep();
-                });
 
                 $scope.nextStep();
 

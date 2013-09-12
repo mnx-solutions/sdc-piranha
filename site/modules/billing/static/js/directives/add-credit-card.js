@@ -267,7 +267,7 @@
                                 Account.updateAccount({
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
-                                }).then(function () {
+                                }).then(function (account) {
                                     notification.push(null, { type: 'success' },
                                         localization.translate(null,
                                             'billing',
@@ -278,7 +278,11 @@
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.loading = false;
+                                        credit.cardNumberFull = $scope.form.creditCardNumber;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
+                                        account.phoneCountry = $scope.phone.country;
+                                        account.billingCountry = $scope.form.cardHolderInfo.country;
+                                        $rootScope.$broadcast('billingAccountUpdate', account);
                                     });
                                 }, function () {
                                     notification.push(null, { type: 'error' },

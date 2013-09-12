@@ -20,15 +20,6 @@
             $scope.lastCalledNumber = null;
             $scope.fullPhoneNumber = null;
 
-            $q.when(Account.getAccount(true), function (account) {
-                if (!$scope.phone) {
-                    $scope.phone = account.phone || '';
-                }
-                if (!$scope.country || $scope.country.iso3 === 'USA') {
-                    $scope.country = $scope.isoToObj(account.country);
-                }
-            });
-
             $scope.isoToObj = function(iso) {
                 if(!$scope.countryCodes){
                     return;
@@ -54,6 +45,14 @@
                 }
                 $scope.countryCodes = countries;
                 $scope.country = $scope.isoToObj();
+                Account.getAccount(true).then(function (account) {
+                    if (!$scope.phone) {
+                        $scope.phone = account.phone || '';
+                    }
+                    if (!$scope.country || $scope.country.iso3 === 'USA') {
+                        $scope.country = $scope.isoToObj(account.country);
+                    }
+                });
             });
 
             $scope.$watch('phone', function (newVal) {

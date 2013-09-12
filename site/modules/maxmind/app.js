@@ -3,16 +3,24 @@
 var fs = require('fs');
 var restify = require('restify');
 var config = require('easy-config');
+var zuora = require('zuora').create(config.zuora.api);
 
 if (!config.maxmind || !config.maxmind.licenseId) {
     throw new Error('MaxMind licenseId must be defined in the config');
 }
 
-var maxMindClient = restify.createStringClient({url: config.maxmind.url});
+var phoneVerificationClient = restify.createStringClient({url: config.maxmind.phoneApiUrl});
+var fraudVerificationClient = restify.createStringClient({url: config.maxmind.fraudApiUrl});
+
 var limits = config.maxmind.limits || {
     calls: 3,
     serviceFails: 3,
     pinTries: 3
+};
+
+var fraudLimits = config.maxmind.fraudLimits || {
+    "fullyOperational": 33,
+    "mustVerifyPhone": 66
 };
 
 var serviceMessages = {
@@ -102,7 +110,7 @@ module.exports = function execute(scope, app) {
             '&verify_code=' + code;
 
         req.log.info('Calling user phone', {userId: req.session.userId, phone: req.params.phone});
-        maxMindClient.get(url, function(err, creq, cres, data) {
+        phoneVerificationClient.get(url, function(err, creq, cres, data) {
             if (err) {
                 req.log.error('Failed to contact maxmind api', err);
                 req.session.maxmindServiceFails = serviceFails + 1;
@@ -157,5 +165,57 @@ module.exports = function execute(scope, app) {
         });
 
         res.json({message: serviceMessages.wrongPin, success: false});
+    });
+
+    app.post('/minfraud', function (req, res) {
+        var query = req.body;
+        query.license_key = config.maxmind.licenseId;
+        query.i = config.maxmind.tmpClientIp || req.ip; // temp config option for demo
+        fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
+            if (err) {
+                SignupProgress.setMinProgress(req, 'billing', function () {
+                    res.json({success: false, message: serviceMessages.serviceFailed});
+                });
+                return;
+            }
+            var result = {success: true};
+            data.split(';').forEach(function (fieldStr) {
+                var keyValueArr = fieldStr.split('=');
+                if (keyValueArr.length > 1) result[keyValueArr[0]] = keyValueArr[1];
+            });
+
+            // risk score override for testing
+            result.riskScore = config.maxmind.tmpRiskScore || result.riskScore;
+
+            // temp logging for demo
+            scope.log.info('maxmind fraud score detected (0.01=safest -- 99.99=maxfraud)',
+                {riskScore: result.riskScore, explanation: result.explanation});
+            var zuoraObj = {riskScore: result.riskScore};
+            if (result.riskScore > fraudLimits.mustVerifyPhone) {
+                zuoraObj.verificationStatus = 'blocked';
+            }
+            zuora.account.update(req.session.userId, {customFieldsData: JSON.stringify(zuoraObj)}, function (err) {
+                if (err) {
+                    res.json(err);
+                    return;
+                }
+                if (result.riskScore <= fraudLimits.fullyOperational) { // Skip phone verification
+                    SignupProgress.setMinProgress(req, 'billing', function () {
+                        SignupProgress.setMinProgress(req, 'phone', function () {
+                            res.json(result);
+                        });
+                    });
+                } else if (result.riskScore <= fraudLimits.mustVerifyPhone) { // Go to phone verification
+                    SignupProgress.setMinProgress(req, 'billing', function () {
+                        res.json(result);
+                    });
+                } else {
+                    SignupProgress.setSignupStep(req, 'blocked', function () {
+                        res.json(result);
+                    });
+                }
+            });
+
+        });
     });
 };

@@ -26,7 +26,7 @@ module.exports = function execute(scope, register) {
 
     //Compatibility with old version
     var api = {};
-    var steps = [ 'start', 'phone', 'billing','ssh' ];
+    var steps = [ 'start', 'billing', 'phone', 'ssh' ];
 
     function getFromBilling(method, userId, cb) {
         jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {
