@@ -13,7 +13,7 @@
                         </div>
                     </label>
                 </th>
-                <th class="sortable" data-ng-click="sortBy('label')" data-ng-switch on="sortIcon.label" data-ng-show="columnsCheckBoxCur[0]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.label}" data-ng-click="sortBy('label')" data-ng-switch on="sortIcon.label" data-ng-show="columnsCheckBoxCur[0]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -21,7 +21,7 @@
                     </div>
                     <div class="block">Name</div>
                 </th>
-                <th class="hidden-48 sortable" data-ng-click="sortBy('datacenter')" data-ng-switch on="sortIcon.datacenter" data-ng-show="columnsCheckBoxCur[1]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.datacenter}" data-ng-click="sortBy('datacenter')" data-ng-switch on="sortIcon.datacenter" data-ng-show="columnsCheckBoxCur[1]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="block">Datacenter</div>
                 </th>
-                <th class="hidden-480 sortable" data-ng-click="sortBy('created')" data-ng-switch on="sortIcon.created" data-ng-show="columnsCheckBoxCur[2]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.created}" data-ng-click="sortBy('created')" data-ng-switch on="sortIcon.created" data-ng-show="columnsCheckBoxCur[2]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -37,7 +37,7 @@
                     </div>
                     <div class="block">Created</div>
                 </th>
-                <th class="hidden-480 sortable" data-ng-click="sortBy('ips')" data-ng-switch on="sortIcon.ips" data-ng-show="columnsCheckBoxCur[3]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.ips}"  data-ng-click="sortBy('ips')" data-ng-switch on="sortIcon.ips" data-ng-show="columnsCheckBoxCur[3]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="block">IP</div>
                 </th>
-                <th class="hidden-480 sortable" data-ng-click="sortBy('state')" data-ng-switch on="sortIcon.state" data-ng-show="columnsCheckBoxCur[4]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.state}" data-ng-click="sortBy('state')" data-ng-switch on="sortIcon.state" data-ng-show="columnsCheckBoxCur[4]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -53,7 +53,7 @@
                     </div>
                     <div class="block">State</div>
                 </th>
-                <th class="hidden-480 sortable" data-ng-click="sortBy('tags.tags')" data-ng-switch on="sortIcon.tags.tags" data-ng-show="columnsCheckBoxCur[5]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.tags}" data-ng-click="sortBy('tags.tags')" data-ng-switch on="sortIcon.tags" data-ng-show="columnsCheckBoxCur[5]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -87,77 +87,11 @@
                     <div data-machine-status machine="machine"></div>
                     <!--<span class="state btn green"><i class="icon-ok"></i> running</span>-->
                 </td>
-                <td class="hidden-480"  data-ng-show="columnsCheckBoxCur[5]" data-ng-click="toggleMachine(machine.tags)">{{machine.tags.tags}}</td>
+                <td class="hidden-480"  data-ng-show="columnsCheckBoxCur[5]" data-ng-click="toggleMachine(machine.tags.tags)">{{machine.tags.tags}}</td>
             </tr>
         </tbody>
     </table>
-<!--<div class="item header row-fluid machine-list-item">-->
-    <!--<span class="text-medium">-->
-        <!--<span class="pull-left">-->
-            <!--<label class="checkbox"><input type="checkbox" /></label>-->
-        <!--</span>-->
-    <!--</span>-->
 
-    <!--<span class="text-medium sortable"-->
-          <!--data-ng-click="sortBy('label')"-->
-          <!--data-ng-switch on="sortIcon.label">-->
-        <!--<i class="icon-sort-up" data-ng-switch-when="up"></i>-->
-        <!--<i class="icon-sort-down" data-ng-switch-when="down"></i>-->
-        <!--<i class="icon-sort-both" data-ng-switch-when=undefined></i>-->
-    <!--</span>-->
-    <!--<span class="pull-left machines-list-header" data-translate>Name</span>-->
-
-
-
-    <!--<span class="text-medium sortable"-->
-          <!--data-ng-click="sortBy('datacenter')"-->
-          <!--data-ng-switch on="sortIcon.datacenter">-->
-        <!--<i class="icon-sort-up" data-ng-switch-when="up"></i>-->
-        <!--<i class="icon-sort-down" data-ng-switch-when="down"></i>-->
-        <!--<i class="icon-sort-both" data-ng-switch-when=undefined></i>-->
-    <!--</span>-->
-    <!--<span class="pull-left machines-list-header" data-translate>Datacenter</span>-->
-
-
-    <!--<span class="text-medium sortable"-->
-          <!--data-ng-click="sortBy('created')"-->
-          <!--data-ng-switch on="sortIcon.created">-->
-        <!--<i class="icon-sort-up" data-ng-switch-when="up"></i>-->
-        <!--<i class="icon-sort-down" data-ng-switch-when="down"></i>-->
-        <!--<i class="icon-sort-both" data-ng-switch-when=undefined></i>-->
-    <!--</span>-->
-    <!--<span class="pull-left machines-list-header" data-translate>Created</span>-->
-
-    <!--<span class="text-medium sortable"-->
-          <!--data-ng-click="sortBy('ips')"-->
-          <!--data-ng-switch on="sortIcon.ips">-->
-        <!--<i class="icon-sort-up" data-ng-switch-when="up"></i>-->
-        <!--<i class="icon-sort-down" data-ng-switch-when="down"></i>-->
-        <!--<i class="icon-sort-both" data-ng-switch-when=undefined></i>-->
-    <!--</span>-->
-    <!--<span class="pull-left machines-list-header" data-translate>IP</span>-->
-
-    <!--<span class="text-medium sortable state-sortable-header"-->
-          <!--data-ng-click="sortBy('state')"-->
-          <!--data-ng-switch on="sortIcon.state">-->
-        <!--<i class="icon-sort-up" data-ng-switch-when="up"></i>-->
-        <!--<i class="icon-sort-down" data-ng-switch-when="down"></i>-->
-        <!--<i class="icon-sort-both" data-ng-switch-when=undefined></i>-->
-    <!--</span>-->
-    <!--<span class="pull-left machines-list-header" data-translate>State</span>-->
-
-    <!--<span class="text-medium pull-right sortable state-sortable-header"-->
-          <!--data-ng-click="sortBy('tags.tags')"-->
-          <!--data-ng-switch on="sortIcon.tags.tags">-->
-        <!--<i class="icon-sort-up" data-ng-switch-when="up"></i>-->
-        <!--<i class="icon-sort-down" data-ng-switch-when="down"></i>-->
-        <!--<i class="icon-sort-both" data-ng-switch-when=undefined></i>-->
-
-    <!--</span>-->
-    <!--<span class="pull-left machines-list-header" data-translate>Tags</span>-->
-<!--</div>-->
-
-	
     <!--<div data-ng-repeat="machine in pagedMachines[currentPage] | orderBy:sortingOrder:reverse" class="item row-fluid">-->
         <!--<span class="span1 text-medium crop checkbox-list-content">-->
             <!--<label class="checkbox"><input type="checkbox" /></label>-->

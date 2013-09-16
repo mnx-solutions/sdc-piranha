@@ -94,7 +94,7 @@
                 Ip: ['ips'],
                 Memory: ['memory'],
                 Datacenter: ['datacenter'],
-                Tafs: ['tags.tags']
+                Tags: ['tags.tags']
             };
 
             $scope.searchable = $scope.searchOptions.Visible;
@@ -247,7 +247,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'best'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:41:17.000Z",
                             "updated": "2013-09-05T15:42:18.000Z",
@@ -273,7 +273,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'new'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:47:53.000Z",
                             "updated": "2013-09-05T15:48:50.000Z",
@@ -299,7 +299,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'Demo'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:41:17.000Z",
                             "updated": "2013-09-05T15:42:18.000Z",
@@ -325,7 +325,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'config'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:47:53.000Z",
                             "updated": "2013-09-05T15:48:50.000Z",
@@ -351,7 +351,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'best'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:41:17.000Z",
                             "updated": "2013-09-05T15:42:18.000Z",
@@ -377,7 +377,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'new'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:47:53.000Z",
                             "updated": "2013-09-05T15:48:50.000Z",
@@ -403,7 +403,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'Demo'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:41:17.000Z",
                             "updated": "2013-09-05T15:42:18.000Z",
@@ -429,7 +429,7 @@
                                 "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
                                 "credentials": []
                             },
-                            "tags": {tags:'config'},
+                            "tags": {},
                             "credentials": "true",
                             "created": "2013-09-05T15:47:53.000Z",
                             "updated": "2013-09-05T15:48:50.000Z",

@@ -52,6 +52,7 @@ ul.page-sidebar-menu > li.active > a {
     border-top-color: transparent !important;
     color: #ff6600;
     height: 20px;
+    border-style: none;
 }
 ul.page-sidebar-menu > li > a i {
     font-size: 16px;

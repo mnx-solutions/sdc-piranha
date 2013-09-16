@@ -92,7 +92,7 @@ h4 {
 .footer .nav {
 	padding-top:8px;
     font-size:12px;
-    margin-left: 10px;
+    margin-left: 28px;
 
 }
 .footer .nav li {
@@ -786,8 +786,8 @@ div .disabled{
 	padding: 0 6px !important;
 }
 .page-header {
-    padding-bottom: 9px !important;
-    margin: 20px 0 -15px !important;
+    padding-bottom: 6px !important;
+    margin: 40px 0 -15px !important;
     border-bottom: none !important;
 }
 .page-header form {
@@ -885,8 +885,8 @@ div .disabled{
 */
 
 .separation-container {
-	padding:10px 5px 10px 5px;
-	margin-left:-1px;
+	/*padding:10px 5px 10px 5px;*/
+	/*margin-left:-1px;*/
 	border-top:1px solid rgba(0,0,0,0.1);
 	border-left:1px solid rgba(0,0,0,0.1);
 }
@@ -1007,4 +1007,17 @@ iframe {
 
 .asterix-info {
     color: #b3b3b3;
+}
+.dashboard_correction{
+    position: absolute;
+    z-index: 99999999;
+    margin: 0;
+    padding: 0;
+    width: 1230px;
+    height: 1300px;
+    opacity: 0.4;
+    background-image: url("../../static/img/instances-overview.png");
+    /*background-image: url("../../static/img/dashboard.png");*/
+    background-repeat: no-repeat;
+
 }

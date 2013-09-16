@@ -5,7 +5,7 @@
             <!--<data-notification></data-notification>-->
             <!--<div class="span">-->
                 <ul class="breadcrumb">
-                    <li><a href="index.html">Dashboard</a> /</li>
+                    <li><a href="#!/dashboard">Dashboard</a> /</li>
                     <li><a href="#"> Compute</a> /</li>
                 </ul>
                 <h3 class="page-title">Instances</h3>
@@ -46,7 +46,7 @@
             <div class="actions" id="tableBtnAdd">
                 <div class="btn-group">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                        Actions <i class="icon-arrow-down"></i>
+                        Actions <i class="icon-drop-down"></i>
                     </a>
                     <ul class="dropdown-menu">
                         <li><a href="#" role="button" class="btn btn-warning">Start</a></li>
@@ -61,7 +61,7 @@
                     <!--<button type="button" class="btn">Export</button>-->
                     <a class="btn" href="#" data-toggle="dropdown">
                         Columns
-                        <i class="icon-arrow-down"></i>
+                        <i class="icon-drop-down"></i>
                     </a>
 
                     <div id="insTable_column_toggler" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
@@ -134,8 +134,7 @@
 	                </div>
 
             <div class="pull-left select_position">
-                <select ui-select2="no-search-box" data-ng-click="showPages()" data-ng-model="select2" class="no-search-box" data-placeholder="Pick a number" style="width: 180px !important;">
-                    <option value=""></option>
+                <select ui-select2="no-search-box" data-ng-click="showPages()" value="5" data-ng-model="select2" class="no-search-box" style="width: 120px !important;">
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>

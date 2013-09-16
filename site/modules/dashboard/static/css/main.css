@@ -46,14 +46,17 @@
     background-image: url("../img/warn.png");
     background-repeat: no-repeat;
     background-size: 70px 70px;
-    background-position: 160px 20px;
+    background-position: 155px 18px;
+    background-color: #e9eff3;
+    height: 205px;
+    width: 240px;
 }
 .dashboard-stat .more {
     clear: both;
     display: block;
     padding: 5px 10px 5px 10px;
     text-transform: uppercase;
-    font-weight: 300;
+    font-weight: 500;
     font-size: 11px;
     color: #fff;
     opacity: 0.7;
@@ -66,9 +69,10 @@
 
 .dashboard-stat.grey h4 {
     color: white;
-    padding-left: 10px;
-    font-weight: 600;
+    padding-left: 15px;
+    font-weight: 500;
     padding-top: 8px;
+    font-size: 19px;
 }
 
 .dashboard-stat.links2 a.more {
@@ -83,6 +87,9 @@
     width: 100%;
     bottom: 0;
     text-decoration: none;
+}
+.dashboard-stat.links2 a.more span{
+    margin-left: 8px;
 }
 
 .dashboard-stat.links2 .more i {
@@ -128,7 +135,7 @@
     font-size: 14px;
     line-height: 12px;
     overflow: hidden;
-    padding-left: 10px;
+    padding-left: 5px;
     padding-right: 5px;
     white-space: nowrap;
     width: 1px;
@@ -137,9 +144,11 @@
 
 .dashboard-stat .details {
     float: left;
-    padding-left: 10px;
+    padding-left: 15px;
     display: inline-block;
     vertical-align: top;
+    line-height: 14px;
+    margin-top: 5px;
 }
 
 .m-icon-white-arrow {
@@ -351,12 +360,14 @@
 
 .margin-text-block h5{
     font-weight: normal !important;
-    line-height: 15px !important;
+    line-height: 11px !important;
+    font-size: 15px;
+
 }
 
 .margin-text-block{
-    padding-left: 20px;
-    padding-top: 87px;
+    padding-left: 22px;
+    padding-top: 93px;
 }
 
 .align_text_btn {
@@ -422,11 +433,12 @@
 .separation-container a,
 .separation-container.row-fluid a,
 .separation-container {
-    color: #0d638f;
+    color: #3d3d3d;
     text-decoration: none;
     min-height: 0 !important;
     font-size: 13px !important;
     border-top: none;
+    line-height: 25px;
 }
 .text-dark-blue{
     /*color: #0d638f;*/
@@ -437,4 +449,29 @@
 }
 .icon-info-sign, .icon-warning-sign, .icon-question-sign{
     background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
+}
+.padding_left10{
+    padding-left: 10px;
+}
+.first_colums{
+    width: 495px;
+    padding-top: 35px;
+}
+.secont_colums{
+    overflow: hidden;
+    width: 485px;
+    padding-top: 23px;
+    padding-left: 20px;
+}
+.secont_colums .span{
+    margin: 0;
+}
+.secont_colums .span h5{
+    letter-spacing: 1px;
+    margin-left: 0;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+.white_line{
+    border-bottom: 1px solid #ffffff;
 }
