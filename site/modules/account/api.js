@@ -71,7 +71,7 @@ module.exports = function execute(scope, register, callback) {
         if (req.session.userId) {
             var start = Date.now();
             getFromBilling('provision', req.session.userId, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start));
+                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
             return;
@@ -85,7 +85,7 @@ module.exports = function execute(scope, register, callback) {
             }
 
             getFromBilling('provision', account.id, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start));
+                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
         });
@@ -125,7 +125,18 @@ module.exports = function execute(scope, register, callback) {
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
-                        call.log.error('Something went wrong with billing API', err);
+                        // build more clear error object so we wouldn't have errors: [object], [object] in the logs
+                        var zuoraErr = {
+                            code: err.code
+                        };
+
+                        if(err.body.errors)
+                            zuoraErr.zuoraErrors = err.body.errors;
+
+                        if(err.body.name)
+                            zuoraErr.name = err.name;
+
+                        call.log.error(zuoraErr,'Something went wrong with billing API');
                     }
                     //No error handling or nothing here, just let it pass.
                     cb();
