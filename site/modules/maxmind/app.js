@@ -86,6 +86,17 @@ module.exports = function execute(scope, app) {
         });
     }
 
+    function checkBlackList(data) {
+        var blacklistConfig = config.ns.blacklist || {};
+        blacklistConfig.domain = blacklistConfig.domain || [];
+        blacklistConfig.ip = blacklistConfig.ip || [];
+        blacklistConfig.country = blacklistConfig.country || [];
+        if (blacklistConfig.domain.indexOf(data.domain.toLowerCase()) !== -1) return false;
+        if (blacklistConfig.ip.indexOf(data.i) !== -1) return false;
+        if (blacklistConfig.country.indexOf(data.country) !== -1) return false;
+        return true;
+    }
+
     app.get('/call/:phone', function (req, res) {
         var retries = req.session.maxmindRetries || 0;
         var serviceFails = req.session.maxmindServiceFails || 0;
@@ -171,51 +182,59 @@ module.exports = function execute(scope, app) {
         var query = req.body;
         query.license_key = config.maxmind.licenseId;
         query.i = config.maxmind.tmpClientIp || req.ip; // temp config option for demo
-        fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
-            if (err) {
-                SignupProgress.setMinProgress(req, 'billing', function () {
-                    res.json({success: false, message: serviceMessages.serviceFailed});
-                });
-                return;
-            }
-            var result = {success: true};
-            data.split(';').forEach(function (fieldStr) {
-                var keyValueArr = fieldStr.split('=');
-                if (keyValueArr.length > 1) result[keyValueArr[0]] = keyValueArr[1];
-            });
-
-            // risk score override for testing
-            result.riskScore = config.maxmind.tmpRiskScore || result.riskScore;
-
-            // temp logging for demo
-            scope.log.info('maxmind fraud score detected (0.01=safest -- 99.99=maxfraud)',
-                {riskScore: result.riskScore, explanation: result.explanation});
-            var zuoraObj = {riskScore: result.riskScore};
-            if (result.riskScore > fraudLimits.mustVerifyPhone) {
-                zuoraObj.verificationStatus = 'blocked';
-            }
-            zuora.account.update(req.session.userId, {customFieldsData: JSON.stringify(zuoraObj)}, function (err) {
+        var result = {success: true};
+        if (checkBlackList(query)) {
+            fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
                 if (err) {
-                    res.json(err);
+                    SignupProgress.setMinProgress(req, 'billing', function () {
+                        res.json({success: false, message: serviceMessages.serviceFailed});
+                    });
                     return;
                 }
-                if (result.riskScore <= fraudLimits.fullyOperational) { // Skip phone verification
-                    SignupProgress.setMinProgress(req, 'billing', function () {
-                        SignupProgress.setMinProgress(req, 'phone', function () {
+                data.split(';').forEach(function (fieldStr) {
+                    var keyValueArr = fieldStr.split('=');
+                    if (keyValueArr.length > 1) result[keyValueArr[0]] = keyValueArr[1];
+                });
+
+                // risk score override for testing
+                result.riskScore = config.maxmind.tmpRiskScore || result.riskScore;
+
+                // temp logging for demo
+                scope.log.info('maxmind fraud score detected (0.01=safest -- 99.99=maxfraud)',
+                    {riskScore: result.riskScore, explanation: result.explanation});
+                var zuoraObj = {riskScore: result.riskScore};
+                if (result.riskScore > fraudLimits.mustVerifyPhone) {
+                    zuoraObj.verificationStatus = 'blocked';
+                }
+                zuora.account.update(req.session.userId, {customFieldsData: JSON.stringify(zuoraObj)}, function (err) {
+                    if (err) {
+                        res.json(err);
+                        return;
+                    }
+                    if (result.riskScore <= fraudLimits.fullyOperational) { // Skip phone verification
+                        SignupProgress.setMinProgress(req, 'billing', function () {
+                            SignupProgress.setMinProgress(req, 'phone', function () {
+                                res.json(result);
+                            });
+                        });
+                    } else if (result.riskScore <= fraudLimits.mustVerifyPhone) { // Go to phone verification
+                        SignupProgress.setMinProgress(req, 'billing', function () {
                             res.json(result);
                         });
-                    });
-                } else if (result.riskScore <= fraudLimits.mustVerifyPhone) { // Go to phone verification
-                    SignupProgress.setMinProgress(req, 'billing', function () {
-                        res.json(result);
-                    });
-                } else {
-                    SignupProgress.setSignupStep(req, 'blocked', function () {
-                        res.json(result);
-                    });
-                }
-            });
+                    } else {
+                        scope.log.warn('User was blocked due to low risk score', {userId: req.session.userId});
+                        SignupProgress.setSignupStep(req, 'blocked', function () {
+                            res.json(result);
+                        });
+                    }
+                });
 
-        });
+            });
+        } else {
+            scope.log.warn('User matched against black list and was blocked', {userId: req.session.userId});
+            SignupProgress.setSignupStep(req, 'blocked', function () {
+                res.json(result);
+            });
+        }
     });
 };

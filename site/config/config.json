@@ -103,8 +103,6 @@
         "fraudLimits": {
             "fullyOperational": 33,
             "mustVerifyPhone": 66
-        },
-        "tmpClientIp": "8.8.8.8",
-        "tmpRiskScore": 70
+        }
     }
 }
