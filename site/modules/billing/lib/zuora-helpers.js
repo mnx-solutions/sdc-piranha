@@ -10,7 +10,13 @@ var moment = require('moment');
 
 var zuoraErrors = {};
 
-function init(callback) {
+function init(zuoraInit, callback) {
+    if(typeof zuoraInit === 'function') {
+        callback = zuoraInit;
+        zuoraInit = false;
+    } else {
+        zuora = zuoraInit;
+    }
     var count = 2;
     var sent = false;
     function end(err, type) {
