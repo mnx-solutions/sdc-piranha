@@ -22,6 +22,7 @@
                 machines.job = serverTab.call({
                     name: 'MachineList',
                     progress: function (err, job) {
+                        console.log('progress');
                         var data = job.__read();
 
                         function handleChunk (machine) {

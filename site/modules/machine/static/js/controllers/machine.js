@@ -7,6 +7,7 @@
         'Dataset',
         'Machine',
         'Package',
+        'Network',
         '$dialog',
         '$$track',
         'localization',
@@ -14,7 +15,7 @@
         '$location',
         'util',
 
-        function ($scope, requestContext, Dataset, Machine, Package, $dialog, $$track, localization, $q, $location, util) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, $dialog, $$track, localization, $q, $location, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -53,6 +54,8 @@
             $scope.loading = true;
             $scope.changingName = false;
             $scope.newInstanceName = null;
+            $scope.networks = [];
+
 
             // Handle case when machine loading fails or machine uuid is invalid
             $q.when($scope.machine).then(
@@ -168,6 +171,12 @@
 
                 $scope.dataset = Dataset.dataset(m.image);
                 $scope.package = Package.package(m.package);
+
+                if(m.networks) {
+                    m.networks.forEach(function(networkId) {
+                       $scope.networks.push(Network.getNetwork(m.datacenter, networkId));
+                    });
+                }
 
                 $scope.dataset.then(function(ds){
                     var type = ds.type;

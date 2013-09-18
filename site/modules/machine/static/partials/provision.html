@@ -50,9 +50,10 @@
                     </div>
 
 
+                </div>
 
-                    <!--
-                    <div id="network-configuration" class="none alert alert-joyent-blue span3">
+                <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none">
+                    <div class="reconfigure-box">
                         <div class="accordion" id="networkAccordion">
                             <div class="accordion-group" id="network-configuration-accordion-group">
                                 <div class="accordion-heading">
@@ -62,19 +63,20 @@
                                 </div>
                                 <div id="collapseOne" class="accordion-body collapse">
                                     <div class="accordion-inner">
-                                        <span data-ng-repeat="network in networks">
-                                            <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
-                                                <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
-                                        </span>
+                                            <span data-ng-repeat="network in networks">
+                                                <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
+                                                    <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                                            </span>
                                     </div>
                                 </div>
                             </div>
                             Only 2 networks allowed. By default machines have one public and one private network.
                         </div>
                     </div>
-                    -->
-
                 </div>
+
+
+
                 <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue reconfigure row-fluid">
                     <div class="reconfigure-box">
                         <form name="provisionForm">
@@ -246,12 +248,11 @@
                                             <div class="span1 provisioning-carousel-padding-left">
                                                 <input class="pull-left"
                                                        type="radio"
-                                                       name="tmp"
+                                                       name="package"
                                                        id="package-{{package.id}}"
                                                        value="{{package.id}}"
-                                                       data-ng-checked="selectedPackage.id == package.id"
-                                                       data-ng-click="selectPackage(package.id)"
-                                                       data-ng-model="selectedPackage"/>
+                                                       data-ng-checked="selectedPackage == package.id"
+                                                       data-ng-click="selectPackage(package.id)" />
                                             </div>
 
                                             <label for="package-{{package.id}}">

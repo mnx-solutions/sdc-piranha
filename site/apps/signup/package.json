@@ -3,6 +3,6 @@
         "auth":true,
 		"route": "/signup",
         "defaultHash": "#!/start",
-		"modules": ["localization", "server", "notification", "tracking", "signup", "menu", "billing", "account","tfa"]
+		"modules": ["localization", "server", "notification", "tracking", "signup", "menu", "billing", "account", "tfa", "maxmind"]
 	}
 }

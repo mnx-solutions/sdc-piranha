@@ -247,8 +247,6 @@
                         $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                     });
 
-                    // end temp tropo fix
-
                     $scope.submitForm = function() {
                         $scope.loading = true;
                         $scope.formSubmitted = true;

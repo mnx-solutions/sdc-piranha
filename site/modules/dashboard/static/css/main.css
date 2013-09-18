@@ -11,6 +11,11 @@
 .loading-medium {
     float:left;
 }
+
+.dashboard-iframe {
+    overflow: hidden;
+}
+
 /*my adds*/
 .dashboard-stat:before, .dashboard-stat:after {
     display: table;

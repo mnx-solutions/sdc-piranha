@@ -7,6 +7,7 @@
       "level": "debug"
     },
     "cloudapi": {
+        "DCCallTimeout": 5000
     },
     "localization": {
         "defaultLocale": "en",
@@ -18,9 +19,6 @@
         "db": 1,
         "signupDB": 5,
         "password": ""
-    },
-    "tropo": {
-      "token": ""
     },
     "assets":{
         "js": {
@@ -80,5 +78,8 @@
         "username":"",
         "password":"",
         "url":""
+    },
+    "maxmind": {
+        "licenseId": "bQg6oKXwLfWj"
     }
 }

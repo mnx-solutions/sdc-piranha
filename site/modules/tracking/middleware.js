@@ -1,5 +1,8 @@
 'use strict';
 
+var config = require('easy-config');
+var production = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+
 module.exports = function execute(scope) {
 
 
@@ -7,13 +10,13 @@ module.exports = function execute(scope) {
         if(!res.locals.jss) {
             res.locals.jss = [];
         }
-        if(!scope.config.marketo.accountId) {
+        if(!scope.config.marketo.accountId && production) {
             req.log.warn('Marketo configuration missing');
         } else {
             res.locals.jss.push('Munchkin.init("'+ scope.config.marketo.accountId +'");');
         }
 
-        if(!scope.config.googleAnalytics.identifier) {
+        if(!scope.config.googleAnalytics.identifier && production) {
             req.log.warn('GoogleAnalytics configuration missing');
         } else {
             var googleAnalytics = 'var _gaq = _gaq || [];'+
@@ -32,14 +35,14 @@ module.exports = function execute(scope) {
                 '}());';
 
             var GAlink = '$(document).ready(function() {'+
-            '$("a").click(function() {'+
-                    'var href = $(this).attr("href");'+
-                    'if (href.indexOf("joyent.com") > -1) {'+
-                        '_gaq.push(["_link", href]);'+
-                        'return false;'+
-                    '}'+
+                '$("a").click(function() {'+
+                'var href = $(this).attr("href");'+
+                'if (href.indexOf("joyent.com") > -1) {'+
+                '_gaq.push(["_link", href]);'+
+                'return false;'+
+                '}'+
                 '});'+
-            '});';
+                '});';
             res.locals.jss.push(googleAnalytics);
             res.locals.jss.push(GAlink);
         }

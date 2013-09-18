@@ -133,18 +133,7 @@
 	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
 	                </div>
 
-            <div class="pull-left select_position">
-                <select ui-select2="no-search-box" data-ng-click="showPages()" value="5" data-ng-model="select2" class="no-search-box" style="width: 120px !important;">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="All">All</option>
-                </select>
-                <span>&nbsp;records per page</span>
-            </div>
-
-
-	                <div class="pagination pagination-right">
+	                <div class="pagination pagination-small pagination-centered">
 	                    <ul>
 	                        <li data-ng-class="{disabled: currentPage == 0}">
                                 <a href ng-click="prevPage()" data-translate>← <span class="hidden-480">Previous</span></a>
@@ -167,27 +156,35 @@
                                 <!--<a href data-ng-click="showPages()" data-translate>View pages</a>-->
                             <!--</li>-->
 	                    </ul>
-
+                        <button role="button"
+                                class="btn btn-mini button tooltip-hover export-csv-button"
+                                data-ng-click="exportDetails()"
+                                data-translate
+                                data-translate-attributes="data-original-title"
+                                data-toggle="tooltip"
+                                data-placement="right"
+                                data-html="true"
+                                data-original-title="Export machine list in .csv">Export .csv</button>
                         <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
 	                </div>
 				<!--</div>-->
 				
-	            <!--<div class="pull-right span3">-->
-	                <!--<button data-ng-click="changeLocation('/instance/create/')"-->
-	                        <!--class="create-instance btn btn-joyent-blue btn-large"-->
-	                        <!--data-translate>Create Instance</button>-->
-		                <!--<div class="alert alert-joyent-blue">-->
-		                    <!--<h4 data-translate>Need help?</h4>-->
-		                    <!--<p class="text-medium" data-translate>Help will open in new window</p>-->
-		                    <!--<form class="form-search" method="GET" action="http://www.joyent.com/developers/search" target="_blank">-->
-		                        <!--<div class="input-append">-->
-		                            <!--<input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">-->
-		                            <!--<button type="submit" class="btn" data-translate>Search</button>-->
-		                        <!--</div>-->
-		                    <!--</form>-->
-		                <!--</div>-->
-	            <!--</div>-->
-            <!--</div>-->
+	            <div class="pull-right span3">
+	                <button data-ng-click="changeLocation('/instance/create/')"
+	                        class="create-instance btn btn-joyent-blue btn-large"
+	                        data-translate>Create Instance</button>
+		                <div class="alert alert-joyent-blue">
+		                    <h4 data-translate>Need help?</h4>
+		                    <p class="text-medium" data-translate>Help will open in new window</p>
+		                    <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
+		                        <div class="input-append">
+		                            <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
+		                            <button type="submit" class="btn" data-translate>Search</button>
+		                        </div>
+		                    </form>
+		                </div>
+	            </div>
+            </div>
         </div>
 
         <!--<div class="machines container" data-ng-hide="(pagedMachines.length || loading || query)">-->

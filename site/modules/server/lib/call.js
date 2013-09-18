@@ -178,6 +178,7 @@ function Call(opts) {
             value: function(err) {
                 if (err) {
                     self.err = err;
+                    self.log.error(err);
                     self.status('error');
                 }
             }
