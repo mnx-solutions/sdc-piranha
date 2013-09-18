@@ -63,7 +63,6 @@ module.exports = function execute(scope, register) {
             }
 
             cb(null, state);
-            return;
         });
     }
 
@@ -122,6 +121,9 @@ module.exports = function execute(scope, register) {
 
     api.setSignupStep = function (call, step, cb) {
         function updateBilling(req) {
+            if (step !== 'billing') {
+                return; // no zuora account yet created
+            }
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
