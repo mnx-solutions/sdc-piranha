@@ -229,217 +229,217 @@
                 // filter by search term
                 var oldMachineCount = $scope.filteredMachines.length;
       // temp object for test START //
-                $scope.machines =
-                    [
-                        {
-                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a01",
-                            "name": "Test1",
-                            "type": "smartmachine",
-                            "state": "stopped",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.115.215",
-                                "10.112.1.200"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:41:17.000Z",
-                            "updated": "2013-09-05T15:42:18.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.115.215",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82902",
-                            "name": "Test2",
-                            "type": "smartmachine",
-                            "state": "running",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.113.176",
-                                "10.112.2.75"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:47:53.000Z",
-                            "updated": "2013-09-05T15:48:50.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.113.176",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a03",
-                            "name": "Test3",
-                            "type": "smartmachine",
-                            "state": "stopped",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.115.215",
-                                "10.112.1.200"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:41:17.000Z",
-                            "updated": "2013-09-05T15:42:18.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.115.215",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82904",
-                            "name": "Test4",
-                            "type": "smartmachine",
-                            "state": "running",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.113.176",
-                                "10.112.2.75"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:47:53.000Z",
-                            "updated": "2013-09-05T15:48:50.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.113.176",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a05",
-                            "name": "Test12",
-                            "type": "smartmachine",
-                            "state": "stopped",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.115.215",
-                                "10.112.1.200"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:41:17.000Z",
-                            "updated": "2013-09-05T15:42:18.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.115.215",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82906",
-                            "name": "Test22",
-                            "type": "smartmachine",
-                            "state": "running",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.113.176",
-                                "10.112.2.75"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:47:53.000Z",
-                            "updated": "2013-09-05T15:48:50.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.113.176",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a07",
-                            "name": "Test33",
-                            "type": "smartmachine",
-                            "state": "stopped",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.115.215",
-                                "10.112.1.200"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:41:17.000Z",
-                            "updated": "2013-09-05T15:42:18.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.115.215",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        },
-                        {
-                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82908",
-                            "name": "Test42",
-                            "type": "smartmachine",
-                            "state": "running",
-                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-                            "ips": [
-                                "72.2.113.176",
-                                "10.112.2.75"
-                            ],
-                            "memory": 256,
-                            "disk": 16384,
-                            "metadata": {
-                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-                                "credentials": []
-                            },
-                            "tags": {},
-                            "credentials": "true",
-                            "created": "2013-09-05T15:47:53.000Z",
-                            "updated": "2013-09-05T15:48:50.000Z",
-                            "dataset": "sdc:sdc:base:13.2.0",
-                            "primaryIp": "72.2.113.176",
-                            "firewall_enabled": false,
-                            "package": "g3-standard-0.25-smartos",
-                            "datacenter": "us-east-1"
-                        }
-                    ];
+//                $scope.machines =
+//                    [
+//                        {
+//                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a01",
+//                            "name": "Test1",
+//                            "type": "smartmachine",
+//                            "state": "stopped",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.115.215",
+//                                "10.112.1.200"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:41:17.000Z",
+//                            "updated": "2013-09-05T15:42:18.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.115.215",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82902",
+//                            "name": "Test2",
+//                            "type": "smartmachine",
+//                            "state": "running",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.113.176",
+//                                "10.112.2.75"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:47:53.000Z",
+//                            "updated": "2013-09-05T15:48:50.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.113.176",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a03",
+//                            "name": "Test3",
+//                            "type": "smartmachine",
+//                            "state": "stopped",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.115.215",
+//                                "10.112.1.200"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:41:17.000Z",
+//                            "updated": "2013-09-05T15:42:18.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.115.215",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82904",
+//                            "name": "Test4",
+//                            "type": "smartmachine",
+//                            "state": "running",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.113.176",
+//                                "10.112.2.75"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:47:53.000Z",
+//                            "updated": "2013-09-05T15:48:50.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.113.176",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a05",
+//                            "name": "Test12",
+//                            "type": "smartmachine",
+//                            "state": "stopped",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.115.215",
+//                                "10.112.1.200"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:41:17.000Z",
+//                            "updated": "2013-09-05T15:42:18.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.115.215",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82906",
+//                            "name": "Test22",
+//                            "type": "smartmachine",
+//                            "state": "running",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.113.176",
+//                                "10.112.2.75"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:47:53.000Z",
+//                            "updated": "2013-09-05T15:48:50.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.113.176",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a07",
+//                            "name": "Test33",
+//                            "type": "smartmachine",
+//                            "state": "stopped",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.115.215",
+//                                "10.112.1.200"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:41:17.000Z",
+//                            "updated": "2013-09-05T15:42:18.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.115.215",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        },
+//                        {
+//                            "id": "020588c2-0fad-47d7-a324-6b3fa17ef82908",
+//                            "name": "Test42",
+//                            "type": "smartmachine",
+//                            "state": "running",
+//                            "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+//                            "ips": [
+//                                "72.2.113.176",
+//                                "10.112.2.75"
+//                            ],
+//                            "memory": 256,
+//                            "disk": 16384,
+//                            "metadata": {
+//                                "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
+//                                "credentials": []
+//                            },
+//                            "tags": {},
+//                            "credentials": "true",
+//                            "created": "2013-09-05T15:47:53.000Z",
+//                            "updated": "2013-09-05T15:48:50.000Z",
+//                            "dataset": "sdc:sdc:base:13.2.0",
+//                            "primaryIp": "72.2.113.176",
+//                            "firewall_enabled": false,
+//                            "package": "g3-standard-0.25-smartos",
+//                            "datacenter": "us-east-1"
+//                        }
+//                    ];
 
                 $scope.filteredMachines = _filter($scope.machines);
 
