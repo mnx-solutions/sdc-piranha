@@ -30,13 +30,15 @@
             });
 
             $scope.exportIframe = '';
+            $scope.downloads = {};
+            window.downloadFinished = function (id) {
+                $scope.downloads[id].downloading = false;
+                delete $scope.downloads[id];
+            };
             $scope.download = function (invoice) {
-                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '" onload="_download_' + invoice.id + '()"></iframe>';
+                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '" onload="downloadFinished(\'' + invoice.id + '\')"></iframe>';
+                $scope.downloads[invoice.id] = invoice;
                 invoice.downloading = true;
-                window['_download_'+invoice.id] = function () {
-                    invoice.downloading = false;
-                    delete window['_download_'+invoice.id];
-                };
             };
 
         }]);
