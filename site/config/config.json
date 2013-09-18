@@ -100,9 +100,10 @@
             "serviceFails": 3,
             "pinTries": 3
         },
-        "fraudLimits": {
-            "fullyOperational": 33,
-            "mustVerifyPhone": 66
+        "riskTiers": {
+            "tier-1": 33,
+            "tier-2": 66,
+            "tier-3": 100
         }
     }
 }

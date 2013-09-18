@@ -77,11 +77,12 @@
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
                         $scope.callInProgress = false;
+                        if (data.navigate) $scope.updateStep();
                         return;
                     }
-                    if (data.skip) {
+                    if (data.navigate) {
                         notification.dismiss('phone');
-                        $scope.nextStep();
+                        $scope.updateStep();
                     } else {
                         notification.replace('phone', { type: 'success' }, data.message);
                     }
@@ -96,6 +97,7 @@
                 Phone.verify($scope.pin, function (err, data) {
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
+                        if (data.navigate) $scope.updateStep();
                         return;
                     }
                     Account.updateAccount({
@@ -103,7 +105,7 @@
                         phone: $scope.phone
                     }).then(function () {
                         notification.dismiss('phone');
-                        $scope.nextStep();
+                        $scope.updateStep();
                     });
                 });
             };

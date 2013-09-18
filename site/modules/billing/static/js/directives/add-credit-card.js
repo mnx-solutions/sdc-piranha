@@ -240,10 +240,6 @@
                         return selected || usa;
                     };
 
-                    $http.get('account/countryCodes').success(function (data) {
-                        $scope.countryCodes = data;
-                    });
-
                     $scope.$watch('phone.country', function(newVal) {
                         $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                     });

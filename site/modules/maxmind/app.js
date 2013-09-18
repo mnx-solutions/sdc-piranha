@@ -1,9 +1,7 @@
 'use strict';
 
-var fs = require('fs');
 var restify = require('restify');
 var config = require('easy-config');
-var zuora = require('zuora').create(config.zuora.api);
 
 if (!config.maxmind || !config.maxmind.licenseId) {
     throw new Error('MaxMind licenseId must be defined in the config');
@@ -18,9 +16,10 @@ var limits = config.maxmind.limits || {
     pinTries: 3
 };
 
-var fraudLimits = config.maxmind.fraudLimits || {
-    "fullyOperational": 33,
-    "mustVerifyPhone": 66
+var riskTiers = config.maxmind.riskTiers || {
+    "tier-1": 33,
+    "tier-2": 66,
+    "tier-3": 100
 };
 
 var serviceMessages = {
@@ -50,19 +49,19 @@ module.exports = function execute(scope, app) {
 
     function lockAccount(req, res) {
         if(req.session.maxmindLocked) { // Already locked
-            res.json({message: serviceMessages.wrongPinLocked, success: false});
+            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
             return;
         }
 
         req.log.warn('Lock user account', {userId: req.session.userId});
         req.session.maxmindLocked = true;
-        Metadata.set(req.session.userId, 'verificationStatus', 'Locked', function (err) {
+        SignupProgress.setSignupStep(req, 'blocked', function (err) {
             if(!err) {
                 req.log.warn('User account is locked', {userId: req.session.userId});
             } else {
                 req.log.error('Failed to lock user account', {userId: req.session.userId, error: err});
             }
-            res.json({message: serviceMessages.wrongPinLocked, success: false});
+            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
         });
     }
 
@@ -73,7 +72,6 @@ module.exports = function execute(scope, app) {
             req.log.error('Maxmind phone verification service cannot be reached after %d attempts',
                             limits.serviceFails, {userId: req.session.userId});
         }
-
         SignupProgress.setMinProgress(req, 'phone', function(err) {
             if(err) {
                 req.log.error('Failed to set user phone verification as passed',
@@ -82,7 +80,7 @@ module.exports = function execute(scope, app) {
                 res.json({message: 'Internal error', success: false});
                 return;
             }
-            res.json({message: 'Phone verification successful', success: true, skip: true});
+            res.json({message: 'Phone verification successful', success: true, navigate: true});
         });
     }
 
@@ -95,6 +93,14 @@ module.exports = function execute(scope, app) {
         if (blacklistConfig.ip.indexOf(data.i) !== -1) return false;
         if (blacklistConfig.country.indexOf(data.country) !== -1) return false;
         return true;
+    }
+
+    function calcRiskTier(riskScore) {
+        for (var i in riskTiers) {
+            var limitScore = riskTiers[i];
+            if (riskScore <= limitScore) return i;
+        }
+        return null;
     }
 
     app.get('/call/:phone', function (req, res) {
@@ -202,33 +208,22 @@ module.exports = function execute(scope, app) {
                 // temp logging for demo
                 scope.log.info('maxmind fraud score detected (0.01=safest -- 99.99=maxfraud)',
                     {riskScore: result.riskScore, explanation: result.explanation});
-                var zuoraObj = {riskScore: result.riskScore};
-                if (result.riskScore > fraudLimits.mustVerifyPhone) {
-                    zuoraObj.verificationStatus = 'blocked';
+                if (err) {
+                    res.json(err);
+                    return;
                 }
-                zuora.account.update(req.session.userId, {customFieldsData: JSON.stringify(zuoraObj)}, function (err) {
-                    if (err) {
-                        res.json(err);
-                        return;
-                    }
-                    if (result.riskScore <= fraudLimits.fullyOperational) { // Skip phone verification
-                        SignupProgress.setMinProgress(req, 'billing', function () {
-                            SignupProgress.setMinProgress(req, 'phone', function () {
-                                res.json(result);
-                            });
-                        });
-                    } else if (result.riskScore <= fraudLimits.mustVerifyPhone) { // Go to phone verification
-                        SignupProgress.setMinProgress(req, 'billing', function () {
-                            res.json(result);
-                        });
-                    } else {
-                        scope.log.warn('User was blocked due to low risk score', {userId: req.session.userId});
-                        SignupProgress.setSignupStep(req, 'blocked', function () {
-                            res.json(result);
-                        });
-                    }
-                });
-
+                var riskTier = calcRiskTier(result.riskScore);
+                if (riskTiers[riskTier] === 100) {
+                    scope.log.warn('User was blocked due to high risk score', {userId: req.session.userId});
+                    SignupProgress.setSignupStep(req, 'blocked', function () {
+                        res.json(result);
+                    });
+                } else {
+                    //TODO: Store riskScore and riskTier
+                    SignupProgress.setMinProgress(req, 'billing', function () {
+                        res.json(result);
+                    });
+                }
             });
         } else {
             scope.log.warn('User matched against black list and was blocked', {userId: req.session.userId});

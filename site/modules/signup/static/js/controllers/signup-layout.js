@@ -12,7 +12,7 @@
                     billing:"Payment Method",
                     ssh:"SSH Key"
                 };
-                $scope.steps = ['billing', 'phone', 'ssh'];
+                $scope.steps = ['phone', 'billing', 'ssh'];
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.campaignId = $cookies.campaignId;
