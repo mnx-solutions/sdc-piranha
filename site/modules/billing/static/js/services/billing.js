@@ -2,7 +2,13 @@
 
 (function (app) {
     // I provide information about the current route request.
-    app.factory('BillingService', ['$http','$q', 'serverTab', '$$track', function ($http, $q, serverTab, $$track) {
+    app.factory('BillingService', [
+        '$http',
+        '$q',
+        'serverTab',
+        'notification',
+        'localization',
+        function ($http, $q, serverTab, notification, localization) {
         var service = {};
 
         var creditCard = null;
@@ -24,7 +30,14 @@
                     name: 'defaultCreditCard',
                     data: {},
                     done: function (err, job) {
-
+                        if(err) {
+                            notification.push('defaultCreditCard', { type: 'error' },
+                                localization.translate(null,
+                                    'billing',
+                                    'Unable to retrieve defaultCreditCard'
+                                )
+                            );
+                        }
                     }
                 });
                 return call.deferred;
@@ -41,29 +54,56 @@
             return call;
         };
 
-        service.getInvoices = function (data, callback) {
+        service.getInvoices = function (callback) {
             var call = serverTab.call({
                 name: 'listInvoices',
-                data: data,
-                done: callback
+                data: {},
+                done: callback || function (err, job) {
+                    if(err) {
+                        notification.push('invoices', { type: 'error' },
+                            localization.translate(null,
+                                'billing',
+                                'Unable to retrieve invoices'
+                            )
+                        );
+                    }
+                }
             });
             return call.deferred;
         };
 
-        service.getSubscriptions = function (data, callback) {
+        service.getSubscriptions = function (callback) {
             var call = serverTab.call({
                 name: 'getSubscriptions',
-                data: data,
-                done: callback
+                data: {},
+                done: callback || function (err, job) {
+                    if(err) {
+                        notification.push('subscriptions', { type: 'error' },
+                            localization.translate(null,
+                                'billing',
+                                'Unable to retrieve subscriptions'
+                            )
+                        );
+                    }
+                }
             });
             return call.deferred;
         };
 
-        service.getLastInvoice = function (data, callback) {
+        service.getLastInvoice = function (callback) {
             var call = serverTab.call({
                 name: 'getLastInvoice',
-                data: data,
-                done: callback
+                data: {},
+                done: callback || function (err, job) {
+                    if(err) {
+                        notification.push('lastInvoice', { type: 'error' },
+                            localization.translate(null,
+                                'billing',
+                                'Unable to retrieve latest invoice'
+                            )
+                        );
+                    }
+                }
             });
             return call.deferred;
         };
