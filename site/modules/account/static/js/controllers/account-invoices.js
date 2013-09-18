@@ -30,13 +30,8 @@
             });
 
             $scope.exportIframe = '';
-            $scope.downloads = {};
-            window.downloadFinished = function (id) {
-                delete $scope.downloads[id];
-            };
             $scope.download = function (invoice) {
-                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '" onload="downloadFinished(\'' + invoice.id + '\')"></iframe>';
-                $scope.downloads[invoice.id] = invoice;
+                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
             };
 
         }]);
