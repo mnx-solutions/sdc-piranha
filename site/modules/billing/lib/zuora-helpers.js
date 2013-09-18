@@ -4,22 +4,40 @@ var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
 var zuora = require('zuora').create(config.zuora.api);
+var zuoraSoap = require('./zuora');
 var moment = require('moment');
 
 
 var zuoraErrors = {};
 
 function init(callback) {
+    var count = 2;
+    var sent = false;
+    function end(err) {
+        if(sent) {
+            return;
+        }
+        if(err) {
+            callback(err);
+            sent = true;
+            return;
+        }
+        if(--count === 0) {
+            callback();
+            sent = true;
+        }
+    }
     // Here we init the zuora errors (its a mess)
     fs.readFile(path.join(process.cwd(), '/var/errors.json'), function (err, data) {
         if(err) {
-            callback(err);
+            end(err);
             return;
         }
         zuoraErrors = JSON.parse(data);
-        callback();
+        end();
     });
 
+    zuoraSoap.connect(config.zuora.soap, end);
 }
 
 module.exports.init = init;
@@ -314,3 +332,23 @@ function createZuoraAccount(call, cb) {
 }
 
 module.exports.createZuoraAccount = createZuoraAccount;
+
+function getInvoicePDF(req, res, next) {
+    zuoraSoap.queryPDF(req.params.account, req.params.id,function (err, data) {
+        if(err) {
+            next(err);
+            return;
+        }
+        var buffer = new Buffer(data.Body,'base64');
+        res.set({
+            'Accept-Ranges':'bytes',
+            'Content-Disposition':'attachment; filename="' + data.InvoiceNumber + '.pdf"',
+            'Content-Length': buffer.length,
+            'Content-Type':'application/pdf'
+        });
+        res.send(buffer);
+    });
+}
+module.exports.zSoap = zuoraSoap;
+
+module.exports.getInvoicePDF = getInvoicePDF;

@@ -46,6 +46,18 @@
                     "list": ["CUB","IRN","SYR","SDN","PRK"]
                 }
             }
+        },
+        "soap": {
+            "tenantId"     : "",
+            "tenantName"   : "",
+            "user"         : "",
+            "password"     : "",
+            "endpoint"     : "",
+            "wsdl"         : "",
+            "objectNS"     : "",
+            "zuoraNS"      : "",
+            "product"      : "",
+            "UOM_postfix"  : ""
         }
     },
     "billing":{

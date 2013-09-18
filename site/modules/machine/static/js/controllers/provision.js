@@ -35,11 +35,11 @@
             $scope.showFinishConfiguration = false;
 
             $q.all([
-                    $q.when($scope.keys),
-                    $q.when($scope.datacenters)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
+                $q.when($scope.keys),
+                $q.when($scope.datacenters)
+            ]).then(function () {
+                $scope.loading = false;
+            });
 
             $scope.data = {};
             $scope.selectedDataset = null;

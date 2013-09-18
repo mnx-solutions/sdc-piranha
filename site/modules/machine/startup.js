@@ -101,7 +101,7 @@ module.exports = function execute(scope) {
             var cloud = call.cloud.separate(name);
             call.log.debug('List machines for datacenter %s', name);
 
-            cloud.listMachines({ 'credentials': true }, function (err, machines) {
+            cloud.listMachines({ credentials: true }, function (err, machines) {
                 var response = {
                     name: name,
                     status: 'pending',

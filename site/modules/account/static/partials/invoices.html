@@ -11,55 +11,27 @@
 
         <div class="pull-left container span9">
 			<div class="loading-medium" data-ng-show="loading" style="height:60px;100%"></div>
-            <div class="item-list-container" data-ng-show="!loading">
-                <div class="item header">
-                    <span class="span2 text-medium" data-translate>Invoice Number</span>
-					<span class="span3 text-medium" data-translate>Date</span>
-					<span class="span1 text-medium" data-translate>State</span>
-					<span class="span2 text-medium pull-right align-right" data-translate>Total (USD)</span>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-
-                <div class="item" data-ng-repeat="invoice in invoices">
-                    <span class="span2 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceNumber}}</span>
-					<span class="span3 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.invoiceDate}}</span>
-					<span class="span1 pointer text-medium" data-ng-click="setOpenDetails($index);">{{invoice.status}}</span>
-
-					<span class="span2 pointer text-medium pull-right align-right"
-                          data-ng-click="setOpenDetails($index);">{{invoice.amount | number:2}}
-                    </span>
-
-                    <div class="clearfix"></div>
-
-                    <div data-ng-show="openDetails == $index" class="toolbox ">
-	                    <div class="item header text-medium">
-							<span class="pull-left span2 text-medium" data-translate>Product</span>
-							<span class="pull-left span3 text-medium" data-translate>Period</span>
-							<span class="pull-left span1 text-medium" data-translate>Quantity</span>
-							<span class="pull-right span2 text-medium pull-right align-right" data-translate>Sum (USD)</span>
-							<div class="clearfix"></div>
-                        </div>
-
-                        <div class="item text-medium" data-ng-repeat="item in invoice.invoiceItems">
-							<span class="pull-left span2 text-medium">{{item.productName}}</span>
-							<span class="pull-left span3 text-medium">{{item.serviceStartDate}}-{{item.serviceEndDate}}</span>
-							<span class="pull-left span1 text-medium">{{item.quantity}}</span>
-							<span class="pull-right span2 text-medium align-right">{{item.chargeAmount | number:2}} USD</span>
-							<div class="clearfix"></div>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div data-ng-show="addsshKey">
-                    <button data-ng-click="addNewKey()" data-ng-disabled="createPending">Add ssh key</button><br />
-                    <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
-                    <div class="loading-medium" data-ng-show="createPending"></div>
-                </div>
-            </div>
-            <div class="clearfix"></div>
+            <table class="table" data-ng-show="!loading">
+                <thead>
+                    <tr>
+                        <td data-translate>Invoice Number</td>
+                        <td data-translate>Date</td>
+                        <td data-translate>State</td>
+                        <td data-translate>Total (USD)</td>
+                        <td data-translate>Download</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="invoice in invoices">
+                        <td>{{invoice.invoiceNumber}}</td>
+                        <td>{{invoice.invoiceDate}}</td>
+                        <td>{{invoice.status}}</td>
+                        <td>{{invoice.amount | number:2}}</td>
+                        <td><button class="btn btn-small btn-success" data-ng-click="download(invoice)" data-translate>Download</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
 		<div class="span3 pull-right">
         	<div account-right-menu></div>
 			<div class="clearfix"></div>
@@ -68,3 +40,4 @@
 		</div>
     </div>
 </div>
+<div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>

@@ -50,6 +50,15 @@
             return call.deferred;
         };
 
+        service.getSubscriptions = function (data, callback) {
+            var call = serverTab.call({
+                name: 'getSubscriptions',
+                data: data,
+                done: callback
+            });
+            return call.deferred;
+        };
+
         service.getLastInvoice = function (data, callback) {
             var call = serverTab.call({
                 name: 'getLastInvoice',

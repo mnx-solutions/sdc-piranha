@@ -170,6 +170,17 @@ module.exports = function execute(scope, callback) {
         });
     });
 
+    server.onCall('getSubscriptions', function (call) {
+        zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
+            if (err) {
+                call.done(err);
+                return;
+            }
+
+            call.done(null, resp.subscriptions);
+        });
+    });
+
     zHelpers.init(function (err) {
         if (err) {
             scope.log.fatal('failed to load error file for zuora', err);

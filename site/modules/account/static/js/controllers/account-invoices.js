@@ -8,6 +8,7 @@
 
             $scope.loading = false;
             $scope.invoices = BillingService.getInvoices();
+            $scope.subscriptions = BillingService.getSubscriptions();
 
             $scope.invoices.then(function () {
                 $scope.loading = false;
@@ -21,6 +22,11 @@
                 } else {
                     $scope.openDetails = id;
                 }
+            };
+
+            $scope.exportIframe = '';
+            $scope.download = function (invoice) {
+                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
             };
 
         }]);
