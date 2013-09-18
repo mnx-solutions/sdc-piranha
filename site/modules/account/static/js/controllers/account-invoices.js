@@ -2,15 +2,46 @@
 
 (function (app) {
     app.controller(
-        'Account.InvoicesController',
-        ['$scope', 'requestContext', '$http', 'BillingService', function ($scope, requestContext, $http, BillingService) {
+        'Account.InvoicesController', [
+            '$scope',
+            'requestContext',
+            '$http',
+            'BillingService',
+            'notification',
+            'localization',
+            '$q',
+            function ($scope, requestContext, $http, BillingService, notification, localization, $q) {
             requestContext.setUpRenderContext('account.invoices', $scope);
 
             $scope.loading = false;
-            $scope.invoices = BillingService.getInvoices();
-            $scope.subscriptions = BillingService.getSubscriptions();
+            $scope.invoices = BillingService.getInvoices(null, function (err, job) {
+                if(err) {
+                    $scope.error = err;
+                    notification.push('invoices', { type: 'error' },
+                        localization.translate(null,
+                            'billing',
+                            'Unable to retrieve invoices'
+                        )
+                    );
+                }
+            });
+            $scope.subscriptions = BillingService.getSubscriptions(null, function (err, job) {
+                $scope.loading = false;
+                if(err) {
+                    $scope.error = err;
+                    notification.push('subscriptions', { type: 'error' },
+                        localization.translate(null,
+                            'billing',
+                            'Unable to retrieve subscriptions'
+                        )
+                    );
+                }
+            });
 
-            $scope.invoices.then(function () {
+            $q.all([
+                $q.when($scope.invoices),
+                $q.when($scope.subscriptions)
+            ]).then(function () {
                 $scope.loading = false;
             });
 
