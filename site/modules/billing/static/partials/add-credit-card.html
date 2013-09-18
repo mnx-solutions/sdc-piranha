@@ -1,6 +1,5 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
     <form name="paymentForm" novalidate="" class="row-fluid" id="paymentForm">
-
     <legend>Credit Card Details <span class="orange-asterix pull-right required-text">* required</span></legend>
         <table>
             <tbody>
@@ -43,24 +42,32 @@
                             <select id="expirationMonth"
                                     name="expirationMonth"
                                     class="date-month"
+                                    data-expiration-date
                                     data-ng-model="form.expirationMonth"
-                                    data-ng-class="{error: isError('creditCard.expirationMonth')}"
+                                    data-ng-class="{error: isError('creditCard.expirationMonth', 'invalidExpirationDate') || isError('creditCard.expirationMonth')}"
                                     data-ng-options="value for value in months"
                                     data-ng-required="true">
                             </select>
                             <select id="expirationYear"
                                     name="expirationYear"
                                     class="date-year"
+                                    data-expiration-date
                                     data-ng-model="form.expirationYear"
-                                    data-ng-class="{error: isError('creditCard.expirationYear')}"
+                                    data-ng-class="{error: isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationYear')}"
                                     data-ng-options="value for value in years"
                                     data-ng-required="true">
 
                             </select>
+                            {{ paymentForm.expirationMonth.$error }}
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate')">
+                                Invalid credit card expiration date (in past)
+                            </div>
                             <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.expirationYear') || isError('creditCard.expirationMonth')">
-                                Invalid credit card number
+                                Invalid credit card expiration date
                             </div>
                             <div class="error"
                                  data-translate
