@@ -14,20 +14,14 @@
                 $scope.loading = false;
             });
 
-
-            $scope.openDetails = null;
-            $scope.setOpenDetails = function(id) {
-                if ($scope.openDetails === id) {
-                    $scope.openDetails = null;
-                } else {
-                    $scope.openDetails = id;
-                }
-            };
-
             $scope.exportIframe = '';
             $scope.download = function (invoice) {
-                console.log('Downloading invoice from ' + 'billing/invoice/' + invoice.accountId + '/' + invoice.id);
-                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
+                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '" onload="_download_' + invoice.id + '()"></iframe>';
+                invoice.downloading = true;
+                window['_download_'+invoice.id] = function () {
+                    invoice.downloading = false;
+                    delete window['_download_'+invoice.id];
+                };
             };
 
         }]);
