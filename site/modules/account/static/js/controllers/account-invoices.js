@@ -26,6 +26,7 @@
 
             $scope.exportIframe = '';
             $scope.download = function (invoice) {
+                console.log('Downloading invoice from ' + 'billing/invoice/' + invoice.accountId + '/' + invoice.id);
                 $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
             };
 

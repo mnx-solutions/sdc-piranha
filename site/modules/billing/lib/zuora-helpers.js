@@ -13,12 +13,12 @@ var zuoraErrors = {};
 function init(callback) {
     var count = 2;
     var sent = false;
-    function end(err) {
+    function end(err, type) {
         if(sent) {
             return;
         }
         if(err) {
-            callback(err);
+            callback(err, type);
             sent = true;
             return;
         }
@@ -30,14 +30,20 @@ function init(callback) {
     // Here we init the zuora errors (its a mess)
     fs.readFile(path.join(process.cwd(), '/var/errors.json'), function (err, data) {
         if(err) {
-            end(err);
+            end(err, 'errors');
             return;
         }
         zuoraErrors = JSON.parse(data);
         end();
     });
 
-    zuoraSoap.connect(config.zuora.soap, end);
+    zuoraSoap.connect(config.zuora.soap, function (err) {
+        if(err) {
+            end(err, 'soap');
+            return;
+        }
+        end();
+    });
 }
 
 module.exports.init = init;

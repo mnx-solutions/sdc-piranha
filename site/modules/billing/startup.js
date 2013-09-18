@@ -6,6 +6,8 @@ var zuora = require('zuora').create(config.zuora.api);
 var restify = require('restify');
 var zHelpers = require('./lib/zuora-helpers');
 
+var isProduction = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+
 module.exports = function execute(scope, callback) {
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
@@ -181,10 +183,17 @@ module.exports = function execute(scope, callback) {
         });
     });
 
-    zHelpers.init(function (err) {
+    zHelpers.init(function (err, errType) {
         if (err) {
-            scope.log.fatal('failed to load error file for zuora', err);
-            process.exit();
+            if(errType === 'errors') {
+                scope.log.fatal('Failed to load zuora errors file', err);
+                process.exit();
+            } else if(isProduction) {
+                scope.log.fatal('Failed to connect soap', err);
+                process.exit();
+            } else {
+                scope.log.error('Failed to connect soap', err);
+            }
         }
 
         callback();
