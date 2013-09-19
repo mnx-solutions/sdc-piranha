@@ -21,7 +21,7 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
     });
 }
 
-module.exports = function execute(scope, register, callback) {
+module.exports = function execute(scope, register) {
     register('Metadata', require('./lib/metadata'));
 
     //Compatibility with old version
@@ -63,7 +63,6 @@ module.exports = function execute(scope, register, callback) {
             }
 
             cb(null, state);
-            return;
         });
     }
 
@@ -122,6 +121,9 @@ module.exports = function execute(scope, register, callback) {
 
     api.setSignupStep = function (call, step, cb) {
         function updateBilling(req) {
+            if (step !== 'billing') {
+                return; // no zuora account yet created
+            }
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
@@ -197,5 +199,4 @@ module.exports = function execute(scope, register, callback) {
     };
 
     register('SignupProgress', api);
-    setImmediate(callback);
 };

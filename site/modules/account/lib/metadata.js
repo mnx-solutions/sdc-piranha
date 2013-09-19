@@ -9,13 +9,18 @@ var appKey = 'portal';
 var set = function (customerUuid, key, value, callback) {
     if (!customerUuid) {
         if(callback) {
-            callback(new Error('Missing UUID'));
+            setImmediate(function () {
+                callback(new Error('Missing UUID'));
+            });
         }
         return false;
     }
 
     if (value) {
-        capi.putMetadata(customerUuid, appKey, key, {value: value}, function(err) {
+        if(typeof value !== 'object') {
+            value = {value: value};
+        }
+        capi.putMetadata(customerUuid, appKey, key, value, function(err) {
             if (callback) {
                 callback(err, value);
             }
@@ -30,7 +35,11 @@ var set = function (customerUuid, key, value, callback) {
 
 };
 
-var get = function (customerUuid, key, callback) {
+var get = function (customerUuid, key, val, callback) {
+    if(val instanceof Function) {
+        callback = val;
+        val = 'value';
+    }
     capi.getMetadata(customerUuid, appKey, key, function (err, res) {
         if(res === 'false') {
             callback(null, false);
@@ -39,8 +48,8 @@ var get = function (customerUuid, key, callback) {
         var result = false;
         if(typeof res === 'string') {
             result = res.indexOf('=') !== -1 ? res.split('=')[1] : result;
-        } else if(typeof res === 'object' && res.value) {
-            result = res.value;
+        } else if(typeof res === 'object' && res[val]) {
+            result = res[val];
         }
         callback(null, result);
     });

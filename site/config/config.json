@@ -92,6 +92,12 @@
         "url":""
     },
     "maxmind": {
-        "licenseId": "bQg6oKXwLfWj"
+        "url": "https://api.maxmind.com",
+        "licenseId": "bQg6oKXwLfWj",
+        "limits" : {
+            "calls": 3,
+            "serviceFails": 3,
+            "pinTries": 3
+        }
     }
 }
