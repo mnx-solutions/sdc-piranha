@@ -227,8 +227,8 @@
 }
 
 .resize-button {
-    margin-top:78px;
-    margin-bottom:0px;
+    margin-top:20px;
+    margin-bottom:0;
 }
 
 .pagination-show-all {
@@ -270,7 +270,7 @@
 }
 
 .key, .value {
-    padding: 3px 0px 3px 0px;
+    padding: 3px 0 3px 0;
     float: left;
 }
 
@@ -434,7 +434,7 @@
     background-color: #afd46c;
     background-image: none;
     border: none;
-    padding: 6px 14px;
+    /*padding: 6px 14px;*/
     font-size: 16px;
     cursor: pointer;
     outline: none;
@@ -695,7 +695,19 @@ ul.dropdown-menu{
     font-size: 16px;
     text-decoration: none;
 }
-.accordion-toggle i {
+
+.accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i {
+    width: 14px ;
+    height: 14px ;
+    float: left;
+    margin-top: 3px;
+    position: relative;
+    left: -4px;
+    background-repeat: no-repeat;
+    background-image: url("../img/accord_i_plus.png") !important;
+    padding-right: 5px;
+}
+.accordion-toggle.active i {
     width: 14px;
     height: 14px;
     float: left;
@@ -703,13 +715,8 @@ ul.dropdown-menu{
     position: relative;
     left: -4px;
     background-repeat: no-repeat;
-    background-image: url("../img/accord_i_down.png");
+    background-image: url("../img/accord_i_down.png") !important;
     padding-right: 5px;
-}
-.accordion-toggle.collapsed i {
-    width: 14px !important;
-    height: 14px !important;
-    background-image: url("../img/accord_i_plus.png")  !important;
 }
 .accordion-inner {
     border-top: 0 !important;
@@ -753,6 +760,7 @@ ul.dropdown-menu{
     background-repeat: no-repeat;
     line-height: 14px;
     vertical-align: top;
+    padding-right: 5px;
 }
 .pause_icon {
     background-image: url("../img/btn_i_pause.png");
@@ -769,7 +777,7 @@ ul.dropdown-menu{
 .details_btn_block span {
     float: left;
     min-width: 86.5px !important;
-    margin-bottom: 20px;
+    /*margin-bottom: 20px;*/
 }
 .details_btn_block_margin{
     margin-right: 7px;
@@ -886,4 +894,20 @@ ul.dropdown-menu{
     width: 100%;
     height: 100%;
     background: url('../img/sselect2.png') no-repeat 0 3px !important;
+}
+.resize_block{
+    padding-top: 20px;
+}
+.icon-info-sign, .icon-warning-sign, .icon-question-sign{
+    background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
+}
+.details_btn_block p{
+    display: inline-block;
+    width: 65px;
+    height: 8px !important;
+}
+.container_details{
+    width: 1000px;
+    padding-left: 48px;
+    padding-bottom: 55px;
 }

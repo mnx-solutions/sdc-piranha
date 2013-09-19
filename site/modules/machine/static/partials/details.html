@@ -1,357 +1,374 @@
-<div class="container" data-ng-controller="Machine.DetailsController">
-<div data-breadcrumb></div>
-<div data-notification></div>
+<div class="container_details " data-ng-controller="Machine.DetailsController">
 
-<div class="page-header">
-    <h1 class="pull-left machine-name" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
-    <form name="instanceRename" class="machine-edit-form">
-        <div class="error"
-             data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
-             data-translate>
-            Invalid machine name
+<ul class="breadcrumb">
+    <li><a href="#!/dashboard">Dashboard</a> /</li>
+    <li><a href="#!/instance"> Compute</a> /</li>
+    <li><a href="#"> Instance Details</a> /</li>
+</ul>
+<h3 class="page-title" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">{{machine.name}}</h3>
+<form name="instanceRename" class="machine-edit-form">
+    <div class="error"
+         data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
+         data-translate>
+        Invalid machine name
+    </div>
+
+    <div class="error"
+         data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
+         data-translate>
+        Machine name is already in use
+    </div>
+    <div class="pull-left machine-edit" data-ng-show="changingName">
+        <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
+        <div class="btn-group machine-edit-buttons">
+            <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
+            <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
         </div>
+    </div>
+</form>
 
-        <div class="error"
-             data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
-             data-translate>
-            Machine name is already in use
-        </div>
-        <div class="pull-left machine-edit" data-ng-show="changingName">
-            <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
-            <div class="btn-group machine-edit-buttons">
-                <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
-                <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
-            </div>
-        </div>
-    </form>
-    <div machine-status machine="machine" class="pull-right"></div>
-	<div class="clearfix"></div>
-</div>
-<div class="row-fluid">
-<div class="machine span8 listing text-medium">
-        <fieldset data-ng-show="machine">
-            <legend data-translate>Overview</legend>
-            <div class="row-fluid">
-                <div class="span11">
-                    <div class="row-fluid">
-                        <span class="span4 key" data-translate>UUID</span>
-                        <span class="span8 value pull-right">{{machine.id}}&nbsp;</span>
-                    </div>
-                    <div data-ng-show="machine.name" class="row-fluid">
-                        <span class="key span4" data-translate>Instance name</span>
-                        <span class="value span8 pull-right">{{machine.name}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid">
-                        <span class="key span4" data-translate>Type</span>
-                        <span class="value span8 pull-right">{{machine.type}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid">
-                        <span class="key span4" data-translate>Image</span>
-                        <span class="value span8 pull-right">{{dataset.name}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid">
-                        <span class="key span4" data-translate>Image version</span>
-                        <span class="value span8 pull-right">{{dataset.version}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid">
-                        <span class="key span4" data-translate>Memory</span>
-                        <span class="value span8 pull-right">{{machine.memory | sizeFormat}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid">
-                        <span class="key span4" data-translate>Disk</span>
-                        <span class="value span8 pull-right">{{machine.disk | sizeFormat}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid" data-ng-show="machine.ips">
-                        <span class="key span4" data-translate>IP addresses</span>
-                         <span class="value span8 pull-right">
-                             <span data-ng-repeat="ip in machine.ips">{{ip}}&nbsp;</span>
-                         </span>
-                    </div>
-
-                    <div class="row-fluid" data-ng-show="machine.created">
-                        <span class="key span4" data-translate>Created</span>
-                                        <span class="value span8 pull-right">
-                                            {{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}&nbsp;
-                                        </span>
-                    </div>
-
-                    <div class="row-fluid" data-ng-show="machine.datacenter">
-                        <span class="key span4" data-translate>Datacenter</span>
-                        <span class="value span8 pull-right">{{machine.datacenter}}&nbsp;</span>
-                    </div>
-
-                    <div class="row-fluid" data-ng-show="machine.primaryIps.length">
-                        <span class="key span4" data-translate>Login</span>
-                        <span class="value span8 pull-right" data-ng-show="machine.os != 'windows'">ssh root@{{machine.primaryIps[0]}}&nbsp;</span>
-                        <span class="value span8 pull-right" data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIps[0]}}&nbsp;</span>
+<div class="portlet-body">
+    <div class="inst_left">
+        <div class="accordion" id="accordion1">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle" data-ng-class="{active: accordionIcon[0] }" data-ng-click="collapseTrigger(0)" data-toggle="collapse" data-parent="#accordion1"
+                       href="#collapse_1">
+                        <i class=""></i>
+                        Meta Data
+                    </a>
+                </div>
+                <div id="collapse_1" class="accordion-body collapse in">
+                    <div class="accordion-inner">
+                        <p>
+                        <table>
+                            <tr>
+                                <td style="width:140px">UUID</td>
+                                <td style="color:#333333;font-weight: bold;">{{machine.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>Instance name</td>
+                                <td>{{machine.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>Type</td>
+                                <td>{{machine.type}}</td>
+                            </tr>
+                            <tr>
+                                <td>Images<i class="details-images-icon"></i></td>
+                                <td>{{dataset.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>Image version</td>
+                                <td>{{dataset.version}}</td>
+                            </tr>
+                            <tr>
+                                <td>Memory</td>
+                                <td>{{machine.memory | sizeFormat}}</td>
+                            </tr>
+                            <tr>
+                                <td>Disk</td>
+                                <td>{{machine.disk | sizeFormat}}</td>
+                            </tr>
+                            <tr>
+                                <td>IP addresses</td>
+                                <td data-ng-repeat="ip in machine.ips">{{ip}}</td>
+                            </tr>
+                            <tr>
+                                <td>Created</td>
+                                <td>{{machine.created | date:'yyyy-MM-dd HH:mm:ss Z'}}</td>
+                            </tr>
+                            <tr>
+                                <td>Datacenter</td>
+                                <td>{{machine.datacenter}}</td>
+                            </tr>
+                            <tr data-ng-show="machine.primaryIps.length">
+                                <td>login</td>
+                                <td data-ng-show="machine.os != 'windows'">ssh root@{{machine.primaryIps[0]}}</td>
+                                <td data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIps[0]}}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
-        </fieldset>
-
-    <fieldset data-ng-show="machine.metadata.credentials">
-        <legend data-translate>Credentials</legend>
-
-        <table class="table table-striped text-medium">
-            <thead>
-                <th data-translate>System</th>
-                <th data-translate>Username</th>
-                <th data-translate>Password</th>
-                <th>&nbsp;</th>
-            </thead>
-            <tr data-ng-repeat="(key,credential) in machine.metadata.credentials">
-                <td>{{credential.system}}</td>
-                <td>{{credential.username}}</td>
-                <td><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span></td>
-                <td nowrap>
-                    <a class="show-password" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">[ Show ]</a>
-                    <a class="show-password" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">[ Hide ]</a>
-                </td>
-            </tr>
-        </table>
-    </fieldset>
-    <fieldset>
-        <legend>
-            <span data-translate>Tags</span>
-            <small data-translate>Add tags for convenient instance searching</small>
-        </legend>
-
-        <p class="text-small muted" data-translate>
-            Tags are metadata stored as key-value pairs to make it easier for you to find, sort,
-            and identify your instances.
-        </p>
-
-        <div class="clearfix"></div>
-
-        <div>
-            <form name="tagForm">
-                <div class="tags" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
-                    <div class="tag row-fluid" data-ng-show="!o.edit">
-                        <span class="key span5" data-ng-class="{error: o.conflict}">{{o.key}}</span>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[1] }" data-ng-click="collapseTrigger(1)" data-toggle="collapse" data-parent="#accordion1"
+                       href="#collapse_2">
+                        <i class=""></i>
+                        Tags
+                    </a>
+                </div>
+                <div id="collapse_2" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <p>
+                            Add tags for convenient instance searching
+                            Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and
+                            identify your instances.
+                        </p>
+                        <form name="tagForm">
+                            <div class="tags" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
+                                <div class="tag row-fluid" data-ng-show="!o.edit">
+                                    <span class="key span5" data-ng-class="{error: o.conflict}">{{o.key}}</span>
                         <span class="value span5" data-ng-class="{error: o.conflict}">
                             {{o.val}}
                             <span class="icon-trash pull-right delete"
                                   data-ng-click="removeTag(key)"
                                   data-ng-show="!tagsave"
-                                  ></span>
-                            <!-- <div class="clearfix"></div> -->
+                                    ></span>
                         </span>
+                                </div>
+
+                                <div class="tag editable" data-ng-show="o.edit">
+                                    <div data-ng-class="{error: o.conflict}" class="tag row-fluid">
+
+
+                                    <div class="control-group">
+                                        <label class="control-label">Key<span class="required">*</span></label>
+
+                                        <div class="controls">
+                                            <input type="text"
+                                                   placeholder="Key"
+                                                   data-translate="placeholder"
+                                                   data-ng-model="o.key"
+                                                   data-ng-required="key != tagnr"
+                                                   data-ng-disabled="tagsave"
+                                                   style="width: 220px;">
+
+                                            <span class="help-inline">Provide a key</span>
+                                        </div>
+                                        <div>
+                                            <label class="control-label">Value</label>
+                                            <input type="text"
+                                                   placeholder="Value"
+                                                   data-translate="placeholder"
+                                                   data-ng-model="o.val"
+                                                   data-ng-required="key != tagnr"
+                                                   data-ng-disabled="tagsave"
+                                                   style="width: 220px;"/>
+                                            <span class="icon-trash delete"
+                                                  data-ng-click="removeTag(key)"
+                                                  data-ng-show="key != tagnr && !tagsave">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tags row-fluid">
+                                <!--<a class="btn orange" href="#collapse_2" target="_blank">Save Tag</a>-->
+                                <button class="btn orange"
+                                        data-ng-click="clickSaveTags(machine.id)"
+                                        data-translate
+                                        data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save Tag</button>
+                                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="tag editable" data-ng-show="o.edit">
-                        <div data-ng-class="{error: o.conflict}" class="tag row-fluid">
-                            <span class="key span5">
-                                <span class="span3 tag-label">
-                                    <label>Key <span class="required-asterix">*</span></label>
-                                </span>
-                                <span class="span9">
-                                    <input type="text"
-                                           placeholder="Key"
-                                           data-translate="placeholder"
-                                           data-ng-model="o.key"
-                                           data-ng-required="key != tagnr"
-                                           data-ng-disabled="tagsave">
-                                </span>
-                            </span>
-
-                            <span class="value span5">
-                                <span class="span3 tag-label">
-                                    <label>Value <span class="required-asterix">*</span></label>
-                                </span>
-                                <span class="span9">
-                                    <input type="text"
-                                           placeholder="Value"
-                                           data-translate="placeholder"
-                                           data-ng-model="o.val"
-                                           data-ng-required="key != tagnr"
-                                           data-ng-disabled="tagsave">
-
-                                                                <span class="icon-trash pull-right delete"
-                                                                      data-ng-click="removeTag(key)"
-                                                                      data-ng-show="key != tagnr && !tagsave">
-                                                                </span>
-                                </span>
-                            </span>
-                        </div>
-                        <!-- <div class="clearfix"></div> -->
-                    </div>
-
-                    <!-- <div class="clearfix"></div> -->
                 </div>
-
-                <div class="tags row-fluid">
-                    <button class="btn btn-joyent-blue pull-right"
-                            data-ng-click="clickSaveTags(machine.id)"
-                            data-translate
-                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
-                    <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
-                </div>
-            </form>
-
-            <div class="clearfix"></div>
-        </div>
-        <div class="clearfix"></div>
-    </fieldset>
-    <fieldset data-ng-show="networks.length >= 1">
-        <legend>
-            <span data-translate>Networks</span>
-            <small data-translate>Instance networks</small>
-        </legend>
-
-        <div>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>ID</th>
-                    <th>Public</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr data-ng-repeat="network in networks" data-ng-show="network.id">
-                    <td>{{$index+1}}.</td>
-                    <td>{{network.name}}</td>
-                    <td>{{network.id}}</td>
-                    <td>{{network.public}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </fieldset>
-
-
-    <div class="clearfix"></div>
-</div>
-<div class="span4 pull-right" style="margin-top:40px">
-    <div class="well well-small shadow">
-	<div class="row-fluid">
-        <button role="button"
-                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
-                data-ng-click="clickStart(machine.id)"
-                data-toggle="tooltip"
-                data-placement="top"
-                data-html="true"
-                data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
-                data-translate
-                data-ng-class="{'btn-success': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                class="btn btn-small span3 tooltip-hover">Start</button>
-        <button role="button"
-                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
-                data-ng-click="clickStop(machine.id)"
-                data-translate-attributes="data-original-title"
-                data-toggle="tooltip"
-                data-placement="top"
-                data-html="true"
-                data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
-                data-translate
-                data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                class="btn btn-small span3 tooltip-hover">Stop</button>
-
-        <button role="button"
-                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
-                data-ng-click="clickDelete(machine.id)"
-                data-translate
-                data-translate-attributes="data-original-title"
-                data-toggle="tooltip"
-                data-placement="top"
-                data-html="true"
-                data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
-                data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                class="btn btn-small span3 tooltip-hover">Delete</button>
-
-        <button role="button"
-                data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
-                data-ng-click="clickReboot(machine.id)"
-                data-toggle="modal"
-                data-translate
-                data-translate-attributes="data-original-title"
-                data-toggle="tooltip"
-                data-placement="top"
-                data-html="true"
-                data-original-title="Click here to reboot your instance."
-                data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                class="btn btn-small span3 tooltip-hover">Reboot</button>
-    	</div>
-	</div>
-    <div class="clearfix"></div>
-    <div class="alert alert-success shadow">
-        <h4 data-translate>Need help?</h4>
-        <p data-translate>Help will open in new window</p>
-        <form class="form-search" method="GET" action="http://www.joyent.com/developers/search" target="_blank">
-            <div class="input-append">
-                <input type="text" name="q" class="span10 search-query" placeholder="Search">
-                <button type="submit" class="btn" data-translate>Search</button>
             </div>
-        </form>
-    </div>
-    <div class="alert shadow" style="">
-        <h4 data-translate>Analytics</h4>
-        <p data-translate>Examine system performance.</p>
-		<a href="#!/cloudAnalytics/{{machine.id}}" class="btn btn-warning pull-right">Start Analytics</a>
-		<div class="clearfix"></div>
-        <a href="#!/cloudAnalytics/{{machine.id}}"><img src="/static/img/analytics-small.png" hspace="10" vspace="20" border="0"></a>
-    </div>
-    <div class="clearfix"></div>
-</div>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[2]}" data-ng-click="collapseTrigger(2)" data-toggle="collapse" data-parent="#accordion1"
+                       href="#collapse_3">
+                        <i class=""></i>
+                        Resize Instance
+                    </a>
+                </div>
+                <div id="collapse_3" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <p class="text-small muted" data-translate>
+                            It may not always be possible to resize based on the constraints of your current server location.
+                        </p>
 
-</div>
-<div class="row-fluid">
-<div class="span12">
-<fieldset>
-    <legend data-translate>Resize Instance</legend>
-    <p class="text-small muted" data-translate>
-        It may not always be possible to resize based on the constraints of your current server location.
-    </p>
+                        <p data-ng-show="datasetType != 'smartos' && machine.type != 'smartmachine' " data-translate>
+                            To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.
+                        </p>
 
-    <p data-ng-show="datasetType != 'smartos' && machine.type != 'smartmachine' " data-translate>
-        To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.
-    </p>
-
-    <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="row-fluid well" data-ng-class="{'loading-medium': isResizing}">
-        <div class="span6 arrow-to" data-ng-show="currentPackage">
-            <div>
-                <h6 data-translate>Current Instance type</h6>
+                        <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="row-fluid " data-ng-class="{'loading-medium': isResizing}">
+                            <div class="pull-left" data-ng-show="currentPackage">
+                                <div>
+                                    <p data-translate><b>Current Instance type</b></p>
                     <span data-ng-show="currentPackage.group">
                         <span  data-ng-show="currentPackage.description">{{currentPackage.description}}</span><br />
                         <span data-translate>Type</span>:
                         <span>{{currentPackage.group}}</span>
                     </span><br />
-                <span data-translate>Memory</span>:
-                <span>{{currentPackage.memory | sizeFormat}}</span><br />
-                <span data-translate>Disk</span>:
-                <span>{{currentPackage.disk | sizeFormat}}</span><br />
-                <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
-                <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                                    <span data-translate>Memory</span>:
+                                    <span>{{currentPackage.memory | sizeFormat}}</span><br />
+                                    <span data-translate>Disk</span>:
+                                    <span>{{currentPackage.disk | sizeFormat}}</span><br />
+                                    <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
+                                    <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                                </div>
+                            </div>
+
+                            <div class="pull-left resize_block">
+                                <p class="control-label" data-translate><b>Resize Instance type</b></p>
+                                <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName" data-placeholder="Select package to resize to">
+                                    <option value=""></option>
+                                    <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
+                                            value="{{package.name}}" class="text-medium">
+                                        Mem: {{package.memory | sizeFormat}}
+                                        Disk: {{package.disk | sizeFormat}}
+                                        <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                                    </option>
+                                </select>
+
+                                <div class="control-group resize-button">
+                                    <button class="btn orange" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[3]}" data-ng-click="collapseTrigger(3)" data-toggle="collapse" data-parent="#accordion1"
+                       href="#collapse_4">
+                        <i class=""></i>
+                        Image
+                    </a>
+                </div>
+                <div id="collapse_4" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <p>
+                            When creating an image from an instance, the image creation process is as follows:
+                        </p>
+
+                        <p>
+                            1. Stop Instance<br>
+                            2. Create Snapshot/Backup of master instance<br>
+                            3. Remove all instance specific information from the instance<br>
+                            4. Create the Image<br>
+                            5. Restore the instance specific information to the master instance.<br>
+                        </p>
+
+                        <p>
+
+                        <div>
+                            <label class="control-label">Image Name</label>
+                            <input type="text" class="span3" name="iname"/><br>
+                            <a class="btn orange" data-toggle="modal" href="#static">Create
+                                Image</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[4] }" data-ng-click="collapseTrigger(4)" data-toggle="collapse" data-parent="#accordion1"
+                       href="#collapse_5">
+                        <i class=""></i>
+                        Firewall Rules
+                    </a>
+                </div>
+                <div id="collapse_5" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <p>
+                            Details about the specific firewall rules for this instance
+                        </p>
+
+                        <p>
+                            <a class="btn orange" data-toggle="modal" href="#static">Activate
+                                Firewall Rules</a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[5]}" data-ng-click="collapseTrigger(5)"   data-toggle="collapse" data-parent="#accordion1"
+                       href="#collapse_6">
+                        <i class=""></i>
+                        Networks
+                    </a>
+                </div>
+                <div id="collapse_6" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <p>
+                            INFORMATION ABOUT THE NETWORK
+                        </p>
+
+                        <p>
+                            <a class="btn orange" data-toggle="modal" href="#static">Apply
+                                network
+                                changes</a>
+                        </p>
+                    </div>
+
+                </div>
             </div>
         </div>
-
-        <div class="span6" >
-            <h6 class="control-label" data-translate>Resize Instance type</h6>
-            <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName" data-placeholder="Select package to resize to">
-                <option value=""></option>
-                <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
-                        value="{{package.name}}" class="text-medium">
-                    Mem: {{package.memory | sizeFormat}}
-                    Disk: {{package.disk | sizeFormat}}
-                    <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
-                </option>
-            </select>
-
-            <div class="control-group align-right resize-button">
-                <button class="btn btn-joyent-blue" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
-            </div>
-        </div>
-        <div class="clearfix"></div>
     </div>
+    <div class="pull-left">
+        <div class="details_btn_block">
+            <span data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
+                  data-ng-click="clickStart(machine.id)"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  data-html="true"
+                  data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
+                  data-ng-class="{'btn-success': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
+                  class="state btn green font_size details_btn_block_margin tooltip-hover">
+                  <i class="icon-ok"></i>
+                <p data-translate>running</p>
+            </span>
 
-</fieldset>
-   </div>
+            <span data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
+                  data-ng-click="clickStop(machine.id)"
+                  data-translate-attributes="data-original-title"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  data-html="true"
+                  data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
+                  data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
+                  class="state btn orange font_size details_btn_block_margin tooltip-hover"><i class="pause_icon"></i>
+                <p data-translate>pause</p>
+            </span>
+
+            <span data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
+                  data-ng-click="clickDelete(machine.id)"
+                  data-translate-attributes="data-original-title"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  data-html="true"
+                  data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
+                  data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
+                  class="state btn orange font_size details_btn_block_margin tooltip-hover"><i class="stop_icon"></i> <p data-translate>delete</p></span>
+
+            <span data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
+                  data-ng-click="clickReboot(machine.id)"
+                  data-toggle="modal"
+                  data-translate-attributes="data-original-title"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  data-html="true"
+                  data-original-title="Click here to reboot your instance."
+                  data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
+                  class="state btn orange font_size  tooltip-hover"><i class="reboot_icon"></i> <p data-translate>reboot</p></span>
+        </div>
+        <a href="#!/cloudAnalytics/{{machine.id}}">
+            <div class="detail_chart cpu_chart"></div>
+        </a>
+
+        <div class="detail_chart net_chart">
+        </div>
+    </div>
 </div>
+
+    <div id="static" class="modal hide fade" tabindex="-1" data-backdrop="static" data-focus-on="button">
+        <div class="modal-header" style="background-color: #ff6600;color: white;">
+            <h5><i class="icon-info-sign"></i>  <b>Message</b></h5>
+        </div>
+        <div class="modal-body">
+            <p>Sorry, this is not implemented yet.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" data-dismiss="modal" data-tabindex="1" class="btn orange">OK</button>
+        </div>
+    </div>
 </div>
