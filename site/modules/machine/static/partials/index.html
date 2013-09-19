@@ -132,58 +132,59 @@
 	                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
 	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
 	                </div>
-
-	                <div class="pagination pagination-small pagination-centered">
-	                    <ul>
-	                        <li data-ng-class="{disabled: currentPage == 0}">
+                    <div class="pull-left select_position">
+                        <select ui-select2 data-ng-click="showPages()" data-ng-model="select2" value="5" class="no-search-box" style="width: 120px !important;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="All">All</option>
+                        </select>
+                        <span>&nbsp;records per page</span>
+                    </div>
+                    <div class="pagination pagination-right">
+                        <ul>
+                            <li data-ng-class="{disabled: currentPage == 0}">
                                 <a href ng-click="prevPage()" data-translate>← <span class="hidden-480">Previous</span></a>
-	                            <!--<a href ng-click="prevPage()" data-translate>« Prev</a>-->
-	                        </li>
-	                        <li data-ng-repeat="n in range()"
-	                            data-ng-class="{active: n == currentPage}"
-	                            data-ng-click="setPage()">
-	                            <a href data-ng-bind="n + 1">1</a>
-	                            <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
-	                        </li>
-	                        <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+                                <!--<a href ng-click="prevPage()" data-translate>« Prev</a>-->
+                            </li>
+                            <li data-ng-repeat="n in range()"
+                                data-ng-class="{active: n == currentPage}"
+                                data-ng-click="setPage()">
+                                <a href data-ng-bind="n + 1">1</a>
+                                <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
+                            </li>
+                            <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
                                 <a href data-ng-click="nextPage()" data-translate><span class="hidden-480">Next</span> → </a>
-	                            <!--<a href data-ng-click="nextPage()" data-translate>Next »</a>-->
-	                        </li>
+                                <!--<a href data-ng-click="nextPage()" data-translate>Next »</a>-->
+                            </li>
                             <!--<li data-ng-show="!showAllActive">-->
-                                <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->
+                            <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->
                             <!--</li>-->
                             <!--<li data-ng-show="showAllActive">-->
-                                <!--<a href data-ng-click="showPages()" data-translate>View pages</a>-->
+                            <!--<a href data-ng-click="showPages()" data-translate>View pages</a>-->
                             <!--</li>-->
-	                    </ul>
-                        <button role="button"
-                                class="btn btn-mini button tooltip-hover export-csv-button"
-                                data-ng-click="exportDetails()"
-                                data-translate
-                                data-translate-attributes="data-original-title"
-                                data-toggle="tooltip"
-                                data-placement="right"
-                                data-html="true"
-                                data-original-title="Export machine list in .csv">Export .csv</button>
+                        </ul>
+
                         <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
-	                </div>
+                    </div>
 				<!--</div>-->
 				
-	            <div class="pull-right span3">
-	                <button data-ng-click="changeLocation('/instance/create/')"
-	                        class="create-instance btn btn-joyent-blue btn-large"
-	                        data-translate>Create Instance</button>
-		                <div class="alert alert-joyent-blue">
-		                    <h4 data-translate>Need help?</h4>
-		                    <p class="text-medium" data-translate>Help will open in new window</p>
-		                    <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
-		                        <div class="input-append">
-		                            <input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">
-		                            <button type="submit" class="btn" data-translate>Search</button>
-		                        </div>
-		                    </form>
-		                </div>
-	            </div>
+	            <!--<div class="pull-right span3">-->
+	                <!--<button data-ng-click="changeLocation('/instance/create/')"-->
+                        <!--class="create-instance btn btn-joyent-blue btn-large"-->
+                        <!--data-translate>Create Instance-->
+                    <!--</button>-->
+                    <!--<div class="alert alert-joyent-blue">-->
+                        <!--<h4 data-translate>Need help?</h4>-->
+                        <!--<p class="text-medium" data-translate>Help will open in new window</p>-->
+                        <!--<form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">-->
+                            <!--<div class="input-append">-->
+                                <!--<input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder"/>-->
+                                <!--<button type="submit" class="btn" data-translate>Search</button>-->
+                            <!--</div>-->
+                        <!--</form>-->
+                    <!--</div>-->
+	            <!--</div>-->
             </div>
         </div>
 

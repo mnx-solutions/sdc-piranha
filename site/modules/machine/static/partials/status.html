@@ -4,7 +4,7 @@
           data-ng-show="machine.state.length">
         <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
         <i class="icon-ok" data-ng-show="machine.state == 'running'"></i>
-        <i class="warn_icon" data-ng-show="machine.state == 'stopped'"></i>
+        <i class="warn_icon" data-ng-show="machine.state == 'stopped' || machine.state == 'stopping'"></i>
         <span data-translate>{{machine.state}}</span>
     </span>
 

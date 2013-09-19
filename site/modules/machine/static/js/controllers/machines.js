@@ -35,7 +35,7 @@
                 { title: 'Created', value: 'created' },
                 { title: 'IP', value: 'ips[0]' },
                 { title: 'State', value: 'state' },
-                { title: 'Tags', value: 'tags.tags' }
+                { title: 'Tags', value: 'type' }
             ];
             $scope.sortField = $scope.sortable[2];
 
@@ -83,18 +83,18 @@
                     'created', 'id', 'name',
                     'type', 'dataset', 'ips',
                     'memory', 'disk', 'metadata',
-                    'datacenter','tags.tags'
+                    'datacenter','type'
                 ],
                 Visible: [
                     'created', 'id', 'name',
-                    'ips', 'datacenter', 'tags.tags'
+                    'ips', 'datacenter', 'type'
                 ],
                 Name: ['id', 'name'],
                 Type: ['type'],
                 Ip: ['ips'],
                 Memory: ['memory'],
                 Datacenter: ['datacenter'],
-                Tags: ['tags.tags']
+                Tags: ['type']
             };
 
             $scope.searchable = $scope.searchOptions.Visible;
@@ -542,7 +542,9 @@
                     $scope.showAll();
                     return;
                 }
-                if($scope.itemsPerPage == undefined || itemNum == undefined) { $scope.itemsPerPage = 5;};
+                if($scope.itemsPerPage == undefined || itemNum == undefined) {
+                    $scope.itemsPerPage = 5;
+                }
                 $scope.itemsPerPage = itemNum;
                 $scope.maxPages = 5;
                 $scope.currentPage = 0;

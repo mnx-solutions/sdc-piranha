@@ -53,7 +53,7 @@
                     </div>
                     <div class="block">State</div>
                 </th>
-                <th class="table-title sortable" data-ng-class="{active: sortIcon.tags}" data-ng-click="sortBy('tags.tags')" data-ng-switch on="sortIcon.tags" data-ng-show="columnsCheckBoxCur[5]">
+                <th class="table-title sortable" data-ng-class="{active: sortIcon.type}" data-ng-click="sortBy('type')" data-ng-switch on="sortIcon.type" data-ng-show="columnsCheckBoxCur[5]">
                     <div>
                         <i class="icon-sort-up" data-ng-switch-when="up"></i>
                         <i class="icon-sort-down" data-ng-switch-when="down"></i>
@@ -87,7 +87,7 @@
                     <div data-machine-status machine="machine"></div>
                     <!--<span class="state btn green"><i class="icon-ok"></i> running</span>-->
                 </td>
-                <td class="hidden-480"  data-ng-show="columnsCheckBoxCur[5]" data-ng-click="toggleMachine(machine.tags.tags)">{{machine.tags.tags}}</td>
+                <td class="hidden-480"  data-ng-show="columnsCheckBoxCur[5]" data-ng-click="toggleMachine(machine.type)">{{machine.type}}</td>
             </tr>
         </tbody>
     </table>
