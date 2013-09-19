@@ -84,8 +84,7 @@
                     </span>
                 </td>
                 <td class="hidden-480" data-ng-show="columnsCheckBoxCur[4]">
-                    <div data-machine-status machine="machine"></div>
-                    <!--<span class="state btn green"><i class="icon-ok"></i> running</span>-->
+                    <a href="#!/instance/details/{{machine.id}}"><div data-machine-status machine="machine"></div></a>
                 </td>
                 <td class="hidden-480"  data-ng-show="columnsCheckBoxCur[5]" data-ng-click="toggleMachine(machine.type)">{{machine.type}}</td>
             </tr>
