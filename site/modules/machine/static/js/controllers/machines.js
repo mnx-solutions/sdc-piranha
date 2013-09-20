@@ -223,6 +223,35 @@
                 return $scope.columnsCheckBoxCur[id];
             };
 
+            $scope.startSelectedInstances = function(){
+                var check = 0;
+                for (var i =0; i<$scope.machines.length;i++){
+                    if($scope.CheckBoxCur[$scope.machines[i].id]){
+                        Machine.startMachine($scope.machines[i].id);
+                        $$track.event('machine', 'start');
+                    }
+                }
+            };
+
+            $scope.stopSelectedInstances = function(){
+                var check = 0;
+                for (var i =0; i<$scope.machines.length;i++){
+                    if($scope.CheckBoxCur[$scope.machines[i].id]){
+                        Machine.stopMachine($scope.machines[i].id);
+                        $$track.event('machine', 'stop');
+                    }
+                }
+            };
+
+            $scope.rebootSelectedInstances = function(){
+                var check = 0;
+                for (var i =0; i<$scope.machines.length;i++){
+                    if($scope.CheckBoxCur[$scope.machines[i].id]){
+                        Machine.rebootMachine($scope.machines[i].id);
+                        $$track.event('machine', 'reboot');
+                    }
+                }
+            };
 
             // Searching
             $scope.search = function (changePage) {
