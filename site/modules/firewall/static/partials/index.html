@@ -68,7 +68,6 @@
                 <h4>From</h4><hr/>
                 <div>
                     <span class="span10 text-medium">
-
                         <span data-ng-show="data.parsed.from.length">
                             <span data-ng-repeat="from in data.parsed.from">
                                 {{from|targetInfo}} <span data-ng-hide="isAny(from)" class="pointer" data-ng-click="removeFrom($index)">[ x ]</span>
@@ -79,21 +78,36 @@
                         <input type="hidden" id="fromSelect" />
                     </span>
                     <span class="span10 text-medium">
-                    {{current.from}} <br/>
-
-
-                        <span data-ng-switch="current.from.type">
-                        <span data-ng-switch-when="wildcard"></span>
-                        <span data-ng-switch-when="tag">
-                            <span>Tag name: </span><input data-ng-model="current.from.text" /><br/>
-                            <span data-ng-show="current.from.text">Tag value (optional): <input data-ng-model="current.from.value" /></span>
-                            <span class="pointer" data-ng-click="addFrom()">ADD</span>
-                        </span>
-                        <span data-ng-switch-default>
-                            {{current.from.type}}: <input data-ng-model="current.from.text" /><br/>
-                            <span class="pointer" data-ng-click="addFrom()">ADD</span>
-                        </span>
-
+                        <form name="fromForm">
+                            <span data-ng-switch="current.from.type">
+                                    <span data-ng-switch-when="wildcard">
+                                        <!--<button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid">USE ANY</button>-->
+                                    </span>
+                                    <span data-ng-switch-when="tag">
+                                        <span>Tag name: </span><input data-ng-model="current.from.text" /><br/>
+                                        <span data-ng-show="current.from.text">Tag value (optional): <input data-ng-model="current.from.value" /></span>
+                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                    </span>
+                                    <span data-ng-switch-default>
+                                        <!-- due to the nature of directives, we need another switch here -->
+                                        {{current.from.type}}:
+                                        <span data-ng-switch="current.from.type">
+                                            <span data-ng-switch-when="subnet">
+                                                <input name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                            </span>
+                                            <span data-ng-switch-when="ip">
+                                                <input name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                            </span>
+                                            <span data-ng-switch-default>
+                                                <input name="fromValue" data-ng-model="current.from.text" /><br/>
+                                            </span>
+                                            <br/>
+                                        </span>
+                                        <!-- directives switch end -->
+                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                    </span>
+                            </span>
+                        </form>
                     </span>
                     </span>
                 </div>
@@ -112,19 +126,34 @@
                         <input type="hidden" id="toSelect" />
                     </span>
                     <span class="span10 text-medium">
-                    {{current.to}} <br/>
-                        <span data-ng-switch="current.to.type">
-                        <span data-ng-switch-when="wildcard"></span>
-                        <span data-ng-switch-when="tag">
-                            <span>Tag name: </span><input data-ng-model="current.to.text" /><br/>
-                            <span data-ng-show="current.to.text">Tag value (optional): <input data-ng-model="current.to.value" /></span>
-                            <span class="pointer" data-ng-click="addTo()">ADD</span>
-                        </span>
-                        <span data-ng-switch-default>
-                            {{current.to.type}}: <input data-ng-model="current.to.text" /><br/>
-                            <span class="pointer" data-ng-click="addTo()">ADD</span>
-                        </span>
-
+                        <form name="toForm">
+                            <span data-ng-switch="current.to.type">
+                                    <span data-ng-switch-when="wildcard"></span>
+                                    <span data-ng-switch-when="tag">
+                                        <span>Tag name: </span><input data-ng-model="current.to.text" /><br/>
+                                        <span data-ng-show="current.to.text">Tag value (optional): <input data-ng-model="current.to.value" /></span>
+                                        <button class="pointer" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                    </span>
+                                    <span data-ng-switch-default>
+                                        <!-- due to the nature of directives, we need another switch here -->
+                                        {{current.to.type}}:
+                                        <span data-ng-switch="current.to.type">
+                                            <span data-ng-switch-when="subnet">
+                                                <input name="toValue" data-ng-model="current.to.text" data-ip/>
+                                            </span>
+                                            <span data-ng-switch-when="ip">
+                                                <input name="toValue" data-ng-model="current.to.text" data-ip/>
+                                            </span>
+                                            <span data-ng-switch-default>
+                                                <input name="toValue" data-ng-model="current.to.text" /><br/>
+                                            </span>
+                                            <br/>
+                                        </span>
+                                        <!-- directives switch end -->
+                                        <button class="pointer" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                    </span>
+                            </span>
+                        </form>
                     </span>
                     </span>
                 </div>
