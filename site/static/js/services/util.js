@@ -19,21 +19,71 @@ window.JP.main.service('util', [
 
         service.confirm = function (title, question, callback) {
             // TODO: Translate
-            var title = title || 'Confirm';
+            var title = 'Confirmation';
+//            var title = title || 'Confirmation';
             var btns = [
                 {
                     result: 'cancel',
-                    label: 'Cancel',
-                    cssClass: 'pull-left'
+                    label: 'No',
+                    cssClass: 'btn grey_new',
+                    datatabindex: "1"
                 },
                 {
                     result:'ok',
-                    label: 'OK',
-                    cssClass: 'btn-joyent-blue'
+                    label: 'Yes',
+                    cssClass: 'btn orange',
+                    datatabindex: "2"
                 }
             ];
 
-            $dialog.messageBox(title, question, btns)
+            var templateUrl = 'dashboard/static/template/dialog/confirmationDialog.html';
+
+            $dialog.messageBox(title, question, btns, templateUrl)
+                .open()
+                .then(function (result) {
+                    if (result === 'ok') {
+                        callback();
+                    }
+                });
+        };
+
+        service.error = function (title, question, callback) {
+            // TODO: Translate
+            var title = 'Error';
+//            var title = title || 'Error';
+            var btns = [
+                {
+                    result:'ok',
+                    label: 'Ok',
+                    cssClass: 'btn orange'
+                }
+            ];
+
+            var templateUrl = 'dashboard/static/template/dialog/errorDialog.html';
+
+            $dialog.messageBox(title, question, btns, templateUrl)
+                .open()
+                .then(function (result) {
+                    if (result === 'ok') {
+                        callback();
+                    }
+                });
+        };
+        service.message = function (title, question, callback) {
+            // TODO: Translate
+            var title = 'Message';
+//            var title = title || 'Message';
+            var btns = [
+                {
+                    result:'ok',
+                    label: 'Ok',
+                    cssClass: 'btn orange'
+                }
+            ];
+
+            var templateUrl = 'dashboard/static/template/dialog/messageDialog.html';
+
+            $dialog.messageBox(title, question, btns, templateUrl)
                 .open()
                 .then(function (result) {
                     if (result === 'ok') {

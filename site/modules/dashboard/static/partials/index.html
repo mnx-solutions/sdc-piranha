@@ -46,7 +46,7 @@
                         </a>
                     </div>
                     <div class="dashboard-stat-btn">
-                        <a class="more" data-toggle="modal" href="#confirm"><button type="button" class="btn btn_stat orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create
+                        <a class="more" data-toggle="modal" data-ng-click="confirmDialog()"><button type="button" class="btn btn_stat orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create
                             Compute Instance</b></button></a>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                                 <p class="desc"> configured</p>
                             </div>
                         </div>
-                        <a class="more" data-toggle="modal" href="#static">
+                        <a class="more" data-toggle="modal" data-ng-click="messageDialog()" href="">
                             <span>
                                 VIEW LOAD BALANCER DETAILS <i class="m-icon-white-arrow"></i>
                             </span>
@@ -69,7 +69,7 @@
                         </a>
                     </div>
                     <div class="dashboard-stat-btn">
-                        <a class="more" data-toggle="modal" href="#error"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create LB Instance</b></button></a>
+                        <a class="more" data-toggle="modal" data-ng-click="errorDialog()"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create LB Instance</b></button></a>
                     </div>
                 </div>
                 <div class="pull-left padding_left10">
@@ -178,55 +178,6 @@
             <div class="clearfix"></div>
 
         </div>
-
-
-        <div id="static" class="modal hide fade" tabindex="-1" data-backdrop="static" data-focus-on="button">
-            <div class="modal-header" style="background-color: #ff6600;color: white;">
-                <h5><i class="icon-info-sign"></i>  <b>Message</b></h5>
-            </div>
-            <div class="modal-body">
-                <p>Sorry, this is not implemented yet.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" data-tabindex="1" class="btn orange">OK</button>
-            </div>
-        </div>
-
-        <div id="error" class="modal hide fade" tabindex="-1"  data-focus-on="button"  data-backdrop="static" >
-            <div class="modal-header" style="background-color: #ff0000;color: white;">
-                <h5><i class="icon-warning-sign" style="color:white;"></i>  <b>Error</b></h5>
-            </div>
-            <div class="modal-body">
-                <p>Failed:  API method not found.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" data-tabindex="1" class="btn orange">OK</button>
-            </div>
-        </div>
-
-        <div id="confirm" class="modal hide fade" tabindex="-1" data-focus-on="button:first"  data-backdrop="static" >
-            <div class="modal-header" style="background-color: #ff6600;color: white;">
-                <h5><i class="icon-question-sign"></i>  <b>Confirmation</b></h5>
-            </div>
-            <div class="modal-body">
-                <p>Your laptop will explode now.  Are you sure? </p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" data-dismiss="modal" data-tabindex="1" class="btn">No</button>
-                <button type="button" data-dismiss="modal" data-tabindex="2" onclick="jQuery(document).ready(function() {$('#confirm').modal('hide');location.href='#!/instance/create';})" class="btn orange">Yes</button>
-            </div>
-        </div>
-
-
-        <!--</div>-->
-
-
-
-
-
-
-
-
 
 
         <!--<div class="row-fluid">-->

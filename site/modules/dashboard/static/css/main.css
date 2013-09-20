@@ -160,6 +160,7 @@
     width: 15px !important;
     height: 15px !important;
     background-image: url(../img/r_arrow.png);
+    cursor: pointer;
 }
 .instance_btn_icon{
     width: 20px;
@@ -172,192 +173,7 @@
     background-repeat: no-repeat;
 }
 
-.btn {
-    background-image: none;
-    filter: none;
-    border: 0;
-    padding: 7px 14px;
-    /*font-family: "Segoe UI", Helvetica, Arial, sans-serif;*/
-    font-size: 14px;
-    color: #333333;
-    cursor: pointer;
-    outline: none;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-}
-.btn:hover,
-.btn:focus,
-.btn:active,
-.btn.active,
-.btn[disabled],
-.btn.disabled {
-    color: #333333;
-    background-color: #d8d8d8 !important;
-}
 
-.btn.red-stripe
-{
-    border-left: 3px solid #d84a38;
-}
-
-.btn.blue-stripe
-{
-    border-left: 3px solid #4d90fe;
-}
-
-.btn.purple-stripe
-{
-    border-left: 3px solid #852b99;
-}
-
-.btn.green-stripe
-{
-    border-left: 3px solid #35aa47;
-}
-
-.btn.yellow-stripe {
-    border-left: 3px solid #ffb848;
-}
-.btn.light-blue {
-    color: #ff6600;
-    text-shadow: none;
-    background-color: #f1f1f1;
-    width: auto;
-    min-height: 20px ! important;
-    line-height: 6px !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-
-}
-.btn.light-blue:hover,
-.btn.light-blue:focus,
-.btn.light-blue:active,
-.btn.light-blue.active,
-.btn.light-blue.disabled,
-.btn.light-blue[disabled] {
-    background-color: #f1f1f1 !important;
-    color: #ff6600 !important;
-}
-
-.btn.orange {
-    color: white;
-    text-shadow: none;
-    background-color: #ff6600;
-    min-width: 100px;
-}
-.btn.orange:hover,
-.btn.orange:focus,
-.btn.orange:active,
-.btn.orange.active,
-.btn.orange.disabled,
-.btn.orange[disabled] {
-    background-color: #ff6600 !important;
-    color: #fff !important;
-}
-
-.btn_stat{
-    width: 240px !important;
-    height: 55px;
-}
-
-/*  Red */
-.btn.red,
-.page-content .breadcrumb a.red, .page-content .breadcrumb a.red i
-{
-    color: white;
-    text-shadow: none;
-    /*background-color: #d84a38;*/
-    background-color: #ff6600;
-}
-.btn.red:hover,
-.btn.red:focus,
-.btn.red:active,
-.btn.red.active,
-.btn.red[disabled],
-.btn.red.disabled,
-.page-content .breadcrumb a.red:hover, .page-content .breadcrumb a.red:hover i,
-.page-content .breadcrumb a.red:focus, .page-content .breadcrumb a.red:focus i,
-.page-content .breadcrumb a.red:active, .page-content .breadcrumb a.red:active i
-
-{
-    /*background-color: #bb2413 !important;*/
-    background-color: #ff6600 !important;
-    color: #fff !important;
-}
-
-/*  Blue */
-.btn.transparent
-{
-    color: black;
-    text-shadow: none;
-    background-color: transparent;
-}
-
-.btn.blue
-{
-    color: white;
-    text-shadow: none;
-    background-color: #94afca;
-}
-.btn.blue:hover,
-.btn.blue:focus,
-.btn.blue:active,
-.btn.blue.active,
-.btn.blue[disabled],
-.btn.blue.disabled {
-    background-color: #94afca !important;
-    color: #fff !important;
-}
-
-/*  Green */
-.btn.green {
-    color: black;
-    text-shadow: none;
-    background-color: #afd46c;
-}
-.btn.green:hover,
-.btn.green:focus,
-.btn.green:active,
-.btn.green.active,
-.btn.green.disabled,
-.btn.green[disabled]{
-    background-color: #afd46c !important;
-    color: #000 !important;
-}
-.btn.grey_new {
-    color: white;
-    text-shadow: none;
-    background-color: #999999;
-}
-.btn.grey_new:hover,
-.btn.grey_new:focus,
-.btn.grey_new:active,
-.btn.grey_new.active,
-.btn.grey_new.disabled,
-.btn.grey_new[disabled]{
-    background-color: #999999 !important;
-    color: #ffffff !important;
-}
-
-/*  Purple */
-.btn.purple {
-    color: white;
-    text-shadow: none;
-    background-color: #405f7c;
-}
-.btn.purple:hover,
-.btn.purple:focus,
-.btn.purple:active,
-.btn.purple.active,
-.btn.purple.disabled,
-.btn.purple[disabled] {
-    background-color: #405f7c !important;
-    color: #fff !important;
-}
 
 .margin-text-block h5 > a{
     color: #ff6600;
@@ -452,9 +268,7 @@
 .span_date{
     width: 13%;
 }
-.icon-info-sign, .icon-warning-sign, .icon-question-sign{
-    background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
-}
+
 .padding_left10{
     padding-left: 10px;
 }

@@ -78,6 +78,52 @@
 
             $scope.runningcount = 0;
             $scope.othercount = 0;
+
+            $scope.confirmDialog = function () {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Your laptop will explode now.  Are you sure?'
+                    ), function () {
+                        location.href = '#!/instance/create';
+                    });
+            };
+            $scope.errorDialog = function () {
+                util.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Eror'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Failed:  API method not found.'
+                    ),function(){
+                        this.close();
+                    });
+            };
+            $scope.messageDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is not implemented yet.'
+                    ),function(){
+                        this.close();
+                    });
+            };
         }
 
     ]);

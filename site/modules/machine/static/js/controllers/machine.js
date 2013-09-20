@@ -25,32 +25,6 @@
 
             $scope.machineid = machineid;
             $scope.machine = Machine.machine(machineid);
-//            $scope.machine = {
-//                "id": "1a32e0ed-9939-4fb5-9ef7-3cace4808f4a01",
-//                "name": "Test1",
-//                "type": "smartmachine",
-//                "state": "stopped",
-//                "image": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
-//                "ips": [
-//                    "72.2.115.215",
-//                    "10.112.1.200"
-//                ],
-//                "memory": 256,
-//                "disk": 16384,
-//                "metadata": {
-//                    "root_authorized_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAIEArdH8pWHeft+S5kPQtlbi/nc3oPXrpycwansQMI8ERTGX+GSpKNEjdyfPCuhWkO+QEygz3rn8g2PrVGlvIdLGcS19vvuJmdys41ZZoSwTbJBtzsq2hZzUBbsRyHBMFyyARQ8fM+/6NZdeDyyZeoOrsZbiWd6nwWw+InvMeGj8OmU= joyent-silvertree-dev\n",
-//                    "credentials": []
-//                },
-//                "tags": {},
-//                "credentials": "true",
-//                "created": "2013-09-05T15:41:17.000Z",
-//                "updated": "2013-09-05T15:42:18.000Z",
-//                "dataset": "sdc:sdc:base:13.2.0",
-//                "primaryIp": "72.2.115.215",
-//                "firewall_enabled": false,
-//                "package": "g3-standard-0.25-smartos",
-//                "datacenter": "us-east-1"
-//            };
             $scope.loading = true;
             $scope.changingName = false;
             $scope.newInstanceName = null;
@@ -267,7 +241,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Restart instance'
+                        'Confirmation'
                     ),
                     localization.translate(
                         $scope,
@@ -302,6 +276,22 @@
                             $scope.currentPackageName = $scope.selectedPackageName;
                             $scope.currentPackage = $scope.selectedPackage;
                         });
+                    });
+            };
+
+            $scope.messageDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is not implemented yet.'
+                    ),function(){
+                        this.close();
                     });
             };
 
