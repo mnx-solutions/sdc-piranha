@@ -62,29 +62,35 @@
         </div>
 
         <div data-ng-model="data">
+            {{data}}
             <h3>{{data.uuid && 'Edit rule '+ data.uuid || 'Create New Rule' }}</h3>
             <div class="item row-fluid">
                 <h4>From</h4><hr/>
                 <div>
                     <span class="span10 text-medium">
-                    <span data-ng-show="data.parsed.from.length">
-                        <span data-ng-repeat="from in data.parsed.from">
-                            {{from|targetInfo}} <span data-ng-hide="from[0] == 'wildcard'" class="pointer" data-ng-click="removeFrom($index)">[ x ]</span>
-                            <br/>
+
+                        <span data-ng-show="data.parsed.from.length">
+                            <span data-ng-repeat="from in data.parsed.from">
+                                {{from|targetInfo}} <span data-ng-hide="isAny(from)" class="pointer" data-ng-click="removeFrom($index)">[ x ]</span>
+                                <br/>
+                            </span>
                         </span>
+
+                        <input type="hidden" id="fromSelect" />
                     </span>
-                    <select data-ng-model="current.fromType" data-ng-options="target.value as target.title for (key, target) in targetTypes"></select><br/>
-                    <span data-ng-switch="current.fromType">
-                        <span data-ng-switch-when="wildcard">
-                            <span class="pointer" data-ng-click="addAnyFrom()">USE ANY</span>
-                        </span>
+                    <span class="span10 text-medium">
+                    {{current.from}} <br/>
+
+
+                        <span data-ng-switch="current.from.type">
+                        <span data-ng-switch-when="wildcard"></span>
                         <span data-ng-switch-when="tag">
-                            <span>Tag name: </span><input data-ng-model="current.from" /><br/>
-                            <span data-ng-show="current.from">Tag value (optional): <input data-ng-model="current.fromTagValue" /></span>
+                            <span>Tag name: </span><input data-ng-model="current.from.text" /><br/>
+                            <span data-ng-show="current.from.text">Tag value (optional): <input data-ng-model="current.from.value" /></span>
                             <span class="pointer" data-ng-click="addFrom()">ADD</span>
                         </span>
                         <span data-ng-switch-default>
-                            {{current.fromType}}: <input data-ng-model="current.from" /><br/>
+                            {{current.from.type}}: <input data-ng-model="current.from.text" /><br/>
                             <span class="pointer" data-ng-click="addFrom()">ADD</span>
                         </span>
 
@@ -95,29 +101,32 @@
                 <h4>To</h4><hr/>
                 <div>
                     <span class="span10 text-medium">
-                    <span data-ng-show="data.parsed.to.length">
-                        <span data-ng-repeat="to in data.parsed.to">
-                            {{to|targetInfo}} <span data-ng-hide="to[0] == 'wildcard'" class="pointer"  data-ng-click="removeTo($index)">[ x ]</span>
-                            <br/>
+
+                        <span data-ng-show="data.parsed.to.length">
+                            <span data-ng-repeat="to in data.parsed.to">
+                                {{to|targetInfo}} <span data-ng-hide="isAny(to)" class="pointer" data-ng-click="removeTo($index)">[ x ]</span>
+                                <br/>
+                            </span>
                         </span>
+
+                        <input type="hidden" id="toSelect" />
                     </span>
-                    <select data-ng-model="current.toType" data-ng-options="target.value as target.title for (key, target) in targetTypes"></select><br/>
-                    <span data-ng-switch="current.toType">
-                        <span data-ng-switch-when="wildcard">
-                            <span class="pointer" data-ng-click="addAnyTo()">USE ANY</span>
-                        </span>
+                    <span class="span10 text-medium">
+                    {{current.to}} <br/>
+                        <span data-ng-switch="current.to.type">
+                        <span data-ng-switch-when="wildcard"></span>
                         <span data-ng-switch-when="tag">
-                            <span>Tag name: </span><input data-ng-model="current.to" /><br/>
-                            <span data-ng-show="current.to">Tag value (optional): <input data-ng-model="current.toTagValue" /></span>
+                            <span>Tag name: </span><input data-ng-model="current.to.text" /><br/>
+                            <span data-ng-show="current.to.text">Tag value (optional): <input data-ng-model="current.to.value" /></span>
                             <span class="pointer" data-ng-click="addTo()">ADD</span>
                         </span>
                         <span data-ng-switch-default>
-                            {{current.toType}}: <input data-ng-model="current.to" /><br/>
+                            {{current.to.type}}: <input data-ng-model="current.to.text" /><br/>
                             <span class="pointer" data-ng-click="addTo()">ADD</span>
                         </span>
 
                     </span>
-                </span>
+                    </span>
                 </div>
                 <div class="clearfix"></div><hr/>
                 <h4>Action</h4><hr/>
@@ -132,7 +141,7 @@
                     <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/>
                     <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
                         ports: <br/><span data-ng-repeat="target in data.parsed.protocol.targets">{{target}}<br/></span>
-                        <input data-ng-model="currentPort" /><br/>
+                        <input data-ng-model="current.port" /><br/>
                         <span class="pointer" data-ng-click="addPort()">ADD</span>
                     </span>
                 </span>
@@ -149,8 +158,7 @@
                 <span class="pointer" data-ng-hide="data.uuid" data-ng-click="createRule()">Create Rule</span>
                 <span class="pointer" data-ng-show="data.uuid" data-ng-click="updateRule()">Update Rule</span>
             </div>
-
-
+            <span class="pointer" data-ng-show="data.uuid" data-ng-click="resetData()">Create new</span>
         </div>
     </div>
 </div>
