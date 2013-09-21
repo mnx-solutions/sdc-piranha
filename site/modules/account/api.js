@@ -83,6 +83,7 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
+            var start = Date.now();
             getFromBilling('provision', account.id, function (err, state) {
                 scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
