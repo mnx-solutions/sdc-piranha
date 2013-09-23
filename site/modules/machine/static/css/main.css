@@ -187,43 +187,41 @@
 }
 
 .machine-name-edit {
-    margin:2px;
-    margin-top: 10px;
-    margin-bottom: 0px;
+    margin: 2px;
+    margin-top: -5px;
     font-family: inherit;
-    font-weight: normal;
-    line-height: 20px;
+    font-weight: 200;
     padding-bottom: 4px;
     padding-left: 6px;
     padding-right: 6px;
     padding-top: 4px;
     color: inherit;
     text-rendering: optimizelegibility;
-    line-height: 40px;
-    font-size: 38.5px;
-    height:40px;
-    width: 300px;
-    border-radius: 4px 4px 0px 4px;
+    font-size: 30px;
+    height: 30px;
+    width: 897px;
+    border-radius: 0;
 }
 
 .machine-edit-form {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
 }
 
 .machine-edit {
     position: relative;
+    padding-bottom: 24px;
+    margin-top: -10px;
+    margin-left: -9px;
 }
 
 .machine-edit-buttons {
     background: white;
     border: #d3d3d3 solid 1px;
-    border-top: 0px;
-    padding:3px;
-    border-radius: 0px 0px 4px 4px;
-    position: absolute;
-    right: 2px;
-    top: 100%;
+    padding: 2px;
+    border-radius: 0;
+    right: 0;
+    margin-top: -7px;
 }
 
 .resize-button {
@@ -772,15 +770,15 @@ ul.dropdown-menu{
     background-image: url("../img/btn_i_reboot.png");
 }
 .details_btn_block{
-    padding-bottom: 60px;
+    padding-bottom: 27px;
 }
 .details_btn_block span {
     float: left;
-    min-width: 86.5px !important;
+    /*min-width: 86.5px !important;*/
     /*margin-bottom: 20px;*/
 }
 .details_btn_block_margin{
-    margin-right: 7px;
+    margin-right: 6px;
 }
 /*.details_btn_block .icon-ok{*/
     /*margin-top: 4px;*/
@@ -910,4 +908,21 @@ ul.dropdown-menu{
     width: 1000px;
     padding-left: 48px;
     padding-bottom: 55px;
+}
+.status .loading-small, .details_btn_block .loading-small {
+    padding-top: 5px;
+    padding-right: 15px;
+    margin-left: -12px;
+}
+
+.container_details .error{
+    padding-bottom: 10px;
+}
+.wait_rename{
+    background-position: 0 0;
+    position: relative;
+    display: inline-block;
+    top: 8px;
+    min-height: 30px;
+    min-width: 30px;
 }

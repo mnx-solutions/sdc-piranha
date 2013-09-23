@@ -916,14 +916,14 @@ a .feature1 {
     -moz-border-radius: 0 !important;
     border-radius: 0 !important;
 }
-.btn:hover,
-.btn:focus,
-.btn:active,
-.btn.active,
+
 .btn[disabled],
 .btn.disabled {
     color: #333333;
     background-color: #d8d8d8 !important;
+    cursor: default !important;
+    opacity: 0.35;
+    filter: alpha(opacity=35);
 }
 
 .btn.red-stripe

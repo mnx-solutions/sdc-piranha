@@ -195,9 +195,12 @@
             $scope.selectAllCheckbox = function () {
                 $scope.checkedCheckBox = ($scope.checkedCheckBox) ? false : true;
                 for (var i =0; i<$scope.machines.length;i++){
-                    $scope.CheckBoxCur[$scope.machines[i].id] = $scope.checkedCheckBox;
+                    if($scope.selectCheckbox($scope.machines[i].id) != undefined){
+                        $scope.CheckBoxCur[$scope.machines[i].id] = $scope.checkedCheckBox;
+                    }
                 }
             };
+
             $scope.checkAllCheckbox = function(){
                 var check = 0;
                 for (var i =0; i<$scope.machines.length;i++){
@@ -205,11 +208,15 @@
                 }
                 if(check == 0){$scope.checkedCheckBox = false}
             };
-            $scope.selectCheckbox = function (id) {
-                $scope.CheckBoxCur[id] = ($scope.CheckBoxCur[id]) ? false : true;
-                $scope.checkAllCheckbox();
-                return $scope.CheckBoxCur[id];
+
+            $scope.selectCheckbox = function(id) {
+                if(!Machine.machine(id).job || (Machine.machine(id).job && Machine.machine(id).job.finished)){
+                    $scope.CheckBoxCur[id] = ($scope.CheckBoxCur[id]) ? false : true;
+                    $scope.checkAllCheckbox();
+                    return $scope.CheckBoxCur[id];
+                }
             };
+
             $scope.columnsCheckBoxCur = {
                 0: true,
                 1: true,
@@ -218,6 +225,7 @@
                 4: true,
                 5: false
             };
+
             $scope.selectColumnsCheckbox = function(id){
                 $scope.columnsCheckBoxCur[id] = ($scope.columnsCheckBoxCur[id]) ? false : true;
                 return $scope.columnsCheckBoxCur[id];
@@ -229,6 +237,7 @@
                     if($scope.CheckBoxCur[$scope.machines[i].id]){
                         Machine.startMachine($scope.machines[i].id);
                         $$track.event('machine', 'start');
+                        $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
                     }
                 }
             };
@@ -239,6 +248,7 @@
                     if($scope.CheckBoxCur[$scope.machines[i].id]){
                         Machine.stopMachine($scope.machines[i].id);
                         $$track.event('machine', 'stop');
+                        $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
                     }
                 }
             };
@@ -249,6 +259,7 @@
                     if($scope.CheckBoxCur[$scope.machines[i].id]){
                         Machine.rebootMachine($scope.machines[i].id);
                         $$track.event('machine', 'reboot');
+                        $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
                     }
                 }
             };
@@ -360,8 +371,9 @@
                 }
                 if($scope.itemsPerPage == undefined || itemNum == undefined) {
                     $scope.itemsPerPage = 5;
+                }else{
+                    $scope.itemsPerPage = itemNum;
                 }
-                $scope.itemsPerPage = itemNum;
                 $scope.maxPages = 5;
                 $scope.currentPage = 0;
                 $scope.showAllActive = false;

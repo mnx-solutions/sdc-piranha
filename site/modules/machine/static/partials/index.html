@@ -1,6 +1,7 @@
 <div data-ng-controller="Machine.IndexController" class="inst_page">
     <!--<div class="loading-large" data-ng-show="loading"></div>-->
-        <div class="machines container" data-ng-show="pagedMachines.length || query">
+        <div class="machines container">
+        <!--<div class="machines container" data-ng-show="pagedMachines.length || query">-->
             <!--<data-breadcrumb></data-breadcrumb>-->
             <!--<data-notification></data-notification>-->
             <!--<div class="span">-->
@@ -24,8 +25,17 @@
 
                 <!--<div class="clearfix"></div>-->
             <!--</div>-->
+            <div data-ng-hide="pagedMachines.length || query || loading">
+                <data-notification></data-notification>
+                <div>
+                    <div class="pull-left">
+                        <h4>Hello there!</h4>
+                        <div data-translate>I see you have no instances configured.</div>
+                    </div>
+                </div>
+            </div>
 
-            <div class="row">
+            <div class="row" data-ng-show="pagedMachines.length || query">
                 <div class="page_row_info">
                     <span>
                         Showing {{pageNumFirst}} to {{pageNumLast}} of {{pageNumSum}} entries
@@ -64,32 +74,32 @@
                         <i class="icon-drop-down"></i>
                     </a>
 
-                    <div id="insTable_column_toggler" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
+                    <div class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
                         <label>
                             <div class="checker" data-ng-class="{hover:show0}" data-ng-mouseenter="show0 = true" data-ng-mouseleave="show0 = false">
-                                <span data-ng-click="selectColumnsCheckbox(0)" data-ng-class="{checked:columnsCheckBoxCur[0]}">
-                                    <input type="checkbox" checked="" data-column="1"></span>
+                                <span data-ng-class="{checked:columnsCheckBoxCur[0]}">
+                                    <input data-ng-click="selectColumnsCheckbox(0)" type="checkbox" checked="" data-column="1"></span>
                             </div>Name</label>
                         <label>
                             <div class="checker" data-ng-class="{hover:show1}" data-ng-mouseenter="show1 = true" data-ng-mouseleave="show1 = false">
-                                <span data-ng-click="selectColumnsCheckbox(1)" data-ng-class="{checked:columnsCheckBoxCur[1]}">
-                                    <input type="checkbox" checked="" data-column="2"></span>
+                                <span data-ng-class="{checked:columnsCheckBoxCur[1]}">
+                                    <input data-ng-click="selectColumnsCheckbox(1)" type="checkbox" checked="" data-column="2"></span>
                             </div>Datacenter</label>
                         <label><div class="checker" data-ng-class="{hover:show2}" data-ng-mouseenter="show2 = true" data-ng-mouseleave="show2 = false">
-                            <span data-ng-click="selectColumnsCheckbox(2)" data-ng-class="{checked:columnsCheckBoxCur[2]}">
-                                <input type="checkbox" checked="" data-column="3"></span>
+                            <span data-ng-class="{checked:columnsCheckBoxCur[2]}">
+                                <input data-ng-click="selectColumnsCheckbox(2)" type="checkbox" checked="" data-column="3"></span>
                             </div>Created</label>
                         <label><div class="checker" data-ng-class="{hover:show3}" data-ng-mouseenter="show3 = true" data-ng-mouseleave="show3 = false">
-                            <span data-ng-click="selectColumnsCheckbox(3)" data-ng-class="{checked:columnsCheckBoxCur[3]}">
-                                <input type="checkbox" checked="" data-column="4"></span>
+                            <span data-ng-class="{checked:columnsCheckBoxCur[3]}">
+                                <input data-ng-click="selectColumnsCheckbox(3)" type="checkbox" checked="" data-column="4"></span>
                             </div>IP</label>
                         <label><div class="checker" data-ng-class="{hover:show4}" data-ng-mouseenter="show4 = true" data-ng-mouseleave="show4 = false">
-                            <span data-ng-click="selectColumnsCheckbox(4)" data-ng-class="{checked:columnsCheckBoxCur[4]}">
-                                <input type="checkbox" checked="" data-column="5"></span>
+                            <span data-ng-class="{checked:columnsCheckBoxCur[4]}">
+                                <input data-ng-click="selectColumnsCheckbox(4)" type="checkbox" checked="" data-column="5"></span>
                             </div>State</label>
                         <label><div class="checker" data-ng-class="{hover:show5}" data-ng-mouseenter="show5 = true" data-ng-mouseleave="show5 = false">
-                            <span data-ng-click="selectColumnsCheckbox(5)" data-ng-class="{checked:columnsCheckBoxCur[5]}">
-                                <input type="checkbox" checked="" data-column="6"></span>
+                            <span data-ng-class="{checked:columnsCheckBoxCur[5]}">
+                                <input data-ng-click="selectColumnsCheckbox(5)" type="checkbox" checked="" data-column="6"></span>
                             </div>Tags</label>
                     </div>
                 </div>
@@ -132,7 +142,7 @@
 	                    <div data-ng-switch-when="normal" data-ng-include="'machine/static/partials/list-normal.html'"></div>
 	                    <div data-ng-switch-when="alternate" data-ng-include="'machine/static/partials/list-alternate.html'"></div>
 	                </div>
-                    <div class="pull-left select_position">
+                    <div class="pull-left select_position" data-ng-show="pagedMachines.length || query">
                         <select ui-select2 data-ng-click="showPages()" data-ng-model="select2" value="5" class="no-search-box" style="width: 120px !important;">
                             <option value="5">5</option>
                             <option value="10">10</option>
@@ -141,11 +151,10 @@
                         </select>
                         <span>&nbsp;records per page</span>
                     </div>
-                    <div class="pagination pagination-right">
+                    <div class="pagination pagination-right" data-ng-show="pagedMachines.length || query">
                         <ul>
                             <li data-ng-class="{disabled: currentPage == 0}">
                                 <a href ng-click="prevPage()" data-translate>← <span class="hidden-480">Previous</span></a>
-                                <!--<a href ng-click="prevPage()" data-translate>« Prev</a>-->
                             </li>
                             <li data-ng-repeat="n in range()"
                                 data-ng-class="{active: n == currentPage}"
@@ -155,7 +164,6 @@
                             </li>
                             <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
                                 <a href data-ng-click="nextPage()" data-translate><span class="hidden-480">Next</span> → </a>
-                                <!--<a href data-ng-click="nextPage()" data-translate>Next »</a>-->
                             </li>
                             <!--<li data-ng-show="!showAllActive">-->
                             <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->
@@ -187,18 +195,5 @@
 	            <!--</div>-->
             </div>
         </div>
-
-        <!--<div class="machines container" data-ng-hide="(pagedMachines.length || loading || query)">-->
-            <!--<data-notification></data-notification>-->
-
-            <!--<div class="alert alert-joyent-blue alert-global">-->
-                <!--<div class="pull-left">-->
-                    <!--<h4>Hello there!</h4>-->
-                    <!--<div data-translate>I see you have no instances configured.</div>-->
-                <!--</div>-->
-                <!--<a class="btn btn-joyent-blue pull-right alert-global" href="#!/instance/create" data-translate>Create an instance</a>-->
-                <!--<div class="clearfix"></div>-->
-            <!--</div>-->
-        <!--</div>-->
 </div>
 

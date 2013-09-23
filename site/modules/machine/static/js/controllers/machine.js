@@ -27,6 +27,7 @@
             $scope.machine = Machine.machine(machineid);
             $scope.loading = true;
             $scope.changingName = false;
+            $scope.loadingNewName = false;
             $scope.newInstanceName = null;
             $scope.networks = [];
 
@@ -320,12 +321,14 @@
                         null,
                         'Rename this instance'
                     ), function () {
+                        $scope.loadingNewName = true;
+                        $scope.changingName = false;
                         $$track.event('machine', 'rename');
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                         job.getJob().done(function() {
                             $scope.machine.name = $scope.newInstanceName;
-                            $scope.changingName = false;
+                            $scope.loadingNewName = false;
                         });
                     }
                 );
