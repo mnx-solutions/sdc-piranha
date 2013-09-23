@@ -89,7 +89,8 @@
     "capishim": {
         "username":"",
         "password":"",
-        "url":""
+        "url":"",
+        "noUpdate":true
     },
     "maxmind": {
         "phoneApiUrl": "https://api.maxmind.com",

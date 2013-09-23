@@ -145,7 +145,7 @@ module.exports = function execute(scope, app) {
                 return;
             }
 
-            req.session.maxmindRetries = retries + 1; // TODO: Shouldn't this be based on attempts not successes?
+            req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
             res.json({message: serviceMessages.calling, success: true});
         });
@@ -219,9 +219,11 @@ module.exports = function execute(scope, app) {
                         res.json(result);
                     });
                 } else {
-                    //TODO: Store riskScore and riskTier
-                    SignupProgress.setMinProgress(req, 'billing', function () {
-                        res.json(result);
+                    Metadata.set(req.session.userId, 'riskScore', riskTier, function () {
+                        // Deliberately ignore possible errors and set progress anyway
+                        SignupProgress.setMinProgress(req, 'billing', function () {
+                            res.json(result);
+                        });
                     });
                 }
             });

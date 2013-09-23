@@ -19,11 +19,12 @@
 
                 $scope.setStep = function (step) {
                     $scope.currentStep = step;
-                    $location.path('/' + step);
+                    var stepPath = '/' + step;
+                    if ($location.path() !== stepPath) $location.path(stepPath);
                 };
 
                 $scope.nextStep = function () {
-                    if ($scope.currentStep === 'blocked') return; // 'blocked' is a virtual step not in sequence
+                    if ($scope.currentStep === 'blocked') return;
                     var i = $scope.steps.indexOf($scope.currentStep);
                     if(++i < $scope.steps.length) {
                         $scope.setStep($scope.steps[i]);
@@ -60,6 +61,7 @@
                     i++;
                 }, true);
 
+                $scope.setStep($scope.currentStep);
                 $scope.nextStep();
 
                 $scope.signOut = function() {

@@ -2,6 +2,7 @@
 
 var config = require('easy-config');
 var restify = require('restify');
+var metadata = require('./lib/metadata');
 
 if (!config.billing.url && !config.billing.noUpdate) {
     throw new Error('Billing.url must be defined in the config');
@@ -22,7 +23,7 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
 }
 
 module.exports = function execute(scope, register) {
-    register('Metadata', require('./lib/metadata'));
+    register('Metadata', metadata);
 
     //Compatibility with old version
     var api = {};
@@ -97,12 +98,18 @@ module.exports = function execute(scope, register) {
         var req = (call.done && call.req) || call;
 
         function end(step) {
-            if (steps.indexOf(step) === (steps.length - 1)) {
-                step = 'completed';
-            }
+            metadata.get(req.session.userId, 'signupStep', function (err, storedStep) {
+                if (!err && storedStep) {
+                    step = storedStep;
+                    call.log.info('Got signupStep from metadata', {step: step});
+                }
+                if (steps.indexOf(step) === (steps.length - 1)) {
+                    step = 'completed';
+                }
 
-            scope.log.trace('signup step is %s', step);
-            cb(null, step);
+                scope.log.trace('signup step is %s', step);
+                cb(null, step);
+            });
         }
 
         if (req.session.signupStep) {
@@ -142,7 +149,10 @@ module.exports = function execute(scope, register) {
                         call.log.error(zuoraErr,'Something went wrong with billing API');
                     }
                     //No error handling or nothing here, just let it pass.
-                    cb();
+                    metadata.set(userId, 'signupStep', step, function () {
+                        call.log.info('Set signupStep in metadata', {step: step});
+                        cb();
+                    });
                 });
             }
 
