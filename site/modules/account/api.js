@@ -98,18 +98,8 @@ module.exports = function execute(scope, register) {
         var req = (call.done && call.req) || call;
 
         function end(step) {
-            metadata.get(req.session.userId, 'signupStep', function (err, storedStep) {
-                if (!err && storedStep) {
-                    step = storedStep;
-                    call.log.info('Got signupStep from metadata', {step: step});
-                }
-                if (steps.indexOf(step) === (steps.length - 1)) {
-                    step = 'completed';
-                }
-
-                scope.log.trace('signup step is %s', step);
-                cb(null, step);
-            });
+            scope.log.trace('signup step is %s', step);
+            cb(null, step);
         }
 
         if (req.session.signupStep) {
@@ -122,16 +112,32 @@ module.exports = function execute(scope, register) {
                 cb(err);
                 return;
             }
-
-            end(value);
+            metadata.get(req.session.userId, 'signupStep', function (err, storedStep) {
+                if (!err && storedStep) {
+                    value = storedStep;
+                    call.log.info('Got signupStep from metadata', {step: value});
+                }
+                end(value);
+            });
         });
     };
 
     api.setSignupStep = function (call, step, cb) {
-        function updateBilling(req) {
-            if (step !== 'billing') {
-                return; // no zuora account yet created
+        function updateStep(req) {
+            if (req.session) {
+                metadata.set(req.session.userId, 'signupStep', step, function () {
+                    call.log.info('Set signupStep in metadata', {step: step});
+                });
             }
+            if (step === 'billing') {
+                updateBilling(req);
+            }
+            else {
+                cb();
+            }
+        }
+
+        function updateBilling(req) {
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
@@ -149,10 +155,7 @@ module.exports = function execute(scope, register) {
                         call.log.error(zuoraErr,'Something went wrong with billing API');
                     }
                     //No error handling or nothing here, just let it pass.
-                    metadata.set(userId, 'signupStep', step, function () {
-                        call.log.info('Set signupStep in metadata', {step: step});
-                        cb();
-                    });
+                    cb();
                 });
             }
 
@@ -175,13 +178,13 @@ module.exports = function execute(scope, register) {
         if (!call.req && !call.done) { // Not a call, but request
             call.session.signupStep = step;
             call.session.save();
-            updateBilling(call);
+            updateStep(call);
         } else {
             call.session(function (req) {
                 req.session.signupStep = step;
                 req.session.save();
             });
-            updateBilling(call.req);
+            updateStep(call.req);
         }
     };
 

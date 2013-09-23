@@ -72,15 +72,21 @@ module.exports = function execute(scope, app) {
             req.log.error('Maxmind phone verification service cannot be reached after %d attempts',
                             limits.serviceFails, {userId: req.session.userId});
         }
-        SignupProgress.setMinProgress(req, 'phone', function(err) {
-            if(err) {
-                req.log.error('Failed to set user phone verification as passed',
-                                {userId: req.session.userId, error: err});
 
-                res.json({message: 'Internal error', success: false});
-                return;
+        var verificationStatus = success ? 'Successful' : 'PV service failed';
+        Metadata.set(req.session.userId, 'phoneVerification', verificationStatus, function (err) {
+            if (err) {
+                req.log.warn('Error occured while setting phone verification status', {error: err});
             }
-            res.json({message: 'Phone verification successful', success: true, navigate: true});
+            SignupProgress.setMinProgress(req, 'phone', function(err) {
+                if(err) {
+                    req.log.error('Failed to set user phone verification as passed',
+                        {userId: req.session.userId, error: err});
+                    res.json({message: 'Internal error', success: false});
+                    return;
+                }
+                res.json({message: 'Phone verification successful', success: true, navigate: true});
+            });
         });
     }
 
@@ -187,11 +193,12 @@ module.exports = function execute(scope, app) {
     app.post('/minfraud', function (req, res) {
         var query = req.body;
         query.license_key = config.maxmind.licenseId;
-        query.i = config.maxmind.tmpClientIp || req.ip; // temp config option for demo
+        query.i = config.maxmind.tmpClientIp || req.ip; // config option for testing
         var result = {success: true};
         if (checkBlackList(query)) {
             fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
                 if (err) {
+                    req.log.info('minFraud was not available, thus user verified');
                     SignupProgress.setMinProgress(req, 'billing', function () {
                         res.json({success: false, message: serviceMessages.serviceFailed});
                     });
@@ -205,8 +212,7 @@ module.exports = function execute(scope, app) {
                 // risk score override for testing
                 result.riskScore = config.maxmind.tmpRiskScore || result.riskScore;
 
-                // temp logging for demo
-                scope.log.info('maxmind fraud score detected (0.01=safest -- 99.99=maxfraud)',
+                req.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
                     {riskScore: result.riskScore, explanation: result.explanation});
                 if (err) {
                     res.json(err);
@@ -214,13 +220,16 @@ module.exports = function execute(scope, app) {
                 }
                 var riskTier = calcRiskTier(result.riskScore);
                 if (riskTiers[riskTier] === 100) {
-                    scope.log.warn('User was blocked due to high risk score', {userId: req.session.userId});
+                    req.log.warn('User was blocked due to high risk score');
                     SignupProgress.setSignupStep(req, 'blocked', function () {
                         res.json(result);
                     });
                 } else {
-                    Metadata.set(req.session.userId, 'riskScore', riskTier, function () {
-                        // Deliberately ignore possible errors and set progress anyway
+                    req.log.info('Saving user riskScore in metadata');
+                    Metadata.set(req.session.userId, 'riskScore', result.riskScore, function (err) {
+                        if (err) {
+                            req.log.warn('Error occured while saving riskScore', {error: err});
+                        }
                         SignupProgress.setMinProgress(req, 'billing', function () {
                             res.json(result);
                         });
@@ -228,7 +237,7 @@ module.exports = function execute(scope, app) {
                 }
             });
         } else {
-            scope.log.warn('User matched against black list and was blocked', {userId: req.session.userId});
+            req.log.warn('User matched against black list and was blocked');
             SignupProgress.setSignupStep(req, 'blocked', function () {
                 res.json(result);
             });
