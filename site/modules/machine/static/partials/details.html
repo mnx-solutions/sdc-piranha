@@ -307,20 +307,25 @@
     </div>
     <div class="pull-left">
         <div class="details_btn_block">
+            <span>
+                <div class="details_btn_block_margin state" data-machine-status machine="machine"></div>
+            </span>
             <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
+                  data-ng-show="machine.state != 'running'"
                   data-ng-click="clickStart(machine.id)"
                   data-toggle="tooltip"
                   data-placement="top"
                   data-html="true"
                   data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
                   data-ng-class="{'btn-success': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                  class="state btn green font_size details_btn_block_margin tooltip-hover">
-                  <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
-                  <i class="icon-ok" data-ng-hide="machine.job && !machine.job.finished"></i>
-                <p data-translate>running</p>
+                  class="state btn orange font_size tooltip-hover">
+                  <!--<span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>-->
+                  <i class="icon-play"></i>
+                <p data-translate>start</p>
             </button>
 
             <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
+                  data-ng-show="machine.state != 'stopped'"
                   data-ng-click="clickStop(machine.id)"
                   data-translate-attributes="data-original-title"
                   data-toggle="tooltip"
@@ -328,9 +333,9 @@
                   data-html="true"
                   data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
                   data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                  class="state btn orange font_size details_btn_block_margin tooltip-hover">
-                <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
-                <i class="pause_icon" data-ng-hide="machine.job && !machine.job.finished"></i>
+                  class="state btn orange font_size tooltip-hover">
+                <!--<span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>-->
+                <i class="pause_icon"></i>
                 <p data-translate>pause</p>
             </button>
 
@@ -342,9 +347,9 @@
                   data-html="true"
                   data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
                   data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                  class="state btn orange font_size details_btn_block_margin tooltip-hover">
-                <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
-                <i class="stop_icon"  data-ng-hide="machine.job && !machine.job.finished"></i>
+                  class="state btn orange font_size tooltip-hover">
+                <!--<span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>-->
+                <i class="stop_icon"></i>
                 <p data-translate>delete</p>
             </button>
 
@@ -358,8 +363,8 @@
                   data-original-title="Click here to reboot your instance."
                   data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                   class="state btn orange font_size  tooltip-hover">
-                <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
-                <i class="reboot_icon" data-ng-hide="machine.job && !machine.job.finished"></i>
+                <!--<span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>-->
+                <i class="reboot_icon"></i>
                 <p data-translate>reboot</p>
             </button>
         </div>

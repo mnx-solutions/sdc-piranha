@@ -34,6 +34,8 @@
 
 .status.label {
     text-transform: capitalize;
+    margin-right: 4px;
+    margin-top: 0;
 }
 
 .machine fieldset {
@@ -71,7 +73,7 @@
 }
 
 .label-margin-fix {
-    margin-left: 0px;
+    margin-left: 0;
 }
 
 .list-controls {
@@ -384,6 +386,7 @@
     top: 3px;
     background-repeat: no-repeat;
     background-image: url("../img/warn_icon.png");
+    padding-right: 5px;
 }
 .icon-sort-up, .icon-sort-down, .icon-sort-both  {
     background-repeat: no-repeat;
@@ -410,9 +413,9 @@
     min-width: 85px;
 }
 .label {
-    padding: 6px 14px;
+    padding: 7px 14px;
     font-size: 16px;
-    cursor: pointer;
+    cursor: default;
     outline: none;
     background-image: none;
     border: none;
@@ -748,7 +751,7 @@ ul.dropdown-menu{
     background-repeat: no-repeat;
     background-image: url("../img/details_img_i.png");
 }
-.pause_icon, .stop_icon, .reboot_icon {
+.pause_icon, .stop_icon, .reboot_icon, .icon-play {
     width: 14px;
     height: 14px;
     float: left;
@@ -772,14 +775,10 @@ ul.dropdown-menu{
 .details_btn_block{
     padding-bottom: 27px;
 }
-.details_btn_block span {
-    float: left;
-    /*min-width: 86.5px !important;*/
-    /*margin-bottom: 20px;*/
-}
-.details_btn_block_margin{
-    margin-right: 6px;
-}
+
+/*.details_btn_block_margin span{*/
+    /*margin-right: 4px;*/
+/*}*/
 /*.details_btn_block .icon-ok{*/
     /*margin-top: 4px;*/
 /*}*/
@@ -903,6 +902,7 @@ ul.dropdown-menu{
     display: inline-block;
     width: 65px;
     height: 8px !important;
+    vertical-align: top;
 }
 .container_details{
     width: 1000px;
@@ -910,7 +910,7 @@ ul.dropdown-menu{
     padding-bottom: 55px;
 }
 .status .loading-small, .details_btn_block .loading-small {
-    padding-top: 5px;
+    padding-top: 6px;
     padding-right: 15px;
     margin-left: -12px;
 }
@@ -925,4 +925,12 @@ ul.dropdown-menu{
     top: 8px;
     min-height: 30px;
     min-width: 30px;
+}
+.icon-play {
+    background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
+    background-position: -264px -72px;
+}
+.loading-small{
+    width: 14px !important;
+    height: 14px !important;
 }
