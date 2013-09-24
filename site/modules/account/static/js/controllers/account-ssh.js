@@ -135,8 +135,8 @@
                 return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
             };
 
-            $scope.clickKeygenDownload = function() {
-                window.location.href = '/main/account/key-generator.sh';
+            $scope.generateKeyPair = function() {
+                window.location.href = '/main/account/ssh';
             };
 
 
