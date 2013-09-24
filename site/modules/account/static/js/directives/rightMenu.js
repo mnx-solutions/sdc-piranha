@@ -40,6 +40,11 @@
                             sequence: 3,
                             name: 'Billing',
                             url: '/account/payment'
+                        },
+                        {
+                            sequence: 4,
+                            name: 'Invoices',
+                            url: '/account/invoices'
                         }
                     ];
                 },

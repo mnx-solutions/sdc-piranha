@@ -28,10 +28,17 @@
                         datasets.job.finished = true;
 
                         if (err) {
-                            errorContext.emit(new Error(localization.translate(null,
-                                'machine',
-                                'Unable to retrieve datasets list'
-                            )));
+                            notification.push(datacenter, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve datasets from datacenter {{name}}',
+                                    { name: datacenter }
+                                )
+                            );
+                            datasets.job.deferred.reject(err);
+                            Object.keys(datasets.search[datacenter]).forEach(function (job) {
+                                job.reject(err);
+                            });
                             return;
                         }
 

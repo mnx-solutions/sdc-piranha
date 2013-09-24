@@ -21,7 +21,7 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
     });
 }
 
-module.exports = function execute(scope, register, callback) {
+module.exports = function execute(scope, register) {
     register('Metadata', require('./lib/metadata'));
 
     //Compatibility with old version
@@ -63,15 +63,14 @@ module.exports = function execute(scope, register, callback) {
             }
 
             cb(null, state);
-            return;
         });
     }
 
     api.getAccountVal = function (req, cb) {
+        var start = Date.now();
         if (req.session.userId) {
-            var start = Date.now();
             getFromBilling('provision', req.session.userId, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start));
+                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
             return;
@@ -84,8 +83,9 @@ module.exports = function execute(scope, register, callback) {
                 return;
             }
 
+            var start = Date.now();
             getFromBilling('provision', account.id, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start));
+                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
         });
@@ -122,10 +122,24 @@ module.exports = function execute(scope, register, callback) {
 
     api.setSignupStep = function (call, step, cb) {
         function updateBilling(req) {
+            if (step !== 'billing') {
+                return; // no zuora account yet created
+            }
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
-                        call.log.error('Something went wrong with billing API', err);
+                        // build more clear error object so we wouldn't have errors: [object], [object] in the logs
+                        var zuoraErr = {
+                            code: err.code
+                        };
+
+                        if(err.body.errors)
+                            zuoraErr.zuoraErrors = err.body.errors;
+
+                        if(err.body.name)
+                            zuoraErr.name = err.name;
+
+                        call.log.error(zuoraErr,'Something went wrong with billing API');
                     }
                     //No error handling or nothing here, just let it pass.
                     cb();
@@ -173,6 +187,7 @@ module.exports = function execute(scope, register, callback) {
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 
             if (isCompleted || isAStepBackwards || isALeap) {
+                scope.log.debug('Can\'t move to the next step, returning');
                 cb();
                 return;
             }
@@ -181,10 +196,10 @@ module.exports = function execute(scope, register, callback) {
                 step = 'completed';
             }
 
+            scope.log.info('Completed step %s, moving to step %s', oldStep, step);
             api.setSignupStep(call, step, cb);
         });
     };
 
     register('SignupProgress', api);
-    setImmediate(callback);
 };

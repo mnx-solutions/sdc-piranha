@@ -7,6 +7,7 @@
       "level": "debug"
     },
     "cloudapi": {
+        "DCCallTimeout": 5000
     },
     "localization": {
         "defaultLocale": "en",
@@ -18,9 +19,6 @@
         "db": 1,
         "signupDB": 5,
         "password": ""
-    },
-    "tropo": {
-      "token": ""
     },
     "assets":{
         "js": {
@@ -48,6 +46,18 @@
                     "list": ["CUB","IRN","SYR","SDN","PRK"]
                 }
             }
+        },
+        "soap": {
+            "tenantId"     : "",
+            "tenantName"   : "",
+            "user"         : "",
+            "password"     : "",
+            "endpoint"     : "",
+            "wsdl"         : "",
+            "objectNS"     : "",
+            "zuoraNS"      : "",
+            "product"      : "",
+            "UOM_postfix"  : ""
         }
     },
     "billing":{
@@ -82,6 +92,12 @@
         "url":""
     },
     "maxmind": {
-        "licenseId": "bQg6oKXwLfWj"
+        "url": "https://api.maxmind.com",
+        "licenseId": "bQg6oKXwLfWj",
+        "limits" : {
+            "calls": 3,
+            "serviceFails": 3,
+            "pinTries": 3
+        }
     }
 }

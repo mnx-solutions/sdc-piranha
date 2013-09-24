@@ -84,6 +84,7 @@
                             return;
                         }
                         var resolver = job.__read();
+                        account = resolver;
                         deferred.resolve(resolver);
                         $$track.marketing_lead(account);
                     }

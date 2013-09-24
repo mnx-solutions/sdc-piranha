@@ -6,6 +6,14 @@ module.exports = function execute(scope, app) {
     var smartCloud = scope.get('smartCloud');
     var TFA = scope.api('TFA');
 
+    function logUserInformation(req, redirectUrl) {
+        if (/\/signup\/$/.test(redirectUrl)) {
+            req.log.info('New user logged in', { userName: req.session.userName, userId: req.session.userId });
+        } else {
+            req.log.info('Existing user logged in', { userName: req.session.userName, userId: req.session.userId });
+        }
+    }
+
     app.get('/saveToken/:url', function(req, res, next) {
         var token = req.query.token;
         // redirect to this url after we're done with the token
@@ -28,8 +36,8 @@ module.exports = function execute(scope, app) {
                 req.session.userName = data.login;
 
                 if (!secret) {
+                    logUserInformation(req, redirectUrl);
 
-                    req.log.info('User logged in', {userName: req.session.userName, userId: req.session.userId});
                     // as sso passes token using ?token=
                     req.session.token = token;
                     req.session.save();
@@ -116,8 +124,8 @@ module.exports = function execute(scope, app) {
             delete req.session._tfaRedirect;
             req.session.save();
 
-            req.log.info('User logged in', {userName: req.session.userName, userId: req.session.userId});
-            res.send({ status: 'ok', redirect: redirect});
+            logUserInformation(req, redirect);
+            res.send({ status: 'ok', redirect: redirect });
         } else {
             res.send({ status: 'error'});
         }

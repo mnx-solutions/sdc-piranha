@@ -35,11 +35,11 @@
             $scope.showFinishConfiguration = false;
 
             $q.all([
-                    $q.when($scope.keys),
-                    $q.when($scope.datacenters)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
+                $q.when($scope.keys),
+                $q.when($scope.datacenters)
+            ]).then(function () {
+                $scope.loading = false;
+            });
 
             $scope.data = {};
             $scope.selectedDataset = null;
@@ -156,7 +156,7 @@
             $scope.reconfigure = function () {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
-                //$scope.selectedDataset = null;
+                $scope.selectedDataset = null;
                 $scope.selectedPackage = null;
                 $scope.selectedPackageInfo = null;
                 $scope.packageType = null;

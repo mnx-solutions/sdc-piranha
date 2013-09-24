@@ -280,3 +280,12 @@
 .tag.editable .key, .tag.editable .value {
     border-bottom: none;
 }
+
+.tag-label {
+    color: #000;
+    padding-top: 5px;
+}
+
+.required-asterix {
+    color : #ff6600;
+}

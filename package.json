@@ -24,14 +24,14 @@
     "file-pointer": "0.0.x",
     "foldermap": "0.3.x",
     "redis": "*",
-    "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
+    "zuora": "0.1.0",
     "moment": "*",
     "xml2js": "*",
     "mustache": "*",
-    "tropo-webapi-node": "*",
     "restify": "*",
     "speakeasy": "*",
-    "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea"
+    "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
+    "soap": "*"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
