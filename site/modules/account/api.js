@@ -83,6 +83,7 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
+            var start = Date.now();
             getFromBilling('provision', account.id, function (err, state) {
                 scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
@@ -186,6 +187,7 @@ module.exports = function execute(scope, register) {
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 
             if (isCompleted || isAStepBackwards || isALeap) {
+                scope.log.debug('Can\'t move to the next step, returning');
                 cb();
                 return;
             }
@@ -194,6 +196,7 @@ module.exports = function execute(scope, register) {
                 step = 'completed';
             }
 
+            scope.log.info('Completed step %s, moving to step %s', oldStep, step);
             api.setSignupStep(call, step, cb);
         });
     };

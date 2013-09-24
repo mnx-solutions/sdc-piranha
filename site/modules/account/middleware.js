@@ -3,7 +3,6 @@
 var config = require('easy-config');
 
 module.exports = function execute(scope) {
-
     var SignupProgress = scope.api('SignupProgress');
 
     function returnPage(req, res, next, step) {
@@ -20,7 +19,6 @@ module.exports = function execute(scope) {
     }
 
     var middleware = function (req, res, next) {
-
         SignupProgress.getSignupStep(req, function(err, step) {
             if (err) {
                 next(err);
