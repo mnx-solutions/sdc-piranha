@@ -952,6 +952,7 @@ a .feature1 {
 .btn.light-blue {
     color: #ff6600;
     text-shadow: none;
+    font-weight: bold;
     background-color: #f1f1f1;
     width: auto;
     min-height: 20px ! important;

@@ -91,7 +91,7 @@
                         null,
                         'Your laptop will explode now.  Are you sure?'
                     ), function () {
-                        location.href = '#!/instance/create';
+                        $scope.jokeDialog();
                     });
             };
             $scope.errorDialog = function () {
@@ -120,6 +120,21 @@
                         $scope,
                         null,
                         'Sorry, this is not implemented yet.'
+                    ),function(){
+                        this.close();
+                    });
+            };
+            $scope.jokeDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is joke.'
                     ),function(){
                         this.close();
                     });

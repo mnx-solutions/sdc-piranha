@@ -110,14 +110,28 @@
                         <form name="tagForm">
                             <div class="tags" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
                                 <div class="tag row-fluid" data-ng-show="!o.edit">
-                                    <span class="key span5" data-ng-class="{error: o.conflict}">{{o.key}}</span>
-                        <span class="value span5" data-ng-class="{error: o.conflict}">
-                            {{o.val}}
-                            <span class="icon-trash pull-right delete"
-                                  data-ng-click="removeTag(key)"
-                                  data-ng-show="!tagsave"
-                                    ></span>
-                        </span>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <!--<label class="control-label">Key<span class="required">*</span></label>-->
+                                            <span class="key tags-width" data-ng-class="{error: o.conflict}">{{o.key}}</span>
+                                        </div>
+                                        <div class="controls">
+                                            <!--<label class="control-label">Value</label>-->
+                                            <span class="value tags-width" data-ng-class="{error: o.conflict}">{{o.val}}</span>
+                                            <span class="icon-trash delete pull-left tags-delete-pos"
+                                                data-ng-click="removeTag(key)"
+                                                data-ng-show="!tagsave">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <!--<span class="key span5" data-ng-class="{error: o.conflict}">{{o.key}}</span>-->
+                        <!--<span class="value span5" data-ng-class="{error: o.conflict}">-->
+                            <!--{{o.val}}-->
+                            <!--<span class="icon-trash pull-right delete"-->
+                                  <!--data-ng-click="removeTag(key)"-->
+                                  <!--data-ng-show="!tagsave">-->
+                            <!--</span>-->
+                        <!--</span>-->
                                 </div>
 
                                 <div class="tag editable" data-ng-show="o.edit">
@@ -134,7 +148,7 @@
                                                    data-ng-model="o.key"
                                                    data-ng-required="key != tagnr"
                                                    data-ng-disabled="tagsave"
-                                                   style="width: 220px;">
+                                                   class="tags-width">
 
                                             <span class="help-inline">Provide a key</span>
                                         </div>
@@ -146,7 +160,7 @@
                                                    data-ng-model="o.val"
                                                    data-ng-required="key != tagnr"
                                                    data-ng-disabled="tagsave"
-                                                   style="width: 220px;"/>
+                                                   class="tags-width"/>
                                             <span class="icon-trash delete"
                                                   data-ng-click="removeTag(key)"
                                                   data-ng-show="key != tagnr && !tagsave">

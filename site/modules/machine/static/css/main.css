@@ -916,7 +916,7 @@ ul.dropdown-menu{
 }
 
 .container_details .error{
-    padding-bottom: 10px;
+    padding-bottom: 15px;
 }
 .wait_rename{
     background-position: 0 0;
@@ -933,4 +933,14 @@ ul.dropdown-menu{
 .loading-small{
     width: 14px !important;
     height: 14px !important;
+}
+.tags-width{
+    width: 220px !important;
+    min-width: 300px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+.tags-delete-pos{
+    margin-top: 12px;
+    margin-bottom: 20px;
 }
