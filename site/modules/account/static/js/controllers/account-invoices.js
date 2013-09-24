@@ -31,7 +31,7 @@
 
             $scope.exportIframe = '';
             $scope.download = function (invoice) {
-                $scope.exportIframe += '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
+                $scope.exportIframe = '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
             };
 
         }]);

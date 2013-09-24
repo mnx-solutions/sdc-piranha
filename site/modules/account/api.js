@@ -67,8 +67,8 @@ module.exports = function execute(scope, register) {
     }
 
     api.getAccountVal = function (req, cb) {
+        var start = Date.now();
         if (req.session.userId) {
-            var start = Date.now();
             getFromBilling('provision', req.session.userId, function (err, state) {
                 scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
