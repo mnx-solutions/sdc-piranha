@@ -2,8 +2,7 @@
 
 (function (app) {
     app.controller(
-        //FIXME: By naming convention it should be Signup.PhoneController
-        'PhoneController',
+        'Signup.PhoneController',
         ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'Phone', '$q',
             function ($scope, Account, localization, requestContext, notification, Phone, $q) {
             requestContext.setUpRenderContext('signup.phone', $scope);

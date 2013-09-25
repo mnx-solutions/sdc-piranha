@@ -14,6 +14,8 @@ module.exports = function execute(scope, callback) {
 
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
+    var Metadata = scope.api('Metadata');
+    var MaxMind = scope.api('MaxMind');
 
     server.onCall('listPaymentMethods', function (call) {
         zHelpers.getPaymentMethods(call, call.done.bind(call));
@@ -63,17 +65,37 @@ module.exports = function execute(scope, callback) {
                             return;
                         }
 
-                        //Set minimum progress to session and ask billing server to update
-                        call.log.debug('Updating user progress');
-                        call._user = user;
-
-                        SignupProgress.setMinProgress(call, 'billing', function (err) {
+                        MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (err, result) {
+                            if (result.riskScore) {
+                                call.log.info('Saving user riskScore in metadata');
+                                Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
+                            }
                             if (err) {
-                                call.log.error(err);
+                                call.log.warn(err);
+                                SignupProgress.setSignupStep(call, 'blocked', function (err) {
+                                    if (err) {
+                                        call.log.error(err);
+                                    }
+                                    call.done(null, data);
+                                });
+                                return;
                             }
 
-                            call.done(null, data);
+                            //Set minimum progress to session and ask billing server to update
+                            call.log.debug('Updating user progress');
+                            call._user = user;
+
+                            SignupProgress.setMinProgress(call, 'billing', function (err) {
+                                if (err) {
+                                    call.log.error(err);
+                                }
+
+                                call.done(null, data);
+                            });
+
                         });
+
+
                     });
                     return;
                 }

@@ -106,21 +106,19 @@ module.exports = function execute(scope, register) {
             setImmediate(end.bind(end, req.session.signupStep));
             return;
         }
-
-        api.getAccountVal(req, function (err, value) {
-            if (err) {
-                cb(err);
-                return;
+        metadata.get(req.session.userId, 'signupStep', function (err, storedStep) {
+            if (!err && storedStep) {
+                call.log.info('Got signupStep from metadata', {step: storedStep});
+                end(storedStep);
+            } else {
+                api.getAccountVal(req, function (err, value) {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
+                    end(value);
+                });
             }
-            //FIXME: If metadata overwrites billing then why is it called after billing?
-            // It should be called before and billing called if metadata failse
-            metadata.get(req.session.userId, 'signupStep', function (err, storedStep) {
-                if (!err && storedStep) {
-                    value = storedStep;
-                    call.log.info('Got signupStep from metadata', {step: value});
-                }
-                end(value);
-            });
         });
     };
 
@@ -131,7 +129,7 @@ module.exports = function execute(scope, register) {
                     call.log.info('Set signupStep in metadata', {step: step});
                 });
             }
-            if (step === 'billing') { //Billing server is updated on every step equal or after billing
+            if (steps.indexOf(step) >= steps.indexOf('billing')) { //Billing server is updated on every step equal or after billing
                 updateBilling(req);
             }
             else {

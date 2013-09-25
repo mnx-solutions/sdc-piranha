@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'MinFraud', 'Process',
-            function ($scope, requestContext, $location, $cookies, MinFraud, Process) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process',
+            function ($scope, requestContext, $location, $cookies, Process) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {

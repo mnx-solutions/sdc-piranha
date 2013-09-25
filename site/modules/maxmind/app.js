@@ -8,18 +8,11 @@ if (!config.maxmind || !config.maxmind.licenseId) {
 }
 
 var phoneVerificationClient = restify.createStringClient({url: config.maxmind.phoneApiUrl});
-var fraudVerificationClient = restify.createStringClient({url: config.maxmind.fraudApiUrl});
 
 var limits = config.maxmind.limits || {
     calls: 3,
     serviceFails: 3,
     pinTries: 3
-};
-
-var riskTiers = config.maxmind.riskTiers || {
-    "tier-1": 33, //FIXME: We use single quotes
-    "tier-2": 66,
-    "tier-3": 100
 };
 
 var serviceMessages = {
@@ -88,28 +81,6 @@ module.exports = function execute(scope, app) {
                 res.json({message: 'Phone verification successful', success: true, navigate: true});
             });
         });
-    }
-
-    function checkBlackList(data) {
-        var blacklistConfig = config.ns.blacklist || {};
-        blacklistConfig.domain = blacklistConfig.domain || [];
-        blacklistConfig.ip = blacklistConfig.ip || [];
-        blacklistConfig.country = blacklistConfig.country || [];
-        //FIXME: We do not use IF without braces {}
-        if (blacklistConfig.domain.indexOf(data.domain.toLowerCase()) !== -1) return false;
-        if (blacklistConfig.ip.indexOf(data.i) !== -1) return false;
-        if (blacklistConfig.country.indexOf(data.country) !== -1) return false;
-        return true;
-    }
-
-    function calcRiskTier(riskScore) {
-        //FIXME: You are iterating over an object - property order is not guaranteed
-        for (var i in riskTiers) {
-            var limitScore = riskTiers[i];
-            //FIXME: We do not use IF without braces {}
-            if (riskScore <= limitScore) return i;
-        }
-        return null;
     }
 
     app.get('/call/:phone', function (req, res) {
@@ -193,59 +164,5 @@ module.exports = function execute(scope, app) {
         res.json({message: serviceMessages.wrongPin, success: false});
     });
 
-    app.post('/minfraud', function (req, res) {
-        var query = req.body;
-        query.license_key = config.maxmind.licenseId;
-        query.i = config.maxmind.tmpClientIp || req.ip; // config option for testing
-        var result = {success: true};
-        //FIXME: If the body is all covered by IF ELSE and one side is considerably smaller like here, then use IF and return
-        // This makes the code much more readable. Here - if (!checkBlackList(query)) {... return; }
-        if (checkBlackList(query)) {
-            fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
-                if (err) {
-                    req.log.info('minFraud was not available, thus user verified');
-                    SignupProgress.setMinProgress(req, 'billing', function () {
-                        res.json({success: false, message: serviceMessages.serviceFailed});
-                    });
-                    return;
-                }
-                data.split(';').forEach(function (fieldStr) {
-                    var keyValueArr = fieldStr.split('=');
-                    if (keyValueArr.length > 1) result[keyValueArr[0]] = keyValueArr[1];
-                });
 
-                // risk score override for testing
-                result.riskScore = config.maxmind.tmpRiskScore || result.riskScore;
-
-                req.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
-                    {riskScore: result.riskScore, explanation: result.explanation});
-                if (err) {
-                    res.json(err);
-                    return;
-                }
-                var riskTier = calcRiskTier(result.riskScore);
-                if (riskTiers[riskTier] === 100) {
-                    req.log.warn('User was blocked due to high risk score');
-                    SignupProgress.setSignupStep(req, 'blocked', function () {
-                        res.json(result);
-                    });
-                } else {
-                    req.log.info('Saving user riskScore in metadata');
-                    Metadata.set(req.session.userId, 'riskScore', result.riskScore, function (err) {
-                        if (err) {
-                            req.log.warn('Error occured while saving riskScore', {error: err});
-                        }
-                        SignupProgress.setMinProgress(req, 'billing', function () {
-                            res.json(result);
-                        });
-                    });
-                }
-            });
-        } else {
-            req.log.warn('User matched against black list and was blocked');
-            SignupProgress.setSignupStep(req, 'blocked', function () {
-                res.json(result);
-            });
-        }
-    });
 };

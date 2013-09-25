@@ -274,11 +274,7 @@
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.loading = false;
-                                        credit.cardNumberFull = $scope.form.creditCardNumber;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
-                                        account.phoneCountry = $scope.phone.country;
-                                        account.billingCountry = $scope.form.cardHolderInfo.country;
-                                        $rootScope.$broadcast('billingAccountUpdate', account);
                                     });
                                 }, function () {
                                     notification.push(null, { type: 'error' },
