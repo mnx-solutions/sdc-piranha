@@ -114,6 +114,7 @@
     margin: -15px 0 22px 0;
     font-weight: 200;
     border-bottom: 1px solid #eee;
+    overflow: hidden;
 }
 
 /***

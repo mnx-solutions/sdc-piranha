@@ -740,6 +740,8 @@ ul.dropdown-menu{
 .accordion-inner table td:last-child {
     font-size: 16px;
     font-weight: 300;
+    overflow: hidden;
+    max-width: 325px;
 }
 .details-images-icon {
     width: 16px;
@@ -944,4 +946,8 @@ ul.dropdown-menu{
 .tags-delete-pos{
     margin-top: 12px;
     margin-bottom: 20px;
+}
+.machine-label{
+    max-width: 300px;
+    overflow: hidden;
 }
