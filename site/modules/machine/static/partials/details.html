@@ -124,14 +124,6 @@
                                             </span>
                                         </div>
                                     </div>
-                                    <!--<span class="key span5" data-ng-class="{error: o.conflict}">{{o.key}}</span>-->
-                        <!--<span class="value span5" data-ng-class="{error: o.conflict}">-->
-                            <!--{{o.val}}-->
-                            <!--<span class="icon-trash pull-right delete"-->
-                                  <!--data-ng-click="removeTag(key)"-->
-                                  <!--data-ng-show="!tagsave">-->
-                            <!--</span>-->
-                        <!--</span>-->
                                 </div>
 
                                 <div class="tag editable" data-ng-show="o.edit">
@@ -220,8 +212,8 @@
 
                             <div class="pull-left resize_block">
                                 <p class="control-label" data-translate><b>Resize Instance type</b></p>
-                                <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName" data-placeholder="Select package to resize to">
-                                    <option value=""></option>
+                                <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName">
+                                    <!--<option value=""></option>-->
                                     <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
                                             value="{{package.name}}" class="text-medium">
                                         Mem: {{package.memory | sizeFormat}}

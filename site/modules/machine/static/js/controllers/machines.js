@@ -424,7 +424,7 @@
             };
 
             $scope.showPages = function() {
-                var itemNum = this.select2;
+                var itemNum = this.selectInstances;
                 if(itemNum == 'All'){
                     $scope.showAll();
                     return;
