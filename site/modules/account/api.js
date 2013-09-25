@@ -139,19 +139,26 @@ module.exports = function execute(scope, register) {
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
-                        // build more clear error object so we wouldn't have errors: [object], [object] in the logs
-                        var zuoraErr = {
-                            code: err.code
-                        };
 
-                        if(err.body.errors)
-                            zuoraErr.zuoraErrors = err.body.errors;
+                        // error 402 is one of the expected results, don't log it.
+                        if (err.code != 402) {
 
-                        if(err.body.name)
-                            zuoraErr.name = err.name;
+                            // build more clear error object so we wouldn't have errors: [object], [object] in the logs
+                            var zuoraErr = {
+                                code: err.code
+                            };
 
-                        call.log.error(zuoraErr,'Something went wrong with billing API');
+                            if(err.body.errors)
+                                zuoraErr.zuoraErrors = err.body.errors;
+
+                            if(err.body.name)
+                                zuoraErr.name = err.name;
+
+
+                                call.log.error(zuoraErr,'Something went wrong with billing API');
+                        }
                     }
+
                     //No error handling or nothing here, just let it pass.
                     cb();
                 });
