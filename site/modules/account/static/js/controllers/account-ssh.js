@@ -7,13 +7,14 @@
         '$timeout',
         '$q',
         '$dialog',
+        '$location',
         'Account',
         'localization',
         'requestContext',
         'notification',
         'util',
 
-        function ($scope, $window, $timeout, $q, $dialog, Account, localization, requestContext, notification, util) {
+        function ($scope, $window, $timeout, $q, $dialog, $location, Account, localization, requestContext, notification, util) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
@@ -138,7 +139,6 @@
             $scope.generateKeyPair = function() {
                 window.location.href = '/main/account/ssh';
             };
-
 
             $scope.updateKeys();
 

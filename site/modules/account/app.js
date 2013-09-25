@@ -19,7 +19,7 @@ redisClient.auth(config.redis.password, function() {});
  * @description
  * Account module API
  */
-module.exports = function execute(scope, app, callback) {
+module.exports = function execute(scope, app) {
     var keyGen = null;
 
     var SignupProgress = scope.api('SignupProgress');
@@ -50,7 +50,7 @@ module.exports = function execute(scope, app, callback) {
         // generate 2048 bit rsa key and send private key to the user
         var filePath = os.tmpdir() +'/'+ crypto.randomBytes(4).readUInt32LE(0);
         var name = crypto.createHash('sha1').update(filePath).digest('hex').substr(0, 10);
-        scope.log.debug('Generating ssh key pair for user '+ req.session.useId);
+        scope.log.debug('Generating ssh key pair for user '+ req.session.userId);
         exec('ssh-keygen -t rsa -q -f '+ filePath +' -N "" -C "'+ req.session.userName +'" && cat '+ filePath +'.pub', function(err, stdout, stderr) {
             SignupProgress.addSshKey(req, name, stdout, function(err) {
                 if(err) {
@@ -78,23 +78,5 @@ module.exports = function execute(scope, app, callback) {
             });
 
         });
-    });
-
-    app.get('/key-generator.sh', function(req, res, next) {
-        // replace username in the script with correct one
-        var data = keyGen.replace('{{username}}', '');
-
-        res.set('Content-type', 'application/x-sh');
-        res.send(data);
-    });
-
-    fs.readFile(__dirname +'/data/key-generator.sh','utf8', function (err, data) {
-        if(err) {
-            scope.log.fatal(err);
-            process.exit();
-            return;
-        }
-        keyGen = data;
-        callback();
     });
 };
