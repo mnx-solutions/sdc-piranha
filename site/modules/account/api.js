@@ -103,7 +103,7 @@ module.exports = function execute(scope, register) {
         }
 
         if (req.session.signupStep) {
-            end(req.session.signupStep);
+            setImmediate(end.bind(end, req.session.signupStep));
             return;
         }
 
@@ -112,6 +112,8 @@ module.exports = function execute(scope, register) {
                 cb(err);
                 return;
             }
+            //FIXME: If metadata overwrites billing then why is it called after billing?
+            // It should be called before and billing called if metadata failse
             metadata.get(req.session.userId, 'signupStep', function (err, storedStep) {
                 if (!err && storedStep) {
                     value = storedStep;
@@ -129,7 +131,7 @@ module.exports = function execute(scope, register) {
                     call.log.info('Set signupStep in metadata', {step: step});
                 });
             }
-            if (step === 'billing') {
+            if (step === 'billing') { //Billing server is updated on every step equal or after billing
                 updateBilling(req);
             }
             else {
@@ -146,12 +148,13 @@ module.exports = function execute(scope, register) {
                             code: err.code
                         };
 
-                        if(err.body.errors)
+                        if(err.body.errors) {
                             zuoraErr.zuoraErrors = err.body.errors;
+                        }
 
-                        if(err.body.name)
+                        if(err.body.name) {
                             zuoraErr.name = err.name;
-
+                        }
                         call.log.error(zuoraErr,'Something went wrong with billing API');
                     }
                     //No error handling or nothing here, just let it pass.

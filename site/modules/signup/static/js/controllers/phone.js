@@ -2,6 +2,7 @@
 
 (function (app) {
     app.controller(
+        //FIXME: By naming convention it should be Signup.PhoneController
         'PhoneController',
         ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'Phone', '$q',
             function ($scope, Account, localization, requestContext, notification, Phone, $q) {
@@ -58,12 +59,14 @@
             $scope.$watch('phone', function (newVal) {
                 $scope.phone = newVal ? newVal.replace(new RegExp(/[^0-9#\*]/g), '') : newVal;
                 $scope.fullPhoneNumber = $scope.selectedCountryCode + $scope.phone;
+                //FIXME: We do not use IF without braces {}
                 if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) $scope.callInProgress = false;
             });
 
             $scope.$watch('country', function(newVal) {
                 $scope.selectedCountryCode = (newVal && newVal.areaCode) || '';
                 $scope.fullPhoneNumber = $scope.selectedCountryCode + $scope.phone;
+                //FIXME: We do not use IF without braces {}
                 if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) $scope.callInProgress = false;
             });
 
@@ -77,6 +80,7 @@
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
                         $scope.callInProgress = false;
+                        //FIXME: We do not use IF without braces {}
                         if (data.navigate) $scope.updateStep();
                         return;
                     }
@@ -97,6 +101,7 @@
                 Phone.verify($scope.pin, function (err, data) {
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
+                        //FIXME: We do not use IF without braces {}
                         if (data.navigate) $scope.updateStep();
                         return;
                     }

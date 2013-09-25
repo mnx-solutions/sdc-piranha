@@ -2,6 +2,7 @@
 
 (function (app) {
     app.controller(
+        //FIXME: By naming convention it should be Signup.BillingController
         'BillingController',
         ['$scope', 'localization', 'requestContext', 'notification', 'MinFraud',
             function ($scope, localization, requestContext, notification, MinFraud) {
@@ -14,6 +15,7 @@
                     creditCard = credit;
                 });
 
+                //TODO: Should the query really be built on client side ? Makes spoofing real easy
                 $scope.$on('billingAccountUpdate', function (event, account) {
                     var query = {
                         domain: account.email.substring(account.email.indexOf('@') + 1),

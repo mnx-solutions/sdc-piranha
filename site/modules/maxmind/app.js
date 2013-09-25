@@ -17,7 +17,7 @@ var limits = config.maxmind.limits || {
 };
 
 var riskTiers = config.maxmind.riskTiers || {
-    "tier-1": 33,
+    "tier-1": 33, //FIXME: We use single quotes
     "tier-2": 66,
     "tier-3": 100
 };
@@ -95,6 +95,7 @@ module.exports = function execute(scope, app) {
         blacklistConfig.domain = blacklistConfig.domain || [];
         blacklistConfig.ip = blacklistConfig.ip || [];
         blacklistConfig.country = blacklistConfig.country || [];
+        //FIXME: We do not use IF without braces {}
         if (blacklistConfig.domain.indexOf(data.domain.toLowerCase()) !== -1) return false;
         if (blacklistConfig.ip.indexOf(data.i) !== -1) return false;
         if (blacklistConfig.country.indexOf(data.country) !== -1) return false;
@@ -102,8 +103,10 @@ module.exports = function execute(scope, app) {
     }
 
     function calcRiskTier(riskScore) {
+        //FIXME: You are iterating over an object - property order is not guaranteed
         for (var i in riskTiers) {
             var limitScore = riskTiers[i];
+            //FIXME: We do not use IF without braces {}
             if (riskScore <= limitScore) return i;
         }
         return null;
@@ -195,6 +198,8 @@ module.exports = function execute(scope, app) {
         query.license_key = config.maxmind.licenseId;
         query.i = config.maxmind.tmpClientIp || req.ip; // config option for testing
         var result = {success: true};
+        //FIXME: If the body is all covered by IF ELSE and one side is considerably smaller like here, then use IF and return
+        // This makes the code much more readable. Here - if (!checkBlackList(query)) {... return; }
         if (checkBlackList(query)) {
             fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
                 if (err) {
