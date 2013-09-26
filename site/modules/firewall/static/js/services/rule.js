@@ -241,34 +241,6 @@
 
             if (!rules.job) {
                 service.updateRules();
-
-                var rule = {
-                    datacenter: 'us-beta-4',
-                    enabled: true,
-                    rule: 'FROM any TO vm 76647258-7a02-44b8-bced-aef44a7d5796 ALLOW tcp PORT 80',
-                    parsed: {
-                        from: [ [ 'wildcard', 'any' ] ],
-                        to: [ [ 'vm', '76647258-7a02-44b8-bced-aef44a7d5796' ] ],
-                        action: 'allow',
-                        protocol: { name: 'tcp', targets: [ 80 ] }
-                    }
-                };
-                service.rule().then(function () {
-                    //console.log('BEFORE length: ' + rules.length);
-                    service.createRule(rule).then(function (rule) {
-                        console.log(rule);
-
-                        service.rule().then(function (ruless) {
-                            console.log(ruless);
-                            ruless[Object.keys(ruless)[0]].forEach(function (r, index) {
-                                if (r.uuid === rule.uuid) {
-                                    console.log(r);
-                                }
-                            });
-                            //console.log('AFTER length: ' + rules[0].rules.length);
-                        })
-                    });
-                });
             }
 
             return service;
