@@ -487,6 +487,7 @@
 
             $scope.setPage = function () {
                 $scope.currentPage = this.n;
+                $scope.groupToPagesInfo();
             };
 
             $scope.startMachine = function (id) {

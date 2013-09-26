@@ -38,7 +38,7 @@
             <div class="row" data-ng-show="pagedMachines.length || query">
                 <div class="page_row_info">
                     <span>
-                        Showing {{pageNumFirst}} to {{pageNumLast}} of {{pageNumSum}} entries
+                        Showing <span data-ng-hide="pageNumFirst == pageNumLast"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
                     </span>
                     <form class="form-search">
                         <input type="search"
