@@ -18,11 +18,31 @@ var fraudVerificationClient = restify.createStringClient({url: config.maxmind.fr
 module.exports = function execute(scope, register) {
     var api = {};
 
+    //FIXME: Uncomment and remove old function - faster + readibility
+//    function checkBlackList(data) {
+//        var blacklist = config.ns.blacklist;
+//        if(!blacklist) {
+//            return true;
+//        }
+//        var comparison = {
+//            domain: data.domain.toLowerCase(),
+//            ip: data.i,
+//            country: data.country
+//        };
+//
+//        return !['domain', 'ip', 'country'].some(function (el) {
+//            if(Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1) {
+//                return true;
+//            }
+//        });
+//    }
+
     function checkBlackList(data) {
         var blacklistConfig = config.ns.blacklist || {};
         blacklistConfig.domain = blacklistConfig.domain || [];
         blacklistConfig.ip = blacklistConfig.ip || [];
         blacklistConfig.country = blacklistConfig.country || [];
+
         if (blacklistConfig.domain.indexOf(data.domain.toLowerCase()) !== -1) {
             return false;
         }
@@ -35,6 +55,21 @@ module.exports = function execute(scope, register) {
         return true;
     }
 
+
+    function calcRiskTierCeil(riskScore) {
+        var i = 1;
+        var tier = 'tier-1';
+        while(riskTiers[tier]) {
+            if(riskScore <= riskTiers[tier]) {
+                return riskTiers[tier];
+            }
+            i++;
+            tier = 'tier-' + i;
+        }
+        return 100; //return max
+    }
+
+    //FIXME: Remove in favour of the calcRiskTierCeil
     function calcRiskTier(riskScore) {
         var calculatedTier = null;
         var calculatedTierLimit = 100;
@@ -59,6 +94,7 @@ module.exports = function execute(scope, register) {
             license_key: config.maxmind.licenseId,
             i: config.maxmind.tmpClientIp || call.req.ip // config option for testing
         };
+
         call.log.info('Calling minFraud verification', query);
         var result = {};
         if (!checkBlackList(query)) {
@@ -74,6 +110,7 @@ module.exports = function execute(scope, register) {
             }
             data.split(';').forEach(function (fieldStr) {
                 var keyValueArr = fieldStr.split('=');
+                //FIXME: We do not use IF sentences without braces!
                 if (keyValueArr.length > 1) result[keyValueArr[0]] = keyValueArr[1];
             });
 
@@ -82,16 +119,15 @@ module.exports = function execute(scope, register) {
 
             call.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
                 {riskScore: result.riskScore, explanation: result.explanation});
+
+            //FIXME: What is this? There is no res object here. + Unreachable
             if (err) {
                 res.json(err);
                 return;
             }
-            var riskTier = calcRiskTier(result.riskScore);
-            if (riskTiers[riskTier] === 100) {
-                callback('User was blocked due to high risk score', result);
-            } else {
-                callback(null, result);
-            }
+
+            var riskErr = calcRiskTierCeil(result.riskScore) === 100 ? 'User was blocked due to high risk score' : null;
+            callback(riskErr, result);
         });
     };
 

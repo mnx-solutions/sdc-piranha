@@ -2,7 +2,6 @@
 
 var config = require('easy-config');
 var moment = require('moment');
-var restify = require('restify');
 var zHelpers = require('./lib/zuora-helpers');
 
 var isProduction = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
@@ -56,49 +55,49 @@ module.exports = function execute(scope, callback) {
         call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if (err) {
-                if (zHelpers.notFound(acc)) {
-                    call.log.debug('Creating new zuora account');
-
-                    zHelpers.createZuoraAccount(call, function (err, data, user) {
-                        if (err) {
-                            error(err, data, 'Zuora account.create failed');
-                            return;
-                        }
-
-                        MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (err, result) {
-                            if (result.riskScore) {
-                                call.log.info('Saving user riskScore in metadata');
-                                Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
-                            }
-                            if (err) {
-                                call.log.warn(err);
-                                SignupProgress.setSignupStep(call, 'blocked', function (err) {
-                                    if (err) {
-                                        call.log.error(err);
-                                    }
-                                    call.done(null, data);
-                                });
-                                return;
-                            }
-
-                            //Set minimum progress to session and ask billing server to update
-                            call.log.debug('Updating user progress');
-                            call._user = user;
-
-                            SignupProgress.setMinProgress(call, 'billing', function (err) {
-                                if (err) {
-                                    call.log.error(err);
-                                }
-
-                                call.done(null, data);
-                            });
-
-                        });
-
-
-                    });
+                if (!zHelpers.notFound(acc)) {
+                    error(err, acc, 'Account check with zuora failed');
                     return;
                 }
+
+                call.log.debug('Creating new zuora account');
+
+                zHelpers.createZuoraAccount(call, function (err, data, user) {
+                    if (err) {
+                        error(err, data, 'Zuora account.create failed');
+                        return;
+                    }
+
+                    MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
+                        if (fraudErr) {
+                            call.log.warn(fraudErr);
+                            SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
+                                if (blockErr) {
+                                    call.log.error(blockErr);
+                                }
+                                call.done(null, data);
+                            });
+                            return;
+                        }
+                        if (result.riskScore) {
+                            call.log.info('Saving user riskScore in metadata');
+                            Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
+                        }
+
+                        //Set minimum progress to session and ask billing server to update
+                        call.log.debug('Updating user progress');
+                        call._user = user;
+
+                        SignupProgress.setMinProgress(call, 'billing', function (err) {
+                            if (err) {
+                                call.log.error(err);
+                            }
+
+                            call.done(null, data);
+                        });
+
+                    });
+                });
 
                 error(err, acc, 'Account check with zuora failed');
                 return;
