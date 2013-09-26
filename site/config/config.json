@@ -101,10 +101,6 @@
             "serviceFails": 3,
             "pinTries": 3
         },
-        "riskTiers": {
-            "tier-1": 33,
-            "tier-2": 66,
-            "tier-3": 100
-        }
+        "riskScoreFraudLimit": 66
     }
 }

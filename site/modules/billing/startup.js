@@ -69,6 +69,10 @@ module.exports = function execute(scope, callback) {
                     }
 
                     MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
+                        if (result && result.riskScore) {
+                            call.log.info('Saving user riskScore in metadata');
+                            Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
+                        }
                         if (fraudErr) {
                             call.log.warn(fraudErr);
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
@@ -78,10 +82,6 @@ module.exports = function execute(scope, callback) {
                                 call.done(null, data);
                             });
                             return;
-                        }
-                        if (result.riskScore) {
-                            call.log.info('Saving user riskScore in metadata');
-                            Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
                         }
 
                         //Set minimum progress to session and ask billing server to update
@@ -98,8 +98,6 @@ module.exports = function execute(scope, callback) {
 
                     });
                 });
-
-                error(err, acc, 'Account check with zuora failed');
                 return;
             }
 

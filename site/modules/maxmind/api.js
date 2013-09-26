@@ -13,74 +13,29 @@ var riskTiers = config.maxmind.riskTiers || {
     'tier-3': 100
 };
 
+var riskScoreFraudLimit = config.maxmind.riskScoreFraudLimit || 66;
+
 var fraudVerificationClient = restify.createStringClient({url: config.maxmind.fraudApiUrl});
 
 module.exports = function execute(scope, register) {
     var api = {};
 
-    //FIXME: Uncomment and remove old function - faster + readibility
-//    function checkBlackList(data) {
-//        var blacklist = config.ns.blacklist;
-//        if(!blacklist) {
-//            return true;
-//        }
-//        var comparison = {
-//            domain: data.domain.toLowerCase(),
-//            ip: data.i,
-//            country: data.country
-//        };
-//
-//        return !['domain', 'ip', 'country'].some(function (el) {
-//            if(Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1) {
-//                return true;
-//            }
-//        });
-//    }
-
     function checkBlackList(data) {
-        var blacklistConfig = config.ns.blacklist || {};
-        blacklistConfig.domain = blacklistConfig.domain || [];
-        blacklistConfig.ip = blacklistConfig.ip || [];
-        blacklistConfig.country = blacklistConfig.country || [];
-
-        if (blacklistConfig.domain.indexOf(data.domain.toLowerCase()) !== -1) {
-            return false;
+        var blacklist = config.ns.blacklist;
+        if (!blacklist) {
+            return true;
         }
-        if (blacklistConfig.ip.indexOf(data.i) !== -1) {
-            return false;
-        }
-        if (blacklistConfig.country.indexOf(data.country) !== -1) {
-            return false;
-        }
-        return true;
-    }
+        var comparison = {
+            domain: data.domain.toLowerCase(),
+            ip: data.i,
+            country: data.country
+        };
 
-
-    function calcRiskTierCeil(riskScore) {
-        var i = 1;
-        var tier = 'tier-1';
-        while(riskTiers[tier]) {
-            if(riskScore <= riskTiers[tier]) {
-                return riskTiers[tier];
+        return !['domain', 'ip', 'country'].some(function (el) {
+            if(Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1) {
+                return true;
             }
-            i++;
-            tier = 'tier-' + i;
-        }
-        return 100; //return max
-    }
-
-    //FIXME: Remove in favour of the calcRiskTierCeil
-    function calcRiskTier(riskScore) {
-        var calculatedTier = null;
-        var calculatedTierLimit = 100;
-        for (var i in riskTiers) {
-            var limitScore = riskTiers[i];
-            if (riskScore <= limitScore && limitScore <= calculatedTierLimit) {
-                calculatedTier = i;
-                calculatedTierLimit = limitScore;
-            }
-        }
-        return calculatedTier;
+        });
     }
 
     api.minFraud = function (call, userInfo, billingInfo, creditCardInfo, callback) {
@@ -110,8 +65,9 @@ module.exports = function execute(scope, register) {
             }
             data.split(';').forEach(function (fieldStr) {
                 var keyValueArr = fieldStr.split('=');
-                //FIXME: We do not use IF sentences without braces!
-                if (keyValueArr.length > 1) result[keyValueArr[0]] = keyValueArr[1];
+                if (keyValueArr.length > 1) {
+                    result[keyValueArr[0]] = keyValueArr[1];
+                }
             });
 
             // risk score override for testing
@@ -120,13 +76,7 @@ module.exports = function execute(scope, register) {
             call.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
                 {riskScore: result.riskScore, explanation: result.explanation});
 
-            //FIXME: What is this? There is no res object here. + Unreachable
-            if (err) {
-                res.json(err);
-                return;
-            }
-
-            var riskErr = calcRiskTierCeil(result.riskScore) === 100 ? 'User was blocked due to high risk score' : null;
+            var riskErr = result.riskScore > riskScoreFraudLimit ? 'User was blocked due to high risk score' : null;
             callback(riskErr, result);
         });
     };
