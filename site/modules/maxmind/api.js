@@ -7,12 +7,6 @@ if (!config.maxmind || !config.maxmind.licenseId) {
     throw new Error('MaxMind licenseId must be defined in the config');
 }
 
-var riskTiers = config.maxmind.riskTiers || {
-    'tier-1': 33,
-    'tier-2': 66,
-    'tier-3': 100
-};
-
 var riskScoreFraudLimit = config.maxmind.riskScoreFraudLimit || 66;
 
 var fraudVerificationClient = restify.createStringClient({url: config.maxmind.fraudApiUrl});
