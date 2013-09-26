@@ -19,7 +19,7 @@
                     if (resultObj.success) {
                         callback(null, resultObj);
                     } else {
-                        callback(resultObj.message);
+                        callback(resultObj.message, resultObj);
                     }
                 }).error(function (err) {
                     callback(err || unavailableError);
@@ -30,7 +30,7 @@
                     if (resultObj.success) {
                         callback(null, resultObj);
                     } else {
-                        callback(resultObj.message);
+                        callback(resultObj.message, resultObj);
                     }
                 }).error(function (err) {
                     callback(err  || unavailableError);

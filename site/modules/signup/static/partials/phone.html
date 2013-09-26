@@ -1,4 +1,4 @@
-<div class="container-fluid" data-ng-controller="PhoneController">
+<div class="container-fluid" data-ng-controller="Signup.PhoneController">
     <div class="container">
         <div class="row">
             <div class="span11">
@@ -66,5 +66,10 @@
                 </div>
             </div>
         </form>
+        <div class="row">
+            <div class="span3">
+                <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</a>
+            </div>
+        </div>
     </div>
 </div>

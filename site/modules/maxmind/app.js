@@ -1,6 +1,5 @@
 'use strict';
 
-var fs = require('fs');
 var restify = require('restify');
 var config = require('easy-config');
 
@@ -8,7 +7,8 @@ if (!config.maxmind || !config.maxmind.licenseId) {
     throw new Error('MaxMind licenseId must be defined in the config');
 }
 
-var maxMindClient = restify.createStringClient({url: config.maxmind.url});
+var phoneVerificationClient = restify.createStringClient({url: config.maxmind.phoneApiUrl});
+
 var limits = config.maxmind.limits || {
     calls: 3,
     serviceFails: 3,
@@ -42,19 +42,19 @@ module.exports = function execute(scope, app) {
 
     function lockAccount(req, res) {
         if(req.session.maxmindLocked) { // Already locked
-            res.json({message: serviceMessages.wrongPinLocked, success: false});
+            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
             return;
         }
 
         req.log.warn('Lock user account', {userId: req.session.userId});
         req.session.maxmindLocked = true;
-        Metadata.set(req.session.userId, 'verificationStatus', 'Locked', function (err) {
+        SignupProgress.setSignupStep(req, 'blocked', function (err) {
             if(!err) {
                 req.log.warn('User account is locked', {userId: req.session.userId});
             } else {
                 req.log.error('Failed to lock user account', {userId: req.session.userId, error: err});
             }
-            res.json({message: serviceMessages.wrongPinLocked, success: false});
+            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
         });
     }
 
@@ -66,15 +66,20 @@ module.exports = function execute(scope, app) {
                             limits.serviceFails, {userId: req.session.userId});
         }
 
-        SignupProgress.setMinProgress(req, 'phone', function(err) {
-            if(err) {
-                req.log.error('Failed to set user phone verification as passed',
-                                {userId: req.session.userId, error: err});
-
-                res.json({message: 'Internal error', success: false});
-                return;
+        var verificationStatus = success ? 'Successful' : 'PV service failed';
+        Metadata.set(req.session.userId, 'phoneVerification', verificationStatus, function (err) {
+            if (err) {
+                req.log.warn('Error occured while setting phone verification status', {error: err});
             }
-            res.json({message: 'Phone verification successful', success: true, skip: true});
+            SignupProgress.setMinProgress(req, 'phone', function(err) {
+                if(err) {
+                    req.log.error('Failed to set user phone verification as passed',
+                        {userId: req.session.userId, error: err});
+                    res.json({message: 'Internal error', success: false});
+                    return;
+                }
+                res.json({message: 'Phone verification successful', success: true, navigate: true});
+            });
         });
     }
 
@@ -102,7 +107,7 @@ module.exports = function execute(scope, app) {
             '&verify_code=' + code;
 
         req.log.info('Calling user phone', {userId: req.session.userId, phone: req.params.phone});
-        maxMindClient.get(url, function(err, creq, cres, data) {
+        phoneVerificationClient.get(url, function(err, creq, cres, data) {
             if (err) {
                 req.log.error('Failed to contact maxmind api', err);
                 req.session.maxmindServiceFails = serviceFails + 1;
@@ -120,7 +125,7 @@ module.exports = function execute(scope, app) {
                 return;
             }
 
-            req.session.maxmindRetries = retries + 1; // TODO: Shouldn't this be based on attempts not successes?
+            req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
             res.json({message: serviceMessages.calling, success: true});
         });
@@ -158,4 +163,6 @@ module.exports = function execute(scope, app) {
 
         res.json({message: serviceMessages.wrongPin, success: false});
     });
+
+
 };

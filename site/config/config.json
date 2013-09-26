@@ -89,15 +89,18 @@
     "capishim": {
         "username":"",
         "password":"",
-        "url":""
+        "url":"",
+        "noUpdate":true
     },
     "maxmind": {
-        "url": "https://api.maxmind.com",
+        "phoneApiUrl": "https://api.maxmind.com",
+        "fraudApiUrl": "https://minfraud.maxmind.com",
         "licenseId": "bQg6oKXwLfWj",
         "limits" : {
             "calls": 3,
             "serviceFails": 3,
             "pinTries": 3
-        }
+        },
+        "riskScoreFraudLimit": 66
     }
 }

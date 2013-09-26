@@ -240,10 +240,6 @@
                         return selected || usa;
                     };
 
-                    $http.get('account/countryCodes').success(function (data) {
-                        $scope.countryCodes = data;
-                    });
-
                     $scope.$watch('phone.country', function(newVal) {
                         $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                     });
@@ -267,7 +263,7 @@
                                 Account.updateAccount({
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
-                                }).then(function () {
+                                }).then(function (account) {
                                     notification.push(null, { type: 'success' },
                                         localization.translate(null,
                                             'billing',
