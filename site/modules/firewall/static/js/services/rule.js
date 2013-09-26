@@ -21,10 +21,9 @@
                 // Store rule
                 rules.list.push(rule);
                 rules.index[rule.uuid] = rule;
+                rules.map[rule.datacenter].push(rule);
 
                 function showError (err) {
-                    console.log('error');
-                    console.log(err);
                     notification.push(rule.uuid, { type: 'error' },
                         localization.translate(null,
                             'firewall',
@@ -50,6 +49,7 @@
                         }
 
                         var data = job.__read();
+                        rule.uuid = data.id;
                     },
 
                     error: function(err, job) {
@@ -176,7 +176,6 @@
                     rules.job = serverTab.call({
                         name: 'RuleList',
                         progress: function (err, job) {
-                            console.log('PROGrESS!!!!');
                             var data = job.__read();
 
                             function handleChunk (name, rule) {
@@ -243,21 +242,33 @@
             if (!rules.job) {
                 service.updateRules();
 
-                /*
                 var rule = {
                     datacenter: 'us-beta-4',
                     enabled: true,
-                    rule: 'FROM any TO any ALLOW tcp PORT 80',
+                    rule: 'FROM any TO vm 76647258-7a02-44b8-bced-aef44a7d5796 ALLOW tcp PORT 80',
                     parsed: {
                         from: [ [ 'wildcard', 'any' ] ],
-                        to: [ [ 'wildcard', 'any' ] ],
+                        to: [ [ 'vm', '76647258-7a02-44b8-bced-aef44a7d5796' ] ],
                         action: 'allow',
                         protocol: { name: 'tcp', targets: [ 80 ] }
                     }
                 };
+                service.rule().then(function () {
+                    //console.log('BEFORE length: ' + rules.length);
+                    service.createRule(rule).then(function (rule) {
+                        console.log(rule);
 
-                service.createRule(rule);
-                */
+                        service.rule().then(function (ruless) {
+                            console.log(ruless);
+                            ruless[Object.keys(ruless)[0]].forEach(function (r, index) {
+                                if (r.uuid === rule.uuid) {
+                                    console.log(r);
+                                }
+                            });
+                            //console.log('AFTER length: ' + rules[0].rules.length);
+                        })
+                    });
+                });
             }
 
             return service;
