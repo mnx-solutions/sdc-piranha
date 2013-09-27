@@ -102,16 +102,19 @@
                         </div>
 
                         <div class="new-key-button">
+                            <button class="btn pull-right btn-small create-key-btn"
+                                    data-ng-click="generateSshKey()"
+                                    data-translate>Create key</button>
+
                             <button class="btn btn-joyent-blue pull-right ssh-add-button"
                                     data-ng-click="addNewKey()"
                                     data-ng-show="keys.length > 0"
-                                    data-translate>Add new SSH key</button>
+                                    data-translate>Import key</button>
                         </div>
                     </div>
                     <!-- End of > 0 keys part -->
                 </div>
             </div>
-
 
             <div class="span3 hidden-phone">
 				
@@ -120,11 +123,15 @@
 				<div data-ng-show="showKeygenDownload()" class="text-small">
                        <div class="separation-container">
 
-                           <h5 data-translate>SSH key generator</h5>
-                           <p>Note: It might take few minutes before the new key appears on the list</p>
-                           <button class="btn"
-                                   data-ng-click="generateKeyPair()"
-                                   data-translate>Generate key pair</button>
+                           <h5 data-translate>SSH keys</h5>
+                           <p>Secure Shell (SSH) is the standard
+                               encryption protocol that allows you to
+                               conduct administrative functions on remote
+                               servers.</p>
+                           <p>
+                               Instances, with the exception of Windows,
+                               are only accessible through SSH. The same
+                               is true for Cloud API and Manta.</p>
                        </div>
                    </div>
 

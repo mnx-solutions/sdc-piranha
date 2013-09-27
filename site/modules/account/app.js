@@ -46,10 +46,10 @@ module.exports = function execute(scope, app) {
         res.redirect(config.sso.url + '/changepassword/' + req.params.uuid);
     });
 
-    app.get('/ssh', function(req, res, next) {
+    app.get('/ssh/:name?', function(req, res, next) {
         // generate 2048 bit rsa key and send private key to the user
         var filePath = os.tmpdir() +'/'+ crypto.randomBytes(4).readUInt32LE(0);
-        var name = crypto.createHash('sha1').update(filePath).digest('hex').substr(0, 10);
+        var name = (req.params.name || crypto.createHash('sha1').update(filePath).digest('hex').substr(0, 10));
         scope.log.debug('Generating ssh key pair for user '+ req.session.userId);
         exec('ssh-keygen -t rsa -q -f '+ filePath +' -N "" -C "'+ req.session.userName +'" && cat '+ filePath +'.pub', function(err, stdout, stderr) {
             SignupProgress.addSshKey(req, name, stdout, function(err) {
@@ -65,7 +65,7 @@ module.exports = function execute(scope, app) {
                     }
 
                     res.set('Content-type', 'application/x-pem-file');
-                    res.set('Content-Disposition', 'attachment; filename="joyent-'+ name +'.pem"');
+                    res.set('Content-Disposition', 'attachment; filename="'+ name +'_id_rsa"');
                     res.send(data);
 
                     fs.unlink(filePath, function(err) {
