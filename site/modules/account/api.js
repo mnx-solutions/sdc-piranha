@@ -225,7 +225,7 @@ module.exports = function execute(scope, register) {
                 step = 'completed';
             }
 
-            scope.log.info('Completed step %s, moving to step %s', oldStep, step);
+            scope.log.info('Step \'%s\' is now passed', step);
             api.setSignupStep(call, step, cb);
         });
     };
