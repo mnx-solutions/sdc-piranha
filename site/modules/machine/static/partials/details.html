@@ -117,7 +117,7 @@
         </table>
     </fieldset>
 
-    <fieldset data-ng-show="canCreateImage(currentPackageName)">
+    <fieldset data-ng-show="canCreateImage(currentPackageName) && features.image != 'disabled'">
         <legend>
             <span data-translate>Create Image</span>
         </legend>

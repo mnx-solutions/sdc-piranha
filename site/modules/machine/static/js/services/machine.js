@@ -23,7 +23,6 @@
                 machines.job = serverTab.call({
                     name: 'MachineList',
                     progress: function machineProgress(err, job) {
-                        console.log('progress');
                         var data = job.__read();
 
                         function wrapMachine (machine) {
@@ -118,17 +117,6 @@
                     },
 
                     done: function(err, job) {
-//                        var data = job.__read();
-//
-//                        if (err) {
-//                            notification.push(data.name, { type: 'error' },
-//                                localization.translate(null,
-//                                    'machine',
-//                                    'Unable to retrieve instances from datacenter {{name}}',
-//                                    { name: data.name }
-//                                )
-//                            );
-//                        }
 
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id]) {

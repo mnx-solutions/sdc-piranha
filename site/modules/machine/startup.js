@@ -592,64 +592,67 @@ module.exports = function execute(scope) {
         }, (timeout || 5 * 60 * 1000));
     }
 
-    /* CreateImage */
-    server.onCall('ImageCreate', {
-        verify: function(data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('machineId');
-        },
-        handler: function(call) {
-            var options = {
-                machine: call.data.machineId,
-                name: (call.data.name || 'My Image'),
-                version: '1.0.0', // We default to version 1.0.0
-                description: (call.data.description || 'Default image description')
-            };
+    if(!config.features || config.features.image !== 'disabled') {
 
-            call.log.info({ options: options }, 'Creating image %s', options.name);
+        /* CreateImage */
+        server.onCall('ImageCreate', {
+            verify: function(data) {
+                return typeof data === 'object' &&
+                    data.hasOwnProperty('machineId');
+            },
+            handler: function(call) {
+                var options = {
+                    machine: call.data.machineId,
+                    name: (call.data.name || 'My Image'),
+                    version: '1.0.0', // We default to version 1.0.0
+                    description: (call.data.description || 'Default image description')
+                };
 
-            var cloud = call.cloud.separate(call.data.datacenter);
-            call.cloud.createImageFromMachine(options, function(err, image) {
-                if (!err) {
-                    call.data.uuid = image.id;
-                    pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'active', null, null);
-                } else {
-                    call.log.error(err);
-                    call.done(err);
-                }
-            });
+                call.log.info({ options: options }, 'Creating image %s', options.name);
 
-        }
-    });
+                var cloud = call.cloud.separate(call.data.datacenter);
+                call.cloud.createImageFromMachine(options, function(err, image) {
+                    if (!err) {
+                        call.data.uuid = image.id;
+                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'active', null, null);
+                    } else {
+                        call.log.error(err);
+                        call.done(err);
+                    }
+                });
 
-    /* DeleteImage */
-    server.onCall('ImageDelete', {
-        verify: function(data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('imageId');
-        },
+            }
+        });
 
-        handler: function(call) {
-            call.log.info('Deleting image %s', call.data.imageId);
+        /* DeleteImage */
+        server.onCall('ImageDelete', {
+            verify: function(data) {
+                return typeof data === 'object' &&
+                    data.hasOwnProperty('imageId');
+            },
 
-            var cloud = call.cloud.separate(call.data.datacenter);
-            call.cloud.deleteImage(call.data.imageId, function(err) {
-                if (!err) {
-                    call.data.uuid = call.data.imageId;
-                    pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
-                } else {
-                    call.log.error(err);
-                    call.done(err);
-                }
-            });
+            handler: function(call) {
+                call.log.info('Deleting image %s', call.data.imageId);
 
-        }
-    });
+                var cloud = call.cloud.separate(call.data.datacenter);
+                call.cloud.deleteImage(call.data.imageId, function(err) {
+                    if (!err) {
+                        call.data.uuid = call.data.imageId;
+                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
+                    } else {
+                        call.log.error(err);
+                        call.done(err);
+                    }
+                });
 
-    /*images list */
-    /* listNetworks */
-    server.onCall('ImagesList', function(call) {
-        call.log.info('Retrieving images list');
-        call.cloud.listImages(call.done.bind(call));
-    });
+            }
+        });
+
+        /*images list */
+        /* listNetworks */
+        server.onCall('ImagesList', function(call) {
+            call.log.info('Retrieving images list');
+            call.cloud.listImages(call.done.bind(call));
+        });
+    }
 };

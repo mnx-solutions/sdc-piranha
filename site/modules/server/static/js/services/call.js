@@ -95,11 +95,9 @@
                         value: function (data, status) {
                             if (data) {
                                 _result = _chunked ? _result.concat(data) : data;
-                                // Handle case when chunked response is in one chunk
-                                if (_chunked) {
-                                    if (status === 'finished' && _status === 'started') {
-                                        emit('updated', self);
-                                    }
+                                // Handle last chunk
+                                if (_chunked && status === 'finished') {
+                                    emit('updated', self);
                                 }
                             }
                         }
@@ -128,11 +126,8 @@
                             _chunked = data.chunked;
                             self.result(data.result, data.status);
                             _status = data.status;
-                            if(data.error) {
-                                self.error(data.error);
-                            } else if(_status !== 'updated'){
-                                self.status();
-                            }
+                            self.error(data.error);
+                            self.status();
                         }
                     },
                     initialize: {
@@ -188,7 +183,6 @@
                             if (status) {
                                 _status = status;
                             }
-
                             emit(_status, self);
                             return;
                         }

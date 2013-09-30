@@ -17,7 +17,8 @@
             "dashboard",
             "tfa",
             "storage",
-            "timeout"
+            "timeout",
+            "feature-flags"
         ],
 		"auth": true,
         "error": true,
