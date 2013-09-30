@@ -148,14 +148,14 @@ module.exports = function execute(scope, register) {
                                 code: err.code
                             };
 
-                            if(err.body.errors)
+                            if(err.body.errors) {
                                 zuoraErr.zuoraErrors = err.body.errors;
-
-                            if(err.body.name)
+                            }
+                            if(err.body.name) {
                                 zuoraErr.name = err.name;
+                            }
 
-
-                                call.log.error(zuoraErr,'Something went wrong with billing API');
+                            call.log.error(zuoraErr,'Something went wrong with billing API');
                         }
                     }
 
