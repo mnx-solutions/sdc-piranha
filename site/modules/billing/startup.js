@@ -69,12 +69,16 @@ module.exports = function execute(scope, callback) {
                     }
 
                     MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
-                        if (result && result.riskScore) {
+                        if (fraudErr) {
+                            call.log.warn(fraudErr);
+                            call.done(fraudErr);
+                            return;
+                        }
+                        if (result.riskScore) {
                             call.log.info('Saving user riskScore in metadata');
                             Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
                         }
-                        if (fraudErr) {
-                            call.log.warn(fraudErr);
+                        if (result.block) {
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
                                 if (blockErr) {
                                     call.log.error(blockErr);

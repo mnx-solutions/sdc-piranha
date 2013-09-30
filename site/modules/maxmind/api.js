@@ -48,13 +48,15 @@ module.exports = function execute(scope, register) {
         var result = {};
         if (!checkBlackList(query)) {
             call.log.warn('User matched against black list and was blocked');
-            callback(new Error('User matched against black list and was blocked'), {});
+            setImmediate(function () {
+                callback(null, {block: true});
+            });
             return;
         }
         fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
             if (err) {
-                call.log.warn('minFraud was not available, thus user verified', {userId: call.session.userId});
-                callback(null, {});
+                call.log.warn('minFraud was not available, thus user verified', {userId: call.req.session.userId});
+                callback(null, {block: false});
                 return;
             }
             data.split(';').forEach(function (fieldStr) {
@@ -70,8 +72,11 @@ module.exports = function execute(scope, register) {
             call.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
                 {riskScore: result.riskScore, explanation: result.explanation});
 
-            var riskErr = result.riskScore > riskScoreFraudLimit ? 'User was blocked due to high risk score' : null;
-            callback(riskErr, result);
+            result.block = result.riskScore > riskScoreFraudLimit;
+            if (result.block) {
+                call.log.info('User was blocked due to high risk score', {userId: call.req.session.userId});
+            }
+            callback(null, result);
         });
     };
 
