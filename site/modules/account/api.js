@@ -67,7 +67,7 @@ module.exports = function execute(scope, register) {
     }
 
     api.addSshKey = function (req, name, keyData, cb) {
-        req.cloud.createKey({name: 'Generated key: '+ name, key: keyData}, function (err, resp) {
+        req.cloud.createKey({name: name, key: keyData}, function (err, resp) {
             if(err) {
                 cb(err);
                 return;
