@@ -118,6 +118,7 @@
                         }
                     },
                     done: function(err, job) {
+                        console.log('ERR on add');
                         if (err) {
                             deferred.reject(err);
                         } else {

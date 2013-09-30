@@ -41,14 +41,9 @@
     <hr />
     <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Click here to return to homepage</a>
     <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
-    <button class="btn pull-right btn-small create-key-btn"
-            data-ng-click="generateSshKey()"
-            data-translate>Create key</button>
-
     <button class="btn btn-joyent-blue pull-right ssh-add-button"
             data-ng-click="createNewKey()"
             style="margin-right:10px"
-            data-ng-show="keys.length > 0"
-            data-translate>Import key</button>
+            data-translate>Add SSH key</button>
 
 </fieldset>

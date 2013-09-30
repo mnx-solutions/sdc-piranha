@@ -33,25 +33,8 @@
                         }
                     };
 
-                    var generateKeyPopup = function(question, callback) {
-                        var title = 'Create SSH Key';
-                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
-                        var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
-
-                        $dialog.messageBox(title, question, btns, templateUrl)
-                            .open(templateUrl, sshKeyModalCtrl)
-                            .then(function(data) {
-
-                                $scope.sshGenerateUrl = '/main/account/ssh'+ ((data) ? '/'+ data : '');
-                                // this is here because this will fire on any kind of dialog close
-                                $scope.keys = Account.getKeys(true);
-                            });
-                    };
-
                     $scope.generateSshKey = function() {
-                        generateKeyPopup('', function(keyData){
-
-                        });
+                        $scope.sshGenerateUrl = '/main/account/ssh';
                     };
 
                     $scope.createNewKey = function (key) {
