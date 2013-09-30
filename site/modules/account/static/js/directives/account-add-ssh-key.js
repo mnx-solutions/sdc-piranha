@@ -18,43 +18,72 @@
                 },
 
                 link: function ($scope) {
-                    $scope.newKey = {};
+                    $scope.key = {};
 
-                    $scope.createNewKey = function() {
-                        $scope.loading = true;
-                        $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
+                    /* ssh key generating popup with custom template */
+                    var sshKeyModalCtrl = function($scope, dialog) {
+                        $scope.keyName = '';
 
-                        $q.when($scope.addedKey, function(key) {
-                            if (key.name && key.fingerprint && key.key) {
-                                // successful add
-                                $scope.addsshKey = false;
-                                $scope.newKey = {};
+                        $scope.close = function(res) {
+                            dialog.close(res);
+                        };
 
-                                if ($scope.nextStep) {
-                                    $scope.nextStep();
-                                }
-                            } else {
-                                $scope.error = localization.translate($scope, null,
-                                    'Failed to add new key: {{message}}',
-                                    {
-                                        message: (key.message || '') + ' ' + (key.code || '')
-                                    }
-                                );
+                        $scope.generateKey = function() {
+                            $scope.close($scope.keyName);
+                        }
+                    };
 
-                            }
+                    var generateKeyPopup = function(question, callback) {
+                        var title = 'Create SSH Key';
+                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
+                        var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
 
-                            $scope.loading = false;
+                        $dialog.messageBox(title, question, btns, templateUrl)
+                            .open(templateUrl, sshKeyModalCtrl)
+                            .then(function(data) {
+
+                                $scope.sshGenerateUrl = '/main/account/ssh'+ ((data) ? '/'+ data : '');
+                                // this is here because this will fire on any kind of dialog close
+                                $scope.keys = Account.getKeys(true);
+                            });
+                    };
+
+                    $scope.generateSshKey = function() {
+                        generateKeyPopup('', function(keyData){
+
                         });
                     };
 
-                    $scope.showKeygenDownload = function() {
-                        // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
-                        var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
-                        return (supportedPlatforms.indexOf($window.navigator.platform) >= 0);
-                    };
+                    $scope.createNewKey = function (key) {
+                        // If key is not given as an argument but exist in a scope
+                        if (!key && $scope.key) {
+                            key = $scope.key;
+                        }
 
-                    $scope.clickKeygenDownload = function() {
-                        window.location.href = '/main/account/key-generator.sh';
+                        var newKey = Account.createKey(key.name, key.data);
+
+                        $q.when(newKey, function (key) {
+                            if (key.name && key.fingerprint && key.key) {
+                                $scope.key = null;
+                                $scope.updateKeys();
+
+                                notification.push(null, { type: 'success' },
+                                    localization.translate($scope, null,
+                                        'New key successfully added'
+                                    )
+                                );
+
+                            } else {
+                                notification.push(null, { type: 'error' },
+                                    localization.translate($scope, null,
+                                        'Failed to add new key: {{message}}',
+                                        {
+                                            message: (key.message || '') + ' ' + (key.code || '')
+                                        }
+                                    )
+                                );
+                            }
+                        });
                     };
 
                 },

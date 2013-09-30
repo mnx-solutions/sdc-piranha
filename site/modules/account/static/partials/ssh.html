@@ -7,6 +7,8 @@
             <div data-notification></div>
         <!-- </div> -->
 
+        <iframe class="ssh-download-iframe" data-ng-src="{{sshGenerateUrl}}" seamless="seamless" style="width: 0px; height: 0px;"></iframe>
+
 		<div class="page-header">
 			<div class="row-fluid">
                 <div class="span12">
@@ -46,9 +48,16 @@
 
                             <div data-ng-show="error">{{error}}</div>
                             <div class="align-right">
-                                <button class="btn btn-joyent-blue ssh-add-button"
-                                        data-ng-click="createNewKey()"
-                                        data-translate>Add SSH key</button>
+                                <div class="new-key-button">
+                                    <button class="btn pull-right btn-small create-key-btn"
+                                            data-ng-click="generateSshKey()"
+                                            data-translate>Create Key</button>
+
+                                    <button class="btn btn-joyent-blue pull-right ssh-add-button"
+                                            data-ng-click="createNewKey()"
+                                            data-ng-show="keys.length > 0"
+                                            data-translate>Import Key</button>
+                                </div>
                             </div>
                         </fieldset>
                     </div>
@@ -91,14 +100,6 @@
                                 </div>
                             </div>
 
-                            <div data-ng-show="addsshKey" style="margin: 10px">
-                                <button data-ng-click="addNewKey()"
-                                        data-ng-disabled="createPending"
-                                        data-translate>Add SSH key</button>
-
-                                <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
-                                <div class="loading-medium" data-ng-show="createPending"></div>
-                            </div>
                         </div>
 
                         <div class="new-key-button">
@@ -118,21 +119,18 @@
 
             <div class="span3 hidden-phone">
 				
-				<div account-right-menu></div>
+			    <div account-right-menu></div>
 				
-				<div data-ng-show="showKeygenDownload()" class="text-small">
-                       <div class="separation-container">
-
-                           <h5 data-translate>Secure Shell (SSH)</h5>
-                           <p>Secure Shell (SSH) is the standard
-                               encryption protocol that allows you to
-                               conduct administrative functions on remote
-                               servers.</p>
-                           <p>Instances, with the exception of Windows,
-                               are only accessible through SSH. The same
-                               is true for Cloud API and Manta.</p>
-                       </div>
-                   </div>
+                <div class="separation-container">
+                    <h5 data-translate>Secure Shell (SSH)</h5>
+                    <p>Secure Shell (SSH) is the standard
+                    encryption protocol that allows you to
+                    conduct administrative functions on remote
+                    servers.</p>
+                    <p>Instances, with the exception of Windows,
+                    are only accessible through SSH. The same
+                    is true for Cloud API and Manta.</p>
+                </div>
 
             </div>
 
