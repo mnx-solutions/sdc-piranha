@@ -10,7 +10,7 @@
 		<div class="page-header">
 			<div class="row-fluid">
                 <div class="span12">
-					<h1  class="span11" data-translate>Manage SSH Keys</h1>
+					<h1  class="span11" data-translate>SSH Public Keys</h1>
 					<div ng-show="!account || !keys"  class="span1 loading-medium-after-h1" data-ng-show="loading" ></div>
                 </div>
 			</div>
@@ -62,7 +62,7 @@
                     <div data-ng-show="keys.length > 0">
                         <div class="item-list-container">
                             <div class="item header row-fluid">
-                                <span class="span12 item-list-container-header">Key Name / UUID</span>
+                                <span class="span12 item-list-container-header">Key Name / Fingerprint</span>
                             </div>
 
                             <div class="item row-fluid" data-ng-repeat="key in keys">
@@ -104,12 +104,12 @@
                         <div class="new-key-button">
                             <button class="btn pull-right btn-small create-key-btn"
                                     data-ng-click="generateSshKey()"
-                                    data-translate>Create key</button>
+                                    data-translate>Create Key</button>
 
                             <button class="btn btn-joyent-blue pull-right ssh-add-button"
                                     data-ng-click="addNewKey()"
                                     data-ng-show="keys.length > 0"
-                                    data-translate>Import key</button>
+                                    data-translate>Import Key</button>
                         </div>
                     </div>
                     <!-- End of > 0 keys part -->
@@ -123,13 +123,12 @@
 				<div data-ng-show="showKeygenDownload()" class="text-small">
                        <div class="separation-container">
 
-                           <h5 data-translate>SSH keys</h5>
+                           <h5 data-translate>Secure Shell (SSH)</h5>
                            <p>Secure Shell (SSH) is the standard
                                encryption protocol that allows you to
                                conduct administrative functions on remote
                                servers.</p>
-                           <p>
-                               Instances, with the exception of Windows,
+                           <p>Instances, with the exception of Windows,
                                are only accessible through SSH. The same
                                is true for Cloud API and Manta.</p>
                        </div>
