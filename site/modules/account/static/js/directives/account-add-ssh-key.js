@@ -18,43 +18,55 @@
                 },
 
                 link: function ($scope) {
-                    $scope.newKey = {};
+                    $scope.key = {};
 
-                    $scope.createNewKey = function() {
-                        $scope.loading = true;
-                        $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
+                    /* ssh key generating popup with custom template */
+                    var sshKeyModalCtrl = function($scope, dialog) {
+                        $scope.keyName = '';
 
-                        $q.when($scope.addedKey, function(key) {
+                        $scope.close = function(res) {
+                            dialog.close(res);
+                        };
+
+                        $scope.generateKey = function() {
+                            $scope.close($scope.keyName);
+                        }
+                    };
+
+                    $scope.generateSshKey = function() {
+                        $scope.sshGenerateUrl = '/main/account/ssh';
+                    };
+
+                    $scope.createNewKey = function (key) {
+                        // If key is not given as an argument but exist in a scope
+                        if (!key && $scope.key) {
+                            key = $scope.key;
+                        }
+
+                        var newKey = Account.createKey(key.name, key.data);
+
+                        $q.when(newKey, function (key) {
                             if (key.name && key.fingerprint && key.key) {
-                                // successful add
-                                $scope.addsshKey = false;
-                                $scope.newKey = {};
+                                $scope.key = null;
+                                $scope.updateKeys();
 
-                                if ($scope.nextStep) {
-                                    $scope.nextStep();
-                                }
-                            } else {
-                                $scope.error = localization.translate($scope, null,
-                                    'Failed to add new key: {{message}}',
-                                    {
-                                        message: (key.message || '') + ' ' + (key.code || '')
-                                    }
+                                notification.push(null, { type: 'success' },
+                                    localization.translate($scope, null,
+                                        'New key successfully added'
+                                    )
                                 );
 
+                            } else {
+                                notification.push(null, { type: 'error' },
+                                    localization.translate($scope, null,
+                                        'Failed to add new key: {{message}}',
+                                        {
+                                            message: (key.message || '') + ' ' + (key.code || '')
+                                        }
+                                    )
+                                );
                             }
-
-                            $scope.loading = false;
                         });
-                    };
-
-                    $scope.showKeygenDownload = function() {
-                        // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
-                        var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
-                        return (supportedPlatforms.indexOf($window.navigator.platform) >= 0);
-                    };
-
-                    $scope.clickKeygenDownload = function() {
-                        window.location.href = '/main/account/key-generator.sh';
                     };
 
                 },

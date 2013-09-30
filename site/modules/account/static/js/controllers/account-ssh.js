@@ -33,21 +33,19 @@
                     });
             };
 
+            $scope.sshGenerateUrl = '';
+
             /* ssh key generating popup with custom template */
             var sshKeyModalCtrl = function($scope, dialog) {
-                $scope.sshGenerateUrl = '';
-
                 $scope.keyName = '';
 
-                $scope.close = function() {
-                    dialog.close(null);
+                $scope.close = function(res) {
+                    dialog.close(res);
                 };
 
                 $scope.generateKey = function() {
-
-                    $scope.generating = true;
-                    $scope.sshGenerateUrl = '/main/account/ssh'+ (($scope.keyName) ? '/'+ $scope.keyName : '');
-                }
+                    $scope.close({generate: true, keyName: $scope.keyName});
+                };
             };
 
             var generateKeyPopup = function(question, callback) {
@@ -57,7 +55,10 @@
 
                 $dialog.messageBox(title, question, btns, templateUrl)
                     .open(templateUrl, sshKeyModalCtrl)
-                    .then(function() {
+                    .then(function(data) {
+                        if(data && data.generate === true) {
+                            $scope.sshGenerateUrl = '/main/account/ssh'+ ((data.keyName) ? '/'+ data.keyName : '');
+                        }
                         // this is here because this will fire on any kind of dialog close
                         $scope.keys = Account.getKeys(true);
                     });
@@ -74,6 +75,13 @@
                 } else {
                     $scope.openKeyDetails = id;
                 }
+            };
+
+            /* SSH Key generation popup */
+            $scope.generateSshKey = function() {
+                generateKeyPopup('', function(keyData){
+
+                });
             };
 
             /* SSH key creating */
@@ -100,14 +108,6 @@
                 });
             };
 
-            /* SSH Key generation popup */
-            $scope.generateSshKey = function() {
-                generateKeyPopup('', function(keyData) {
-                    $scope.sshGenerateUrl = '/main/account/ssh';
-                });
-
-            };
-
             $scope.updateKeys = function () {
                 $scope.keys = Account.getKeys(true);
             };
@@ -118,9 +118,12 @@
                     key = $scope.key;
                 }
 
+                console.log('Adding key:', key);
+
                 var newKey = Account.createKey(key.name, key.data);
 
                 $q.when(newKey, function (key) {
+                    console.log(newKey);
                     if (key.name && key.fingerprint && key.key) {
                         $scope.key = null;
                         $scope.updateKeys();
@@ -165,13 +168,6 @@
                             $scope.updateKeys();
                         });
                     });
-            };
-
-
-            $scope.showKeygenDownload = function() {
-                // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
-                var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
-                return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
             };
 
             $scope.updateKeys();
