@@ -118,12 +118,9 @@
                     key = $scope.key;
                 }
 
-                console.log('Adding key:', key);
-
                 var newKey = Account.createKey(key.name, key.data);
 
                 $q.when(newKey, function (key) {
-                    console.log(newKey);
                     if (key.name && key.fingerprint && key.key) {
                         $scope.key = null;
                         $scope.updateKeys();

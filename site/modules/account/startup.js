@@ -61,8 +61,6 @@ module.exports = function execute(scope) {
 
     server.onCall('createKey', function(call) {
         // create new ssh key for this account
-
-        console.log('Creating new key for the account', call.data);
         call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
             if(err) {
                 call.done(err);
