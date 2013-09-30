@@ -2,11 +2,16 @@
 
 var config = require('easy-config');
 var moment = require('moment');
-var zuora = require('zuora').create(config.zuora.api);
 var restify = require('restify');
 var zHelpers = require('./lib/zuora-helpers');
 
+var isProduction = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+
 module.exports = function execute(scope, callback) {
+    var options = config.zuora.api;
+    options.log = scope.log;
+    var zuora = require('zuora').create(options);
+
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
 
@@ -170,10 +175,28 @@ module.exports = function execute(scope, callback) {
         });
     });
 
-    zHelpers.init(function (err) {
+    server.onCall('getSubscriptions', function (call) {
+        zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
+            if (err) {
+                call.done(err);
+                return;
+            }
+
+            call.done(null, resp.subscriptions);
+        });
+    });
+
+    zHelpers.init(zuora, function (err, errType) {
         if (err) {
-            scope.log.fatal('failed to load error file for zuora', err);
-            process.exit();
+            if(errType === 'errors') {
+                scope.log.fatal('Failed to load zuora errors file', err);
+                process.exit();
+            } else if(isProduction) {
+                scope.log.fatal('Failed to connect soap', err);
+                process.exit();
+            } else {
+                scope.log.error('Failed to connect soap', err);
+            }
         }
 
         callback();

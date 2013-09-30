@@ -118,3 +118,8 @@ select.date-month, select.date-year {
 #paymentForm input[type="text"]:focus:invalid {
     border-color: #FF6600;
 }
+
+.create-key-btn {
+    margin-left: 20px;
+    margin-top: 2px;
+}

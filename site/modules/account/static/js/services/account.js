@@ -47,6 +47,10 @@
                             noCache: noCache
                         },
                         done: function(err, job) {
+                            if(err) {
+                                deferred.reject(err);
+                                return;
+                            }
                             account = job.__read();
                             deferred.resolve(account);
                             $$track.marketing_lead(account);
@@ -75,7 +79,12 @@
                     name: 'updateAccount',
                     data: (data.$$v || data),
                     done: function(err, job) {
+                        if(err) {
+                            deferred.reject(err);
+                            return;
+                        }
                         var resolver = job.__read();
+                        account = resolver;
                         deferred.resolve(resolver);
                         $$track.marketing_lead(account);
                     }
@@ -110,7 +119,7 @@
                     },
                     done: function(err, job) {
                         if (err) {
-                            deferred.resolve(err);
+                            deferred.reject(err);
                         } else {
                             keys = null;
                             deferred.resolve(job.__read());
@@ -144,6 +153,10 @@
                             noCache: noCache
                         },
                         done: function(err, job) {
+                            if(err) {
+                                deferred.reject(err);
+                                return;
+                            }
                             keys = job.__read();
                             deferred.resolve(keys);
                         }
@@ -173,12 +186,16 @@
                         fingerprint: fingerprint
                     },
                     done: function(err, job) {
+                        if(err) {
+                            deferred.reject(err);
+                            return;
+                        }
                         keys = null;
                         deferred.resolve(job.__read());
                     }
                 });
 
-                return deferred;
+                return deferred.promise;
             };
 
             return service;

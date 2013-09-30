@@ -7,13 +7,14 @@
         '$timeout',
         '$q',
         '$dialog',
+        '$location',
         'Account',
         'localization',
         'requestContext',
         'notification',
         'util',
 
-        function ($scope, $window, $timeout, $q, $dialog, Account, localization, requestContext, notification, util) {
+        function ($scope, $window, $timeout, $q, $dialog, $location, Account, localization, requestContext, notification, util) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
@@ -26,11 +27,42 @@
                 $dialog.messageBox(title, question, btns, templateUrl)
                     .open()
                     .then(function(result) {
-                        if(result.value === 'add') {
+                        if(result && result.value === 'add') {
                             callback(result.data);
                         }
                     });
             };
+
+            /* ssh key generating popup with custom template */
+            var sshKeyModalCtrl = function($scope, dialog) {
+                $scope.sshGenerateUrl = '';
+
+                $scope.keyName = '';
+
+                $scope.close = function() {
+                    dialog.close(null);
+                };
+
+                $scope.generateKey = function() {
+
+                    $scope.generating = true;
+                    $scope.sshGenerateUrl = '/main/account/ssh'+ (($scope.keyName) ? '/'+ $scope.keyName : '');
+                }
+            };
+
+            var generateKeyPopup = function(question, callback) {
+                var title = 'Create SSH Key';
+                var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
+                var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
+
+                $dialog.messageBox(title, question, btns, templateUrl)
+                    .open(templateUrl, sshKeyModalCtrl)
+                    .then(function() {
+                        // this is here because this will fire on any kind of dialog close
+                        $scope.keys = Account.getKeys(true);
+                    });
+            };
+
 
             $scope.key = {};
             $scope.userPlatform = $window.navigator.platform;
@@ -66,6 +98,14 @@
                         data: keyData.keyData
                     });
                 });
+            };
+
+            /* SSH Key generation popup */
+            $scope.generateSshKey = function() {
+                generateKeyPopup('', function(keyData) {
+                    $scope.sshGenerateUrl = '/main/account/ssh';
+                });
+
             };
 
             $scope.updateKeys = function () {
@@ -122,11 +162,7 @@
                                     'Key successfully deleted'
                                 )
                             );
-                            //REVIEW: Why you no fix?
-                            // FIXME: Bad, bad, bad
-                            $timeout(function () {
-                                $scope.updateKeys();
-                            }, 1000);
+                            $scope.updateKeys();
                         });
                     });
             };
@@ -137,11 +173,6 @@
                 var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
                 return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
             };
-
-            $scope.clickKeygenDownload = function() {
-                window.location.href = '/main/account/key-generator.sh';
-            };
-
 
             $scope.updateKeys();
 

@@ -5,11 +5,11 @@ window.JP.main.config(['$routeProvider', function ($routeProvider) {
             .when('/start', {
                 action: 'signup.index'
             })
+            .when('/phone', {
+                action: 'signup.phone'
+            })
             .when('/accountInfo', {
                 action: 'signup.accountInfo'
-            })
-            .when('/tropo', {
-                action: 'signup.tropo'
             })
             .when('/billing', {
                 action: 'signup.billing'

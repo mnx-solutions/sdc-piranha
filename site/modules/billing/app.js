@@ -2,6 +2,7 @@
 
 var zuora = require('zuora');
 var config = require('easy-config');
+var zuoraHelpers = require('./lib/zuora-helpers');
 
 module.exports = function execute(scope, app) {
     app.get('/countries', function (req, res, next) {
@@ -19,4 +20,6 @@ module.exports = function execute(scope, app) {
     app.get('/states', function (req, res, next) {
         res.json(zuora.states);
     });
+
+    app.get('/invoice/:account/:id', zuoraHelpers.getInvoicePDF);
 };

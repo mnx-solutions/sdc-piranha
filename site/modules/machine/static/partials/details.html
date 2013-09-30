@@ -179,27 +179,39 @@
                         </span>
                     </div>
 
-                    <div class="tag editable muted" data-ng-show="o.edit">
-                        <div data-ng-class="{error: o.conflict}" class="row-fluid tag" >
-                            <input class="span5"
-                                   type="text"
-                                   placeholder="Key"
-                                   data-translate="placeholder"
-                                   data-ng-model="o.key"
-                                   data-ng-required="key != tagnr"
-                                   data-ng-disabled="tagsave">
+                    <div class="tag editable" data-ng-show="o.edit">
+                        <div data-ng-class="{error: o.conflict}" class="tag row-fluid">
+                            <span class="key span5">
+                                <span class="span3 tag-label">
+                                    <label>Key <span class="required-asterix">*</span></label>
+                                </span>
+                                <span class="span9">
+                                    <input type="text"
+                                           placeholder="Key"
+                                           data-translate="placeholder"
+                                           data-ng-model="o.key"
+                                           data-ng-required="key != tagnr"
+                                           data-ng-disabled="tagsave">
+                                </span>
+                            </span>
 
-                            <input type="text"
-                                   class="span5"
-                                   placeholder="Value"
-                                   data-translate="placeholder"
-                                   data-ng-model="o.val"
-                                   data-ng-required="key != tagnr"
-                                   data-ng-disabled="tagsave">
+                            <span class="value span5">
+                                <span class="span3 tag-label">
+                                    <label>Value <span class="required-asterix">*</span></label>
+                                </span>
+                                <span class="span9">
+                                    <input type="text"
+                                           placeholder="Value"
+                                           data-translate="placeholder"
+                                           data-ng-model="o.val"
+                                           data-ng-required="key != tagnr"
+                                           data-ng-disabled="tagsave">
 
-                            <span class="icon-trash pull-right delete"
-                                  data-ng-click="removeTag(key)"
-                                  data-ng-show="key != tagnr && !tagsave">
+                                                                <span class="icon-trash pull-right delete"
+                                                                      data-ng-click="removeTag(key)"
+                                                                      data-ng-show="key != tagnr && !tagsave">
+                                                                </span>
+                                </span>
                             </span>
                         </div>
                         <!-- <div class="clearfix"></div> -->
@@ -212,7 +224,7 @@
                     <button class="btn btn-joyent-blue pull-right"
                             data-ng-click="clickSaveTags(machine.id)"
                             data-translate
-                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave || tagForm.$pristine">Save</button>
+                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
                     <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
                 </div>
             </form>
@@ -307,7 +319,7 @@
     <div class="alert alert-success shadow">
         <h4 data-translate>Need help?</h4>
         <p data-translate>Help will open in new window</p>
-        <form class="form-search" method="GET" action="http://joyent.com/developers/search" target="_blank">
+        <form class="form-search" method="GET" action="http://www.joyent.com/developers/search" target="_blank">
             <div class="input-append">
                 <input type="text" name="q" class="span10 search-query" placeholder="Search">
                 <button type="submit" class="btn" data-translate>Search</button>

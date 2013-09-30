@@ -28,18 +28,23 @@
                         },
                         {
                             sequence: 4,
-                            name: 'SSH keys',
+                            name: 'SSH Keys',
                             url: '/account/ssh'
                         },
                         {
                             sequence: 2,
-                            name: 'Edit account',
+                            name: 'Edit Account',
                             url: '/account/edit'
                         },
                         {
                             sequence: 3,
                             name: 'Billing',
                             url: '/account/payment'
+                        },
+                        {
+                            sequence: 4,
+                            name: 'Invoices',
+                            url: '/account/invoices'
                         }
                     ];
                 },

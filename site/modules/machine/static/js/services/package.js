@@ -19,7 +19,6 @@
                 packages.nameIndex[datacenter] = {};
                 packages.list[datacenter] = [];
                 packages.search[datacenter] = {};
-//                packages.info[datacenter] = info.packages[datacenter];
             }
 
             if (!packages.job[datacenter]) {
@@ -29,11 +28,17 @@
                     data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
-                            errorContext.emit(new Error(localization.translate(null,
-                                'machine',
-                                'Unable to retrieve packages list'
-                            )));
-
+                            notification.push(datacenter, { type: 'error' },
+                                localization.translate(null,
+                                    'machine',
+                                    'Unable to retrieve packages from datacenter {{name}}',
+                                    { name: datacenter }
+                                )
+                            );
+                            packages.job.deferred.reject(err);
+                            Object.keys(packages.search[datacenter]).forEach(function (job) {
+                                job.reject(err);
+                            });
                             return;
                         }
 

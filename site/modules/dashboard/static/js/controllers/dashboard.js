@@ -35,7 +35,8 @@
             };
             $scope.systemStatusTopics = Zendesk.getSystemStatusTopics();
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
-            $scope.machines    = Machine.machine();
+            $scope.machines = Machine.machine();
+
 //                $scope.lastInvoice = BillingService.getLastInvoice();
 
             // get campaign id from the cookie
@@ -44,7 +45,7 @@
             window.dashboard_rss_feed_callback = function (data) {
                 $scope.rssentries = data.responseData.feed.entries;
             };
-            $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://joyent.com/blog/feed'));
+            $http.jsonp('//ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=7&callback=dashboard_rss_feed_callback&q=' + encodeURIComponent('http://www.joyent.com/blog/feed'));
 
             // when all datasources are loaded, disable loader
             $q.all(

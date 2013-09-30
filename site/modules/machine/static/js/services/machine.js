@@ -23,6 +23,7 @@
                 machines.job = serverTab.call({
                     name: 'MachineList',
                     progress: function machineProgress(err, job) {
+                        console.log('progress');
                         var data = job.__read();
 
                         function wrapMachine (machine) {

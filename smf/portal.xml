@@ -17,12 +17,13 @@
     <exec_method
       type="method"
       name="start"
-      exec="node /opt/portal/index.js -env=pro &amp;"
+      exec="node /opt/portal/index.js &amp;"
       timeout_seconds="60">
       <method_context working_directory='/opt/portal'>
         <method_credential user="portal" group="staff" privileges="basic,net_privaddr"/>
         <method_environment>
           <envvar name="PATH" value="/usr/local/bin:/opt/local/bin:/usr/bin:/usr/sbin:/bin"/>
+          <envvar name="NODE_ENV" value="production"/>
         </method_environment>
       </method_context>
     </exec_method>
