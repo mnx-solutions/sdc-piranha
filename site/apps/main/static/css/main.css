@@ -1204,3 +1204,7 @@ iframe {
     background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
     padding-right: 2px;
 }
+.content-container-inner {
+    padding-bottom: 55px;
+    padding-left: 45px;
+}

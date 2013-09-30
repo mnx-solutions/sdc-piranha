@@ -554,6 +554,7 @@ table.table {
     margin-bottom: 6px !important;
     max-width: none !important;
     font-size: 16px;
+    overflow: auto;
 }
 .table-bordered th, .table-bordered td {
     padding-left: 15px;
@@ -561,11 +562,12 @@ table.table {
     border-right: 0 none !important;
 }
 .table th, .table td {
-    padding: 8px;
+    padding-right: 25px;
     line-height: 20px;
     text-align: left;
     vertical-align: middle;
     border-top: none;
+    white-space: nowrap;
 }
 .table td a{
     color: #375675;
@@ -674,7 +676,7 @@ ul.dropdown-menu{
     border-radius: 50px;
     background-position: center center;
 }
-.accordion{
+#accordion1{
     width: 500px !important;
 }
 .accordion-group {
@@ -947,7 +949,214 @@ ul.dropdown-menu{
     margin-top: 12px;
     margin-bottom: 20px;
 }
-.machine-label{
-    max-width: 300px;
-    overflow: hidden;
+.item-list-container{
+    /*width: 1000px;*/
+    overflow: auto;
+}
+.basic-instance-box:hover{
+    background-color: #fdf1d1 !important;
+}
+.basic-instance-box{
+    width: 240px;
+    height: 206px;
+    border-radius: 3px;
+    /*border: 2px #3d3d3d solid;*/
+    float: left;
+    margin-right: 10px;
+    background-color: #eef0f2;
+}
+.smartos-logo {
+    background-image: url(../img/smartos-logo.png);
+    background-repeat: no-repeat;
+    background-position: 190px 15px;
+    background-size: 38px;
+}
+.ubuntuos-logo {
+    background-image: url(../img/ubuntuos-logo.png);
+    background-repeat: no-repeat;
+    background-position: 190px 15px;
+    background-size: 38px;
+}
+.winos-logo {
+    background-image: url(../img/winos-logo.png);
+    background-repeat: no-repeat;
+    background-position: 190px 15px;
+    background-size: 38px;
+}
+.centos-logo {
+    background-image: url(../img/centos-logo.png);
+    background-repeat: no-repeat;
+    background-position: 190px 15px;
+    background-size: 38px;
+}
+.nodejs-logo {
+    background-image: url(../img/nodejs-logo.png);
+    background-repeat: no-repeat;
+    background-position: 190px 15px;
+    background-size: 38px;
+}
+.joyent-logo {
+    background-image: url(../img/joyent-logo.png);
+    background-repeat: no-repeat;
+    background-position: 190px 15px;
+    background-size: 38px;
+}
+.basic-instance-info{
+    margin-left: 20px;
+    display: inline-block;
+}
+.basic-instance-info p{
+    margin-top: 7px;
+    text-align: left;
+    color: #666666;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+}
+.basic-instance-info span p{
+    text-align: left;
+    color: #000000;
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 0px;
+}
+.basic-instance-title{
+    padding: 26px 20px 0 20px;
+}
+.basic-instance-browse p{
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 18px;
+    padding-left: 20px;
+    padding-top: 20px;
+    /*padding: 20px 20px 0 20px;*/
+}
+.basic-instance-browse span p{
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+    margin-top: -24px;
+}
+.basic-instance-title p{
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 10px;
+}
+.basic-instance-title span p{
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+}
+.basic-instance-line{
+    border-bottom: 1px solid #d6d8d9;
+    margin: 18px 20px 0 20px;
+}
+.basic-instance-btn.btn_s{
+    float: right;
+    margin-top: -25px;
+    margin-left: 30px;
+}
+.basic-instance-btn{
+    width: 65px !important;
+    height: 30px;
+    margin-left: 12px;
+    color: white;
+    background-color: #c3c9d6;
+    padding: 5px;
+    margin-right: 20px;
+    margin-top: 12px;
+}
+.basic-instance-box:hover .basic-instance-btn{
+    background-color: #FF6600;
+}
+.basic-instance-btn-block{
+    display: inline-block;
+}
+.basic-instance-btn-block span p{
+    font-size: 12px;
+    display: inline-block;
+    float: left;
+    margin-left: 80px;
+    margin-top: -17px;
+}
+.basic-instance-btn-block p.ft{
+    text-transform: uppercase;
+    font-weight: bold;
+    float: left;
+    margin: 17px 50px 0 20px;
+}
+.basic-instance-btn-block p.price{
+    margin: 17px 0 0 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+.ci_desc{
+    font-size: 16px;
+    font-weight: 400;
+    padding-bottom: 30px;
+}
+.basic-instance-box-padding{
+    padding-bottom: 10px;
+}
+.datacenter-select{
+    background-color: white !important;
+    border: 1px solid #c5c5c5 !important;
+    height: 28px;
+    padding: 4px 10px 10px 10px;
+}
+.btn_browse{
+    margin-top: 13px;
+    padding: 5px 15px 5px 15px;
+    margin-left: 20px;
+}
+.no-breadcrumb{
+    padding-top: 40px;
+    border-bottom: 1px solid #ffffff;
+}
+.search-images{
+    margin: 0!important;
+    background-color: #eef0f2 !important;
+    color: #666666 !important;
+    border-radius: 18px !important;
+    height: 24px !important;
+    border: 0 none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    padding-right: 30px;
+    padding-left: 10px;
+}
+.btn-search-images {
+    border: 0 none;
+    padding: 0;
+    background-image: url(../img/search-image-icon.png);
+    background-repeat: no-repeat;
+    width: 23px !important;
+    height: 22px;
+    right: 40px;
+    position: relative;
+    background-color: transparent;
+    background-position: center center;
+}
+
+.item-scrolling div.item:nth-child(odd){
+    background-color: #f4f4f4;
+}
+.item-scrolling div.item:hover{
+    background-color: #f9f9f9 !important;
+}
+.item-scrolling .item{
+    border: 0;
+}
+
+.item.header,
+.item.header:hover,
+.carousel-inner .item.header,
+.carousel-inner .item.header:hover{
+    background-color: white !important;
+    box-shadow: none;
+    border: 0;
+}
+.item {
+    border: none;
 }

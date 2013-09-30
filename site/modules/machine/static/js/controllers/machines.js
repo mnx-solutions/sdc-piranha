@@ -221,9 +221,25 @@
                 0: true,
                 1: true,
                 2: true,
-                3: true,
+                3: false,
                 4: true,
-                5: false
+                5: true,
+                6: false,
+                7: false,
+                8: false,
+                9: false,
+                10: false,
+                11: false,
+                12: false,
+                13: false,
+                14: false,
+                15: false,
+                16: false,
+                17: false,
+                18: false
+            };
+            $scope.noClose = function(){
+                $('.dropdown-menu').click(function(event){event.stopPropagation();});
             };
 
             $scope.selectColumnsCheckbox = function(id){
