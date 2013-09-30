@@ -18,56 +18,35 @@
                 },
 
                 link: function ($scope) {
-                    $scope.key = {};
+                    $scope.newKey = {};
 
-                    /* ssh key generating popup with custom template */
-                    var sshKeyModalCtrl = function($scope, dialog) {
-                        $scope.keyName = '';
+                    $scope.createNewKey = function() {
+                        $scope.loading = true;
+                        $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
 
-                        $scope.close = function(res) {
-                            dialog.close(res);
-                        };
-
-                        $scope.generateKey = function() {
-                            $scope.close($scope.keyName);
-                        }
-                    };
-
-                    $scope.generateSshKey = function() {
-                        $scope.sshGenerateUrl = '/main/account/ssh';
-                    };
-
-                    $scope.createNewKey = function (key) {
-                        // If key is not given as an argument but exist in a scope
-                        if (!key && $scope.key) {
-                            key = $scope.key;
-                        }
-
-                        var newKey = Account.createKey(key.name, key.data);
-
-                        $q.when(newKey, function (key) {
+                        $q.when($scope.addedKey, function(key) {
                             if (key.name && key.fingerprint && key.key) {
-                                $scope.key = null;
-                                $scope.updateKeys();
+                                // successful add
+                                $scope.addsshKey = false;
+                                $scope.newKey = {};
 
-                                notification.push(null, { type: 'success' },
-                                    localization.translate($scope, null,
-                                        'New key successfully added'
-                                    )
-                                );
-
+                                if ($scope.nextStep) {
+                                    $scope.nextStep();
+                                }
                             } else {
-                                notification.push(null, { type: 'error' },
-                                    localization.translate($scope, null,
-                                        'Failed to add new key: {{message}}',
-                                        {
-                                            message: (key.message || '') + ' ' + (key.code || '')
-                                        }
-                                    )
+                                $scope.error = localization.translate($scope, null,
+                                    'Failed to add new key: {{message}}',
+                                    {
+                                        message: (key.message || '') + ' ' + (key.code || '')
+                                    }
                                 );
+
                             }
+
+                            $scope.loading = false;
                         });
                     };
+
 
                 },
                 templateUrl: 'account/static/partials/account-add-ssh-key.html'
