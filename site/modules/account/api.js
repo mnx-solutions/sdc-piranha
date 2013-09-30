@@ -134,6 +134,7 @@ module.exports = function execute(scope, register) {
     api.setSignupStep = function (call, step, cb) {
         function updateBilling(req) {
             if (step !== 'billing') {
+                setImmediate(cb);
                 return; // no zuora account yet created
             }
             function update(userId) {
@@ -141,7 +142,7 @@ module.exports = function execute(scope, register) {
                     if (err) {
 
                         // error 402 is one of the expected results, don't log it.
-                        if (err.code != 402) {
+                        if (err.code !== 402) {
 
                             // build more clear error object so we wouldn't have errors: [object], [object] in the logs
                             var zuoraErr = {
