@@ -121,6 +121,7 @@
                 var newKey = Account.createKey(key.name, key.data);
 
                 $q.when(newKey, function (key) {
+                    console.log('key resolved', key);
                     if (key.name && key.fingerprint && key.key) {
                         $scope.key = null;
                         $scope.updateKeys();
@@ -141,6 +142,15 @@
                             )
                         );
                     }
+                }, function(key) {
+                    notification.push(null, { type: 'error' },
+                        localization.translate($scope, null,
+                            'Failed to add new key: {{message}}',
+                            {
+                                message: (key.message || '') + ' ' + (key.code || '')
+                            }
+                        )
+                    );
                 });
             };
 

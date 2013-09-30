@@ -44,6 +44,13 @@
                             }
 
                             $scope.loading = false;
+                        }, function(key) {
+                            $scope.error = localization.translate($scope, null,
+                                'Failed to add new key: {{message}}',
+                                {
+                                    message: (key.message || '') + ' ' + (key.code || '')
+                                }
+                            );
                         });
                     };
 
