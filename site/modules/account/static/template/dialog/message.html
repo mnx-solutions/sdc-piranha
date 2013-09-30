@@ -1,17 +1,16 @@
 <div>
     <div class="modal-header">
-        <h1>Add new SSH key</h1>
+        <h1>Import SSH Public Key</h1>
     </div>
     <div class="modal-body">	
 		<div class="control-group">
-            <label class="control-label">Name</label>
+            <label class="control-label">Key Name</label>
             <div class="controls">
-                <input type="text" class="span5" data-ng-model="data.keyName" placeholder="ssh key name" />
+                <input type="text" class="span5" data-ng-model="data.keyName" placeholder="optional" />
             </div>
         </div>
-        	
 		<div class="control-group">
-			<label class="control-label">SSH Key</label>
+			<label class="control-label">Public Key</label>
 			<div class="controls">
         		<textarea class="ssharea span5" rows="10" data-ng-model="data.keyData"></textarea><br />
 			</div>
