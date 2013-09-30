@@ -1140,10 +1140,10 @@ ul.dropdown-menu{
 }
 
 .item-scrolling div.item:nth-child(odd){
-    background-color: #f4f4f4;
+    background-color: #eef0f2;
 }
 .item-scrolling div.item:hover{
-    background-color: #f9f9f9 !important;
+    background-color: #fdf1d1 !important;
 }
 .item-scrolling .item{
     border: 0;
@@ -1159,4 +1159,8 @@ ul.dropdown-menu{
 }
 .item {
     border: none;
+}
+.search-image{
+    float: right;
+    margin-top: -30px;
 }

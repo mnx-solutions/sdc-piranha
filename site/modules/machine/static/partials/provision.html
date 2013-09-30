@@ -211,11 +211,11 @@
 
 
             <div data-ng-show="!basicCreateInstance">
-                <ul class="breadcrumb">
-                    <li><a href="#!/dashboard">Dashboard</a> /</li>
-                    <li><a href="#!/instance"> Compute</a> /</li>
-                </ul>
-                <h3 class="page-title" data-translate>Create Instance</h3>
+                <!--<ul class="breadcrumb">-->
+                    <!--<li><a href="#!/dashboard">Dashboard</a> /</li>-->
+                    <!--<li><a href="#!/instance"> Compute</a> /</li>-->
+                <!--</ul>-->
+                <h3 class="page-title no-breadcrumb" data-translate>Create Instance</h3>
                 <div class="header-btn-ci">
                     <a href="#!/instance/create">
                         <button type="button" class="btn btn_ci orange" data-ng-click="basicCreateInstance = true"><b>Basic mode</b></button></a>
@@ -267,11 +267,11 @@
 
                     </div>
 
-                    <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none">
+                    <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none" style="background-color: #f5f5f5;">
                         <div class="reconfigure-box">
                             <div class="accordion" id="networkAccordion">
                                 <div class="accordion-group" id="network-configuration-accordion-group">
-                                    <div class="accordion-heading">
+                                    <div class="accordion-heading" style="background-color: #e5e5e5;">
                                         <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
                                             <h4>Configure networks +</h4>
                                         </a>
@@ -279,7 +279,7 @@
                                     <div id="collapseOne" class="accordion-body collapse">
                                         <div class="accordion-inner">
                                                 <span data-ng-repeat="network in networks">
-                                                    <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
+                                                    <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" style="margin-top: -3px;"/>
                                                         <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
                                                 </span>
                                         </div>
@@ -293,7 +293,7 @@
 
 
                     <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue reconfigure row-fluid">
-                        <div class="reconfigure-box">
+                        <div class="reconfigure-box" style="background-color: #f5f5f5;">
                             <form name="provisionForm">
                                 <h4 data-translate>Name your instance.</h4>
                                 <span data-translate>This is optional.</span>
@@ -328,30 +328,31 @@
                     <div id="myCarousel" class="carousel slide">
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
-                                <div class="item provisioning-item  header row-fluid">
-                                    <div class="provisioning-header-left-button btn-group tooltip-hover span3"
+                                <div class="item provisioning-item header row-fluid" style="display: inline-block">
+                                    <div class="provisioning-header-left-button btn-group tooltip-hover"
                                          data-html="true"
                                          data-toggle="tooltip"
                                          data-placement="right"
                                          data-original-title="Filter by zone">
-                                        <button class="btn" data-ng-show="data.datacenter">{{data.datacenter}}</button>
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu" style="margin-left: 9px;">
                                             <li data-ng-repeat="datacenter in datacenters">
                                                 <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
                                             </li>
                                         </ul>
                                     </div>
 
-                                    <div class="btn-group tooltip-hover span2 hidden-phone"
+                                    <div class="btn-group tooltip-hover hidden-phone"
                                          data-html="true"
                                          data-toggle="tooltip"
                                          data-placement="right"
-                                         data-original-title="Filter by operating system">
-                                        <button class="btn" data-ng-show="data.opsys">{{data.opsys}}</button>
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                         data-original-title="Filter by operating system"
+                                         style="padding-left: 20px;">
+                                        <button class="btn datacenter-select" data-ng-show="data.opsys">{{data.opsys}}</button>
+                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
@@ -361,8 +362,10 @@
                                         </ul>
                                     </div>
 
-                                    <div class="span3 offset4 provisioning-header-search">
-                                        <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                    <div class="offset4 search-image">
+                                        <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                        <input value="" class="btn-search-images" type="submit">
+                                        <!--<input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />-->
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
@@ -433,26 +436,28 @@
                                          data-toggle="tooltip"
                                          data-placement="right"
                                          data-original-title="Filter by instance type">
-                                        <button class="btn" data-translate data-ng-show="!packageType">Package Types</button>
-                                        <button class="btn" data-ng-show="packageType">{{packageType}}</button>
+                                        <button class="btn datacenter-select" data-translate data-ng-show="!packageType">Package Types</button>
+                                        <button class="btn datacenter-select" data-ng-show="packageType">{{packageType}}</button>
 
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
 
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu" style="margin-left: 9px;">
                                             <li data-ng-repeat="package in packageTypes">
                                                 <a data-ng-click="selectPackageType(package)">{{package}}</a>
                                             </li>
                                         </ul>
                                     </div>
 
-                                    <div class="span3 offset6 provisioning-header-search">
-                                            <input type="text"
-                                                   class="span12"
-                                                   placeholder="Search image"
-                                                   data-ng-model="searchPackages"
-                                                   data-translate="placeholder" />
+                                    <div class="offset6 search-image">
+                                        <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchPackages" data-translate="placeholder" />
+                                        <input value="" class="btn-search-images" type="submit">
+                                            <!--<input type="text"-->
+                                                   <!--class="span12"-->
+                                                   <!--placeholder="Search image"-->
+                                                   <!--data-ng-model="searchPackages"-->
+                                                   <!--data-translate="placeholder" />-->
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
