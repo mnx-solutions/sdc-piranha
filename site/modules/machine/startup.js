@@ -181,12 +181,12 @@ module.exports = function execute(scope) {
                 }
 
                 if (data[i].name) {
-                    for (var k in info.licenses.data['License Portfolio']) {
+                    Object.keys(info.licenses.data['License Portfolio']).forEach(function (k) {
                         var lic = info.licenses.data['License Portfolio'][k];
-                        if (lic['API Name'] == data[i].name) {
+                        if (lic['API Name'] === data[i].name) {
                             data[i].license_price = lic['Pan-Instance Price Uplift'];
                         }
-                    }
+                    });
                 }
             });
 
@@ -371,7 +371,7 @@ module.exports = function execute(scope) {
                     // name change check
                     if (newName && newName === machine.name) {
                         // make sure machine package didn't go lost
-                        if (machine.package == '') {
+                        if (machine.package === '') {
                             call.log.error('Machine %s package is empty after rename!', machineId);
                         }
 
