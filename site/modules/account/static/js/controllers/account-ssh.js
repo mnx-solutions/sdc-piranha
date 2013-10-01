@@ -172,7 +172,6 @@
                                     'Key successfully deleted'
                                 )
                             );
-
                             $scope.updateKeys();
                         });
                     });

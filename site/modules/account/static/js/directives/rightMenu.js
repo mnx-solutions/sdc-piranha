@@ -13,7 +13,7 @@
                 replace: true,
                 scope: true,
 
-                controller: function($scope, $element, $attrs, $transclude) {
+                controller: function($scope, $element, $attrs, $transclude) { //REVIEW: Why all these unused things?
                     localization.bind('account', $scope);
                 },
 

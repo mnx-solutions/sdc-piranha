@@ -254,7 +254,6 @@ module.exports = function execute(scope, app) {
         for (var d in instrumentations) {
             iCount += Object.keys(instrumentations[d]).length;
         }
-
         for (var datacenter in instrumentations) {
             for (var instrumentationId in instrumentations[datacenter]) {
                 var instrumentation = instrumentations[datacenter][instrumentationId];

@@ -9,9 +9,10 @@
         '$q',
         'localization',
         'notification',
-        'errorContext',
+        'Package',
+        'Dataset',
 
-        function ($resource, serverTab, $rootScope, $q, localization, notification, errorContext) {
+        function ($resource, serverTab, $rootScope, $q, localization, notification, Package, Dataset) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -21,11 +22,54 @@
                 machines.list.final = false;
                 machines.job = serverTab.call({
                     name: 'MachineList',
-                    progress: function (err, job) {
+                    progress: function machineProgress(err, job) {
                         var data = job.__read();
+
+                        function wrapMachine (machine) {
+                            var p = null;
+                            var i = null;
+                            if(!machine._Package && !machine._Dataset) {
+                                Object.defineProperties(machine, {
+                                    _Package: {
+                                        get: function () {
+                                            if(!p) {
+                                                p = {};
+                                                if(machine.package) {
+                                                    $q.when(Package.package(machine.package), function (pack) {
+                                                        Object.keys(pack).forEach(function (k) {
+                                                            p[k] = pack[k];
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                            return p;
+
+                                        }
+                                    },
+                                    _Dataset: {
+                                        get: function () {
+                                            if(!i) {
+                                                i = {};
+                                                if(machine.image) {
+                                                    Dataset.dataset(machine.image).then(function (dataset) {
+                                                        Object.keys(dataset).forEach(function (k) {
+                                                            i[k] = dataset[k];
+                                                        });
+                                                    });
+                                                }
+                                            }
+                                            return i;
+                                        }
+                                    }
+                                });
+                            }
+                            return machine;
+                        }
 
                         function handleChunk (machine) {
                             var old = null;
+
+                            machine = wrapMachine(machine);
 
                             if (machines.index[machine.id]) {
                                 old = machines.list.indexOf(machines.index[machine.id]);
@@ -34,7 +78,9 @@
                             machines.index[machine.id] = machine;
 
                             if (machines.search[machine.id]) {
-                                machines.search[machine.id].resolve(machine);
+                                machines.search[machine.id].forEach(function (r) {
+                                    r.resolve(machine);
+                                });
                                 delete machines.search[machine.id];
                             }
 
@@ -71,17 +117,6 @@
                     },
 
                     done: function(err, job) {
-//                        var data = job.__read();
-//
-//                        if (err) {
-//                            notification.push(data.name, { type: 'error' },
-//                                localization.translate(null,
-//                                    'machine',
-//                                    'Unable to retrieve instances from datacenter {{name}}',
-//                                    { name: data.name }
-//                                )
-//                            );
-//                        }
 
                         Object.keys(machines.search).forEach(function (id) {
                             if (!machines.index[id]) {
@@ -112,11 +147,13 @@
             }
 
             if (!machines.index[id] || (machines.job && !machines.job.finished)) {
+                var ret = $q.defer();
                 if (!machines.search[id]) {
-                    machines.search[id] = $q.defer();
+                    machines.search[id] = [];
                 }
+                machines.search[id].push(ret);
 
-                return machines.search[id].promise;
+                return ret.promise;
             }
 
             return machines.index[id];
@@ -263,9 +300,9 @@
                 notification.push(id, { type: 'error' },
                     localization.translate(null,
                         'machine',
-                        'Unable to create instance '+ (instanceName ? instanceName : ''),
+                        'Unable to create instance {{name}}',
                         {
-                            name: data.name
+                            name: (instanceName ? instanceName : '')
                         }
                     ) +' '+ ((err.message) ? '<br />'+ err.message : '')
                 );

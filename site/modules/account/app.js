@@ -1,16 +1,12 @@
 'use strict';
 
 var crypto = require('crypto');
-var conf = require('easy-config');
-var redis = require('redis');
 var config = require('easy-config');
-var redisClient = redis.createClient(config.redis.port, config.redis.host);
 var fs = require('fs');
 var countryCodes = require('./data/country-codes');
 var exec = require('child_process').exec;
 var os = require('os');
 
-redisClient.auth(config.redis.password, function() {});
 /**
  * @ngdoc service
  * @name account.service:api
@@ -20,7 +16,6 @@ redisClient.auth(config.redis.password, function() {});
  * Account module API
  */
 module.exports = function execute(scope, app) {
-    var keyGen = null;
 
     var SignupProgress = scope.api('SignupProgress');
 

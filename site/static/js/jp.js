@@ -14,6 +14,7 @@ var JP = {
         register = register || [];
         this._modules[name] = window.angular.module(name, register, configFn);
         this._includes.push(name);
+        return this._modules[name];
     },
     setMain: function (name, register, configFn) {
         if (window.angular.isArray(register)) {
