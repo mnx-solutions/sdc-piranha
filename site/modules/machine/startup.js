@@ -169,7 +169,7 @@ module.exports = function execute(scope) {
     server.onCall('DatasetList', function (call) {
         call.log.info('Handling list datasets event');
 
-        call.cloud.separate(call.data.datacenter).listDatasets(function (err, data) {
+        call.cloud.separate(call.data.datacenter).listImages(function (err, data) {
             if (err) {
                 call.error(err);
                 return;
@@ -508,8 +508,8 @@ module.exports = function execute(scope) {
             var options = {
                 name: call.data.name,
                 package: call.data.package,
-                dataset: call.data.dataset,
-                networks: call.data.networks
+                dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
+                networks: call.data.networks,
             };
 
             call.log.info({options: options}, 'Creating machine %s', call.data.name);
@@ -531,9 +531,128 @@ module.exports = function execute(scope) {
         }
     });
 
-    /* listNetworks */
-    server.onCall('ImagesList', function(call) {
-        call.log.info('Retrieving images list');
-        call.cloud.listImages(call.done.bind(call));
-    });
+
+    /* Images */
+
+    /**
+     * Waits for image state
+     * @param {Object} client
+     * @param {Object} call - image ID is taken from call.data.uuid or call.data if it's a string
+     * @param {Number} [timeout=300000] - timeout in milliseconds, defaults to 5m
+     * @param {String} [state=null]
+     */
+    function pollForImageStateChange(client, call, timeout, state) {
+        var timer = setInterval(function () {
+            var imageId = typeof call.data === 'object' ? call.data.uuid : call.data;
+
+            if (state) {
+                call.log.debug('Polling for image %s to become %s', imageId, state);
+            }
+
+            client.getImage(imageId, function (err, image) {
+                if (err) {
+                    // in case we're waiting for deletion a http 410(Gone) is good enough
+                    if (err.statusCode === 404 && state === 'deleted') {
+                        call.log.debug('Image %s is deleted, returning call', imageId);
+                        call.done(null, image);
+                        clearInterval(timer);
+                        clearTimeout(timerTimeout);
+                        return;
+                    }
+
+                    call.log.error({ error:err }, 'Cloud polling failed');
+                    call.error(err);
+                    clearInterval(timer);
+                    clearTimeout(timerTimeout);
+                } else if (image.state === 'failed') {
+                    call.log.error('Image %s fell into failed state', imageId);
+                    call.done(new Error('Image fell into failed state'));
+                    clearInterval(timer);
+                    clearTimeout(timerTimeout);
+                } else {
+                    // machine state check
+                    if (state && state === image.state) {
+                        call.log.debug('Image %s state is %s as expected, returing call', imageId, state);
+                        call.done(null, image);
+                        clearTimeout(timer);
+                        clearInterval(timerTimeout);
+                    } else if (state && state !== image.state) {
+                        call.log.trace('Image %s state is %s, waiting for %s', imageId, image.state, state);
+                        call.step = { state: image.state };
+                    }
+                }
+            }, null, null, true);
+        }, config.polling.machineState);
+
+        // timeout, so we wouldn't poll cloudapi forever
+        var timerTimeout = setTimeout(function() {
+            call.log.error('Operation timed out');
+            clearInterval(timer);
+            call.error(new Error('Operation timed out'));
+        }, (timeout || 5 * 60 * 1000));
+    }
+
+    if(!config.features || config.features.image !== 'disabled') {
+
+        /* CreateImage */
+        server.onCall('ImageCreate', {
+            verify: function(data) {
+                return typeof data === 'object' &&
+                    data.hasOwnProperty('machineId');
+            },
+            handler: function(call) {
+                var options = {
+                    machine: call.data.machineId,
+                    name: (call.data.name || 'My Image'),
+                    version: '1.0.0', // We default to version 1.0.0
+                    description: (call.data.description || 'Default image description')
+                };
+
+                call.log.info({ options: options }, 'Creating image %s', options.name);
+
+                var cloud = call.cloud.separate(call.data.datacenter);
+                call.cloud.createImageFromMachine(options, function(err, image) {
+                    if (!err) {
+                        call.data.uuid = image.id;
+                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'active', null, null);
+                    } else {
+                        call.log.error(err);
+                        call.done(err);
+                    }
+                });
+
+            }
+        });
+
+        /* DeleteImage */
+        server.onCall('ImageDelete', {
+            verify: function(data) {
+                return typeof data === 'object' &&
+                    data.hasOwnProperty('imageId');
+            },
+
+            handler: function(call) {
+                call.log.info('Deleting image %s', call.data.imageId);
+
+                var cloud = call.cloud.separate(call.data.datacenter);
+                call.cloud.deleteImage(call.data.imageId, function(err) {
+                    if (!err) {
+                        call.data.uuid = call.data.imageId;
+                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
+                    } else {
+                        call.log.error(err);
+                        call.done(err);
+                    }
+                });
+
+            }
+        });
+
+        /*images list */
+        /* listNetworks */
+        server.onCall('ImagesList', function(call) {
+            call.log.info('Retrieving images list');
+            call.cloud.listImages(call.done.bind(call));
+        });
+    }
 };

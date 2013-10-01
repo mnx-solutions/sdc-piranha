@@ -14,8 +14,8 @@
         '$q',
         '$location',
         'util',
-
-        function ($scope, requestContext, Dataset, Machine, Package, Network, $dialog, $$track, localization, $q, $location, util) {
+        'Image',
+        function ($scope, requestContext, Dataset, Machine, Package, Network, $dialog, $$track, localization, $q, $location, util, Image) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -37,7 +37,7 @@
                     $scope.loading = false;
                     $scope.newInstanceName = $scope.machine.name;
                 }, function () {
-                    $location.url('/instance');
+                    $location.url('/compute');
                     $location.replace();
                 }
             );
@@ -263,6 +263,11 @@
                     });
             };
 
+            $scope.clickCreateImage = function() {
+                $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
+                console.log($scope.imageJob);
+            };
+
             $scope.enableRename = function(name) {
                 $scope.changingName = true;
                 $scope.newInstanceName = name;
@@ -273,7 +278,7 @@
             };
 
             $scope.clickRename = function() {
-                if ($scope.machine.name == $scope.newInstanceName) {
+                if ($scope.machine.name === $scope.newInstanceName) {
                     return;
                 }
 
@@ -316,7 +321,7 @@
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
                             if($location.url() === '/instance/details/'+ machineid) {
-                                $location.url('/instance');
+                                $location.url('/compute');
                                 $location.replace();
                             }
                         });
@@ -376,6 +381,14 @@
                     return (!$scope.currentPackage.type && item.group === 'High CPU') || (item.group === $scope.currentPackage.group);
                 }
                 return false;
+            };
+
+            var ending = '-image-creation';
+            $scope.canCreateImage = function (name) {
+                return name &&
+                    typeof name === 'string' &&
+                    name.length >= ending.length &&
+                    name.indexOf(ending, name.length - ending.length) !== -1;
             };
         }
 

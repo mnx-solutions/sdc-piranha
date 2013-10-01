@@ -123,5 +123,9 @@
     "Click here to reboot your instance.": "Click here to reboot your instance.",
     "Examine system performance.": "Examine system performance.",
     "Name your instance.": "Name your instance.",
-    "This is optional.": "This is optional."
+    "This is optional.": "This is optional.",
+    "Image \"{{name}}\" successfully created": "Image \"{{name}}\" successfully created",
+    "Unable to create image \"{{name}}\"": "Unable to create image \"{{name}}\"",
+    "Image \"{{name}}\" successfully deleted": "Image \"{{name}}\" successfully deleted",
+    "Unable to delete image \"{{name}}\"": "Unable to delete image \"{{name}}\""
 }

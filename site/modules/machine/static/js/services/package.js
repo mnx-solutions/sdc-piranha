@@ -53,13 +53,17 @@
                             packages.index[datacenter][p.id] = p;
 
                             if (packages.search[datacenter][p.id]) {
-                                packages.search[datacenter][p.id].resolve(p);
+                                packages.search[datacenter][p.id].forEach(function (r) {
+                                    r.resolve(p);
+                                });
                                 delete packages.search[datacenter][p.id];
                             }
 
                             packages.nameIndex[datacenter][p.name] = p;
                             if (packages.search[datacenter][p.name]) {
-                                packages.search[datacenter][p.name].resolve(p);
+                                packages.search[datacenter][p.name].forEach(function (r) {
+                                    r.resolve(p);
+                                });
                                 delete packages.search[datacenter][p.name];
                             }
 
@@ -108,8 +112,9 @@
 
                     service.updatePackages(params.datacenter);
                     if (!packages.search[params.datacenter][params.id]) {
-                        packages.search[params.datacenter][params.id] = ret;
+                        packages.search[params.datacenter][params.id] = [];
                     }
+                    packages.search[params.datacenter][params.id].push(ret);
                 } else {
                     ret.resolve(packages.index[params.datacenter][params.id] ||
                         packages.nameIndex[params.datacenter][params.id]);

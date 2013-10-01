@@ -34,6 +34,9 @@
 
             var interceptor = ['$rootScope', '$q', 'httpBuffer', function($rootScope, $q, httpBuffer) {
                 function success(response) {
+                    if(response.headers('Content-Type')) {
+                        (window.JP.get('timeoutRefresh') || angular.noop)();
+                    }
                     return response;
                 }
 
@@ -44,6 +47,7 @@
                         $rootScope.$broadcast('event:auth-loginRequired');
                         return deferred.promise;
                     }
+                    (window.JP.get('timeoutRefresh') || angular.noop)();
                     // otherwise, default behaviour
                     return $q.reject(response);
                 }

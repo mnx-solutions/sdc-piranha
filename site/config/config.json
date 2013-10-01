@@ -99,5 +99,8 @@
             "serviceFails": 3,
             "pinTries": 3
         }
+    },
+    "features": {
+        "image": "disabled"
     }
 }

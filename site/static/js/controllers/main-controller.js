@@ -12,6 +12,8 @@
         '$location',
 
         function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location) {
+            $rootScope.features = window.JP.get('features') || {};
+
             $scope.windowTitle = 'Joyent Portal';
 
             $scope.setWindowTitle = function (title) {

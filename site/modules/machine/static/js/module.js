@@ -1,3 +1,3 @@
 'use strict';
 
-window.JP.createModule('Machine', [ 'ui.bootstrap.dialog', 'ui' ]);
+window.JP.createModule('Machine', [ 'ui.bootstrap.dialog', 'ui', 'ui.bootstrap.pagination']);

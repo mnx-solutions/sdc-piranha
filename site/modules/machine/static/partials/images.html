@@ -2,12 +2,33 @@
     <div class="loading-large" data-ng-show="loading"></div>
 
     <div class="machines container" data-ng-show="images.length">
-        <data-breadcrumb></data-breadcrumb>
-        <data-notification></data-notification>
+        <div  data-breadcrumb></div>
+        <div data-notification></div>
 
+        <form class="form-search pull-right">
+            <input type="search"
+                   class="span3"
+                   name="search"
+                   id="search"
+                   placeholder="Search images"
+                   data-ng-model="query"
+                   data-translate="placeholder" />
+        </form>
 
-        <div data-ng-repeat="image in images">
-            <div class="image-name">{{image.name}} - {{image.description}}</div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="span12">
+                <div data-grid-view
+                     data-props="gridProps"
+                     data-detail-props="gridDetailProps"
+                     data-action-buttons="gridActionButtons"
+                     data-objects="images"
+                     data-per-page="15"
+                     data-order="gridOrder"
+                     data-filter-all="{{query}}"
+                     data-export-fields="exportFields"
+                     data-objects-type="image"></div>
+            </div>
         </div>
     </div>
 </div>

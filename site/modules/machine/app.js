@@ -28,15 +28,30 @@ module.exports = function (scope, app) {
         res.send(id);
     });
 
-    app.get('/export/:id/:format', function (req, res, next) {
+    app.get('/export/:id/:format/:type', function (req, res, next) {
         var data = readTempData(req.params.id);
         if(!data) {
             res.send(404);
             return;
         }
+        var type = 'machine';
+        var prefix  = 'export_';
+        if(req.params.type) {
+            type = req.params.type;
+        }
+
+        switch(type) {
+            case 'image':
+                prefix = 'image_list_';
+                break;
+            case 'machine':
+                prefix = 'instance_list_';
+                break;
+        }
+
 
         var format = req.params.format.toLowerCase();
-        var fname = 'attachment; filename=export_' + req.params.id.substr(0,5) + '.' + format;
+        var fname = 'attachment; filename=' + prefix + req.params.id.substr(0,5) + '.' + format;
         var fcontent = '';
         switch(format) {
             case 'json':

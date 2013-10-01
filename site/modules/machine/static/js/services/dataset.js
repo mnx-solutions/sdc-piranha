@@ -1,4 +1,5 @@
 'use strict';
+window.fn = [];
 
 (function (app) {
     app.factory('Dataset', [
@@ -7,7 +8,8 @@
         'localization',
         'notification',
         'errorContext',
-        function (serverTab, $q, localization, notification, errorContext) {
+        '$rootScope',
+        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
@@ -52,7 +54,9 @@
                             datasets.index[datacenter][p.id] = p;
 
                             if (datasets.search[datacenter][p.id]) {
-                                datasets.search[datacenter][p.id].resolve(p);
+                                datasets.search[datacenter][p.id].forEach(function (r) {
+                                    r.resolve(p);
+                                });
                                 delete datasets.search[datacenter][p.id];
                             }
 
@@ -98,10 +102,10 @@
             } else {
                 if (!datasets.index[params.datacenter][params.id]) {
                     service.updateDatasets(params.datacenter);
-
                     if (!datasets.search[params.datacenter][params.id]) {
-                        datasets.search[params.datacenter][params.id] = ret;
+                        datasets.search[params.datacenter][params.id] = [];
                     }
+                    datasets.search[params.datacenter][params.id].push(ret);
                 } else {
                     ret.resolve(datasets.index[params.datacenter][params.id]);
                 }

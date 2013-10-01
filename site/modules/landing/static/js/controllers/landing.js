@@ -14,7 +14,7 @@ window.JP.set('urlHashbang', window.location.hash);
             localization.bind('landing', $scope);
 
             var oldHashbang = window.JP.get('urlHashbang');
-            if (oldHashbang == '#!/' || !oldHashbang || oldHashbang == '') {
+            if(oldHashbang === '#!/' || !oldHashbang || oldHashbang === '') {
                 oldHashbang = '#!/dashboard';
             }
 
