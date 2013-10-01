@@ -7,12 +7,13 @@
         'localization',
         '$q',
         '$window',
-        function (Account, localization, $q, $window) {
+        '$dialog',
+        '$timeout',
+        function (Account, localization, $q, $window, $dialog, $timeout) {
             return {
                 restrict: 'A',
                 replace: true,
                 scope: true,
-
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
                 },
@@ -34,6 +35,7 @@
                                     $scope.nextStep();
                                 }
                             } else {
+
                                 $scope.error = localization.translate($scope, null,
                                     'Failed to add new key: {{message}}',
                                     {
@@ -51,6 +53,7 @@
                                     message: (key.message || '') + ' ' + (key.code || '')
                                 }
                             );
+                            $scope.loading = false;
                         });
                     };
 

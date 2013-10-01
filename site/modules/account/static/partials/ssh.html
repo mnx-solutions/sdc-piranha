@@ -21,56 +21,16 @@
         <div class="row-fluid">
             <div class="span9">
                 <div class="row-fluid">
-                    <!-- Part shown when user have no keys -->
-                    <div class="ssh-add-span" data-ng-show="keys.length <= 0">
-                        <div class="alert alert-joyent-blue">
-                            <span data-translate>You have to add SSH key to start creating instances.</span>
-                        </div>
-
-                        <fieldset>
-                            <div class="control-group">
-                                <label class="control-label" data-translate>Name</label>
-                                <div class="controls">
-                                    <input type="text"
-                                           class="span8"
-                                           placeholder="SSH key name"
-                                           data-ng-model="key.name"
-                                           data-translate-attributes="placeholder" />
-                                </div>
-                            </div>
-
-                            <div class="control-group">
-                                <label class="control-label" data-translate>SSH key</label>
-                                <div class="controls">
-                                    <textarea class="ssharea span8" rows="10" data-ng-model="key.data"></textarea>
-                                </div>
-                            </div>
-
-                            <div data-ng-show="error">{{error}}</div>
-                            <div class="align-right">
-                                <div class="new-key-button">
-                                    <button class="btn pull-right btn-small create-key-btn"
-                                            data-ng-click="generateSshKey()"
-                                            data-translate>Create Key</button>
-
-                                    <button class="btn btn-joyent-blue pull-right ssh-add-button"
-                                            data-ng-click="createNewKey()"
-                                            data-translate>Add SSH Key</button>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <!-- End of 0 keys part -->
-
-                </div>
-
-                <div class="row-fluid">
 
                     <!-- Part shown when user has keys -->
-                    <div data-ng-show="keys.length > 0">
+                    <div>
                         <div class="item-list-container">
                             <div class="item header row-fluid">
                                 <span class="span12 item-list-container-header">Key Name / Fingerprint</span>
+                            </div>
+
+                            <div data-ng-show="keys.length < 1">
+                                <div class="alert alert-joyent-blue alert-global">You don't have any SSH keys</div>
                             </div>
 
                             <div class="item row-fluid" data-ng-repeat="key in keys">
@@ -108,7 +68,6 @@
 
                             <button class="btn btn-joyent-blue pull-right ssh-add-button"
                                     data-ng-click="addNewKey()"
-                                    data-ng-show="keys.length > 0"
                                     data-translate>Import Key</button>
                         </div>
                     </div>
@@ -117,7 +76,7 @@
             </div>
 
             <div class="span3 hidden-phone">
-				
+
 			    <div account-right-menu></div>
 				
                 <div class="separation-container">
@@ -126,7 +85,7 @@
                     encryption protocol that allows you to
                     conduct administrative functions on remote
                     servers.</p>
-                    <p data-translate>Instances, with the exception of Windows,
+                    <p>Instances, with the exception of Windows,
                     are only accessible through SSH. The same
                     is true for Cloud API and Manta.</p>
                 </div>
