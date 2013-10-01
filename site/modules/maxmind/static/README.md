@@ -1,1 +1,0 @@
-Don't delete me, 'static' folder is to prevent modulizer error.
