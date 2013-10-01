@@ -329,27 +329,27 @@ module.exports = function execute(scope) {
                     if (err.statusCode === 410 && state === 'deleted') {
                         call.log.debug('Machine %s is deleted, returning call', machineId);
                         call.done(null, machine);
-                        clearInterval(timer);
                         clearTimeout(timerTimeout);
+                        clearInterval(timer);
                         return;
                     }
 
                     call.log.error({error:err}, 'Cloud polling failed');
                     call.error(err);
-                    clearInterval(timer);
                     clearTimeout(timerTimeout);
+                    clearInterval(timer);
                 } else if (machine.state === 'failed') {
                     call.log.error('Machine %s fell into failed state', machineId);
                     call.done(new Error('Machine fell into failed state'));
-                    clearInterval(timer);
                     clearTimeout(timerTimeout);
+                    clearInterval(timer);
                 } else {
                     // machine state check
                     if (state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         call.done(null, machine);
-                        clearTimeout(timer);
-                        clearInterval(timerTimeout);
+                        clearTimeout(timerTimeout);
+                        clearInterval(timer);
                     } else if(state && state !== machine.state) {
                         call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
                         call.step = {state: machine.state};
@@ -361,8 +361,8 @@ module.exports = function execute(scope) {
                     if (sdcpackage && sdcpackage === machine.package) {
                         call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
                         call.done(null, machine);
-                        clearInterval(timer);
                         clearTimeout(timerTimeout);
+                        clearInterval(timer);
                     } else if(sdcpackage) {
                         call.log.debug('Machine %s package is %s, waiting for %s', machineId, machine.package, sdcpackage);
                         call.step = { state: 'resizing' };
@@ -376,10 +376,10 @@ module.exports = function execute(scope) {
                         }
 
                         call.log.debug('Machine %s renamed to %s as expected, returing call', machineId, newName);
+                        clearTimeout(timerTimeout);
+                        clearInterval(timer);
                         call.done(null, machine);
 
-                        clearInterval(timer);
-                        clearTimeout(timerTimeout);
                     } else if(newName) {
                         call.log.debug('Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
                         call.step = { state: 'renaming' };
