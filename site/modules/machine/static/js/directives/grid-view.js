@@ -137,7 +137,7 @@
         $scope.export = function (format) {
             $http.post('machine/export', getJSONData())
                 .success(function (id) {
-                    $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '/machine"></iframe>';
+                    $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '/' + $scope.objectsType + '"></iframe>';
                 })
                 .error(function () {
                     console.log('err', arguments);
