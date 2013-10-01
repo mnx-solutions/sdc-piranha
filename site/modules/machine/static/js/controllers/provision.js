@@ -254,40 +254,31 @@
             };
 
             $scope.filterDatasetsByOS = function (item) {
-                if ($scope.data.opsys != 'All') {
-                    var val = item['os'];
-                    if (val.match($scope.data.opsys)) {
-                        return true;
-                    }
-                } else {
-                    return true;
+                if ($scope.data.opsys !== 'All' && !item.os.match($scope.data.opsys)) {
+                    return false;
                 }
-
-                return false;
+                return true;
             };
 
             $scope.filterDatasetsByVisibility = function(item) {
-                if($scope.selectedVisibility === false || $scope.selectedVisibility === true) {
-                    var val = item['public'];
-                    if(val === $scope.selectedVisibility) {
-                        return true;
-                    }
-                } else {
-                    return true;
+                if($scope.features.image !== 'disabled'
+                    && $scope.selectedVisibility === false
+                    || $scope.selectedVisibility === true
+                    && item.public !== $scope.selectedVisibility) {
+                    return false;
                 }
 
-                return false;
+                return true;
             };
 
             $scope.selectVisibility = function(type) {
-                if(type === null)
+                if(type === null) {
                     $scope.visibilityFilter = 'All';
-
-                if(type === true)
+                } else if(type === true) {
                     $scope.visibilityFilter = 'Public';
-
-                if(type === false)
+                } else if(type === false) {
                     $scope.visibilityFilter = 'Private';
+                }
 
                 $scope.selectedVisibility = type;
             };
