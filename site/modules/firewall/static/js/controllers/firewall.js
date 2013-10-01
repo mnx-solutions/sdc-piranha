@@ -121,6 +121,46 @@
                 });
             });
 
+            $scope.CIDRs = [];
+            for(var i=0; i<=32; i++) {
+                $scope.CIDRs.push(i);
+            }
+            $scope.fromSubnet = {
+                address:null,
+                CIDR:32
+            };
+            $scope.toSubnet = {
+                address:null,
+                CIDR:32
+            };
+
+            $scope.$watch('fromSubnet', function(n) {
+                if(n.CIDR && n.address) {
+                    $scope.current.from.text = n.address + '/' + n.CIDR;
+                }
+            }, true);
+
+            $scope.$watch('toSubnet', function(n) {
+                if(n.CIDR && n.address) {
+                    $scope.current.to.text = n.address + '/' + n.CIDR;
+                }
+            }, true);
+
+            $scope.$watch('current.from.type', function() {
+                $scope.fromSubnet = {
+                    address:null,
+                    CIDR:32
+                };
+            });
+
+            $scope.$watch('current.to.type', function() {
+                $scope.toSubnet = {
+                    address:null,
+                    CIDR:32
+                };
+            });
+
+
 
             $scope.loading = true;
             $scope.tags = [];
@@ -128,13 +168,18 @@
             $scope.current = {
                 from: null,
                 to: null,
-                port: null
+                port: null,
+                type: 0,
+                code: null
             };
             $scope.data = {};
             $scope.dropdown = [{
                 text:'',
                 children:[{
-                    id: JSON.stringify({type: 'wildcard'}),
+                    id: JSON.stringify({
+                        type: 'wildcard',
+                        text: 'all vms'
+                    }),
                     text: 'Any Vm'
                 },{
                     id: JSON.stringify({type: 'ip'}),
@@ -186,6 +231,9 @@
                 title:'ICMP'
             }];
 
+            function setRules(rules) {
+                $scope.rules = rules[$scope.datacenter];
+            }
 
             // get lists from services
             $scope.machines = Machine.machine();
@@ -197,7 +245,7 @@
                 $scope.$watch('datacenter', function(dc){
                     if(dc) {
 
-                        $scope.rules = lists[1][$scope.datacenter];
+                        setRules(lists[1]);
 
                         if(lists[0].length) {
                             extractVmInfo(lists[0]);
@@ -248,6 +296,16 @@
             $scope.addPort =function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
                 $scope.current.port = null;
+            }
+
+            $scope.addType = function() {
+                var target = $scope.current.type;
+                if($scope.current.code || $scope.current.code === 0) {
+                    target+= ':' + $scope.current.code;
+                }
+                $scope.data.parsed.protocol.targets.push(target);
+                $scope.current.type = 0;
+                $scope.current.code = null;
             }
 
             function addTarget(direction) {
@@ -348,13 +406,19 @@
                     datacenter: r.datacenter
                 }).then(function(){
                     console.log('delete rule', arguments)
+
                 })
             }
 
             $scope.createRule = function() {
                 var data = ng.copy($scope.data);
-                rule.createRule(data).then(function(){
-                    console.log('create response', arguments);
+                rule.createRule(data).then(function(r){
+                    if(r.id) {
+                        rule.rule().then(function(r){
+                            setRules(r);
+                            $scope.resetData();
+                        });
+                    }
                 })
             }
 

@@ -62,7 +62,6 @@
         </div>
 
         <div data-ng-model="data">
-            {{data}}
             <h3>{{data.uuid && 'Edit rule '+ data.uuid || 'Create New Rule' }}</h3>
             <div class="item row-fluid">
                 <h4>From</h4><hr/>
@@ -81,7 +80,9 @@
                         <form name="fromForm">
                             <span data-ng-switch="current.from.type">
                                     <span data-ng-switch-when="wildcard">
-                                        <!--<button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid">USE ANY</button>-->
+                                        <span data-ng-show="current.from.text == 'all vms'">
+                                            <button class="pointer" data-ng-click="addFrom()">ADD</button>
+                                        </span>
                                     </span>
                                     <span data-ng-switch-when="tag">
                                         <span>Tag name: </span><input data-ng-model="current.from.text" /><br/>
@@ -90,10 +91,11 @@
                                     </span>
                                     <span data-ng-switch-default>
                                         <!-- due to the nature of directives, we need another switch here -->
-                                        {{current.from.type}}:
                                         <span data-ng-switch="current.from.type">
                                             <span data-ng-switch-when="subnet">
-                                                <input name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                                <input name="fromValue" data-ng-model="fromSubnet.address" data-ip/>
+                                                <br/>
+                                                CIDR: <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
                                             </span>
                                             <span data-ng-switch-when="ip">
                                                 <input name="fromValue" data-ng-model="current.from.text" data-ip/>
@@ -128,7 +130,11 @@
                     <span class="span10 text-medium">
                         <form name="toForm">
                             <span data-ng-switch="current.to.type">
-                                    <span data-ng-switch-when="wildcard"></span>
+                                    <span data-ng-switch-when="wildcard">
+                                        <span data-ng-show="current.to.text == 'all vms'">
+                                            <button class="pointer" data-ng-click="addTo()">ADD</button>
+                                        </span>
+                                    </span>
                                     <span data-ng-switch-when="tag">
                                         <span>Tag name: </span><input data-ng-model="current.to.text" /><br/>
                                         <span data-ng-show="current.to.text">Tag value (optional): <input data-ng-model="current.to.value" /></span>
@@ -136,10 +142,11 @@
                                     </span>
                                     <span data-ng-switch-default>
                                         <!-- due to the nature of directives, we need another switch here -->
-                                        {{current.to.type}}:
                                         <span data-ng-switch="current.to.type">
                                             <span data-ng-switch-when="subnet">
-                                                <input name="toValue" data-ng-model="current.to.text" data-ip/>
+                                                <input name="toValue" data-ng-model="toSubnet.address" data-ip/>
+                                                <br/>
+                                                CIDR: <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
                                             </span>
                                             <span data-ng-switch-when="ip">
                                                 <input name="toValue" data-ng-model="current.to.text" data-ip/>
@@ -173,6 +180,13 @@
                         <input data-ng-model="current.port" /><br/>
                         <span class="pointer" data-ng-click="addPort()">ADD</span>
                     </span>
+                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                        <br/><span data-ng-repeat="target in data.parsed.protocol.targets">{{target}}<br/></span>
+                        Type: <input data-ng-model="current.type" /><br/>
+                        Code: <input data-ng-model="current.code" /><br/>
+                        <span class="pointer" data-ng-click="addType()">ADD</span>
+                    </span>
+
                 </span>
                 </div>
                 <div class="clearfix"></div><hr/>
