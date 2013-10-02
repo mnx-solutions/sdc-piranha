@@ -8,13 +8,14 @@
         '$q',
         '$dialog',
         '$location',
+        '$http',
         'Account',
         'localization',
         'requestContext',
         'notification',
         'util',
 
-        function ($scope, $window, $timeout, $q, $dialog, $location, Account, localization, requestContext, notification, util) {
+        function ($scope, $window, $timeout, $q, $dialog, $location, $http, Account, localization, requestContext, notification, util) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
@@ -57,7 +58,25 @@
                     .open(templateUrl, sshKeyModalCtrl)
                     .then(function(data) {
                         if(data && data.generate === true) {
-                            $scope.iframe = '<iframe class="ssh-download-iframe" src="/main/account/ssh'+ ((data.keyName) ? '/'+ data.keyName : '') +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                            $http.post('/main/account/ssh/create/', {name: data.keyName})
+                                .success(function(data) {
+                                    if(data.success === true) {
+                                        notification.push(null, { type: 'alert' },
+                                            localization.translate($scope, null,
+                                                'You will be prompted for private key download shortly. Please keep your private key safe'
+                                            )
+                                        );
+                                        $scope.iframe = '<iframe class="ssh-download-iframe" src="/main/account/ssh/download/'+ data.keyId +'/'+ data.name +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                                    } else {
+                                        // error
+                                        notification.push(null, { type: 'error' },
+                                            localization.translate($scope, null,
+                                                'Unable to generate SSH key: '+ data.err.message
+                                            )
+                                        );
+                                    }
+                                });
+
                         }
                         // this is here because this will fire on any kind of dialog close
                         $scope.keys = Account.getKeys(true);
