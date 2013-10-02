@@ -57,7 +57,7 @@
                     .open(templateUrl, sshKeyModalCtrl)
                     .then(function(data) {
                         if(data && data.generate === true) {
-                            $scope.sshGenerateUrl = '/main/account/ssh'+ ((data.keyName) ? '/'+ data.keyName : '');
+                            $scope.iframe = '<iframe class="ssh-download-iframe" src="/main/account/ssh'+ ((data.keyName) ? '/'+ data.keyName : '') +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
                         }
                         // this is here because this will fire on any kind of dialog close
                         $scope.keys = Account.getKeys(true);
