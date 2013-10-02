@@ -190,6 +190,7 @@
             };
 
             $scope.loading = true;
+            $scope.allCheckboxSelected = false;
 
             $scope.CheckBoxCur = {};
             $scope.selectAllCheckbox = function () {
@@ -206,7 +207,10 @@
                 for (var i =0; i<$scope.machines.length;i++){
                     if($scope.CheckBoxCur[$scope.machines[i].id]){check+=1}
                 }
-                if(check == 0){$scope.checkedCheckBox = false}
+                if(check == 0){
+                    $scope.checkedCheckBox = false;
+                    $scope.allCheckboxSelected = false;
+                }else $scope.allCheckboxSelected = true;
             };
 
             $scope.selectCheckbox = function(id) {
@@ -245,6 +249,30 @@
             $scope.selectColumnsCheckbox = function(id){
                 $scope.columnsCheckBoxCur[id] = ($scope.columnsCheckBoxCur[id]) ? false : true;
                 return $scope.columnsCheckBoxCur[id];
+            };
+
+            $scope.actionButton = function(action){
+                $scope.checkAllCheckbox();
+                if(!$scope.allCheckboxSelected){
+                    util.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'No instance selected for the action.'
+                        ),function(){
+                            this.close();
+                    });
+                }else{
+                    if(action == 'start') $scope.startSelectedInstances();
+                    if(action == 'stop') $scope.stopSelectedInstances();
+                    if(action == 'delete') $scope.deleteSelectedInstances();
+                    if(action == 'reboot') $scope.rebootSelectedInstances();
+                }
             };
 
             $scope.startSelectedInstances = function(){
