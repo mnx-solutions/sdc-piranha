@@ -13,7 +13,8 @@
             "billing",
             "account",
             "tfa",
-            "maxmind"
+            "maxmind",
+            "feature-flags"
         ]
 	}
 }
