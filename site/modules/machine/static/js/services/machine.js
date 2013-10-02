@@ -254,7 +254,7 @@
                     return;
                 }
 
-                delete machines.list[machines.list.indexOf(job.machine)];
+                machines.list.splice(machines.list.indexOf(job.machine), 1);
                 delete machines.index[job.machine.id];
             }
         });
