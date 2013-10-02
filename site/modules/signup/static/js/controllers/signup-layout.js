@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'Process',
-            function ($scope, requestContext, $location, $cookies, Process) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$$track',
+            function ($scope, requestContext, $location, $cookies, Process, $$track) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
@@ -67,6 +67,7 @@
                 $scope.signOut = function() {
                     var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
                     if(msg){
+                        $$track.event('Signup', 'Cancel Signup');
                         window.location = '/landing/forgetToken';
                     }
                     return false;
