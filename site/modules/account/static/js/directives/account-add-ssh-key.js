@@ -5,21 +5,56 @@
     app.directive('accountAddSshKey', [
         'Account',
         'localization',
+        'notification',
         '$q',
         '$window',
         '$dialog',
         '$timeout',
-        function (Account, localization, $q, $window, $dialog, $timeout) {
+        '$http',
+        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http) {
             return {
                 restrict: 'A',
                 replace: true,
                 scope: true,
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
+
+                    $scope.downloaded = false;
                 },
 
                 link: function ($scope) {
                     $scope.newKey = {};
+
+                    $scope.generateKey = function() {
+                        $scope.loading = true;
+                        $http.post('/signup/account/ssh/create/')
+                            .success(function(data) {
+                                if(data.success === true) {
+                                    notification.push(null, { type: 'alert' },
+                                        localization.translate($scope, null,
+                                            'You will be prompted for private key download shortly. Please keep your private key safe. <br />Press continue when you are done'
+                                        )
+                                    );
+                                    $scope.downloaded = true;
+                                    $scope.iframe = '<iframe class="ssh-download-iframe" src="/signup/account/ssh/download/'+ data.keyId +'/'+ data.name +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                                    $scope.loading = false;
+                                } else {
+                                    $scope.loading = false;
+                                    // error
+                                    notification.push(null, { type: 'error' },
+                                        localization.translate($scope, null,
+                                            'Unable to generate SSH key: '+ data.err.message
+                                        )
+                                    );
+                                }
+                        });
+                    };
+
+                    $scope.continue = function() {
+                        if ($scope.nextStep) {
+                            $scope.nextStep();
+                        }
+                    };
 
                     $scope.createNewKey = function() {
                         $scope.loading = true;

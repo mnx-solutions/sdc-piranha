@@ -75,7 +75,7 @@
                                             )
                                         );
                                     }
-                                });
+                            });
 
                         }
                         // this is here because this will fire on any kind of dialog close

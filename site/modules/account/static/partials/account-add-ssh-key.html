@@ -39,11 +39,28 @@
     <div class="clearfix"></div>
     <hr />
     <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Click here to return to homepage</a>
-    <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
-    <button class="btn btn-joyent-blue pull-right ssh-add-button"
-            data-ng-click="createNewKey()"
-            style="margin-right:10px"
-            data-ng-disabled="loading"
-            data-translate>Add SSH key</button>
 
+    <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
+    <div data-ng-hide="downloaded">
+        <button class="btn btn-small pull-right ssh-add-button"
+                data-ng-click="generateKey()"
+                style="margin-right:10px;margin-top:2px;"
+                data-ng-disabled="loading"
+                data-translate>Create SSH key</button>
+        <button class="btn btn-joyent-blue pull-right ssh-add-button"
+                data-ng-click="createNewKey()"
+                style="margin-right:10px"
+                data-ng-disabled="loading"
+                data-translate>Add SSH key</button>
+    </div>
+    <div data-ng-show="downloaded">
+        <button class="btn btn-joyent-blue btn-success pull-right ssh-add-button"
+                data-ng-click="continue()"
+                style="margin-right:10px"
+                data-ng-disabled="loading"
+                data-translate>Continue</button>
+    </div>
+
+
+    <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 </fieldset>
