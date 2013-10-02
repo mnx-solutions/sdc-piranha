@@ -101,6 +101,7 @@
         }
     },
     "features": {
-        "image": "disabled"
+        "image": "disabled",
+        "invoices": "disabled"
     }
 }

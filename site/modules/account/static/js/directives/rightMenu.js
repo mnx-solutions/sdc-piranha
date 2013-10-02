@@ -40,13 +40,15 @@
                             sequence: 3,
                             name: 'Billing',
                             url: '/account/payment'
-                        },
-                        {
+                        }
+                    ];
+                    if($scope.features.invoices !== 'disabled') {
+                        $scope.pages.push({
                             sequence: 4,
                             name: 'Invoices',
                             url: '/account/invoices'
-                        }
-                    ];
+                        });
+                    }
                 },
                 template: '<div class="sizebar-fix">' +
                     '<div class="tabbable tabs-right">' +
