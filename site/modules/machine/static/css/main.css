@@ -953,9 +953,9 @@ ul.dropdown-menu{
     /*width: 1000px;*/
     overflow: auto;
 }
-.basic-instance-box:hover{
-    background-color: #fdf1d1 !important;
-}
+/*.basic-instance-box:hover{*/
+    /*background-color: #fdf1d1 !important;*/
+/*}*/
 .basic-instance-box{
     width: 240px;
     height: 206px;
@@ -1065,9 +1065,9 @@ ul.dropdown-menu{
     margin-right: 20px;
     margin-top: 12px;
 }
-.basic-instance-box:hover .basic-instance-btn{
-    background-color: #FF6600;
-}
+/*.basic-instance-box:hover .basic-instance-btn{*/
+    /*background-color: #FF6600;*/
+/*}*/
 .basic-instance-btn-block{
     display: inline-block;
 }
