@@ -44,10 +44,11 @@
 
             service.image = function(force, id) {
 
-                if(!force)
+                if(!force) {
                     force = false;
+                }
 
-                if(!id && !images.list.final || force) {
+                if((!id && !images.list.final) || force) {
                     var job = service.updateImages(force);
                     return job.deferred;
                 }
