@@ -50,12 +50,6 @@
                         });
                     };
 
-                    $scope.continue = function() {
-                        if ($scope.nextStep) {
-                            $scope.nextStep();
-                        }
-                    };
-
                     $scope.createNewKey = function() {
                         $scope.loading = true;
                         $scope.addedKey = Account.createKey($scope.newKey.name, $scope.newKey.data);
