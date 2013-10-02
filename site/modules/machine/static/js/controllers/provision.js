@@ -262,8 +262,8 @@
 
             $scope.filterDatasetsByVisibility = function(item) {
                 if($scope.features.image !== 'disabled'
-                    && $scope.selectedVisibility === false
-                    || $scope.selectedVisibility === true
+                    && ($scope.selectedVisibility === false
+                    || $scope.selectedVisibility === true)
                     && item.public !== $scope.selectedVisibility) {
                     return false;
                 }
