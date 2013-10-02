@@ -1,4 +1,5 @@
 'use strict';
+var config = require('easy-config');
 
 module.exports = function execute(scope) {
     var smartCloud = scope.get('smartCloud');
@@ -11,11 +12,20 @@ module.exports = function execute(scope) {
             return;
         }
 
+        // proper user ip taking reverse proxy / load balancer into account
+        if(config.server.headerClientIpKey) {
+            req.userIp = req.header(config.server.headerClientIpKey);
+            if(!req.userIp) {
+                scope.log.warn('Client IP address is not found in header by configured key \'%s\'', config.server.headerClientIpKey);
+            }
+        }
+        req.userIp = req.userIp || req.ip;
+
         if (req.session.userId && req.session.userName) {
             req.log = req.log.child({
                 userName: req.session.userName,
                 userId: req.session.userId,
-                userIp: req.headers['x-cluster-client-ip'] || req.headers['x-forwarded-for']
+                userIp: req.userIp
             });
         }
 

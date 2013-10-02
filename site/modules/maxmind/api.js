@@ -41,7 +41,7 @@ module.exports = function execute(scope, register) {
             region: billingInfo.state || null,
             bin: creditCardInfo.creditCardNumber.substring(0, 6),
             license_key: config.maxmind.licenseId,
-            i: config.maxmind.tmpClientIp || call.req.ip // config option for testing
+            i: config.maxmind.tmpClientIp || call.req.userIp // config option for testing
         };
 
         call.log.info('Calling minFraud verification', query);
