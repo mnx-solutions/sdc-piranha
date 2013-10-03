@@ -18,7 +18,8 @@
             "tfa",
             "storage",
             "timeout",
-            "feature-flags"
+            "feature-flags",
+            "elb"
         ],
 		"auth": true,
         "error": true,
