@@ -1,3 +1,3 @@
 'use strict';
 
-window.JP.createModule('ELB', []);
+window.JP.createModule('elb', []);
