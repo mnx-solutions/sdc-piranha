@@ -5,3 +5,40 @@
     margin-bottom: 50px;
     width: 230px;
 }
+
+.lb-label{
+    padding: 5px 0 0 0;
+    line-height: 15px;
+}
+
+.protocol-input input{
+    width: 60px;
+}
+.port-input input{
+    width: 50px;
+}
+.name-input input{
+    width: 277px;
+}
+.group-checkable{
+    margin: 0;
+}
+.lb-edit{
+    border: 2px solid #ececec;
+    padding: 15px;
+    margin-bottom: 40px;
+}
+.lb-line{
+    border-top: 2px solid #ececec;
+    width: 355px;
+    padding-bottom: 15px;
+}
+.logo_riverbed{
+    background-image: url("../img/logo_riverbed.png");
+    width: 133px;
+    height: 58px;
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-position: 14px;
+    margin-top: -30px;
+}
