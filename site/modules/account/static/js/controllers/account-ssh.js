@@ -67,6 +67,8 @@
                                             )
                                         );
                                         $scope.iframe = '<iframe class="ssh-download-iframe" src="/main/account/ssh/download/'+ data.keyId +'/'+ data.name +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                                        // start interval
+                                        $scope.updateInterval();
                                     } else {
                                         // error
                                         notification.push(null, { type: 'error' },
@@ -78,8 +80,6 @@
                             });
 
                         }
-                        // this is here because this will fire on any kind of dialog close
-                        $scope.keys = Account.getKeys(true);
                     });
             };
 
@@ -131,6 +131,31 @@
                 $scope.keys = Account.getKeys(true);
             };
 
+            // update keys interval
+            $scope.updateInterval = function() {
+                var interval = setInterval(function() {
+                        $scope.updatedKeys = Account.getKeys(true);
+                        $q.all([
+                            $q.when($scope.keys),
+                            $q.when($scope.updatedKeys)
+                        ])
+                        .then(function(results) {
+                            if(results[0].length !== results[1].length && $scope.openKeyDetails === null) {
+                                // keys list have been updated, add it
+                                $scope.keys = $scope.updatedKeys;
+                                clearInterval(interval);
+                                clearTimeout(intervalTimeout);
+                            }
+                        });
+                }, 3000);
+
+                var intervalTimeout = setTimeout(function() {
+                    clearInterval(interval);
+                }, 5 * 60 * 1000);
+
+            };
+
+
             $scope.createNewKey = function (key) {
                 // If key is not given as an argument but exist in a scope
                 if (!key && $scope.key) {
@@ -140,10 +165,11 @@
                 var newKey = Account.createKey(key.name, key.data);
 
                 $q.when(newKey, function (key) {
-                    console.log('key resolved', key);
                     if (key.name && key.fingerprint && key.key) {
                         $scope.key = null;
-                        $scope.updateKeys();
+
+                        // start interval
+                        $scope.updateInterval();
 
                         notification.push(null, { type: 'success' },
                             localization.translate($scope, null,
@@ -191,12 +217,16 @@
                                     'Key successfully deleted'
                                 )
                             );
-                            $scope.updateKeys();
+
+                            // start interval
+                            $scope.updateInterval();
                         });
                     });
             };
 
             $scope.updateKeys();
+
+
 
         }]);
 }(window.JP.getModule('Account')));

@@ -112,9 +112,6 @@
                         key: keyData
                     },
                     progress: function(err, job) {
-                        console.log('Progress', err);
-
-
                         if (err) {
                             keys = null;
                             deferred.resolve(err);
@@ -149,7 +146,7 @@
 
                 var deferred = $q.defer();
 
-                if (!keys) {
+                if (!keys || noCache) {
                     serverTab.call({
                         name: 'listKeys',
                         data: {
