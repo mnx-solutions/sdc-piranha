@@ -3,14 +3,13 @@
 (function (app) {
     app.controller(
         'elb.ListController',
-        ['$scope', 'requestContext', 'localization', '$resource', function ($scope, requestContext, localization, $resource) {
+        ['$scope', 'requestContext', 'localization', '$http', function ($scope, requestContext, localization, $http) {
             localization.bind('elb', $scope);
             requestContext.setUpRenderContext('elb.list', $scope, {
                 title: localization.translate(null, 'elb', 'Load Balancers List')
             });
 
-            var resource = $resource('elb/:id', {id:'@id'});
-            $scope.clients = resource.query();
+            $scope.clients = $http.get('elb/list');
 
         }]);
 }(window.JP.getModule('elb')));
