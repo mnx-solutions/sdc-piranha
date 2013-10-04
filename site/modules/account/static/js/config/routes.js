@@ -17,9 +17,12 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         .when('/account/payment', {
             title: 'Billing information',
             action: 'account.payment'
-        })
-        .when('/account/invoices', {
+        });
+
+    if(window.JP.get('features').invoices !== 'disabled') {
+        routeProvider.when('/account/invoices', {
             title: 'Invoices',
             action: 'account.invoices'
         });
+    }
 }]);

@@ -167,47 +167,49 @@ module.exports = function execute(scope, callback) {
         });
     });
 
-    server.onCall('listInvoices', function (call) {
-        zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
-            if (err) {
-                call.done(err);
-                return;
-            }
+    if(config.features.invoices !== 'disabled') {
+        server.onCall('listInvoices', function (call) {
+            zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
 
-            call.done(null, resp.invoices);
-        });
-    });
-
-    server.onCall('getLastInvoice', function (call) {
-        zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
-            if (err) {
-                call.done(err);
-                return;
-            }
-
-            if (!resp.invoices.length) {
-                call.done(null, null);
-                return;
-            }
-
-            resp.invoices.sort(function (a, b) {
-                return moment(b.invoiceDate).unix() - moment(a.invoiceDate).unix();
+                call.done(null, resp.invoices);
             });
-
-            call.done(null, resp.invoices[0]);
         });
-    });
 
-    server.onCall('getSubscriptions', function (call) {
-        zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
-            if (err) {
-                call.done(err);
-                return;
-            }
+        server.onCall('getLastInvoice', function (call) {
+            zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
 
-            call.done(null, resp.subscriptions);
+                if (!resp.invoices.length) {
+                    call.done(null, null);
+                    return;
+                }
+
+                resp.invoices.sort(function (a, b) {
+                    return moment(b.invoiceDate).unix() - moment(a.invoiceDate).unix();
+                });
+
+                call.done(null, resp.invoices[0]);
+            });
         });
-    });
+
+        server.onCall('getSubscriptions', function (call) {
+            zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
+
+                call.done(null, resp.subscriptions);
+            });
+        });
+    }
 
     zHelpers.init(zuora, function (err, errType) {
         if (err) {

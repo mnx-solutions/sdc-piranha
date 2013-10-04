@@ -19,7 +19,7 @@ window.JP.main.service('util', [
 
         service.confirm = function (title, question, callback) {
             // TODO: Translate
-            var title = title || 'Confirm';
+            title = title || 'Confirm';
             var btns = [
                 {
                     result: 'cancel',
@@ -33,7 +33,7 @@ window.JP.main.service('util', [
                 }
             ];
 
-            $dialog.messageBox(title, question, btns)
+            return $dialog.messageBox(title, question, btns)
                 .open()
                 .then(function (result) {
                     if (result === 'ok') {

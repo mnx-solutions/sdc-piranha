@@ -33,6 +33,7 @@
 
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
+            $scope.visibilityFilter = 'Public';
 
             $q.all([
                 $q.when($scope.keys),
@@ -45,6 +46,7 @@
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
+            $scope.selectedVisibility = true; // defaults to Public true
             $scope.previousPos = 0;
 
             // version number comparison
@@ -111,7 +113,7 @@
                                 }
                             });
 
-                            $location.path('/instance');
+                            $location.path('/compute');
                         });
                 }
 
@@ -252,16 +254,33 @@
             };
 
             $scope.filterDatasetsByOS = function (item) {
-                if ($scope.data.opsys != 'All') {
-                    var val = item['os'];
-                    if (val.match($scope.data.opsys)) {
-                        return true;
-                    }
-                } else {
-                    return true;
+                if ($scope.data.opsys !== 'All' && !item.os.match($scope.data.opsys)) {
+                    return false;
+                }
+                return true;
+            };
+
+            $scope.filterDatasetsByVisibility = function(item) {
+                if($scope.features.image !== 'disabled'
+                    && ($scope.selectedVisibility === false
+                    || $scope.selectedVisibility === true)
+                    && item.public !== $scope.selectedVisibility) {
+                    return false;
                 }
 
-                return false;
+                return true;
+            };
+
+            $scope.selectVisibility = function(type) {
+                if(type === null) {
+                    $scope.visibilityFilter = 'All';
+                } else if(type === true) {
+                    $scope.visibilityFilter = 'Public';
+                } else if(type === false) {
+                    $scope.visibilityFilter = 'Private';
+                }
+
+                $scope.selectedVisibility = type;
             };
 
             $scope.selectPackage = function (id) {

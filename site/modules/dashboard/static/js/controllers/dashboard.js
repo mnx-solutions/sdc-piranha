@@ -35,7 +35,8 @@
             };
             $scope.systemStatusTopics = Zendesk.getSystemStatusTopics();
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
-            $scope.machines    = Machine.machine();
+            $scope.machines = Machine.machine();
+
 //                $scope.lastInvoice = BillingService.getLastInvoice();
 
             // get campaign id from the cookie

@@ -44,7 +44,7 @@
                     ]
                 };
 
-                $scope.heatmap;
+                $scope.heatmap; //REVIEW: Wut?
                 $scope.showGraph = true;
                 $scope.loadingText = 'loading...';
                 $scope.details = null;

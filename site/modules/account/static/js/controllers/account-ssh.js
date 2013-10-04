@@ -7,13 +7,15 @@
         '$timeout',
         '$q',
         '$dialog',
+        '$location',
+        '$http',
         'Account',
         'localization',
         'requestContext',
         'notification',
         'util',
 
-        function ($scope, $window, $timeout, $q, $dialog, Account, localization, requestContext, notification, util) {
+        function ($scope, $window, $timeout, $q, $dialog, $location, $http, Account, localization, requestContext, notification, util) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
@@ -26,11 +28,61 @@
                 $dialog.messageBox(title, question, btns, templateUrl)
                     .open()
                     .then(function(result) {
-                        if(result.value === 'add') {
+                        if(result && result.value === 'add') {
                             callback(result.data);
                         }
                     });
             };
+
+            $scope.sshGenerateUrl = '';
+
+            /* ssh key generating popup with custom template */
+            var sshKeyModalCtrl = function($scope, dialog) {
+                $scope.keyName = '';
+
+                $scope.close = function(res) {
+                    dialog.close(res);
+                };
+
+                $scope.generateKey = function() {
+                    $scope.close({generate: true, keyName: $scope.keyName});
+                };
+            };
+
+            var generateKeyPopup = function(question, callback) {
+                var title = 'Create SSH Key';
+                var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
+                var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
+
+                $dialog.messageBox(title, question, btns, templateUrl)
+                    .open(templateUrl, sshKeyModalCtrl)
+                    .then(function(data) {
+                        if(data && data.generate === true) {
+                            $http.post('/main/account/ssh/create/', {name: data.keyName})
+                                .success(function(data) {
+                                    if(data.success === true) {
+                                        notification.push(null, { type: 'alert' },
+                                            localization.translate($scope, null,
+                                                'You will be prompted for private key download shortly. Please keep your private key safe'
+                                            )
+                                        );
+                                        $scope.iframe = '<iframe class="ssh-download-iframe" src="/main/account/ssh/download/'+ data.keyId +'/'+ data.name +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                                    } else {
+                                        // error
+                                        notification.push(null, { type: 'error' },
+                                            localization.translate($scope, null,
+                                                'Unable to generate SSH key: '+ data.err.message
+                                            )
+                                        );
+                                    }
+                            });
+
+                        }
+                        // this is here because this will fire on any kind of dialog close
+                        $scope.keys = Account.getKeys(true);
+                    });
+            };
+
 
             $scope.key = {};
             $scope.userPlatform = $window.navigator.platform;
@@ -42,6 +94,13 @@
                 } else {
                     $scope.openKeyDetails = id;
                 }
+            };
+
+            /* SSH Key generation popup */
+            $scope.generateSshKey = function() {
+                generateKeyPopup('', function(keyData){
+
+                });
             };
 
             /* SSH key creating */
@@ -81,6 +140,7 @@
                 var newKey = Account.createKey(key.name, key.data);
 
                 $q.when(newKey, function (key) {
+                    console.log('key resolved', key);
                     if (key.name && key.fingerprint && key.key) {
                         $scope.key = null;
                         $scope.updateKeys();
@@ -101,6 +161,15 @@
                             )
                         );
                     }
+                }, function(key) {
+                    notification.push(null, { type: 'error' },
+                        localization.translate($scope, null,
+                            'Failed to add new key: {{message}}',
+                            {
+                                message: (key.message || '') + ' ' + (key.code || '')
+                            }
+                        )
+                    );
                 });
             };
 
@@ -122,23 +191,10 @@
                                     'Key successfully deleted'
                                 )
                             );
-
                             $scope.updateKeys();
                         });
                     });
             };
-
-
-            $scope.showKeygenDownload = function() {
-                // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
-                var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
-                return (supportedPlatforms.indexOf($scope.userPlatform) >= 0);
-            };
-
-            $scope.clickKeygenDownload = function() {
-                window.location.href = '/main/account/key-generator.sh';
-            };
-
 
             $scope.updateKeys();
 

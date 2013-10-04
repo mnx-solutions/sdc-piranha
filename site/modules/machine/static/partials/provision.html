@@ -118,7 +118,7 @@
                                     <div class="provisioning-header-left-button btn-group tooltip-hover span3"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="right"
+                                         data-placement="bottom"
                                          data-original-title="Filter by zone">
                                         <button class="btn" data-ng-show="data.datacenter">{{data.datacenter}}</button>
                                         <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -131,10 +131,10 @@
                                         </ul>
                                     </div>
 
-                                    <div class="btn-group tooltip-hover span2 hidden-phone"
+                                    <div class="btn-group tooltip-hover span3 hidden-phone"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="right"
+                                         data-placement="bottom"
                                          data-original-title="Filter by operating system">
                                         <button class="btn" data-ng-show="data.opsys">{{data.opsys}}</button>
                                         <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -147,12 +147,29 @@
                                         </ul>
                                     </div>
 
-                                    <div class="span3 offset4 provisioning-header-search">
+                                    <div class="btn-group tooltip-hover span2 hidden-phone"
+                                         data-ng-show="features.image != 'disabled'"
+                                         data-html="true"
+                                         data-toggle="tooltip"
+                                         data-placement="bottom"
+                                         data-original-title="Filter by visibility">
+                                        <button class="btn">{{visibilityFilter}}</button>
+                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <!-- <li><a data-ng-click="selectVisibility(null);">All</a></li> -->
+                                            <li><a data-ng-click="selectVisibility(true);">Public</a></li>
+                                            <li><a data-ng-click="selectVisibility(false);">Private</a></li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="span3 offset1 provisioning-header-search">
                                         <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
-                                    <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS">
+                                    <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
                                             <div class="span1 provisioning-carousel-padding-left">
                                                 <input class="pull-left"
                                                        type="radio"

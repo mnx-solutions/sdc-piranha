@@ -5,7 +5,7 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     meta(name='fragment',content='!')
     meta(http-equiv="X-UA-Compatible", content="IE=Edge")
     //if lt IE 9
-      script(type="text/javascript")
+      script(type="text/javascript").
         window.top.location.href = '/old-browser';
     title(data-ng-bind='windowTitle')
     style(type='text/css') @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}
@@ -47,7 +47,7 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each partial in partials
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
 
-    script(type='text/javascript')
+    script(type='text/javascript').
         if (typeof(Zenbox) !== "undefined") {
           Zenbox.init({
             dropboxID:   "20078915",

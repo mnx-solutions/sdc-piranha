@@ -13,7 +13,7 @@
                 replace: true,
                 scope: true,
 
-                controller: function($scope, $element, $attrs, $transclude) {
+                controller: function($scope, $element, $attrs, $transclude) { //REVIEW: Why all these unused things?
                     localization.bind('account', $scope);
                 },
 
@@ -28,25 +28,27 @@
                         },
                         {
                             sequence: 4,
-                            name: 'SSH keys',
+                            name: 'SSH Keys',
                             url: '/account/ssh'
                         },
                         {
                             sequence: 2,
-                            name: 'Edit account',
+                            name: 'Edit Account',
                             url: '/account/edit'
                         },
                         {
                             sequence: 3,
                             name: 'Billing',
                             url: '/account/payment'
-                        },
-                        {
+                        }
+                    ];
+                    if($scope.features.invoices !== 'disabled') {
+                        $scope.pages.push({
                             sequence: 4,
                             name: 'Invoices',
                             url: '/account/invoices'
-                        }
-                    ];
+                        });
+                    }
                 },
                 template: '<div class="sizebar-fix">' +
                     '<div class="tabbable tabs-right">' +

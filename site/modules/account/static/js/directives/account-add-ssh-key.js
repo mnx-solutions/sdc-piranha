@@ -5,20 +5,50 @@
     app.directive('accountAddSshKey', [
         'Account',
         'localization',
+        'notification',
         '$q',
         '$window',
-        function (Account, localization, $q, $window) {
+        '$dialog',
+        '$timeout',
+        '$http',
+        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http) {
             return {
                 restrict: 'A',
                 replace: true,
                 scope: true,
-
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
+
+                    $scope.downloaded = false;
                 },
 
                 link: function ($scope) {
                     $scope.newKey = {};
+
+                    $scope.generateKey = function() {
+                        $scope.loading = true;
+                        $http.post('/signup/account/ssh/create/')
+                            .success(function(data) {
+                                if(data.success === true) {
+                                    notification.push(null, { type: 'alert' },
+                                        localization.translate($scope, null,
+                                            'You will be prompted for private key download shortly. Please keep your private key safe. <br />Press continue when you are done'
+                                        )
+                                    );
+                                    $scope.downloaded = true;
+                                    $scope.iframe = '<iframe class="ssh-download-iframe" src="/signup/account/ssh/download/'+ data.keyId +'/'+ data.name +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                                    $scope.loading = false;
+                                } else {
+                                    $scope.loading = false;
+                                    // error
+                                    notification.push(null, { type: 'error' },
+                                        localization.translate($scope, null,
+                                            'Unable to generate SSH key: '+ data.err.message
+                                        )
+                                    );
+                                }
+                        });
+                    };
 
                     $scope.createNewKey = function() {
                         $scope.loading = true;
@@ -34,6 +64,7 @@
                                     $scope.nextStep();
                                 }
                             } else {
+
                                 $scope.error = localization.translate($scope, null,
                                     'Failed to add new key: {{message}}',
                                     {
@@ -44,18 +75,17 @@
                             }
 
                             $scope.loading = false;
+                        }, function(key) {
+                            $scope.error = localization.translate($scope, null,
+                                'Failed to add new key: {{message}}',
+                                {
+                                    message: (key.message || '') + ' ' + (key.code || '')
+                                }
+                            );
+                            $scope.loading = false;
                         });
                     };
 
-                    $scope.showKeygenDownload = function() {
-                        // these names refer to http://www.w3.org/TR/html5/webappapis.html#dom-navigator-platform
-                        var supportedPlatforms = ['Linux x86_64', 'Linux i686', 'MacPPC', 'MacIntel'];
-                        return (supportedPlatforms.indexOf($window.navigator.platform) >= 0);
-                    };
-
-                    $scope.clickKeygenDownload = function() {
-                        window.location.href = '/main/account/key-generator.sh';
-                    };
 
                 },
                 templateUrl: 'account/static/partials/account-add-ssh-key.html'

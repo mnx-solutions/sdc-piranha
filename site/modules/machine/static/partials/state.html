@@ -1,0 +1,15 @@
+<div>
+    <span class="status label label-info pull-right"
+          data-ng-class="labelForState(object.state)"
+          data-ng-show="object.state.length">
+        <span class="loading-small pull-left" data-ng-show="object.job && !object.job.finished"></span>
+        <span data-translate>{{object.state}}</span>
+    </span>
+
+    <span class="status label label-info pull-right"
+          data-ng-class="btn-danger"
+          data-ng-show="object.job && object.job.err">
+        <i class="icon-warning-sign icon-white" data-ng-show="object.job.err"></i>
+        <span data-translate>error</span>
+    </span>
+</div>

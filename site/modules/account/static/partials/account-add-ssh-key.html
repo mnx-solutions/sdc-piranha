@@ -17,13 +17,19 @@
         </div>
     </div>
 
-    <div class="span3 pull-right" data-ng-show="showKeygenDownload()">
+    <div class="span3 pull-right">
         <div class="sizebar-fix sizebar-fix-right">
             <div class="alert alert-success shadow">
-                <h5 data-translate>SSH Key generator</h5>
-                <p class="text-medium" data-translate>Let us guide you with this small piece of code. Just press the button "Download script" below.</p>
-                <p class="text-medium" data-translate>To run the downloaded script, open up your terminal and write this: sh /path/to/downloaded/script</p>
-                <button class="btn btn-success" data-ng-click="clickKeygenDownload()">Download script</button>
+                <div class="separation-container">
+                    <h5 data-translate>Secure Shell (SSH)</h5>
+                    <p data-translate> Secure Shell (SSH) is the standard
+                        encryption protocol that allows you to
+                        conduct administrative functions on remote
+                        servers.</p>
+                    <p data-translate>Instances, with the exception of Windows,
+                        are only accessible through SSH. The same
+                        is true for Cloud API and Manta.</p>
+                </div>
                 <div class="clearfix"></div>
             </div>
         </div>
@@ -33,7 +39,28 @@
     <div class="clearfix"></div>
     <hr />
     <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Click here to return to homepage</a>
-    <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
-    <button class="btn btn-joyent-blue pull-right" style="margin-right:10px" data-ng-click="createNewKey()" data-ng-disabled="loading">Add SSH key</button>
 
+    <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
+    <div data-ng-hide="downloaded">
+        <button class="btn btn-small pull-right ssh-add-button"
+                data-ng-click="generateKey()"
+                style="margin-right:10px;margin-top:2px;"
+                data-ng-disabled="loading"
+                data-translate>Create SSH key</button>
+        <button class="btn btn-joyent-blue pull-right ssh-add-button"
+                data-ng-click="createNewKey()"
+                style="margin-right:10px"
+                data-ng-disabled="loading"
+                data-translate>Add SSH key</button>
+    </div>
+    <div data-ng-show="downloaded">
+        <button class="btn btn-joyent-blue btn-success pull-right ssh-add-button"
+                data-ng-click="skipSsh()"
+                style="margin-right:10px"
+                data-ng-disabled="loading"
+                data-translate>Continue</button>
+    </div>
+
+
+    <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 </fieldset>

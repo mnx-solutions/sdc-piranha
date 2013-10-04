@@ -16,7 +16,9 @@
             "tracking",
             "dashboard",
             "tfa",
-            "storage"
+            "storage",
+            "timeout",
+            "feature-flags"
         ],
 		"auth": true,
         "error": true,

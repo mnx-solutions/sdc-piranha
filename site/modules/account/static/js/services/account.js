@@ -112,6 +112,9 @@
                         key: keyData
                     },
                     progress: function(err, job) {
+                        console.log('Progress', err);
+
+
                         if (err) {
                             keys = null;
                             deferred.resolve(err);

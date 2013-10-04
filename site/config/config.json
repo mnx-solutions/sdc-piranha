@@ -38,7 +38,7 @@
         "tenantID": "11333",
         "api": {
             "user": "piranha-api@joyent.com",
-            "password": "904WeugM6Uw6hRW",
+            "password": "904WeugM6Uw6hRWv",
             "validation": {
                 "countries": {
                     "type": "deny",
@@ -102,5 +102,9 @@
             "pinTries": 3
         },
         "riskScoreFraudLimit": 66
+    },
+    "features": {
+        "image": "disabled",
+        "invoices": "disabled"
     }
 }
