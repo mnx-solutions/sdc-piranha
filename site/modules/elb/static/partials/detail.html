@@ -8,9 +8,21 @@
             <div class="">
                 <div class="clearfix"></div>
                 <span class="span4 lb-label">Protocol</span>
-                <span class="span3 protocol-input">
-                    <input type="text" placeholder="HTTP" data-translate="placeholder"/>
-                </span>
+                <div class="btn-group tooltip-hover span3"
+                     style="margin-top: -5px;"
+                     data-toggle="tooltip"
+                     data-placement="bottom">
+                    <button class="btn" >HTTP</button>
+                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a>HTTP</a></li>
+                        <li><a>HTTPS</a></li>
+                        <li><a>FTP</a></li>
+                        <li><a>FTPS</a></li>
+                    </ul>
+                </div>
                 <div class="clearfix"></div>
                 <span class="span4 lb-label">Port</span>
                 <span class="span2 port-input">
@@ -43,7 +55,7 @@
                     <!--<tr data-ng-repeat="item in items">-->
                     <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
                     <td >Web Server 1</td>
-                    <td>John</td>
+                    <td>Jens</td>
                     <td>Healthy</td>
                     <td>Web Server Cluster</td>
                 </tr>
