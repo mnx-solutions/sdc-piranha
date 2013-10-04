@@ -11,14 +11,6 @@ module.exports = function execute(scope) {
             return;
         }
 
-        if (req.session.userId && req.session.userName) {
-            req.log = req.log.child({
-                userName: req.session.userName,
-                userId: req.session.userId,
-                userIp: req.headers['x-cluster-client-ip'] || req.headers['x-forwarded-for']
-            });
-        }
-
         // we have a token, create a new cloudapi object with this
         if(!req.cloud) {
             var _cloud = null;
