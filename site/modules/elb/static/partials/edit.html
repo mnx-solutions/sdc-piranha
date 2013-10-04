@@ -16,11 +16,11 @@
             <div class="">
                 <span class="span3 lb-label">Protocol</span>
                 <span class="span3 protocol-input">
-                    <input type="text" placeholder="HTTP" data-translate="placeholder"/>
+                    <input type="text" placeholder="HTTP" data-translate="placeholder" data-ng-model="server.protocol"/>
                 </span>
                 <span class="span3 lb-label">Port</span>
                 <span class="span2 port-input">
-                    <input type="text" placeholder="443" data-translate="placeholder"/>
+                    <input type="text" placeholder="443" data-translate="placeholder" data-ng-model="server.fromPort"/>
                 </span>
                 <span class="span10">
                     <button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: 0 -33px 20px 0;"><span class="ng-scope">Upload Certificate</span></button>
@@ -121,6 +121,6 @@
 
     <span class="span12">
         <p class="logo_riverbed pull-left">Powered by</p>
-        <button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Create</span></button>
+        <button data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Create</span></button>
     </span>
 </div>

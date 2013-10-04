@@ -15,6 +15,7 @@
             $scope.server = resource.get({id: balancerId});
 
             $scope.save = function () {
+                $scope.server.toPort = $scope.server.fromPort;
                 $scope.server.$save();
             };
 

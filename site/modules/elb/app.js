@@ -1,5 +1,3 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 var restify = require('restify');
 var client = restify.createJsonClient({
     url: 'https://localhost:4000',
