@@ -18,11 +18,23 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/', function (req, res, next) {
-        //
+        client.post('/loadbalancers', req.body, function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            res.json(obj);
+        });
     });
 
     app.get('/:id', function (req, res, next) {
-        //
+        client.get('/loadbalancers/' + req.params.id || '', function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            res.json(obj);
+        });
     });
 
     app.post('/:id', function (req, res, next) {
