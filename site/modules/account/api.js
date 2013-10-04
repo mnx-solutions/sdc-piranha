@@ -2,6 +2,7 @@
 
 var config = require('easy-config');
 var restify = require('restify');
+var metadata = require('./lib/metadata');
 
 if (!config.billing.url && !config.billing.noUpdate) {
     throw new Error('Billing.url must be defined in the config');
@@ -22,11 +23,11 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
 }
 
 module.exports = function execute(scope, register) {
-    register('Metadata', require('./lib/metadata'));
+    register('Metadata', metadata);
 
     //Compatibility with old version
     var api = {};
-    var steps = [ 'start', 'phone', 'billing','ssh' ];
+    var steps = [ 'start', 'phone', 'billing', 'ssh' ];
 
     function getFromBilling(method, userId, cb) {
         jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {
@@ -108,35 +109,62 @@ module.exports = function execute(scope, register) {
         var req = (call.done && call.req) || call;
 
         function end(step) {
-            if (steps.indexOf(step) === (steps.length - 1)) {
-                step = 'completed';
-            }
-
             scope.log.trace('signup step is %s', step);
             cb(null, step);
         }
 
         if (req.session.signupStep) {
-            end(req.session.signupStep);
+            setImmediate(end.bind(end, req.session.signupStep));
+            return;
+        }
+        function getMetadata(userId) {
+            metadata.get(userId, 'signupStep', function (err, storedStep) {
+                if (!err && storedStep) {
+                    call.log.info('Got signupStep from metadata', {step: storedStep});
+                    end(storedStep);
+                } else {
+                    api.getAccountVal(req, function (err, value) {
+                        if (err) {
+                            cb(err);
+                            return;
+                        }
+                        end(value);
+                    });
+                }
+            });
+        }
+        if(req.session.userId) {
+            getMetadata(req.session.userId);
             return;
         }
 
-        api.getAccountVal(req, function (err, value) {
-            if (err) {
-                cb(err);
+        req.cloud.getAccount(function (accErr, account) {
+            if (accErr) {
+                scope.log.error('Failed to get info from cloudApi', accErr);
+                cb(accErr);
                 return;
             }
-
-            end(value);
+            req.session.userId = account.id;
+            getMetadata(account.id);
         });
     };
 
     api.setSignupStep = function (call, step, cb) {
-        function updateBilling(req) {
-            if (step !== 'billing') {
-                setImmediate(cb);
-                return; // no zuora account yet created
+        function updateStep(req) {
+            if (req.session) {
+                metadata.set(req.session.userId, 'signupStep', step, function () {
+                    call.log.info('Set signupStep in metadata', {step: step});
+                });
             }
+            // Billing server is updated on billing step and forward
+            if (steps.indexOf(step) >= steps.indexOf('billing')) {
+                updateBilling(req);
+            } else {
+                setImmediate(cb);
+            }
+        }
+
+        function updateBilling(req) {
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
@@ -159,7 +187,6 @@ module.exports = function execute(scope, register) {
                             call.log.error(zuoraErr,'Something went wrong with billing API');
                         }
                     }
-
                     //No error handling or nothing here, just let it pass.
                     cb();
                 });
@@ -184,13 +211,13 @@ module.exports = function execute(scope, register) {
         if (!call.req && !call.done) { // Not a call, but request
             call.session.signupStep = step;
             call.session.save();
-            updateBilling(call);
+            updateStep(call);
         } else {
             call.session(function (req) {
                 req.session.signupStep = step;
                 req.session.save();
             });
-            updateBilling(call.req);
+            updateStep(call.req);
         }
     };
 
@@ -215,7 +242,7 @@ module.exports = function execute(scope, register) {
                 step = 'completed';
             }
 
-            scope.log.info('Completed step %s, moving to step %s', oldStep, step);
+            scope.log.info('Step \'%s\' is now passed', step);
             api.setSignupStep(call, step, cb);
         });
     };
