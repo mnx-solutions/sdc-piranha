@@ -66,6 +66,15 @@ Session.get = function (req, res, next) {
         return;
     }
 
+    // Store user session information in log entries
+    if (req.session.userId && req.session.userName) {
+        req.log = req.log.child({
+            userName: req.session.userName,
+            userId: req.session.userId,
+            userIp: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+        });
+    }
+
     if (sessions[req.session.id]) {
         req._session = sessions[req.session.id];
     } else {
