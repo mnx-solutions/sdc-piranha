@@ -19,6 +19,14 @@
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
+            // reverse filter for SSH keys
+            app.filter('reverse', function() {
+                return function(items) {
+                    // return new array in reverse order
+                    return items.slice().reverse();
+                };
+            });
+
             /* ssh key creating popup with custom template */
             var newKeyPopup = function(question, callback) {
                 var title = 'Add new ssh key';
