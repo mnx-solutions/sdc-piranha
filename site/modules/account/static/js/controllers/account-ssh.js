@@ -46,6 +46,10 @@
                         if(result && result.value === 'add') {
                             callback(result.data);
                         }
+
+                        if(result === 'add') {
+                            callback(null);
+                        }
                     });
             };
 
