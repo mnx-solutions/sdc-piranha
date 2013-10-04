@@ -30,9 +30,9 @@
                         $http.post('/signup/account/ssh/create/')
                             .success(function(data) {
                                 if(data.success === true) {
-                                    notification.push(null, { type: 'alert' },
+                                    notification.push(null, { type: 'success' },
                                         localization.translate($scope, null,
-                                            'You will be prompted for private key download shortly. Please keep your private key safe. <br />Press continue when you are done'
+                                            'SSH Key has been added to your account! <br />You will be prompted for private key download shortly. Please keep your private key safe. <br />Press continue when you are done'
                                         )
                                     );
                                     $scope.downloaded = true;
