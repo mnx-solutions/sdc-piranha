@@ -7,7 +7,7 @@ var client = restify.createJsonClient({
 });
 
 module.exports = function execute(scope, app) {
-    app.get('/', function (req, res) {
+    app.get('/list', function (req, res) {
         client.get('/loadbalancers', function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
@@ -17,7 +17,11 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.post('/', function (req, res, next) {
+    app.get('/item', function (req, res, next) {
+        res.json({});
+    });
+
+    app.post('/item', function (req, res, next) {
         client.post('/loadbalancers', req.body, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
@@ -27,8 +31,8 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.get('/:id', function (req, res, next) {
-        client.get('/loadbalancers/' + req.params.id || '', function(err, creq, cres, obj) {
+    app.get('/item/:id', function (req, res) {
+        client.get('/loadbalancers/' + req.params.id, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
                 return;
@@ -37,11 +41,23 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.post('/:id', function (req, res, next) {
-        //
+    app.post('/item/:id', function (req, res, next) {
+        client.post('/loadbalancers/' + req.params.id, req.body, function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            res.json(obj);
+        });
     });
 
-    app.delete('/:id', function (req, res, next) {
-        //
+    app.delete('/item/:id', function (req, res, next) {
+        client.del('/loadbalancers/' + req.params.id, function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            res.json(obj);
+        });
     });
 };

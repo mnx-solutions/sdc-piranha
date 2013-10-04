@@ -10,9 +10,9 @@
             });
 
             var balancerId = requestContext.getParam('balancerId');
-            var resource = $resource('elb/:id', {id:'@id'});
+            var resource = $resource('elb/item/:id', {id:'@id'});
 
-            $scope.server = resource.query({id: balancerId});
+            $scope.server = resource.get({id: balancerId});
 
             $scope.save = function () {
                 $scope.server.$save();
