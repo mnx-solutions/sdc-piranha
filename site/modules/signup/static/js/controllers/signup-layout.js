@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies',
-            function ($scope, requestContext, $location, $cookies) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process',
+            function ($scope, requestContext, $location, $cookies, Process) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
@@ -19,16 +19,27 @@
 
                 $scope.setStep = function (step) {
                     $scope.currentStep = step;
-                    $location.path('/' + step);
+                    var stepPath = '/' + step;
+                    if ($location.path() !== stepPath) $location.path(stepPath);
                 };
 
                 $scope.nextStep = function () {
+                    if ($scope.currentStep === 'blocked') return;
                     var i = $scope.steps.indexOf($scope.currentStep);
                     if(++i < $scope.steps.length) {
                         $scope.setStep($scope.steps[i]);
                     } else {
                         window.location.href = '/main';
                     }
+                };
+
+                $scope.updateStep = function () {
+                    Process.getPreviousStep(function (err, step) {
+                        if (!err) {
+                            $scope.setStep(step);
+                            $scope.nextStep();
+                        }
+                    });
                 };
 
                 $scope.skipSsh = function() {
@@ -50,10 +61,7 @@
                     i++;
                 }, true);
 
-                $scope.$on('creditCardUpdate', function () {
-                    $scope.nextStep();
-                });
-
+                $scope.setStep($scope.currentStep);
                 $scope.nextStep();
 
                 $scope.signOut = function() {

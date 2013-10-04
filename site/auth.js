@@ -1,4 +1,5 @@
 'use strict';
+var config = require('easy-config');
 
 module.exports = function execute(scope) {
     var smartCloud = scope.get('smartCloud');
