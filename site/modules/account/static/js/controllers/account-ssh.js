@@ -1,6 +1,19 @@
 'use strict';
 
 (function (app) {
+    // reverse filter for SSH keys
+    app.filter('reverse', function() {
+        return function(items) {
+            if(items) {
+                // return new array in reverse order
+                return items.slice().reverse();
+            } else {
+                return items;
+            }
+        };
+    });
+
+
     app.controller('Account.SSHController', [
         '$scope',
         '$window',
@@ -19,6 +32,8 @@
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 
+
+
             /* ssh key creating popup with custom template */
             var newKeyPopup = function(question, callback) {
                 var title = 'Add new ssh key';
@@ -30,6 +45,10 @@
                     .then(function(result) {
                         if(result && result.value === 'add') {
                             callback(result.data);
+                        }
+
+                        if(result === 'add') {
+                            callback(null);
                         }
                     });
             };
@@ -67,6 +86,8 @@
                                             )
                                         );
                                         $scope.iframe = '<iframe class="ssh-download-iframe" src="/main/account/ssh/download/'+ data.keyId +'/'+ data.name +'" seamless="seamless" style="width: 0px; height: 0px;"></iframe>';
+                                        // start interval
+                                        $scope.updateInterval();
                                     } else {
                                         // error
                                         notification.push(null, { type: 'error' },
@@ -78,8 +99,6 @@
                             });
 
                         }
-                        // this is here because this will fire on any kind of dialog close
-                        $scope.keys = Account.getKeys(true);
                     });
             };
 
@@ -131,6 +150,31 @@
                 $scope.keys = Account.getKeys(true);
             };
 
+            // update keys interval
+            $scope.updateInterval = function() {
+                var interval = setInterval(function() {
+                        $scope.updatedKeys = Account.getKeys(true);
+                        $q.all([
+                            $q.when($scope.keys),
+                            $q.when($scope.updatedKeys)
+                        ])
+                        .then(function(results) {
+                            if(results[0].length !== results[1].length && $scope.openKeyDetails === null) {
+                                // keys list have been updated, add it
+                                $scope.keys = $scope.updatedKeys;
+                                clearInterval(interval);
+                                clearTimeout(intervalTimeout);
+                            }
+                        });
+                }, 3000);
+
+                var intervalTimeout = setTimeout(function() {
+                    clearInterval(interval);
+                }, 5 * 60 * 1000);
+
+            };
+
+
             $scope.createNewKey = function (key) {
                 // If key is not given as an argument but exist in a scope
                 if (!key && $scope.key) {
@@ -140,10 +184,11 @@
                 var newKey = Account.createKey(key.name, key.data);
 
                 $q.when(newKey, function (key) {
-                    console.log('key resolved', key);
                     if (key.name && key.fingerprint && key.key) {
                         $scope.key = null;
-                        $scope.updateKeys();
+
+                        // start interval
+                        $scope.updateInterval();
 
                         notification.push(null, { type: 'success' },
                             localization.translate($scope, null,
@@ -191,12 +236,16 @@
                                     'Key successfully deleted'
                                 )
                             );
-                            $scope.updateKeys();
+
+                            // start interval
+                            $scope.updateInterval();
                         });
                     });
             };
 
             $scope.updateKeys();
+
+
 
         }]);
 }(window.JP.getModule('Account')));
