@@ -1,7 +1,7 @@
 {
     "server": {
       "port": 3000,
-      "headerClientIpKey": "X-Forwarded-For"
+      "headerClientIpKey": "x-forwarded-for"
     },
     "log": {
       "name": "piranha",
