@@ -15,6 +15,12 @@
             $scope.protocols = ['HTTP', 'HTTPS', 'FTP', 'FTPS'];
             $scope.protocolSelected = $scope.protocols[0];
 
+            $scope.hc_delays = ['1','3','5','10'];
+            $scope.hc_delaySelected = $scope.hc_delays[2]; //default
+
+            $scope.timeouts = ['1','2','5','10','20'];
+            $scope.timeoutSelected = $scope.timeouts[1]; //default
+
             $scope.server = resource.get({id: balancerId});
 
             $scope.save = function () {
@@ -24,6 +30,12 @@
             };
             $scope.protocolSelect = function (name) {
                 $scope.protocolSelected = name;
+            };
+            $scope.hc_delaySelect = function (name) {
+                $scope.hc_delaySelected = name;
+            };
+            $scope.timeoutSelect = function (name) {
+                $scope.timeoutSelected = name;
             };
 
         }]);

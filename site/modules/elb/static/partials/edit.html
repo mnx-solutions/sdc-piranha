@@ -29,10 +29,22 @@
                         </li>
                     </ul>
                 </div>
-                <span class="span3 lb-label">Port</span>
-                <span class="span2 port-input">
-                    <input type="text" placeholder="443" data-translate="placeholder" data-ng-model="server.fromPort"/>
+            </div>
+            <div class="clearfix"></div>
+            <div class="">
+                <span class="lb-label">Port </span>
+                <span class="port-input">
+                    <input type="text" placeholder="8080" data-translate="placeholder" data-ng-model="server.Port"/>
                 </span>
+                <span class="lb-label"> to be Port from </span>
+                <span class= "port-input">
+                    <input type="text" placeholder="44" data-translate="placeholder" data-ng-model="server.fromPort"/>
+                </span>
+                <span class="lb-label"> to </span>
+                <span class="port-input">
+                    <input type="text" placeholder="8043" data-translate="placeholder" data-ng-model="server.toPort"/>
+                </span>
+                <div class="clearfix"></div>
                 <span class="span10">
                     <button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: 0 -33px 20px 0;"><span class="ng-scope">Upload Certificate</span></button>
                 </span>
@@ -58,29 +70,54 @@
                 </div>
                 <span class="span3 lb-label">Port</span>
                 <span class="span2 port-input">
-                    <input type="text" placeholder="443" data-translate="placeholder"/>
+                    <input type="text" placeholder="443" data-translate="placeholder" class="clb_input"/>
                 </span>
             </div>
             <div class="clearfix"></div>
-            <div class="">
+            <div style="margin-top: 10px;">
                 <span class="span3 lb-label">URL</span>
                 <span class="span3 protocol-input">
                     <input type="text" placeholder="/index.html" data-translate="placeholder"/>
                 </span>
-                <span class="span3 lb-label">Timeout</span>
-                <span class="span2 port-input">
-                    <input type="text" placeholder="2sec" data-translate="placeholder"/>
-                </span>
+                <span class="span3 lb-label" style="margin: 0;">Timeout</span>
+                <div class="btn-group tooltip-hover span3 dd_margin"
+                     data-toggle="tooltip"
+                     style="margin-left: -18px;"
+                     data-placement="bottom">
+                    <button class="btn dd_btn_small" >{{timeoutSelected}} sec</button>
+                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-ng-repeat="timeout in timeouts">
+                            <a data-ng-click="timeoutSelect(timeout)">{{timeout}} sec</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--<span class="span3 lb-label">Timeout</span>-->
+                <!--<span class="span3 port-input">-->
+                    <!--<input type="text" placeholder="2sec" data-translate="placeholder" class="clb_input"/>-->
+                <!--</span>-->
             </div>
             <div class="clearfix"></div>
-            <div class="">
-                <span class="span3 lb-label">HC delay</span>
-                <span class="span3 protocol-input">
-                    <input type="text" placeholder="5 min" data-translate="placeholder"/>
-                </span>
+            <div>
+                <span class="span3 " style="line-height: 15px;">HC delay, mins</span>
+                <div class="btn-group tooltip-hover span3 dd_margin"
+                     data-toggle="tooltip"
+                     data-placement="bottom">
+                    <button class="btn dd_btn" >{{hc_delaySelected}}</button>
+                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li data-ng-repeat="hc_delay in hc_delays">
+                            <a data-ng-click="hc_delaySelect(hc_delay)">{{hc_delay}}</a>
+                        </li>
+                    </ul>
+                </div>
                 <span class="span3" style="line-height: 15px;">Failure Threshold</span>
                 <span class="span2 port-input">
-                    <input type="text" placeholder="5" data-translate="placeholder"/>
+                    <input type="text" placeholder="5" data-translate="placeholder" class="clb_input"/>
                 </span>
             </div>
         </div>

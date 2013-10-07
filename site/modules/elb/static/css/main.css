@@ -11,14 +11,19 @@
 
 .lb-label{
     padding: 5px 0 0 0;
-    line-height: 15px;
+    line-height: 20px;
 }
 
 .protocol-input input{
     width: 60px;
 }
-.port-input input{
-    width: 50px;
+.port-input > input{
+    width: 35px !important;
+    margin: 10px;
+}
+.clb_input{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 .name-input input{
     width: 277px;
@@ -90,6 +95,9 @@
 .dd_margin{
     margin-left: -10px;
     margin-right: 10px;
+}
+.dd_btn_small{
+    min-width: 45px;
 }
 .dd_btn{
     min-width: 70px;
