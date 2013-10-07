@@ -71,6 +71,12 @@
                                 );
 
                                 if($scope.nextStep) {
+                                    // show a persistent notification
+                                    notification.push(null, { type: 'success', persistent: true },
+                                        localization.translate($scope, null,
+                                            'SSH Key successfully added to your account'
+                                        )
+                                    );
                                     $scope.nextStep();
                                 }
                             } else {

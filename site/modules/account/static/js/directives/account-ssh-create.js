@@ -67,6 +67,11 @@
                                                 }
 
                                                 if($scope.nextStep) {
+                                                    notification.push(null, { type: 'success', persistent: true },
+                                                        localization.translate($scope, null,
+                                                            'SSH Key successfully added to your account'
+                                                        )
+                                                    );
                                                     window.location.href = '/main';
                                                 }
                                             } else {
