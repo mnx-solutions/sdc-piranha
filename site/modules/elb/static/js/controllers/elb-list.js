@@ -9,7 +9,11 @@
                 title: localization.translate(null, 'elb', 'Load Balancers List')
             });
 
-            $scope.clients = $http.get('elb/list');
+            $scope.servers = [];
+            $http.get('elb/list').success(function (data) {
+                console.log(arguments);
+                $scope.servers = data;
+            });
 
         }]);
 }(window.JP.getModule('elb')));

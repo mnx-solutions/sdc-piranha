@@ -18,16 +18,8 @@
                 <div class="btn-group tooltip-hover span3"
                      data-toggle="tooltip"
                      data-placement="bottom">
-                    <button class="btn" >HTTP</button>
-                    <button class="btn dropdown-toggle" data-toggle="dropdown">
-                        <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a>HTTP</a></li>
-                        <li><a>HTTPS</a></li>
-                        <li><a>FTP</a></li>
-                        <li><a>FTPS</a></li>
-                    </ul>
+                    <select style="width: 70px" data-ng-model="server.protocol" data-ng-options="p for p in protocols">
+                    </select>
                 </div>
                 <span class="span3 lb-label">Port</span>
                 <span class="span2 port-input">

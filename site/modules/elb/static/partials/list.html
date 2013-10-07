@@ -20,14 +20,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <!--<tr data-ng-repeat="item in items">-->
+        <tr data-ng-repeat="server in servers">
             <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
-            <td ><a href="#!/elb/detail/">Web Server</a></td>
+            <td><a href="#!/elb/edit/{{server.id}}">{{server.name}}</a></td>
             <td>Jens</td>
             <td>Active</td>
             <td>4/4</td>
-            <td>10-10-2014</td>
+            <td>{{server.created}}</td>
             <td>Production</td>
         </tr>
         </tbody>
