@@ -30,7 +30,8 @@
     margin-bottom: 0 !important;
 }
 .name-input input{
-    width: 277px;
+    width: 265px;
+    margin-left: 14px;
 }
 .group-checkable{
     margin: 0;

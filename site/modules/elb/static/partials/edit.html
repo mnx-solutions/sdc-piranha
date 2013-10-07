@@ -31,11 +31,8 @@
             </div>
             <div class="clearfix"></div>
             <div class="">
-                <span class="lb-label">Port </span>
-                <span class="port-input">
-                    <input type="text" placeholder="8080" data-translate="placeholder" data-ng-model="server.Port"/>
-                </span>
-                <span class="lb-label"> to be Port from </span>
+                <span class="lb-label">Port</span>
+                <span class="lb-label" style="margin-left: 50px;">from </span>
                 <span class= "port-input">
                     <input type="text" placeholder="44" data-translate="placeholder" data-ng-model="server.fromPort"/>
                 </span>
@@ -63,8 +60,6 @@
                     <ul class="dropdown-menu">
                         <li><a>HTTP</a></li>
                         <li><a>HTTPS</a></li>
-                        <li><a>FTP</a></li>
-                        <li><a>FTPS</a></li>
                     </ul>
                 </div>
                 <span class="span3 lb-label">Port</span>
@@ -96,17 +91,17 @@
             </div>
             <div class="clearfix"></div>
             <div>
-                <span class="span3 " style="line-height: 15px;">HC delay, mins</span>
+                <span class="span3" style="line-height: 30px;">HC delay</span>
                 <div class="btn-group tooltip-hover span3 dd_margin"
                      data-toggle="tooltip"
                      data-placement="bottom">
-                    <button class="btn dd_btn" >{{hc_delaySelected}}</button>
+                    <button class="btn dd_btn" >{{hc_delaySelected}} mins</button>
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li data-ng-repeat="hc_delay in hc_delays">
-                            <a data-ng-click="hc_delaySelect(hc_delay)">{{hc_delay}}</a>
+                            <a data-ng-click="hc_delaySelect(hc_delay)">{{hc_delay}} mins</a>
                         </li>
                     </ul>
                 </div>
@@ -121,6 +116,7 @@
             <table class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                 <tr>
+                    <th class="hidden-480 "></th>
                     <th class="table-title sortable"><div class="block">Image Name</div>
                     <th class="table-title sortable"><div class="block">Creation Date</div>
                     <th class="table-title sortable"><div class="block">Load Balancer</div>
@@ -130,24 +126,28 @@
                 <tbody>
                 <tr>
                     <!--<tr data-ng-repeat="item in items">-->
+                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
                     <td >Node.js Server 1</td>
                     <td>10-10-2014</td>
                     <td>Node Farm1</td>
                 </tr>
                 <tr>
                     <!--<tr data-ng-repeat="item in items">-->
+                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
                     <td >Node.js Server 2</td>
                     <td>10-10-2014</td>
                     <td>Node Farm1</td>
                 </tr>
                 <tr>
                     <!--<tr data-ng-repeat="item in items">-->
+                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
                     <td >Web Server 1</td>
                     <td>10-10-2014</td>
                     <td></td>
                 </tr>
                 <tr>
                     <!--<tr data-ng-repeat="item in items">-->
+                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
                     <td >Web Server 2</td>
                     <td>10-10-2014</td>
                     <td></td>
@@ -160,5 +160,6 @@
     <span class="span12">
         <p class="logo_riverbed pull-left">Powered by</p>
         <button data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Save</span></button>
+        <button data-ng-click="delete()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 0 30px 10px;"><span class="ng-scope">Delete</span></button>
     </span>
 </div>

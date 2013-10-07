@@ -12,7 +12,7 @@
             var balancerId = requestContext.getParam('balancerId');
             var resource = $resource('elb/item/:id', {id:'@id'});
 
-            $scope.protocols = ['HTTP', 'HTTPS', 'FTP', 'FTPS'];
+            $scope.protocols = ['HTTP', 'HTTPS', 'TCP', 'TCPS'];
             $scope.protocolSelected = $scope.protocols[0];
 
             $scope.server = resource.get({id: balancerId}, function () {
