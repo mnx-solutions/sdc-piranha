@@ -87,3 +87,10 @@
     padding-top: 20px;
     padding-bottom: 40px;
 }
+.dd_margin{
+    margin-left: -10px;
+    margin-right: 10px;
+}
+.dd_btn{
+    min-width: 70px;
+}
