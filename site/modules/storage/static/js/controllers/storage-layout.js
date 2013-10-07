@@ -12,4 +12,4 @@
             });
         }
     ]);
-}(window.JP.getModule('Dashboard')));
+}(window.JP.getModule('Storage')));
