@@ -5,12 +5,15 @@
         return {
             restrict: 'EA',
             replace: true,
+            priority: 20,
 
             link: function (scope) {
             },
 
             controller: function ($scope, requestContext, localization) {
                 localization.bind('notification', $scope);
+
+                $scope.notifications = notification.getPersistentNotifications();
 
                 $scope.close = function (ctx, type) {
                     if ($scope.notifications[ctx][type]) {
