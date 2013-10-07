@@ -42,6 +42,7 @@
                         var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
                         var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
 
+                        $scope.loading = true;
                         $dialog.messageBox(title, question, btns, templateUrl)
                             .open(templateUrl, sshKeyModalCtrl)
                             .then(function(data) {
@@ -54,6 +55,7 @@
 
                                     $http.post(createUrl, {name: data.keyName})
                                         .success(function(data) {
+                                            $scope.loading = false;
                                             if(data.success === true) {
                                                 notification.push(null, { type: 'success' },
                                                     localization.translate($scope, null,
