@@ -74,7 +74,21 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            cb(null);
+            api.getSignupStep(req, function(err, step) {
+                console.log('signup step = ', step);
+
+                if(step !== 'completed' || step !== 'complete') {
+                    api.setMinProgress(req, 'ssh', function(err) {
+                        if(err) {
+                            cb(err);
+                        }
+
+                        cb(null);
+                    });
+                } else {
+                    cb(null);
+                }
+            });
         });
     };
 

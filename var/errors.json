@@ -112,5 +112,27 @@
         "nr": "20"
       }
     }
+  },
+  "null": {
+    "code": 50000000,
+    "message": null,
+    "human": "REST API: undefined,_general - Unknown",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "nr": "000"
+      },
+      "field": {
+        "name": "_general",
+        "nr": "00"
+      },
+      "category": {
+        "name": "Unknown",
+        "nr": "00"
+      }
+    }
   }
 }
