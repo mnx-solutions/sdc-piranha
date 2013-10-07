@@ -1,39 +1,9 @@
 <fieldset data-ng-class="{'loading-medium': loading}" >
     <div class="alert alert-error" data-ng-show="error">{{error}}</div>
 
-    <div class="span6 pull-left">
-        <div class="control-group">
-            <label class="control-label">Name</label>
-            <div class="controls">
-                <input type="text" class="span6" data-ng-model="newKey.name" placeholder="ssh key name" />
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label">SSH Key</label>
-            <div class="controls">
-                <textarea class="ssharea span6" rows="10" data-ng-model="newKey.data"></textarea><br />
-            </div>
-        </div>
-    </div>
-
-    <div class="span3 pull-right">
-        <div class="sizebar-fix sizebar-fix-right">
-            <div class="alert alert-success shadow">
-                <div class="separation-container">
-                    <h5 data-translate>Secure Shell (SSH)</h5>
-                    <p data-translate> Secure Shell (SSH) is the standard
-                        encryption protocol that allows you to
-                        conduct administrative functions on remote
-                        servers.</p>
-                    <p data-translate>Instances, with the exception of Windows,
-                        are only accessible through SSH. The same
-                        is true for Cloud API and Manta.</p>
-                </div>
-                <div class="clearfix"></div>
-            </div>
-        </div>
-        <div class="clearfix"></div>
+    <div class="span8 pull-left">
+        Secure Shell (SSH) is the standard encryption protocol that allows you to conduct administrative functions on remote servers.
+        Instances, with the exception of Windows, are only accessible through SSH. The same is true for Cloud API and Manta.
     </div>
 
     <div class="clearfix"></div>
@@ -41,26 +11,9 @@
     <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Click here to return to homepage</a>
 
     <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-disabled="loading">Skip this step</button>
-    <div data-ng-hide="downloaded">
-        <button class="btn btn-small pull-right ssh-add-button"
-                data-ng-click="generateKey()"
-                style="margin-right:10px;margin-top:2px;"
-                data-ng-disabled="loading"
-                data-translate>Create SSH key</button>
-        <button class="btn btn-joyent-blue pull-right ssh-add-button"
-                data-ng-click="createNewKey()"
-                style="margin-right:10px"
-                data-ng-disabled="loading"
-                data-translate>Add SSH key</button>
-    </div>
-    <div data-ng-show="downloaded">
-        <button class="btn btn-joyent-blue btn-success pull-right ssh-add-button"
-                data-ng-click="skipSsh()"
-                style="margin-right:10px"
-                data-ng-disabled="loading"
-                data-translate>Continue</button>
+    <div>
+        <div data-account-ssh-create></div>
+        <div data-account-ssh-import></div>
     </div>
 
-
-    <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 </fieldset>

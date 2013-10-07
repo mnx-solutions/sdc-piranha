@@ -131,3 +131,13 @@ select.date-month, select.date-year {
 #paymentForm tr td{
     padding:10px;
 }
+
+.btn-joyent-blue,
+.btn-joyent-blue:hover {
+    background-image:url('../img/bg-button-blue.png');
+    background-position:50% 50%;
+    background-repeat:repeat-x;
+    color:#fff;
+    text-shadow:1px 1px 1px #375775;
+    border-bottom:1px solid #28445e;
+}

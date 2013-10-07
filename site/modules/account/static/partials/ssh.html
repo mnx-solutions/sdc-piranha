@@ -61,13 +61,8 @@
                         </div>
 
                         <div class="new-key-button">
-                            <button class="btn pull-right btn-small create-key-btn"
-                                    data-ng-click="generateSshKey()"
-                                    data-translate>Create Key</button>
-
-                            <button class="btn btn-joyent-blue pull-right ssh-add-button"
-                                    data-ng-click="addNewKey()"
-                                    data-translate>Import Key</button>
+                            <div data-account-ssh-create></div>
+                            <div data-account-ssh-import></div>
                         </div>
                     </div>
                     <!-- End of > 0 keys part -->
