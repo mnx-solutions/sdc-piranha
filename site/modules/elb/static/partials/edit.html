@@ -24,8 +24,8 @@
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li data-ng-repeat="protocol in protocols">
-                            <a data-ng-click="protocolSelect(protocol)">{{protocol}}</a>
+                        <li data-ng-repeat="server.protocol in server.protocols">
+                            <a data-ng-click="protocolSelect(server.protocol)">{{server.protocol}}</a>
                         </li>
                     </ul>
                 </div>
