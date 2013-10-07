@@ -3,31 +3,19 @@
     <table class="table table-striped table-bordered table-hover table-full-width">
         <thead>
         <tr>
-            <th class="hidden-480 ">
-                <!--<label class="checkbox" >-->
-                    <!--<div class="checker" >-->
-                        <!--<input type="checkbox" class="group-checkable" value="">-->
-                    <!--</div>-->
-                <!--</label>-->
-            </th>
             <th class="table-title sortable"><div class="block">Image Name</div>
-            <th class="table-title sortable"><div class="block">Owner</div>
             <th class="table-title sortable"><div class="block">Status</div>
             <th class="table-title sortable"><div class="block">Health</div>
             <th class="table-title sortable"><div class="block">Creation Date</div>
-            <th class="table-title sortable"><div class="block">TAG = Env</div>
             </th>
         </tr>
         </thead>
         <tbody>
         <tr data-ng-repeat="server in servers">
-            <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
             <td><a href="#!/elb/edit/{{server.id}}">{{server.name}}</a></td>
-            <td>Jens</td>
             <td>Active</td>
             <td>4/4</td>
             <td>{{server.created}}</td>
-            <td>Production</td>
         </tr>
         </tbody>
     </table>

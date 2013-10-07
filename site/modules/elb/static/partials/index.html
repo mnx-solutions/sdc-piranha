@@ -1,7 +1,12 @@
    <div class="container">
        <div class="span12">
            <h3>Do you want to enable the Load Balancer feature for your account?</h3>
-           <button data-ng-click="license()" data-toggle="modal" class="btn btn-joyent-blue btn-large load-balancers" data-translate=""><span class="ng-scope">Enable Load Balancing</span></button>
+           <div data-ng-include="'elb/static/templates/eula.html'"></div>
+           <div class="accept-checkbox">
+               <input type="checkbox" data-ng-click="licenseAccept()"/>
+               <span>I accept the terms of end-user lincense agreement above</span>
+           </div>
+           <button data-ng-click="license()" data-ng-disabled="!licenseAcceptCheck" class="btn btn-joyent-blue btn-medium load-balancers" data-translate=""><span class="ng-scope">Enable Load Balancing</span></button>
            <!--<button data-ng-click="changeLocation('/elb/list/')" class="btn btn-joyent-blue btn-large load-balancers" data-translate=""><span class="ng-scope">Enable Load Balancing</span></button>-->
        </div>
    </div>

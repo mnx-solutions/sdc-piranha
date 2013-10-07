@@ -14,21 +14,13 @@
             };
 
             $scope.license = function() {
-                console.log('modal');
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Enable Load Balacer'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'license text...'
-                    ), function () {
-                        $scope.changeLocation('/elb/list/');
-                    });
+                $scope.changeLocation('/elb/list/');
             };
+
+            $scope.licenseAcceptCheck = false;
+            $scope.licenseAccept = function(){
+                $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
+            }
 
         }]);
 }(window.JP.getModule('elb')));
