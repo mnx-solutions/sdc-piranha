@@ -24,16 +24,6 @@
             };
             $scope.protocolSelect = function (name) {
                 $scope.protocolSelected = name;
-//                if (!name && !$scope.protocols) {
-//                    Datacenter.datacenter().then(function (datacenters) {
-//                        if (datacenters.length > 0) {
-//                            $scope.data.datacenter = datacenters[0].name;
-//                        }
-//                    });
-//                } else if (name && (name !== $scope.data.datacenter)) {
-//                    $scope.data.datacenter = name;
-//                }
-
             };
 
         }]);
