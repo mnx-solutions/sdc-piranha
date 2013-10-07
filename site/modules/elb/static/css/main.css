@@ -45,6 +45,10 @@
     width: 355px;
     padding-bottom: 15px;
 }
+.lb-line_allwidth{
+    border-bottom: 2px solid #ececec;
+    width: 100%;
+}
 .logo_riverbed{
     background-image: url("../img/logo_riverbed.png");
     width: 133px;
@@ -105,4 +109,9 @@
 }
 .dd_btn{
     min-width: 70px;
+}
+.table_pos{
+    margin: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
