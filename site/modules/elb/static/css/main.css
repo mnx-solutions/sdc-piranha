@@ -17,6 +17,10 @@
 .protocol-input input{
     width: 60px;
 }
+.url-input{
+    width: 80px;
+    margin-left: -17px;
+}
 .port-input > input{
     width: 35px !important;
     margin: 10px;
