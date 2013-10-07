@@ -13,9 +13,10 @@
             var resource = $resource('elb/item/:id', {id:'@id'});
 
             $scope.protocols = ['HTTP', 'HTTPS', 'FTP', 'FTPS'];
-            $scope.protocolSelected = $scope.protocols[0];
 
-            $scope.server = resource.get({id: balancerId});
+            $scope.server = resource.get({id: balancerId}, function () {
+                $scope.server.protocol = $scope.server.protocol || 'HTTP';
+            });
 
             $scope.save = function () {
                 $scope.server.toPort = $scope.server.fromPort;
@@ -23,7 +24,7 @@
                 $location.path('/elb/list');
             };
             $scope.protocolSelect = function (name) {
-                $scope.protocolSelected = name;
+                $scope.server.protocol = name;
             };
 
         }]);
