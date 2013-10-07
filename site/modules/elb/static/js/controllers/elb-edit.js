@@ -15,6 +15,9 @@
             $scope.protocols = ['HTTP', 'HTTPS', 'FTP', 'FTPS'];
             $scope.protocolSelected = $scope.protocols[0];
 
+            $scope.server = resource.get({id: balancerId}, function () {
+                $scope.server.protocol = $scope.server.protocol || 'HTTP';
+            });
             $scope.hc_delays = ['1','3','5','10'];
             $scope.hc_delaySelected = $scope.hc_delays[2]; //default
 
@@ -29,6 +32,7 @@
                 $location.path('/elb/list');
             };
             $scope.protocolSelect = function (name) {
+                $scope.server.protocol = name;
                 $scope.protocolSelected = name;
             };
             $scope.hc_delaySelect = function (name) {

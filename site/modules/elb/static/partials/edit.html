@@ -19,7 +19,7 @@
                      data-toggle="tooltip"
                      data-placement="bottom">
                     <!--<select style="width: 70px" data-ng-model="server.protocol" data-ng-options="p for p in protocols"></select>-->
-                    <button class="btn dd_btn" >{{protocolSelected}}</button>
+                    <button class="btn dd_btn" >{{server.protocol}}</button>
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
@@ -160,6 +160,6 @@
 
     <span class="span12">
         <p class="logo_riverbed pull-left">Powered by</p>
-        <button data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Create</span></button>
+        <button data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Save</span></button>
     </span>
 </div>

@@ -11,7 +11,6 @@
 
             $scope.servers = [];
             $http.get('elb/list').success(function (data) {
-                console.log(arguments);
                 $scope.servers = data;
             });
 
