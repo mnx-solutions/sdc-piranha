@@ -110,6 +110,7 @@
 }
 .dd_btn{
     min-width: 70px;
+    max-width: 70px;
 }
 .table_pos{
     margin: 0;

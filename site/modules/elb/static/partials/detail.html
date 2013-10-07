@@ -10,8 +10,10 @@
                 <span >&nbsp;&nbsp;<b>HTTP</b></span>
             </div>
             <div class="span4">
-                <span class="lb-label">Port: </span>
-                <span >&nbsp;&nbsp;<b>443</b></span>
+                <span class="lb-label">Port from:</span>
+                <span>&nbsp;<b>4400</b></span>
+                <span class="lb-label"> to:</span>
+                <span>&nbsp;<b>4433</b></span>
             </div>
             <div class="span4">
                 <span class="lb-label">Overall Health: </span>
@@ -61,6 +63,6 @@
 
     <span class="span12">
         <p class="logo_riverbed pull-left">Powered by</p>
-        <button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Edit</span></button>
+        <button data-ng-click="changeLocation('/elb/edit/')" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Edit</span></button>
     </span>
 </div>
