@@ -1141,8 +1141,8 @@ ul.dropdown-menu{
 .item-scrolling div.item:nth-child(odd){
     background-color: #eef0f2;
 }
-.item-scrolling div.item:hover{
-    background-color: #fdf1d1 !important;
+.item-scrolling div.item:nth-child(odd):hover{
+    background-color: #eef0f2;
 }
 .item-scrolling .item{
     border: 0;
