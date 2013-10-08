@@ -14,6 +14,7 @@
         <div data-account-ssh-import></div>
     </div>
     <div data-ng-show="loading" class="pull-right">
+        <span data-ng-show="loading && downloadLink"><a href="{{downloadLink}}">Click here if your download doesn't start</a></span>
         <span class="loading-medium"></span>
     </div>
 </fieldset>

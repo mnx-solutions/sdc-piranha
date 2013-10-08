@@ -21,6 +21,7 @@
                     localization.bind('account', $scope);
 
                     $scope.loading = false;
+                    $rootScope.downloadLink = false;
                 },
 
                 link: function ($scope) {
@@ -67,9 +68,14 @@
                                                 );
 
                                                 // as this is directive, we need to use rootScope here
-                                                $scope.iframe = '<iframe src="http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name +'"></iframe>';
+                                                if($scope.nextStep) {
+                                                    $scope.iframe = '<iframe src="http://'+ window.location.host +'/signup/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name +'"></iframe>';
+                                                } else {
+                                                    $scope.iframe = '<iframe src="http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name +'"></iframe>';
+                                                }
 
                                                 // tell the rootScope that we are loading
+                                                $rootScope.downloadLink = 'http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name;
                                                 $rootScope.loading = true;
 
                                                 // start polling
