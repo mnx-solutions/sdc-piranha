@@ -78,7 +78,7 @@
                      data-toggle="tooltip"
                      style="margin-left: -27px;"
                      data-placement="bottom">
-                    <button class="btn dd_btn" >{{timeoutSelected}} sec</button>
+                    <button class="btn dd_btn">{{server.health.timeout}} sec</button>
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
@@ -107,7 +107,7 @@
                 </div>
                 <span class="span3" style="line-height: 15px;">Failure Threshold</span>
                 <span class="span2 port-input">
-                    <input type="text" placeholder="5" data-translate="placeholder" class="clb_input"/>
+                    <input type="text" placeholder="5" data-translate="placeholder" data-ng-model="server.health.failThreshold" class="clb_input"/>
                 </span>
             </div>
         </div>

@@ -30,7 +30,6 @@
                 $scope.protocolSelect(response.protocol);
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
-                $scope.server.health.timeout = $scope.server.health.timeout || 2;
                 $scope.server.machines = $scope.server.machines || [];
                 var elbMachines = $scope.server.machines.map(function (machine) {
                     return machine.host;
@@ -54,8 +53,7 @@
             $scope.hc_delays = ['1','3','5','10'];
             $scope.hc_delaySelected = $scope.hc_delays[2]; //default
 
-            $scope.timeouts = ['1','2','5','10','20'];
-            $scope.timeoutSelected = $scope.timeouts[1]; //default
+            $scope.timeouts = [1, 2, 5, 10, 20];
 
             $scope.server = resource.get({id: balancerId});
 
@@ -90,7 +88,7 @@
                 $scope.hc_delaySelected = name;
             };
             $scope.timeoutSelect = function (name) {
-                $scope.timeoutSelected = name;
+                $scope.server.health.timeout = name;
             };
 
         }]);
