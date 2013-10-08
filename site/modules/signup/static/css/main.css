@@ -10,6 +10,16 @@
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
 
 }
+
+.loading-medium {
+    background-image:url('../img/icon-loading-medium.gif');
+    background-position:50% 50%;
+    background-repeat:no-repeat;
+    min-height:60px;
+    max-width:100%;
+    min-width:50px;
+}
+
 .navbar-inner .container {
     padding:10px;
 }
