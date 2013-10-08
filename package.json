@@ -24,7 +24,7 @@
     "file-pointer": "0.0.x",
     "foldermap": "0.3.x",
     "redis": "*",
-    "zuora": "0.1.0",
+    "zuora": "0.1.2",
     "moment": "*",
     "xml2js": "*",
     "mustache": "*",
