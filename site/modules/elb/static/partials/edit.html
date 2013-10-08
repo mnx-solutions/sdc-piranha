@@ -18,13 +18,13 @@
                 <div class="btn-group tooltip-hover span3 dd_margin"
                      data-toggle="tooltip"
                      data-placement="bottom">
-                    <button class="btn dd_btn" >{{server.protocol || protocolSelected}}</button>
+                    <button class="btn dd_btn">{{protocolSelected.name}}</button>
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu">
                         <li data-ng-repeat="protocol in protocols">
-                            <a data-ng-click="protocolSelect(protocol)">{{protocol}}</a>
+                            <a data-ng-click="protocolSelect(protocol.value)">{{protocol.name}}</a>
                         </li>
                     </ul>
                 </div>

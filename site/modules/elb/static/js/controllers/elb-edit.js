@@ -13,12 +13,22 @@
             var balancerId = requestContext.getParam('balancerId');
             var resource = $resource('elb/item/:id', {id:'@id'});
 
-            $scope.protocols = ['HTTP', 'HTTPS', 'TCP', 'TCPS'];
+            $scope.protocols = [
+                {name: 'HTTP', value: 'http'},
+                {name: 'HTTPS', value: 'https'},
+                {name: 'TCP', value: 'tcp'},
+                {name: 'TCPS', value: 'tcps'}
+            ];
 
-            $scope.server = resource.get({id: balancerId}, function () {
-                $scope.server.protocol = $scope.server.protocol || 'HTTP';
+            $scope.protocolSelect = function (protocolValue) {
+                $scope.protocolSelected = $scope.protocols.filter(function (protocol) {
+                    return protocol.value === protocolValue;
+                })[0] || $scope.protocols[0];
+            };
+
+            $scope.server = resource.get({id: balancerId}, function (response) {
+                $scope.protocolSelect(response.protocol);
                 $scope.server.health = $scope.server.health || {};
-                //$scope.server.health.failThreshold = $scope.server.health.failThreshold || 5;
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
                 $scope.server.machines = $scope.server.machines || [];
@@ -56,7 +66,7 @@
                     return machine.primaryIp;
                 });
                 $scope.server.machines = selectedMachines;
-                //$scope.server.toPort = $scope.server.fromPort;
+                $scope.server.protocol = $scope.protocolSelected.value;
                 $scope.server.$save();
                 $location.path('/elb/list');
             };
@@ -75,9 +85,6 @@
                     ), function () {
                         //delete function
                     });
-            };
-            $scope.protocolSelect = function (name) {
-                $scope.server.protocol = name;
             };
             $scope.hc_delaySelect = function (name) {
                 $scope.hc_delaySelected = name;
