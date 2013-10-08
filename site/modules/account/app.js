@@ -73,7 +73,6 @@ module.exports = function execute(scope, app) {
 
 
                 // success
-                console.log('SSH key successfully created');
                 res.json({success: true, keyId: randomBytes, name: name});
             });
 
