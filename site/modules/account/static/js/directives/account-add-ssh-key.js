@@ -18,6 +18,7 @@
                 scope: true,
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
+
                 },
 
                 link: function ($scope) {

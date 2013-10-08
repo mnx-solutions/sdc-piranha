@@ -151,3 +151,9 @@ select.date-month, select.date-year {
     text-shadow:1px 1px 1px #375775;
     border-bottom:1px solid #28445e;
 }
+
+.ssh-download-link {
+    width:300px;
+    float:left;
+    margin-top: 20px;
+}
