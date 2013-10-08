@@ -11,12 +11,16 @@
     font-family: Menlo,Menlo-Regular,Inconsolata,Monaco,monospace;
     font-size: 13px;
     border: 1px solid #e3e3e3;
-    padding: 19px;
+    padding-left: 19px;
+    padding-bottom: 19px;
     min-height: 20px;
     margin-top: 10px;
     margin-bottom: 10px;
     white-space: pre-line;
     word-wrap: break-word;
+}
+.code p{
+    /*margin: 0;*/
 }
 .box .code {
     background: rgba(0,0,0,0.07);

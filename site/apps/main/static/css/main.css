@@ -1208,3 +1208,9 @@ iframe {
     padding-bottom: 55px;
     padding-left: 45px;
 }
+.select2-results .select2-result-label {
+    color: #000000 !important;
+    font-weight: bold !important;
+    font-family: Menlo,Menlo-Regular,Inconsolata,Monaco,monospace !important;
+    font-size: 13px !important;
+}

@@ -35,12 +35,11 @@
             </div>
         </div>
         <div class="portlet-body">
-
             <p>There are two ways to get started:<br/>
                 1. If you already have at least node.js 0.8.14 installed you can install the manta CLI and node SDK</p>
-
-            <div class="code">sudo npm install -g</div>
-
+            <div class="code">
+                sudo npm install -g
+            </div>
             <p>2. If you do not have node.js installed you can use the
                 installer for Mac OS X</p>
             <a href="https://us-east.manta.joyent.com/manta/public/sdks/joyent-node-latest.pkg" class="btn orange">
@@ -60,26 +59,21 @@
             </div>
         </div>
         <div class="portlet-body">
-
             <p>Once you have installed the Manta CLI, you're ready to go. The following examples are customized with
                 your account information. Just cut and paste.</p>
-
             <p><br/><b>Set environment</b></p>
-
             <div data-ng-show="sshKeys.length>1" class="code">
                 <label for="keySel">You have multiple keys, please select the one you want to use:</label>
-                <select id="keySel" ng-model="keyId" ui-select2="{ width: 375}" value="{{keyName}}"
+                <select id="keySel" ng-model="keyId" ui-select2="{ width: auto}" value="{{keyName}}"
                         ng-options="c.fingerprint as c.name for c in sshKeys">
                     <option ng-repeat="c.fingerprint as c.name for c in sshKeys" value="{{keyName}}">{{keyName}}</option>
                 </select>
             </div>
-
             <div data-ng-show="sshKeys.length==0" class="code">
                 You dont have any SSH keys configured, you need a SSH key to use
                 Manta.
                 <a href="#!/account/ssh" data-translate>Add a SSH key</a>
             </div>
-
             <div class="code">
                 export MANTA_URL=https://us-east.manta.joyent.com
                 export MANTA_USER={{account.login}}
@@ -87,31 +81,22 @@
             </div>
                 <h5>Create, list and delete objects</h5>
                 <div class="code">
-                    echo "Hello, Manta" >
-                    /tmp/hello.txt
-                    mput -f /tmp/hello.txt
-                    /{{account.login}}/stor/foo
+                    echo "Hello, Manta" > /tmp/hello.txt
+                    mput -f /tmp/hello.txt /{{account.login}}/stor/foo
                     /{{account.login}}/stor/foo [==========================>] 100% 13B
-                    mget
-                    /{{account.login}}/stor/foo
+                    mget /{{account.login}}/stor/foo
                     Hello, Manta
                     mls
                     foo
-                    mrm
-                    /{{account.login}}/stor/foo
+                    mrm /{{account.login}}/stor/foo
                 </div>
             <p><br/><b>Execute jobs</b><br/>
                 This job will copy Treasure Island to Joyent Manta and run a job that counts the number of times the
                 word Silver is mentioned.</p>
-
             <div class="code">
-                curl -sL
-                http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -H
-                'content-type: text/plain'
-                /{{account.login}}/stor/treasure_island.txt<br/>
-                mfind
-                /{{account.login}}/stor/treasure_island.txt | mjob create -o
-                "grep Silver | wc -l"<br/>
+                curl -sL http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -H 'content-type: text/plain'
+                /{{account.login}}/stor/treasure_island.txt
+                mfind /{{account.login}}/stor/treasure_island.txt | mjob create -o "grep Silver | wc -l"
             </div>
             <p>While the CLI uses node.js there is also SDK support for <a href="https://github.com/joyent/ruby-manta">Ruby</a>,
                 <a href="https://github.com/joyent/python-manta">Python</a> and <a
