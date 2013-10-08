@@ -75,8 +75,6 @@ module.exports = function execute(scope, register) {
             }
 
             api.getSignupStep(req, function(err, step) {
-                console.log('signup step = ', step);
-
                 if(step !== 'completed' || step !== 'complete') {
                     api.setMinProgress(req, 'ssh', function(err) {
                         if(err) {
