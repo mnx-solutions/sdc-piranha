@@ -6,6 +6,7 @@ var fs = require('fs');
 var countryCodes = require('./data/country-codes');
 var exec = require('child_process').exec;
 var os = require('os');
+var uuid = require('./vendor/uuid');
 
 /**
  * @ngdoc service
@@ -17,6 +18,7 @@ var os = require('os');
  */
 module.exports = function execute(scope, app) {
 
+    var jobs = {};
     var SignupProgress = scope.api('SignupProgress');
 
     app.get('/countryCodes',function(req, res) {
@@ -42,6 +44,10 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/ssh/create/:name?', function(req, res, next) {
+
+        var jobId = uuid.v4();
+        jobs[jobId] = {status: 'pending'};
+
         // generate 2048 bit rsa key and add public part to cloudapi
         var randomBytes = crypto.randomBytes(4).readUInt32LE(0);
         var filePath = os.tmpdir() +'/'+ randomBytes;
@@ -51,7 +57,7 @@ module.exports = function execute(scope, app) {
             SignupProgress.addSshKey(req, name, stdout, function(err) {
                 if(err) {
                     scope.log.error(err);
-                    res.json({success: false, err: err});
+                    res.json({success: false, jobId: jobId, err: err});
                     return;
                 }
 
@@ -73,25 +79,44 @@ module.exports = function execute(scope, app) {
 
 
                 // success
-                res.json({success: true, keyId: randomBytes, name: name});
+                res.json({success: true, jobId: jobId, keyId: randomBytes, name: name});
             });
 
         });
     });
 
+    app.get('/ssh/job/:jobId', function(req, res, next) {
+        if(jobs[req.params.jobId]) {
+            res.json(jobs[req.params.jobId]);
+        } else {
+            res.json(404);
+        }
+    });
 
-    app.get('/ssh/download/:hash/:name?', function(req, res, next) {
+
+    app.get('/ssh/download/:jobId/:hash/:name?', function(req, res, next) {
         var hash = req.params.hash;
         var name = req.params.name;
+        var jobId = req.params.jobId;
         var filePath = os.tmpdir() +'/'+ hash;
 
         if(!hash) {
+            jobs[jobId] = {
+                error: 'Invalid SSH key requested',
+                success: false,
+                status: 'finished'
+            }
             scope.log.error('Invalid SSH key requested');
             return;
         }
 
         fs.readFile(filePath, {encoding: 'UTF8'}, function(err, data) {
             if(err) {
+                jobs[jobId] = {
+                    error: err,
+                    success: false,
+                    status: 'finished'
+                };
                 scope.log.error(err);
                 return;
             }
@@ -106,6 +131,12 @@ module.exports = function execute(scope, app) {
                     return;
                 }
             });
+
+            jobs[jobId] = {
+                error: null,
+                success: true,
+                status: 'finished'
+            };
         });
     });
 };

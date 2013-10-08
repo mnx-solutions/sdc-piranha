@@ -6,7 +6,6 @@
         <!-- <div class="row-fluid"> -->
             <div data-notification></div>
         <!-- </div> -->
-        <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 
 		<div class="page-header">
 			<div class="row-fluid">
@@ -60,9 +59,12 @@
 
                         </div>
 
-                        <div class="new-key-button">
+                        <div class="new-key-button" data-ng-hide="loading">
                             <div data-account-ssh-create></div>
                             <div data-account-ssh-import></div>
+                        </div>
+                        <div class="new-key-button pull-right" data-ng-show="loading">
+                            <div class="loading-medium"></div>
                         </div>
                     </div>
                     <!-- End of > 0 keys part -->

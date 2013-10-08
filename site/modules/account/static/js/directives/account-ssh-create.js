@@ -11,7 +11,8 @@
         '$dialog',
         '$timeout',
         '$http',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http) {
+        '$rootScope',
+        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -20,7 +21,6 @@
                     localization.bind('account', $scope);
 
                     $scope.loading = false;
-
                 },
 
                 link: function ($scope) {
@@ -43,7 +43,7 @@
                         var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
                         var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
 
-                        $scope.loading = true;
+                        $rootScope.loading = true;
                         $dialog.messageBox(title, question, btns, templateUrl)
                             .open(templateUrl, sshKeyModalCtrl)
                             .then(function(data) {
@@ -54,31 +54,69 @@
                                         createUrl = '/signup/account/ssh/create/';
                                     }
 
+
                                     $http.post(createUrl, {name: data.keyName})
                                         .success(function(data) {
-                                            $scope.loading = false;
+
+                                            var jobId = data.jobId;
                                             if(data.success === true) {
                                                 notification.push(null, { type: 'success' },
                                                     localization.translate($scope, null,
                                                         'SSH key successfully added to your account<br />You will be prompted for private key download shortly. Please keep your private key safe'
                                                     )
                                                 );
-                                                $window.open('http://'+ window.location.host +'/main/account/ssh/download/'+ data.keyId +'/'+ data.name +'');
 
-                                                if($scope.updateInterval) {
-                                                    $scope.updateInterval();
-                                                }
+                                                // as this is directive, we need to use rootScope here
+                                                $scope.iframe = '<iframe src="http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name +'"></iframe>';
 
-                                                if($scope.nextStep) {
-                                                    notification.push(null, { type: 'success', persistent: true },
+                                                // tell the rootScope that we are loading
+                                                $rootScope.loading = true;
+
+                                                // start polling
+                                                var pollingJob = setInterval(function() {
+                                                    $http.get('/main/account/ssh/job/'+ jobId).success(function(data) {
+                                                        console.log('POLLING STATUS', data);
+
+                                                        if(data.success === true) {
+                                                            $rootScope.loading = false;
+                                                            clearInterval(pollingJob);
+
+                                                            if($scope.updateInterval) {
+                                                                $scope.updateInterval();
+                                                            }
+
+                                                            if($scope.nextStep) {
+                                                                window.location.href = '/main/#!/account/ssh';
+                                                            }
+                                                        }
+                                                        if(data.success === false) {
+                                                            $rootScope.loading = false;
+                                                            notification.push(null, { type: 'error' },
+                                                                localization.translate($scope, null,
+                                                                    'SSH Key generation error'
+                                                                )
+                                                            );
+
+                                                            clearInterval(pollingJob);
+                                                        }
+                                                    })
+                                                }, 1000);
+
+                                                var pollingTimeout = setTimeout(function() {
+                                                    clearInterval(pollingJob);
+                                                    clearTimeout(pollingTimeout);
+                                                    $rootScope.loading = false;
+                                                    notification.push(null, { type: 'error' },
                                                         localization.translate($scope, null,
-                                                            'SSH Key successfully added to your account'
+                                                            'SSH Key generation error'
                                                         )
                                                     );
-                                                    window.location.href = '/main/#!/account/ssh';
-                                                }
+
+                                                }, 2*60*1000);
+
                                             } else {
                                                 // error
+                                                $rootScope.loading = false;
                                                 notification.push(null, { type: 'error' },
                                                     localization.translate($scope, null,
                                                         'Unable to generate SSH key: '+ data.err.message
@@ -88,7 +126,7 @@
                                         });
 
                                 } else {
-                                    $scope.loading = false;
+                                    $rootScope.loading = false;
                                 }
                             });
                     };

@@ -11,7 +11,8 @@
         '$dialog',
         '$timeout',
         '$http',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http) {
+        '$rootScope',
+        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -20,11 +21,8 @@
                     localization.bind('account', $scope);
 
                     $scope.loading = false;
-
                 },
-
                 link: function ($scope) {
-
 
                     /* ssh key creating popup with custom template */
                     var newKeyPopup = function(question, callback) {
@@ -46,7 +44,7 @@
                     };
 
                     $scope.createNewKey = function (key) {
-                        $scope.loading = true;
+                        $rootScope.loading = true;
                         // If key is not given as an argument but exist in a scope
                         if (!key && $scope.key) {
                             key = $scope.key;
@@ -55,7 +53,7 @@
                         var newKey = Account.createKey(key.name, key.data);
 
                         $q.when(newKey, function (key) {
-                            $scope.loading = false;
+                            $rootScope.loading = false;
                             if (key.name && key.fingerprint && key.key) {
                                 $scope.key = null;
 
@@ -90,7 +88,7 @@
                                 );
                             }
                         }, function(key) {
-                            $scope.loading = false;
+                            $rootScope.loading = false;
                             notification.push(null, { type: 'error' },
                                 localization.translate($scope, null,
                                     'Failed to add new key: {{message}}',
