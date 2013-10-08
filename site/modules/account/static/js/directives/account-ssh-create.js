@@ -29,6 +29,7 @@
                         $scope.keyName = '';
 
                         $scope.close = function(res) {
+                            $scope.loading = false;
                             dialog.close(res);
                         };
 
@@ -74,7 +75,7 @@
                                                             'SSH Key successfully added to your account'
                                                         )
                                                     );
-                                                    window.location.href = '/main';
+                                                    window.location.href = '/main/#!/account/ssh';
                                                 }
                                             } else {
                                                 // error
@@ -86,6 +87,8 @@
                                             }
                                         });
 
+                                } else {
+                                    $scope.loading = false;
                                 }
                             });
                     };
