@@ -293,14 +293,14 @@
              * Dismiss given notifications
              *
              * @public
-             * @param _notifications
+             * @param _notifications dismissPersistent
              */
-            dismissNotifications: function (_notifications) {
+            dismissNotifications: function (_notifications, dismissPersistent) {
                 var changed = false;
 
                 _notifications.forEach(function (n1) {
                     notifications.forEach(function (n2, index) {
-                        if (n1.id === n2.id && !notifications[index].opts.persistent) {
+                        if (n1.id === n2.id && (!notifications[index].opts.persistent || dismissPersistent)) {
                             changed = true;
                             notifications.splice(index, 1);
                         }

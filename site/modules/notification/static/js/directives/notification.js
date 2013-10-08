@@ -17,7 +17,7 @@
 
                 $scope.close = function (ctx, type) {
                     if ($scope.notifications[ctx][type]) {
-                        notification.dismissNotifications($scope.notifications[ctx][type]);
+                        notification.dismissNotifications($scope.notifications[ctx][type], true);
                     }
                 };
 
