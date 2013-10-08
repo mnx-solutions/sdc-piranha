@@ -256,10 +256,11 @@ module.exports = function execute(scope) {
                             } else if (json !== oldTags) {
                                 clearInterval(timer);
                                 clearTimeout(timer2);
-                                call.done(new Error('Other call changed tags'));
+	                              call.log.warn('Other call changed tags, returning new tags %j', tags);
+                                call.done(null, tags);
                             }
                         } else {
-                            call.log.error('Cloud polling failed for %s , %o', tagsErr);
+                            call.log.error('Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
                         }
                     }, undefined, true);
                 }, config.polling.machineTags);
