@@ -75,8 +75,6 @@
                                                 // start polling
                                                 var pollingJob = setInterval(function() {
                                                     $http.get('/main/account/ssh/job/'+ jobId).success(function(data) {
-                                                        console.log('POLLING STATUS', data);
-
                                                         if(data.success === true) {
                                                             $rootScope.loading = false;
                                                             clearInterval(pollingJob);
