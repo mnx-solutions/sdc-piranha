@@ -69,7 +69,7 @@
                 $location.path('/elb/list');
             };
 
-            $scope.deleteLB = function(){
+            $scope.delete = function(){
                 util.confirm(
                     localization.translate(
                         $scope,
@@ -81,7 +81,8 @@
                         null,
                         'Are you sure you want to delete?'
                     ), function () {
-                        //delete function
+                        $scope.server.$remove();
+                        $location.path('/elb/list');
                     });
             };
             $scope.hc_delaySelect = function (name) {
