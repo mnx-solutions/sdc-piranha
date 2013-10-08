@@ -10,7 +10,7 @@
             <div class="">
                 <span class="span2 lb-label">Name</span>
                 <span class="span9 name-input">
-                    <input type="text" placeholder="Name" data-translate="placeholder" data-ng-model="server.name"/>
+                    <input type="text" placeholder="Name" data-translate="placeholder" required data-ng-model="server.name"/>
                 </span>
             </div>
             <div class="">
@@ -34,11 +34,11 @@
                 <span class="lb-label">Port</span>
                 <span class="lb-label" style="margin-left: 50px;">from </span>
                 <span class= "port-input">
-                    <input type="text" placeholder="44" data-translate="placeholder" data-ng-model="server.fromPort"/>
+                    <input type="text" placeholder="44" data-translate="placeholder" required data-ng-model="server.fromPort"/>
                 </span>
                 <span class="lb-label"> to </span>
                 <span class="port-input">
-                    <input type="text" placeholder="8043" data-translate="placeholder" data-ng-model="server.toPort"/>
+                    <input type="text" placeholder="8043" data-translate="placeholder" required data-ng-model="server.toPort"/>
                 </span>
                 <div class="clearfix"></div>
                 <span class="span10">
@@ -124,33 +124,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <!--<tr data-ng-repeat="item in items">-->
-                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
-                    <td >Node.js Server 1</td>
-                    <td>10-10-2014</td>
-                    <td>Node Farm1</td>
-                </tr>
-                <tr>
-                    <!--<tr data-ng-repeat="item in items">-->
-                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
-                    <td >Node.js Server 2</td>
-                    <td>10-10-2014</td>
-                    <td>Node Farm1</td>
-                </tr>
-                <tr>
-                    <!--<tr data-ng-repeat="item in items">-->
-                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
-                    <td >Web Server 1</td>
-                    <td>10-10-2014</td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <!--<tr data-ng-repeat="item in items">-->
-                    <td width="10"><input type="checkbox" class="group-checkable" value=""></td>
-                    <td >Web Server 2</td>
-                    <td>10-10-2014</td>
-                    <td></td>
+                <tr data-ng-repeat="machine in machines">
+                    <td width="10"><input type="checkbox" class="group-checkable" data-ng-model="machine.selected"></td>
+                    <td>{{machine.name}}</td>
+                    <td>{{machine.created}}</td>
+                    <td>?</td>
                 </tr>
                 </tbody>
             </table>
