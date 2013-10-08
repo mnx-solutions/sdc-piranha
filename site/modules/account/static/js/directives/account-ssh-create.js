@@ -29,6 +29,7 @@
                         $scope.keyName = '';
 
                         $scope.close = function(res) {
+                            $scope.loading = false;
                             dialog.close(res);
                         };
 
@@ -86,6 +87,8 @@
                                             }
                                         });
 
+                                } else {
+                                    $scope.loading = false;
                                 }
                             });
                     };
