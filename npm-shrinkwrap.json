@@ -772,8 +772,8 @@
       "resolved": "https://registry.npmjs.org/redis/-/redis-0.8.5.tgz"
     },
     "zuora": {
-      "version": "0.1.0",
-      "from": "zuora@0.1.0",
+      "version": "0.1.2",
+      "from": "zuora@0.1.2",
       "dependencies": {
         "validator": {
           "version": "1.5.1",
