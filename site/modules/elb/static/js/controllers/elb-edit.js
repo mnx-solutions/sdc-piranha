@@ -3,7 +3,7 @@
 (function (app) {
     app.controller(
         'elb.EditController',
-        ['$scope', 'requestContext', 'localization', '$resource', '$location', function ($scope, requestContext, localization, $resource, $location) {
+        ['$scope', 'requestContext', 'localization', '$resource', '$location', 'util', function ($scope, requestContext, localization, $resource, $location, util) {
             localization.bind('elb', $scope);
             requestContext.setUpRenderContext('elb.edit', $scope, {
                 title: localization.translate(null, 'elb', 'Create/Edit Load Balancer')
@@ -30,6 +30,22 @@
                 $scope.server.toPort = $scope.server.fromPort;
                 $scope.server.$save();
                 $location.path('/elb/list');
+            };
+
+            $scope.deleteLB = function(){
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete Load Balacer'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Are you sure you want to delete?'
+                    ), function () {
+                        //delete function
+                    });
             };
             $scope.protocolSelect = function (name) {
                 $scope.server.protocol = name;
