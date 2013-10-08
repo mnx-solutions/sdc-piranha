@@ -1,24 +1,21 @@
 <div class="container-fluid content-container">
     <div class="container content-container-inner">
-        <div class="container">
+        <div class="container_details">
 
 		<div data-ng-switch="subview">
 			
 		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
 				<!-- <data-breadcrumb></data-breadcrumb> -->
-				<ul class="breadcrumb">
-					<li><a href="#!/dashboard/">Dashboard</a></li>
-					<li><span class="text-gray"> / </span><a href="#!/instance/details/{{zoneId}}">Instance details</a></li>
-					<li class="active"> /  Cloud analytics</li>
-					<li class="pull-right"><a class="add-machine" href="#!/instance/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>
-				</ul>
+                <ul class="breadcrumb">
+                    <li><a href="#!/dashboard">Dashboard</a> /</li>
+                    <li><a href="#!/instance"> Compute</a> /</li>
+                    <li><a href="#!/instance/details/{{zoneId}}"> Instance Details</a> /</li>
+                    <li><a > Cloud analytics</a> /</li>
+                </ul>
+                <h3 class="page-title">Instance analytics <small>{{zoneId}}</small></h3>
 
-				<div class="page-header">
-	                <h1 class="pull-left">Instance analytics <small>{{zoneId}}</small></h1>
-					<div class="clearfix"></div>
-	            </div>
                 <data-notification></data-notification>
-				<div class="container span8 listing text-medium">
+				<div class="container_details span8 listing text-medium" style="margin: 0;">
 					<div class="well well-small">
 	                	<span class="span2 text-fix pointer text-small" data-ng-click="zoomIn()"><i class="icon icon-zoom-in" title="zoom in the graph"></i> Zoom In for closer look</span>
 	                	<span class="span2 text-fix pointer text-small" data-ng-click="zoomOut()"><i class="icon icon-zoom-out" title="zoom out the graph"></i> Zoom Out for overview</span>

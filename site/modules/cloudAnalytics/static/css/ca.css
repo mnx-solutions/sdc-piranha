@@ -8,3 +8,16 @@
 	top: 0;
 	left: 0;
 }
+.breadcrumb {
+    margin-bottom: 5px;
+    background-color: transparent !important;
+    padding: 10px 0 !important;
+}
+.breadcrumb > .active {
+    color: #ff6600;
+}
+.breadcrumb > li {
+    display: inline-block;
+    text-shadow: none;
+    color: #ff6600;
+}
