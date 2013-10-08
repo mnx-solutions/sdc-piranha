@@ -52,8 +52,9 @@
                         done: function(err, job) {
                             var res = job.__read();
 
-                            if(!networksInfo[datacenter])
+                            if(!networksInfo[datacenter]) {
                                 networksInfo[datacenter] = {};
+                            }
 
                             networksInfo[datacenter][id] = res;
                             d.resolve(res);
