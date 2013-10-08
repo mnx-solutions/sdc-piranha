@@ -21,6 +21,9 @@
                 // Store rule
                 rules.list.push(rule);
                 rules.index[rule.uuid] = rule;
+                if(!rules.map[rule.datacenter]) {
+                    rules.map[rule.datacenter] = [];
+                }
                 rules.map[rule.datacenter].push(rule);
 
                 function showError (err) {

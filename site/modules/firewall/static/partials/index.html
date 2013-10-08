@@ -1,208 +1,351 @@
 <div class="container-fluid" data-ng-controller="Firewall.IndexController">
     <div class="container">
+    <data-notification></data-notification>
         <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter as datacenter for (datacenter, rules) in rulesByDatacenter"></select>
         <h1 class="pull-left">Firewall rules for {{datacenter}}</h1>
         <div class="clearfix"></div>
 
-        <div class="item header row-fluid">
-
-            <span class="span3 text-mediume">
-                <span class="pull-left" data-translate>From</span>
-            </span>
-
-            <span class="span3 text-medium">
-                <span class="pull-left" data-translate>To</span>
-            </span>
-
-            <span class="span1 text-medium sortable"
-                  data-ng-click="sortBy('action')"
-                  data-ng-switch on="sortIcon.action">
-                <span class="pull-left" data-translate>Action</span>
-                <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                <i class="icon-arrow-down" data-ng-switch-when="down"></i>
-            </span>
-
-            <span class="span1 text-medium" data-translate>Protocol</span>
-
-            <span class="span1 text-medium sortable state-sortable-header"
-                  data-ng-click="sortBy('state')"
-                  data-ng-switch on="sortIcon.status">
-                <span class="pull-left" data-translate>Enabled</span>
-                <i class="icon-arrow-up" data-ng-switch-when="up"></i>
-                <i class="icon-arrow-down" data-ng-switch-when="down"></i>
-            </span>
-            <span class="span1 text-medium">
-                <span class="pull-left" data-translate></span>
-            </span>
-            <span class="span1 text-medium">
-                <span class="pull-left" data-translate></span>
-            </span>
-        </div>
-
-
-        <div data-ng-repeat="rule in rules" class="item row-fluid">
-            <span class="span3 text-medium">
-                <span data-ng-show="rule.parsed.from.length">
-                    <span data-ng-repeat="from in rule.parsed.from">{{from|targetInfo}}<br/></span>
-                </span>
-            </span>
-            <span class="span3 text-medium">
-                <span data-ng-show="rule.parsed.to.length">
-                    <span data-ng-repeat="to in rule.parsed.to">{{to|targetInfo}}<br/></span>
-                </span>
-            </span>
-            <span class="span1 text-medium">{{rule.parsed.action}}</span>
-            <span class="span1 text-medium">
-                {{rule.parsed.protocol.name}} <br/>
-                targets: <br/><span data-ng-repeat="target in rule.parsed.protocol.targets">{{target}}<br/></span>
-            </span>
-            <span class="span1 text-medium">{{rule.enabled}}</span>
-            <span class="span1 text-medium pointer" data-ng-click="editRule(rule)">Edit</span>
-            <span class="span1 text-medium pointer" data-ng-click="deleteRule(rule)">Delete</span>
-        </div>
-
-        <div data-ng-model="data">
-            <h3>{{data.uuid && 'Edit rule '+ data.uuid || 'Create New Rule' }}</h3>
-            <div class="item row-fluid">
-                <h4>From</h4><hr/>
-                <div>
-                    <span class="span10 text-medium">
-                        <span data-ng-show="data.parsed.from.length">
-                            <span data-ng-repeat="from in data.parsed.from">
-                                {{from|targetInfo}} <span data-ng-hide="isAny(from)" class="pointer" data-ng-click="removeFrom($index)">[ x ]</span>
-                                <br/>
-                            </span>
-                        </span>
-
-                        <input type="hidden" id="fromSelect" />
+        <table class="table table-bordered width-100">
+            <tr>
+                <th data-translate>From</th>
+                <th data-translate>To</th>
+                <th data-translate class="sortable" data-ng-click="sortBy('action')" data-ng-switch on="sortIcon.action">
+                    Action
+                    <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                    <i class="icon-arrow-down" data-ng-switch-when="down"></i>
+                </th>
+                <th data-translate>Protocol</th>
+                <th colspan="3">&nbsp;</th>
+            </tr>
+            <tr data-ng-repeat="rule in rules" class="item">
+                <td>
+                    <div data-ng-show="rule.parsed.from.length">
+                        <div data-ng-repeat="from in rule.parsed.from">{{from|targetInfo}}</div>
+                    </div>
+                </td>
+                <td>
+                    <div data-ng-show="rule.parsed.to.length">
+                        <div data-ng-repeat="to in rule.parsed.to">{{to|targetInfo}}</div>
+                    </div>
+                </td>
+                <td>{{rule.parsed.action}}</td>
+                <td>
+                    <div>{{rule.parsed.protocol.name}}</div>
+                    <span data-ng-repeat="target in rule.parsed.protocol.targets">
+                        {{target}}
+                        {{{true: '', false: ', '}[$last]}}
                     </span>
-                    <span class="span10 text-medium">
-                        <form name="fromForm">
-                            <span data-ng-switch="current.from.type">
+                </td>
+                <td>
+                    <div class="text-center">
+                        <button type="button" class="btn {{{true: 'btn-success', false: 'btn-warning'}[rule.enabled]}}">{{{true: 'Disable', false: 'Enable'}[rule.enabled]}}</button>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <button class="btn" data-ng-click="editRule(rule)" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Edit</button>
+                    </div>
+                </td>
+                <td>
+                    <div class="text-center">
+                        <button class="btn btn-danger" data-ng-click="deleteRule(rule)" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Delete</button>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <form class="form-horizontal" data-ng-model="data">
+            <fieldset>
+                <legend>{{data.uuid && 'Edit rule '+ data.uuid || 'Create New Rule' }}</legend>
+                <div class="control-group">
+                    <label class="control-label">From</label>
+                    <div class="controls">
+                        <span class="span10 text-medium">
+                            <input type="hidden" id="fromSelect" /><br /><br />
+                        </span>
+                        <span class="span10 text-medium">
+                            <form name="fromForm">
+                                <span data-ng-switch="current.from.type">
                                     <span data-ng-switch-when="wildcard">
                                         <span data-ng-show="current.from.text == 'all vms'">
-                                            <button class="pointer" data-ng-click="addFrom()">ADD</button>
+                                            <span class="row-fluid">
+                                                <span class="span10 offset2 margin-top-10">
+                                                    <button class="btn" data-ng-click="addFrom()">ADD</button>
+                                                </span>
+                                            </span>
                                         </span>
                                     </span>
                                     <span data-ng-switch-when="tag">
-                                        <span>Tag name: </span><input data-ng-model="current.from.text" /><br/>
-                                        <span data-ng-show="current.from.text">Tag value (optional): <input data-ng-model="current.from.value" /></span>
-                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                        <span class="row-fluid">
+                                            <span class="span2">
+                                                Tag name:
+                                            </span>
+                                            <span class="span10">
+                                                <input type="text" data-ng-model="current.from.text"/>
+                                            </span>
+                                        </span>
+                                        <span data-ng-show="current.from.text" class="row-fluid">
+                                            <span class="span2 margin-top-10">
+                                                Tag value (optional):
+                                            </span>
+                                            <span class="span10 margin-top-10">
+                                                <input type="text" data-ng-model="current.from.value" />
+                                            </span>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span10 offset2 margin-top-10">
+                                                <button class="btn" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                            </span>
+                                        </span>
                                     </span>
                                     <span data-ng-switch-default>
                                         <!-- due to the nature of directives, we need another switch here -->
                                         <span data-ng-switch="current.from.type">
                                             <span data-ng-switch-when="subnet">
-                                                <input name="fromValue" data-ng-model="fromSubnet.address" data-ip/>
-                                                <br/>
-                                                CIDR: <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
+                                                <span class="row-fluid">
+                                                    <span class="span10 offset2">
+                                                        <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip/>
+                                                    </span>
+                                                </span>
+                                                <span data-ng-show="current.from.text" class="row-fluid">
+                                                    <span class="span2 margin-top-10">
+                                                        CIDR:
+                                                    </span>
+                                                    <span class="span10 margin-top-10">
+                                                        <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
+                                                    </span>
+                                                </span>
                                             </span>
                                             <span data-ng-switch-when="ip">
-                                                <input name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                                <span class="row-fluid">
+                                                    <span class="span10 offset2">
+                                                        <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                                    </span>
+                                                </span>
                                             </span>
                                             <span data-ng-switch-default>
-                                                <input name="fromValue" data-ng-model="current.from.text" /><br/>
+                                                <span class="row-fluid">
+                                                    <span class="span10 offset2">
+                                                        <input type="text" name="fromValue" data-ng-model="current.from.text" />
+                                                    </span>
+                                                </span>
+
                                             </span>
-                                            <br/>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span10 offset2 margin-top-10">
+                                                <button class="btn" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                            </span>
                                         </span>
                                         <!-- directives switch end -->
-                                        <button class="pointer" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+
                                     </span>
-                            </span>
-                        </form>
-                    </span>
-                    </span>
-                </div>
-                <div class="clearfix"></div><hr/>
-                <h4>To</h4><hr/>
-                <div>
-                    <span class="span10 text-medium">
-
-                        <span data-ng-show="data.parsed.to.length">
-                            <span data-ng-repeat="to in data.parsed.to">
-                                {{to|targetInfo}} <span data-ng-hide="isAny(to)" class="pointer" data-ng-click="removeTo($index)">[ x ]</span>
-                                <br/>
-                            </span>
+                                </span>
+                            </form>
                         </span>
-
-                        <input type="hidden" id="toSelect" />
-                    </span>
-                    <span class="span10 text-medium">
-                        <form name="toForm">
-                            <span data-ng-switch="current.to.type">
+                        <span data-ng-show="data.parsed.from.length" class="span10 margin-top-10">
+                            <table class="table table-bordered width-100">
+                                <tr data-ng-repeat="from in data.parsed.from">
+                                    <td class="width-90">
+                                        {{from|targetInfo}}
+                                    </td>
+                                    <td class="width-10">
+                                        <div class="text-center">
+                                            <button type="button" data-ng-hide="isAny(from)" class="btn btn-danger" data-ng-click="removeFrom($index)">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">To</label>
+                    <div class="controls">
+                        <span class="span10 text-medium">
+                            <input type="hidden" id="toSelect" />  <br /><br />
+                        </span>
+                        <span class="span10 text-medium">
+                            <form name="toForm">
+                                <span data-ng-switch="current.to.type">
                                     <span data-ng-switch-when="wildcard">
                                         <span data-ng-show="current.to.text == 'all vms'">
-                                            <button class="pointer" data-ng-click="addTo()">ADD</button>
+                                            <span class="row-fluid">
+                                                <span class="span10 offset2 margin-top-10">
+                                                    <button class="btn" data-ng-click="addTo()">ADD</button>
+                                                </span>
+                                            </span>
                                         </span>
                                     </span>
                                     <span data-ng-switch-when="tag">
-                                        <span>Tag name: </span><input data-ng-model="current.to.text" /><br/>
-                                        <span data-ng-show="current.to.text">Tag value (optional): <input data-ng-model="current.to.value" /></span>
-                                        <button class="pointer" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                        <span class="row-fluid">
+                                            <span class="span2">
+                                                Tag name:
+                                            </span>
+                                            <span class="span10">
+                                                <input type="text" data-ng-model="current.to.text"/>
+                                            </span>
+                                        </span>
+                                        <span data-ng-show="current.to.text" class="row-fluid">
+                                            <span class="span2 margin-top-10">
+                                                Tag value (optional):
+                                            </span>
+                                            <span class="span10 margin-top-10">
+                                                <input type="text" data-ng-model="current.to.value" />
+                                            </span>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span10 offset2 margin-top-10">
+                                                <button class="btn" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                            </span>
+                                        </span>
                                     </span>
                                     <span data-ng-switch-default>
                                         <!-- due to the nature of directives, we need another switch here -->
                                         <span data-ng-switch="current.to.type">
                                             <span data-ng-switch-when="subnet">
-                                                <input name="toValue" data-ng-model="toSubnet.address" data-ip/>
-                                                <br/>
-                                                CIDR: <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
+                                                <span class="row-fluid">
+                                                    <span class="span10 offset2">
+                                                        <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip/>
+                                                    </span>
+                                                </span>
+                                                <span data-ng-show="current.to.text" class="row-fluid">
+                                                    <span class="span2 margin-top-10">
+                                                        CIDR:
+                                                    </span>
+                                                    <span class="span10 margin-top-10">
+                                                        <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
+                                                    </span>
+                                                </span>
                                             </span>
                                             <span data-ng-switch-when="ip">
-                                                <input name="toValue" data-ng-model="current.to.text" data-ip/>
+                                                <span class="row-fluid">
+                                                    <span class="span10 offset2">
+                                                        <input type="text" name="toValue" data-ng-model="current.to.text" data-ip/>
+                                                    </span>
+                                                </span>
                                             </span>
                                             <span data-ng-switch-default>
-                                                <input name="toValue" data-ng-model="current.to.text" /><br/>
+                                                <span class="row-fluid">
+                                                    <span class="span10 offset2">
+                                                        <input type="text" name="toValue" data-ng-model="current.to.text" /><br/>
+                                                    </span>
+                                                </span>
                                             </span>
-                                            <br/>
                                         </span>
                                         <!-- directives switch end -->
-                                        <button class="pointer" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                        <span class="row-fluid">
+                                            <span class="span10 offset2 margin-top-10">
+                                                <button class="btn" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                            </span>
+                                        </span>
                                     </span>
+                                </span>
+                            </form>
+                        </span>
+                        <span data-ng-show="data.parsed.to.length" class="span10 margin-top-10">
+                            <table class="table table-bordered width-100">
+                                  <tr data-ng-repeat="to in data.parsed.to">
+                                    <td class="width-90">
+                                        {{to|targetInfo}}
+                                    </td>
+                                    <td class="width-10">
+                                        <div class="text-center">
+                                            <button type="button" data-ng-hide="isAny(to)" class="btn btn-danger" data-ng-click="removeTo($index)">Delete</button>
+                                        </div>
+                                    </td>
+                                  </tr>
+                            </table>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Action</label>
+                    <div class="controls">
+                        <span class="span10">
+                            <select data-ng-model="data.parsed.action" data-ng-options="action.value as action.title for (key, action) in actions"></select>
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label">Protocol</label>
+                    <div class="controls warning">
+                        <span class="span10 text-medium">
+                            <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
+                            <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
+                                <span class="row-fluid">
+                                    <span class="span1">
+                                        Ports:
+                                    </span>
+                                    <span class="span10">
+                                        <input type="text" data-ng-model="current.port" />
+                                    </span>
+                                </span>
+                                <span class="row-fluid">
+                                    <span class="span10 offset1 margin-top-10">
+                                        <button class="btn" data-ng-click="addPort()">ADD</button>
+                                    </span>
+                                </span>
                             </span>
-                        </form>
-                    </span>
-                    </span>
+                            <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                                <span class="row-fluid">
+                                    <span class="span1">
+                                        Type:
+                                    </span>
+                                    <span class="span10">
+                                        <input type="text" data-ng-model="current.type" />
+                                    </span>
+                                </span>
+                                <span class="row-fluid">
+                                    <span class="span1 margin-top-10">
+                                        Code:
+                                    </span>
+                                    <span class="span10 margin-top-10">
+                                        <input type="text" data-ng-model="current.code" />
+                                    </span>
+                                </span>
+                                <span class="row-fluid">
+                                    <span class="span10 offset1 margin-top-10">
+                                        <button class="btn" data-ng-click="addType()">ADD</button>
+                                    </span>
+                                </span>
+                            </span>
+                        </span>
+                        <span data-ng-show="data.parsed.to.length" class="span10 margin-top-10">
+                            <table class="table table-bordered width-100">
+                                <tr data-ng-repeat="target in data.parsed.protocol.targets">
+                                    <td class="width-90">
+                                        {{target}} KUSTUTAMINE TEGEMATA
+                                    </td>
+                                    <td class="width-10">
+                                        <div class="text-center">
+                                            <button type="button" class="btn btn-danger">Delete</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </span>
+                    </div>
                 </div>
-                <div class="clearfix"></div><hr/>
-                <h4>Action</h4><hr/>
-                <div>
-                    <span class="span10 text-medium"><select data-ng-model="data.parsed.action" data-ng-options="action.value as action.title for (key, action) in actions"></select></span>
-
+                <div class="control-group">
+                    <label class="control-label">Status</label>
+                    <div class="controls">
+                        <span class="span10">
+                            <select data-ng-model="data.enabled" data-ng-options="status.value as status.title for (key, status) in states"></select>
+                        </span>
+                    </div>
                 </div>
-                <div class="clearfix"></div><hr/>
-                <h4>Protocol</h4><hr/>
-                <div>
-                    <span class="span10 text-medium">
-                    <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/>
-                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                        ports: <br/><span data-ng-repeat="target in data.parsed.protocol.targets">{{target}}<br/></span>
-                        <input data-ng-model="current.port" /><br/>
-                        <span class="pointer" data-ng-click="addPort()">ADD</span>
-                    </span>
-                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                        <br/><span data-ng-repeat="target in data.parsed.protocol.targets">{{target}}<br/></span>
-                        Type: <input data-ng-model="current.type" /><br/>
-                        Code: <input data-ng-model="current.code" /><br/>
-                        <span class="pointer" data-ng-click="addType()">ADD</span>
-                    </span>
-
-                </span>
+                <div class="form-actions">
+                    <button class="btn btn-primary" data-ng-hide="data.uuid" data-ng-click="createRule()">
+                        Create Rule
+                    </button>
+                    <button class="btn btn-primary" data-ng-show="data.uuid" data-ng-click="updateRule()">
+                        Update Rule
+                    </button>
                 </div>
-                <div class="clearfix"></div><hr/>
-                <h4>Status</h4><hr/>
-                <div>
-                    <span class="span10 text-medium">
-                    <select data-ng-model="data.enabled" data-ng-options="status.value as status.title for (key, status) in states"></select>
-                </span>
-                </div>
-
-                <div class="clearfix"></div><hr/>
-                <span class="pointer" data-ng-hide="data.uuid" data-ng-click="createRule()">Create Rule</span>
-                <span class="pointer" data-ng-show="data.uuid" data-ng-click="updateRule()">Update Rule</span>
-            </div>
-            <span class="pointer" data-ng-show="data.uuid" data-ng-click="resetData()">Create new</span>
-        </div>
+            </fieldset>
+        </form>
     </div>
 </div>
 
