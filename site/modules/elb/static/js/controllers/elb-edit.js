@@ -3,15 +3,34 @@
 (function (app) {
     app.controller(
         'elb.EditController',
-        ['$scope', 'requestContext', 'localization', '$resource', '$location', 'serverTab', 'util',
-                function ($scope, requestContext, localization, $resource, $location, serverTab, util) {
+        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'elb.Service',
+                function ($scope, requestContext, localization, $location, util, $q, service) {
             localization.bind('elb', $scope);
             requestContext.setUpRenderContext('elb.edit', $scope, {
                 title: localization.translate(null, 'elb', 'Create/Edit Load Balancer')
             });
 
             var balancerId = requestContext.getParam('balancerId');
-            var resource = $resource('elb/item/:id', {id:'@id'});
+
+            $q.all([service.getBalancer(balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
+                var balancer = results[0], balancers = results[1], machines = results[2];
+                $scope.server = balancer;
+                $scope.protocolSelect($scope.server.protocol);
+                $scope.server.health = $scope.server.health || {};
+                $scope.server.health.timeout = $scope.server.health.timeout || 2;
+                $scope.server.machines = $scope.server.machines || [];
+                var elbMachines = $scope.server.machines.map(function (machine) {
+                    return machine.host;
+                });
+                //TODO: We should only list machines form current DC
+                $scope.machines = machines[0].machines.map(function (machine) {
+                    machine.created = machine.created.substring(0, 10);
+                    if (elbMachines.indexOf(machine.primaryIp) != -1) {
+                        machine.selected = true;
+                    }
+                    return machine;
+                });
+            });
 
             $scope.protocols = [
                 {name: 'HTTP', value: 'http'},
@@ -28,37 +47,10 @@
 
             $scope.server = {};
 
-            resource.get({id: balancerId}, function (response) {
-                $scope.server = response;
-                $scope.protocolSelect($scope.server.protocol);
-                $scope.server.health = $scope.server.health || {};
-                $scope.server.health.timeout = $scope.server.health.timeout || 2;
-                $scope.server.machines = $scope.server.machines || [];
-                var elbMachines = $scope.server.machines.map(function (machine) {
-                    return machine.host;
-                });
-                serverTab.call({
-                    name: 'MachineList',
-                    progress: function machineProgress(err, job) {
-                        var data = job.__read();
-                        //TODO: We should only list machines form current DC
-                        $scope.machines = data[0].machines.map(function (machine) {
-                            machine.created = machine.created.substring(0, 10);
-                            if (elbMachines.indexOf(machine.primaryIp) != -1) {
-                                machine.selected = true;
-                            }
-                            return machine;
-                        });
-                    }
-                });
-            });
-
             $scope.hc_delays = ['1','3','5','10'];
             $scope.hc_delaySelected = $scope.hc_delays[2]; //default
 
             $scope.timeouts = [1, 2, 5, 10, 20];
-
-            $scope.server = resource.get({id: balancerId});
 
             $scope.save = function () {
                 var selectedMachines = $scope.machines.filter(function (machine) {
