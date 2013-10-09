@@ -76,12 +76,12 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Delete Load Balacer'
+                        'Confirm: Delete Load Balancer'
                     ),
                     localization.translate(
                         $scope,
                         null,
-                        'Are you sure you want to delete?'
+                        'Are you sure you want to delete this load balancer?'
                     ), function () {
                         $scope.server.$remove();
                         $location.path('/elb/list');
