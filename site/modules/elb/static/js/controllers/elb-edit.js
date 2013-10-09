@@ -26,11 +26,13 @@
                 })[0] || $scope.protocols[0];
             };
 
-            $scope.server = resource.get({id: balancerId}, function (response) {
-                $scope.protocolSelect(response.protocol);
+            $scope.server = {};
+
+            resource.get({id: balancerId}, function (response) {
+                $scope.server = response;
+                $scope.protocolSelect($scope.server.protocol);
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
-                $scope.server.machines = $scope.server.machines || [];
                 var elbMachines = $scope.server.machines.map(function (machine) {
                     return machine.host;
                 });

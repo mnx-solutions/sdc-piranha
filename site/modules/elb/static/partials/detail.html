@@ -7,13 +7,13 @@
         <div class="span12 lb-line_allwidth">
             <div class="span4">
                 <span class="lb-label">Protocol: </span>
-                <span >&nbsp;&nbsp;<b>HTTP</b></span>
+                <span >&nbsp;&nbsp;<b>{{server.protocol | uppercase}}</b></span>
             </div>
             <div class="span4">
                 <span class="lb-label">Port from:</span>
-                <span>&nbsp;<b>4400</b></span>
+                <span>&nbsp;<b>{{server.fromPort}}</b></span>
                 <span class="lb-label"> to:</span>
-                <span>&nbsp;<b>4433</b></span>
+                <span>&nbsp;<b>{{server.toPort}}</b></span>
             </div>
             <div class="span4">
                 <span class="lb-label">Overall Health: </span>
