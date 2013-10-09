@@ -59,7 +59,7 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.post('/item/:id/machines/:host', function (req, res) {
+    app.put('/item/:id/machines/:host', function (req, res) {
         client.put('/loadbalancers/' + req.params.id + '/machines/' + req.params.host, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
