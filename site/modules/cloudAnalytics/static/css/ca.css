@@ -19,5 +19,10 @@
 .breadcrumb > li {
     display: inline-block;
     text-shadow: none;
-    color: #ff6600;
+    color: #a9a9a9;
+}
+.alert-info{
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #555;
 }

@@ -317,7 +317,7 @@
                     '</div>' +
                     '<br/>' +
                     '<div data-ng-show="showGraph && ready">' +
-                        '<div>' +
+                        '<div style="background-color: #e9eff3;">' +
                         '<div class="btn-group" data-toggle="buttons-radio">' +
                             '<button class="btn btn-mini default-margin default-margin-mini {{renderer == activeRenderer && \'active\' || \'\'}}" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
                         '</div>' +
@@ -333,7 +333,7 @@
                             '</div>' +
                         '</div>' +
                     '</div>' +
-                    '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:620px"></div>' +
+                    '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:610px"></div>' +
                     '</div><hr />' +
                 '</div>'
         };
