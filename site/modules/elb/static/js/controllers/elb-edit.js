@@ -33,6 +33,7 @@
                 $scope.protocolSelect($scope.server.protocol);
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
+                $scope.server.machines = $scope.server.machines || [];
                 var elbMachines = $scope.server.machines.map(function (machine) {
                     return machine.host;
                 });
