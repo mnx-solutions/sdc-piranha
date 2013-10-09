@@ -65,6 +65,7 @@
                 }).map(function (machine) {
                     return machine.primaryIp;
                 });
+                delete $scope.server.health; //TODO: Remove this when saving health status is fixed
                 $scope.server.protocol = $scope.protocolSelected.value;
                 var operations = [];
                 if (balancerId) {
