@@ -13,8 +13,8 @@
             var balancerId = requestContext.getParam('balancerId');
 
             $q.all([service.getBalancer(balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
-                var balancer = results[0], balancers = results[1], machines = results[2];
-                $scope.server = balancer;
+                var currentBalancer = results[0], balancers = results[1], machines = results[2];
+                $scope.server = currentBalancer;
                 $scope.protocolSelect($scope.server.protocol);
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
@@ -22,12 +22,19 @@
                 var elbMachines = $scope.server.machines.map(function (machine) {
                     return machine.host;
                 });
+                var hosts = {};
+                balancers.forEach(function (balancer) {
+                    (balancer.machines || []).forEach(function (machine) {
+                        hosts[machine.host] = balancer.name;
+                    });
+                });
                 //TODO: We should only list machines form current DC
                 $scope.machines = machines[0].machines.map(function (machine) {
                     machine.created = machine.created.substring(0, 10);
                     if (elbMachines.indexOf(machine.primaryIp) != -1) {
                         machine.selected = true;
                     }
+                    machine.balancer = hosts[machine.primaryIp] || '';
                     return machine;
                 });
             });
