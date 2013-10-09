@@ -15,7 +15,7 @@
             $scope.server = resource.get({id: balancerId});
 
             $scope.edit = function () {
-                $location.path('/elb/edit/' + $scope.server.id);
+                $location.path('/elb/edit/' + balancerId);
             };
 
         }]);
