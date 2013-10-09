@@ -40,7 +40,7 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/item/:id', function (req, res, next) {
-        client.post('/loadbalancers/' + req.params.id, req.body, function(err, creq, cres, obj) {
+        client.put('/loadbalancers/' + req.params.id, req.body, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
                 return;
