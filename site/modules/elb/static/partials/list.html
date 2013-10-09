@@ -14,7 +14,7 @@
         <tr data-ng-repeat="server in servers">
             <td><a href="#!/elb/detail/{{server.id}}">{{server.name}}</a></td>
             <td>Active</td>
-            <td>4/4</td>
+            <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
             <td>{{server.created}}</td>
         </tr>
         </tbody>

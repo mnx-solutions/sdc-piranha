@@ -6,10 +6,17 @@
         '$http',
         '$q',
         function (serverTab, $http, $q) {
+            function _filterBalancer(balancer) {
+                balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
+                    return machine.status === 'up';
+                });
+                return balancer;
+            }
+
             function getBalancer(balancerId) {
                 var d = $q.defer();
                 $http.get('elb/item/' + (balancerId || '')).success(function (data) {
-                    d.resolve(data);
+                    d.resolve(_filterBalancer(data));
                 }).error(function (err) {
                     d.reject(err);
                 });
@@ -54,6 +61,9 @@
             function getBalancers() {
                 var d = $q.defer();
                 $http.get('elb/list').success(function (data) {
+                    data = data.map(function (balancer) {
+                        return _filterBalancer(balancer);
+                    });
                     d.resolve(data);
                 }).error(function (err) {
                     d.reject(err);
