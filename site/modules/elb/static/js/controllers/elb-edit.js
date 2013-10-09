@@ -65,10 +65,32 @@
                 }).map(function (machine) {
                     return machine.primaryIp;
                 });
-                $scope.server.machines = selectedMachines;
                 $scope.server.protocol = $scope.protocolSelected.value;
-                $scope.server.$save();
-                $location.path('/elb/list');
+                var operations = [];
+                if (balancerId) {
+                    var existingMachines = $scope.server.machines.map(function (machine) {
+                        return machine.host;
+                    });
+                    var machinesToAdd = selectedMachines.filter(function (machine) {
+                        return existingMachines.indexOf(machine) == -1;
+                    });
+                    var machinesToDelete = existingMachines.filter(function (machine) {
+                        return selectedMachines.indexOf(machine) == -1;
+                    });
+                    machinesToAdd.forEach(function (machine) {
+                        operations.push(service.addMachine(balancerId, machine));
+                    });
+                    machinesToDelete.forEach(function (machine) {
+                        operations.push(service.deleteMachine(balancerId, machine));
+                    });
+                    operations.push(service.updateBalancer(balancerId, $scope.server));
+                } else {
+                    $scope.server.machines = selectedMachines;
+                    operations.push(service.addBalancer($scope.server));
+                }
+                $q.all(operations).then(function () {
+                    $location.path('/elb/list');
+                })
             };
 
             $scope.delete = function(){

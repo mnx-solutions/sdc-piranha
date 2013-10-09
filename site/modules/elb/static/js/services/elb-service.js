@@ -16,6 +16,26 @@
                 return d.promise;
             }
 
+            function updateBalancer(balancerId, data) {
+                var d = $q.defer();
+                $http.put('elb/item/' + balancerId, data).success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                    d.reject(err);
+                });
+                return d.promise;
+            }
+
+            function addBalancer(data) {
+                var d = $q.defer();
+                $http.post('elb/item', data).success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                    d.reject(err);
+                });
+                return d.promise;
+            }
+
             function getMachines() {
                 var d = $q.defer();
                 serverTab.call({
@@ -40,6 +60,35 @@
                 });
                 return d.promise;
             }
-            return {getBalancer: getBalancer, getBalancers: getBalancers, getMachines: getMachines};
+
+            function addMachine(balancerId, host) {
+                var d = $q.defer();
+                $http.put('elb/item/' + balancerId + '/machines/' + encodeURIComponent(host)).success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                    d.reject(err);
+                });
+                return d.promise;
+            }
+
+            function deleteMachine(balancerId, host) {
+                var d = $q.defer();
+                $http.delete('elb/item/' + balancerId + '/machines/' + encodeURIComponent(host)).success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                        d.reject(err);
+                    });
+                return d.promise;
+            }
+
+            return {
+                getBalancer: getBalancer,
+                addBalancer: addBalancer,
+                updateBalancer: updateBalancer,
+                getBalancers: getBalancers,
+                getMachines: getMachines,
+                addMachine: addMachine,
+                deleteMachine: deleteMachine
+            };
         }]);
 }(window.JP.getModule('elb')));

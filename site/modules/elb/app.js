@@ -15,11 +15,11 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.get('/item', function (req, res, next) {
+    app.get('/item', function (req, res) {
         res.json({});
     });
 
-    app.post('/item', function (req, res, next) {
+    app.post('/item', function (req, res) {
         client.post('/loadbalancers', req.body, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
@@ -39,7 +39,7 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.post('/item/:id', function (req, res, next) {
+    app.put('/item/:id', function (req, res) {
         client.put('/loadbalancers/' + req.params.id, req.body, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
@@ -49,8 +49,28 @@ module.exports = function execute(scope, app) {
         });
     });
 
-    app.delete('/item/:id', function (req, res, next) {
+    app.delete('/item/:id', function (req, res) {
         client.del('/loadbalancers/' + req.params.id, function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            res.json(obj);
+        });
+    });
+
+    app.post('/item/:id/machines/:host', function (req, res) {
+        client.put('/loadbalancers/' + req.params.id + '/machines/' + req.params.host, function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            res.json(obj);
+        });
+    });
+
+    app.delete('/item/:id/machines/:host', function (req, res) {
+        client.del('/loadbalancers/' + req.params.id + '/machines/' + req.params.host, function(err, creq, cres, obj) {
             if (err) {
                 res.send(400, err);
                 return;
