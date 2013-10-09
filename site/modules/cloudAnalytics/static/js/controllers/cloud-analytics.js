@@ -10,8 +10,9 @@
         '$q',
         'caInstrumentation',
         '$timeout',
+        '$location',
 
-        function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout) {
+        function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout, $location) {
             function tick() {
                 $scope.endtime++;
                 $timeout(tick, 1000);
@@ -22,6 +23,7 @@
 
             $scope.zoneId = zoneId;
             $scope.zones = Machine.machine();
+            $scope.location = $location;
 
             $scope.ranges = [ 10, 30, 60, 90, 120, 150, 180 ];
 
@@ -97,7 +99,8 @@
                                 title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
                             });
                         }
-
+                        $scope.cpuGraphs = $scope.graphs.slice(0, 1);
+                        $scope.memGraphs = $scope.graphs.slice(2, 3);
                     });
                 } else {
                     notification.push( 'ca', { type: 'error' }, err);
@@ -292,7 +295,6 @@
                         );
                     }
                 });
-
             };
 
             $scope.deleteAllInstrumentations = function() {
