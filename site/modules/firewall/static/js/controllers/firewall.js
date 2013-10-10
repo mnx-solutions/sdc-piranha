@@ -134,6 +134,8 @@
                 CIDR:32
             };
 
+
+
             $scope.$watch('fromSubnet', function(n) {
                 if(n.CIDR && n.address) {
                     $scope.current.from.text = n.address + '/' + n.CIDR;
@@ -151,6 +153,12 @@
                     address:null,
                     CIDR:32
                 };
+            });
+
+            $scope.$watch('data.parsed.protocol.name', function(name) {
+                if(name) {
+                    $scope.clearProtocolTargets();
+                }
             });
 
             $scope.$watch('current.to.type', function() {
@@ -231,11 +239,12 @@
                 title:'ICMP'
             }];
 
-            function setRules(rules) {
+            $scope.setRules = function (rules) {
                 $scope.rules = rules[$scope.datacenter];
             }
 
             // get lists from services
+            $scope.rules = [];
             $scope.machines = Machine.machine();
             $scope.rulesByDatacenter = rule.rule();
             $q.all([
@@ -243,9 +252,10 @@
                 $q.when($scope.rulesByDatacenter)
             ]).then(function(lists){
                 $scope.$watch('datacenter', function(dc){
+
                     if(dc) {
 
-                        setRules(lists[1]);
+                        $scope.setRules(lists[1]);
 
                         if(lists[0].length) {
                             extractVmInfo(lists[0]);
@@ -272,6 +282,23 @@
                 };
                 $scope.data.enabled = false;
             };
+
+            $scope.getData = function() {
+                return {
+                    uuid: $scope.data.uuid,
+                    datacenter: $scope.data.datacenter,
+                    enabled: $scope.data.enabled,
+                    parsed: {
+                        from: $scope.data.parsed.from,
+                        to: $scope.data.parsed.to,
+                        action: $scope.data.parsed.action,
+                        protocol: {
+                            name: $scope.data.parsed.protocol.name,
+                            targets: $scope.data.parsed.protocol.targets
+                        }
+                    }
+                }
+            }
 
             $scope.resetCurrent = function() {
                 if(from && $scope.current.from) {
@@ -340,6 +367,10 @@
                 $scope.data.parsed[direction] = [];
             }
 
+            $scope.clearProtocolTargets = function() {
+                $scope.data.parsed.protocol.targets = [];
+            }
+
             $scope.addFrom = function() {
                 addTarget('from');
             }
@@ -354,6 +385,11 @@
                     $scope.data.parsed.from = [['wildcard', 'any']];
                 }
             }
+
+            $scope.removeProtocolTarget = function(i) {
+                $scope.data.parsed.protocol.targets.splice(i, 1);
+            }
+
             $scope.removeTo = function(i) {
                 $scope.data.parsed.to.splice(i, 1);
                 if(!$scope.data.parsed.to.length) {
@@ -374,16 +410,15 @@
             }
 
             $scope.editRule = function(r) {
-                var n = ng.copy(r);
-                $scope.data.uuid = n.uuid;
-                $scope.data.datacenter = n.datacenter;
+                $scope.data.uuid = r.uuid;
+                $scope.data.datacenter = r.datacenter;
                 $scope.data.parsed = {
-                    from: n.parsed.from,
-                    to: n.parsed.to,
-                    action: n.parsed.action,
-                    protocol: n.parsed.protocol
+                    from: r.parsed.from,
+                    to: r.parsed.to,
+                    action: r.parsed.action,
+                    protocol: r.parsed.protocol
                 };
-                $scope.data.enabled = n.enabled;
+                $scope.data.enabled = r.enabled;
             }
 
             // Rule controls to interact with service
@@ -391,33 +426,43 @@
             // Temporary solution for updating rule information
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
+                $scope.loading = true;
 
-                var data = ng.copy($scope.data);
-                rule.deleteRule(({uuid: data.uuid, datacenter: data.datacenter}));
-
-                rule.createRule(data).then(function(){
-                    console.log('update rule', arguments)
-                })
+                rule.deleteRule($scope.getData()).then(function(){
+                    var r = $scope.getData();
+                    delete r.uuid;
+                        rule.createRule(r).then(function(created){
+                            if(created.id) {
+                                $scope.data.uuid = created.id;
+                            }
+                        $scope.refresh();
+                    })
+                });
 
             }
             $scope.deleteRule = function(r) {
-                rule.deleteRule({
-                    uuid: r.uuid,
-                    datacenter: r.datacenter
-                }).then(function(){
-                    console.log('delete rule', arguments)
-
-                })
+                $scope.loading = true;
+                rule.deleteRule(r).then(function(){
+                    $scope.loading = false;
+                });
             }
 
+            $scope.changeStatus = function(r) {
+                $scope.loading = true;
+
+            }
+            $scope.refresh = function() {
+                $scope.loading = true;
+                rule.rule().then(function(r){
+                    $scope.setRules(r);
+                    $scope.loading = false;
+                });
+            }
             $scope.createRule = function() {
-                var data = ng.copy($scope.data);
-                rule.createRule(data).then(function(r){
+                $scope.loading = true;
+                rule.createRule($scope.getData()).then(function(r){
                     if(r.id) {
-                        rule.rule().then(function(r){
-                            setRules(r);
-                            $scope.resetData();
-                        });
+                        $scope.refresh();
                     }
                 })
             }

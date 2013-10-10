@@ -2,7 +2,7 @@
     <div class="container">
     <data-notification></data-notification>
         <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter as datacenter for (datacenter, rules) in rulesByDatacenter"></select>
-        <h1 class="pull-left">Firewall rules for {{datacenter}}</h1>
+        <h1 class="pull-left">Firewall rules for {{datacenter}}</h1><div data-ng-show="loading" class="loading-medium-after-h1"></div>
         <div class="clearfix"></div>
 
         <table class="table table-bordered width-100">
@@ -38,7 +38,7 @@
                 </td>
                 <td>
                     <div class="text-center">
-                        <button type="button" class="btn {{{true: 'btn-success', false: 'btn-warning'}[rule.enabled]}}">{{{true: 'Disable', false: 'Enable'}[rule.enabled]}}</button>
+                        <button type="button" class="btn {{{true: 'btn-success', false: 'btn-warning'}[rule.enabled]}}" data-ng-click="changeStatus(rule)">{{{true: 'Disable', false: 'Enable'}[rule.enabled]}}</button>
                     </div>
                 </td>
                 <td>
@@ -53,10 +53,13 @@
                 </td>
             </tr>
         </table>
-
-        <form class="form-horizontal" data-ng-model="data">
+        <div data-ng-show="loading" class="loading-large"></div>
+        <form class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
             <fieldset>
-                <legend>{{data.uuid && 'Edit rule '+ data.uuid || 'Create New Rule' }}</legend>
+                <legend>
+                    <span data-ng-show="data.uuid">Edit rule {{data.uuid}} <a class="pointer" data-ng-click="resetData()">(create new instead)</a></span>
+                    <span data-ng-hide="data.uuid">Create New Rule</span>
+                </legend>
                 <div class="control-group">
                     <label class="control-label">From</label>
                     <div class="controls">
@@ -316,11 +319,11 @@
                             <table class="table table-bordered width-100">
                                 <tr data-ng-repeat="target in data.parsed.protocol.targets">
                                     <td class="width-90">
-                                        {{target}} KUSTUTAMINE TEGEMATA
+                                        {{target}}
                                     </td>
                                     <td class="width-10">
                                         <div class="text-center">
-                                            <button type="button" class="btn btn-danger">Delete</button>
+                                            <button type="button" class="btn btn-danger" data-ng-click="removeProtocolTarget($index)">Delete</button>
                                         </div>
                                     </td>
                                 </tr>
