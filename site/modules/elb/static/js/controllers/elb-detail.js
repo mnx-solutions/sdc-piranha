@@ -10,10 +10,12 @@
                 title: localization.translate(null, 'elb', 'Load Balancer Details')
             });
 
+            $scope.detailLoaded = false;
             var balancerId = requestContext.getParam('balancerId');
             $scope.server = {};
             service.getBalancer(balancerId).then(function (data) {
                 $scope.server = data;
+                $scope.detailLoaded = true;
             });
 
             $scope.edit = function () {

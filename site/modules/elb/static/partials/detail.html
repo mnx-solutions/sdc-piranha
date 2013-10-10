@@ -3,7 +3,9 @@
         <h1 class="pull-left" data-translate>Web Server Cluster</h1>
         <div class="clearfix"></div>
     </div>
-    <div class="row-fluid lb-edit">
+    <div class="loading-large" data-ng-hide="detailLoaded"></div>
+
+    <div class="row-fluid lb-edit" data-ng-show="detailLoaded">
         <div class="span12 lb-line_allwidth">
             <div class="span4">
                 <span class="lb-label">Protocol: </span>
