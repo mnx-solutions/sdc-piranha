@@ -37,7 +37,6 @@
                 });
                 //TODO: We should only list machines form current DC
                 $scope.machines = machines[0].machines.map(function (machine) {
-                    machine.created = machine.created.substring(0, 10);
                     if (elbMachines.indexOf(machine.primaryIp) != -1) {
                         machine.selected = true;
                     }
