@@ -3,18 +3,26 @@
 (function (app) {
     app.controller(
         'elb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'util',  function ($scope, requestContext, localization, $location, util) {
+        ['$scope', 'requestContext', 'localization', '$location', 'elb.Service',
+                function ($scope, requestContext, localization, $location, service) {
             localization.bind('elb', $scope);
             requestContext.setUpRenderContext('elb.index', $scope, {
                 title: localization.translate(null, 'elb', 'Enable Load Balancing')
             });
 
-            $scope.enableElb = function () {
-                $location.path('/elb/list');
-            };
+            $scope.allLoading = false;
 
-            $scope.license = function() {
-                $scope.changeLocation('/elb/list/');
+            service.getController().then(function (isEnabled) {
+                if (isEnabled) {
+                    $location.path('/elb/list');
+                }
+                $scope.allLoading = true;
+            })
+
+            $scope.enableElb = function () {
+                service.createController().then(function () {
+                    $location.path('/elb/list');
+                });
             };
 
             $scope.licenseAcceptCheck = false;
