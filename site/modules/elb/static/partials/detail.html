@@ -1,6 +1,6 @@
 <div class="container" data-ng-controller="elb.DetailController">
     <div class="page-header">
-        <h1 class="pull-left" data-translate>Web Server Cluster</h1>
+        <h1 class="pull-left" data-translate>Load Balancer: {{server.name}}</h1>
         <div class="clearfix"></div>
     </div>
     <div class="loading-large" data-ng-hide="detailLoaded"></div>
@@ -30,15 +30,12 @@
                 <tr>
                     <th class="table-title sortable"><div class="block">Image Name</div>
                     <th class="table-title sortable"><div class="block">Health Status</div>
-                    <th class="table-title sortable"><div class="block">Load Balancer</div>
-                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="machine in server.machines">
                     <td>{{machine.name}}</td>
                     <td>{{machine.status}}</td>
-                    <td>{{server.name}}</td>
                 </tr>
                 </tbody>
             </table>
