@@ -11,7 +11,7 @@
             <div class="">
                 <span class="span2 lb-label">Name</span>
                 <span class="span9 name-input">
-                    <input type="text" placeholder="Name" data-translate="placeholder" required data-ng-model="server.name"/>
+                    <input type="text" data-translate="placeholder" required data-ng-model="server.name"/>
                 </span>
             </div>
             <div class="">
@@ -35,11 +35,11 @@
                 <span class="lb-label">Port</span>
                 <span class="lb-label" style="margin-left: 50px;">from </span>
                 <span class= "port-input">
-                    <input type="text" placeholder="44" data-translate="placeholder" required data-ng-model="server.fromPort"/>
+                    <input type="text" data-translate="placeholder" required data-ng-model="server.fromPort"/>
                 </span>
                 <span class="lb-label"> to </span>
                 <span class="port-input">
-                    <input type="text" placeholder="8043" data-translate="placeholder" required data-ng-model="server.toPort"/>
+                    <input type="text" data-translate="placeholder" required data-ng-model="server.toPort"/>
                 </span>
                 <div class="clearfix"></div>
                 <span class="span10">
@@ -65,14 +65,14 @@
                 </div>
                 <span class="span3 lb-label">Port</span>
                 <span class="span2 port-input">
-                    <input type="text" placeholder="443" data-translate="placeholder" class="clb_input"/>
+                    <input type="text" data-translate="placeholder" class="clb_input"/>
                 </span>
             </div>
             <div class="clearfix"></div>
             <div style="margin-top: 10px;">
                 <span class="span3 lb-label">URL</span>
                 <span class="span3">
-                    <input type="text" placeholder="/index.html" data-translate="placeholder" class="url-input"/>
+                    <input type="text" data-ng-model="server.health.url" data-translate="placeholder" class="url-input"/>
                 </span>
                 <span class="span3 lb-label" style="margin: 0;">Timeout</span>
                 <div class="btn-group tooltip-hover span3 dd_margin"
@@ -96,7 +96,7 @@
                 <div class="btn-group tooltip-hover span3 dd_margin"
                      data-toggle="tooltip"
                      data-placement="bottom">
-                    <button class="btn dd_btn" >{{hc_delaySelected}} mins</button>
+                    <button class="btn dd_btn" >{{server.health.delay}} mins</button>
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
@@ -108,7 +108,7 @@
                 </div>
                 <span class="span3" style="line-height: 15px;">Failure Threshold</span>
                 <span class="span2 port-input">
-                    <input type="text" placeholder="5" data-translate="placeholder" data-ng-model="server.health.failThreshold" class="clb_input"/>
+                    <input type="text" data-translate="placeholder" data-ng-model="server.health.failThreshold" class="clb_input"/>
                 </span>
             </div>
         </div>

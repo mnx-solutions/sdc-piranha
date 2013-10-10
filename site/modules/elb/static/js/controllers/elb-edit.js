@@ -12,12 +12,18 @@
 
             var balancerId = requestContext.getParam('balancerId');
 
+            $scope.server = {};
+            $scope.hc_delays = [1, 3, 5, 10];
+            $scope.timeouts = [1, 2, 5, 10, 20];
+
             $q.all([service.getBalancer(balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
                 var currentBalancer = results[0], balancers = results[1], machines = results[2];
                 $scope.server = currentBalancer;
                 $scope.protocolSelect($scope.server.protocol);
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
+                $scope.server.health.delay = $scope.server.health.timeout || 5;
+                $scope.server.health.failThreshold = $scope.server.health.failThreshold || 5;
                 $scope.server.machines = $scope.server.machines || [];
                 var elbMachines = $scope.server.machines.map(function (machine) {
                     return machine.host;
@@ -52,12 +58,12 @@
                 })[0] || $scope.protocols[0];
             };
 
-            $scope.server = {};
-
-            $scope.hc_delays = ['1','3','5','10'];
-            $scope.hc_delaySelected = $scope.hc_delays[2]; //default
-
-            $scope.timeouts = [1, 2, 5, 10, 20];
+            $scope.hc_delaySelect = function (name) {
+                $scope.server.health.delay = name;
+            };
+            $scope.timeoutSelect = function (name) {
+                $scope.server.health.timeout = name;
+            };
 
             $scope.save = function () {
                 var selectedMachines = $scope.machines.filter(function (machine) {
@@ -65,7 +71,6 @@
                 }).map(function (machine) {
                     return machine.primaryIp;
                 });
-                delete $scope.server.health; //TODO: Remove this when saving health status is fixed
                 $scope.server.protocol = $scope.protocolSelected.value;
                 var operations = [];
                 if (balancerId) {
@@ -111,12 +116,5 @@
                         });
                     });
             };
-            $scope.hc_delaySelect = function (name) {
-                $scope.hc_delaySelected = name;
-            };
-            $scope.timeoutSelect = function (name) {
-                $scope.server.health.timeout = name;
-            };
-
         }]);
 }(window.JP.getModule('elb')));

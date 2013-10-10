@@ -17,6 +17,9 @@
             <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
             <td>{{server.created}}</td>
         </tr>
+        <tr data-ng-show="servers.length == 0">
+            <td colspan="4">No balancers configured</td>
+        </tr>
         </tbody>
     </table>
     <p class="text-fix pull-right"><i class="icon icon-plus-sign" style="margin: 1px 0 0 0;"></i>&nbsp;<a href="#!/elb/edit/">Create New Load Balancer</a></p>
