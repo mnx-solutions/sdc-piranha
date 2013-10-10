@@ -20,7 +20,10 @@
             $scope.servers = [];
 
             service.getBalancers().then(function (data) {
-                $scope.servers = data;
+                $scope.servers = data.map(function (balancer) {
+                    balancer.created = balancer.created.substring(0, 10);
+                    return balancer;
+                });
                 $scope.listLoaded = true;
             });
 
