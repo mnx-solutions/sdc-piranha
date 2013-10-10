@@ -40,6 +40,7 @@
     border: 2px solid #ececec;
     padding: 15px;
     margin-bottom: 40px;
+    width: auto;
 }
 .lb-line{
     border-top: 2px solid #ececec;
