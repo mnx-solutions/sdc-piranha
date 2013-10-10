@@ -3,18 +3,26 @@
 (function (app) {
     app.controller(
         'elb.DetailController',
-        ['$scope', 'requestContext', 'localization', 'elb.Service', '$location',
-                function ($scope, requestContext, localization, service, $location) {
+        ['$scope', 'requestContext', 'localization', 'elb.Service', '$location', '$q',
+                function ($scope, requestContext, localization, service, $location, $q) {
             localization.bind('elb', $scope);
             requestContext.setUpRenderContext('elb.detail', $scope, {
                 title: localization.translate(null, 'elb', 'Load Balancer Details')
             });
 
-            $scope.detailLoaded = false;
             var balancerId = requestContext.getParam('balancerId');
+            $scope.detailLoaded = false;
             $scope.server = {};
-            service.getBalancer(balancerId).then(function (data) {
-                $scope.server = data;
+            $q.all([service.getBalancer(balancerId), service.getMachines()]).then(function (results) {
+                $scope.server = results[0];
+                var hostNames = {}, machines = results[1][0].machines;
+                machines.forEach(function (machine) {
+                    hostNames[machine.primaryIp] = machine.name;
+                });
+                $scope.server.machines = ($scope.server.machines || []).map(function (machine) {
+                    machine.name = hostNames[machine.host] || '';
+                    return machine;
+                });
                 $scope.detailLoaded = true;
             });
 
