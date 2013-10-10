@@ -25,7 +25,7 @@
                 $scope.server.toPort = $scope.server.toPort || 80;
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
-                $scope.server.health.delay = $scope.server.health.timeout || 5;
+                $scope.server.health.delay = $scope.server.health.delay || 5;
                 $scope.server.health.failThreshold = $scope.server.health.failThreshold || 5;
                 $scope.server.machines = $scope.server.machines || [];
                 var elbMachines = $scope.server.machines.map(function (machine) {
