@@ -319,7 +319,7 @@ Portlets
 .portlet-body .btn-group {
     margin: 0px !important;
     padding: 0px !important;
-    margin-bottom: 10px !important;
+    /*margin-bottom: 10px !important;*/
 }
 
 /***

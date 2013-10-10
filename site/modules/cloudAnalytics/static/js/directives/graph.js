@@ -190,7 +190,7 @@
                     var conf = {
                         element: document.querySelector('#chart_' + $scope.$id),
                         renderer: $scope.activeRenderer,
-                        width: $scope.width || 400,
+                        width: $scope.width,
                         height: $scope.height || 150,
                         series: series
                     };
@@ -311,11 +311,11 @@
             },
             template:
                 '<div>' +
-                    '<div class="btn-group" style="width:100%;">' +
-                        '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:90%;">{{ready && options.title || loadingText}}</button>' +
-                        '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
+                    '<div class="btn-group margin_btn_0" style="width:100%;">' +
+                        '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:100%;">{{ready && options.title || loadingText}}</button>' +
+                     //   '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
                     '</div>' +
-                    '<br/>' +
+                  // '<br/>' +
                     '<div data-ng-show="showGraph && ready">' +
                         '<div style="background-color: #e9eff3;">' +
                         '<div class="btn-group" data-toggle="buttons-radio">' +
