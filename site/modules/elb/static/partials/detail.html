@@ -33,17 +33,10 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <!--<tr data-ng-repeat="item in items">-->
-                    <td >Web Server 1</td>
-                    <td>Healthy</td>
-                    <td>Web Server Cluster</td>
-                </tr>
-                <tr>
-                    <!--<tr data-ng-repeat="item in items">-->
-                    <td >Web Server 2</td>
-                    <td>Healthy</td>
-                    <td>Web Server Cluster</td>
+                <tr data-ng-repeat="machine in server.machines">
+                    <td>{{machine.host}}</td>
+                    <td>{{machine.status}}</td>
+                    <td>{{server.name}}</td>
                 </tr>
                 </tbody>
             </table>
