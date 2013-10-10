@@ -10,7 +10,8 @@ piranha is a portal for Joyent Cloud Services
 (Warning: piranha is using some private modules, so make sure you have access to them before installing)
 
 ## Installation on Joyent smartmachine
-    1. provision a fresh smartmachine base 13.1.0 works fine, it has the added benefit of having a recent enough nodejs installed already
+    1. provision a fresh smartmachine base 13.1.0 works fine,
+        it has the added benefit of having a recent enough nodejs installed already
     2. verify nodejs version 0.10.x is present
     3. verify git, gcc47 and gmake are present
     4. add user portal (useradd portal)
