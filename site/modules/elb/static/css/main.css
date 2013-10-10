@@ -118,6 +118,6 @@
     padding-bottom: 20px;
 }
 .table_overflow{
-    overflow: hidden;
+    overflow: auto;
     text-overflow: ellipsis;
 }
