@@ -15,7 +15,7 @@
                 <h3 class="page-title">Instance analytics <small>{{zoneId}}</small></h3>
 
                 <data-notification></data-notification>
-				<div class="container_details span8 listing text-medium" style="margin: 0;">
+				<div class="container_details span9 listing text-medium" style="margin: 0;">
 					<div class="well well-small">
 	                	<span class="span2 text-fix pointer text-small" data-ng-click="zoomIn()"><i class="icon icon-zoom-in" title="zoom in the graph"></i> Zoom In for closer look</span>
 	                	<span class="span2 text-fix pointer text-small" data-ng-click="zoomOut()"><i class="icon icon-zoom-out" title="zoom out the graph"></i> Zoom Out for overview</span>
@@ -67,7 +67,7 @@
 					<button class="btn" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
 					<h5>Use default instrumentation</h5>
 					<p class="text-small">Pre-defined metrics to measure performance.</p>
-					<button class="btn btn-info" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Start Analysis</button>
+					<button class="btn orange" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Start Analysis</button>
 				</div>
 				
 

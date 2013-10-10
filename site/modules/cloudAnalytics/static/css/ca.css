@@ -26,3 +26,9 @@
     border: 1px solid #ddd;
     color: #555;
 }
+.rickshaw_legend ul>li{
+    margin-left: 20px !important;
+}
+.rickshaw_legend {
+    padding: 12px 0;
+}

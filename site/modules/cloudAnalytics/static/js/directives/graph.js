@@ -311,7 +311,7 @@
             },
             template:
                 '<div>' +
-                    '<div class="btn-group" style="width:620px;">' +
+                    '<div class="btn-group" style="width:100%;">' +
                         '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:90%;">{{ready && options.title || loadingText}}</button>' +
                         '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
                     '</div>' +
@@ -327,13 +327,13 @@
 
                         '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>' +
                         '<div id="chart_{{$id}}" style="position: relative; left: 50px;">' +
-                            '<div id="clickpoint" style="position:absolute;height:0px;width:0px;"></div>' +
+                            '<div id="clickpoint" style="position:absolute;height:0;width:0;"></div>' +
                             '<div class="caOverlaid">' +
                                 '<img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
-                    '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:610px"></div>' +
+                    '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:100%"></div>' +
                     '</div><hr />' +
                 '</div>'
         };
