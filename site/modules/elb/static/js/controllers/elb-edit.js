@@ -44,6 +44,7 @@
                     machine.balancer = hosts[machine.primaryIp] || {};
                     return machine;
                 });
+                $scope.allLoading = true;
             });
 
             $scope.protocols = [
@@ -57,7 +58,6 @@
                 $scope.protocolSelected = $scope.protocols.filter(function (protocol) {
                     return protocol.value === protocolValue;
                 })[0] || $scope.protocols[0];
-                $scope.allLoading = true;
             };
 
             $scope.hc_delaySelect = function (name) {
