@@ -117,3 +117,7 @@
     padding-top: 20px;
     padding-bottom: 20px;
 }
+.table_overflow{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
