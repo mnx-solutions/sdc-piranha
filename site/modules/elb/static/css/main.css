@@ -122,3 +122,6 @@
     overflow: auto;
     text-overflow: ellipsis;
 }
+.table{
+    white-space: nowrap;
+}
