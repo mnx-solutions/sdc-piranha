@@ -151,7 +151,7 @@ module.exports = function execute(scope, register) {
 
         req.cloud.getAccount(function (accErr, account) {
             if (accErr) {
-                scope.log.error('Failed to get info from cloudApi', accErr);
+                req.log.error('Failed to get info from cloudApi', accErr);
                 cb(accErr);
                 return;
             }
@@ -210,7 +210,7 @@ module.exports = function execute(scope, register) {
 
             req.cloud.getAccount(function (accErr, account) {
                 if (accErr) {
-                    scope.log.error('Failed to get info from cloudApi', accErr);
+                    req.log.error('Failed to get info from cloudApi', accErr);
                     cb(accErr);
                     return;
                 }
@@ -244,7 +244,7 @@ module.exports = function execute(scope, register) {
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 
             if (isCompleted || isAStepBackwards || isALeap) {
-                scope.log.debug('Can\'t move to the next step, returning');
+                req.log.debug('Can\'t move to the next step, returning');
                 cb();
                 return;
             }
@@ -253,7 +253,7 @@ module.exports = function execute(scope, register) {
                 step = 'completed';
             }
 
-            scope.log.info('Step \'%s\' is now passed', step);
+            req.log.info('Step \'%s\' is now passed', step);
             api.setSignupStep(call, step, cb);
         });
     };
