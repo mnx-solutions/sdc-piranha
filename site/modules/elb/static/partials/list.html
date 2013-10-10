@@ -20,7 +20,7 @@
                 <td><a href="#!/elb/detail/{{server.id}}">{{server.name}}</a></td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
-                <td>{{server.created}}</td>
+                <td>{{server.created | dateTime:'YYYY-MM-DD'}}</td>
             </tr>
             <tr data-ng-show="servers.length == 0">
                 <td colspan="4">No balancers configured</td>

@@ -10,17 +10,19 @@
                 title: localization.translate(null, 'elb', 'Create/Edit Load Balancer')
             });
 
-            var balancerId = requestContext.getParam('balancerId');
+            $scope.balancerId = requestContext.getParam('balancerId');
 
             $scope.server = {};
             $scope.hc_delays = [1, 3, 5, 10];
             $scope.timeouts = [1, 2, 5, 10, 20];
             $scope.allLoading = false;
 
-            $q.all([service.getBalancer(balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
+            $q.all([service.getBalancer($scope.balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
                 var currentBalancer = results[0], balancers = results[1], machines = results[2];
                 $scope.server = currentBalancer;
                 $scope.protocolSelect($scope.server.protocol);
+                $scope.server.fromPort = $scope.server.fromPort || 80;
+                $scope.server.toPort = $scope.server.toPort || 80;
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
                 $scope.server.health.delay = $scope.server.health.timeout || 5;
@@ -37,7 +39,6 @@
                 });
                 //TODO: We should only list machines form current DC
                 $scope.machines = machines[0].machines.map(function (machine) {
-                    machine.created = machine.created.substring(0, 10);
                     if (elbMachines.indexOf(machine.primaryIp) != -1) {
                         machine.selected = true;
                     }
@@ -75,7 +76,7 @@
                 });
                 $scope.server.protocol = $scope.protocolSelected.value;
                 var operations = [];
-                if (balancerId) {
+                if ($scope.balancerId) {
                     var existingMachines = $scope.server.machines.map(function (machine) {
                         return machine.host;
                     });
@@ -86,19 +87,19 @@
                         return selectedMachines.indexOf(machine) == -1;
                     });
                     machinesToAdd.forEach(function (machine) {
-                        operations.push(service.addMachine(balancerId, machine));
+                        operations.push(service.addMachine($scope.balancerId, machine));
                     });
                     machinesToDelete.forEach(function (machine) {
-                        operations.push(service.deleteMachine(balancerId, machine));
+                        operations.push(service.deleteMachine($scope.balancerId, machine));
                     });
-                    operations.push(service.updateBalancer(balancerId, $scope.server));
+                    operations.push(service.updateBalancer($scope.balancerId, $scope.server));
                 } else {
                     $scope.server.machines = selectedMachines;
                     operations.push(service.addBalancer($scope.server));
                 }
                 // Delete selected machines from other balancers
                 $scope.machines.forEach(function (machine) {
-                    if (machine.selected && machine.balancer.id && machine.balancer.id !== balancerId) {
+                    if (machine.selected && machine.balancer.id && machine.balancer.id !== $scope.balancerId) {
                         operations.push(service.deleteMachine(machine.balancer.id, machine.primaryIp));
                     }
                 });
@@ -119,7 +120,7 @@
                         null,
                         'Are you sure you want to delete this load balancer?'
                     ), function () {
-                        service.deleteBalancer(balancerId).then(function () {
+                        service.deleteBalancer($scope.balancerId).then(function () {
                             $location.path('/elb/list');
                         });
                     });

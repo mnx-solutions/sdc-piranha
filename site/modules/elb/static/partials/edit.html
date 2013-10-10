@@ -129,7 +129,7 @@
                 <tr data-ng-repeat="machine in machines">
                     <td width="10"><input type="checkbox" class="group-checkable" data-ng-model="machine.selected"></td>
                     <td>{{machine.name}}</td>
-                    <td>{{machine.created}}</td>
+                    <td>{{machine.created | dateTime:'YYYY-MM-DD'}}</td>
                     <td>{{machine.balancer.name}}</td>
                 </tr>
                 </tbody>
@@ -140,7 +140,7 @@
     <span class="span12" data-ng-show="allLoading">
         <p class="logo_riverbed pull-left">Powered by</p>
         <button data-ng-disabled="!editForm.$valid" data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 20px 30px 10px;"><span class="ng-scope">Save</span></button>
-        <button data-ng-disabled="!editForm.$valid" data-ng-click="delete()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 0 30px 10px;"><span class="ng-scope">Delete</span></button>
+        <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 0 30px 10px;"><span class="ng-scope">Delete</span></button>
     </span>
 
     </form>
