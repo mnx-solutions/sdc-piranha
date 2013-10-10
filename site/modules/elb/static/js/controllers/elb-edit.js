@@ -106,8 +106,9 @@
                         null,
                         'Are you sure you want to delete this load balancer?'
                     ), function () {
-                        $scope.server.$remove();
-                        $location.path('/elb/list');
+                        service.deleteBalancer(balancerId).then(function () {
+                            $location.path('/elb/list');
+                        });
                     });
             };
             $scope.hc_delaySelect = function (name) {

@@ -6,6 +6,8 @@
         '$http',
         '$q',
         function (serverTab, $http, $q) {
+            var service = {};
+
             function _filterBalancer(balancer) {
                 balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
                     return machine.status === 'up';
@@ -13,7 +15,7 @@
                 return balancer;
             }
 
-            function getBalancer(balancerId) {
+            service.getBalancer = function getBalancer(balancerId) {
                 var d = $q.defer();
                 $http.get('elb/item/' + (balancerId || '')).success(function (data) {
                     d.resolve(_filterBalancer(data));
@@ -21,9 +23,9 @@
                     d.reject(err);
                 });
                 return d.promise;
-            }
+            };
 
-            function updateBalancer(balancerId, data) {
+            service.updateBalancer = function updateBalancer(balancerId, data) {
                 var d = $q.defer();
                 $http.put('elb/item/' + balancerId, data).success(function (data) {
                     d.resolve(data);
@@ -31,9 +33,9 @@
                     d.reject(err);
                 });
                 return d.promise;
-            }
+            };
 
-            function addBalancer(data) {
+            service.addBalancer = function addBalancer(data) {
                 var d = $q.defer();
                 $http.post('elb/item', data).success(function (data) {
                     d.resolve(data);
@@ -41,9 +43,19 @@
                     d.reject(err);
                 });
                 return d.promise;
-            }
+            };
 
-            function getMachines() {
+            service.deleteBalancer = function deleteBalancer(balancerId) {
+                var d = $q.defer();
+                $http.delete('elb/item/' + balancerId).success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                    d.reject(err);
+                });
+                return d.promise;
+            };
+
+            service.getMachines = function getMachines() {
                 var d = $q.defer();
                 serverTab.call({
                     name: 'MachineList',
@@ -56,9 +68,9 @@
                     }
                 });
                 return d.promise;
-            }
+            };
 
-            function getBalancers() {
+            service.getBalancers = function getBalancers() {
                 var d = $q.defer();
                 $http.get('elb/list').success(function (data) {
                     data = data.map(function (balancer) {
@@ -69,9 +81,9 @@
                     d.reject(err);
                 });
                 return d.promise;
-            }
+            };
 
-            function addMachine(balancerId, host) {
+            service.addMachine = function addMachine(balancerId, host) {
                 var d = $q.defer();
                 $http.put('elb/item/' + balancerId + '/machines/' + encodeURIComponent(host)).success(function (data) {
                     d.resolve(data);
@@ -79,9 +91,9 @@
                     d.reject(err);
                 });
                 return d.promise;
-            }
+            };
 
-            function deleteMachine(balancerId, host) {
+            service.deleteMachine = function deleteMachine(balancerId, host) {
                 var d = $q.defer();
                 $http.delete('elb/item/' + balancerId + '/machines/' + encodeURIComponent(host)).success(function (data) {
                     d.resolve(data);
@@ -89,16 +101,8 @@
                         d.reject(err);
                     });
                 return d.promise;
-            }
-
-            return {
-                getBalancer: getBalancer,
-                addBalancer: addBalancer,
-                updateBalancer: updateBalancer,
-                getBalancers: getBalancers,
-                getMachines: getMachines,
-                addMachine: addMachine,
-                deleteMachine: deleteMachine
             };
+
+            return service;
         }]);
 }(window.JP.getModule('elb')));
