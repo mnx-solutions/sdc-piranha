@@ -1,4 +1,16 @@
 <div class="container" data-ng-controller="elb.DetailController">
+    <ul class="breadcrumb">
+        <li class="ng-scope">
+            <a href="#!/elb" data-translate="" data-translate-expression="true" class="ng-binding">
+                <span class="ng-scope ng-binding">Load Balancers</span>
+            </a>
+            <span  class="divider">/</span>
+        </li>
+        <li class="ng-scope active">
+            <span class="ng-binding" > Load Balancer Details</span>
+        </li>
+    </ul>
+
     <div class="page-header">
         <h1 class="pull-left" data-translate>Load Balancer: {{server.name}}</h1>
         <div class="clearfix"></div>
