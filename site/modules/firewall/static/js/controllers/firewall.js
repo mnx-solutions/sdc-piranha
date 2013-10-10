@@ -427,14 +427,10 @@
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-
                 rule.deleteRule($scope.getData()).then(function(){
                     var r = $scope.getData();
                     delete r.uuid;
-                        rule.createRule(r).then(function(created){
-                            if(created.id) {
-                                $scope.data.uuid = created.id;
-                            }
+                    rule.createRule(r).then(function(){
                         $scope.refresh();
                     })
                 });
@@ -443,17 +439,27 @@
             $scope.deleteRule = function(r) {
                 $scope.loading = true;
                 rule.deleteRule(r).then(function(){
-                    $scope.loading = false;
+                    $scope.refresh();
                 });
             }
 
             $scope.changeStatus = function(r) {
                 $scope.loading = true;
-
+                if(r.enabled) {
+                    rule.disableRule(r).then(function() {
+                        $scope.refresh();
+                    });
+                } else {
+                    rule.enableRule(r).then(function() {
+                        $scope.refresh();
+                    });
+                }
             }
             $scope.refresh = function() {
                 $scope.loading = true;
                 rule.rule().then(function(r){
+                    $scope.resetData();
+                    $scope.resetCurrent();
                     $scope.setRules(r);
                     $scope.loading = false;
                 });

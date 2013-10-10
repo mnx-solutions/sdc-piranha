@@ -25,6 +25,21 @@
                 });
             }
 
+            var updateLocal = function (action, rule) {
+                switch(action) {
+                    case 'RuleEnable':
+                        rules.index[rule.uuid].enabled = true;
+                        break;
+                    case 'RuleDisable':
+                        rules.index[rule.uuid].enabled = false;
+                        break;
+                    case 'RuleDelete':
+                        removeRule(rule);
+                        break;
+                    default:
+                }
+            }
+
             service.createRule = function (rule) {
                 rule.uuid = window.uuid.v4();
 
@@ -92,6 +107,9 @@
                         );
                     }
 
+                    if(rule.job) {
+                        delete rule.job;
+                    }
                     // Update the rule
                     var job = serverTab.call({
                         name: action || 'RuleUpdate',
@@ -101,6 +119,7 @@
                                 showError(err);
                                 return;
                             }
+                            updateLocal(action, rule);
                             var data = job.__read();
                         },
 
@@ -117,47 +136,7 @@
                 }
             };
 
-            service.deleteRule = function(rule) {
-
-
-                function showError (err) {
-                    notification.push(rule.uuid, { type: 'error' },
-                        localization.translate(null,
-                            'firewall',
-                            'Unable to a delete rule: {{error}}',
-                            {
-                                error: (err.message) ? '<br />' + err.message : ''
-                            }
-                        )
-                    );
-                }
-
-                // delete rule
-                var job = serverTab.call({
-                    name: 'RuleDelete',
-                    data: rule,
-                    done: function(err, job) {
-                        if (err) {
-                            showError(err);
-                            return;
-                        }
-
-                        removeRule(rule);
-                        var data = job.__read();
-                    },
-
-                    error: function(err, job) {
-                        if (err) {
-                            showError(err);
-                            return;
-                        }
-                    }
-                });
-
-                rule.job = job.getTracker();
-                return job.deferred;
-            }
-
+            service.deleteRule = service.updateState('RuleDelete');
             service.updateRule = service.updateState('RuleUpdate');
             service.enableRule = service.updateState('RuleEnable');
             service.disableRule = service.updateState('RuleDisable');
