@@ -108,7 +108,6 @@
              * @returns {boolean}
              */
             _addPersistentNotification: function(notification) {
-                console.log('adding per notif');
                 if(!localStorage) {
                     return false;
                 }

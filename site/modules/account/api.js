@@ -29,6 +29,10 @@ module.exports = function execute(scope, register) {
     var api = {};
     var steps = [ 'start', 'phone', 'billing', 'ssh' ];
 
+    function _nextStep(step) {
+        return (step == 'completed' || step == 'complete') ?  step : steps[steps.indexOf(step)+1];
+    }
+
     function getFromBilling(method, userId, cb) {
         jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {
             if (!err) {
@@ -119,7 +123,6 @@ module.exports = function execute(scope, register) {
         scope.log.trace('getting signup step');
 
         var req = (call.done && call.req) || call;
-
         function end(step) {
             scope.log.trace('signup step is %s', step);
             cb(null, step);
@@ -133,6 +136,7 @@ module.exports = function execute(scope, register) {
             metadata.get(userId, 'signupStep', function (err, storedStep) {
                 if (!err && storedStep) {
                     call.log.info('Got signupStep from metadata', {step: storedStep});
+                    call.log.info('User landing in step: ', _nextStep(storedStep));
                     end(storedStep);
                 } else {
                     api.getAccountVal(req, function (err, value) {
@@ -140,6 +144,8 @@ module.exports = function execute(scope, register) {
                             cb(err);
                             return;
                         }
+
+                        call.log.info('User landing in step', _nextStep(storedStep));
                         end(value);
                     });
                 }
@@ -166,6 +172,7 @@ module.exports = function execute(scope, register) {
             if (req.session) {
                 metadata.set(req.session.userId, 'signupStep', step, function () {
                     call.log.info('Set signupStep in metadata', {step: step});
+                    call.log.info('User is now in step', _nextStep(step));
                 });
             }
             // Billing server is updated on billing step and forward
