@@ -1,34 +1,82 @@
-# piranha
+# Joyent Public Cloud Portal (piranha)
 
-piranha is a portal for Joyent Cloud Services
+Production: <https://my.joyentcloud.com/>  
+Repository: <https://github.com/joyent/piranha>  
+Browsing: <https://github.com/joyent/piranha>  
+Contacts: Lloyd Dewolf, Jens Schutt   
+Docs: <https://hub.joyent.com/wiki/display/PIRANHA/Home> (out of date)  
+Tickets/bugs: <https://sdcportal.atlassian.net/browse/PIRANHA>
+
+## Overview
+
+Originally billed as the SDC7 Client Portal, it is currently focused on Joyent Public Cloud.
+
+The project code name of 'piranha' has no special meaning other than Joyent's fondness for fish named projects. It is also hard to spell.
+
+## Repository
+
+    lib/
+    site/
+    site/config/ configuration and 3rd API keys
+    smf/
+    test/
+    tools/
+    var/
+    Gruntfile.js
+    README.md
+    env.json
+    index.js
+    package.json
 
 ## Installation
-    - Setup redis. Either use your package manager to install redis or download it from http://redis.io/download
-    - create environment configuration file (more in Config section)
-    $ npm install
-    $ node index.js -env={environment}
-(Warning: piranha is using some private modules, so make sure you have access to them before installing)
 
-## Installation on Joyent smartmachine
-    1. provision a fresh smartmachine base 13.1.0 works fine,
-        it has the added benefit of having a recent enough nodejs installed already
-    2. verify nodejs version 0.10.x is present
-    3. verify git, gcc47 and gmake are present
-    4. add user portal (useradd portal)
-    5. cd /opt/; git clone git@github.com:/joyent/piranha.git portal (need ssh -A to the host before)
-    6. check portal/smf/portal.xml looks sane
-    7. copy deployment configuration file config.pro.json to /opt/portal/site/config
-    8. copy deployment ssh key to /opt/portal/site/config
-    9. cd /opt/portal; npm install -production
-    10. svccfg import /opt/portal/smf/portal.xml
+### Development
+
+Development regularly occurs on Linux until it is ready for staging. Lloyd encourages development on SmartOS to be "close to production".
+
+1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.
+2. `git clone git@github.com:joyent/piranha.git`  
+3. `npm install` 
+4. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+5. `node index.js -env={environment}`
+
+### Staged Development
+
+The production environment is currently SmartOS 64-bit - base64 13.1.0, so we use the same for staged development.
+* Use 'ssh -A' to connect to the instance, forwarding your authentication agent.
+
+1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.  
+2. `pkgin up; pkgin in scmgit-base redis build-essential`
+3. `svcadm enable redis:default`
+4. `git clone git@github.com:joyent/piranha.git /opt/portal`  
+5. `cd /opt/portal; npm install --production`
+6. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+7. `svccfg import /opt/portal/smf/portal.xml`
+8. `svcadmin enable portal`
+
+### Production
+
+FIXME: moving to tarballs including all node.js modules and automated deployment using chef.
+
+## Update
+
+### Development & Staged
+
+1. `svcadmin disable portal`
+2. `rm -rf /opt/portal/node_modules/*`
+3. `git pull`
+5. `cd /opt/portal; npm install --production`
+8. `svcadmin enable portal`
+
+### Production
+
+FIXME: with a `make install`
 
 ## Configuration
 
-piranha is using [easy-config][1] module for configuration handling.
-piranha config can be found in `site/config/config.json` which also holds all default values (portal does not start up on these)
-For environmental configurations create `config.{environment}.json` and start piranha with `-env={environment}` option. This will load your enviromental configuration on top of config.json.
-You can also define configuration options using command line. ex: `$ node index.js -env=pro --log.level=fatal`
+piranha uses [easy-config][1] for configuration handling. The default config file is `site/config/config.json`. When piranha is started with the `-env={environment}` command line option, the values in `site/config/config.{environment}.json` overwrite those from `config.json`.
 
+You can also define configuration options using command line. ex: `$ node index.js -env=pro --log.level=fatal`
 
 - `server.port` Port on which piranha portal runs on.
 - `log.name` Name which will appear in every log message
@@ -49,7 +97,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `redis.port` Redis storage port
 - `redis.db` Redis database index
 - `redis.password` Redis storage password
-- `assets.*` [express-modulizer][1] magic.
+- `assets.*` [express-modulizer][3] magic.
 - `zuora.tenantID` Zuoras tenant ID
 - `zuora.api.user` Zuora API user
 - `zuora.api.password` Zuora API password
@@ -74,10 +122,10 @@ You can also define configuration options using command line. ex: `$ node index.
 
 ## Common errors:
 `Cannot find module {X}`
-    You don't have module X and need to install it using `npm install {X}`. Make sure you have access to it, because piranha is using some private modules.
+    You don't have module X and need to install it using `npm install {X}`.
 
-`Invalid developer` in SSO
-    Your `sso.keyId` or `sso.keyPath` are wrong. Re-check them and make sure they are in Admin portal.
+`Invalid developer` message when logging in to the portal in the web browser.
+    Your `sso.keyId` or `sso.keyPath` are wrong. Re-check them and make sure they are in SDC Admin. 
 
 [1]:https://github.com/DeadAlready/node-easy-config
 [2]:https://github.com/trentm/node-bunyan
