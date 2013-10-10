@@ -100,7 +100,7 @@
                             });
                         }
                         $scope.cpuGraphs = $scope.graphs.slice(0, 1);
-                        $scope.memGraphs = $scope.graphs.slice(2, 3);
+                        $scope.memGraphs = $scope.graphs.slice(3, 4);
                     });
                 } else {
                     notification.push( 'ca', { type: 'error' }, err);

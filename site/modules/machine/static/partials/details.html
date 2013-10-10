@@ -286,29 +286,6 @@
 
                 </div>
             </div>
-            <!--<div class="accordion-group">-->
-                <!--<div class="accordion-heading">-->
-                    <!--<a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[5]}" data-ng-click="collapseTrigger(5)"   data-toggle="collapse" data-parent="#accordion1"-->
-                       <!--href="#collapse_6">-->
-                        <!--<i class=""></i>-->
-                        <!--Networks-->
-                    <!--</a>-->
-                <!--</div>-->
-                <!--<div id="collapse_6" class="accordion-body collapse">-->
-                    <!--<div class="accordion-inner">-->
-                        <!--<p>-->
-                            <!--INFORMATION ABOUT THE NETWORK-->
-                        <!--</p>-->
-
-                        <!--<p>-->
-                            <!--<a class="btn orange" data-toggle="modal" href="" data-ng-click="messageDialog()">Apply-->
-                                <!--network-->
-                                <!--changes</a>-->
-                        <!--</p>-->
-                    <!--</div>-->
-
-                <!--</div>-->
-            <!--</div>-->
         </div>
     </div>
     <div class="pull-left">
@@ -372,15 +349,15 @@
             </button>
         </div>
         <div data-ng-controller="cloudController">
-            <a href="#!/cloudAnalytics/{{machine.id}}">
                 <div class="detail_chart" >
+                    <div class="loading-large" data-ng-hide="cpuGraphs && memGraphs"></div>
                     <graph data-ng-repeat="i in cpuGraphs" options="i" style="max-width: 480px;"></graph>
                 </div>
-            </a>
 
             <div class="detail_chart">
                 <graph data-ng-repeat="i in memGraphs" options="i" style="max-width: 480px;"></graph>
             </div>
+            <a href="#!/cloudAnalytics/{{machine.id}}" class="btn orange pull-right">View Detailed Analytics</a>
         </div>
 
     </div>
