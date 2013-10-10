@@ -252,7 +252,7 @@ module.exports = function execute(scope, register) {
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 
             if (isCompleted || isAStepBackwards || isALeap) {
-                req.log.debug('Can\'t move to the next step, returning');
+                scope.log.debug('Can\'t move to the next step, returning');
                 cb();
                 return;
             }
@@ -261,7 +261,7 @@ module.exports = function execute(scope, register) {
                 step = 'completed';
             }
 
-            req.log.info('Step \'%s\' is now passed', step);
+            scope.log.info('Step \'%s\' is now passed', step);
             api.setSignupStep(call, step, cb);
         });
     };
