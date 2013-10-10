@@ -3,17 +3,27 @@
 (function (app) {
     app.controller(
         'elb.ListController',
-        ['$scope', 'requestContext', 'localization', 'elb.Service', function ($scope, requestContext, localization, service) {
+        ['$scope', 'requestContext', 'localization', 'elb.Service', '$location',
+                function ($scope, requestContext, localization, service, $location) {
             $scope.listLoaded = false;
             localization.bind('elb', $scope);
             requestContext.setUpRenderContext('elb.list', $scope, {
                 title: localization.translate(null, 'elb', 'Load Balancers List')
             });
 
+            $scope.disableLb = function () {
+                service.deleteController().then(function () {
+                    $location.path('/elb');
+                });
+            };
+
             $scope.servers = [];
 
             service.getBalancers().then(function (data) {
-                $scope.servers = data;
+                $scope.servers = data.map(function (balancer) {
+                    balancer.created = balancer.created.substring(0, 10);
+                    return balancer;
+                });
                 $scope.listLoaded = true;
             });
 

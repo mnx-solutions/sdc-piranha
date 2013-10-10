@@ -103,6 +103,41 @@
                 return d.promise;
             };
 
+            service.getController = function getController() {
+                var d = $q.defer();
+                d.resolve(localStorage['hasElbController'] === 'yes');
+                return d.promise;
+            }
+
+            service.createController = function createController() {
+                var d = $q.defer();
+                localStorage['hasElbController'] = 'yes';
+                d.resolve();
+                return d.promise;
+            };
+
+            service.deleteController = function deleteController() {
+                var d = $q.defer();
+                localStorage['hasElbController'] = 'no';
+                d.resolve();
+                return d.promise;
+            };
+
+            function _createController() {
+                var data = {
+                    name: 'ELBController',
+                    package: 'd6987187-e4c6-4e89-990c-cd314c216add', // TODO: Change minimal Ubuntu package to STM when ready
+                    networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f']
+                };
+                serverTab.createMachine(data, function (err, machine) {
+                    if (err) {
+                        d.reject(err);
+                        return;
+                    }
+                    d.resolve(machine);
+                });
+            }
+
             return service;
         }]);
 }(window.JP.getModule('elb')));
