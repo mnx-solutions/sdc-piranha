@@ -66,26 +66,6 @@ Session.get = function (req, res, next) {
         return;
     }
 
-    // proper user ip taking reverse proxy / load balancer into account
-    if (req.scope.config.server.headerClientIpKey) {
-        req.userIp = req.header(req.scope.config.server.headerClientIpKey);
-
-        if (!req.userIp) {
-            req.log.warn('Client IP address is not found in header by configured key \'%s\'', req.scope.config.server.headerClientIpKey);
-        }
-    }
-
-    req.userIp = req.userIp || req.ip;
-
-    // Store user session information in log entries
-    if (req.session.userId && req.session.userName) {
-        req.log = req.log.child({
-            userName: req.session.userName,
-            userId: req.session.userId,
-            userIp: req.userIp
-        });
-    }
-
     if (sessions[req.session.id]) {
         req._session = sessions[req.session.id];
     } else {

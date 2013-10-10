@@ -590,9 +590,9 @@
       "resolved": "https://registry.npmjs.org/easy-config/-/easy-config-0.1.10.tgz"
     },
     "express-modulizer": {
-      "version": "0.0.25",
+      "version": "0.0.26",
       "from": "express-modulizer@git+ssh://git@github.com:joyent/node-express-modulizer.git",
-      "resolved": "git+ssh://git@github.com:joyent/node-express-modulizer.git#968e6b26ab458b67c5f5098ca7a5e94e644d0a01",
+      "resolved": "git+ssh://git@github.com:joyent/node-express-modulizer.git#4d3ccfda11a3f99bb713a7b959c65572afcc77a6",
       "dependencies": {
         "easy-asset": {
           "version": "0.1.2",

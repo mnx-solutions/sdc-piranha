@@ -12,6 +12,26 @@ module.exports = function execute(scope) {
             return;
         }
 
+        // proper user ip taking reverse proxy / load balancer into account
+        if (req.scope.config.server.headerClientIpKey) {
+            req.userIp = req.header(req.scope.config.server.headerClientIpKey);
+        }
+
+        req.userIp = req.userIp || req.ip;
+
+        if (!req.userIp) {
+            req.log.debug('Client IP address is not found in header by configured key \'%s\'', req.scope.config.server.headerClientIpKey);
+        }
+
+        // Store user session information in log entries
+        if (req.session.userId && req.session.userName) {
+            req.log = scope.log.child({
+                userName: req.session.userName,
+                userId: req.session.userId,
+                userIp: req.userIp
+            });
+        }
+
         // we have a token, create a new cloudapi object with this
         if(!req.cloud) {
             var _cloud = null;
