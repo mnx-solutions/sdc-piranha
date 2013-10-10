@@ -3,10 +3,23 @@
 piranha is a portal for Joyent Cloud Services
 
 ## Installation
-    create environment configuration file (more in Config section)
+    - Setup redis. Either use your package manager to install redis or download it from http://redis.io/download
+    - create environment configuration file (more in Config section)
     $ npm install
     $ node index.js -env={environment}
 (Warning: piranha is using some private modules, so make sure you have access to them before installing)
+
+## Installation on Joyent smartmachine
+    1. provision a fresh smartmachine base 13.1.0 works fine, it has the added benefit of having a recent enough nodejs installed already
+    2. verify nodejs version 0.10.x is present
+    3. verify git, gcc47 and gmake are present
+    4. add user portal (useradd portal)
+    5. cd /opt/; git clone git@github.com:/joyent/piranha.git portal (need ssh -A to the host before)
+    6. check portal/smf/portal.xml looks sane
+    7. copy deployment configuration file config.pro.json to /opt/portal/site/config
+    8. copy deployment ssh key to /opt/portal/site/config
+    9. cd /opt/portal; npm install -production
+    10. svccfg import /opt/portal/smf/portal.xml
 
 ## Configuration
 
