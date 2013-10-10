@@ -31,7 +31,7 @@
                 var hosts = {};
                 balancers.forEach(function (balancer) {
                     (balancer.machines || []).forEach(function (machine) {
-                        hosts[machine.host] = balancer.name;
+                        hosts[machine.host] = {id: balancer.id, name: balancer.name};
                     });
                 });
                 //TODO: We should only list machines form current DC
@@ -40,7 +40,7 @@
                     if (elbMachines.indexOf(machine.primaryIp) != -1) {
                         machine.selected = true;
                     }
-                    machine.balancer = hosts[machine.primaryIp] || '';
+                    machine.balancer = hosts[machine.primaryIp] || {};
                     return machine;
                 });
             });
@@ -94,6 +94,12 @@
                     $scope.server.machines = selectedMachines;
                     operations.push(service.addBalancer($scope.server));
                 }
+                // Delete selected machines from other balancers
+                $scope.machines.forEach(function (machine) {
+                    if (machine.selected && machine.balancer.id && machine.balancer.id !== balancerId) {
+                        operations.push(service.deleteMachine(machine.balancer.id, machine.primaryIp));
+                    }
+                });
                 $q.all(operations).then(function () {
                     $location.path('/elb/list');
                 })
