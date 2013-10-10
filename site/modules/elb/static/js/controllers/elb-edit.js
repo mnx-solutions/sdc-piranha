@@ -15,6 +15,7 @@
             $scope.server = {};
             $scope.hc_delays = [1, 3, 5, 10];
             $scope.timeouts = [1, 2, 5, 10, 20];
+            $scope.allLoading = false;
 
             $q.all([service.getBalancer(balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
                 var currentBalancer = results[0], balancers = results[1], machines = results[2];
@@ -56,6 +57,7 @@
                 $scope.protocolSelected = $scope.protocols.filter(function (protocol) {
                     return protocol.value === protocolValue;
                 })[0] || $scope.protocols[0];
+                $scope.allLoading = true;
             };
 
             $scope.hc_delaySelect = function (name) {

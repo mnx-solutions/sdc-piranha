@@ -6,7 +6,8 @@
         <h1 class="pull-left" data-translate>Edit Load Balancer</h1>
         <div class="clearfix"></div>
     </div>
-    <div class="row-fluid lb-edit">
+    <div class="loading-large" data-ng-hide="allLoading"></div>
+    <div class="row-fluid lb-edit" data-ng-show="allLoading">
         <div class="span5">
             <div class="">
                 <span class="span2 lb-label">Name</span>
@@ -136,7 +137,7 @@
         </div>
     </div>
 
-    <span class="span12">
+    <span class="span12" data-ng-show="allLoading">
         <p class="logo_riverbed pull-left">Powered by</p>
         <button data-ng-disabled="!editForm.$valid" data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px -15px 30px 10px;"><span class="ng-scope">Save</span></button>
         <button data-ng-disabled="!editForm.$valid" data-ng-click="delete()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 0 30px 10px;"><span class="ng-scope">Delete</span></button>
