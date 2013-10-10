@@ -94,7 +94,7 @@ module.exports = function execute(scope, register) {
         var start = Date.now();
         if (req.session.userId) {
             getFromBilling('provision', req.session.userId, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
             return;
@@ -102,26 +102,25 @@ module.exports = function execute(scope, register) {
 
         req.cloud.getAccount(function (accErr, account) {
             if (accErr) {
-                scope.log.error('Failed to get info from cloudApi', accErr);
+                req.log.error('Failed to get info from cloudApi', accErr);
                 cb(accErr);
                 return;
             }
 
             var start = Date.now();
             getFromBilling('provision', account.id, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
         });
     };
 
     api.getSignupStep = function (call, cb) {
-        scope.log.trace('getting signup step');
-
         var req = (call.done && call.req) || call;
+        req.log.trace('getting signup step');
 
         function end(step) {
-            scope.log.trace('signup step is %s', step);
+            req.log.trace('signup step is %s', step);
             cb(null, step);
         }
 
@@ -132,7 +131,7 @@ module.exports = function execute(scope, register) {
         function getMetadata(userId) {
             metadata.get(userId, 'signupStep', function (err, storedStep) {
                 if (!err && storedStep) {
-                    call.log.info('Got signupStep from metadata', {step: storedStep});
+                    req.log.info('Got signupStep from metadata', {step: storedStep});
                     end(storedStep);
                 } else {
                     api.getAccountVal(req, function (err, value) {

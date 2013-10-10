@@ -44,7 +44,6 @@ module.exports = function execute(scope, app) {
     });
 
     app.post('/ssh/create/:name?', function(req, res, next) {
-
         var jobId = uuid.v4();
         jobs[jobId] = {status: 'pending'};
 
@@ -52,11 +51,16 @@ module.exports = function execute(scope, app) {
         var randomBytes = crypto.randomBytes(4).readUInt32LE(0);
         var filePath = os.tmpdir() +'/'+ randomBytes;
         var name = (req.body.name || crypto.createHash('sha1').update(filePath).digest('hex').substr(0, 10));
-        scope.log.debug('Generating ssh key pair for user '+ req.session.userId);
-        exec('ssh-keygen -t rsa -q -f '+ filePath +' -N "" -C "'+ req.session.userName +'" && cat '+ filePath +'.pub', function(err, stdout, stderr) {
+        var cmd = 'ssh-keygen -t rsa -q -f ' + filePath + ' -N "" -C "' + req.session.userName +'" && cat ' + filePath +'.pub';
+
+        req.log.debug('Generating SSH key pair');
+
+        exec(cmd, function(err, stdout, stderr) {
+            req.log.debug('Adding SSH key to the account');
+
             SignupProgress.addSshKey(req, name, stdout, function(err) {
-                if(err) {
-                    scope.log.error(err);
+                if (err) {
+                    req.log.error(err);
                     res.json({success: false, jobId: jobId, err: err});
                     return;
                 }
@@ -68,7 +72,7 @@ module.exports = function execute(scope, app) {
                         if(exists) {
                             fs.unlink(filePath, function(err) {
                                 if(err) {
-                                    scope.log.error(err);
+                                    req.log.error(err);
                                     return;
                                 }
                             });
@@ -79,6 +83,7 @@ module.exports = function execute(scope, app) {
 
 
                 // success
+                req.log.debug('Added SSH key to the account');
                 res.json({success: true, jobId: jobId, keyId: randomBytes, name: name});
             });
 
@@ -106,7 +111,7 @@ module.exports = function execute(scope, app) {
                 success: false,
                 status: 'finished'
             }
-            scope.log.error('Invalid SSH key requested');
+            req.log.error('Invalid SSH key requested');
             return;
         }
 
@@ -117,7 +122,7 @@ module.exports = function execute(scope, app) {
                     success: false,
                     status: 'finished'
                 };
-                scope.log.error(err);
+                req.log.error(err);
                 return;
             }
 
@@ -127,7 +132,7 @@ module.exports = function execute(scope, app) {
 
             fs.unlink(filePath, function(err) {
                 if(err) {
-                    scope.log.error(err);
+                    req.log.error(err);
                     return;
                 }
             });
