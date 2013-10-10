@@ -21,6 +21,8 @@
                 var currentBalancer = results[0], balancers = results[1], machines = results[2];
                 $scope.server = currentBalancer;
                 $scope.protocolSelect($scope.server.protocol);
+                $scope.server.fromPort = $scope.server.fromPort || 80;
+                $scope.server.toPort = $scope.server.toPort || 80;
                 $scope.server.health = $scope.server.health || {};
                 $scope.server.health.timeout = $scope.server.health.timeout || 2;
                 $scope.server.health.delay = $scope.server.health.timeout || 5;
