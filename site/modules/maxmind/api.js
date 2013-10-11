@@ -26,9 +26,7 @@ module.exports = function execute(scope, register) {
         };
 
         return !['domain', 'ip', 'country'].some(function (el) {
-            if(Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1) {
-                return true;
-            }
+            return Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1;
         });
     }
 
@@ -41,7 +39,7 @@ module.exports = function execute(scope, register) {
             region: billingInfo.state || null,
             bin: creditCardInfo.creditCardNumber.substring(0, 6),
             license_key: config.maxmind.licenseId,
-            i: config.maxmind.tmpClientIp || call.req.userIp // config option for testing
+            i: config.maxmind.testClientIp || call.req.userIp // config option for testing
         };
 
         call.log.info('Calling minFraud verification', query);
@@ -67,7 +65,7 @@ module.exports = function execute(scope, register) {
             });
 
             // risk score override for testing
-            result.riskScore = config.maxmind.tmpRiskScore || result.riskScore;
+            result.riskScore = config.maxmind.testRiskScore || result.riskScore;
 
             call.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
                 {riskScore: result.riskScore, explanation: result.explanation});

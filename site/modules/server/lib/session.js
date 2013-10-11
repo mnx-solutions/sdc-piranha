@@ -66,6 +66,16 @@ Session.get = function (req, res, next) {
         return;
     }
 
+    // proper user ip taking reverse proxy / load balancer into account
+    var headerClientIpKey = req.scope.config.server.headerClientIpKey;
+    var headerUserIp;
+
+    if (headerClientIpKey) {
+        headerUserIp = req.userIp = req.header(headerClientIpKey);
+    }
+
+    req.userIp = req.userIp || req.ip;
+
     if (sessions[req.session.id]) {
         req._session = sessions[req.session.id];
     } else {
@@ -74,6 +84,9 @@ Session.get = function (req, res, next) {
             log: req.log,
             lifespan: (req.scope.config.session && req.scope.config.session.lifespan) || 60 * 60 * 1000 // Default is 1 hour
         });
+        if (req.scope.config.server.headerClientIpKey && !headerUserIp) {
+            req.log.warn('Client IP address is not found in header by configured key \'%s\'', req.scope.config.server.headerClientIpKey);
+        }
     }
     next();
 };
