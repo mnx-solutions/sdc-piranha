@@ -12,6 +12,14 @@ module.exports = function execute(scope) {
             return;
         }
 
+        // Proper user ip taking reverse proxy / load balancer into account
+        var headerClientIpKey = req.scope.config.server.headerClientIpKey;
+        if (headerClientIpKey) {
+            req.userIp = req.header(headerClientIpKey);
+        }
+
+        req.userIp = req.userIp || req.ip;
+
         // Store user session information in log entries
         if (req.session.userId && req.session.userName) {
             req.log = scope.log.child({
