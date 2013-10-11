@@ -7,10 +7,16 @@ module.exports = function execute(scope, app) {
     var TFA = scope.api('TFA');
 
     function logUserInformation(req, redirectUrl) {
+        var info = {
+            userName: req.session.userName,
+            userId: req.session.userId,
+            userAgent: req.headers['user-agent']
+        };
+
         if (/\/signup\/$/.test(redirectUrl)) {
-            req.log.info('New user logged in', { userName: req.session.userName, userId: req.session.userId });
+            req.log.info('New user logged in', info);
         } else {
-            req.log.info('Existing user logged in', { userName: req.session.userName, userId: req.session.userId });
+            req.log.info('Existing user logged in', info);
         }
     }
 
