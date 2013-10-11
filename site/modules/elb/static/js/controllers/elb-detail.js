@@ -18,9 +18,11 @@
                 var hostNames = {}, machines = results[1][0].machines;
                 machines.forEach(function (machine) {
                     hostNames[machine.primaryIp] = machine.name;
+                    hostNames[machine.name] = machine.id;
                 });
                 $scope.server.machines = ($scope.server.machines || []).map(function (machine) {
                     machine.name = hostNames[machine.host] || '';
+                    machine.id = hostNames[machine.name] || '';
                     return machine;
                 });
                 $scope.detailLoaded = true;

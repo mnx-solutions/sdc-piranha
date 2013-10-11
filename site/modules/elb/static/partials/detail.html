@@ -40,13 +40,13 @@
             <table class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                 <tr>
-                    <th class="table-title sortable"><div class="block">Image Name</div>
+                    <th class="table-title sortable"><div class="block">Machine Name</div>
                     <th class="table-title sortable"><div class="block">Health Status</div>
                 </tr>
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="machine in server.machines">
-                    <td>{{machine.name}}</td>
+                    <td><a href="#!/instance/details/{{machine.id}}">{{machine.name}}</a></td>
                     <td>{{machine.status}}</td>
                 </tr>
                 </tbody>

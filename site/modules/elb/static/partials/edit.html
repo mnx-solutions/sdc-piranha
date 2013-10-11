@@ -139,7 +139,7 @@
                 <tbody>
                 <tr data-ng-repeat="machine in machines">
                     <td width="10"><input type="checkbox" class="group-checkable" data-ng-model="machine.selected"></td>
-                    <td title="{{machine.name}}">{{machine.name}}</td>
+                    <td title="{{machine.name}}"><a href="#!/instance/details/{{machine.id}}">{{machine.name}}</a></td>
                     <td title="{{machine.created | dateTime:'YYYY-MM-DD'}}">{{machine.created | dateTime:'YYYY-MM-DD'}}</td>
                     <td title="{{machine.balancer.name}}">
                         <div data-ng-repeat="balancer in machine.balancers">{{balancer.name}}</div>
