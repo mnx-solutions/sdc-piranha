@@ -594,7 +594,7 @@ module.exports = function execute(scope) {
         }, (timeout || 5 * 60 * 1000));
     }
 
-    if(!config.features || config.features.image !== 'disabled') {
+    if(!config.features || config.features.imageCreate !== 'disabled') {
 
         /* CreateImage */
         server.onCall('ImageCreate', {
@@ -625,6 +625,9 @@ module.exports = function execute(scope) {
 
             }
         });
+    }
+
+    if(!config.features || config.features.imageUse !== 'disabled') {
 
         /* DeleteImage */
         server.onCall('ImageDelete', {

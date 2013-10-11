@@ -261,7 +261,7 @@
             };
 
             $scope.filterDatasetsByVisibility = function(item) {
-                if($scope.features.image !== 'disabled'
+                if($scope.features.imageUse !== 'disabled'
                     && ($scope.selectedVisibility === false
                     || $scope.selectedVisibility === true)
                     && item.public !== $scope.selectedVisibility) {

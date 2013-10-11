@@ -105,7 +105,8 @@
         "riskScoreFraudLimit": 100
     },
     "features": {
-        "image": "disabled",
+        "imageUse": "disabled",
+        "imageCreate": "disabled",
         "invoices": "disabled"
     }
 }
