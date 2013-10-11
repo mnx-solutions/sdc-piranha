@@ -80,9 +80,11 @@ You can also define configuration options using command line. ex: `$ node index.
 
 - `assets.*` [express-modulizer][3] magic.
 - `billing.url` [billing-server][4] url
+- `billing.noUpdate` Do not talk to billing server
 - `capishim.username` Capishim username
 - `capishim.password` Capishim password
 - `capishim.url` Capishim url
+- `capishim.noUpdate` Do not talk to capi shim
 - `cloudapi.version` If defined this is used for Api-version header for CloudAPI calls.
 - `cloudapi.url` CloudAPI endpoint url
 - `cloudapi.urls` If defined (Array) this is used instead of url. Here you can define multiple CloudAPI (datacenter) URL's so if one fails, portal will take the next one
@@ -90,12 +92,23 @@ You can also define configuration options using command line. ex: `$ node index.
 - `cloudapi.username` Username from AdminUI
 - `cloudapi.keyId` Your SSH key fingerprint from Admin portal
 - `cloudapi.keyPath` Full local path to your private key file
+- `googleAnalytics.identifier` Google analytics ID
+- `googleAnalytics.domain` Google analytics domain
 - `localization.defaultLocale` Default language for portal
 - `localization.locales` Possible languages in portal
 - `log.name` Name which will appear in every log message
 - `log.level` Log level used by [Bunyan][2]. Possible values: `fatal`, `error`, `warn`, `info`, `debug`, `trace`
 - `marketo.apikey` Marketo API key
 - `marketo.accountId` Markerto Account Id
+- `maxmind.phoneApiUrl` MaxMind Phone API URL
+- `maxmind.fraudApiUrl` MaxMind Fraud API URL
+- `maxmind.licenseId` MaxMind license ID
+- `maxmind.limits.calls` Maximum calls allowed
+- `maxmind.limits.serviceFails` Maximum service fails after which verification is skipped
+- `maxmind.pinTries` Maximum pin entries
+- `maxmind.riskScoreFraudLimit` Maximum risk score allowed, value can be 0..100 where 0 = block everyone; 100 = allow everyone
+- `maxmind.testClientIp` Set your IP address for testing
+- `maxmind.testRiskScore` Set your risk score for testing
 - `polling.machineTags` Time in ms how long can machine tags polling take before fail
 - `polling.machineState` Time in ms how long can machine state polling take before fail
 - `polling.packageChange` Time in ms how long can packge change take before fail
@@ -104,6 +117,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `redis.db` Redis database index
 - `redis.password` Redis storage password
 - `server.port` Port on which piranha portal runs on.
+- `server.headerClientIpKey` Client IP address placeholder for load balancer / reverse proxy
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
@@ -119,6 +133,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `zuora.api.validation.countries.type` Zuora validation rule type
 - `zuora.api.validation.countries.name` Which field rule uses
 - `zuora.api.validation.countries.list` Rule values
+- `zuora.soap` GuartTime TBD
 
 ## Common errors:
 `Cannot find module {X}`
