@@ -86,10 +86,10 @@
                     <div data-ng-show="sshKeys.length > 0" class="span11">
                         <div class="item-list-container">
                             <div class="item header row-fluid">
-                                <span class="span12 item-list-container-header">Key Name / UUID</span>
+                                <span class="span12 item-list-container-header">Key Name / Fingerprint</span>
                             </div>
 
-                            <div class="item row-fluid" data-ng-repeat="key in sshKeys">
+                            <div class="item row-fluid" data-ng-repeat="key in sshKeys | reverse">
                                 <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
                                     <span class="span12 item-list-container-header">{{key.name.length > 0 && key.name != key.fingerprint && (key.name + ' / ') || ''}}{{key.fingerprint}}</span>
                                 </span>
