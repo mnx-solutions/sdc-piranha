@@ -19,17 +19,19 @@
 
     <div class="row-fluid lb-edit" data-ng-show="detailLoaded">
         <div class="span12 lb-line_allwidth">
-            <div class="span4">
+            <div class="span3">
                 <span class="lb-label">Protocol: </span>
                 <span >&nbsp;&nbsp;<b>{{server.protocol | uppercase}}</b></span>
             </div>
-            <div class="span4">
-                <span class="lb-label">Port from:</span>
+            <div class="span3">
+                <span class="lb-label">External port:</span>
                 <span>&nbsp;<b>{{server.fromPort}}</b></span>
-                <span class="lb-label"> to:</span>
+            </div>
+            <div class="span3">
+                <span class="lb-label">Internal port:</span>
                 <span>&nbsp;<b>{{server.toPort}}</b></span>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <span class="lb-label">Overall Health: </span>
                 <span>&nbsp;&nbsp;<b>{{server.machinesUp.length}}/{{server.machines.length}}</b></span>
             </div>
