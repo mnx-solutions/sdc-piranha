@@ -12,7 +12,7 @@
     },
     "localization": {
         "defaultLocale": "en",
-        "locales": [ "en", "et" ]
+        "locales": [ "en" ]
     },
     "redis": {
         "host": "redis-gtint.piranha.ee",
