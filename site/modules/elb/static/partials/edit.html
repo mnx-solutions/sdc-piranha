@@ -40,6 +40,9 @@
                             <a data-ng-click="protocolSelect(protocol.value)">{{protocol.name}}</a>
                         </li>
                     </ul>
+                    <span class="upload_btn" data-ng-show="protocolSelected.name == 'HTTPS'">
+                        <button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate=""><span class="ng-scope">Upload Certificate</span></button>
+                </span>
                 </div>
             </div>
             <div class="clearfix"></div>
@@ -54,9 +57,9 @@
                     <input type="text" data-translate="placeholder" required data-ng-model="server.toPort"/>
                 </span>
                 <div class="clearfix"></div>
-                <span class="span10">
-                    <button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: 0 -33px 20px 0;"><span class="ng-scope">Upload Certificate</span></button>
-                </span>
+                <!--<span class="span10" data-ng-show="protocolSelected.name == 'HTTPS'">-->
+                    <!--<button data-ng-click="" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: 0 -33px 20px 0;"><span class="ng-scope">Upload Certificate</span></button>-->
+                <!--</span>-->
             </div>
             <div class="clearfix"></div>
             <div class="lb-line"></div>

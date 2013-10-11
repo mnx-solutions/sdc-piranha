@@ -130,3 +130,8 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
+.upload_btn{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 44px;
+}
