@@ -324,7 +324,7 @@ module.exports = function execute(scope) {
                 call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
             }
 
-            client.getMachine(machineId, function (err, machine) {
+            client.getMachine(machineId, true, function (err, machine) {
                 if (err) {
                     // in case we're waiting for deletion a http 410(Gone) is good enough
                     if (err.statusCode === 410 && state === 'deleted') {
@@ -348,6 +348,7 @@ module.exports = function execute(scope) {
                     // machine state check
                     if (state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
+                        machine.metadata.credentials = handleCredentials(machine);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
@@ -387,7 +388,7 @@ module.exports = function execute(scope) {
                     }
                 }
 
-            }, null, null, true);
+            }, null, true);
         }, config.polling.machineState);
 
         // timeout, so we wouldn't poll cloudapi forever
@@ -510,7 +511,7 @@ module.exports = function execute(scope) {
                 name: call.data.name,
                 package: call.data.package,
                 dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
-                networks: call.data.networks,
+                networks: call.data.networks
             };
 
             call.log.info({options: options}, 'Creating machine %s', call.data.name);

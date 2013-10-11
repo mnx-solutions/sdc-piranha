@@ -12,16 +12,13 @@ module.exports = function execute(scope) {
             return;
         }
 
-        // proper user ip taking reverse proxy / load balancer into account
-        if (req.scope.config.server.headerClientIpKey) {
-            req.userIp = req.header(req.scope.config.server.headerClientIpKey);
+        // Proper user ip taking reverse proxy / load balancer into account
+        var headerClientIpKey = req.scope.config.server.headerClientIpKey;
+        if (headerClientIpKey) {
+            req.userIp = req.header(headerClientIpKey);
         }
 
         req.userIp = req.userIp || req.ip;
-
-        if (!req.userIp) {
-            req.log.debug('Client IP address is not found in header by configured key \'%s\'', req.scope.config.server.headerClientIpKey);
-        }
 
         // Store user session information in log entries
         if (req.session.userId && req.session.userName) {
