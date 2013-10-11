@@ -37,9 +37,9 @@
                         switch (state) {
                             case 'active':
                                 return 'btn-success';
-
-                            default:
                             case 'stopped':
+                                return '';
+                            default:
                                 return '';
                         }
                     }

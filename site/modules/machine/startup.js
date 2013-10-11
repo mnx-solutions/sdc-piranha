@@ -653,11 +653,48 @@ module.exports = function execute(scope) {
             }
         });
 
-        /*images list */
-        /* listNetworks */
+        /* images list */
         server.onCall('ImagesList', function(call) {
-            call.log.info('Retrieving images list');
-            call.cloud.listImages(call.done.bind(call));
+
+            var datacenters = call.cloud.listDatacenters();
+            var keys = Object.keys(datacenters);
+            var count = keys.length;
+
+            keys.forEach(function (name) {
+                var cloud = call.cloud.separate(name);
+                call.log.debug('List images for datacenter %s', name);
+
+                cloud.listImages(function (err, images) {
+                    var response = {
+                        name: name,
+                        status: 'pending',
+                        images: []
+                    };
+
+                    if (err) {
+                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                        response.status = 'error';
+                        response.error = err;
+                    } else {
+                        /* add datacenter to every image */
+                        images.forEach(function (image) {
+                            image.datacenter = name;
+                        });
+
+                        response.status = 'complete';
+                        response.images = images;
+
+                        call.log.debug('List images succeeded for datacenter %s', name);
+                    }
+                    call.update(null, response);
+
+                    if (--count === 0) {
+                        call.done();
+                    }
+                });
+            });
+
+
         });
     }
 };

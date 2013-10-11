@@ -3,11 +3,15 @@
 (function (ng, app) {
     app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
         $scope.getLastPage = function (update) {
-            var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
-            if(update) {
-                $scope.lastPage = lastPage;
+            if($scope.objects)
+            {
+                var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
+                if(update) {
+                    $scope.lastPage = lastPage;
+                }
+                return lastPage;
+
             }
-            return lastPage;
         };
         $scope.$watch('objects', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
