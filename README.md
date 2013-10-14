@@ -38,7 +38,8 @@ Development regularly occurs on Linux until it is ready for staging. Lloyd encou
 2. `git clone git@github.com:joyent/piranha.git`  
 3. `npm install` 
 4. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
-5. `node index.js -env={environment}`
+5. Make sure portal user has rights to write var/error.json `chown -R portal var/`
+6. `node index.js -env={environment}`
 
 ### Staged Development
 
@@ -51,8 +52,9 @@ The production environment is currently SmartOS 64-bit - base64 13.1.0, so we us
 4. `git clone git@github.com:joyent/piranha.git /opt/portal`  
 5. `cd /opt/portal; npm install --production`
 6. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
-7. `svccfg import /opt/portal/smf/portal.xml`
-8. `svcadmin enable portal`
+7. Make sure portal user has rights to write var/error.json `chown -R portal var/`
+8. `svccfg import /opt/portal/smf/portal.xml`
+9. `svcadmin enable portal`
 
 ### Production
 
