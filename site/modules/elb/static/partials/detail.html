@@ -12,7 +12,7 @@
     </ul>
 
     <div class="page-header">
-        <h1 class="pull-left" data-translate>Load Balancer: {{server.name}}, {{server.ip}}</h1>
+        <h1 class="pull-left" data-ng-show="detailLoaded" data-translate>Load Balancer: {{server.name}}: {{server.ip}}</h1>
         <div class="clearfix"></div>
     </div>
     <div class="loading-large" data-ng-hide="detailLoaded"></div>
