@@ -34,14 +34,15 @@ module.exports = function execute(scope) {
                 '    var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);'+
                 '}());';
 
-            var GAlink = '$(document).ready(function() {'+
-                '$("a").click(function() {'+
-                'var href = $(this).attr("href");'+
-                'if (href.indexOf("joyent.com") > -1) {'+
-                '_gaq.push(["_link", href]);'+
-                'return false;'+
-                '}'+
-                '});'+
+            var GAlink =
+                '$(document).ready(function () {' +
+                '  $(document).on("mousedown", "a", function (e) {' +
+                '    var href = $(this).attr("href");' +
+                '    if (e.which == 3) return;' +
+                '    if (href.indexOf("joyent.com") > -1 || href.indexOf("github.com") > -1) {' +
+                '      _gaq.push(["_trackEvent", "External Link", href]);' +
+                '    }'+
+                '  });'+
                 '});';
             res.locals.jss.push(googleAnalytics);
             res.locals.jss.push(GAlink);
