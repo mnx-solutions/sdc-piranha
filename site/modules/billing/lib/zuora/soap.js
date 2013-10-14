@@ -68,17 +68,18 @@ function connect () {
 
     newClient.setEndpoint(config.endpoint);
     var loginCreds = {
-        'zns:username': config.user,
-        'zns:password': config.password
+        'username': config.user,
+        'password': config.password
     };
     // TODO: dm: it may be possible for this to hang?
     newClient.ZuoraService.Soap.login(loginCreds, function (err, resp) {
         if (err) {
             return callback(err);
         }
+
         newClient.addSoapHeader({
-            'zns:SessionHeader': {
-                'zns:session': resp.result[0].Session
+            'SessionHeader': {
+                'session': resp.result.Session
             }
         });
 
@@ -118,7 +119,7 @@ function query (zObject, callback) {
 
     // Safety checking:
     if (typeof zObject === 'object') {
-        if (zObject['zns:queryString'].indexOf('[object Object]') !== -1) {
+        if (zObject['queryString'].indexOf('[object Object]') !== -1) {
             return callback(new Error('Query found [object Object] inside string.'));
         }
     }
