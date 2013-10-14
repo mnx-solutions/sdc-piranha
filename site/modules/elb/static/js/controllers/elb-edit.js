@@ -45,6 +45,7 @@
                         machine.selected = true;
                     }
                     machine.balancers = hosts[machine.primaryIp] || [];
+                    machine.balancers = hosts[machine.datacenter] || [];
                     return machine;
                 });
                 $scope.allLoading = true;

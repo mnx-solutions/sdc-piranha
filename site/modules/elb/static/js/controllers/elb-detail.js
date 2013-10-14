@@ -19,10 +19,12 @@
                 machines.forEach(function (machine) {
                     hostNames[machine.primaryIp] = machine.name;
                     hostNames[machine.name] = machine.id;
+                    hostNames[machine.dc] = machine.datacenter;
                 });
                 $scope.server.machines = ($scope.server.machines || []).map(function (machine) {
                     machine.name = hostNames[machine.host] || '';
                     machine.id = hostNames[machine.name] || '';
+                    machine.datacenter = hostNames[machine.dc] || '';
                     return machine;
                 });
                 $scope.detailLoaded = true;
