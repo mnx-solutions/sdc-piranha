@@ -28,7 +28,7 @@
             </div>
             <div data-ng-show="balancerId">
                 <span class="span2">IP</span>
-                <span class="span9" style="padding-left: 15px;">
+                <span class="span9" style="padding-left: 37px;">
                     {{server.ip}}
                 </span>
             </div>
@@ -36,7 +36,8 @@
                 <span class="span3 lb-label">Protocol</span>
                 <div class="btn-group tooltip-hover span3 dd_margin"
                      data-toggle="tooltip"
-                     data-placement="bottom">
+                     data-placement="bottom"
+                     style="margin-left: 13px;">
                     <label class="btn dd_btn">{{protocolSelected.name}}</label>
                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="caret"></span>
@@ -66,7 +67,7 @@
             </div>
             <div class="clearfix"></div>
             <div class="lb-line"></div>
-            <p class="span12 pull-left" style="margin: 0;">Health Check configuration</p>
+            <p class="span12 pull-left" style="margin: 0 0 -10px 0;">Health Check configuration</p>
 
             <div class="clearfix"></div>
             <div style="margin-top: 10px;">
@@ -74,7 +75,7 @@
                 <span class="span3">
                     <input type="text" data-ng-model="server.health.url" data-translate="placeholder" class="url-input"/>
                 </span>
-                <span class="span3 lb-label" style="margin: 0;">Timeout</span>
+                <span class="span3 lb-label" style="margin: 0 0 0 20px;">Timeout</span>
                 <div class="btn-group tooltip-hover span3 dd_margin"
                      data-toggle="tooltip"
                      style="margin-left: -27px;"
@@ -106,7 +107,7 @@
                         </li>
                     </ul>
                 </div>
-                <span class="span3" style="line-height: 15px;">Failure Threshold</span>
+                <span class="span3" style="line-height: 15px;margin-left: 28px;">Failure Threshold</span>
                 <span class="span2 port-input">
                     <input type="text" data-translate="placeholder" data-ng-model="server.health.failThreshold" class="clb_input"/>
                 </span>

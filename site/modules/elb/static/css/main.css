@@ -30,8 +30,10 @@
     margin-bottom: 0 !important;
 }
 .name-input input{
-    width: 265px;
-    margin-left: 14px;
+    /*width: 265px;*/
+    /*margin-left: 14px;*/
+    width: 242px;
+    margin-left: 37px;
 }
 .group-checkable{
     margin: 0;
@@ -133,5 +135,5 @@
 .upload_btn{
     display: inline-block;
     vertical-align: middle;
-    margin-left: 44px;
+    margin-left: 20px;
 }
