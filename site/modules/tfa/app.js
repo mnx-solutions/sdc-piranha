@@ -14,9 +14,9 @@ module.exports = function execute(scope, app) {
         };
 
         if (/\/signup\/$/.test(redirectUrl)) {
-            req.log.info('New user logged in', info);
+            req.log.info(info, 'New user logged in');
         } else {
-            req.log.info('Existing user logged in', info);
+            req.log.info(info, 'Existing user logged in');
         }
     }
 
