@@ -15,6 +15,7 @@
             <thead>
             <tr>
                 <th class="table-title sortable"><div class="block">Load Balancer</div>
+                <th class="table-title sortable"><div class="block">IP</div>
                 <th class="table-title sortable"><div class="block">Status</div>
                 <th class="table-title sortable"><div class="block">Health</div>
                 <th class="table-title sortable"><div class="block">Creation Date</div>
@@ -24,6 +25,7 @@
             <tbody>
             <tr data-ng-repeat="server in servers">
                 <td><a href="#!/elb/detail/{{server.id}}">{{server.name}}</a></td>
+                <td>111.222.333.444</td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
                 <td>{{server.created | dateTime:'YYYY-MM-DD'}}</td>

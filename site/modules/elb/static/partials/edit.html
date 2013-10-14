@@ -26,6 +26,12 @@
                     <input type="text" data-translate="placeholder" required data-ng-model="server.name"/>
                 </span>
             </div>
+            <div data-ng-show="balancerId">
+                <span class="span2">IP</span>
+                <span class="span9" style="padding-left: 15px;">
+                    {{server.ip}}
+                </span>
+            </div>
             <div class="">
                 <span class="span3 lb-label">Protocol</span>
                 <div class="btn-group tooltip-hover span3 dd_margin"

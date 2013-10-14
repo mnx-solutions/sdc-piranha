@@ -26,6 +26,7 @@
                     return machine;
                 });
                 $scope.detailLoaded = true;
+                $scope.server.ip = '111.222.333.444'; //templary
             });
 
             $scope.edit = function () {
