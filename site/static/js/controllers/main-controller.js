@@ -54,9 +54,16 @@
                     if (!$route.current.action) {
                         return;
                     }
-
-                    // Update the current request action change.
-                    requestContext.setContext($route.current.action, $routeParams);
+                    // Appropriate redirect for signup steps
+                    var currentStep = $('#signupStep').val();
+                    if (currentStep 
+                        && !(currentStep === 'complete' || currentStep === 'completed')
+                        && $route.current.action.indexOf('signup') === -1) {
+                        requestContext.setContext('signup.'+currentStep, $routeParams);
+                    } else {
+                        // Update the current request action change.
+                        requestContext.setContext($route.current.action, $routeParams);
+                    }
 
                     // Announce the change in render conditions.
                     $scope.$broadcast('requestContextChanged', requestContext);
