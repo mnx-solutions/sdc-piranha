@@ -28,7 +28,6 @@
                 $scope.server.health.delay = $scope.server.health.delay || 5;
                 $scope.server.health.failThreshold = $scope.server.health.failThreshold || 5;
                 $scope.server.machines = $scope.server.machines || [];
-                $scope.server.ip = '111.222.333.444'; //templary
                 var elbMachines = $scope.server.machines.map(function (machine) {
                     return machine.host;
                 });

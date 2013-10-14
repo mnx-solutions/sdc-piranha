@@ -25,7 +25,7 @@
             <tbody>
             <tr data-ng-repeat="server in servers">
                 <td><a href="#!/elb/detail/{{server.id}}">{{server.name}}</a></td>
-                <td>111.222.333.444</td>
+                <td>{{server.host}}</td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
                 <td>{{server.created | dateTime:'YYYY-MM-DD'}}</td>
