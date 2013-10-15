@@ -153,9 +153,7 @@
                             }, function (err) {
                                 deferred.reject(err);
                             });
-                        }
-
-                        if (rules.job && !rules.job.finished) {
+                        } else if (rules.job && !rules.job.finished) {
                             rules.job.deferred.then(function () {
                                 deferred.resolve(rules.map);
                             }, function (err) {
@@ -164,38 +162,38 @@
                         } else if (rules.job && rules.job.finished) {
                             deferred.resolve(rules.map);
                         }
-                    }
-
-                    // Rule
-                    if (!rules.index[id]) {
-                        if (!rules.job) {
-                            service.updateRules();
-                        }
-
-                        if (rules.job && !rules.job.finished) {
-                            if (!rules.search[id]) {
-                                rules.search[id] = $q.defer();
+                    } else {
+                        // Rule
+                        if (id && !rules.index[id]) {
+                            if (!rules.job) {
+                                service.updateRules();
                             }
 
-                            // Reject/resolve search promise automatically (10s)
-                            var resolver = $timeout(function () {
-                                deferred.reject(new Error('Rule not found'));
-                                $timeout.cancel(resolver);
-                            }, 10000);
+                            if (rules.job && !rules.job.finished) {
+                                if (!rules.search[id]) {
+                                    rules.search[id] = $q.defer();
+                                }
 
-                            // Wrap promise handler
-                            rules.search[id].promise.then(function () {
-                                deferred.resolve(rules.index[id]);
-                                $timeout.cancel(resolver);
-                            }, function (err) {
-                                deferred.reject(err);
-                                $timeout.cancel(resolver);
-                            });
+                                // Reject/resolve search promise automatically (10s)
+                                var resolver = $timeout(function () {
+                                    deferred.reject(new Error('Rule not found'));
+                                    $timeout.cancel(resolver);
+                                }, 10000);
+
+                                // Wrap promise handler
+                                rules.search[id].promise.then(function () {
+                                    deferred.resolve(rules.index[id]);
+                                    $timeout.cancel(resolver);
+                                }, function (err) {
+                                    deferred.reject(err);
+                                    $timeout.cancel(resolver);
+                                });
+                            } else {
+                                deferred.reject(new Error('Rule not found'));
+                            }
                         } else {
-                            deferred.reject(new Error('Rule not found'));
+                            deferred.resolve(rules.index[id]);
                         }
-                    } else {
-                        deferred.resolve(rules.index[id]);
                     }
                 }, 0);
 
