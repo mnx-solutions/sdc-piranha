@@ -9,12 +9,18 @@
                 model: '='
             },
             link: function (scope, element, attrs) {
-                $('.certUpload').change(function () {
-                    uploadCertificate(event.target.files[0]);
+                $('.certUpload').change(function (e) {
+                    if (e.target.files && e.target.files.length) {
+                        uploadCertificate(e.target.files[0]);
+                    }
                 });
-                scope.uploadClick = function () {
+                scope.upload = function () {
                     $('.certUpload').click();
-                }
+                };
+                scope.remove = function () {
+                    $('.certUpload').val('');
+                    scope.model = null;
+                };
 
                 function uploadCertificate(file) {
                     var data = new FormData(), xhr = new XMLHttpRequest();
