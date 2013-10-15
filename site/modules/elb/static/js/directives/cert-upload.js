@@ -1,20 +1,39 @@
 'use strict';
 
 (function (app) {
-    app.directive('certUpload', function () {
+    app.directive('certUpload', ['notification', function (notification) {
         return {
-            template: '<input class="certUpload" accept="application/x-pem-file" type="file">',
+            templateUrl: 'elb/static/partials/cert-upload.html',
             restrict: 'E',
             scope: {
                 model: '='
             },
             link: function (scope, element, attrs) {
                 $('.certUpload').change(function () {
-                    alert('changed');
+                    uploadCertificate(event.target.files[0]);
                 });
+                scope.uploadClick = function () {
+                    $('.certUpload').click();
+                }
+
+                function uploadCertificate(file) {
+                    var data = new FormData(), xhr = new XMLHttpRequest();
+                    xhr.onloadstart = function (e) {
+                        // start
+                    };
+                    xhr.onerror = function (e) {
+                        // error
+                    };
+                    xhr.onload = function (e) {
+                        console.log(xhr.responseText);
+                    };
+                    data.append('certificate', file, file.name);
+                    xhr.open('POST', '/main/elb/certificates');
+                    xhr.send(data);
+                }
             }
         };
-    });
+    }]);
 }(window.JP.getModule('elb')));
 
 
