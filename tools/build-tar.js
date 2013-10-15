@@ -16,6 +16,7 @@ var productionImage = 'Image    base64 13.1.0';
 
 // must point to piranha root
 var dirFix = 'cd '+ __dirname +'/../ ';
+var bashFix = '/usr/bin/env bash ';
 
 var noTagCheck = false;
 var noPackageCheck = false;
@@ -41,13 +42,21 @@ process.argv.forEach(function(val, index, array) {
 
 
 /**
+ * Remove newlines and spaces from stdout
+ */
+function clean(stdout) {
+    return stdout.replace(/(\r\n|\n|\r)/gm,"").trim();
+}
+/**
  * Will get the latest tag made from git using git tag (bottom one is the latest)
  *
  * @param next
  */
 var getLatestTag = function getLatestTag(next) {
     // get latest tag
-    exec(dirFix +'&& echo -n "$(git tag | tail -1)"', function(err, stdout, stderr) {
+    exec(dirFix +'&& git tag | tail -1', function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
@@ -70,7 +79,9 @@ var checkCurrentBranch = function checkCurrentBranch(next) {
         return;
     }
 
-    exec(dirFix +'&& BRANCH=$(git describe --all); echo -n "$BRANCH"', function(err, stdout, stderr) {
+    exec(dirFix +'&& git describe --all', function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
@@ -96,7 +107,9 @@ var checkCurrentTag = function checkCurrentTag(next) {
         next();
         return;
     }
-    exec(dirFix +'&& test "'+ latestTag +'" == "$(git describe --always --tags)" && echo -n True || echo -n false'+ clearFormatting, function(err, stdout, stderr) {
+    exec(dirFix +'&& test "'+ latestTag +'" == "$(git describe --always --tags)" && echo True || echo false'+ clearFormatting, function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
@@ -124,6 +137,8 @@ var checkPackage = function checkPackage(next) {
     }
 
     exec(dirFix +'&& sm-summary 2> /dev/null | grep $"^Image\t*"', function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(codec +'sm-summary'+ errorc +' command not found. Are you on a smartmachine? Use -skippackage to ignore this error'+ clearFormatting);
             process.exit(1);
@@ -146,6 +161,8 @@ var checkPackage = function checkPackage(next) {
 var npmInstall = function npmInstall(next) {
 
     var installer = exec(dirFix +'&& npm install --force', function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
@@ -170,6 +187,8 @@ var checkModules = function checkModules(next) {
 
     // check if all modules are there
     exec(dirFix +'&& npm list 2>&1 | grep "not ok"', function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
@@ -195,6 +214,8 @@ var makeTar = function makeTar(next) {
 
     var tarName = 'portal-'+ latestTag +'.tar';
     exec(dirFix +'&& tar -cvf '+ tarName +' -X .gitignore . &&  tar -uvf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName + clearFormatting, function(err, stdout, stderr) {
+        stdout = clean(stdout);
+
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
