@@ -325,7 +325,8 @@
 
             $scope.addPort =function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
-                $scope.current.port = null;
+                $scope.current.port = '';
+                $scope.rule.port.$setValidity('range', false);
             }
 
             $scope.addType = function() {
@@ -336,6 +337,7 @@
                 $scope.data.parsed.protocol.targets.push(target);
                 $scope.current.type = 0;
                 $scope.current.code = null;
+                $scope.rule.code.$setValidity('range', false);
             }
 
             function addTarget(direction) {
