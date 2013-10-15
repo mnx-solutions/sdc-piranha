@@ -77,7 +77,7 @@ var checkCurrentBranch = function checkCurrentBranch(next) {
         }
 
         if(stdout != 'tags/'+ latestTag) {
-            console.log(errorc +'Wrong git branch. Please run: '+ codec +'git checkout tags/'+ latestTag);
+            console.log(errorc +'Wrong git branch. Please run: '+ codec +'git checkout tags/'+ latestTag + clearFormatting);
             process.exit(1);
         }
 
@@ -96,7 +96,7 @@ var checkCurrentTag = function checkCurrentTag(next) {
         next();
         return;
     }
-    exec(dirFix +'&& test "'+ latestTag +'" == "$(git describe --always --tags)" && echo -n True || echo -n false', function(err, stdout, stderr) {
+    exec(dirFix +'&& test "'+ latestTag +'" == "$(git describe --always --tags)" && echo -n True || echo -n false'+ clearFormatting, function(err, stdout, stderr) {
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
@@ -125,12 +125,12 @@ var checkPackage = function checkPackage(next) {
 
     exec(dirFix +'&& sm-summary 2> /dev/null | grep $"^Image\t*"', function(err, stdout, stderr) {
         if(err || stderr) {
-            console.log(codec +'sm-summary'+ errorc +' command not found. Are you on a smartmachine? Use -skippackage to ignore this error');
+            console.log(codec +'sm-summary'+ errorc +' command not found. Are you on a smartmachine? Use -skippackage to ignore this error'+ clearFormatting);
             process.exit(1);
         }
 
         if(stdout != productionImage) {
-            console.log(errorc +'Current machine has wrong image. Please provision SmartMachine machine with image'+ codec +' '+ productionImage);
+            console.log(errorc +'Current machine has wrong image. Please provision SmartMachine machine with image'+ codec +' '+ productionImage + clearFormatting);
             process.exit(1);
         }
 
@@ -155,7 +155,7 @@ var npmInstall = function npmInstall(next) {
     });
 
     var installTimeout = setTimeout(function() {
-        console.log(errorc +'npm install took too long. Exited after 3 minutes');
+        console.log(errorc +'npm install took too long. Exited after 3 minutes'+ clearFormatting);
         installer.kill('SIGKILL');
         process.exit(1);
     }, 3*60*1000)
@@ -176,7 +176,7 @@ var checkModules = function checkModules(next) {
         }
 
         if(stdout) {
-            console.log(errorc +'modules check failed. Please see'+ codec +' npm list '+ errorc +'for more information');
+            console.log(errorc +'modules check failed. Please see'+ codec +' npm list '+ errorc +'for more information'+ clearFormatting);
             process.exit(1);
         }
 
@@ -194,7 +194,7 @@ var makeTar = function makeTar(next) {
     console.log(successc +'Making tar...');
 
     var tarName = 'portal-'+ latestTag +'.tar';
-    exec(dirFix +'&& tar -cvf '+ tarName +' -X .gitignore . &&  tar -uvf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName, function(err, stdout, stderr) {
+    exec(dirFix +'&& tar -cvf '+ tarName +' -X .gitignore . &&  tar -uvf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName + clearFormatting, function(err, stdout, stderr) {
         if(err || stderr) {
             console.log(err, stderr);
             process.exit(1);
