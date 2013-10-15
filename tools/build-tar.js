@@ -12,11 +12,10 @@ var clearFormatting = '\033[0m';
 var successc = '\033[1;32m';
 
 var latestTag = null;
-var productionImage = 'Image    base64 13.1.0';
+var productionImage = 'Image               base64 13.1.0';
 
 // must point to piranha root
 var dirFix = 'cd '+ __dirname +'/../ ';
-var bashFix = '/usr/bin/env bash ';
 
 var noTagCheck = false;
 var noPackageCheck = false;
@@ -32,7 +31,7 @@ process.argv.forEach(function(val, index, array) {
     }
 
     if(val === '--in-root') {
-        dirFix = 'cd '+ __diranme +'/';
+        dirFix = 'cd '+ __dirname +'/';
     }
 
     if(val === '-help' || val === '--help' || val === '-h' || val === '--h') {

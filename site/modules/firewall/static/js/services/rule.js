@@ -171,25 +171,31 @@
                                 rules.search[id] = $q.defer();
                             }
 
-                            // Reject/resolve search promise automatically (10s)
-                            var resolver = $timeout(function () {
-                                deferred.reject(new Error('Rule not found'));
-                                $timeout.cancel(resolver);
-                            }, 10000);
+                            if (rules.job && !rules.job.finished) {
+                                if (!rules.search[id]) {
+                                    rules.search[id] = $q.defer();
+                                }
 
-                            // Wrap promise handler
-                            rules.search[id].promise.then(function () {
-                                deferred.resolve(rules.index[id]);
-                                $timeout.cancel(resolver);
-                            }, function (err) {
-                                deferred.reject(err);
-                                $timeout.cancel(resolver);
-                            });
-                        } else {
-                            deferred.reject(new Error('Rule not found'));
+                                // Reject/resolve search promise automatically (10s)
+                                var resolver = $timeout(function () {
+                                    deferred.reject(new Error('Rule not found'));
+                                    $timeout.cancel(resolver);
+                                }, 10000);
+
+                                // Wrap promise handler
+                                rules.search[id].promise.then(function () {
+                                    deferred.resolve(rules.index[id]);
+                                    $timeout.cancel(resolver);
+                                }, function (err) {
+                                    deferred.reject(err);
+                                    $timeout.cancel(resolver);
+                                });
+                            } else {
+                                deferred.reject(new Error('Rule not found'));
+                            }
                         }
                     } else {
-                        deferred.resolve(rules.index[id]);
+	                    deferred.resolve(rules.index[id]);
                     }
                 }, 0);
 
