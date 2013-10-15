@@ -107,6 +107,7 @@
     "features": {
         "imageUse": "disabled",
         "imageCreate": "disabled",
-        "invoices": "disabled"
+        "invoices": "disabled",
+        "firewall": "disabled"
     }
 }
