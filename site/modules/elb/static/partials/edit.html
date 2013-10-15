@@ -1,4 +1,5 @@
 <div class="container" data-ng-controller="elb.EditController">
+    <div data-notification></div>
     <form name="editForm">
     <ul class="breadcrumb">
         <li class="ng-scope">
@@ -48,7 +49,7 @@
                         </li>
                     </ul>
                     <span class="upload_btn" data-ng-show="protocolSelected.name == 'HTTPS'">
-                        <cert-upload></cert-upload>
+                        <span data-cert-upload model="server.certificate"></span>
                     </span>
                 </div>
             </div>
