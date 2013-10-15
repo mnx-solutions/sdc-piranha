@@ -81,18 +81,38 @@ module.exports = function execute(scope, app) {
         });
     });
 
+    function parsePemSection(pemSrc, sectionName) {
+        var start = -1, end = -1, startMatch, endMatch;
+        if ((startMatch = pemSrc.match(new RegExp('\\-+BEGIN ' + sectionName + '\\-+$', 'm')))) {
+            start = startMatch.index;
+        }
+        if ((endMatch = pemSrc.match(new RegExp('^\\-+END ' + sectionName + '\\-+', 'm')))) {
+            end = endMatch.index + (endMatch[0] || '').length;
+        }
+        if (start >= 0 && end >=0) {
+            return pemSrc.substring(start, end);
+        }
+        return null;
+    }
+
     app.post('/certificates', function (req, res) {
         if (!req.files || !req.files.certificate) {
             res.send(400, 'Certificate not found');
             return;
         }
-        pem.readCertificateInfo(fs.readFileSync(req.files.certificate.path, 'utf8'), function (err, modules) {
+        var data = {};
+        var pemSrc = fs.readFileSync(req.files.certificate.path, 'utf8');
+        data.private = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
+        if (!data.private) {
+            res.send(400, 'Private key not found in PEM');
+            return;
+        }
+        pem.getPublicKey(pemSrc, function (err, publicKey) {
             if (err) {
-                res.send(400, 'Certificate is not in PEM format: ' + err);
+                res.send(400, 'Public key not found in PEM: ' + err);
                 return;
             }
-            console.log(modules);
-            var data = {};
+            data.public = publicKey;
             client.post('/certificates', data, function (err, creq, cres, obj) {
                 if (err) {
                     res.send(400, err);
@@ -101,33 +121,5 @@ module.exports = function execute(scope, app) {
                 res.json(obj);
             });
         });
-
     });
-
-    /*
-     #define PEM_STRING_X509_OLD     "X509 CERTIFICATE"
-     #define PEM_STRING_X509         "CERTIFICATE"
-     #define PEM_STRING_X509_PAIR    "CERTIFICATE PAIR"
-     #define PEM_STRING_X509_TRUSTED "TRUSTED CERTIFICATE"
-     #define PEM_STRING_X509_REQ_OLD "NEW CERTIFICATE REQUEST"
-     #define PEM_STRING_X509_REQ     "CERTIFICATE REQUEST"
-     #define PEM_STRING_X509_CRL     "X509 CRL"
-     #define PEM_STRING_EVP_PKEY     "ANY PRIVATE KEY"
-     #define PEM_STRING_PUBLIC       "PUBLIC KEY"
-     #define PEM_STRING_RSA          "RSA PRIVATE KEY"
-     #define PEM_STRING_RSA_PUBLIC   "RSA PUBLIC KEY"
-     #define PEM_STRING_DSA          "DSA PRIVATE KEY"
-     #define PEM_STRING_DSA_PUBLIC   "DSA PUBLIC KEY"
-     #define PEM_STRING_PKCS7        "PKCS7"
-     #define PEM_STRING_PKCS7_SIGNED "PKCS #7 SIGNED DATA"
-     #define PEM_STRING_PKCS8        "ENCRYPTED PRIVATE KEY"
-     #define PEM_STRING_PKCS8INF     "PRIVATE KEY"
-     #define PEM_STRING_DHPARAMS     "DH PARAMETERS"
-     #define PEM_STRING_SSL_SESSION  "SSL SESSION PARAMETERS"
-     #define PEM_STRING_DSAPARAMS    "DSA PARAMETERS"
-     #define PEM_STRING_ECDSA_PUBLIC "ECDSA PUBLIC KEY"
-     #define PEM_STRING_ECPARAMETERS "EC PARAMETERS"
-     #define PEM_STRING_ECPRIVATEKEY "EC PRIVATE KEY"
-     #define PEM_STRING_CMS          "CMS"
-     */
 };
