@@ -3,16 +3,14 @@
 (function (ng, app) {
     app.filter('targetInfo', function() {
         return function(target) {
-            if(target[0] == 'wildcard' && target[1] == 'any') {
+            if(target[0] === 'wildcard' && target[1] === 'any') {
                 return 'ANY';
-            } else {
-                if(target[0] == 'tag' && ng.isArray(target[1])) {
-                    return target[0] + ': ' + target[1][0] + ' = ' + target[1][1];
-                }else {
-                    return target[0] + ': ' + target[1];
-                }
             }
-        }
+            if(target[0] === 'tag' && ng.isArray(target[1])) {
+                return target[0] + ': ' + target[1][0] + ' = ' + target[1][1];
+            }
+            return target[0] + ': ' + target[1];
+        };
     });
     app.controller('Firewall.IndexController', [
         '$scope',
@@ -34,7 +32,7 @@
             function query(options){
 
                 var results = [];
-                if(options.term == "") {
+                if(options.term === '') {
 
                     results = ng.copy($scope.dropdown);
 
@@ -46,11 +44,11 @@
                     }
 
                 } else {
-                    var vms = $.grep($scope.vms, function(vm){
-                        return (vm.id.indexOf(options.term) != -1) || (vm.text.indexOf(options.term) != -1);
+                    var vms = $scope.vms.filter(function(vm){
+                        return (vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1);
                     });
-                    var tags = $.grep($scope.tags, function(tag){
-                        return (tag.id.indexOf(options.term) != -1) || (tag.text.indexOf(options.term) != -1);
+                    var tags = $scope.tags.filter(function(tag){
+                        return (tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1);
                     });
 
                     results = [{
@@ -59,13 +57,13 @@
                     },{
                         text: "Tags",
                         children: tags
-                    }]
+                    }];
                 }
 
                 options.callback({
                     more: false,
                     results: results
-                })
+                });
             }
 
             function extractVmInfo(machines) {
@@ -107,8 +105,7 @@
                 initSelection : function () {}
             }).change(function(e){
                 $scope.$apply(function(){
-                    var val = $.parseJSON(e.val);
-                    $scope.current.from = val;
+                    $scope.current.from = ng.fromJson(e.val);
                 });
             });
 
@@ -118,8 +115,7 @@
                 initSelection : function () {}
             }).change(function(e){
                 $scope.$apply(function(){
-                    var val = $.parseJSON(e.val);
-                    $scope.current.to = val;
+                    $scope.current.to = ng.fromJson(e.val);
                 });
             });
 
@@ -186,22 +182,22 @@
             $scope.dropdown = [{
                 text:'',
                 children:[{
-                    id: JSON.stringify({
+                    id: ng.toJson({
                         type: 'wildcard',
                         text: 'all vms'
                     }),
                     text: 'Any Vm'
                 },{
-                    id: JSON.stringify({type: 'ip'}),
+                    id: ng.toJson({type: 'ip'}),
                     text: 'IP'
                 }, {
-                    id: JSON.stringify({type: 'subnet'}),
+                    id: ng.toJson({type: 'subnet'}),
                     text:'Subnet'
                 }, {
-                    id: JSON.stringify({type: 'tag'}),
+                    id: ng.toJson({type: 'tag'}),
                     text:'Tag'
                 }, {
-                    id: JSON.stringify({type: 'vm'}),
+                    id: ng.toJson({type: 'vm'}),
                     text:'Vm'
                 }]
             },{
@@ -300,8 +296,8 @@
                             targets: $scope.data.parsed.protocol.targets
                         }
                     }
-                }
-            }
+                };
+            };
 
             $scope.resetCurrent = function() {
                 if(from && $scope.current.from) {
@@ -321,12 +317,12 @@
                     value: null
                 };
 
-            }
+            };
 
             $scope.addPort =function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
                 $scope.current.port = null;
-            }
+            };
 
             $scope.addType = function() {
                 var target = $scope.current.type;
@@ -336,12 +332,12 @@
                 $scope.data.parsed.protocol.targets.push(target);
                 $scope.current.type = 0;
                 $scope.current.code = null;
-            }
+            };
 
             function addTarget(direction) {
                 var target = [];
                 var data = $scope.current[direction];
-                if(data.type == 'wildcard', data.text == 'any') {
+                if(data.type === 'wildcard', data.text === 'any') {
                     clearTarget(direction);
                     data = {
                         type: 'wildcard',
@@ -349,7 +345,7 @@
                     };
                 }
 
-                if($scope.data.parsed[direction].length == 1 && $scope.data.parsed[direction][0][0] == 'wildcard') {
+                if($scope.data.parsed[direction].length === 1 && $scope.data.parsed[direction][0][0] === 'wildcard') {
                     $scope.data.parsed[direction] = [];
                 }
 
@@ -372,45 +368,41 @@
 
             $scope.clearProtocolTargets = function() {
                 $scope.data.parsed.protocol.targets = [];
-            }
+            };
 
-            $scope.addFrom = function() {
-                addTarget('from');
-            }
-
-            $scope.addTo = function() {
-                addTarget('to');
-            }
+            $scope.addFrom = addTarget.bind(addTarget, 'from');
+            $scope.addTo = addTarget.bind(addTarget, 'to');
 
             $scope.removeFrom = function(i) {
                 $scope.data.parsed.from.splice(i, 1);
                 if(!$scope.data.parsed.from.length) {
                     $scope.data.parsed.from = [['wildcard', 'any']];
                 }
-            }
+            };
 
             $scope.removeProtocolTarget = function(i) {
                 $scope.data.parsed.protocol.targets.splice(i, 1);
-            }
+            };
 
             $scope.removeTo = function(i) {
                 $scope.data.parsed.to.splice(i, 1);
                 if(!$scope.data.parsed.to.length) {
                     $scope.data.parsed.to = [['wildcard', 'any']];
                 }
-            }
+            };
 
             $scope.isAny = function(target) {
                 // handle array
-                if(ng.isArray(target) && target.length == 2) {
-                    return target[0] == 'wildcard' && target[1] == 'any';
+                if(ng.isArray(target) && target.length === 2) {
+                    return target[0] === 'wildcard' && target[1] === 'any';
 
                 // handle object
-                } else if (ng.isObject(target)){
-                    return target.type == 'wildcard' && target.text == 'any';
+                }
+	            if (ng.isObject(target)){
+                    return target.type === 'wildcard' && target.text === 'any';
                 }
                 return false;
-            }
+            };
 
             $scope.editRule = function(r) {
                 $scope.data.uuid = r.uuid;
@@ -422,7 +414,7 @@
                     protocol: r.parsed.protocol
                 };
                 $scope.data.enabled = r.enabled;
-            }
+            };
 
             // Rule controls to interact with service
 
@@ -438,13 +430,13 @@
                     })
                 });
 
-            }
+            };
             $scope.deleteRule = function(r) {
                 $scope.loading = true;
                 rule.deleteRule(r).then(function(){
                     $scope.refresh();
                 });
-            }
+            };
 
             $scope.changeStatus = function(r) {
                 $scope.loading = true;
@@ -457,7 +449,7 @@
                         $scope.refresh();
                     });
                 }
-            }
+            };
             $scope.refresh = function() {
                 $scope.loading = true;
                 rule.rule().then(function(r){
@@ -466,7 +458,7 @@
                     $scope.setRules(r);
                     $scope.loading = false;
                 });
-            }
+            };
             $scope.createRule = function() {
                 $scope.loading = true;
                 rule.createRule($scope.getData()).then(function(r){
@@ -474,7 +466,7 @@
                         $scope.refresh();
                     }
                 })
-            }
+            };
 
             // Sorting
             $scope.sortingOrder = null;
@@ -535,7 +527,7 @@
                         $scope.reverse);
                 }
 
-                if (changePage || oldMachineCount != $scope.filteredItems.length) {
+                if (changePage || !$scope.filteredItems || oldMachineCount !== $scope.filteredItems.length) {
                     $scope.currentPage = 0;
                 }
 

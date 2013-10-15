@@ -15,7 +15,7 @@
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
 
-            var removeRule = function(rule) {
+            function removeRule(rule) {
                 rules.list = rules.list.filter( function (obj) {
                     return obj.uuid !== rule.uuid;
                 });
@@ -25,7 +25,7 @@
                 });
             }
 
-            var updateLocal = function (action, rule) {
+            function updateLocal(action, rule) {
                 switch(action) {
                     case 'RuleEnable':
                         rules.index[rule.uuid].enabled = true;
@@ -120,7 +120,6 @@
                                 return;
                             }
                             updateLocal(action, rule);
-                            var data = job.__read();
                         },
 
                         error: function(err, job) {
@@ -133,7 +132,7 @@
 
                     rule.job = job.getTracker();
                     return job.deferred;
-                }
+                };
             };
 
             service.deleteRule = service.updateState('RuleDelete');
@@ -153,26 +152,21 @@
                             }, function (err) {
                                 deferred.reject(err);
                             });
+                        } else {
+	                        if (rules.job.finished) {
+		                        deferred.resolve(rules.map);
+	                        } else {
+		                        rules.job.deferred.then(function () {
+			                        deferred.resolve(rules.map);
+		                        }, function (err) {
+			                        deferred.reject(err);
+		                        });
+	                        }
                         }
-
-                        if (rules.job && !rules.job.finished) {
-                            rules.job.deferred.then(function () {
-                                deferred.resolve(rules.map);
-                            }, function (err) {
-                                deferred.reject(err);
-                            });
-                        } else if (rules.job && rules.job.finished) {
-                            deferred.resolve(rules.map);
-                        }
-                    }
-
-                    // Rule
-                    if (!rules.index[id]) {
+                    } else if (!rules.index[id]) { //Rule
                         if (!rules.job) {
                             service.updateRules();
-                        }
-
-                        if (rules.job && !rules.job.finished) {
+                        } else if (rules.job && !rules.job.finished) {
                             if (!rules.search[id]) {
                                 rules.search[id] = $q.defer();
                             }

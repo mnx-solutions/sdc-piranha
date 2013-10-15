@@ -17,6 +17,7 @@
 
             service.enable = function (id, cb) {
                 if (!firewall.job || firewall.job.finished) {
+	                cb = cb || ng.noop;
                     $q.when(Machine.machine(id)).then(function (machine) {
                         firewall.job = serverTab.call({
                             name: 'MachineFirewallEnable',
@@ -24,27 +25,18 @@
                             done: function(err, job) {
                                 var data = job.__read();
 
-                                if (err || data.err) {
-                                    if (cb) {
-                                        cb(err || data.err);
-                                    }
-                                } else {
-                                    if (cb) {
-                                        cb();
-                                    }
-                                }
+	                            cb(err || data.err);
                             }
                         });
                     });
-                } else {
-                    if (cb) {
-                        cb();
-                    }
+                } else if (cb) {
+					setTimeout(cb, 1); // Async
                 }
             };
 
             service.disable = function (id, cb) {
                 if (!firewall.job || firewall.job.finished) {
+	                cb = cb || ng.noop;
                     $q.when(Machine.machine(id)).then(function (machine) {
                         firewall.job = serverTab.call({
                             name: 'MachineFirewallDisable',
@@ -52,22 +44,12 @@
                             done: function(err, job) {
                                 var data = job.__read();
 
-                                if (err || data.err) {
-                                    if (cb) {
-                                        cb(err || data.err);
-                                    }
-                                } else {
-                                    if (cb) {
-                                        cb();
-                                    }
-                                }
+	                            cb(err || data.err);
                             }
                         });
                     });
-                } else {
-                    if (cb) {
-                        cb();
-                    }
+                } else if (cb) {
+	                setTimeout(cb, 1); // Async
                 }
             };
 
