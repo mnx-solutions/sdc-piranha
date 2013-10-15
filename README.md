@@ -58,7 +58,25 @@ The production environment is currently SmartOS 64-bit - base64 13.1.0, so we us
 
 ### Production
 
-FIXME: moving to tarballs including all node.js modules and automated deployment using chef.
+1. `node tools/build-tar.js` to run tar-builder
+
+#### build-tar.js
+
+NodeJS script that will build deployment tar.
+Script will do the following:
+
+1. Check if latest tags & branch is checked out and correct
+2. Check if current machine is SM Base64 13.1.0
+3. Make clean node_modules production install
+4. Check if 'npm list' is clean
+5. Makes tar, exluding .gitignore files, gzips it
+
+Possible tar builder flags:
+* `--skip-tags` - Skip git tag/branch checking
+* `--skip-package` - Skip smartmachine package check
+* `--in-root` - Use this when build-tar.js is in piranha root instead of tools/
+* `--debug` - When this flag is present, debug.log is generated with output
+* `--help` - Displays possible flags
 
 ## Update
 
