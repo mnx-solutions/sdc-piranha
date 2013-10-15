@@ -23,19 +23,19 @@ var noPackageCheck = false;
 
 // options
 process.argv.forEach(function(val, index, array) {
-    if(val === '-skiptags') {
+    if(val === '--skip-tags') {
         noTagCheck = true;
     }
 
-    if(val === '-skippackage') {
+    if(val === '--skip-package') {
         noPackageCheck = true;
     }
 
     if(val === '-help' || val === '--help' || val === '-h' || val === '--h') {
         console.log('Tar builder for piranha');
         console.log('');
-        console.log('-skiptags          Skip git tag / branch checking');
-        console.log('-skippackage       Skip smartmachine package check');
+        console.log('--skip-tags          Skip git tag / branch checking');
+        console.log('--skip-package       Skip smartmachine package check');
         process.exit(0);
     }
 });
@@ -160,13 +160,9 @@ var checkPackage = function checkPackage(next) {
  */
 var npmInstall = function npmInstall(next) {
 
+    console.log(successc +'Running '+ codec +'npm install --force '+ successc +'please hold on'+ clearFormatting);
     var installer = exec(dirFix +'&& npm install --force', function(err, stdout, stderr) {
         stdout = clean(stdout);
-
-        if(err || stderr) {
-            console.log(err, stderr);
-            process.exit(1);
-        }
 
         next();
     });
