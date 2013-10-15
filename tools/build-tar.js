@@ -31,11 +31,16 @@ process.argv.forEach(function(val, index, array) {
         noPackageCheck = true;
     }
 
+    if(val === '--in-root') {
+        dirFix = 'cd '+ __diranme +'/';
+    }
+
     if(val === '-help' || val === '--help' || val === '-h' || val === '--h') {
         console.log('Tar builder for piranha');
         console.log('');
         console.log('--skip-tags          Skip git tag / branch checking');
         console.log('--skip-package       Skip smartmachine package check');
+        console.log('--in-root       Use this when build-tar is in piranha root');
         process.exit(0);
     }
 });
