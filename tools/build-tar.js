@@ -19,6 +19,7 @@ var dirFix = 'cd '+ __dirname +'/../ ';
 
 var noTagCheck = false;
 var noPackageCheck = false;
+var debug = '';
 
 // options
 process.argv.forEach(function(val, index, array) {
@@ -34,12 +35,17 @@ process.argv.forEach(function(val, index, array) {
         dirFix = 'cd '+ __dirname +'/';
     }
 
+    if(val === '--debug') {
+        debug = ' | tee -a "debug.log"';
+    }
+
     if(val === '-help' || val === '--help' || val === '-h' || val === '--h') {
         console.log('Tar builder for piranha');
         console.log('');
         console.log('--skip-tags          Skip git tag / branch checking');
         console.log('--skip-package       Skip smartmachine package check');
-        console.log('--in-root       Use this when build-tar is in piranha root');
+        console.log('--in-root          Use this when build-tar is in piranha root');
+        console.log('--debug            When this flag is present, debug.log is generated with output');
         process.exit(0);
     }
 });
@@ -58,7 +64,7 @@ function clean(stdout) {
  */
 var getLatestTag = function getLatestTag(next) {
     // get latest tag
-    exec(dirFix +'&& git tag | tail -1', function(err, stdout, stderr) {
+    exec(dirFix +'&& git tag | tail -1 '+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {
@@ -83,7 +89,7 @@ var checkCurrentBranch = function checkCurrentBranch(next) {
         return;
     }
 
-    exec(dirFix +'&& git describe --all', function(err, stdout, stderr) {
+    exec(dirFix +'&& git describe --all'+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {
@@ -111,7 +117,7 @@ var checkCurrentTag = function checkCurrentTag(next) {
         next();
         return;
     }
-    exec(dirFix +'&& test "'+ latestTag +'" == "$(git describe --always --tags)" && echo True || echo false'+ clearFormatting, function(err, stdout, stderr) {
+    exec(dirFix +'&& test "'+ latestTag +'" == "$(git describe --always --tags)" && echo True || echo false'+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {
@@ -120,7 +126,7 @@ var checkCurrentTag = function checkCurrentTag(next) {
         }
 
         if(stdout == 'false') {
-            console.log(errorc +'Wrong tag. Please run: '+ codec +'git checkout tags/'+ latestTag);
+            console.log(errorc +'Wrong tag. Please run: '+ codec +'git checkout tags/'+ latestTag + clearFormatting);
             process.exit(1);
         }
 
@@ -140,7 +146,7 @@ var checkPackage = function checkPackage(next) {
         return;
     }
 
-    exec(dirFix +'&& sm-summary 2> /dev/null | grep $"^Image\t*"', function(err, stdout, stderr) {
+    exec(dirFix +'&& sm-summary 2> /dev/null | grep $"^Image\t*"'+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {
@@ -163,11 +169,11 @@ var checkPackage = function checkPackage(next) {
  * @param next
  */
 var npmInstall = function npmInstall(next) {
-
-    console.log(successc +'Running '+ codec +'npm install --force '+ successc +'please hold on'+ clearFormatting);
-    var installer = exec(dirFix +'&& npm install --force', function(err, stdout, stderr) {
+    console.log(successc +'Running '+ codec +'npm install --force --production '+ successc +'please wait'+ clearFormatting);
+    var installer = exec(dirFix +'&& rm -fr '+ dirFix.trim() +'node_modules/ && npm install --force --production 2>&1 '+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
+        console.log(codec +'npm install'+ successc +' finished');
         next();
     });
 
@@ -186,7 +192,8 @@ var npmInstall = function npmInstall(next) {
 var checkModules = function checkModules(next) {
 
     // check if all modules are there
-    exec(dirFix +'&& npm list 2>&1 | grep "not ok"', function(err, stdout, stderr) {
+    console.log(successc +'Running '+ codec +'npm list 2>&1 | grep "not ok"'+ successc +' please wait '+ clearFormatting);
+    exec(dirFix +'&& npm list 2>&1 | tee -a "debug.log" | grep "not ok"'+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {
@@ -213,7 +220,7 @@ var makeTar = function makeTar(next) {
     console.log(successc +'Making tar...');
 
     var tarName = 'portal-'+ latestTag +'.tar';
-    exec(dirFix +'&& tar -cvf '+ tarName +' -X .gitignore . &&  tar -uvf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName + clearFormatting, function(err, stdout, stderr) {
+    exec(dirFix +'&& tar -cvf '+ tarName +' -X .gitignore . &&  tar -uvf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName +' '+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {
