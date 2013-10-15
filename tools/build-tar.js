@@ -234,7 +234,7 @@ var makeTar = function makeTar(next) {
 };
 
 // full check list, in order.
-var checks = [getLatestTag, checkCurrentBranch, checkCurrentTag, checkPackage, makeTar];
+var checks = [getLatestTag, checkCurrentBranch, checkCurrentTag, checkPackage, npmInstall, checkModules, makeTar];
 
 var test = 0;
 var getNext = function() {
