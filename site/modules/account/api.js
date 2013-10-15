@@ -72,7 +72,7 @@ module.exports = function execute(scope, register) {
     }
 
     api.addSshKey = function (req, name, keyData, cb) {
-        req.cloud.createKey({name: name, key: keyData}, function (err, resp) {
+        req.cloud.createKey({name: name, key: keyData}, function (err) {
             if(err) {
                 cb(err);
                 return;
@@ -171,8 +171,7 @@ module.exports = function execute(scope, register) {
         function updateStep(req) {
             if (req.session) {
                 metadata.set(req.session.userId, 'signupStep', step, function () {
-                    call.log.info('Set signupStep in metadata', {step: step});
-                    call.log.info('User is now in step', _nextStep(step));
+                    call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
                 });
             }
             // Billing server is updated on billing step and forward
@@ -260,8 +259,6 @@ module.exports = function execute(scope, register) {
             if (steps.indexOf(step) === (steps.length -1)) { // Last step
                 step = 'completed';
             }
-
-            scope.log.info('Step \'%s\' is now passed', step);
             api.setSignupStep(call, step, cb);
         });
     };

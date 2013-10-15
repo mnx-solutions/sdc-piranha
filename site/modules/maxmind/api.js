@@ -42,7 +42,6 @@ module.exports = function execute(scope, register) {
             i: config.maxmind.testClientIp || call.req.userIp // config option for testing
         };
 
-        call.log.info('Calling minFraud verification', query);
         var result = {};
         if (!checkBlackList(query)) {
             call.log.warn('User matched against black list and was blocked');
@@ -51,9 +50,12 @@ module.exports = function execute(scope, register) {
             });
             return;
         }
+
+        call.log.info(query, 'Calling minFraud verification');
+
         fraudVerificationClient.get({path: '/app/ccv2r', query: query}, function (err, creq, cres, data) {
             if (err) {
-                call.log.warn('minFraud was not available, thus user verified', {userId: call.req.session.userId});
+                call.log.warn({userId: call.req.session.userId}, 'minFraud was not available, thus user verified');
                 callback(null, {block: false});
                 return;
             }
@@ -67,12 +69,12 @@ module.exports = function execute(scope, register) {
             // risk score override for testing
             result.riskScore = config.maxmind.testRiskScore || result.riskScore;
 
-            call.log.info('minFraud riskScore received (riskScore - probability of fraud in percent)',
-                {riskScore: result.riskScore, explanation: result.explanation});
+            call.log.info({"riskScore": result.riskScore, "explanation": result.explanation},
+                'minFraud risk score received (percent probability of fraud)');
 
             result.block = result.riskScore > riskScoreFraudLimit;
             if (result.block) {
-                call.log.info('User was blocked due to high risk score', {userId: call.req.session.userId});
+                call.log.info({userId: call.req.session.userId}, 'User was blocked due to high risk score');
             }
             callback(null, result);
         });
