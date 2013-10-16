@@ -1,7 +1,7 @@
 <div class="container-fluid" data-ng-controller="Firewall.IndexController">
     <div class="container">
     <data-notification></data-notification>
-        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter as datacenter for (datacenter, rules) in rulesByDatacenter"></select>
+        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter for datacenter in datacenters"></select>
         <h1 class="pull-left">Firewall rules for {{datacenter}}</h1><div data-ng-show="loading" class="loading-medium-after-h1"></div>
         <div class="clearfix"></div>
 
@@ -13,18 +13,24 @@
                 <th data-translate>
                     To
                 </th>
-                <th data-translate>
+                <th data-translate class="sortable" data-ng-click="sortBy('parsed.action')" data-ng-switch on="sortIcon.action">
                     Action
+                    <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                    <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </th>
-                <th data-translate>
+                <th data-translate class="sortable" data-ng-click="sortBy('parsed.protocol.name')" data-ng-switch on="sortIcon.action">
                     Protocol
+                    <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                    <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </th>
-                <th data-translate>
+                <th data-translate class="sortable" data-ng-click="sortBy('enabled')" data-ng-switch on="sortIcon.action">
                     Enabled
+                    <i class="icon-arrow-up" data-ng-switch-when="up"></i>
+                    <i class="icon-arrow-down" data-ng-switch-when="down"></i>
                 </th>
                 <th colspan="2">&nbsp;</th>
             </tr>
-            <tr data-ng-repeat="rule in rules" class="item">
+            <tr data-ng-repeat="rule in pagedItems[currentPage] | orderBy:sortingOrder:reverse" class="item">
                 <td>
                     <div data-ng-show="rule.parsed.from.length">
                         <div data-ng-repeat="from in rule.parsed.from">{{from|targetInfo}}</div>
@@ -60,28 +66,28 @@
                 </td>
             </tr>
         </table>
-        <!--<div class="pagination pagination-small pagination-centered">-->
-            <!--<ul>-->
-                <!--<li data-ng-class="{disabled: currentPage == 0}">-->
-                    <!--<a href ng-click="prevPage()" data-translate>« Prev</a>-->
-                <!--</li>-->
-                <!--<li data-ng-repeat="n in range()"-->
-                    <!--data-ng-class="{active: n == currentPage}"-->
-                    <!--data-ng-click="setPage()">-->
-                    <!--<a href data-ng-bind="n + 1">1</a>-->
-                    <!--<span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>-->
-                <!--</li>-->
-                <!--<li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">-->
-                    <!--<a href data-ng-click="nextPage()" data-translate>Next »</a>-->
-                <!--</li>-->
-                <!--<li data-ng-show="!showAllActive">-->
-                    <!--<a href data-ng-click="showAll()" data-translate>List all</a>-->
-                <!--</li>-->
-                <!--<li data-ng-show="showAllActive">-->
-                    <!--<a href data-ng-click="showPages()" data-translate>View pages</a>-->
-                <!--</li>-->
-            <!--</ul>-->
-        <!--</div>-->
+        <div class="pagination pagination-small pagination-centered">
+            <ul>
+                <li data-ng-class="{disabled: currentPage == 0}">
+                    <a href ng-click="prevPage()" data-translate>« Prev</a>
+                </li>
+                <li data-ng-repeat="n in range()"
+                    data-ng-class="{active: n == currentPage}"
+                    data-ng-click="setPage()">
+                    <a href data-ng-bind="n + 1">1</a>
+                    <span data-ng-click="$event.stopPropagation()" class="" data-ng-show="(range()[$index] < range()[$index+1]-1)">...</span>
+                </li>
+                <li data-ng-class="{disabled: currentPage == pagedMachines.length - 1}">
+                    <a href data-ng-click="nextPage()" data-translate>Next »</a>
+                </li>
+                <li data-ng-show="!showAllActive">
+                    <a href data-ng-click="showAll()" data-translate>List all</a>
+                </li>
+                <li data-ng-show="showAllActive">
+                    <a href data-ng-click="showPages()" data-translate>View pages</a>
+                </li>
+            </ul>
+        </div>
         <div data-ng-show="loading" class="loading-large"></div>
         <form name="rule" class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
             <fieldset>
