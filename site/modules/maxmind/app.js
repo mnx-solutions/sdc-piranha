@@ -46,13 +46,11 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        req.log.warn('Lock user account', {userId: req.session.userId});
+        req.log.warn('User account is locked');
         req.session.maxmindLocked = true;
         SignupProgress.setSignupStep(req, 'blocked', function (err) {
-            if(!err) {
-                req.log.warn('User account is locked', {userId: req.session.userId});
-            } else {
-                req.log.error('Failed to lock user account', {userId: req.session.userId, error: err});
+            if (err) {
+                req.log.error(err);
             }
             res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
         });
@@ -60,21 +58,20 @@ module.exports = function execute(scope, app) {
 
     function finishVerification(req, res, success) {
         if(success) {
-            req.log.info('Phone verification successful', {userId: req.session.userId});
+            req.log.info('Phone verification successful');
         } else {
             req.log.error('Maxmind phone verification service cannot be reached after %d attempts',
-                            limits.serviceFails, {userId: req.session.userId});
+                limits.serviceFails);
         }
 
         var verificationStatus = success ? 'Successful' : 'PV service failed';
         Metadata.set(req.session.userId, 'phoneVerification', verificationStatus, function (err) {
             if (err) {
-                req.log.warn('Error occured while setting phone verification status', {error: err});
+                req.log.warn({error: err}, 'Error occurred while setting phone verification status');
             }
             SignupProgress.setMinProgress(req, 'phone', function(err) {
                 if(err) {
-                    req.log.error('Failed to set user phone verification as passed',
-                        {userId: req.session.userId, error: err});
+                    req.log.error(err);
                     res.json({message: 'Internal error', success: false});
                     return;
                 }
@@ -106,10 +103,11 @@ module.exports = function execute(scope, app) {
             '&phone=' + encodeURIComponent(req.params.phone) +
             '&verify_code=' + code;
 
-        req.log.info('Calling user phone', {userId: req.session.userId, phone: req.params.phone});
+        req.log.info({phone: req.params.phone}, 'Calling user phone');
+
         phoneVerificationClient.get(url, function(err, creq, cres, data) {
             if (err) {
-                req.log.error('Failed to contact maxmind api', err);
+                req.log.error(err);
                 req.session.maxmindServiceFails = serviceFails + 1;
                 res.json({message: serviceMessages.serviceFailed, success: false});
                 return;
@@ -117,8 +115,8 @@ module.exports = function execute(scope, app) {
 
             if (data.indexOf('err') === 0) {
                 var error = messageFilter(data.substring(4)); // Skip 'err='
-                req.log.info('Phone verification error', {error: error.message, phone: req.params.phone});
-                if(error.serviceFailed) {
+                req.log.warn({error: error.message, phone: req.params.phone}, 'Phone verification error');
+                if (error.serviceFailed) {
                     req.session.maxmindServiceFails = serviceFails + 1;
                 }
                 res.json({message: error.message, success: false});
@@ -155,11 +153,10 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        req.log.info('User entered wrong pin', {
-            userId: req.session.userId,
+        req.log.info({
             generatedPin: req.session.maxmindCode,
             enteredPin: req.params.code
-        });
+        }, 'User entered wrong pin');
 
         res.json({message: serviceMessages.wrongPin, success: false});
     });
