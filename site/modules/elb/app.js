@@ -1,12 +1,22 @@
+var assert = require('assert');
+var config = require('easy-config');
 var restify = require('restify');
-var client = restify.createJsonClient({
-    url: 'https://localhost:4000',
-    rejectUnauthorized: false
-});
 var fs = require('fs');
+var httpSignature = require('http-signature');
+var key = fs.readFileSync(config.elb.keyPath).toString(); 
 var pem = require('pem');
-
 module.exports = function execute(scope, app) {
+    var client = restify.createJsonClient({
+        url: config.elb.url,
+        rejectUnauthorized: false,
+        signRequest: function(req) {
+            httpSignature.sign(req, {
+                key: key,
+                keyId: config.elb.keyId
+            })
+        }
+    });
+
     app.get('/list', function (req, res) {
         client.get('/loadbalancers', function(err, creq, cres, obj) {
             if (err) {
@@ -122,4 +132,5 @@ module.exports = function execute(scope, app) {
             });
         });
     });
+    console.log(config.elb);
 };

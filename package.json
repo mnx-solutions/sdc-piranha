@@ -32,7 +32,8 @@
     "speakeasy": "*",
     "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
     "soap": "0.2.7",
-    "pem": "~1.2.2"
+    "pem": "~1.2.2",
+    "http-signature": "~0.9.11"
   },
   "devDependencies": {
     "grunt": ">=0.4.0",
