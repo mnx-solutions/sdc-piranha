@@ -1,7 +1,7 @@
 <div class="container-fluid" data-ng-controller="Firewall.IndexController">
     <div class="container">
     <data-notification></data-notification>
-        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter for datacenter in datacenters"></select>
+        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter.name as datacenter.name for (key, datacenter) in datacenters"></select>
         <h1 class="pull-left">Firewall rules for {{datacenter}}</h1><div data-ng-show="loading" class="loading-medium-after-h1"></div>
         <div class="clearfix"></div>
 

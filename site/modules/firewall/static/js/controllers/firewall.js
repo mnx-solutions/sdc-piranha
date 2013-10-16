@@ -252,7 +252,7 @@
                 $q.when($scope.rulesByDatacenter),
                 $q.when($scope.datacenters)
             ]).then(function(lists){
-                $scope.datacenter = lists[2][0];
+                $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
 
                     if(dc) {
