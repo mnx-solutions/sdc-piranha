@@ -99,7 +99,7 @@
                                 title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
                             });
                         }
-                        $scope.cpuGraphs = $scope.graphs.slice(0, 1);
+                        $scope.cpuGraphs = $scope.graphs.slice(1, 2);
                         $scope.memGraphs = $scope.graphs.slice(3, 4);
                     });
                 } else {
