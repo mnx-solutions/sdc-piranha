@@ -1,67 +1,87 @@
 {
     "License Portfolio": [
         {
-            "API Name": "stm-500L-10",
-            "Pan-Instance Price Uplift": 0.108,
+            "API Name": "stm-500L-10", 
+            "Pan-Instance Price Uplift": 0.108, 
             "URN": "sdc:jpc:stingray-500L"
-        },
+        }, 
         {
-            "API Name": "stm-500M-200",
-            "Pan-Instance Price Uplift": 0.226,
+            "API Name": "stm-500M-200", 
+            "Pan-Instance Price Uplift": 0.226, 
             "URN": "sdc:jpc:stingray-500M"
-        },
+        }, 
         {
-            "API Name": "stm-1000M",
-            "Pan-Instance Price Uplift": 0.612,
+            "API Name": "stm-1000M", 
+            "Pan-Instance Price Uplift": 0.612, 
             "URN": "sdc:jpc:stingray-100M"
-        },
+        }, 
         {
-            "API Name": "stm-1000M-SAF",
-            "Pan-Instance Price Uplift": 1.28,
+            "API Name": "stm-1000M-SAF", 
+            "Pan-Instance Price Uplift": 1.28, 
             "URN": "sdc:jpc:stingray-100M-SAF"
-        },
+        }, 
         {
-            "API Name": "stm-1000H",
-            "Pan-Instance Price Uplift": 0.932,
+            "API Name": "stm-1000H", 
+            "Pan-Instance Price Uplift": 0.932, 
             "URN": "sdc:jpc:stingray-1000H"
-        },
+        }, 
         {
-            "API Name": "stm-2000L",
-            "Pan-Instance Price Uplift": 1.374,
+            "API Name": "stm-2000L", 
+            "Pan-Instance Price Uplift": 1.374, 
             "URN": "sdc:jpc:stingray-2000L"
-        },
+        }, 
         {
-            "API Name": "stm-2000L-SAF",
-            "Pan-Instance Price Uplift": 2.362,
+            "API Name": "stm-2000L-SAF", 
+            "Pan-Instance Price Uplift": 2.362, 
             "URN": "sdc:jpc:stingray-2000L-SAF"
-        },
+        }, 
         {
-            "API Name": "stm-4000L",
-            "Pan-Instance Price Uplift": 2.586,
+            "API Name": "stm-2000L-SAF-STX", 
+            "Pan-Instance Price Uplift": 3.104, 
+            "URN": "sdc:jpc:stingray-2000L-SAF-STX"
+        }, 
+        {
+            "API Name": "stm-2000L-STX", 
+            "Pan-Instance Price Uplift": 2.112, 
+            "URN": "sdc:jpc:stingray-2000L-STX"
+        }, 
+        {
+            "API Name": "stm-2000M-SAF-STX", 
+            "Pan-Instance Price Uplift": 3.864, 
+            "URN": "sdc:jpc:stingray-2000M-SAF-STX"
+        }, 
+        {
+            "API Name": "stm-2000M-STX", 
+            "Pan-Instance Price Uplift": 2.88, 
+            "URN": "sdc:jpc:stingray-2000M-STX"
+        }, 
+        {
+            "API Name": "stm-4000L", 
+            "Pan-Instance Price Uplift": 2.586, 
             "URN": "sdc:jpc:stingray-4000L"
-        },
+        }, 
         {
-            "API Name": "ws2008ent-r2-sp1",
-            "Pan-Instance Price Uplift": 0.2,
+            "API Name": "ws2008ent-r2-sp1", 
+            "Pan-Instance Price Uplift": 0.2, 
             "URN": "sdc:admin:ws2008ent-r2-sp1"
-        },
+        }, 
         {
-            "API Name": "ws2008std-r2-sp1",
-            "Pan-Instance Price Uplift": 0.06,
+            "API Name": "ws2008std-r2-sp1", 
+            "Pan-Instance Price Uplift": 0.06, 
             "URN": "sdc:admin:ws2008std-r2-sp1"
-        },
+        }, 
         {
-            "API Name": "ws2012std",
-            "Pan-Instance Price Uplift": 0.06,
+            "API Name": "ws2012std", 
+            "Pan-Instance Price Uplift": 0.06, 
             "URN": "sdc:admin:ws2012std"
         }
-    ],
+    ], 
     "Portfolio Description": {
-        "Created": "2013-05-24T09:54:41.928491",
-        "Notes": "",
-        "Revision": "1.2.0.0",
-        "SchemaVersion": "1.0.0.1",
-        "Status": "Pre-production",
+        "Created": "2013-10-01T22:18:42.772822", 
+        "Notes": "SYSOPS-6241 (adhoc change 2013-09-17, Added 4 new stingray instances)", 
+        "Revision": "1.3.0.0", 
+        "SchemaVersion": "1.0.0.1", 
+        "Status": "Pre-production", 
         "Type": "Joyent License Portfolio"
     }
 }
