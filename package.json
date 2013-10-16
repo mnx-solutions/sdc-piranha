@@ -24,7 +24,7 @@
         "file-pointer": "0.0.x",
         "foldermap": "0.3.x",
         "redis": "*",
-        "zuora": "git+ssh://git@github.com:DeadAlready/node-zuora.git",
+        "zuora": "0.1.3",
         "moment": "*",
         "xml2js": "*",
         "mustache": "*",
