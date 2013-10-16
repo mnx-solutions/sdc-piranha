@@ -108,6 +108,6 @@
         "imageUse": "disabled",
         "imageCreate": "disabled",
         "invoices": "disabled",
-        "firewall": "disabled"
+        "firewall": "enabled"
     }
 }
