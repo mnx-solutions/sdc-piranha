@@ -54,7 +54,7 @@ The production environment is currently SmartOS 64-bit - base64 13.1.0, so we us
 6. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
 7. Make sure portal user has rights to write var/error.json `chown -R portal var/`
 8. `svccfg import /opt/portal/smf/portal.xml`
-9. `svcadmin enable portal`
+9. `svcadm enable portal`
 
 ### Production
 
@@ -82,11 +82,11 @@ Possible tar builder flags:
 
 ### Development & Staged
 
-1. `svcadmin disable portal`
+1. `svcadm disable portal`
 2. `rm -rf /opt/portal/node_modules/*`
 3. `git pull`
 5. `cd /opt/portal; npm install --production`
-8. `svcadmin enable portal`
+8. `svcadm enable portal`
 
 ### Production
 
