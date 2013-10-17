@@ -2,10 +2,10 @@
 
 (function (ng, app) {
     app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
-        $scope.getLastPage = function (update) {
+        $scope.getLastPage = function (update, newValue, oldValue) {
             if($scope.objects)
             {
-                var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
+                var lastPage =  Math.ceil($filter('filter')(newValue || $scope.objects, $scope.matchesFilter).length / $scope.perPage);
                 if(update) {
                     $scope.lastPage = lastPage;
                 }
@@ -13,9 +13,9 @@
 
             }
         };
-        $scope.$watch('objects', $scope.getLastPage.bind($scope, true), true);
-        $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
-        $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
+        $scope.$watch('objects', $scope.getLastPage.bind($scope, true));
+        $scope.$watch('props', $scope.getLastPage.bind($scope, true));
+        $scope.$watch('perPage', $scope.getLastPage.bind($scope, true));
 
         $scope.getLastPage(true);
 
@@ -45,10 +45,6 @@
         $scope.clearOrder = function () {
             $scope.order = [];
         };
-
-		setInterval(function () {
-			console.log($scope.order);
-		}, 5000);
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
             var existed = null;

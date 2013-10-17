@@ -232,9 +232,9 @@
             }];
 
             $scope.setRules = function (rules) {
-                $scope.rules = rules[$scope.datacenter];
-//                $scope.search();
-            }
+	            $scope.rules = rules[$scope.datacenter];
+//                $scope.rules.splice.apply($scope.rules, [0, $scope.rules.length].concat(rules[$scope.datacenter]));
+            };
 
             // get lists from services
             $scope.rules = [];
@@ -564,7 +564,6 @@
 			        },
 			        btn: {
 				        getLabel: function (object) {
-					        console.log('getLabel', object);
 					        return object.enabled ? 'Disable' : 'Enable';
 				        },
 				        getClass: function (object) {
