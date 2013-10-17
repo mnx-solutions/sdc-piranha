@@ -37,3 +37,7 @@ input.ng-invalid, input.ng-pristine {
 .control-label {
     font-weight: bold !important;
 }
+
+.padding-5 {
+    padding: 5px;
+}

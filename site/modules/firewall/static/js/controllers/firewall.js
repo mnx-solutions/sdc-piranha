@@ -1,17 +1,6 @@
 'use strict';
 
 (function (ng, app) {
-    app.filter('targetInfo', function() {
-        return function(target) {
-            if(target[0] === 'wildcard' && target[1] === 'any') {
-                return 'ANY';
-            }
-            if(target[0] === 'tag' && ng.isArray(target[1])) {
-                return target[0] + ': ' + target[1][0] + ' = ' + target[1][1];
-            }
-            return target[0] + ': ' + target[1];
-        };
-    });
     app.controller('Firewall.IndexController', [
         '$scope',
         'Datacenter',
@@ -210,6 +199,10 @@
             }];
             $scope.datacenters = Datacenter.datacenter();
             $scope.datacenter = null;
+
+	        $scope.selectDatacenter = function (name) {
+		        $scope.datacenter = name;
+	        };
 
             $scope.actions = [{
                 value:'allow',
@@ -472,168 +465,116 @@
                     }
                 })
             };
-
-//            // Sorting
-//            $scope.sortingOrder = null;
-//            $scope.reverse = true;
-//
-//            $scope.sortable = [
-//                { title: 'Action', value: 'parsed.action' },
-//                { title: 'Protocol', value: 'parsed.protocol.name' },
-//                { title: 'Active', value: 'enabled' }
-//            ];
-//            $scope.sortField = $scope.sortable[2];
-//
-//            // Pagination
-//            $scope.itemsPerPage = 5;
-//            $scope.pagedItems = [];
-//            $scope.showAllActive = false;
-//            $scope.maxPages = 5;
-//            $scope.currentPage = 0;
-//
-//            $scope.filteredItems = [];
-//
-//            // Controller methods
-//            // Sorting
-//            // change sorting order
-//            var __fieldName;
-//            $scope.sortBy = function (fieldName, changeDirection) {
-//                $scope.reverse = __fieldName === fieldName ? !$scope.reverse : false;
-//                __fieldName = fieldName;
-//
-//                // Assume that filter method will find least one matching item
-//                try {
-//                    $scope.sortField = $scope.sortable.filter(function (item) {
-//                        return fieldName === item.value;
-//                    })[0];
-//                    $cookieStore.put('sortField', fieldName);
-//                    $cookieStore.put('sortDirection', $scope.reverse);
-//                } catch (e) {
-//                    // Cannot change sorting field, ignore
-//                    return;
-//                }
-//
-//                var oldFieldName = $scope.sortingOrder;
-//                $scope.sortingOrder = fieldName;
-//                $scope.search((oldFieldName != fieldName));
-//            };
-//
-//            // Searching
-//            $scope.search = function (changePage) {
-//                // filter by search term
-//                var oldMachineCount = $scope.filteredItems.length;
-//                $scope.filteredItems = $scope.rules;
-//
-//                // take care of the sorting order
-//                if ($scope.sortingOrder !== '') {
-//                    $scope.filteredItems = $filter('orderBy')(
-//                        $scope.filteredItems,
-//                        $scope.sortingOrder,
-//                        $scope.reverse);
-//                }
-//
-//                if (changePage || !$scope.filteredItems || oldMachineCount !== $scope.filteredItems.length) {
-//                    $scope.currentPage = 0;
-//                }
-//
-//                $scope.groupToPages();
-//                $scope.$watch('machines.final', function(newval) {
-//                    if (newval && $scope.loading) {
-//                        $scope.loading = false;
-//                    }
-//                })
-//            };
-//            // Pagination
-//            // calculate page in place
-//            $scope.groupToPages = function () {
-//                $scope.pagedItems = [];
-//
-//                var i;
-//                for (i = 0; i < $scope.filteredItems.length; i++) {
-//                    var index = Math.floor(i / $scope.itemsPerPage);
-//                    if (i % $scope.itemsPerPage === 0) {
-//                        $scope.pagedItems[index] = [$scope.filteredItems[i]];
-//                    } else {
-//                        $scope.pagedItems[index].push($scope.filteredItems[i]);
-//                    }
-//                }
-//            };
-//
-//            // get pagination range
-//            $scope.range = function () {
-//                var ret = [];
-//
-//                var start = $scope.currentPage - Math.floor($scope.maxPages / 2);
-//                var end = $scope.currentPage + Math.ceil($scope.maxPages / 2);
-//
-//                if (end > $scope.pagedItems.length) {
-//                    end = $scope.pagedItems.length;
-//                    if (end - $scope.maxPages >= 0) {
-//                        start = end - $scope.maxPages;
-//                    }
-//                }
-//
-//                if (start < 0) {
-//                    start = 0;
-//                    if (start + $scope.maxPages <= $scope.pagedItems.length) {
-//                        end = start + $scope.maxPages;
-//                    }
-//                }
-//
-//                // add first page
-//                ret.push(0);
-//                for (var i = start; i < end; i++) {
-//                    // don't duplicate first or last page
-//                    if(i != 0 && i != $scope.pagedItems.length-1)
-//                        ret.push(i);
-//                }
-//
-//                // add last page
-//                if ($scope.pagedItems.length > 1) {
-//                    ret.push($scope.pagedItems.length-1);
-//                }
-//
-//                return ret;
-//            };
-//
-//
-//            // put all machines to one page
-//            $scope.showAll = function() {
-//                $scope.itemsPerPage = 9999;
-//                $scope.maxPages = 1;
-//                $scope.currentPage = 0;
-//                $scope.showAllActive = true;
-//                $scope.groupToPages();
-//            };
-//
-//            $scope.showPages = function() {
-//                $scope.itemsPerPage = 5;
-//                $scope.maxPages = 5;
-//                $scope.currentPage = 0;
-//                $scope.showAllActive = false;
-//                $scope.groupToPages();
-//            };
-//
-//            $scope.prevPage = function () {
-//                if ($scope.currentPage > 0) {
-//                    $scope.currentPage--;
-//                }
-//            };
-//
-//            $scope.nextPage = function () {
-//                if ($scope.currentPage < $scope.pagedItems.length - 1) {
-//                    $scope.currentPage++;
-//                }
-//            };
-//
-//            $scope.setPage = function () {
-//                $scope.currentPage = this.n;
-//            };
-//
-//            if (!$scope.sortingOrder) {
-//                $scope.reverse = $cookieStore.get('sortDirection') || false;
-//                $scope.sortBy($cookieStore.get('sortField') || $scope.sortField.value, false);
-//            }
+	        $scope.gridOrder = [];
+	        $scope.gridProps = [
+		        {
+			        id: 'parsed',
+			        id2: 'from',
+			        name: 'From',
+			        getClass: function () {
+				        return 'span2 padding-5';
+			        },
+			        _getter: function (object) {
+				        var arr = object.parsed.from.map(function (from) {
+					        return $filter('targetInfo')(from);
+				        });
+				        return arr.join('; ');
+			        },
+			        sequence: 1
+		        },
+		        {
+			        id: 'parsed',
+			        id2: 'to',
+			        name: 'To',
+			        getClass: function () {
+				        return 'span2 padding-5';
+			        },
+			        _getter: function (object) {
+				        var arr = object.parsed.to.map(function (to) {
+					        return $filter('targetInfo')(to);
+				        });
+				        return arr.join('; ');
+			        },
+			        sequence: 2
+		        },
+		        {
+			        id: 'parsed',
+			        id2: 'action',
+			        name: 'Action',
+			        getClass: function () {
+				        return 'span1 padding-5';
+			        },
+			        sequence: 3
+		        },
+		        {
+			        id: 'protocol',
+			        name: 'Protocol',
+			        getClass: function () {
+				        return 'span2 padding-5';
+			        },
+			        _getter: function (object) {
+				        return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
+			        },
+			        sequence: 4
+		        },
+		        {
+			        id: 'delete',
+			        name: 'Delete',
+			        type: 'button',
+			        getClass: function () {
+				        return 'pull-right span1 padding-5';
+			        },
+			        btn: {
+				        label: 'Delete',
+				        getClass: function (object) {
+					        return 'btn-mini btn-danger';
+				        },
+				        disabled: function () {
+					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
+				        },
+				        action: $scope.deleteRule.bind($scope),
+				        tooltip: 'Delete the rule'
+			        }
+		        },
+		        {
+			        id: 'edit',
+			        name: 'Edit',
+			        type: 'button',
+			        getClass: function () {
+				        return 'pull-right span1 padding-5';
+			        },
+			        btn: {
+				        label: 'Edit',
+				        getClass: function () {
+					        return 'btn-mini btn-default';
+				        },
+				        disabled: function () {
+					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
+				        },
+				        action: $scope.editRule.bind($scope),
+				        tooltip: 'Edit the rule'
+			        }
+		        },
+		        {
+			        id: 'enabled',
+			        name: 'Enabled',
+			        type: 'button',
+			        getClass: function () {
+				        return 'pull-right span1 padding-5';
+			        },
+			        btn: {
+				        getLabel: function (object) {
+					        console.log('getLabel', object);
+					        return object.enabled ? 'Disable' : 'Enable';
+				        },
+				        getClass: function (object) {
+					        return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
+				        },
+				        action: $scope.changeStatus.bind($scope),
+				        tooltip: 'Enable the rule'
+			        }
+		        }
+	        ];
 
         }
 

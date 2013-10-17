@@ -46,6 +46,10 @@
             $scope.order = [];
         };
 
+		setInterval(function () {
+			console.log($scope.order);
+		}, 5000);
+
         $scope.orderGridMachinesBy = function (prop, reverse) {
             var existed = null;
             if($scope.order.indexOf(prop.order) !== -1) {
@@ -75,7 +79,7 @@
                         return false;
                     }
 
-                    var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                    var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                     if (ng.isNumber(subject)) {
                         subject = subject.toString();
@@ -92,7 +96,7 @@
                     return false;
                 }
 
-                var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                 if (ng.isNumber(subject)) {
                     subject = subject.toString();
@@ -152,6 +156,9 @@
             if(!object) {
                 return $scope.actionButtons;
             }
+	        if(!$scope.actionButtons) {
+		        return [];
+	        }
 
             return $scope.actionButtons.filter(function (btn) {
                 if(btn.show === undefined) {
@@ -197,7 +204,17 @@
 
                 $scope.props.forEach(function (el) {
                     el.active = true;
-                    if(!el.id2) {
+	                if(el._getter) {
+		                el.order = el._getter;
+		                el.rorder = function (obj) {
+			                var elem = el._getter(obj) + '';
+			                var next = '';
+			                for(var i = 0; i < elem.length; i++) {
+				                next += String.fromCharCode(255 - elem.charCodeAt(i));
+			                }
+			                return next;
+		                };
+	                } else if(!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {
