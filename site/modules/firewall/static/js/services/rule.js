@@ -16,13 +16,9 @@
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
 
             function removeRule(rule) {
-                rules.list = rules.list.filter( function (obj) {
-                    return obj.uuid !== rule.uuid;
-                });
+	            rules.list.splice(rules.list.indexOf(rule), 1);
                 delete rules.index[rule.uuid];
-                rules.map[rule.datacenter] = rules.map[rule.datacenter].filter( function (obj) {
-                    return obj.uuid !== rule.uuid;
-                });
+	            rules.map[rule.datacenter].splice(rules.map[rule.datacenter].indexOf(rule), 1);
             }
 
             function updateLocal(action, rule) {
@@ -41,6 +37,7 @@
             }
 
             service.createRule = function (rule) {
+	            console.log(rule);
                 rule.uuid = window.uuid.v4();
 
                 // Store rule

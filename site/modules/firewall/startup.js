@@ -71,13 +71,12 @@ var firewall = function execute (scope) {
                                 clearInterval(poll);
                                 clearTimeout(timeout);
                             }
-                        });
+                        }, undefined, true);
                     }, 500);
 
                     // When timeout reached
                     timeout = setTimeout(function () {
                         var err = new Error('Rule not created');
-                        call.log.error(err);
                         call.done(err);
                         clearInterval(poll);
                     }, 10000);
@@ -172,19 +171,19 @@ var firewall = function execute (scope) {
                     rules: []
                 };
 
-                // Serialize rules
-                rules.forEach(function (rule) {
-                    rule.datacenter = name;
-                    rule.parsed = fwrule.parse(rule.rule);
-                    rule.uuid = rule.id;
-                });
-
                 if (err) {
                     call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
                     response.status = 'error';
                     response.error = err;
                 } else {
                     response.rules = rules;
+
+	                // Serialize rules
+	                rules.forEach(function (rule) {
+		                rule.datacenter = name;
+		                rule.parsed = fwrule.parse(rule.rule);
+		                rule.uuid = rule.id;
+	                });
 
                     call.log.debug('List rules succeeded for datacenter %s', name);
                 }
