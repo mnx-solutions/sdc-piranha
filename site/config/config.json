@@ -102,7 +102,7 @@
             "serviceFails": 3,
             "pinTries": 3
         },
-        "riskScoreFraudLimit": 100
+        "riskScoreFraudLimit": 90
     },
     "features": {
         "imageUse": "disabled",

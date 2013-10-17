@@ -14,6 +14,7 @@
     });
     app.controller('Firewall.IndexController', [
         '$scope',
+        'Datacenter',
         '$cookieStore',
         '$filter',
         'requestContext',
@@ -22,7 +23,7 @@
         '$q',
         'Machine',
 
-        function ($scope, $cookieStore, $filter, requestContext, localization, rule, $q, Machine) {
+        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -207,8 +208,8 @@
                 text: "Tags",
                 children: $scope.tags
             }];
-
-            $scope.datacenter = 'us-beta-4';
+            $scope.datacenters = Datacenter.datacenter();
+            $scope.datacenter = null;
 
             $scope.actions = [{
                 value:'allow',
@@ -248,8 +249,10 @@
             $scope.rulesByDatacenter = rule.rule();
             $q.all([
                 $q.when($scope.machines),
-                $q.when($scope.rulesByDatacenter)
+                $q.when($scope.rulesByDatacenter),
+                $q.when($scope.datacenters)
             ]).then(function(lists){
+                $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
 
                     if(dc) {

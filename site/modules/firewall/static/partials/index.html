@@ -1,7 +1,7 @@
 <div class="container-fluid" data-ng-controller="Firewall.IndexController">
     <div class="container">
     <data-notification></data-notification>
-        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter as datacenter for (datacenter, rules) in rulesByDatacenter"></select>
+        <select class="pull-right" data-ng-model="datacenter" data-ng-options="datacenter.name as datacenter.name for (key, datacenter) in datacenters"></select>
         <h1 class="pull-left">Firewall rules for {{datacenter}}</h1><div data-ng-show="loading" class="loading-medium-after-h1"></div>
         <div class="clearfix"></div>
 
@@ -14,17 +14,26 @@
                     To
                 </th>
                 <th data-translate>
+                <!--<th data-translate class="sortable" data-ng-click="sortBy('parsed.action')" data-ng-switch on="sortIcon.action">-->
                     Action
+                    <!--<i class="icon-arrow-up" data-ng-switch-when="up"></i>-->
+                    <!--<i class="icon-arrow-down" data-ng-switch-when="down"></i>-->
                 </th>
                 <th data-translate>
+                <!--<th data-translate class="sortable" data-ng-click="sortBy('parsed.protocol.name')" data-ng-switch on="sortIcon.action">-->
                     Protocol
+                    <!--<i class="icon-arrow-up" data-ng-switch-when="up"></i>-->
+                    <!--<i class="icon-arrow-down" data-ng-switch-when="down"></i>-->
                 </th>
                 <th data-translate>
+                <!--<th data-translate class="sortable" data-ng-click="sortBy('enabled')" data-ng-switch on="sortIcon.action">-->
                     Enabled
+                    <!--<i class="icon-arrow-up" data-ng-switch-when="up"></i>-->
+                    <!--<i class="icon-arrow-down" data-ng-switch-when="down"></i>-->
                 </th>
                 <th colspan="2">&nbsp;</th>
             </tr>
-            <tr data-ng-repeat="rule in rules" class="item">
+            <tr data-ng-repeat="rule in rules | orderBy:sortingOrder:reverse" class="item">
                 <td>
                     <div data-ng-show="rule.parsed.from.length">
                         <div data-ng-repeat="from in rule.parsed.from">{{from|targetInfo}}</div>
