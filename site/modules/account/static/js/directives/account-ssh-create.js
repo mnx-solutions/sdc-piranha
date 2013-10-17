@@ -71,7 +71,7 @@
                                                 // as this is directive, we need to use rootScope here
                                                 $rootScope.pollingJob = true;
                                                 $rootScope.loading = false;
-                                                //$scope.iframe = '<iframe src="'+ downloadLink +'"></iframe>';
+                                                $scope.iframe = '<iframe src="'+ downloadLink +'"></iframe>';
 
                                                 // tell the rootScope that we are loading
                                                 $rootScope.downloadLink = downloadLink;
