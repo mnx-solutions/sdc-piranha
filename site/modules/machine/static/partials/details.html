@@ -3,7 +3,7 @@
 <div data-notification></div>
 
 <div class="page-header">
-    <h1 class="pull-left machine-name" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
+    <h1 class="pull-left machine-name" data-ng-class="renameClass()" data-ng-show="!changingName || features.instanceRename == 'disabled'" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
     <form name="instanceRename" class="machine-edit-form">
         <div class="error"
              data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
@@ -151,7 +151,7 @@
             <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
         </div>
     </fieldset>
-    <fieldset>
+    <fieldset data-ng-show="features.instanceTagging != 'disabled'">
         <legend>
             <span data-translate>Tags</span>
             <small data-translate>Add tags for convenient instance searching</small>
@@ -172,7 +172,7 @@
                         <span class="value span5" data-ng-class="{error: o.conflict}">
                             {{o.val}}
                             <span class="icon-trash pull-right delete"
-                                  data-ng-click="removeTag(key)"
+                                  data-ng-click="removes(key)"
                                   data-ng-show="!tagsave"
                                   ></span>
                             <!-- <div class="clearfix"></div> -->

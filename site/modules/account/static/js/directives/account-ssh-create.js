@@ -67,18 +67,21 @@
                                                     )
                                                 );
 
+                                                var downloadLink = 'http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name;
                                                 // as this is directive, we need to use rootScope here
-                                                $scope.iframe = '<iframe src="http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name +'"></iframe>';
+                                                $rootScope.pollingJob = true;
+                                                $rootScope.loading = false;
+                                                $scope.iframe = '<iframe src="'+ downloadLink +'"></iframe>';
 
                                                 // tell the rootScope that we are loading
-                                                $rootScope.downloadLink = 'http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name;
-                                                $rootScope.loading = true;
+                                                $rootScope.downloadLink = downloadLink;
 
                                                 // start polling
                                                 var pollingJob = setInterval(function() {
                                                     $http.get('/main/account/ssh/job/'+ jobId).success(function(data) {
                                                         if(data.success === true) {
                                                             $rootScope.loading = false;
+                                                            $rootScope.pollingJob = false;
                                                             clearInterval(pollingJob);
 
                                                             if($scope.updateInterval) {
@@ -91,6 +94,7 @@
                                                         }
                                                         if(data.success === false) {
                                                             $rootScope.loading = false;
+                                                            $rootScope.pollingJob = false;
                                                             notification.push(null, { type: 'error' },
                                                                 localization.translate($scope, null,
                                                                     'SSH Key generation error'
@@ -106,6 +110,7 @@
                                                     clearInterval(pollingJob);
                                                     clearTimeout(pollingTimeout);
                                                     $rootScope.loading = false;
+                                                    $rootScope.pollingJob = false;
                                                     notification.push(null, { type: 'error' },
                                                         localization.translate($scope, null,
                                                             'SSH Key generation error'
@@ -117,6 +122,7 @@
                                             } else {
                                                 // error
                                                 $rootScope.loading = false;
+                                                $rootScope.pollingJob = false;
                                                 notification.push(null, { type: 'error' },
                                                     localization.translate($scope, null,
                                                         'Unable to generate SSH key: '+ data.err.message

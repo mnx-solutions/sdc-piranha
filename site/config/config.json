@@ -105,6 +105,8 @@
         "riskScoreFraudLimit": 90
     },
     "features": {
+        "instanceRename": "enabled",
+        "instanceTagging": "enabled",
         "imageUse": "disabled",
         "imageCreate": "disabled",
         "invoices": "disabled",

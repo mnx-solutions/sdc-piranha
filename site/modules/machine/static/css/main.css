@@ -186,7 +186,7 @@
     width: 300px;
 }
 
-.machine-name:hover {
+.machine-name-rename:hover {
     background: white;
     border: 1px solid #cccccc;
     border-radius: 4px;
