@@ -4,8 +4,9 @@
     app.controller(
             'cloudController',
             ['$scope', 'ca', 'notification', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            '$location',
 
-function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout) {
+function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout, $location) {
     function tick() {
         $scope.endtime++;
         $timeout(tick, 1000);
@@ -13,6 +14,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
 
     $scope.zoneId = $routeParams.machine || null;
     $scope.zones = Machine.machine();
+    $scope.location = $location;
 
     $scope.ranges = [ 10, 30, 60, 90, 120, 150, 180 ];
 
@@ -53,6 +55,8 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                                 }
                             }
                         }
+                        $scope.cpuGraphs = $scope.graphs.slice(1, 2);
+                        $scope.memGraphs = $scope.graphs.slice(3, 4);
                     }
 
                     $scope.ca.deletequeue.splice(queueIndex, 1);

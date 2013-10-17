@@ -30,6 +30,7 @@
             $scope.machine = Machine.machine(machineid);
             $scope.loading = true;
             $scope.changingName = false;
+            $scope.loadingNewName = false;
             $scope.newInstanceName = null;
             $scope.networks = [];
 
@@ -189,6 +190,21 @@
                 });
             });
 
+            $scope.accordionIcon={
+                0:true
+            };
+            $scope.collapseTrigger = function(item){
+                $scope.accordionIcon = {
+                    0:false,
+                    1:false,
+                    2:false,
+                    3:false,
+                    4:false
+                };
+                return $scope.accordionIcon[item] = true;
+
+            };
+
             $scope.clickStart = function () {
                 util.confirm(
                     localization.translate(
@@ -228,7 +244,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Restart instance'
+                        'Confirmation'
                     ),
                     localization.translate(
                         $scope,
@@ -270,6 +286,22 @@
                 $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
             };
 
+            $scope.messageDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is not implemented yet.'
+                    ), function() {
+                        this.close();
+                    });
+            };
+
             $scope.enableRename = function(name) {
                 $scope.changingName = true;
                 $scope.newInstanceName = name;
@@ -295,12 +327,14 @@
                         null,
                         'Rename this instance'
                     ), function () {
+                        $scope.loadingNewName = true;
+                        $scope.changingName = false;
                         $$track.event('machine', 'rename');
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                         job.getJob().done(function() {
                             $scope.machine.name = $scope.newInstanceName;
-                            $scope.changingName = false;
+                            $scope.loadingNewName = false;
                         });
                     }
                 );

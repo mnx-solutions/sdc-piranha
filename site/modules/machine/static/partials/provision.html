@@ -2,149 +2,363 @@
 	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="container content-container-inner" data-ng-hide="loading">
         <div class="row-fluid" data-ng-show="keys.length">
-            <div data-breadcrumb></div>
-            <div data-notification></div>
-
-            <div class="page-header">
-                <h1 data-translate>Create Instance</h1>
+            <!--<div data-breadcrumb></div>-->
+            <!--<div data-notification></div>-->
+        <div data-ng-show="basicCreateInstance">
+            <!--<ul class="breadcrumb">-->
+                <!--<li><a href="#!/dashboard">Dashboard</a> /</li>-->
+                <!--<li><a href="#!/instance"> Compute</a> /</li>-->
+            <!--</ul>-->
+            <h3 class="page-title no-breadcrumb" data-translate>Create Instance</h3>
+            <!--<div class="header-btn-ci">-->
+                <!--<a href="#!/instance/create">-->
+                    <!--&lt;!&ndash;<button type="button" class="btn btn_ci orange" data-ng-click="basicCreateInstance = false"><b>Advanced mode</b></button>&ndash;&gt;-->
+                <!--</a>-->
+            <!--</div>-->
+            <div class="ci_desc">Get started with Joyent by selecting an instance below and start computing.</div>
+            <div style="padding-bottom: 30px;">
+                <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                <input value="" class="btn-search-images" type="submit">
+                <span style="padding-left: 25px;">DataCenter:</span>
+                <div class="provisioning-header-left-button btn-group tooltip-hover"
+                     data-html="true"
+                     data-toggle="tooltip"
+                     data-placement="right"
+                     data-original-title="Filter by zone">
+                    <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                    <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" style="margin-left: 9px;">
+                        <li data-ng-repeat="datacenter in datacenters" style="width: 108px;">
+                            <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="row-fluid">
-            <div class="span4 pull-right">
-                <div data-ng-show="showReConfigure" class="alert alert-joyent-gray row-fluid reconfigure" id="pricing" style="padding-bottom:10px !important;">
-                    <div class="reconfigure-box">
-
-                        <h4 data-translate>Selected configuration</h4>
-                        <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
-                        <br/>
-
-                        <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
-                            <div class="row-fluid">
-                                <b style="width:90px;display:inline-block" data-translate>Datacenter</b> {{data.datacenter}}<br/>
-                                <b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
-                                <b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
-                                    <span data-ng-show="selectedPackageInfo.vcpus">
-                                        <b style="width:90px;display:inline-block" data-translate>vCPUs</b> {{selectedPackageInfo.vcpus}}<span data-ng-show="selectedPackageInfo.type == 'smartos'"> and bursting</span><br />
-                                    </span>
-                            </div>
-
-                            <div class="row-fluid price-container">
-                                <div class="span6 text-center">
-                                    <h5 data-translate>Hourly $</h5>
-                                    <b style="font-size:26px">{{selectedPackageInfo.full_price || selectedPackageInfo.price}}</b>
-                                    <!-- <span data-translate>USD</span><br/> -->
-                                </div>
-                                <div class="span6 text-center">
-                                    <h5 data-translate>Est. Monthly $</h5>
-                                    <b style="font-size:26px">
-                                        {{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <a class="btn pull-left reconfigure-btn" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">&#171; Change Configuration</a>
-                        <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
-                        </div>
-
+            <div class="row-fluid basic-instance-box-padding">
+                <div class="basic-instance-box smartos-logo">
+                    <div class="basic-instance-title">
+                        <p>Basic SmartOS</p>
+                        <span><p>The high-performance cloud<br>OS</p></span>
                     </div>
-
-
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="ft">Free tier</p>
+                        <button type="button" class="btn basic-instance-btn"><b>Select</b></button>
+                    </div>
+                </div>
+                <div class="basic-instance-box centos-logo">
+                    <div class="basic-instance-title">
+                        <p>Basic CentOS</p>
+                        <span><p>Linux distro with Yum, RPM,<br>Gnome</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="ft">Free tier</p>
+                        <button type="button" class="btn basic-instance-btn"><b>Select</b></button>
+                    </div>
+                </div>
+                <div class="basic-instance-box nodejs-logo">
+                    <div class="basic-instance-title">
+                        <p>Standart Node.js</p>
+                        <span><p>Optimized Node.js<br>on SmartOS for dev & prod</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="price">$0.020</p>
+                        <span><p>per hour</p></span>
+                        <button type="button" class="btn basic-instance-btn btn_s"><b>Select</b></button>
+                    </div>
+                </div>
+                <div class="basic-instance-box ubuntuos-logo">
+                    <div class="basic-instance-title">
+                        <p>Standart Ubuntu</p>
+                        <span><p>The high-performance cloud<br>OS</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="price">$0.020</p>
+                        <span><p>per hour</p></span>
+                        <button type="button" class="btn basic-instance-btn btn_s"><b>Select</b></button>
+                    </div>
                 </div>
 
-                <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none">
-                    <div class="reconfigure-box">
-                        <div class="accordion" id="networkAccordion">
-                            <div class="accordion-group" id="network-configuration-accordion-group">
-                                <div class="accordion-heading">
-                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
-                                        <h4>Configure networks +</h4>
-                                    </a>
+
+
+
+            </div>
+            <div class="row-fluid basic-instance-box-padding">
+                <div class="basic-instance-box smartos-logo">
+                    <div class="basic-instance-title">
+                        <p>Basic SmartOS</p>
+                        <span><p>The high-performance cloud<br>OS</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="ft">Free tier</p>
+                        <button type="button" class="btn basic-instance-btn"><b>Select</b></button>
+                    </div>
+                </div>
+                <div class="basic-instance-box centos-logo">
+                    <div class="basic-instance-title">
+                        <p>Basic CentOS</p>
+                        <span><p>Linux distro with Yum, RPM,<br>Gnome</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="ft">Free tier</p>
+                        <button type="button" class="btn basic-instance-btn"><b>Select</b></button>
+                    </div>
+                </div>
+                <div class="basic-instance-box winos-logo">
+                    <div class="basic-instance-title">
+                        <p>Standart Windows</p>
+                        <span><p>Windows 2012 installation<br>with support</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>MEMORY</p><span><p>0.25 GB</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>vCPUs</p><span><p>0.125</p></span>
+                    </div>
+                    <div class="basic-instance-info">
+                        <p>Disk</p><span><p>16 GB</p></span>
+                    </div>
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <p class="price">$0.020</p>
+                        <span><p>per hour</p></span>
+                        <button type="button" class="btn basic-instance-btn btn_s"><b>Select</b></button>
+                    </div>
+                </div>
+                <div class="basic-instance-box joyent-logo">
+                    <div class="basic-instance-browse">
+                        <p>Browse our<br>complete image<br>library</p>
+                        <span><p>Instances suitable for specific<br>applications, database, traffic<br>management and more.</p></span>
+                    </div>
+
+                    <div class="basic-instance-line"></div>
+                    <div class="basic-instance-btn-block">
+                        <button type="button" class="btn orange btn_browse" data-ng-click="basicCreateInstance = false"><b>View More Images</b></button>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+
+
+
+
+
+            <div data-ng-show="!basicCreateInstance">
+                <!--<ul class="breadcrumb">-->
+                    <!--<li><a href="#!/dashboard">Dashboard</a> /</li>-->
+                    <!--<li><a href="#!/instance"> Compute</a> /</li>-->
+                <!--</ul>-->
+                <h3 class="page-title no-breadcrumb" data-translate>Create Instance</h3>
+                <div class="header-btn-ci">
+                    <a href="#!/instance/create">
+                        <button type="button" class="btn btn_ci orange" data-ng-click="basicCreateInstance = true"><b>Basic mode</b></button></a>
+                </div>
+            <!--<div class="page-header">-->
+                <!--<h1 data-translate>Create Instance</h1>-->
+            <!--</div>-->
+
+            <div class="row-fluid">
+                <div class="span4 pull-right">
+                    <div data-ng-show="showReConfigure" class="alert alert-joyent-gray row-fluid reconfigure" id="pricing" style="padding-bottom:10px !important;">
+                        <div class="reconfigure-box">
+
+                            <h4 data-translate>Selected configuration</h4>
+                            <div id="selected-image" class="text-small">{{selectedDataset.description}}</div>
+                            <br/>
+
+                            <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
+                                <div class="row-fluid">
+                                    <b style="width:90px;display:inline-block" data-translate>Datacenter</b> {{data.datacenter}}<br/>
+                                    <b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
+                                    <b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
+                                        <span data-ng-show="selectedPackageInfo.vcpus">
+                                            <b style="width:90px;display:inline-block" data-translate>vCPUs</b> {{selectedPackageInfo.vcpus}}<span data-ng-show="selectedPackageInfo.type == 'smartos'"> and bursting</span><br />
+                                        </span>
                                 </div>
-                                <div id="collapseOne" class="accordion-body collapse">
-                                    <div class="accordion-inner">
-                                            <span data-ng-repeat="network in networks">
-                                                <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" />
-                                                    <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
-                                            </span>
+
+                                <div class="row-fluid price-container">
+                                    <div class="span6 text-center">
+                                        <h5 data-translate>Hourly $</h5>
+                                        <b style="font-size:26px">{{selectedPackageInfo.full_price || selectedPackageInfo.price}}</b>
+                                        <!-- <span data-translate>USD</span><br/> -->
+                                    </div>
+                                    <div class="span6 text-center">
+                                        <h5 data-translate>Est. Monthly $</h5>
+                                        <b style="font-size:26px">
+                                            {{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</b> <!-- <span data-translate>USD</span><br/> -->
                                     </div>
                                 </div>
                             </div>
-                            Only 2 networks allowed. By default machines have one public and one private network.
+
+
+                            <a class="btn pull-left reconfigure-btn" data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">&#171; Change Configuration</a>
+                            <div id="step-configuration" class="text-small  none" style="margin-top:10px;">
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                    <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none" style="background-color: #f5f5f5;">
+                        <div class="reconfigure-box">
+                            <div class="accordion" id="networkAccordion">
+                                <div class="accordion-group" id="network-configuration-accordion-group">
+                                    <div class="accordion-heading" style="background-color: #e5e5e5;">
+                                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
+                                            <h4>Configure networks +</h4>
+                                        </a>
+                                    </div>
+                                    <div id="collapseOne" class="accordion-body collapse">
+                                        <div class="accordion-inner">
+                                                <span data-ng-repeat="network in networks">
+                                                    <input type="checkbox" value="{{network.id}}" name="{{network.name}}" data-ng-model="selectedNetworkId" data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1" data-ng-change="selectNetwork(network.id);" style="margin-top: -3px;"/>
+                                                        <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                                                </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                Only 2 networks allowed. By default machines have one public and one private network.
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue reconfigure row-fluid">
+                        <div class="reconfigure-box" style="background-color: #f5f5f5;">
+                            <form name="provisionForm">
+                                <h4 data-translate>Name your instance.</h4>
+                                <span data-translate>This is optional.</span>
+                                <div class="error"
+                                     data-ng-show="provisionForm.machineName.$error.machineName"
+                                     data-translate>
+                                    Invalid machine name
+                                </div>
+
+                                <div class="error"
+                                     data-ng-show="provisionForm.machineName.$error.machineUnique"
+                                     data-translate>
+                                    Machine name is already in use
+                                </div>
+                                <br />
+                                <input name="machineName"
+                                       type="text"
+                                       placeholder="Name of your instance"
+                                       data-ng-model="data.name"
+                                       data-machine-name
+                                       data-machine-unique />
+
+                                <button class="btn btn-joyent-blue"
+                                        data-ng-disabled="provisionForm.$invalid"
+                                        data-ng-click="clickProvision()"
+                                        data-translate>Create instance</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-
-
-                <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue reconfigure row-fluid">
-                    <div class="reconfigure-box">
-                        <form name="provisionForm">
-                            <h4 data-translate>Name your instance.</h4>
-                            <span data-translate>This is optional.</span>
-                            <div class="error"
-                                 data-ng-show="provisionForm.machineName.$error.machineName"
-                                 data-translate>
-                                Invalid machine name
-                            </div>
-
-                            <div class="error"
-                                 data-ng-show="provisionForm.machineName.$error.machineUnique"
-                                 data-translate>
-                                Machine name is already in use
-                            </div>
-                            <br />
-                            <input name="machineName"
-                                   type="text"
-                                   placeholder="Name of your instance"
-                                   data-ng-model="data.name"
-                                   data-machine-name
-                                   data-machine-unique />
-
-                            <button class="btn btn-joyent-blue"
-                                    data-ng-disabled="provisionForm.$invalid"
-                                    data-ng-click="clickProvision()"
-                                    data-translate>Create instance</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
                 <div class="span8 provisioning-carousel-span">
                     <div id="myCarousel" class="carousel slide">
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
-                                <div class="item provisioning-item  header row-fluid">
-                                    <div class="provisioning-header-left-button btn-group tooltip-hover span3"
+                                <div class="item provisioning-item header row-fluid" style="display: inline-block">
+                                    <div class="provisioning-header-left-button btn-group tooltip-hover"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"
-                                         data-original-title="Filter by zone"
-                                            style="padding-bottom: 10px">
+                                         data-placement="right"
+                                         data-original-title="Filter by zone" style="padding-bottom: 10px">
                                         <span class="text-medium" style="line-height: 30px">
                                             Data Center<br/>
                                         </span>
-                                        <button class="btn" data-ng-show="data.datacenter">{{data.datacenter}}</button>
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu" style="margin-left: 9px;">
                                             <li data-ng-repeat="datacenter in datacenters">
                                                 <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
                                             </li>
                                         </ul>
                                     </div>
 
-                                    <div class="btn-group tooltip-hover span3 hidden-phone"
+                                    <div class="btn-group tooltip-hover hidden-phone"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"
-                                         data-original-title="Filter by operating system">
+                                         data-placement="right"
+                                         data-original-title="Filter by operating system"
+                                         style="padding-left: 20px;">
                                         <span class="text-medium" style="line-height: 30px">
                                             Operating System<br/>
                                         </span>
-                                        <button class="btn" data-ng-show="data.opsys">{{data.opsys}}</button>
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <button class="btn datacenter-select" data-ng-show="data.opsys">{{data.opsys}}</button>
+                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
@@ -174,8 +388,9 @@
                                         </ul>
                                     </div>
 
-                                    <div class="span3 offset1 provisioning-header-search">
-                                        <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                    <div class="offset4 search-image">
+                                        <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                        <input value="" class="btn-search-images" type="submit">
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
@@ -246,26 +461,28 @@
                                          data-toggle="tooltip"
                                          data-placement="right"
                                          data-original-title="Filter by instance type">
-                                        <button class="btn" data-translate data-ng-show="!packageType">Package Types</button>
-                                        <button class="btn" data-ng-show="packageType">{{packageType}}</button>
+                                        <button class="btn datacenter-select" data-translate data-ng-show="!packageType">Package Types</button>
+                                        <button class="btn datacenter-select" data-ng-show="packageType">{{packageType}}</button>
 
-                                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
 
-                                        <ul class="dropdown-menu">
+                                        <ul class="dropdown-menu" style="margin-left: 9px;">
                                             <li data-ng-repeat="package in packageTypes">
                                                 <a data-ng-click="selectPackageType(package)">{{package}}</a>
                                             </li>
                                         </ul>
                                     </div>
 
-                                    <div class="span3 offset6 provisioning-header-search">
-                                            <input type="text"
-                                                   class="span12"
-                                                   placeholder="Search image"
-                                                   data-ng-model="searchPackages"
-                                                   data-translate="placeholder" />
+                                    <div class="offset6 search-image">
+                                        <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchPackages" data-translate="placeholder" />
+                                        <input value="" class="btn-search-images" type="submit">
+                                            <!--<input type="text"-->
+                                                   <!--class="span12"-->
+                                                   <!--placeholder="Search image"-->
+                                                   <!--data-ng-model="searchPackages"-->
+                                                   <!--data-translate="placeholder" />-->
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
@@ -308,10 +525,10 @@
                         </div>
                     </div>
                 </div>
-
-
             </div>
         </div>
+        </div>
+
 
         <div class="alert alert-joyent-blue alert-global" data-ng-show="keys.length == 0">
             <div class="pull-left">

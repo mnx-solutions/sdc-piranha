@@ -18,7 +18,16 @@
                            data-translate="placeholder" />
                 </form>
 
-                <div class="clearfix"></div>
+                <!--<div class="clearfix"></div>-->
+            <!--</div>-->
+            <div data-ng-hide="pagedMachines.length || query || loading">
+                <data-notification></data-notification>
+                <div>
+                    <div class="pull-left">
+                        <h4>Hello there!</h4>
+                        <div data-translate>I see you have no instances configured.</div>
+                    </div>
+                </div>
             </div>
 
             <div class="row">

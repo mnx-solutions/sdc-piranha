@@ -190,8 +190,8 @@
                     var conf = {
                         element: document.querySelector('#chart_' + $scope.$id),
                         renderer: $scope.activeRenderer,
-                        width: $scope.width || 580,
-                        height: $scope.height || 180,
+                        width: $scope.width,
+                        height: $scope.height || 150,
                         series: series
                     };
 
@@ -311,32 +311,31 @@
             },
             template:
                 '<div>' +
-                        '<div class="btn-group" style="width:620px;">' +
-                            '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:90%;">{{ready && options.title || loadingText}}</button>' +
-                            '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
-                        '</div>' +
-                        '<br/>' +
+                    '<div class="btn-group margin_btn_0" style="width:100%;">' +
+                    '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" style="width:100%;">{{ready && options.title || loadingText}}</button>' +
+                    //   '<button data-ng-click="deleteGraph()" class="btn" title="delete graph" style="width:10%;"><i class="icon-remove-circle"></i></button>' +
+                    '</div>' +
+                    // '<br/>' +
                     '<div data-ng-show="showGraph && ready">' +
-                            '<div>' +
-                            '<div class="btn-group" data-toggle="buttons-radio">' +
-                                '<button class="btn btn-mini default-margin default-margin-mini {{renderer == activeRenderer && \'active\' || \'\'}}" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
-                            '</div>' +
-                            '<br/><br/>' +
+                    '<div style="background-color: #e9eff3;">' +
+                    '<div class="btn-group" data-toggle="buttons-radio">' +
+                    '<button class="btn btn-mini default-margin default-margin-mini {{renderer == activeRenderer && \'active\' || \'\'}}" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
+                    '</div>' +
+                    '<br/><br/>' +
 
-                            '<div class="chart_container_{{$id}}" style="position: relative;margin-bottom:10px;">' +
+                    '<div class="chart_container_{{$id}}" style="position: relative;margin-bottom:10px;">' +
 
-                                '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>' +
-                                '<div id="chart_{{$id}}" style="position: relative; left: 50px;">' +
-                                '<div id="clickpoint" style="position:absolute;height:0px;width:0px;"></div>' +
-                                '<div class="caOverlaid">' +
-
-                                '<img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
-                                '</div>' +
-                                '</div>' +
-                            '</div>' +
-                            '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:620px"></div>' +
+                    '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>' +
+                    '<div id="chart_{{$id}}" style="position: relative; left: 50px;">' +
+                    '<div id="clickpoint" style="position:absolute;height:0;width:0;"></div>' +
+                    '<div class="caOverlaid">' +
+                    '<img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div data-ng-hide="heatmap" id="legend_{{$id}}" style="width:100%"></div>' +
                     '</div><hr />' +
-                '</div>'
+                    '</div>'
         };
     });
 }(window.JP.getModule('cloudAnalytics'), window.angular, window.jQuery));

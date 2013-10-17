@@ -8,3 +8,30 @@
 	top: 0;
 	left: 0;
 }
+.breadcrumb {
+    margin-bottom: 5px;
+    background-color: transparent !important;
+    padding: 10px 0 !important;
+}
+.breadcrumb > .active {
+    color: #ff6600;
+}
+.breadcrumb > li {
+    display: inline-block;
+    text-shadow: none;
+    color: #a9a9a9;
+}
+.alert-info{
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    color: #555;
+}
+.rickshaw_legend ul>li{
+    margin-left: 20px !important;
+}
+.rickshaw_legend {
+    padding: 12px 0;
+}
+.margin_btn_0{
+    margin-bottom: 0 !important;
+}

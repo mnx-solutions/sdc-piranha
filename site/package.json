@@ -18,6 +18,7 @@
             ],
 			"css": [
 				"/vendor/bootstrap/css/bootstrap.css",
+				"/vendor/metro/css/style.css",
                 "/vendor/zendesk/zenbox.css"
 			]
 		}

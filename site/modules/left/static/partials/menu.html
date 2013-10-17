@@ -1,0 +1,36 @@
+<div class="modulizer-module-left" ng-class="{'sidebar-toggler-closed': sideBarMin}">
+    <div class="page-sidebar nav-collapse collapse" ng-class="{'sidebar-toggler-closed': sideBarMin}">
+    <!-- BEGIN SIDEBAR MENU -->
+    <ul class="page-sidebar-menu">
+
+        <!--<li ng-repeat="item in items" ng-click="select(item)" ng-class="{active: isActive(item)}">{{item}}</li>-->
+
+        <li class="start " ng-class="{active: location.path() == '/dashboard'}">
+            <a href="#!/dashboard">
+                <i class=""></i>
+                <span class="title" data-ng-show="!sideBarMin">Dashboard</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+        <li class="second" ng-class="{active: location.path() == '/instance'}">
+            <a href="#!/instance">
+                <i class=""></i>
+                <span class="title" data-ng-show="!sideBarMin">Compute</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+        <li class="three" ng-class="{active: location.path() == '/storage'}">
+            <a href="#!/storage">
+                <i class=""></i>
+                <span class="title" data-ng-show="!sideBarMin">Storage</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+        <li>
+            <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
+            <!--<div class="sidebar-toggler" data-ng-click="sideBarMin()"></div>-->
+        </li>
+    </ul>
+    <!-- END SIDEBAR MENU -->
+</div>
+</div>

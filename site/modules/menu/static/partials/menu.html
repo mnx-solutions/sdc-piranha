@@ -1,32 +1,40 @@
 <div class="navbar-inner">
-    <div class="container">
-        <div class="row-fluid">
-            <div class="span3 hidden-phone">
-                <a href="#!/dashboard/"><div class="brand pull-left shadow-dark"></div></a>
-            </div>
-            <div class="span9">
-                <div class="row-fluid">
-                    <div class="span12">
-                        <div class="pull-right top-menu">
-                            <span><a href="//help.joyent.com" target="_blank">Support</a></span>
-                            <span><a href="http://wiki.joyent.com/wiki/display/jpc2/JoyentCloud+Home" target="_blank">Docs</a></span>
-                            <span class="last"><a href="/landing/forgetToken">Sign Out</a> ({{account.login}})</span>
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="span12">
-                        <div class="pull-left main-nav">
-                            <a href="#!/dashboard/" data-translate>Dashboard</a>
-                            <a href="#!/compute/" data-translate>Compute</a>
-                            <a data-ng-show="features.firewall != 'disabled'" href="#!/firewall/" data-translate>Firewall</a>
-                            <a href="#!/storage/" data-translate>Storage</a>
-                            <a href="#!/account/" data-translate>My Account</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="container-fluid">
+        <a class="brand" href="/">
+            <!--<img src="../img/logo-orange.png" alt="logo"/>-->
+        </a>
+        <a href="#" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+            <!--<img src="assets/img/menu-toggler.png" alt=""/>-->
+        </a>
+        <ul class="nav pull-right">
+            <li class="dropdown" id="header_notification_bar"
+                style="outline: 0; box-shadow: rgba(102, 188, 230, 0) 0 0 13px; outline-offset: 20px;">
+            </li>
+            <li class="dropdown" id="header_inbox_bar"
+                style="outline: 0; box-shadow: rgba(221, 81, 49, 0) 0 0 13px; outline-offset: 20px;">
+                <a href="https://help.joyent.com/home" target="_blank" class="dropdown-toggle">
+                    <i class="header_icon support_icon"></i>
+                    <span class="username">Support</span>
+                </a>
+            </li>
+            <li class="dropdown" id="header_task_bar">
+                <a href="http://www.joyent.com/developers" target="_blank" class="dropdown-toggle">
+                    <i class="header_icon info_icon"></i>
+                    <span class="username">DevCenter</span>
+                </a>
+            </li>
+            <li class="loading-small load-user-name" data-ng-hide="account.firstName"></li>
+            <li class="dropdown user">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <span class="username">{{account.firstName}}</span>
+                    <i class="icon-arrow-down-user"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#!/account">
+                        <i class="icon-user"></i> Account</a></li>
+                    <li><a href="/landing/forgetToken"><i class="icon-signout"></i> Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </div>

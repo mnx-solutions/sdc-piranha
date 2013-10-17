@@ -38,6 +38,7 @@
             $scope.packageTypes = [];
             $scope.packageType = null;
             $scope.loading = true;
+            $scope.basicCreateInstance = true;
 
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;

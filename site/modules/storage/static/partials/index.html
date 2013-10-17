@@ -1,127 +1,106 @@
 <div class="container" data-ng-controller="StorageController">
+    <ul class="breadcrumb">
+        <li><a href="#!/dashboard">Dashboard</a> /</li>
+        <li><a href="#!/storage"> Storage</a> /</li>
+    </ul>
+    <h3 class="page-title">Storage</h3>
 
-
-    <div class="row">
-        <div class="span7">
-            <h3>Introduction</h3>
-            Joyent Manta Storage Service is a cloud service that offers both
-            storage and integrated compute for developers. Using Manta,
-            developers can store and process any amount of data at any time,
-            from any location, without additional compute resources.
-            <br/>
-            <br/>
-            <a class="btn btn-info btn-large btn-joyent-blue"
-               href="http://apidocs.joyent.com/manta/">Manta
-                documentation</a>
+    <div class="portlet box light-grey">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-reorder"></i>
+                Introduction
+            </div>
         </div>
-
-        <div class="span5">
-            <h5>Getting Started</h5>
-
-            <div>
+        <div class="portlet-body as-table videos">
                 <div id="setup-vid" data-ng-click="openVideo()">
-                    <img src="storage/static/img/thumb.png">
-                    <div class="playbutton"/>
-                </div>
-            </div>
+                <img src="storage/static/img/thumb.png">
+                <div class="playbutton"/></div>
+            <p>Joyent Manta Storage Service is a cloud service that offers both
+                storage and integrated compute for developers. Using Manta,
+                developers can store and process any amount of data at any time,
+                from any location, without additional compute resources.</p>
+            <a href="http://apidocs.joyent.com/manta/" class="btn orange">
+                Manta documentation
+            </a>
 
         </div>
     </div>
 
-
-    <div class="row">
-        <div class="span12">
-            <h4>Getting started</h4>
-
-            <p>
-                There are two ways to get started:
-            </p>
-
-            <p>1. If you already have at least node.js 0.8.14 installed
-                you can install the manta CLI and node SDK
-            </p>
-
-            <div class="well code">sudo npm install manta -g
+    <div class="portlet box light-grey">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-reorder"></i>
+                Getting started
             </div>
-
+        </div>
+        <div class="portlet-body">
+            <p>There are two ways to get started:<br/>
+                1. If you already have at least node.js 0.8.14 installed you can install the manta CLI and node SDK</p>
+            <div class="code">
+                sudo npm install -g
+            </div>
             <p>2. If you do not have node.js installed you can use the
-                installer for Mac OS X
-            </p>
-            <a class="btn btn-info btn-joyent-blue"
-               href="https://us-east.manta.joyent.com/manta/public/sdks/joyent-node-latest.pkg">OS
-                X Installer</a>
+                installer for Mac OS X</p>
+            <a href="https://us-east.manta.joyent.com/manta/public/sdks/joyent-node-latest.pkg" class="btn orange">
+                Download OS X Installer
+            </a>
+
         </div>
+
+
     </div>
 
-    <div class="row">
-        <div class="span12">
-            <h4>CLI Example</h4>
-
-            <p>Once you have installed the Manta CLI, you're ready to go. The
-                following examples are customized with your account information.
-                Just cut and paste.</p>
-            <h5>Set environment</h5>
-
-            <div data-ng-show="sshKeys.length>1" class="alert alert-info">
-                <label for="keySel">You have multiple keys, please select the
-                    one you want to use:</label>
-                <select id="keySel" ng-model="keyId"
-                        ng-options="c.fingerprint as c.name for c in sshKeys"></select>
+    <div class="portlet box light-grey">
+        <div class="portlet-title">
+            <div class="caption">
+                <i class="icon-reorder"></i>
+                CLI Example
             </div>
-
-            <div data-ng-show="sshKeys.length==0" class="alert alert-warning">
+        </div>
+        <div class="portlet-body">
+            <p>Once you have installed the Manta CLI, you're ready to go. The following examples are customized with
+                your account information. Just cut and paste.</p>
+            <p><br/><b>Set environment</b></p>
+            <div data-ng-show="sshKeys.length>1" class="code">
+                <label for="keySel">You have multiple keys, please select the one you want to use:</label>
+                <select id="keySel" ng-model="keyId" ui-select2="{ width: auto}" value="{{keyName}}"
+                        ng-options="c.fingerprint as c.name for c in sshKeys">
+                    <option ng-repeat="c.fingerprint as c.name for c in sshKeys" value="{{keyName}}">{{keyName}}</option>
+                </select>
+            </div>
+            <div data-ng-show="sshKeys.length==0" class="code">
                 You dont have any SSH keys configured, you need a SSH key to use
                 Manta.
-                <a href="#!/account/ssh" data-translate>Add a SSH key</a>
+                <a href="#!/account/ssh" data-translate class="btn orange" style="margin-top: 10px;">Add a SSH key</a>
             </div>
-
-            <div class="well code">
-                export MANTA_URL=https://us-east.manta.joyent.com<br/>
-                export MANTA_USER={{account.login}}<br/>
+            <div class="code">
+                export MANTA_URL=https://us-east.manta.joyent.com
+                export MANTA_USER={{account.login}}
                 export MANTA_KEY_ID={{keyId}}
             </div>
-            <div class="row">
-
-                <div class="span12">
-                    <h5>Create, list and delete objects</h5>
-
-                    <div class="well code">
-                        <span class="hl">$</span> echo "Hello, Manta" >
-                        /tmp/hello.txt<br/>
-                        <span class="hl">$</span> mput -f /tmp/hello.txt
-                        /{{account.login}}/stor/foo<br/>
-                        <span class="res">/{{account.login}}/stor/foo [==========================>] 100% 13B</span>
-                        <br/>
-                        <span class="hl">$</span> mget
-                        /{{account.login}}/stor/foo<br/>
-                        <span class="res">Hello, Manta</span><br/>
-                        <span class="hl">$</span> mls<br/>
-                        <span class="res">foo</span><br/>
-                        <span class="hl">$</span> mrm
-                        /{{account.login}}/stor/foo<br/>
-                    </div>
+                <h5>Create, list and delete objects</h5>
+                <div class="code">
+                    echo "Hello, Manta" > /tmp/hello.txt
+                    mput -f /tmp/hello.txt /{{account.login}}/stor/foo
+                    /{{account.login}}/stor/foo [==========================>] 100% 13B
+                    mget /{{account.login}}/stor/foo
+                    Hello, Manta
+                    mls
+                    foo
+                    mrm /{{account.login}}/stor/foo
                 </div>
+            <p><br/><b>Execute jobs</b><br/>
+                This job will copy Treasure Island to Joyent Manta and run a job that counts the number of times the
+                word Silver is mentioned.</p>
+            <div class="code">
+                curl -sL http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -H 'content-type: text/plain'
+                /{{account.login}}/stor/treasure_island.txt
+                mfind /{{account.login}}/stor/treasure_island.txt | mjob create -o "grep Silver | wc -l"
             </div>
-            <h5>Execute jobs</h5>
-
-            <p>This job will copy Treasure Island to Joyent Manta and run a job
-                that counts the number of times the word
-                Silver is mentioned.
-            </p>
-
-            <div class="well code">
-                <span class="hl">$</span> curl -sL
-                http://www.gutenberg.org/ebooks/120.txt.utf-8 | mput -H
-                'content-type: text/plain'
-                /{{account.login}}/stor/treasure_island.txt<br/>
-                <span class="hl">$</span> mfind
-                /{{account.login}}/stor/treasure_island.txt | mjob create -o
-                "grep Silver | wc -l"<br/>
-            </div>
-
-            <p>While the CLI uses node.js there is also SDK support for <a href="https://github.com/joyent/ruby-manta" target="_blank">Ruby</a>,
-                <a href="https://github.com/joyent/python-manta" target="_blank">Python</a> and <a href="https://github.com/joyent/java-manta" target="_blank">Java</a>.</p>
+            <p>While the CLI uses node.js there is also SDK support for <a href="https://github.com/joyent/ruby-manta">Ruby</a>,
+                <a href="https://github.com/joyent/python-manta">Python</a> and <a
+                        href="https://github.com/joyent/java-manta">Java</a>.</p>
         </div>
     </div>
-
 </div>
