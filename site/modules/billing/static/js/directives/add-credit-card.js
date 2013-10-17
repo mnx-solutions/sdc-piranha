@@ -260,6 +260,10 @@
 
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (!errs) {
+                                var attemptId = job.__read().attemptId;
+                                if (attemptId) {
+                                    $scope.setAttemptId(attemptId);
+                                }
                                 Account.updateAccount({
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number

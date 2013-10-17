@@ -24,10 +24,15 @@ module.exports = function execute(scope, register) {
             ip: data.i,
             country: data.country
         };
-
-        return !['domain', 'ip', 'country'].some(function (el) {
-            return Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1;
+        var blockBy = [];
+        ['domain', 'ip', 'country'].forEach(function (el) {
+            var block = Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1;
+            if (block) {
+                blockBy.push(el + ': ' + comparison[el]);
+            }
         });
+        
+        return blockBy;
     }
 
     api.minFraud = function (call, userInfo, billingInfo, creditCardInfo, callback) {
@@ -42,9 +47,11 @@ module.exports = function execute(scope, register) {
             i: config.maxmind.testClientIp || call.req.userIp // config option for testing
         };
 
-        var result = {};
-        if (!checkBlackList(query)) {
+        var result = {},
+            block = checkBlackList(query);
+        if (block.length) {
             call.log.warn('User matched against black list and was blocked');
+            call.req.session.blockReason = 'Blacklisted. '+block.join("\n");
             setImmediate(function () {
                 callback(null, {block: true});
             });

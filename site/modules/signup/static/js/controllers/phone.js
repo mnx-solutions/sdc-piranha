@@ -84,6 +84,7 @@
                         if (data.navigate) {
                             $scope.updateStep();
                         }
+                        if (data.attemptId) $scope.setAttemptId(data.attemptId);
                         return;
                     }
                     if (data.navigate) {
@@ -106,6 +107,7 @@
                         if (data.navigate) {
                             $scope.updateStep();
                         }
+                        if (data.attemptId) $scope.setAttemptId(data.attemptId);
                         return;
                     }
                     Account.updateAccount({

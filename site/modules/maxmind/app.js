@@ -52,7 +52,12 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.error(err);
             }
-            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
+            
+            if (req.session.blockReason) {
+                Metadata.set(req.session.userId, 'Blocking Reason', req.session.blockReason);
+            }
+            
+            res.json({message: serviceMessages.wrongPinLocked, attemptId: req.session.attemptId, success: false, navigate: true});
         });
     }
 
@@ -88,6 +93,7 @@ module.exports = function execute(scope, app) {
 
         // Too many tries, lock account
         if(retries >= limits.calls || req.session.maxmindLocked) {
+            req.session.blockReason = 'Phone verification, too many calls.  REF ID: ' + req.session.attemptId;
             lockAccount(req, res);
             return;
         }
@@ -123,6 +129,9 @@ module.exports = function execute(scope, app) {
                 return;
             }
 
+            if (data.indexOf('refid=') === 0) {
+                req.session.attemptId = data.substr(6);
+            }
             req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
             res.json({message: serviceMessages.calling, success: true});
@@ -140,6 +149,7 @@ module.exports = function execute(scope, app) {
         if (++req.session.maxmindPinTries > limits.pinTries) {
             // If call limit is high enough then lock account
             if (req.session.maxmindRetries >= limits.calls) {
+                req.session.blockReason = 'Phone verification, too many pins.  REF ID: ' + req.session.attemptId;
                 lockAccount(req, res);
                 return;
             }

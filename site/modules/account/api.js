@@ -134,8 +134,8 @@ module.exports = function execute(scope, register) {
         function getMetadata(userId) {
             metadata.get(userId, 'signupStep', function (err, storedStep) {
                 if (!err && storedStep) {
-                    call.log.info('Got signupStep from metadata', {step: storedStep});
-                    call.log.info('User landing in step: ', _nextStep(storedStep));
+                    call.log.info('Got signupStep from metadata:', {step: storedStep});
+                    call.log.info('User landing in step:', _nextStep(storedStep));
 
                     end(storedStep);
                 } else {
@@ -145,7 +145,7 @@ module.exports = function execute(scope, register) {
                             return;
                         }
 
-                        call.log.info('User landing in step', _nextStep(storedStep));
+                        call.log.info('User landing in step:', _nextStep(value));
                         end(value);
                     });
                 }

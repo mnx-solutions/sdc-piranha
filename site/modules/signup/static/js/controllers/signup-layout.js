@@ -17,6 +17,10 @@
 
                 $scope.campaignId = $cookies.campaignId;
 
+                $scope.setAttemptId = function(id) {
+                    $scope.attemptId = id;
+                };
+
                 $scope.setStep = function (step) {
                     $scope.currentStep = step;
                     var stepPath = '/' + step;
