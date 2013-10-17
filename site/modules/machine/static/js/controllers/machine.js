@@ -79,7 +79,9 @@
                 return d.promise;
             }
 
-            $scope.tagcloud = tagcloud();
+            if($scope.features.instanceTagging === 'enabled') {
+                $scope.tagcloud = tagcloud();
+            }
 
             function checkTags (val, old) {
                 if (val) {
@@ -270,9 +272,19 @@
                 $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
             };
 
+            $scope.renameClass = function() {
+                if($scope.features.instanceRename === 'enabled') {
+                    return 'machine-name-rename';
+                } else {
+                    return '';
+                }
+            }
+
             $scope.enableRename = function(name) {
-                $scope.changingName = true;
-                $scope.newInstanceName = name;
+                if($scope.features.instanceRename === 'enabled') {
+                    $scope.changingName = true;
+                    $scope.newInstanceName = name;
+                }
             };
 
             $scope.cancelRename = function() {
