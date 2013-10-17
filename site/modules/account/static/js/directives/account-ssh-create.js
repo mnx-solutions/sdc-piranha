@@ -67,7 +67,7 @@
                                                     )
                                                 );
 
-                                                var downloadLink = 'http://'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name;
+                                                var downloadLink = window.location.protocol +'//'+ window.location.host +'/main/account/ssh/download/'+ jobId +'/'+ data.keyId +'/'+ data.name;
                                                 // as this is directive, we need to use rootScope here
                                                 $rootScope.pollingJob = true;
                                                 $rootScope.loading = false;
