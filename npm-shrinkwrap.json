@@ -773,6 +773,7 @@
     "zuora": {
       "version": "0.1.3",
       "from": "zuora@0.1.3",
+      "resolved": "https://registry.npmjs.org/zuora/-/zuora-0.1.3.tgz",
       "dependencies": {
         "validator": {
           "version": "1.5.1",
