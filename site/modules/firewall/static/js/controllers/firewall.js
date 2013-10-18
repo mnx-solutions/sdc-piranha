@@ -122,7 +122,33 @@
                 CIDR:32
             };
 
+            $scope.$watch('data', function(n) {
+                if (n) {
+                    var data = $scope.getData();
 
+                    if (!data.parsed) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.from || data.parsed.from.length === 0) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.to || data.parsed.to.length === 0) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.protocol.name) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.protocol.targets || data.parsed.protocol.targets.length === 0) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    $scope.validData = true;
+                }
+            }, true);
 
             $scope.$watch('fromSubnet', function(n) {
                 if(n.CIDR && n.address) {
@@ -308,7 +334,7 @@
             $scope.addPort =function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
                 $scope.current.port = '';
-                $scope.rule.port.$setValidity('range', false);
+                $scope.protocolForm.port.$setValidity('range', false);
             };
 
             $scope.addType = function() {
@@ -319,7 +345,7 @@
                 $scope.data.parsed.protocol.targets.push(target);
                 $scope.current.type = 0;
                 $scope.current.code = null;
-                $scope.rule.code.$setValidity('range', false);
+                $scope.protocolForm.code.$setValidity('range', false);
             };
 
             function addTarget(direction) {
@@ -501,7 +527,7 @@
 					        return 'btn-mini btn-danger';
 				        },
 				        disabled: function () {
-					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
+					        return $scope.loading;
 				        },
 				        action: $scope.deleteRule.bind($scope),
 				        tooltip: 'Delete the rule'
@@ -520,7 +546,7 @@
 					        return 'btn-mini btn-default';
 				        },
 				        disabled: function () {
-					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
+					        return $scope.loading;
 				        },
 				        action: function (object) {
 					        $scope.data = rule.cleanRule(object);
@@ -542,6 +568,9 @@
 				        getClass: function (object) {
 					        return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
 				        },
+                        disabled: function () {
+                            return $scope.loading;
+                        },
 				        action: $scope.changeStatus.bind($scope),
 				        tooltip: 'Enable the rule'
 			        }
