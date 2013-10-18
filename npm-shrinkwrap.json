@@ -771,9 +771,9 @@
       "from": "redis@*"
     },
     "zuora": {
-      "version": "0.1.4",
-      "from": "zuora@0.1.4",
-      "resolved": "https://registry.npmjs.org/zuora/-/zuora-0.1.4.tgz",
+      "version": "0.1.5",
+      "from": "zuora@0.1.5",
+      "resolved": "https://registry.npmjs.org/zuora/-/zuora-0.1.5.tgz",
       "dependencies": {
         "validator": {
           "version": "1.5.1",
