@@ -20,8 +20,12 @@
             })
 
             $scope.enableElb = function () {
+                $scope.allLoading = false;
                 service.createController().then(function () {
                     $location.path('/elb/list');
+                }, function (err) {
+                    console.log(err);
+                    $scope.allLoading = true;
                 });
             };
 
