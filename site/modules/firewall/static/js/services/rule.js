@@ -9,41 +9,23 @@
         '$timeout',
         'localization',
         'notification',
+        'util',
 
-        function (serverTab, $rootScope, $q, $timeout, localization, notification) {
+        function (serverTab, $rootScope, $q, $timeout, localization, notification, util) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
 
-	        function clone(obj) {
-		        if(!obj || typeof obj !== 'object') {
-			        return obj;
-		        }
-		        var ret = {};
-		        if(ng.isArray(obj)) {
-			        ret = [];
-			        obj.forEach(function (el) {
-				        ret.push(clone(el));
-			        });
-			        return ret;
-		        }
-		        Object.keys(obj).forEach(function (key) {
-			        if(key.indexOf('$') !== 0 && key !== 'job') {
-				        ret[key] = clone(obj[key]);
-			        }
-		        });
-		        return ret;
-	        }
-	        function cleanRule(rule) {
-		        return clone(rule);
-	        }
+            function cleanRule(rule) {
+                return util.clone(rule);
+            }
 
-	        service.cleanRule = cleanRule;
+            service.cleanRule = cleanRule;
 
             function removeRule(rule) {
-	            rules.list.splice(rules.list.map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
+                rules.list.splice(rules.list.map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
                 delete rules.index[rule.uuid];
-	            rules.map[rule.datacenter].splice(rules.map[rule.datacenter].map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
+                rules.map[rule.datacenter].splice(rules.map[rule.datacenter].map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
             }
 
             function updateLocal(action, rule) {
@@ -62,7 +44,7 @@
             }
 
             service.createRule = function (rule) {
-	            rule = cleanRule(rule);
+                rule = cleanRule(rule);
                 rule.uuid = window.uuid.v4();
 
                 // Store rule
@@ -175,15 +157,15 @@
                                 deferred.reject(err);
                             });
                         } else {
-	                        if (rules.job.finished) {
-		                        deferred.resolve(rules.map);
-	                        } else {
-		                        rules.job.deferred.then(function () {
-			                        deferred.resolve(rules.map);
-		                        }, function (err) {
-			                        deferred.reject(err);
-		                        });
-	                        }
+                            if (rules.job.finished) {
+                                deferred.resolve(rules.map);
+                            } else {
+                                rules.job.deferred.then(function () {
+                                    deferred.resolve(rules.map);
+                                }, function (err) {
+                                    deferred.reject(err);
+                                });
+                            }
                         }
                     } else if (!rules.index[id]) { //Rule
                         if (!rules.job) {
@@ -217,7 +199,7 @@
                             }
                         }
                     } else {
-	                    deferred.resolve(rules.index[id]);
+                        deferred.resolve(rules.index[id]);
                     }
                 }, 0);
 
