@@ -12,8 +12,12 @@
             });
 
             $scope.disableLb = function () {
+                $scope.listLoaded = false;
                 service.deleteController().then(function () {
                     $location.path('/elb');
+                }, function (err) {
+                    console.log(err);
+                    $scope.listLoaded = true;
                 });
             };
 
