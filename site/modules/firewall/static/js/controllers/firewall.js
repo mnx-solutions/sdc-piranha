@@ -401,25 +401,13 @@
                 return false;
             };
 
-            $scope.editRule = function(r) {
-                $scope.data.uuid = r.uuid;
-                $scope.data.datacenter = r.datacenter;
-                $scope.data.parsed = {
-                    from: r.parsed.from,
-                    to: r.parsed.to,
-                    action: r.parsed.action,
-                    protocol: r.parsed.protocol
-                };
-                $scope.data.enabled = r.enabled;
-            };
-
             // Rule controls to interact with service
 
             // Temporary solution for updating rule information
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-                rule.deleteRule($scope.getData()).then(function(){
+                rule.deleteRule($scope.data).then(function(){
                     var r = $scope.getData();
                     delete r.uuid;
                     rule.createRule(r).then(function(){
@@ -550,7 +538,9 @@
 				        disabled: function () {
 					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
 				        },
-				        action: $scope.editRule.bind($scope),
+				        action: function (rule) {
+					        $scope.data = ng.copy(rule);
+				        },
 				        tooltip: 'Edit the rule'
 			        }
 		        },

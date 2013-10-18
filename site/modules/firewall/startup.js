@@ -193,7 +193,7 @@ var firewall = function execute (scope) {
                 if (--count === 0) {
                     call.done();
                 }
-            });
+            }, undefined, true);
         });
 
     });

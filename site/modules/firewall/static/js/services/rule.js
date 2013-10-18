@@ -16,9 +16,9 @@
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
 
             function removeRule(rule) {
-	            rules.list.splice(rules.list.indexOf(rule), 1);
+	            rules.list.splice(rules.list.map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
                 delete rules.index[rule.uuid];
-	            rules.map[rule.datacenter].splice(rules.map[rule.datacenter].indexOf(rule), 1);
+	            rules.map[rule.datacenter].splice(rules.map[rule.datacenter].map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
             }
 
             function updateLocal(action, rule) {
