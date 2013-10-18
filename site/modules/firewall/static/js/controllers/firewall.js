@@ -277,27 +277,12 @@
                 $scope.data.enabled = false;
             };
 
-	        function clone(obj) {
-		        if(typeof obj !== 'object') {
-			        return obj;
-		        }
-		        var ret = {};
-		        if(ng.isArray(obj)) {
-			        ret = [];
-			        obj.forEach(function (el) {
-				        ret.push(clone(el));
-			        });
-			        return ret;
-		        }
-		        Object.keys(obj).forEach(function (key) {
-			        if(key.indexOf('$') !== 0 && key !== 'job') {
-				        ret[key] = clone(obj[key]);
-			        }
-		        });
-		        return ret;
-	        }
             $scope.getData = function() {
-	            return clone($scope.data);
+	            var data = rule.cleanRule($scope.data);
+	            if(!data.datacenter) {
+		            data.datacenter = $scope.datacenter;
+	            }
+	            return data;
             };
 
             $scope.resetCurrent = function() {
@@ -413,10 +398,8 @@
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-	            var r = $scope.getData();
-                rule.deleteRule(r).then(function(){
-                    delete r.uuid;
-                    rule.createRule(r).then(function(){
+                rule.deleteRule($scope.data).then(function(){
+                    rule.createRule($scope.data).then(function(){
                         $scope.refresh();
                     })
                 });
@@ -431,15 +414,10 @@
 
             $scope.changeStatus = function(r) {
                 $scope.loading = true;
-                if(r.enabled) {
-                    rule.disableRule(r).then(function() {
-                        $scope.refresh();
-                    });
-                } else {
-                    rule.enableRule(r).then(function() {
-                        $scope.refresh();
-                    });
-                }
+	            var fn = r.enabled ? 'disableRule' : 'enableRule';
+	            rule[fn](r).then(function() {
+		            $scope.refresh();
+	            });
             };
             $scope.refresh = function() {
                 $scope.loading = true;
@@ -544,8 +522,8 @@
 				        disabled: function () {
 					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
 				        },
-				        action: function (rule) {
-					        $scope.data = clone(rule);
+				        action: function (object) {
+					        $scope.data = rule.cleanRule(object);
 				        },
 				        tooltip: 'Edit the rule'
 			        }

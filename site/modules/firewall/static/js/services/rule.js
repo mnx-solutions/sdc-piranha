@@ -15,6 +15,31 @@
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
 
+	        function clone(obj) {
+		        if(!obj || typeof obj !== 'object') {
+			        return obj;
+		        }
+		        var ret = {};
+		        if(ng.isArray(obj)) {
+			        ret = [];
+			        obj.forEach(function (el) {
+				        ret.push(clone(el));
+			        });
+			        return ret;
+		        }
+		        Object.keys(obj).forEach(function (key) {
+			        if(key.indexOf('$') !== 0 && key !== 'job') {
+				        ret[key] = clone(obj[key]);
+			        }
+		        });
+		        return ret;
+	        }
+	        function cleanRule(rule) {
+		        return clone(rule);
+	        }
+
+	        service.cleanRule = cleanRule;
+
             function removeRule(rule) {
 	            rules.list.splice(rules.list.map(function(el) { return el.uuid; }).indexOf(rule.uuid), 1);
                 delete rules.index[rule.uuid];
@@ -37,7 +62,7 @@
             }
 
             service.createRule = function (rule) {
-	            console.log(rule);
+	            rule = cleanRule(rule);
                 rule.uuid = window.uuid.v4();
 
                 // Store rule
