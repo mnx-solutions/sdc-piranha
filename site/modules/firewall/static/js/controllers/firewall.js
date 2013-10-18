@@ -277,21 +277,27 @@
                 $scope.data.enabled = false;
             };
 
+	        function clone(obj) {
+		        if(typeof obj !== 'object') {
+			        return obj;
+		        }
+		        var ret = {};
+		        if(ng.isArray(obj)) {
+			        ret = [];
+			        obj.forEach(function (el) {
+				        ret.push(clone(el));
+			        });
+			        return ret;
+		        }
+		        Object.keys(obj).forEach(function (key) {
+			        if(key.indexOf('$') !== 0 && key !== 'job') {
+				        ret[key] = clone(obj[key]);
+			        }
+		        });
+		        return ret;
+	        }
             $scope.getData = function() {
-                return {
-                    uuid: $scope.data.uuid,
-                    datacenter: $scope.data.datacenter,
-                    enabled: $scope.data.enabled,
-                    parsed: {
-                        from: $scope.data.parsed.from,
-                        to: $scope.data.parsed.to,
-                        action: $scope.data.parsed.action,
-                        protocol: {
-                            name: $scope.data.parsed.protocol.name,
-                            targets: $scope.data.parsed.protocol.targets
-                        }
-                    }
-                };
+	            return clone($scope.data);
             };
 
             $scope.resetCurrent = function() {
@@ -407,8 +413,8 @@
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-                rule.deleteRule($scope.data).then(function(){
-                    var r = $scope.getData();
+	            var r = $scope.getData();
+                rule.deleteRule(r).then(function(){
                     delete r.uuid;
                     rule.createRule(r).then(function(){
                         $scope.refresh();
@@ -539,7 +545,7 @@
 					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
 				        },
 				        action: function (rule) {
-					        $scope.data = ng.copy(rule);
+					        $scope.data = clone(rule);
 				        },
 				        tooltip: 'Edit the rule'
 			        }
