@@ -41,3 +41,7 @@ input.ng-invalid, input.ng-pristine {
 .padding-5 {
     padding: 5px;
 }
+
+.row-height {
+    height: 200px;
+}
