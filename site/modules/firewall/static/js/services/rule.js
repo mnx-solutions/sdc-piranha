@@ -99,6 +99,7 @@
 
             service.updateState = function (action) {
                 return function (rule) {
+	                rule = cleanRule(rule);
                     function showError (err) {
                         notification.push(rule.uuid, { type: 'error' },
                             localization.translate(null,
