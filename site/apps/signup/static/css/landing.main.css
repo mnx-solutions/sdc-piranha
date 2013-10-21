@@ -37,30 +37,58 @@ h3 {
     border:none;
 }
 
-.footer .brand {
-    background-image: url('../img/logo-gray.png');
-    background-repeat:no-repeat;
-    background-position:50% 60%;
-    width:120px;
-    height:30px;
-}
+/*.footer .brand {*/
+    /*background-image: url('../img/logo-gray.png');*/
+    /*background-repeat:no-repeat;*/
+    /*background-position:50% 60%;*/
+    /*width:120px;*/
+    /*height:30px;*/
+/*}*/
 
+/*.footer {*/
+    /*padding-top:10px;*/
+    /*border-top:1px solid #d4d7d9;*/
+    /*margin-bottom:45px;*/
+/*}*/
+/*.footer .nav {*/
+    /*padding-top:8px;*/
+/*}*/
+/*.footer .nav li {*/
+    /*float:left;*/
+    /*font-size:11px;*/
+/*}*/
+/*.footer a {*/
+    /*color:#999;*/
+    /*background-color:transparent !important;*/
+    /*padding-right:20px;*/
+/*}*/
 .footer {
-    padding-top:10px;
-    border-top:1px solid #d4d7d9;
-    margin-bottom:45px;
+    position: fixed;
+    padding-top: 10px;
+    background-color: #ededed;
+    height: 60px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    width: 100%;
+    bottom: 0;
+    margin-left: 175px;
+    padding-right: 175px;
 }
 .footer .nav {
-    padding-top:8px;
+    padding-top: 8px;
+    font-size: 12px;
+    margin-left: 28px;
 }
 .footer .nav li {
     float:left;
-    font-size:11px;
 }
 .footer a {
     color:#999;
     background-color:transparent !important;
     padding-right:20px;
+    text-decoration: none;
 }
 
 .red-asterix {
@@ -75,4 +103,9 @@ div.error {
 
 .asterix-info {
     color: #b3b3b3;
+}
+.logo{
+    background-image: url(../img/logo-orange.png);
+    width: 175px;
+    height: 53px;
 }

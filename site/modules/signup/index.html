@@ -1,29 +1,87 @@
-<div class="navbar-inner">
-    <div class="container">
-        <a data-ng-click="signOut()"><div class="brand pull-left"></div></a>
-    </div>
+<!--<img src="http://chrisglass.com/work/joyent/portal/milestone1/v02/img/create-acct-2.png" style="position: absolute;top: 0;left: 0;z-index: 100;opacity: 0.5;"/>-->
+<div class="header">
+    <div class="logo"></div>
 </div>
-<div class="container">
-    <div data-notification></div>
-
-    <div class="brand pull-left"></div>
-    <div class="clearfix"></div>
-    <ul class="nav nav-tabs" data-ng-show="steps">
-
-        <li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">
-            <a>{{stepNames[s]}}</a>
-        </li>
-    </ul>
+<div class="left"></div>
+<div class="main">
     <div class="signup-progress-container" data-ng-switch="subview">
 
-            <div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>
-            <div data-ng-switch-when="phone" data-ng-include="'signup/static/partials/phone.html'"></div>
-            <div data-ng-switch-when="accountInfo" data-ng-include="'signup/static/partials/accountInfo.html'"></div>
-            <div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>
-            <div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>
-            <div data-ng-switch-when="blocked" data-ng-include="'signup/static/partials/blocked.html'"></div>
+        <div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>
+        <div data-ng-switch-when="phone" data-ng-include="'signup/static/partials/phone.html'"></div>
+        <div data-ng-switch-when="accountInfo" data-ng-include="'signup/static/partials/accountInfo.html'"></div>
+        <div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>
+        <div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>
+        <div data-ng-switch-when="blocked" data-ng-include="'signup/static/partials/blocked.html'"></div>
 
         <div class="clearfix"></div>
     </div>
     <div class="clearfix"></div>
 </div>
+<!--<div class="navbar-inner">-->
+    <!--<div class="header">-->
+        <!--<div class="logo"></div>-->
+    <!--</div>-->
+    <!--<div class="left"></div>-->
+    <!--<div class="main">-->
+        <!--<div class="page-title">Sign Up for Joyent</div>-->
+        <!--<div class="wizard-steps">-->
+            <!--<div class="active-step"><p>Account Details</p></div>-->
+            <!--<div><p>Verification</p></div>-->
+            <!--<div><p>Payment Information</p></div>-->
+            <!--<div><p class="laststep"></p></div>-->
+        <!--</div>-->
+        <!--<div class="login-form">-->
+            <!--<table class="table">-->
+                <!--<tr>-->
+                    <!--<td><label>First Name</label></td>-->
+                    <!--<td><input type="text" name="" class="signin-inputs usn" data-validate=""/></td>-->
+                <!--</tr>-->
+
+            <!--</table>-->
+            <!--<div class="line"></div>-->
+            <!--<div class="position_ca">-->
+                <!--<span class="si_btn">Create Account</span>-->
+                <!--<p>By clicking on “Create an account”, you are agreeing to the <a href="http://joyent.com/tos" target="_blank">Terms of Service</a></p>-->
+            <!--</div>-->
+            <!--<div class="terms-txt"><p>-->
+                <!--*Terms and Conditions: Promotional offer is valid for new customers only, and is good for up to $65.00 of usage value per calendar month for up to 2 months (All prices subject to change). Promotion offer may be used only once and is non-transferable. Promotion cannot be redeemed for cash value. Any unused value at the end of each month is forfeited (does not roll-over to the following month). For limited time only. Offer good while supplies last. Joyent reserves the right in its sole discretion to cancel your free trial due to inactivity. Valid credit card required for authorization. Your card will be charged when your use exceeds the value of the promotional offer.-->
+            <!--</p></div>-->
+        <!--</div>-->
+        <!--<div class="prom-code-box">-->
+            <!--<div class="textbox">-->
+
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+
+
+    <!--<div class="container">-->
+        <!--<a data-ng-click="signOut()"><div class="brand pull-left"></div></a>-->
+    <!--</div>-->
+<!--</div>-->
+<!--<div class="container">-->
+    <!--<div data-notification></div>-->
+
+    <!--<div class="brand pull-left"></div>-->
+    <!--<div class="clearfix"></div>-->
+    <!--<ul class="nav nav-tabs" data-ng-show="steps">-->
+
+        <!--<li data-ng-repeat="s in steps" data-ng-class="{active: currentStep == s, disabled: currentStep != s}">-->
+            <!--<a>{{stepNames[s]}}</a>-->
+        <!--</li>-->
+    <!--</ul>-->
+    <!--<div class="signup-progress-container" data-ng-switch="subview">-->
+
+            <!--<div data-ng-switch-when="index" data-ng-include="'signup/static/partials/index.html'"></div>-->
+            <!--<div data-ng-switch-when="phone" data-ng-include="'signup/static/partials/phone.html'"></div>-->
+            <!--<div data-ng-switch-when="accountInfo" data-ng-include="'signup/static/partials/accountInfo.html'"></div>-->
+            <!--<div data-ng-switch-when="billing" data-ng-include="'signup/static/partials/billing.html'"></div>-->
+            <!--<div data-ng-switch-when="ssh" data-ng-include="'signup/static/partials/ssh.html'"></div>-->
+            <!--<div data-ng-switch-when="blocked" data-ng-include="'signup/static/partials/blocked.html'"></div>-->
+
+        <!--<div class="clearfix"></div>-->
+    <!--</div>-->
+    <!--<div class="clearfix"></div>-->
+<!--</div>-->
