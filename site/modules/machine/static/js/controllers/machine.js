@@ -131,11 +131,13 @@
             $scope.$on(
                 'event:forceUpdate',
                 function (){
-                    $scope.firewallRules = Machine.listFirewallRules($scope.machineid);
-                    
                     Machine.updateMachines();
                     Machine.machine(machineid).then(function (m) {
                         $scope.machine = m;
+
+                        Machine.listFirewallRules(m.id).then(function (rules) {
+                            $scope.firewallRules = rules;
+                        });
                     });
                 }
             );
@@ -143,6 +145,12 @@
             $scope.packages = Package.package();
 
             $q.when($scope.machine, function (m) {
+                if ($scope.features.firewall === 'enabled') {
+                    Machine.listFirewallRules(m.id).then(function (rules) {
+                        $scope.firewallRules = rules;
+                    });
+                }
+
                 m.primaryIps = m.ips.filter(function (ip) {
                     return !util.isPrivateIP(ip);
                 });
@@ -411,8 +419,6 @@
             }
 
             if ($scope.features.firewall === 'enabled') {
-                $scope.firewallRules = Machine.listFirewallRules($scope.machineid);
-
                 $scope.gridOrder = [];
                 $scope.gridProps = [
                     {
