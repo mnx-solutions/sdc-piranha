@@ -161,7 +161,11 @@
                     $scope.current.to.text = n.address + '/' + n.CIDR;
                 }
             }, true);
-
+            $scope.$watch('current.code', function(n) {
+                if(!n || n == '') {
+                    $scope.protocolForm.code.$setValidity('range', true);
+                }
+            })
             $scope.$watch('current.from.type', function() {
                 $scope.fromSubnet = {
                     address:null,
