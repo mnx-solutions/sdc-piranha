@@ -320,7 +320,7 @@
                                 <input name="port"
                                        type="text"
                                        data-ng-model="current.port"
-                                       data-range="0-65535"/>
+                                       data-range="1-65535"/>
                             </span>
                         </span>
                         <span class="row-fluid">
@@ -337,7 +337,11 @@
                                 Type:
                             </span>
                             <span class="span10">
-                                <input type="text" data-ng-model="current.type" />
+                                <input type="text"
+                                       name="type"
+                                       data-ng-required="true"
+                                       data-range="0-255"
+                                       data-ng-model="current.type" />
                             </span>
                         </span>
                         <span class="row-fluid">
@@ -347,6 +351,7 @@
                             <span class="span6 margin-top-10">
                                 <input type="text"
                                        name="code"
+                                       data-ng-required="false"
                                        data-range="0-255"
                                        data-ng-model="current.code" />
                             </span>
@@ -354,7 +359,7 @@
                         <span class="row-fluid">
                             <span class="span6 margin-top-10">
                                 <button class="btn"
-                                        data-ng-disabled="!protocolForm.code.$dirty || protocolForm.code.$error.range"
+                                        data-ng-disabled="!protocolForm.$valid"
                                         data-ng-click="addType()">ADD</button>
                             </span>
                         </span>
