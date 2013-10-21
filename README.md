@@ -47,7 +47,7 @@ The production environment is currently SmartOS 64-bit - base64 13.1.0, so we us
 * Use 'ssh -A' to connect to the instance, forwarding your authentication agent.
 
 1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.  
-2. `pkgin up; pkgin in scmgit-base redis build-essential`
+2. `pkgin up; pkgin -y install scmgit-base redis build-essential`
 3. `svcadm enable redis:default`
 4. `git clone git@github.com:joyent/piranha.git /opt/portal`  
 5. `cd /opt/portal; npm install --production`
