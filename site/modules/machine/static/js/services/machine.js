@@ -260,9 +260,13 @@
         });
 
         service.listFirewallRules = function (uuid) {
+            var machine = service.machine(uuid);
             var job = serverTab.call({
                 name: 'MachineRuleList',
-                data: { machineId: uuid },
+                data: {
+                    machineId: uuid,
+                    datacenter: machine.datacenter
+                },
                 done: function(err, job) {
                     if (err) {
                         return;
