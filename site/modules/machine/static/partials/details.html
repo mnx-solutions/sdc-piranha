@@ -261,6 +261,24 @@
         </div>
     </fieldset>
 
+    <fieldset data-ng-show="firewallRules.length >= 1">
+        <legend>
+            <span data-translate>Firewall rules</span>
+            <small data-translate></small>
+        </legend>
+
+        <div>
+            <div class="span12">
+                <div data-grid-view
+                     data-props="gridProps"
+                     data-objects="firewallRules"
+                     data-paginated="false"
+                     data-order="gridOrder"
+                     data-filter-all="{{query}}"
+                     data-objects-type="firewall"></div>
+            </div>
+        </div>
+    </fieldset>
 
     <div class="clearfix"></div>
 </div>

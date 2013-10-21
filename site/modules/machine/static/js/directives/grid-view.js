@@ -169,6 +169,7 @@
         };
     }])
     .constant('gridConfig', {
+        paginated: true,
         perPage: 15,
         page: 1,
         showPages: 5,
@@ -192,6 +193,7 @@
             templateUrl: 'machine/static/partials/grid-view.html',
             replace: true,
             link: function($scope, element, attrs) {
+                $scope.paginated = ng.isDefined(attrs.paginated) ? $scope.$eval(attrs.paginated) : gridConfig.paginated;
                 $scope.perPage = ng.isDefined(attrs.perPage) ? $scope.$eval(attrs.perPage) : gridConfig.perPage;
                 $scope.showPages = ng.isDefined(attrs.showPages) ? $scope.$eval(attrs.showPages) : gridConfig.showPages;
                 $scope.page = $scope.page || gridConfig.page;
