@@ -87,6 +87,13 @@ module.exports = function execute(scope) {
             }
         });
 
+	    // Clean null networks
+	    if(machine.networks) {
+		    machine.networks = machine.networks.filter(function (network) {
+			    return !!network;
+		    });
+	    }
+
         return machine;
     }
 

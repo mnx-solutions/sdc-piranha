@@ -10,6 +10,7 @@
         'Network',
         'rule',
         'firewall',
+        '$filter',
         '$dialog',
         '$$track',
         'localization',
@@ -18,7 +19,7 @@
         'util',
         'Image',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $dialog, $$track, localization, $q, $location, util, Image) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -79,10 +80,6 @@
                 return d.promise;
             }
 
-            if($scope.features.instanceTagging === 'enabled') {
-                $scope.tagcloud = tagcloud();
-            }
-
             function checkTags (val, old) {
                 if (val) {
                     var keys = Object.keys(val);
@@ -137,6 +134,10 @@
                     Machine.updateMachines();
                     Machine.machine(machineid).then(function (m) {
                         $scope.machine = m;
+
+                        Machine.listFirewallRules(m.id).then(function (rules) {
+                            $scope.firewallRules = rules;
+                        });
                     });
                 }
             );
@@ -144,6 +145,12 @@
             $scope.packages = Package.package();
 
             $q.when($scope.machine, function (m) {
+                if ($scope.features.firewall === 'enabled') {
+                    Machine.listFirewallRules(m.id).then(function (rules) {
+                        $scope.firewallRules = rules;
+                    });
+                }
+
                 m.primaryIps = m.ips.filter(function (ip) {
                     return !util.isPrivateIP(ip);
                 });
@@ -404,6 +411,68 @@
                     name.length >= ending.length &&
                     name.indexOf(ending, name.length - ending.length) !== -1;
             };
+
+            // Enable features
+            // Instance tagging
+            if ($scope.features.instanceTagging === 'enabled') {
+                $scope.tagcloud = tagcloud();
+            }
+
+            if ($scope.features.firewall === 'enabled') {
+                $scope.gridOrder = [];
+                $scope.gridProps = [
+                    {
+                        id: 'parsed',
+                        id2: 'from',
+                        name: 'From',
+                        getClass: function () {
+                            return 'span4 padding-5';
+                        },
+                        _getter: function (object) {
+                            var arr = object.parsed.from.map(function (from) {
+                                return $filter('targetInfo')(from);
+                            });
+                            return arr.join('; ');
+                        },
+                        sequence: 1
+                    },
+                    {
+                        id: 'parsed',
+                        id2: 'to',
+                        name: 'To',
+                        getClass: function () {
+                            return 'span4 padding-5';
+                        },
+                        _getter: function (object) {
+                            var arr = object.parsed.to.map(function (to) {
+                                return $filter('targetInfo')(to);
+                            });
+                            return arr.join('; ');
+                        },
+                        sequence: 2
+                    },
+                    {
+                        id: 'parsed',
+                        id2: 'action',
+                        name: 'Action',
+                        getClass: function () {
+                            return 'span2 padding-5';
+                        },
+                        sequence: 3
+                    },
+                    {
+                        id: 'protocol',
+                        name: 'Protocol',
+                        getClass: function () {
+                            return 'span2 padding-5';
+                        },
+                        _getter: function (object) {
+                            return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
+                        },
+                        sequence: 4
+                    }
+                ];
+            }
         }
 
     ]);
