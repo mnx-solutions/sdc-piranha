@@ -46,15 +46,16 @@ Development regularly occurs on Linux until it is ready for staging. Lloyd encou
 The production environment is currently SmartOS 64-bit - base64 13.1.0, so we use the same for staged development.
 * Use 'ssh -A' to connect to the instance, forwarding your authentication agent.
 
-1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.  
-2. `pkgin up; pkgin -y install scmgit-base redis build-essential`
-3. `svcadm enable redis:default`
-4. `git clone git@github.com:joyent/piranha.git /opt/portal`  
-5. `cd /opt/portal; npm install --production`
-6. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
-7. Make sure portal user has rights to write var/error.json `chown -R portal var/`
-8. `svccfg import /opt/portal/smf/portal.xml`
-9. `svcadm enable portal`
+1. Test access to Joyent git repos: `ssh git@git.joyent.com` (Confirms access to the private repositories. Connection will immediately close)  
+2. Update and install system packages: `pkgin up; pkgin -y install scmgit-base redis build-essential`
+3. Enable local Redis service: `svcadm enable redis:default`
+4. Clone Piranha repo from GitHub: `git clone git@github.com:joyent/piranha.git /opt/portal` 
+5. Create a new non-root user for portal: `useradd -s /bin/false -m portal`
+6. Install node.js modules: `cd /opt/portal; npm install --production`
+6. Make sure that portal user owns its files: `chown -R portal /opt/portal`
+7. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+8. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
+9. Start portal: `svcadm enable portal`
 
 ### Production
 
