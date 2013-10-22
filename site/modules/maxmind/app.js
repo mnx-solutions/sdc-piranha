@@ -19,6 +19,7 @@ var serviceMessages = {
     wrongPin: 'Phone verification failed. Incorrect PIN code. Please try again',
     wrongPinTooManyTries: 'Phone verification failed. Incorrect PIN code. PIN has been locked. Please use "Call Me Now" to get a new PIN.',
     wrongPinLocked: 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support',
+    wrongCallLocked: 'Phone verification failed. Too many calls made. Your account has been locked. Please contact support',
     phoneIncorrect: 'The phone number is incorrect',
     serviceFailed: 'Verification service not accessible, please try again',
     calling: 'Calling...'
@@ -40,9 +41,10 @@ module.exports = function execute(scope, app) {
         return {message:message, serviceFailed: false};
     }
 
-    function lockAccount(req, res) {
+    function lockAccount(req, res, lockMessage) {
+        lockMessage = lockMessage || serviceMessages.wrongPinLocked;
         if(req.session.maxmindLocked) { // Already locked
-            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
+            res.json({message: lockMessage, success: false, navigate: true});
             return;
         }
 
@@ -57,7 +59,7 @@ module.exports = function execute(scope, app) {
                 Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
             }
             
-            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
+            res.json({message: lockMessage, success: false, navigate: true});
         });
     }
 
@@ -94,7 +96,7 @@ module.exports = function execute(scope, app) {
         // Too many tries, lock account
         if(retries >= limits.calls || req.session.maxmindLocked) {
             req.session.blockReason = 'Phone verification, too many calls.  REF ID: ' + req.session.attemptId;
-            lockAccount(req, res);
+            lockAccount(req, res, serviceMessages.wrongCallLocked);
             return;
         }
 
@@ -110,13 +112,6 @@ module.exports = function execute(scope, app) {
             '&verify_code=' + code;
 
         req.log.info({phone: req.params.phone}, 'Calling user phone');
-
-        // If call limit is high enough then lock account
-        if (retries >= limits.calls) {
-            req.session.blockReason = 'Phone verification, too many calls. REF ID: ' + req.session.attemptId;
-            lockAccount(req, res);
-            return;
-        }
 
         phoneVerificationClient.get(url, function(err, creq, cres, data) {
             if (err) {
