@@ -1,8 +1,17 @@
 <div data-ng-controller="Signup.BillingController">
-    <div class="page-header">
-        <h1>Almost ready to provision!</h1>
-        <h1><small>Finalize your account info to get started.</small></h1>
+    <div class="content-container-signup-billing">
+        <div class="page-title">Billing Information</div>
+        <div class="wizard-steps">
+            <div><p class="firststep">Account Details</p></div>
+            <div><p>Verification</p></div>
+            <div class="active-step"><p>Payment Information</p></div>
+            <div><p class="laststep"></p></div>
+        </div>
+        <!--<div class="page-header">-->
+        <!--<h1>Almost ready to provision!</h1>-->
+        <!--<h1><small>Finalize your account info to get started.</small></h1>-->
+        <!--</div>-->
+        <div data-add-credit-card></div>
+        <div class="clearfix"></div>
     </div>
-    <div data-add-credit-card></div>
-    <div class="clearfix"></div>
 </div>
