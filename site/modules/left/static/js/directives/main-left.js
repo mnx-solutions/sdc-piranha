@@ -8,6 +8,9 @@
             controller: function ($scope, $location){
                 $scope.location = $location;
                 $scope.sideBarMin = false;
+                $scope.t_start = false;
+                $scope.t_second = false;
+                $scope.t_three = false;
                 $scope.toggleSideBar = function () {
                     $scope.sideBarMin = ($scope.sideBarMin == false) ? true : false;
                     if($scope.sideBarMin){
