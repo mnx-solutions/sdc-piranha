@@ -77,10 +77,10 @@ module.exports = function execute(scope, callback) {
                         }
                         if (result.riskScore) {
                             call.log.info('Saving user riskScore in metadata');
-                            Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
+                            Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
                         }
                         if (result.block) {
-                            Metadata.set(call.req.session.userId, 'Blocking Reason', call.req.session.blockReason || 'High fraud risk score. MAXMIND ID: '+result.maxmindID);
+                            Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, call.req.session.blockReason || 'High fraud risk score. MAXMIND ID: '+result.maxmindID);
                             data.attemptId = call.req.session.attemptId = call.req.session.attemptId || result.maxmindID;
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
                                 if (blockErr) {

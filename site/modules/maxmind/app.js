@@ -54,7 +54,7 @@ module.exports = function execute(scope, app) {
             }
             
             if (req.session.blockReason) {
-                Metadata.set(req.session.userId, 'Blocking Reason', req.session.blockReason);
+                Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
             }
             
             res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
@@ -70,7 +70,7 @@ module.exports = function execute(scope, app) {
         }
 
         var verificationStatus = success ? 'Successful' : 'PV service failed';
-        Metadata.set(req.session.userId, 'phoneVerification', verificationStatus, function (err) {
+        Metadata.set(req.session.userId, Metadata.PHONE_VERIFICATION, verificationStatus, function (err) {
             if (err) {
                 req.log.warn({error: err}, 'Error occurred while setting phone verification status');
             }
@@ -146,6 +146,8 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/verify/:code', function (req, res) {
+        req.session.maxmindPinTries = req.session.maxmindPinTries || 0;
+
         // We are already locked?
         if (req.session.maxmindLocked) {
             lockAccount(req, res);
@@ -154,7 +156,8 @@ module.exports = function execute(scope, app) {
 
         // Reached the limit of pin retries
         if (req.session.maxmindPinTries++ >= limits.pinTries) {
-            req.session.blockReason = 'Phone verification, too many pins. REF ID: ' + req.session.attemptId;
+            req.session.blockReason = 'Phone verification, too many pins. ' +
+                (req.session.attemptId ? 'REF ID: ' + req.session.attemptId : 'No calls made.');
             lockAccount(req, res);
             return;
         }

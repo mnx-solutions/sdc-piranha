@@ -132,7 +132,7 @@ module.exports = function execute(scope, register) {
             return;
         }
         function getMetadata(userId) {
-            metadata.get(userId, 'signupStep', function (err, storedStep) {
+            metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (!err && storedStep) {
                     call.log.info('Got signupStep from metadata:', {step: storedStep});
                     call.log.info('User landing in step:', _nextStep(storedStep));
@@ -170,7 +170,7 @@ module.exports = function execute(scope, register) {
     api.setSignupStep = function (call, step, cb) {
         function updateStep(req) {
             if (req.session) {
-                metadata.set(req.session.userId, 'signupStep', step, function () {
+                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function () {
                     call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
                 });
             }
