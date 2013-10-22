@@ -356,6 +356,7 @@ module.exports = function execute(scope) {
                     if (state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         machine.metadata.credentials = handleCredentials(machine);
+	                    machine = filterFields(machine);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
