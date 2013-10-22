@@ -87,6 +87,13 @@ module.exports = function execute(scope) {
             }
         });
 
+	    // Clean null networks
+	    if(machine.networks) {
+		    machine.networks = machine.networks.filter(function (network) {
+			    return !!network;
+		    });
+	    }
+
         return machine;
     }
 
@@ -349,6 +356,7 @@ module.exports = function execute(scope) {
                     if (state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         machine.metadata.credentials = handleCredentials(machine);
+	                    machine = filterFields(machine);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);

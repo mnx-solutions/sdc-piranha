@@ -1,7 +1,6 @@
 'use strict';
 
 var soap = require('./soap');
-var moment = require('moment');
 
 function connect(config, callback) {
     soap.connect(config, callback);

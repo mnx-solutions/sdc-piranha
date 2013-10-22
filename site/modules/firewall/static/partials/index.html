@@ -26,13 +26,12 @@
              data-objects="rules"
              data-per-page="15"
              data-order="gridOrder"
-             data-filter-all="{{query}}"
              data-objects-type="firewall"></div>
     </div>
 </div>
 
 <div data-ng-show="loading" class="loading-large"></div>
-<form name="rule" class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
+<div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
 <fieldset>
 <legend>
     <span data-ng-show="data.uuid">Edit rule {{data.uuid}} <a class="pointer" data-ng-click="resetData()">(create new instead)</a></span>
@@ -310,70 +309,77 @@
     <!-- right -->
     <div class="span6">
         <label class="control-label">Protocol</label>
-        <div class="controls warning">
-            <span class="span6 text-medium">
-                <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
-                <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                    <span class="row-fluid">
-                        <span class="span6">
-                            <input name="port"
-                                   type="text"
-                                   data-ng-model="current.port"
-                                   data-range="0-65535"/>
+        <form name="protocolForm">
+            <div class="controls warning">
+                <span class="span6 text-medium">
+                    <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
+                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
+                        <span class="row-fluid">
+                            <span class="span6">
+                                <input name="port"
+                                       type="text"
+                                       data-ng-model="current.port"
+                                       data-range="1-65535"/>
+                            </span>
+                        </span>
+                        <span class="row-fluid">
+                            <span class="span6 margin-top-10">
+                                <button class="btn"
+                                        data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
+                                        data-ng-click="addPort()">ADD</button>
+                            </span>
                         </span>
                     </span>
-                    <span class="row-fluid">
-                        <span class="span6 margin-top-10">
-                            <button class="btn"
-                                    data-ng-disabled="!rule.port.$dirty || rule.port.$error.range"
-                                    data-ng-click="addPort()">ADD</button>
+                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                        <span class="row-fluid">
+                            <span class="span1">
+                                Type:
+                            </span>
+                            <span class="span10">
+                                <input type="text"
+                                       name="type"
+                                       data-ng-required="true"
+                                       data-range="0-255"
+                                       data-ng-model="current.type" />
+                            </span>
+                        </span>
+                        <span class="row-fluid">
+                            <span class="span1 margin-top-10">
+                                Code:
+                            </span>
+                            <span class="span6 margin-top-10">
+                                <input type="text"
+                                       name="code"
+                                       data-ng-required="false"
+                                       data-range="0-255"
+                                       data-ng-model="current.code" />
+                            </span>
+                        </span>
+                        <span class="row-fluid">
+                            <span class="span6 margin-top-10">
+                                <button class="btn"
+                                        data-ng-disabled="!protocolForm.$valid"
+                                        data-ng-click="addType()">ADD</button>
+                            </span>
                         </span>
                     </span>
                 </span>
-                <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                    <span class="row-fluid">
-                        <span class="span1">
-                            Type:
-                        </span>
-                        <span class="span10">
-                            <input type="text" data-ng-model="current.type" />
-                        </span>
-                    </span>
-                    <span class="row-fluid">
-                        <span class="span1 margin-top-10">
-                            Code:
-                        </span>
-                        <span class="span6 margin-top-10">
-                            <input type="text"
-                                   name="code"
-                                   data-range="0-255"
-                                   data-ng-model="current.code" />
-                        </span>
-                    </span>
-                    <span class="row-fluid">
-                        <span class="span6 margin-top-10">
-                            <button class="btn"
-                                    data-ng-disabled="!rule.code.$dirty || rule.code.$error.range"
-                                    data-ng-click="addType()">ADD</button>
-                        </span>
-                    </span>
-                </span>
-            </span>
 
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
 <div class="form-actions">
-    <button class="btn btn-primary" data-ng-hide="data.uuid" data-ng-click="createRule()">
+    <button class="btn btn-primary" data-ng-hide="data.uuid" data-ng-disabled="!validData" data-ng-click="createRule()">
         Create Rule
     </button>
-    <button class="btn btn-primary" data-ng-show="data.uuid" data-ng-click="updateRule()">
+    <button class="btn btn-primary" data-ng-show="data.uuid" data-ng-disabled="!validData" data-ng-click="updateRule()">
         Update Rule
     </button>
 </div>
 </fieldset>
-</form>
+</div>
 </div>
 </div>
 

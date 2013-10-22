@@ -19,7 +19,8 @@
             "tfa",
             "storage",
             "timeout",
-            "feature-flags"
+            "feature-flags",
+			"maxmind"
         ],
 		"auth": true,
         "error": true,

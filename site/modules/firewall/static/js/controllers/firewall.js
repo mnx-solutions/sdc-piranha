@@ -122,7 +122,33 @@
                 CIDR:32
             };
 
+            $scope.$watch('data', function(n) {
+                if (n) {
+                    var data = $scope.getData();
 
+                    if (!data.parsed) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.from || data.parsed.from.length === 0) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.to || data.parsed.to.length === 0) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.protocol.name) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    if (!data.parsed.protocol.targets || data.parsed.protocol.targets.length === 0) {
+                        $scope.validData = false;
+                        return;
+                    }
+                    $scope.validData = true;
+                }
+            }, true);
 
             $scope.$watch('fromSubnet', function(n) {
                 if(n.CIDR && n.address) {
@@ -135,7 +161,11 @@
                     $scope.current.to.text = n.address + '/' + n.CIDR;
                 }
             }, true);
-
+            $scope.$watch('current.code', function(n) {
+                if(!n || n == '') {
+                    $scope.protocolForm.code.$setValidity('range', true);
+                }
+            })
             $scope.$watch('current.from.type', function() {
                 $scope.fromSubnet = {
                     address:null,
@@ -278,20 +308,11 @@
             };
 
             $scope.getData = function() {
-                return {
-                    uuid: $scope.data.uuid,
-                    datacenter: $scope.data.datacenter,
-                    enabled: $scope.data.enabled,
-                    parsed: {
-                        from: $scope.data.parsed.from,
-                        to: $scope.data.parsed.to,
-                        action: $scope.data.parsed.action,
-                        protocol: {
-                            name: $scope.data.parsed.protocol.name,
-                            targets: $scope.data.parsed.protocol.targets
-                        }
-                    }
-                };
+	            var data = rule.cleanRule($scope.data);
+	            if(!data.datacenter) {
+		            data.datacenter = $scope.datacenter;
+	            }
+	            return data;
             };
 
             $scope.resetCurrent = function() {
@@ -317,7 +338,7 @@
             $scope.addPort =function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
                 $scope.current.port = '';
-                $scope.rule.port.$setValidity('range', false);
+                $scope.protocolForm.port.$setValidity('range', false);
             };
 
             $scope.addType = function() {
@@ -328,7 +349,7 @@
                 $scope.data.parsed.protocol.targets.push(target);
                 $scope.current.type = 0;
                 $scope.current.code = null;
-                $scope.rule.code.$setValidity('range', false);
+                $scope.protocolForm.code.$setValidity('range', false);
             };
 
             function addTarget(direction) {
@@ -401,28 +422,14 @@
                 return false;
             };
 
-            $scope.editRule = function(r) {
-                $scope.data.uuid = r.uuid;
-                $scope.data.datacenter = r.datacenter;
-                $scope.data.parsed = {
-                    from: r.parsed.from,
-                    to: r.parsed.to,
-                    action: r.parsed.action,
-                    protocol: r.parsed.protocol
-                };
-                $scope.data.enabled = r.enabled;
-            };
-
             // Rule controls to interact with service
 
             // Temporary solution for updating rule information
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-                rule.deleteRule($scope.getData()).then(function(){
-                    var r = $scope.getData();
-                    delete r.uuid;
-                    rule.createRule(r).then(function(){
+                rule.deleteRule($scope.data).then(function(){
+                    rule.createRule($scope.data).then(function(){
                         $scope.refresh();
                     })
                 });
@@ -437,15 +444,10 @@
 
             $scope.changeStatus = function(r) {
                 $scope.loading = true;
-                if(r.enabled) {
-                    rule.disableRule(r).then(function() {
-                        $scope.refresh();
-                    });
-                } else {
-                    rule.enableRule(r).then(function() {
-                        $scope.refresh();
-                    });
-                }
+	            var fn = r.enabled ? 'disableRule' : 'enableRule';
+	            rule[fn](r).then(function() {
+		            $scope.refresh();
+	            });
             };
             $scope.refresh = function() {
                 $scope.loading = true;
@@ -529,7 +531,7 @@
 					        return 'btn-mini btn-danger';
 				        },
 				        disabled: function () {
-					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
+					        return $scope.loading;
 				        },
 				        action: $scope.deleteRule.bind($scope),
 				        tooltip: 'Delete the rule'
@@ -548,9 +550,11 @@
 					        return 'btn-mini btn-default';
 				        },
 				        disabled: function () {
-					        return $scope.fromForm && ($scope.fromForm.$invalid || $scope.fromForm.$pristine);
+					        return $scope.loading;
 				        },
-				        action: $scope.editRule.bind($scope),
+				        action: function (object) {
+					        $scope.data = rule.cleanRule(object);
+				        },
 				        tooltip: 'Edit the rule'
 			        }
 		        },
@@ -568,6 +572,9 @@
 				        getClass: function (object) {
 					        return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
 				        },
+                        disabled: function () {
+                            return $scope.loading;
+                        },
 				        action: $scope.changeStatus.bind($scope),
 				        tooltip: 'Enable the rule'
 			        }

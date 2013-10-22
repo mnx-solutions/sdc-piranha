@@ -259,6 +259,28 @@
             }
         });
 
+        service.listFirewallRules = function (uuid) {
+            var machine = service.machine(uuid);
+            var job = serverTab.call({
+                name: 'MachineRuleList',
+                data: {
+                    machineId: uuid,
+                    datacenter: machine.datacenter
+                },
+                done: function(err, job) {
+                    if (err) {
+                        return;
+                    }
+                },
+
+                error: function(err, job) {
+                }
+            });
+
+            //machine.job = job.getTracker();
+            return job.deferred;
+        };
+
         service.resizeMachine = function (uuid, sdcpackage) {
             var fn = changeState({
                 name: 'MachineResize',
