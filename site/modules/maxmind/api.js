@@ -36,6 +36,11 @@ module.exports = function execute(scope, register) {
     }
 
     api.minFraud = function (call, userInfo, billingInfo, creditCardInfo, callback) {
+        call.session(function (req) {
+            req.session.blockReason = null;
+            req.session.attemptId = null;
+            req.session.save();
+        });
         var query = {
             country: billingInfo.country,
             postal: billingInfo.zipCode,
@@ -51,7 +56,10 @@ module.exports = function execute(scope, register) {
         var block = checkBlackList(query);
         if (block.length) {
             call.log.warn('User matched against black list and was blocked');
-            call.req.session.blockReason = 'Blacklisted. ' + block.join("\n");
+            call.session(function (req) {
+                req.session.blockReason = 'Blacklisted. ' + block.join("\n");
+                req.session.save();
+            });
             setImmediate(function () {
                 callback(null, {block: true});
             });
@@ -81,6 +89,10 @@ module.exports = function execute(scope, register) {
 
             result.block = result.riskScore > riskScoreFraudLimit;
             if (result.block) {
+                call.session(function (req) {
+                    req.session.attemptId = result.maxmindID;
+                    req.session.save();
+                });
                 call.log.info({userId: call.req.session.userId}, 'User was blocked due to high risk score');
             }
             callback(null, result);
