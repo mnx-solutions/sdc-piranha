@@ -8,11 +8,12 @@
 
     <div class="clearfix"></div>
     <hr />
-    <button class="btn pull-right" data-ng-click="skipSsh()" data-ng-hide="loading">Skip</button>
     <div data-ng-hide="loading">
         <div data-account-ssh-create></div>
         <div data-account-ssh-import></div>
     </div>
+    <button class="grey_btn pull-right" data-ng-click="skipSsh()" data-ng-hide="loading">Skip</button>
+
     <span data-ng-show="loading && downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></span>
     <div data-ng-show="loading" class="loading-medium pull-right"></div>
 
