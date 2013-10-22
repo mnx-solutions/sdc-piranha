@@ -15,7 +15,7 @@ module.exports = function execute(scope, register) {
     var api = {};
 
     function checkBlackList(data) {
-        var blacklist = config.ns.blacklist;
+        var blacklist = config.ns.blacklist || {};
         if (!blacklist) {
             return true;
         }
@@ -25,12 +25,12 @@ module.exports = function execute(scope, register) {
             country: data.country
         };
         var blockBy = [];
-        ['domain', 'ip', 'country'].forEach(function (el) {
+        Object.keys(blacklist).forEach(function(el) {
             var block = Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1;
             if (block) {
                 blockBy.push(el + ': ' + comparison[el]);
             }
-        });
+        })
         
         return blockBy;
     }
@@ -47,11 +47,11 @@ module.exports = function execute(scope, register) {
             i: config.maxmind.testClientIp || call.req.userIp // config option for testing
         };
 
-        var result = {},
-            block = checkBlackList(query);
+        var result = {};
+        var block = checkBlackList(query);
         if (block.length) {
             call.log.warn('User matched against black list and was blocked');
-            call.req.session.blockReason = 'Blacklisted. '+block.join("\n");
+            call.req.session.blockReason = 'Blacklisted. ' + block.join("\n");
             setImmediate(function () {
                 callback(null, {block: true});
             });

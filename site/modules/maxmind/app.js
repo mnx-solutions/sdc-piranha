@@ -57,7 +57,7 @@ module.exports = function execute(scope, app) {
                 Metadata.set(req.session.userId, 'Blocking Reason', req.session.blockReason);
             }
             
-            res.json({message: serviceMessages.wrongPinLocked, attemptId: req.session.attemptId, success: false, navigate: true});
+            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
         });
     }
 
@@ -111,6 +111,13 @@ module.exports = function execute(scope, app) {
 
         req.log.info({phone: req.params.phone}, 'Calling user phone');
 
+        // If call limit is high enough then lock account
+        if (retries >= limits.calls) {
+            req.session.blockReason = 'Phone verification, too many calls. REF ID: ' + req.session.attemptId;
+            lockAccount(req, res);
+            return;
+        }
+
         phoneVerificationClient.get(url, function(err, creq, cres, data) {
             if (err) {
                 req.log.error(err);
@@ -145,15 +152,10 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        // Reached the limit of retries for this pin?
-        if (++req.session.maxmindPinTries > limits.pinTries) {
-            // If call limit is high enough then lock account
-            if (req.session.maxmindRetries >= limits.calls) {
-                req.session.blockReason = 'Phone verification, too many pins.  REF ID: ' + req.session.attemptId;
-                lockAccount(req, res);
-                return;
-            }
-            res.json({message: serviceMessages.wrongPinTooManyTries, success: false});
+        // Reached the limit of pin retries
+        if (req.session.maxmindPinTries++ >= limits.pinTries) {
+            req.session.blockReason = 'Phone verification, too many pins. REF ID: ' + req.session.attemptId;
+            lockAccount(req, res);
             return;
         }
 
@@ -168,7 +170,10 @@ module.exports = function execute(scope, app) {
             enteredPin: req.params.code
         }, 'User entered wrong pin');
 
-        res.json({message: serviceMessages.wrongPin, success: false});
+        // prompt user to change phone is he is on his last pin attempt
+        var wrongPinMessage = req.session.maxmindPinTries === limits.pinTries ?
+            serviceMessages.wrongPinTooManyTries : serviceMessages.wrongPin;
+        res.json({message: wrongPinMessage, success: false});
     });
 
 
