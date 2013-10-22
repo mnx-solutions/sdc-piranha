@@ -13,7 +13,8 @@ var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
 app.use(app.router);
-app.use(express.bodyParser());
+app.use(express.urlencoded());
+app.use(express.json());
 app.use(express.cookieParser());
 
 app.use(express.session({
