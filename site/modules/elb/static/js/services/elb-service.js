@@ -56,6 +56,16 @@
                 return d.promise;
             };
 
+            service.getBalancerUsage = function getBalancerUsage(balancerId) {
+                var d = $q.defer();
+                $http.get('elb/item/' + balancerId + '/usage').success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                    d.reject(err);
+                });
+                return d.promise;
+            };
+
             service.getMachines = function getMachines() {
                 var d = $q.defer();
                 serverTab.call({

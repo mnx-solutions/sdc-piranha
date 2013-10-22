@@ -13,9 +13,11 @@
             var balancerId = requestContext.getParam('balancerId');
             $scope.detailLoaded = false;
             $scope.server = {};
-            $q.all([service.getBalancer(balancerId), service.getMachines()]).then(function (results) {
+            $q.all([service.getBalancer(balancerId), service.getMachines(), service.getBalancerUsage(balancerId)]).then(function (results) {
                 $scope.server = results[0];
                 var hostNames = {}, machines = results[1][0].machines;
+                var usage = results[2];
+                console.log(usage); //TODO: Bind this to graphs available
                 machines.forEach(function (machine) {
                     hostNames[machine.primaryIp] = machine.name;
                     hostNames[machine.name] = machine.id;

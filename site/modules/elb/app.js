@@ -71,6 +71,24 @@ module.exports = function execute(scope, app) {
         });
     });
 
+    app.get('/item/:id/usage', function (req, res) {
+        client.get('/loadbalancers/' + req.params.id + '/usage?metric=bytesin', function(err, creq, cres, obj) {
+            if (err) {
+                res.send(400, err);
+                return;
+            }
+            var result = [obj];
+            client.get('/loadbalancers/' + req.params.id + '/usage?metric=bytesout', function(err, creq, cres, obj) {
+                if (err) {
+                    res.send(400, err);
+                    return;
+                }
+                result.push(obj);
+                res.json(result);
+            });
+        });
+    });
+
     app.put('/item/:id/machines/:host', function (req, res) {
         client.put('/loadbalancers/' + req.params.id + '/machines/' + req.params.host, function(err, creq, cres, obj) {
             if (err) {
