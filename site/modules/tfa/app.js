@@ -6,10 +6,20 @@ module.exports = function execute(scope, app) {
     var smartCloud = scope.get('smartCloud');
     var TFA = scope.api('TFA');
 
+    var headerClientIpKey = scope.config.server.headerClientIpKey;
+
     function logUserInformation(req, redirectUrl) {
+        // Proper user ip taking reverse proxy / load balancer into account
+        if (headerClientIpKey) {
+            req.userIp = req.header(headerClientIpKey);
+        }
+
+        req.userIp = req.userIp || req.ip;
+
         var info = {
             userName: req.session.userName,
             userId: req.session.userId,
+            userIp: req.userIp,
             userAgent: req.headers['user-agent']
         };
 
