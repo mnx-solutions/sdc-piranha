@@ -59,11 +59,15 @@ The production environment is currently SmartOS 64-bit - base64 13.1.0, so we us
 
 ### Production
 
-1. `node tools/build-tar.js` to run tar-builder
+#### Build tarball
 
-#### build-tar.js
+1. Pull latest changes from repo: `git pull`
+2. Check out latest release tag: `git checkout tagname` (where tagname is release tag name, e.g. v1.3.6)
+3. Build: `make build`
+4. Copy `portal-tagname.tar.gz` tarball to production environment
 
-NodeJS script that will build deployment tar.
+`make build` step executes `tools/build-tar.js` node script that will build deployment tarball.
+
 Script will do the following:
 
 1. Check if latest tags & branch is checked out and correct
@@ -79,6 +83,16 @@ Possible tar builder flags:
 * `--debug` - When this flag is present, debug.log is generated with output
 * `--help` - Displays possible flags
 
+#### Deploy tarball
+
+1. Create a new non-root user for portal if it doesn't exist: `useradd -s /bin/false -m portal`
+2. Create directory for portal files: `/opt/portal`
+3. Unpack production tarball: `tar xvzf portal-tagname.tar.gz --directory=/opt/portal`
+4. Make sure that portal user owns its files: `chown -R portal /opt/portal`
+5. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+6. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
+7. Start portal: `svcadm enable portal`
+
 ## Update
 
 ### Development & Staged
@@ -86,7 +100,7 @@ Possible tar builder flags:
 1. Stop portal: `svcadm disable portal`
 2. Change working directory: `cd /opt/portal`
 3. Remove installed node.js modules: `rm -rf node_modules/`
-4. Pull changes from repo: `git pull origin master`
+4. Pull latest changes from repo: `git pull`
 5. Install node.js modules: `npm install --production`
 6. Start portal: `svcadm enable portal`
 
