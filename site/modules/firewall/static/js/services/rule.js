@@ -93,7 +93,7 @@
                     }
                 });
 
-                rule.job = job.getTracker();
+                job.getTracker();
                 return job.deferred;
             };
 
@@ -135,7 +135,7 @@
                         }
                     });
 
-                    rule.job = job.getTracker();
+                    job.getTracker();
                     return job.deferred;
                 };
             };
