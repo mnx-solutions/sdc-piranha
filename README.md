@@ -83,15 +83,13 @@ Possible tar builder flags:
 
 ### Development & Staged
 
-1. `svcadm disable portal`
-2. `rm -rf /opt/portal/node_modules/*`
-3. `git pull`
-5. `cd /opt/portal; npm install --production`
-8. `svcadm enable portal`
+1. Stop portal: `svcadm disable portal`
+2. Change working directory: `cd /opt/portal`
+3. Remove installed node.js modules: `rm -rf node_modules/`
+4. Pull changes from repo: `git pull origin master`
+5. Install node.js modules: `npm install --production`
+6. Start portal: `svcadm enable portal`
 
-### Production
-
-FIXME: with a `make install`
 
 ## Configuration
 
