@@ -19,6 +19,7 @@ var serviceMessages = {
     wrongPin: 'Phone verification failed. Incorrect PIN code. Please try again',
     wrongPinTooManyTries: 'Phone verification failed. Incorrect PIN code. PIN has been locked. Please use "Call Me Now" to get a new PIN.',
     wrongPinLocked: 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support',
+    wrongCallLocked: 'Phone verification failed. Too many calls made. Your account has been locked. Please contact support',
     phoneIncorrect: 'The phone number is incorrect',
     serviceFailed: 'Verification service not accessible, please try again',
     calling: 'Calling...'
@@ -40,9 +41,10 @@ module.exports = function execute(scope, app) {
         return {message:message, serviceFailed: false};
     }
 
-    function lockAccount(req, res) {
+    function lockAccount(req, res, lockMessage) {
+        lockMessage = lockMessage || serviceMessages.wrongPinLocked;
         if(req.session.maxmindLocked) { // Already locked
-            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
+            res.json({message: lockMessage, success: false, navigate: true});
             return;
         }
 
@@ -52,7 +54,12 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.error(err);
             }
-            res.json({message: serviceMessages.wrongPinLocked, success: false, navigate: true});
+            
+            if (req.session.blockReason) {
+                Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
+            }
+            
+            res.json({message: lockMessage, success: false, navigate: true});
         });
     }
 
@@ -65,7 +72,7 @@ module.exports = function execute(scope, app) {
         }
 
         var verificationStatus = success ? 'Successful' : 'PV service failed';
-        Metadata.set(req.session.userId, 'phoneVerification', verificationStatus, function (err) {
+        Metadata.set(req.session.userId, Metadata.PHONE_VERIFICATION, verificationStatus, function (err) {
             if (err) {
                 req.log.warn({error: err}, 'Error occurred while setting phone verification status');
             }
@@ -88,7 +95,8 @@ module.exports = function execute(scope, app) {
 
         // Too many tries, lock account
         if(retries >= limits.calls || req.session.maxmindLocked) {
-            lockAccount(req, res);
+            req.session.blockReason = 'Phone verification, too many calls.  REF ID: ' + req.session.attemptId;
+            lockAccount(req, res, serviceMessages.wrongCallLocked);
             return;
         }
 
@@ -123,6 +131,9 @@ module.exports = function execute(scope, app) {
                 return;
             }
 
+            if (data.indexOf('refid=') === 0) {
+                req.session.attemptId = data.substr(6);
+            }
             req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
             res.json({message: serviceMessages.calling, success: true});
@@ -130,20 +141,19 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/verify/:code', function (req, res) {
+        req.session.maxmindPinTries = req.session.maxmindPinTries || 0;
+
         // We are already locked?
         if (req.session.maxmindLocked) {
             lockAccount(req, res);
             return;
         }
 
-        // Reached the limit of retries for this pin?
-        if (++req.session.maxmindPinTries > limits.pinTries) {
-            // If call limit is high enough then lock account
-            if (req.session.maxmindRetries >= limits.calls) {
-                lockAccount(req, res);
-                return;
-            }
-            res.json({message: serviceMessages.wrongPinTooManyTries, success: false});
+        // Reached the limit of pin retries
+        if (req.session.maxmindPinTries++ >= limits.pinTries) {
+            req.session.blockReason = 'Phone verification, too many pins. ' +
+                (req.session.attemptId ? 'REF ID: ' + req.session.attemptId : 'No calls made.');
+            lockAccount(req, res);
             return;
         }
 
@@ -158,7 +168,10 @@ module.exports = function execute(scope, app) {
             enteredPin: req.params.code
         }, 'User entered wrong pin');
 
-        res.json({message: serviceMessages.wrongPin, success: false});
+        // prompt user to change phone is he is on his last pin attempt
+        var wrongPinMessage = req.session.maxmindPinTries === limits.pinTries ?
+            serviceMessages.wrongPinTooManyTries : serviceMessages.wrongPin;
+        res.json({message: wrongPinMessage, success: false});
     });
 
 
