@@ -204,14 +204,21 @@ body{
 .main{
     padding-left: 203px;
     padding-top: 75px;
-    width: 1005px;
+    /*width: 1005px;*/
+
+    top: 0;
+    bottom: 60px;
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 .login-form{
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.03px;
     width: 565px;
-    padding-top: 16px;
+    padding-top: 45px;
     float: left;
 }
 .sigin{
@@ -347,9 +354,11 @@ body{
     padding-top: 1px;
 }
 .wizard-steps {
-    position: relative;
+    width: 730px;
+    position: absolute;
     clear: both;
     margin-top: -2px;
+    display: inline-block;
 }
 .wizard-steps div {
     position:relative;
@@ -460,7 +469,7 @@ body{
     background-color: #e8f0f7;
     position: relative;
     margin-left: 752px;
-    margin-top: 20px;
+    margin-top: -2px;
 }
 .prom-code-box{
     width: 253px;
@@ -544,10 +553,10 @@ legend {
 }
 .mb-pos{
     position: absolute;
-    top: 132px;
+    top: 153px;
 }
 .phone_btn_pos{
-    margin-top: -20px;
+    margin-top: -19px;
     padding-bottom: 35px;
     margin-left: 200px;
 }
