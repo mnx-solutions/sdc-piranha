@@ -105,7 +105,13 @@
                     $scope.saving = false;
                 })
             };
-
+                    
+            $scope.validatePort = function(name) {
+                var input = $scope.editForm[name];
+                var value = input.$viewValue;
+                input.$setValidity('port', value > 0 && value <= 65535);
+            };
+                    
             $scope.delete = function(){
                 util.confirm(
                     localization.translate(

@@ -57,13 +57,13 @@
             <div class="">
                 <span class="lb-label">External port&nbsp;</span>
                 <span class= "port-input">
-                    <input type="text" data-translate="placeholder" required data-ng-model="server.fromPort"/>
+                    <input name="fromPort" type="text" data-translate="placeholder" required data-ng-model="server.fromPort" data-ng-change="validatePort('fromPort')"/>
                 </span>
             </div>
             <div style="margin-top: -10px;">
                 <span class="lb-label">Internal port &nbsp;</span>
                 <span class="port-input">
-                    <input type="text" data-translate="placeholder" required data-ng-model="server.toPort"/>
+                    <input name="toPort" type="text" data-translate="placeholder" required data-ng-model="server.toPort" data-ng-change="validatePort('toPort')"/>
                 </span>
             </div>
             <div class="clearfix"></div>
