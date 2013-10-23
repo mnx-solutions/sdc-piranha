@@ -183,7 +183,7 @@
     padding-right: 6px;
     padding-top: 4px;
     border: 1px solid #ffffff;
-    width: 300px;
+    max-width: 700px;
 }
 
 .machine-name-rename:hover {
@@ -208,7 +208,8 @@
     line-height: 40px;
     font-size: 38.5px;
     height:40px;
-    width: 300px;
+    width: 100%;
+    max-width: 700px;
     border-radius: 4px 4px 0px 4px;
 }
 
