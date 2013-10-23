@@ -64,7 +64,7 @@ module.exports = function execute(scope, register) {
             if (errs.length === 0) { // The only error was provisioning flag - letting through
                 state = 'completed';
             } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') { // There was only a billing error
-                state = 'billing';
+                state = 'phone'; // which means billing
             }
 
             cb(null, state);
