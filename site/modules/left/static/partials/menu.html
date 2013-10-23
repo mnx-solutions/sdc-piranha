@@ -15,7 +15,7 @@
                 <span class="selected"></span>
             </a>
         </li>
-        <li class="second" data-ng-class="{active: location.path() == '/instance' || location.path() == '/elb', over: t_second && sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
+        <li class="second" data-ng-class="{active: location.path() == '/instance' || location.path() == '/elb', over: t_second && sideBarMin, collapse: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
             <a href="#!/instance">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_second">Compute</span>

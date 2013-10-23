@@ -129,8 +129,23 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     opacity: 1;
 }
 
-.second.active, second.active.over {
-    height: 170px !important;
+.second.active.over.collapse .title{
+    margin-left: 15px;
+}
+.second.active, .second.active.over.collapse {
+    height: 170px;
+    position: relative !important;
+    z-index: 2000;
+    display: block !important;
+}
+.second.active.over, .second.active.collapse{
+    height: 34px;
+}
+.second.active.over .sub-menu >li a{
+    padding-left: 7px !important;
+}
+.second.active.over.collapse .sub-menu{
+    margin-left: 56px !important;
 }
 .second.active .sub-menu {
     display: block;
