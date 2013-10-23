@@ -39,6 +39,7 @@
             $scope.packageType = null;
             $scope.loading = true;
 
+            $scope.reConfigurable = false;
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
             $scope.visibilityFilter = 'Public';
@@ -235,7 +236,6 @@
                         });
                     }
 
-                    $scope.showReConfigure = true;
                     $scope.slideCarousel();
                 });
 
@@ -448,13 +448,16 @@
 
             ng.element('.carousel').bind({
                 slide: function() {
-                    // ng.element('.item .header').hide();
+                    $scope.reConfigurable = !$scope.reConfigurable;
                 },
                 slid:function(){
-                    // ng.element('.item .header').show();
+                    if($scope.reConfigurable) {
+                        $scope.$apply(function (){
+                            $scope.showReConfigure = true;
+                        })
+                    }
                 }
             });
-
             $scope.slideCarousel = function() {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
 
