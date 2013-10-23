@@ -36,13 +36,15 @@
                                        required/>
                             </div>
                         </td>
-                        <td class="">
-                            <div>
-                                <button class="si_btn" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button>
+                        <td>
+                            <div class="error alert-icon" style="margin-top: 4px;">
+                                <span>Invalid phone number</span>
                             </div>
                         </td>
+
                     </tr>
                 </table>
+                <div class="phone_btn_pos"><button class="si_btn" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button></div>
             </form>
             <div class="line"></div>
             <div style="padding-top: 42px;">
@@ -56,15 +58,18 @@
                             <td>
                                 <input data-ng-model="pin" type="text" required style="border-radius: 0;">
                             </td>
-                            <td class="">
-                                <div>
-                                    <button class="si_btn">Verify</button>
+                            <td>
+                                <div class="error alert-icon" style="margin-top: 4px;">
+                                    <span>Incorrect PIN code</span>
                                 </div>
                             </td>
                         </tr>
                     </table>
+                    <div class="phone_btn_pos"><button class="si_btn">Verify</button></div>
                 </form>
             </div>
+            <div class="line"></div>
+
         </div>
         <div class="message-box">
             <p style="color: #7C7C7C;padding-left: 70px;padding-top: 8px;font-size: 16px;">Marketing Info</p>
