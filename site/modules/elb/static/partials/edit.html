@@ -144,8 +144,9 @@
 
     <span class="span12" data-ng-show="allLoading">
         <p class="logo_riverbed pull-left">Powered by</p>
-        <button data-ng-disabled="!editForm.$valid" data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 20px 30px 10px;"><span class="ng-scope">Save</span></button>
+        <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 20px 30px 10px;"><span class="ng-scope">Save</span></button>
         <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 0 30px 10px;"><span class="ng-scope">Delete</span></button>
+        <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;margin-top:-20px" data-ng-show="saving"></div>
     </span>
 
     </form>

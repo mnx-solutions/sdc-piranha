@@ -70,6 +70,7 @@
             };
 
             $scope.save = function () {
+                $scope.saving = true;
                 var selectedMachines = $scope.machines.filter(function (machine) {
                     return machine.selected;
                 }).map(function (machine) {
@@ -100,6 +101,8 @@
                 }
                 $q.all(operations).then(function () {
                     $location.path('/elb/list');
+                }, function () {
+                    $scope.saving = false;
                 })
             };
 
