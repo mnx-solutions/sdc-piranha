@@ -63,7 +63,7 @@ h3 {
     /*padding-right:20px;*/
 /*}*/
 .footer {
-    position: fixed;
+    position: relative;
     padding-top: 10px;
     background-color: #ededed;
     height: 60px;
