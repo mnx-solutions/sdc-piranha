@@ -1,6 +1,7 @@
 'use strict';
 
 var TEMP = {};
+var moment = require('moment');
 
 function setTempData(data, id) {
     TEMP[id] = data;
@@ -42,16 +43,16 @@ module.exports = function (scope, app) {
 
         switch(type) {
             case 'image':
-                prefix = 'image_list_';
+                prefix = 'joyent-images-';
                 break;
             case 'machine':
-                prefix = 'instance_list_';
+                prefix = 'joyent-instances-';
                 break;
         }
 
 
         var format = req.params.format.toLowerCase();
-        var fname = 'attachment; filename=' + prefix + req.params.id.substr(0,5) + '.' + format;
+        var fname = 'attachment; filename=' + prefix + moment().format('YYYY-MM-DD-hh-mm-ss') + '.' + format;
         var fcontent = '';
         switch(format) {
             case 'json':
