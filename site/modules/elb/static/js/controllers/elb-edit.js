@@ -106,12 +106,14 @@
                 })
             };
                     
-            $scope.validatePort = function(name) {
+            $scope.validatePort = function(name, min, max) {
                 var input = $scope.editForm[name];
                 var value = input.$viewValue;
+                min = min || 1;
+                max = max || Infinity;
                 input.$setValidity('port',
                     !(value % 1) && 
-                    value > 0 && value <= 65535
+                    value >= min && value <= max
                 );
             };
                     

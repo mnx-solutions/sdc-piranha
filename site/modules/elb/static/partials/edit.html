@@ -57,13 +57,13 @@
             <div class="">
                 <span class="lb-label">External port&nbsp;</span>
                 <span class= "port-input">
-                    <input name="fromPort" type="text" data-translate="placeholder" required data-ng-model="server.fromPort" data-ng-change="validatePort('fromPort')"/>
+                    <input name="fromPort" type="text" data-translate="placeholder" required data-ng-model="server.fromPort" data-ng-change="validatePort('fromPort', 1, 65535)"/>
                 </span>
             </div>
             <div style="margin-top: -10px;">
                 <span class="lb-label">Internal port &nbsp;</span>
                 <span class="port-input">
-                    <input name="toPort" type="text" data-translate="placeholder" required data-ng-model="server.toPort" data-ng-change="validatePort('toPort')"/>
+                    <input name="toPort" type="text" data-translate="placeholder" required data-ng-model="server.toPort" data-ng-change="validatePort('toPort', 1, 65535)"/>
                 </span>
             </div>
             <div class="clearfix"></div>
@@ -110,7 +110,7 @@
                 </div>
                 <span class="span3" style="line-height: 15px;margin-left: 28px;">Failure Threshold</span>
                 <span class="span2 port-input">
-                    <input type="text" data-translate="placeholder" data-ng-model="server.health.failThreshold" class="clb_input"/>
+                    <input name="failThreshold" type="text" data-translate="placeholder" data-ng-model="server.health.failThreshold" class="clb_input" data-ng-change="validatePort('failThreshold', 1)"/>
                 </span>
             </div>
         </div>
