@@ -17,6 +17,10 @@
 
                 $scope.campaignId = $cookies.campaignId;
 
+                $scope.setAttemptId = function(id) {
+                    $scope.attemptId = id;
+                };
+
                 $scope.setStep = function (step) {
                     $scope.currentStep = step;
                     var stepPath = '/' + step;
@@ -24,7 +28,12 @@
                 };
 
                 $scope.nextStep = function () {
-                    if ($scope.currentStep === 'blocked') return;
+                    if ($scope.currentStep === 'blocked') {
+                        Process.getAttemptId(function(error, attemptId) {
+                            $scope.setAttemptId(attemptId);
+                        });
+                        return;
+                    }
                     var i = $scope.steps.indexOf($scope.currentStep);
                     if(++i < $scope.steps.length) {
                         $scope.setStep($scope.steps[i]);

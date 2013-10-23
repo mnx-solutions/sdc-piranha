@@ -15,7 +15,7 @@ module.exports = function execute(scope, register) {
     var api = {};
 
     function checkBlackList(data) {
-        var blacklist = config.ns.blacklist;
+        var blacklist = config.ns.blacklist || {};
         if (!blacklist) {
             return true;
         }
@@ -24,13 +24,23 @@ module.exports = function execute(scope, register) {
             ip: data.i,
             country: data.country
         };
-
-        return !['domain', 'ip', 'country'].some(function (el) {
-            return Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1;
+        var blockBy = [];
+        Object.keys(blacklist).forEach(function(el) {
+            var block = Array.isArray(blacklist[el]) && blacklist[el].indexOf(comparison[el]) !== -1;
+            if (block) {
+                blockBy.push(el + ': ' + comparison[el]);
+            }
         });
+        
+        return blockBy;
     }
 
     api.minFraud = function (call, userInfo, billingInfo, creditCardInfo, callback) {
+        call.session(function (req) {
+            req.session.blockReason = null;
+            req.session.attemptId = null;
+            req.session.save();
+        });
         var query = {
             country: billingInfo.country,
             postal: billingInfo.zipCode,
@@ -43,10 +53,11 @@ module.exports = function execute(scope, register) {
         };
 
         var result = {};
-        if (!checkBlackList(query)) {
+        var block = checkBlackList(query);
+        if (block.length) {
             call.log.warn('User matched against black list and was blocked');
             setImmediate(function () {
-                callback(null, {block: true});
+                callback(null, {block: true, blockReason: 'Blacklisted. ' + block.join('\n')});
             });
             return;
         }
@@ -74,6 +85,11 @@ module.exports = function execute(scope, register) {
 
             result.block = result.riskScore > riskScoreFraudLimit;
             if (result.block) {
+                call.session(function (req) {
+                    req.session.attemptId = result.maxmindID;
+                    req.session.save();
+                });
+                result.blockReason = 'High fraud risk score. MAXMIND ID: ' + result.maxmindID;
                 call.log.info({userId: call.req.session.userId}, 'User was blocked due to high risk score');
             }
             callback(null, result);

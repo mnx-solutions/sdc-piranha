@@ -14,6 +14,13 @@
                     callback(err || unavailableError);
                 });
             };
+            service.getAttemptId = function (callback) {
+                $http.get('signup/attemptId').success(function (attemptId) {
+                    callback(null, attemptId);
+                }).error(function (err) {
+                    callback(err || unavailableError);
+                });
+            };
             return service;
         }]);
 }(window.JP.getModule('Signup')));

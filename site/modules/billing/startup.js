@@ -67,7 +67,6 @@ module.exports = function execute(scope, callback) {
                         error(err, data, 'Zuora account.create failed');
                         return;
                     }
-
                     MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
                         if (fraudErr) {
                             call.log.warn(fraudErr);
@@ -76,9 +75,12 @@ module.exports = function execute(scope, callback) {
                         }
                         if (result.riskScore) {
                             call.log.info('Saving user riskScore in metadata');
-                            Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
+                            Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
                         }
                         if (result.block) {
+                            if (result.blockReason) {
+                                Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
+                            }
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
                                 if (blockErr) {
                                     call.log.error(blockErr);
