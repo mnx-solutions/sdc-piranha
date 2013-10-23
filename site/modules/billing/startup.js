@@ -78,7 +78,9 @@ module.exports = function execute(scope, callback) {
                             Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
                         }
                         if (result.block) {
-                            Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, call.req.session.blockReason || 'High fraud risk score. MAXMIND ID: '+result.maxmindID);
+                            if (result.blockReason) {
+                                Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
+                            }
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
                                 if (blockErr) {
                                     call.log.error(blockErr);

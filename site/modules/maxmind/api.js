@@ -30,7 +30,7 @@ module.exports = function execute(scope, register) {
             if (block) {
                 blockBy.push(el + ': ' + comparison[el]);
             }
-        })
+        });
         
         return blockBy;
     }
@@ -56,12 +56,8 @@ module.exports = function execute(scope, register) {
         var block = checkBlackList(query);
         if (block.length) {
             call.log.warn('User matched against black list and was blocked');
-            call.session(function (req) {
-                req.session.blockReason = 'Blacklisted. ' + block.join("\n");
-                req.session.save();
-            });
             setImmediate(function () {
-                callback(null, {block: true});
+                callback(null, {block: true, blockReason: 'Blacklisted. ' + block.join('\n')});
             });
             return;
         }
@@ -93,6 +89,7 @@ module.exports = function execute(scope, register) {
                     req.session.attemptId = result.maxmindID;
                     req.session.save();
                 });
+                result.blockReason = 'High fraud risk score. MAXMIND ID: ' + result.maxmindID;
                 call.log.info({userId: call.req.session.userId}, 'User was blocked due to high risk score');
             }
             callback(null, result);
