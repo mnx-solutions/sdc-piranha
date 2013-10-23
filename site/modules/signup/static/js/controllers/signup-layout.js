@@ -8,9 +8,9 @@
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
-                    phone: "Phone confirmation",
-                    billing:"Payment Method",
-                    ssh:"SSH Key"
+                    phone: 'Phone confirmation',
+                    billing: 'Payment Method',
+                    ssh: 'SSH Key'
                 };
                 $scope.steps = ['phone', 'billing', 'ssh'];
                 $scope.currentStep = $('#signupStep').val();
@@ -24,7 +24,9 @@
                 $scope.setStep = function (step) {
                     $scope.currentStep = step;
                     var stepPath = '/' + step;
-                    if ($location.path() !== stepPath) $location.path(stepPath);
+                    if ($location.path() !== stepPath) {
+	                    $location.path(stepPath);
+                    }
                 };
 
                 $scope.nextStep = function () {

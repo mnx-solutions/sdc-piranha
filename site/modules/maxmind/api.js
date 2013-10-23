@@ -80,7 +80,7 @@ module.exports = function execute(scope, register) {
             // risk score override for testing
             result.riskScore = config.maxmind.testRiskScore || result.riskScore;
 
-            call.log.info({"riskScore": result.riskScore, "explanation": result.explanation},
+            call.log.info({riskScore: result.riskScore, explanation: result.explanation},
                 'minFraud risk score received (percent probability of fraud)');
 
             result.block = result.riskScore > riskScoreFraudLimit;

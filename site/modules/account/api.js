@@ -30,7 +30,7 @@ module.exports = function execute(scope, register) {
     var steps = [ 'start', 'phone', 'billing', 'ssh' ];
 
     function _nextStep(step) {
-        return (step == 'completed' || step == 'complete') ?  step : steps[steps.indexOf(step)+1];
+        return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step)+1];
     }
 
     function getFromBilling(method, userId, cb) {
