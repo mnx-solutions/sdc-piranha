@@ -17,7 +17,7 @@
         <span class="text-medium crop"
               data-ng-class="prop.getClass() || {'span3 machine-list-content': $first, 'pull-right machine-list-state state pointer': $last, 'span2  machine-list-content': ($index > 0 && !$last)}"
               data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
-            <a data-ng-switch-when="label" href="#!/instance/details/{{object.id}}">{{object.label}}</a>
+            <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                 <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
             </span>

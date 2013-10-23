@@ -347,7 +347,7 @@
 
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
-                            if($location.url() === '/instance/details/'+ machineid) {
+                            if($location.url() === '/compute/instance/'+ machineid) {
                                 $location.url('/compute');
                                 $location.replace();
                             }

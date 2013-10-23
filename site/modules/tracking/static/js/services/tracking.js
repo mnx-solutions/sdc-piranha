@@ -47,7 +47,7 @@
                 mktoMunchkinFunction(
                     'visitWebPage',
                     {
-                        url: '/main/#!/instance/create/success',
+                        url: '/main/#!/compute/create/success',
                         params: {email: account.email}
                     }
                 );
