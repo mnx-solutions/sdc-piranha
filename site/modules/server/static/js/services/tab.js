@@ -115,7 +115,7 @@
                 errorPollingLength = 500;
 
                 if (notification.isVisible(self)) {
-                    //eventer.$emit(true, 'forceUpdate');
+                    notification.dismiss();
                 }
             });
 
@@ -123,19 +123,11 @@
                 errorPollingLength = errorPollingLength * 2;
                 var time = errorPollingLength / 1000;
 
-                notification.push(self, { type: 'error' },
-                    localization.translate(null,
-                        'server',
-                        'Lost contact with server retrying in {{seconds}}',
-                        { seconds: time }
-                    )
-                );
-
                 var timer = setInterval(function () {
                     time--;
 
                     if (time > 0) {
-                        notification.push(self, { type: 'error' },
+                        notification.replace(self, { type: 'error' },
                             localization.translate(null,
                                 'server',
                                 'Lost contact with server retrying in {{seconds}}',
@@ -143,7 +135,7 @@
                             )
                         );
                     } else {
-                        notification.push(self, { type: 'error' },
+                        notification.replace(self, { type: 'error' },
                             localization.translate(null,
                                 'server',
                                 'Retrying...'
