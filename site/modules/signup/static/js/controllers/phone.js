@@ -79,7 +79,7 @@
                 $scope.lastCalledNumber = $scope.fullPhoneNumber;
                 Phone.makeCall($scope.fullPhoneNumber, function (err, data) {
                     if (err) {
-                        notification.replace('phone', { type: 'error' }, err);
+                        $scope.phoneError = err;
                         $scope.callInProgress = false;
                         if (data.navigate) {
                             $scope.updateStep();
@@ -87,10 +87,11 @@
                         return;
                     }
                     if (data.navigate) {
-                        notification.dismiss('phone');
+                        $scope.phoneError = null;
                         $scope.updateStep();
                     } else {
-                        notification.replace('phone', { type: 'success' }, data.message);
+                        $scope.phoneError = null;
+                        // maybe display 'calling...' message somewhere
                     }
                 });
             };
@@ -102,7 +103,7 @@
                 $scope.callInProgress = false;
                 Phone.verify($scope.pin, function (err, data) {
                     if (err) {
-                        notification.replace('phone', { type: 'error' }, err);
+                        $scope.pinError = err;
                         if (data.navigate) {
                             $scope.updateStep();
                         }
@@ -112,7 +113,7 @@
                         country: $scope.country.iso3,
                         phone: $scope.phone
                     }).then(function () {
-                        notification.dismiss('phone');
+                        $scope.pinError = null;
                         $scope.updateStep();
                     });
                 });

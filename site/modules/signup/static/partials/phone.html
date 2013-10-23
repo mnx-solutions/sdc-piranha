@@ -37,8 +37,8 @@
                             </div>
                         </td>
                         <td>
-                            <div class="error alert-icon" style="margin-top: 4px;">
-                                <span>Invalid phone number</span>
+                            <div data-ng-show="phoneError" class="error alert-icon" style="margin-top: 4px;">
+                                <span>{{phoneError}}</span>
                             </div>
                         </td>
 
@@ -59,8 +59,8 @@
                                 <input data-ng-model="pin" type="text" required style="border-radius: 0;">
                             </td>
                             <td>
-                                <div class="error alert-icon" style="margin-top: 4px;">
-                                    <span>Incorrect PIN code</span>
+                                <div data-ng-show="pinError" class="error alert-icon" style="margin-top: 4px;">
+                                    <span>{{pinError}}</span>
                                 </div>
                             </td>
                         </tr>
