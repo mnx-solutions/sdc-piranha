@@ -19,8 +19,8 @@
         <div class="pull-left machine-edit" data-ng-show="changingName">
             <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
             <div class="btn-group machine-edit-buttons">
-                <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
-                <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
+                <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name || renaming" type="button"><i class="icon-ok"/></button>
+                <button class="btn" data-ng-click="cancelRename()" data-ng-disabled="renaming" type="button"><i class="icon-remove"/></button>
             </div>
         </div>
     </form>

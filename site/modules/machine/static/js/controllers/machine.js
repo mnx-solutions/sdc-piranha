@@ -285,7 +285,7 @@
                 } else {
                     return '';
                 }
-            }
+            };
 
             $scope.enableRename = function(name) {
                 if($scope.features.instanceRename === 'enabled') {
@@ -315,11 +315,13 @@
                         'Rename this instance'
                     ), function () {
                         $$track.event('machine', 'rename');
+		                $scope.renaming = true;
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                         job.getJob().done(function() {
                             $scope.machine.name = $scope.newInstanceName;
                             $scope.changingName = false;
+	                        $scope.renaming = false;
                         });
                     }
                 );
