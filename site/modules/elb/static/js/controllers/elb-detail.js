@@ -13,11 +13,35 @@
             var balancerId = requestContext.getParam('balancerId');
             $scope.detailLoaded = false;
             $scope.server = {};
+            var traffic = {
+                inbound: [{x:0,y:0}],
+                outbound: [{x:0,y:0}]
+            };
+                    
+            function prepareTrafficData(data, key, collector) {
+                collector.splice(0);
+
+                data.forEach(function(day) {
+                    var date = new Date(day.date);
+                    day[key].slice(-8).forEach(function(value, hour) {
+                        collector.push({
+                            x: date.setHours(hour)/1000,//(date/1000 + ((z++) * 60 * 60)), //date.toDateString() + ' ' + twoDigits(hour) + ':00',
+                            y: value
+                        })
+                    })
+                })
+                return collector;
+            }
+                    
             $q.all([service.getBalancer(balancerId), service.getMachines(), service.getBalancerUsage(balancerId)]).then(function (results) {
                 $scope.server = results[0];
                 var hostNames = {}, machines = results[1][0].machines;
+
+                prepareTrafficData(results[2][0].slice(-1), 'bytesin', traffic.inbound);
+                prepareTrafficData(results[2][1].slice(-1), 'bytesout', traffic.outbound);
+                $scope.traffic = traffic;
                 var usage = results[2];
-                console.log(usage); //TODO: Bind this to graphs available
+
                 machines.forEach(function (machine) {
                     hostNames[machine.primaryIp] = machine.name;
                     hostNames[machine.name] = machine.id;

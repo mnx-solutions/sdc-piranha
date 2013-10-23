@@ -106,7 +106,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             );
             return;
         }
-        /* pre-defined default intrumentations */
+        /* pre-defined default instrumentation's */
         var oo = [
             [{
                 module: 'cpu',
