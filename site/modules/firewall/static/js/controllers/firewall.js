@@ -122,19 +122,21 @@
                 CIDR:32
             };
 
-            $scope.$watch('data', function(n) {
+            $scope.$watch('data', function(n, o) {
                 if (n) {
                     var data = $scope.getData();
-
+                    if (n.parsed && o.parsed && n.parsed.protocol.name !== o.parsed.protocol.name && n.uuid == o.uuid) {
+                        $scope.clearProtocolTargets();
+                    }
                     if (!data.parsed) {
                         $scope.validData = false;
                         return;
                     }
-                    if (!data.parsed.from || data.parsed.from.length === 0) {
+                    if (!data.parsed.from || data.parsed.from.length === 0 || ($scope.isAny(data.parsed.from[0]) && $scope.isAny(data.parsed.to[0]))) {
                         $scope.validData = false;
                         return;
                     }
-                    if (!data.parsed.to || data.parsed.to.length === 0) {
+                    if (!data.parsed.to || data.parsed.to.length === 0  || ($scope.isAny(data.parsed.from[0]) && $scope.isAny(data.parsed.to[0]))) {
                         $scope.validData = false;
                         return;
                     }
@@ -161,22 +163,18 @@
                     $scope.current.to.text = n.address + '/' + n.CIDR;
                 }
             }, true);
+
             $scope.$watch('current.code', function(n) {
                 if(!n || n == '') {
                     $scope.protocolForm.code.$setValidity('range', true);
                 }
-            })
+            });
+
             $scope.$watch('current.from.type', function() {
                 $scope.fromSubnet = {
                     address:null,
                     CIDR:32
                 };
-            });
-
-            $scope.$watch('data.parsed.protocol.name', function(name) {
-                if(name) {
-                    $scope.clearProtocolTargets();
-                }
             });
 
             $scope.$watch('current.to.type', function() {
@@ -335,9 +333,22 @@
 
             };
 
-            $scope.addPort =function() {
+            $scope.useAllPorts = function() {
+                $scope.data.parsed.protocol.targets = ['all'];
+            }
+
+            $scope.isAllPorts = function () {
+                var ports = $scope.data.parsed.protocol.targets;
+                if (ports.length && ports[0] == 'all') {
+                    return true;
+                }
+                return false;
+            }
+
+            $scope.addPort = function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
                 $scope.current.port = '';
+                $scope.current.allPorts = false;
                 $scope.protocolForm.port.$setValidity('range', false);
             };
 
