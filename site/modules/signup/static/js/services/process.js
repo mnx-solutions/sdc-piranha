@@ -8,14 +8,14 @@
             var service = {};
             var unavailableError = 'Service is unavailable';
             service.getPreviousStep = function (callback) {
-                $http.get('signup/currentStep').success(function (step) {
+                $http.get('signup/currentStep' + '?rnd=' + Math.random().toString(36).substr(2)).success(function (step) {
                     callback(null, step);
                 }).error(function (err) {
                     callback(err || unavailableError);
                 });
             };
             service.getAttemptId = function (callback) {
-                $http.get('signup/attemptId').success(function (attemptId) {
+                $http.get('signup/attemptId' + '?rnd=' + Math.random().toString(36).substr(2)).success(function (attemptId) {
                     callback(null, attemptId);
                 }).error(function (err) {
                     callback(err || unavailableError);
