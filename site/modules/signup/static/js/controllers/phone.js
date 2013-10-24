@@ -2,7 +2,7 @@
 
 (function (app) {
     app.controller(
-        'PhoneController',
+        'Signup.PhoneController',
         ['$scope', 'Account', 'localization', 'requestContext', 'notification', 'Phone', '$q',
             function ($scope, Account, localization, requestContext, notification, Phone, $q) {
             requestContext.setUpRenderContext('signup.phone', $scope);
@@ -20,26 +20,17 @@
             $scope.lastCalledNumber = null;
             $scope.fullPhoneNumber = null;
 
-            $q.when(Account.getAccount(true), function (account) {
-                if (!$scope.phone) {
-                    $scope.phone = account.phone || '';
-                }
-                if (!$scope.country || $scope.country.iso3 === 'USA') {
-                    $scope.country = $scope.isoToObj(account.country);
-                }
-            });
-
             $scope.isoToObj = function(iso) {
-                if(!$scope.countryCodes){
+                if (!$scope.countryCodes) {
                     return;
                 }
                 var selected = null;
                 var usa = null;
                 $scope.countryCodes.some(function (el) {
-                    if(el.iso3 === 'USA') {
+                    if (el.iso3 === 'USA') {
                         usa = el;
                     }
-                    if(el.iso3 === iso) {
+                    if (el.iso3 === iso) {
                         selected = el;
                         return true;
                     }
@@ -54,22 +45,34 @@
                 }
                 $scope.countryCodes = countries;
                 $scope.country = $scope.isoToObj();
+                Account.getAccount(true).then(function (account) {
+                    if (!$scope.phone) {
+                        $scope.phone = account.phone || '';
+                    }
+                    if (!$scope.country || $scope.country.iso3 === 'USA') {
+                        $scope.country = $scope.isoToObj(account.country);
+                    }
+                });
             });
 
             $scope.$watch('phone', function (newVal) {
                 $scope.phone = newVal ? newVal.replace(new RegExp(/[^0-9#\*]/g), '') : newVal;
                 $scope.fullPhoneNumber = $scope.selectedCountryCode + $scope.phone;
-                if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) $scope.callInProgress = false;
+                if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) {
+                    $scope.callInProgress = false;
+                }
             });
 
             $scope.$watch('country', function(newVal) {
                 $scope.selectedCountryCode = (newVal && newVal.areaCode) || '';
                 $scope.fullPhoneNumber = $scope.selectedCountryCode + $scope.phone;
-                if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) $scope.callInProgress = false;
+                if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) {
+                    $scope.callInProgress = false;
+                }
             });
 
             $scope.makeCall = function() {
-                if (!$scope.selectedCountryCode || $scope.callInProgress) {
+                if (!$scope.fullPhoneNumber || $scope.callInProgress) {
                     return;
                 }
                 $scope.callInProgress = true;
@@ -78,11 +81,14 @@
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
                         $scope.callInProgress = false;
+                        if (data.navigate) {
+                            $scope.updateStep();
+                        }
                         return;
                     }
-                    if (data.skip) {
+                    if (data.navigate) {
                         notification.dismiss('phone');
-                        $scope.nextStep();
+                        $scope.updateStep();
                     } else {
                         notification.replace('phone', { type: 'success' }, data.message);
                     }
@@ -97,6 +103,9 @@
                 Phone.verify($scope.pin, function (err, data) {
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
+                        if (data.navigate) {
+                            $scope.updateStep();
+                        }
                         return;
                     }
                     Account.updateAccount({
@@ -104,7 +113,7 @@
                         phone: $scope.phone
                     }).then(function () {
                         notification.dismiss('phone');
-                        $scope.nextStep();
+                        $scope.updateStep();
                     });
                 });
             };

@@ -1,7 +1,6 @@
 'use strict';
 
 var soap = require('./soap');
-var moment = require('moment');
 
 function connect(config, callback) {
     soap.connect(config, callback);
@@ -15,7 +14,8 @@ function queryPDF (AccountId, id, callback) {
         'Body'].join(',');
     var query = 'SELECT ' + fieldList + ' FROM Invoice WHERE Id = \'' + id + '\' AND AccountId = \'' + AccountId + '\'';
 
-    soap.query({'zns:queryString': query}, function (err, result) {
+    soap.query({'queryString': query}, function (err, result) {
+        console.log(arguments);
         if(err) {
             callback(err);
             return;

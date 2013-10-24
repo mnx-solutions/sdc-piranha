@@ -5,6 +5,7 @@
         return {
             restrict: 'EA',
             replace: true,
+            priority: 20,
 
             link: function (scope) {
             },
@@ -12,14 +13,21 @@
             controller: function ($scope, requestContext, localization) {
                 localization.bind('notification', $scope);
 
+                $scope.notifications = notification.getPersistentNotifications();
+
                 $scope.close = function (ctx, type) {
                     if ($scope.notifications[ctx][type]) {
-                        notification.dismissNotifications($scope.notifications[ctx][type]);
+                        notification.dismissNotifications($scope.notifications[ctx][type], true);
                     }
                 };
 
                 $scope.$on('notification:change', function (scope) {
-                    $scope.notifications = notification.getNotifications();
+                    try {
+                        $scope.notifications = notification.getNotifications();
+                        $scope.$digest();
+                    } catch (err) {
+
+                    }
                 });
             },
             template: '<div class="notification-wrapper">' +

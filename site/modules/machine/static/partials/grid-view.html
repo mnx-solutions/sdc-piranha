@@ -3,7 +3,7 @@
     <div class="item header row-fluid machine-list-item">
         <span data-ng-repeat="prop in props | orderBy:sequence"
               class="text-medium sortable"
-              data-ng-class="{span3: $index == 0, 'span1 pull-right state-sortable-header': $index == (props.length -1), span2: ($index > 0 && $index < props.length -1)}"
+              data-ng-class="prop.getClass('header') || {span3: $first, 'span1 pull-right state-sortable-header': $last, span2: (!$first && !$last)}"
               data-ng-click="orderGridMachinesBy(prop)">
             <span class="pull-left machines-list-header" data-translate-value>{{prop.name}}</span>
             <i class="icon-arrow-up" data-ng-show="order.indexOf(prop.rorder) != -1"></i>
@@ -15,18 +15,22 @@
 
     <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" class="item row-fluid">
         <span class="text-medium crop"
-              data-ng-class="{'span3 machine-list-content': $index == 0, 'pull-right machine-list-state state pointer': $index == (props.length -1), 'span2  machine-list-content': ($index > 0 && $index < props.length -1)}"
+              data-ng-class="prop.getClass('body') || {'span3 machine-list-content': $first, 'pull-right machine-list-state state pointer': $last, 'span2  machine-list-content': ($index > 0 && !$last)}"
               data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
-            <a data-ng-switch-when="label" href="#!/instance/details/{{object.id}}">{{object.label}}</a>
+            <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                 <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
             </span>
             <span data-ng-switch-when="created">{{object[prop.id] | dateTime}}</span>
-            <span data-ng-switch-when="ips" class="span2">
-                <span data-ng-show="object.primaryIps.length">{{object.primaryIps[0]}}</span>
-                <span data-ng-show="!object.primaryIps.length && object.ips.length">{{object.ips[0]}}</span>
+            <span data-ng-switch-default data-ng-switch="prop.type">
+                <span data-ng-switch-when="button">
+                    <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
+                </span>
+                <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                <span data-ng-switch-default>
+                    {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
+                </span>
             </span>
-            <span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>
         </span>
 
         <div class="clearfix"></div>
@@ -43,8 +47,8 @@
         <div data-ng-show="areDetailsShown(object.id)" class="toolbox">
             <div class="item machine-details-info" data-ng-class="{span10: getActionButtons(object).length, span12: !getActionButtons(object).length}">
                 <div data-ng-repeat="prop in detailProps | orderBy:sequence" class="row-fluid">
-                    <span class="text-medium key span4" data-ng-class="{last: $index == (detailProps.length -1) }" data-translate-value>{{prop.name}}</span>
-                    <span class="text-medium value span6" data-ng-class="{last: $index == (detailProps.length -1) }" data-ng-switch="prop.id">
+                    <span class="text-medium key span4" data-ng-class="{last: $last }" data-translate-value>{{prop.name}}</span>
+                    <span class="text-medium value span6" data-ng-class="{last: $last }" data-ng-switch="prop.id">
                         <span data-ng-switch-when="memory">{{object.memory | sizeFormat}}&nbsp;</span>
                         <span data-ng-switch-when="disk">{{object.memory | sizeFormat}}&nbsp;</span>
                         <span data-ng-switch-when="ips">
@@ -59,14 +63,15 @@
 
             <div class="pull-right action-container span2" data-ng-show="getActionButtons(object).length">
                 <div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
-                    <div data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
+                    <div data-action-button data-action-fn="btn.action" data-class-fn="btn.getClass" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
                     <div class="clearfix"></div>
                 </div>
             </div>
             <div class="clearfix"></div>
         </div>
     </div>
-    <div class="row-fluid">
+
+    <div class="row-fluid" data-ng-show="paginated">
         <div class="span3 pagination pagination-small pagination-centered">
             <ul class="pagination grid-view-pagination pull-left" data-ng-show="perPage < 9000" >
                 <li data-ng-click="showAll();" data-translate>Show All</li>
@@ -79,7 +84,7 @@
             <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
         </div>
         <div class="span3 pull-right pagination">
-            <div class="btn-group pull-right">
+            <div class="btn-group pull-right" data-ng-show="exportFields">
                 <!--<button class="btn btn-mini"-->
                         <!--data-translate-attributes="data-original-title"-->
                         <!--data-toggle="tooltip"-->

@@ -1,6 +1,5 @@
 'use strict';
 
-var fs = require('fs');
 var restify = require('restify');
 var config = require('easy-config');
 
@@ -8,7 +7,8 @@ if (!config.maxmind || !config.maxmind.licenseId) {
     throw new Error('MaxMind licenseId must be defined in the config');
 }
 
-var maxMindClient = restify.createStringClient({url: config.maxmind.url});
+var phoneVerificationClient = restify.createStringClient({url: config.maxmind.phoneApiUrl});
+
 var limits = config.maxmind.limits || {
     calls: 3,
     serviceFails: 3,
@@ -19,6 +19,7 @@ var serviceMessages = {
     wrongPin: 'Phone verification failed. Incorrect PIN code. Please try again',
     wrongPinTooManyTries: 'Phone verification failed. Incorrect PIN code. PIN has been locked. Please use "Call Me Now" to get a new PIN.',
     wrongPinLocked: 'Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support',
+    wrongCallLocked: 'Phone verification failed. Too many calls made. Your account has been locked. Please contact support',
     phoneIncorrect: 'The phone number is incorrect',
     serviceFailed: 'Verification service not accessible, please try again',
     calling: 'Calling...'
@@ -40,41 +41,49 @@ module.exports = function execute(scope, app) {
         return {message:message, serviceFailed: false};
     }
 
-    function lockAccount(req, res) {
+    function lockAccount(req, res, lockMessage) {
+        lockMessage = lockMessage || serviceMessages.wrongPinLocked;
         if(req.session.maxmindLocked) { // Already locked
-            res.json({message: serviceMessages.wrongPinLocked, success: false});
+            res.json({message: lockMessage, success: false, navigate: true});
             return;
         }
 
-        req.log.warn('Lock user account', {userId: req.session.userId});
+        req.log.warn('User account is locked');
         req.session.maxmindLocked = true;
-        Metadata.set(req.session.userId, 'verificationStatus', 'Locked', function (err) {
-            if(!err) {
-                req.log.warn('User account is locked', {userId: req.session.userId});
-            } else {
-                req.log.error('Failed to lock user account', {userId: req.session.userId, error: err});
+        SignupProgress.setSignupStep(req, 'blocked', function (err) {
+            if (err) {
+                req.log.error(err);
             }
-            res.json({message: serviceMessages.wrongPinLocked, success: false});
+            
+            if (req.session.blockReason) {
+                Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
+            }
+            
+            res.json({message: lockMessage, success: false, navigate: true});
         });
     }
 
     function finishVerification(req, res, success) {
         if(success) {
-            req.log.info('Phone verification successful', {userId: req.session.userId});
+            req.log.info('Phone verification successful');
         } else {
             req.log.error('Maxmind phone verification service cannot be reached after %d attempts',
-                            limits.serviceFails, {userId: req.session.userId});
+                limits.serviceFails);
         }
 
-        SignupProgress.setMinProgress(req, 'phone', function(err) {
-            if(err) {
-                req.log.error('Failed to set user phone verification as passed',
-                                {userId: req.session.userId, error: err});
-
-                res.json({message: 'Internal error', success: false});
-                return;
+        var verificationStatus = success ? 'Successful' : 'PV service failed';
+        Metadata.set(req.session.userId, Metadata.PHONE_VERIFICATION, verificationStatus, function (err) {
+            if (err) {
+                req.log.warn({error: err}, 'Error occurred while setting phone verification status');
             }
-            res.json({message: 'Phone verification successful', success: true, skip: true});
+            SignupProgress.setMinProgress(req, 'phone', function(err) {
+                if(err) {
+                    req.log.error(err);
+                    res.json({message: 'Internal error', success: false});
+                    return;
+                }
+                res.json({message: 'Phone verification successful', success: true, navigate: true});
+            });
         });
     }
 
@@ -86,7 +95,8 @@ module.exports = function execute(scope, app) {
 
         // Too many tries, lock account
         if(retries >= limits.calls || req.session.maxmindLocked) {
-            lockAccount(req, res);
+            req.session.blockReason = 'Phone verification, too many calls.  REF ID: ' + req.session.attemptId;
+            lockAccount(req, res, serviceMessages.wrongCallLocked);
             return;
         }
 
@@ -101,10 +111,11 @@ module.exports = function execute(scope, app) {
             '&phone=' + encodeURIComponent(req.params.phone) +
             '&verify_code=' + code;
 
-        req.log.info('Calling user phone', {userId: req.session.userId, phone: req.params.phone});
-        maxMindClient.get(url, function(err, creq, cres, data) {
+        req.log.info({phone: req.params.phone}, 'Calling user phone');
+
+        phoneVerificationClient.get(url, function(err, creq, cres, data) {
             if (err) {
-                req.log.error('Failed to contact maxmind api', err);
+                req.log.error(err);
                 req.session.maxmindServiceFails = serviceFails + 1;
                 res.json({message: serviceMessages.serviceFailed, success: false});
                 return;
@@ -112,35 +123,37 @@ module.exports = function execute(scope, app) {
 
             if (data.indexOf('err') === 0) {
                 var error = messageFilter(data.substring(4)); // Skip 'err='
-                req.log.info('Phone verification error', {error: error.message, phone: req.params.phone});
-                if(error.serviceFailed) {
+                req.log.warn({error: error.message, phone: req.params.phone}, 'Phone verification error');
+                if (error.serviceFailed) {
                     req.session.maxmindServiceFails = serviceFails + 1;
                 }
                 res.json({message: error.message, success: false});
                 return;
             }
 
-            req.session.maxmindRetries = retries + 1; // TODO: Shouldn't this be based on attempts not successes?
+            if (data.indexOf('refid=') === 0) {
+                req.session.attemptId = data.substr(6);
+            }
+            req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
             res.json({message: serviceMessages.calling, success: true});
         });
     });
 
     app.get('/verify/:code', function (req, res) {
+        req.session.maxmindPinTries = req.session.maxmindPinTries || 0;
+
         // We are already locked?
         if (req.session.maxmindLocked) {
             lockAccount(req, res);
             return;
         }
 
-        // Reached the limit of retries for this pin?
-        if (++req.session.maxmindPinTries > limits.pinTries) {
-            // If call limit is high enough then lock account
-            if (req.session.maxmindRetries >= limits.calls) {
-                lockAccount(req, res);
-                return;
-            }
-            res.json({message: serviceMessages.wrongPinTooManyTries, success: false});
+        // Reached the limit of pin retries
+        if (req.session.maxmindPinTries++ >= limits.pinTries) {
+            req.session.blockReason = 'Phone verification, too many pins. ' +
+                (req.session.attemptId ? 'REF ID: ' + req.session.attemptId : 'No calls made.');
+            lockAccount(req, res);
             return;
         }
 
@@ -150,12 +163,16 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        req.log.info('User entered wrong pin', {
-            userId: req.session.userId,
+        req.log.info({
             generatedPin: req.session.maxmindCode,
             enteredPin: req.params.code
-        });
+        }, 'User entered wrong pin');
 
-        res.json({message: serviceMessages.wrongPin, success: false});
+        // prompt user to change phone is he is on his last pin attempt
+        var wrongPinMessage = req.session.maxmindPinTries === limits.pinTries ?
+            serviceMessages.wrongPinTooManyTries : serviceMessages.wrongPin;
+        res.json({message: wrongPinMessage, success: false});
     });
+
+
 };

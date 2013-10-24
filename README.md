@@ -1,24 +1,123 @@
-# piranha
+# Joyent Public Cloud Portal (piranha)
 
-piranha is a portal for Joyent Cloud Services
+Production: <https://my.joyentcloud.com/>  
+Repository: <https://github.com/joyent/piranha>  
+Browsing: <https://github.com/joyent/piranha>  
+Contacts: Lloyd Dewolf, Jens Schutt   
+Docs: <https://hub.joyent.com/wiki/display/PIRANHA/Home> (out of date)  
+Tickets/bugs: <https://sdcportal.atlassian.net/browse/PIRANHA>
+
+## Overview
+
+Originally billed as the SDC7 Client Portal, it is currently focused on Joyent Public Cloud.
+
+The project code name of 'piranha' has no special meaning other than Joyent's fondness for fish named projects. It is also hard to spell.
+
+## Repository
+
+    lib/
+    site/
+    site/config/ configuration and 3rd API keys
+    smf/
+    test/
+    tools/
+    var/
+    Gruntfile.js
+    README.md
+    env.json
+    index.js
+    package.json
 
 ## Installation
-    create environment configuration file (more in Config section)
-    $ npm install
-    $ node index.js -env={environment}
-(Warning: piranha is using some private modules, so make sure you have access to them before installing)
+
+### Development
+
+Development regularly occurs on Linux until it is ready for staging. Lloyd encourages development on SmartOS to be "close to production".
+
+1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.
+2. `git clone git@github.com:joyent/piranha.git`  
+3. `npm install` 
+4. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+5. Make sure portal user has rights to write var/error.json `chown -R portal var/`
+6. `node index.js -env={environment}`
+
+### Staged Development
+
+The production environment is currently SmartOS 64-bit - base64 13.1.0, so we use the same for staged development.
+* Use 'ssh -A' to connect to the instance, forwarding your authentication agent.
+
+1. Test access to Joyent git repos: `ssh git@git.joyent.com` (Confirms access to the private repositories. Connection will immediately close)  
+2. Update and install system packages: `pkgin up; pkgin -y install scmgit-base redis build-essential`
+3. Enable local Redis service: `svcadm enable redis:default`
+4. Clone Piranha repo from GitHub: `git clone git@github.com:joyent/piranha.git /opt/portal` 
+5. Create a new non-root user for portal: `useradd -s /bin/false -m portal`
+6. Install node.js modules: `cd /opt/portal; npm install --production`
+6. Make sure that portal user owns its files: `chown -R portal /opt/portal`
+7. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+8. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
+9. Start portal: `svcadm enable portal`
+
+### Production
+
+#### Build tarball
+
+1. Pull latest changes from repo: `git pull`
+2. Check out latest release tag: `git checkout tagname` (where tagname is release tag name, e.g. v1.3.6)
+3. Build: `make build`
+4. Copy `portal-tagname.tar.gz` tarball to production environment
+
+`make build` step executes `tools/build-tar.js` node script that will build deployment tarball.
+
+Script will do the following:
+
+1. Check if latest tags & branch is checked out and correct
+2. Check if current machine is SM Base64 13.1.0
+3. Make clean node_modules production install
+4. Check if 'npm list' is clean
+5. Makes tar, exluding .gitignore files, gzips it
+
+Possible tar builder flags:
+* `--skip-tags` - Skip git tag/branch checking
+* `--skip-package` - Skip smartmachine package check
+* `--in-root` - Use this when build-tar.js is in piranha root instead of tools/
+* `--debug` - When this flag is present, debug.log is generated with output
+* `--help` - Displays possible flags
+
+#### Deploy tarball
+
+1. Create a new non-root user for portal if it doesn't exist: `useradd -s /bin/false -m portal`
+2. Create directory for portal files: `/opt/portal`
+3. Unpack production tarball: `tar xvzf portal-tagname.tar.gz --directory=/opt/portal`
+4. Make sure that portal user owns its files: `chown -R portal /opt/portal`
+5. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+6. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
+7. Start portal: `svcadm enable portal`
+
+## Update
+
+### Development & Staged
+
+1. Stop portal: `svcadm disable portal`
+2. Change working directory: `cd /opt/portal`
+3. Remove installed node.js modules: `rm -rf node_modules/`
+4. Pull latest changes from repo: `git pull`
+5. Install node.js modules: `npm install --production`
+6. Start portal: `svcadm enable portal`
+
 
 ## Configuration
 
-piranha is using [easy-config][1] module for configuration handling.
-piranha config can be found in `site/config/config.json` which also holds all default values (portal does not start up on these)
-For environmental configurations create `config.{environment}.json` and start piranha with `-env={environment}` option. This will load your enviromental configuration on top of config.json.
+piranha uses [easy-config][1] for configuration handling. The default config file is `site/config/config.json`. When piranha is started with the `-env={environment}` command line option, the values in `site/config/config.{environment}.json` overwrite those from `config.json`.
+
 You can also define configuration options using command line. ex: `$ node index.js -env=pro --log.level=fatal`
 
-
-- `server.port` Port on which piranha portal runs on.
-- `log.name` Name which will appear in every log message
-- `log.level` Log level used by [Bunyan][2]. Possible values: `fatal`, `error`, `warn`, `info`, `debug`, `trace`
+- `assets.*` [express-modulizer][3] magic.
+- `billing.url` [billing-server][4] url
+- `billing.noUpdate` Do not talk to billing server
+- `capishim.username` Capishim username
+- `capishim.password` Capishim password
+- `capishim.url` Capishim url
+- `capishim.noUpdate` Do not talk to capi shim
 - `cloudapi.version` If defined this is used for Api-version header for CloudAPI calls.
 - `cloudapi.url` CloudAPI endpoint url
 - `cloudapi.urls` If defined (Array) this is used instead of url. Here you can define multiple CloudAPI (datacenter) URL's so if one fails, portal will take the next one
@@ -26,44 +125,55 @@ You can also define configuration options using command line. ex: `$ node index.
 - `cloudapi.username` Username from AdminUI
 - `cloudapi.keyId` Your SSH key fingerprint from Admin portal
 - `cloudapi.keyPath` Full local path to your private key file
-- `sso.url` Signle Sign-on service url
-- `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
-- `sso.keyPath` Full local path to your private key file
+- `googleAnalytics.identifier` Google analytics ID
+- `googleAnalytics.domain` Google analytics domain
 - `localization.defaultLocale` Default language for portal
 - `localization.locales` Possible languages in portal
+- `log.name` Name which will appear in every log message
+- `log.level` Log level used by [Bunyan][2]. Possible values: `fatal`, `error`, `warn`, `info`, `debug`, `trace`
+- `marketo.apikey` Marketo API key
+- `marketo.accountId` Markerto Account Id
+- `maxmind.phoneApiUrl` MaxMind Phone API URL
+- `maxmind.fraudApiUrl` MaxMind Fraud API URL
+- `maxmind.licenseId` MaxMind license ID
+- `maxmind.limits.calls` Maximum calls allowed
+- `maxmind.limits.serviceFails` Maximum service fails after which verification is skipped
+- `maxmind.pinTries` Maximum pin entries
+- `maxmind.riskScoreFraudLimit` Maximum risk score allowed, value can be 0..100 where 0 = block everyone; 100 = allow everyone
+- `maxmind.testClientIp` Set your IP address for testing
+- `maxmind.testRiskScore` Set your risk score for testing
+- `polling.machineTags` Time in ms how long can machine tags polling take before fail
+- `polling.machineState` Time in ms how long can machine state polling take before fail
+- `polling.packageChange` Time in ms how long can packge change take before fail
 - `redis.host` Redis storage host
 - `redis.port` Redis storage port
 - `redis.db` Redis database index
 - `redis.password` Redis storage password
-- `assets.*` [express-modulizer][1] magic.
-- `zuora.tenantID` Zuoras tenant ID
-- `zuora.api.user` Zuora API user
-- `zuora.api.password` Zuora API password
-- `zuora.api.validation.countries.type` Zuora validation rule type
-- `zuora.api.validation.countries.name` Which field rule uses
-- `zuora.api.validation.countries.list` Rule values
-- `billing.url` [billing-server][4] url
+- `server.port` Port on which piranha portal runs on.
+- `server.headerClientIpKey` Client IP address placeholder for load balancer / reverse proxy
+- `sso.url` Signle Sign-on service url
+- `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
+- `sso.keyPath` Full local path to your private key file
 - `zendesḱ.account` Zendesk account with trailing `/token`
 - `zendesk.token` Zendesk token
 - `zendesk.host` Zendesk host
 - `zendesk.forumsPath` Path to Zendesk forums json
 - `zendesk.systemStatusPath` Path to Zendesk system statuses topic json
 - `zendesk.packageUpdatePath` Path to Zendesk packages updates topic json
-- `marketo.apikey` Marketo API key
-- `marketo.accountId` Markerto Account Id
-- `polling.machineTags` Time in ms how long can machine tags polling take before fail
-- `polling.machineState` Time in ms how long can machine state polling take before fail
-- `polling.packageChange` Time in ms how long can packge change take before fail
-- `capishim.username` Capishim username
-- `capishim.password` Capishim password
-- `capishim.url` Capishim url
+- `zuora.tenantID` Zuoras tenant ID
+- `zuora.api.user` Zuora API user
+- `zuora.api.password` Zuora API password
+- `zuora.api.validation.countries.type` Zuora validation rule type
+- `zuora.api.validation.countries.name` Which field rule uses
+- `zuora.api.validation.countries.list` Rule values
+- `zuora.soap` GuartTime TBD
 
 ## Common errors:
 `Cannot find module {X}`
-    You don't have module X and need to install it using `npm install {X}`. Make sure you have access to it, because piranha is using some private modules.
+    You don't have module X and need to install it using `npm install {X}`.
 
-`Invalid developer` in SSO
-    Your `sso.keyId` or `sso.keyPath` are wrong. Re-check them and make sure they are in Admin portal.
+`Invalid developer` message when logging in to the portal in the web browser.
+    Your `sso.keyId` or `sso.keyPath` are wrong. Re-check them and make sure they are in SDC Admin. 
 
 [1]:https://github.com/DeadAlready/node-easy-config
 [2]:https://github.com/trentm/node-bunyan

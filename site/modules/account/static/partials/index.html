@@ -81,15 +81,15 @@
                 </fieldset>
 
                 <fieldset class="row-fluid">
-                    <legend><span>SSH Summary</span> <a href="#!/account/ssh/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
+                    <legend><span>SSH Public Keys</span> <a href="#!/account/ssh/" class="pull-right btn btn-mini" style="margin-top:5px">Edit</a></legend>
 
-                    <div data-ng-show="sshKeys.length > 0" class="span11">
+                    <div data-ng-show="keys.length > 0" class="span11">
                         <div class="item-list-container">
                             <div class="item header row-fluid">
-                                <span class="span12 item-list-container-header">Key Name / UUID</span>
+                                <span class="span12 item-list-container-header">Key Name / Fingerprint</span>
                             </div>
 
-                            <div class="item row-fluid" data-ng-repeat="key in sshKeys">
+                            <div class="item row-fluid" data-ng-repeat="key in keys | reverse">
                                 <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
                                     <span class="span12 item-list-container-header">{{key.name.length > 0 && key.name != key.fingerprint && (key.name + ' / ') || ''}}{{key.fingerprint}}</span>
                                 </span>
@@ -134,7 +134,7 @@
                     </div>
 
                     <div class="row-fluid">
-                        <div class="span12 alert alert-info alert-global" data-ng-hide="loading || sshKeys.length > 0">
+                        <div class="span12 alert alert-info alert-global" data-ng-hide="loading || keys.length > 0">
                             <div class="span6">
                                 <h4>Please set up your SSH Key.</h4>
                                 <div>I see you have no SSH keys configured.</div>

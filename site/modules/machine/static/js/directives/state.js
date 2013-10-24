@@ -34,13 +34,12 @@
                                 return 'btn-danger';
                         }
                     } else {
-                        console.log('stae: ' + state);
                         switch (state) {
                             case 'active':
                                 return 'btn-success';
-
-                            default:
                             case 'stopped':
+                                return '';
+                            default:
                                 return '';
                         }
                     }

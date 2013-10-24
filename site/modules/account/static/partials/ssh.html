@@ -6,13 +6,11 @@
         <!-- <div class="row-fluid"> -->
             <div data-notification></div>
         <!-- </div> -->
-        <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 
 		<div class="page-header">
 			<div class="row-fluid">
                 <div class="span12">
 					<h1  class="span11" data-translate>SSH Public Keys</h1>
-					<div ng-show="!account || !keys"  class="span1 loading-medium-after-h1" data-ng-show="loading" ></div>
                 </div>
 			</div>
         </div>
@@ -32,7 +30,7 @@
                                 <div class="alert alert-joyent-blue alert-global">You don't have any SSH keys</div>
                             </div>
 
-                            <div class="item row-fluid" data-ng-repeat="key in keys">
+                            <div class="item row-fluid" data-ng-repeat="key in keys | reverse">
                                 <span class="pointer text-medium" data-ng-click="setOpenDetails($index)">
                                     <span class="span12 title">{{key.name.length > 0 && key.name != key.fingerprint && (key.name + ' / ') || ''}}{{key.fingerprint}}</span>
                                 </span>
@@ -60,14 +58,15 @@
 
                         </div>
 
-                        <div class="new-key-button">
-                            <button class="btn pull-right btn-small create-key-btn"
-                                    data-ng-click="generateSshKey()"
-                                    data-translate>Create Key</button>
-
-                            <button class="btn btn-joyent-blue pull-right ssh-add-button"
-                                    data-ng-click="addNewKey()"
-                                    data-translate>Import Key</button>
+                        <div class="new-key-button" data-ng-hide="loading || pollingJob">
+                            <div data-account-ssh-create></div>
+                            <div data-account-ssh-import></div>
+                        </div>
+                        <div data-ng-show="(loading && downloadLink) || (pollingJob && downloadLink)" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></div>
+                        <div class="new-key-button pull-right" data-ng-show="loading">
+                            <div class="row">
+                                <div class="loading-medium span4"></div>
+                            </div>
                         </div>
                     </div>
                     <!-- End of > 0 keys part -->

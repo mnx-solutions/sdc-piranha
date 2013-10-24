@@ -11,8 +11,8 @@
         'notification',
         'Package',
         'Dataset',
-
-        function ($resource, serverTab, $rootScope, $q, localization, notification, Package, Dataset) {
+		'util',
+        function ($resource, serverTab, $rootScope, $q, localization, notification, Package, Dataset, util) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -70,6 +70,13 @@
                             var old = null;
 
                             machine = wrapMachine(machine);
+	                        machine.publicIps = machine.privateIps = [];
+	                        if(ng.isArray(machine.ips)) {
+		                        machine.publicIps = machine.ips.filter(function (ip) {
+			                        return !util.isPrivateIP(ip);
+		                        });
+		                        machine.privateIps = machine.ips.filter(util.isPrivateIP);
+	                        }
 
                             if (machines.index[machine.id]) {
                                 old = machines.list.indexOf(machines.index[machine.id]);
@@ -258,6 +265,28 @@
                 delete machines.index[job.machine.id];
             }
         });
+
+        service.listFirewallRules = function (uuid) {
+            var machine = service.machine(uuid);
+            var job = serverTab.call({
+                name: 'MachineRuleList',
+                data: {
+                    machineId: uuid,
+                    datacenter: machine.datacenter
+                },
+                done: function(err, job) {
+                    if (err) {
+                        return;
+                    }
+                },
+
+                error: function(err, job) {
+                }
+            });
+
+            //machine.job = job.getTracker();
+            return job.deferred;
+        };
 
         service.resizeMachine = function (uuid, sdcpackage) {
             var fn = changeState({

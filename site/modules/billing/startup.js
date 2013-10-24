@@ -2,7 +2,6 @@
 
 var config = require('easy-config');
 var moment = require('moment');
-var restify = require('restify');
 var zHelpers = require('./lib/zuora-helpers');
 
 var isProduction = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
@@ -14,6 +13,8 @@ module.exports = function execute(scope, callback) {
 
     var server = scope.api('Server');
     var SignupProgress = scope.api('SignupProgress');
+    var Metadata = scope.api('Metadata');
+    var MaxMind = scope.api('MaxMind');
 
     server.onCall('listPaymentMethods', function (call) {
         zHelpers.getPaymentMethods(call, call.done.bind(call));
@@ -54,12 +55,38 @@ module.exports = function execute(scope, callback) {
         call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if (err) {
-                if (zHelpers.notFound(acc)) {
-                    call.log.debug('Creating new zuora account');
+                if (!zHelpers.notFound(acc)) {
+                    error(err, acc, 'Account check with zuora failed');
+                    return;
+                }
 
-                    zHelpers.createZuoraAccount(call, function (err, data, user) {
-                        if (err) {
-                            error(err, data, 'Zuora account.create failed');
+                call.log.debug('Creating new zuora account');
+
+                zHelpers.createZuoraAccount(call, function (err, data, user) {
+                    if (err) {
+                        error(err, data, 'Zuora account.create failed');
+                        return;
+                    }
+                    MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
+                        if (fraudErr) {
+                            call.log.warn(fraudErr);
+                            call.done(fraudErr);
+                            return;
+                        }
+                        if (result.riskScore) {
+                            call.log.info('Saving user riskScore in metadata');
+                            Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
+                        }
+                        if (result.block) {
+                            if (result.blockReason) {
+                                Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
+                            }
+                            SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
+                                if (blockErr) {
+                                    call.log.error(blockErr);
+                                }
+                                call.done(null, data);
+                            });
                             return;
                         }
 
@@ -74,11 +101,9 @@ module.exports = function execute(scope, callback) {
 
                             call.done(null, data);
                         });
-                    });
-                    return;
-                }
 
-                error(err, acc, 'Account check with zuora failed');
+                    });
+                });
                 return;
             }
 
