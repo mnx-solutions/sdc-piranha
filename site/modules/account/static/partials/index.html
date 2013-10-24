@@ -115,21 +115,17 @@
                                 </div>
                             </div>
 
-                            <div data-ng-show="addsshKey">
-                                <button data-ng-click="addNewKey()"
-                                        data-ng-disabled="createPending"
-                                        data-translate>Add SSH key</button>
-
-                                <div class="error">{{addedKey.message}} {{addedKey.code}}</div>
-                                <div class="loading-medium" data-ng-show="createPending"></div>
-                            </div>
                         </div>
 
-                        <div class="new-key-button">
-                            <button class="btn btn-joyent-blue pull-right"
-                                    data-ng-click="addNewKey()"
-                                    data-ng-show="keys.length > 0"
-                                    data-translate>Add new SSH key</button>
+                        <div class="new-key-button" data-ng-hide="loading || pollingJob">
+                            <div data-account-ssh-create></div>
+                            <div data-account-ssh-import></div>
+                        </div>
+                        <div data-ng-show="(loading && downloadLink) || (pollingJob && downloadLink)" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></div>
+                        <div class="new-key-button pull-right" data-ng-show="loading">
+                            <div class="row">
+                                <div class="loading-medium span4"></div>
+                            </div>
                         </div>
                     </div>
 
