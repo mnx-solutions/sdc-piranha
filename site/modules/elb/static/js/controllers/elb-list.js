@@ -23,10 +23,15 @@
 
             $scope.servers = [];
 
-            service.getBalancers().then(function (data) {
-                $scope.servers = data;
-                $scope.listLoaded = true;
+            service.getController().then(function (isEnabled) {
+                if (!isEnabled || $scope.features.elb !== 'enabled') {
+                    $location.path('/elb');
+                    return;
+                }
+                service.getBalancers().then(function (data) {
+                    $scope.servers = data;
+                    $scope.listLoaded = true;
+                });
             });
-
         }]);
 }(window.JP.getModule('elb')));
