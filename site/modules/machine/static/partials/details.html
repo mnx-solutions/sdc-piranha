@@ -266,7 +266,8 @@
         </div>
     </fieldset>
 
-    <fieldset data-ng-show="firewallRules.length >= 1">
+    <span data-ng-switch="features.firewall">
+    <fieldset data-ng-switch-when="enabled" data-ng-show="firewallRules.length >= 1">
         <legend>
             <span data-translate>Firewall rules</span>
             <small data-translate></small>
@@ -284,6 +285,7 @@
             </div>
         </div>
     </fieldset>
+    </span>
 
     <div class="clearfix"></div>
 </div>

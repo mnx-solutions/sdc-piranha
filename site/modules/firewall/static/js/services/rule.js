@@ -276,7 +276,7 @@
                 return rules.job.deferred;
             };
 
-            if (!rules.job) {
+            if (!rules.job && $rootScope.features.firewall === 'enabled') {
                 service.updateRules();
             }
 
