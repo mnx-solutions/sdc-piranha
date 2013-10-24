@@ -102,6 +102,7 @@
     },
     "features": {
         "image": "disabled",
-        "invoices": "disabled"
+        "invoices": "disabled",
+        "elb": "enabled"
     }
 }
