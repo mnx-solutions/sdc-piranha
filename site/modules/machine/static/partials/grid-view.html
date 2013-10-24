@@ -3,7 +3,7 @@
     <div class="item header row-fluid machine-list-item">
         <span data-ng-repeat="prop in props | orderBy:sequence"
               class="text-medium sortable"
-              data-ng-class="prop.getClass() || {span3: $first, 'span1 pull-right state-sortable-header': $last, span2: ($index > 0 && !$last)}"
+              data-ng-class="prop.getClass('header') || {span3: $first, 'span1 pull-right state-sortable-header': $last, span2: (!$first && !$last)}"
               data-ng-click="orderGridMachinesBy(prop)">
             <span class="pull-left machines-list-header" data-translate-value>{{prop.name}}</span>
             <i class="icon-arrow-up" data-ng-show="order.indexOf(prop.rorder) != -1"></i>
@@ -15,21 +15,18 @@
 
     <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" class="item row-fluid">
         <span class="text-medium crop"
-              data-ng-class="prop.getClass() || {'span3 machine-list-content': $first, 'pull-right machine-list-state state pointer': $last, 'span2  machine-list-content': ($index > 0 && !$last)}"
+              data-ng-class="prop.getClass('body') || {'span3 machine-list-content': $first, 'pull-right machine-list-state state pointer': $last, 'span2  machine-list-content': ($index > 0 && !$last)}"
               data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
             <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                 <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
             </span>
             <span data-ng-switch-when="created">{{object[prop.id] | dateTime}}</span>
-            <span data-ng-switch-when="ips" class="span2">
-                <span data-ng-show="object.primaryIps.length">{{object.primaryIps[0]}}</span>
-                <span data-ng-show="!object.primaryIps.length && object.ips.length">{{object.ips[0]}}</span>
-            </span>
             <span data-ng-switch-default data-ng-switch="prop.type">
                 <span data-ng-switch-when="button">
                     <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
                 </span>
+                <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
                 <span data-ng-switch-default>
                     {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
                 </span>

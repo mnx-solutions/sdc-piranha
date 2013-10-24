@@ -114,13 +114,13 @@
                     <div id="myCarousel" class="carousel slide">
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
-                                <div class="item provisioning-item  header row-fluid">
+                                <div class="item provisioning-item  header row-fluid" style="padding-bottom: 10px">
                                     <div class="provisioning-header-left-button btn-group tooltip-hover span3"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"
+                                         data-placement="top"
                                          data-original-title="Filter by zone"
-                                            style="padding-bottom: 10px">
+                                         data-container="body">
                                         <span class="text-medium" style="line-height: 30px">
                                             Data Center<br/>
                                         </span>
@@ -138,8 +138,9 @@
                                     <div class="btn-group tooltip-hover span3 hidden-phone"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"
-                                         data-original-title="Filter by operating system">
+                                         data-placement="top"
+                                         data-original-title="Filter by operating system"
+                                         data-container="body">
                                         <span class="text-medium" style="line-height: 30px">
                                             Operating System<br/>
                                         </span>
@@ -148,7 +149,7 @@
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li data-ng-repeat="opsys in operating_systems">
+                                            <li data-ng-repeat="opsys in operating_systems | orderBy:'toString()'">
                                                 <a data-ng-click="selectOpsys(opsys)">{{opsys}}</a>
                                             </li>
                                         </ul>
@@ -158,8 +159,9 @@
                                          data-ng-show="features.imageUse != 'disabled'"
                                          data-html="true"
                                          data-toggle="tooltip"
-                                         data-placement="bottom"
-                                         data-original-title="Filter by visibility">
+                                         data-placement="top"
+                                         data-original-title="Filter by visibility"
+                                         data-container="body">
                                         <span class="text-medium" style="line-height: 30px">
                                             Image Type<br/>
                                         </span>
@@ -175,7 +177,7 @@
                                     </div>
 
                                     <div class="span3 offset1 provisioning-header-search">
-                                        <input type="text" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+                                        <input type="text" style="margin-top:30px;" class="span12" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
