@@ -151,14 +151,6 @@
                     });
                 }
 
-                if (m.ips) {
-                    m.primaryIps = m.ips.filter(function (ip) {
-                        return !util.isPrivateIP(ip);
-                    });
-                } else {
-                    m.primaryIps = [];
-                }
-
                 $scope.dataset = Dataset.dataset(m.image);
                 $scope.package = Package.package(m.package);
 

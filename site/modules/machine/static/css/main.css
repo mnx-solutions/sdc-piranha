@@ -183,6 +183,7 @@
     padding-right: 6px;
     padding-top: 4px;
     border: 1px solid #ffffff;
+    width: 100%;
     max-width: 700px;
 }
 
@@ -219,6 +220,8 @@
 }
 
 .machine-edit {
+    width: 100%;
+    max-width: 700px;
     position: relative;
 }
 
@@ -302,4 +305,8 @@
 
 .padding-5 {
     padding: 5px;
+}
+.hide-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
