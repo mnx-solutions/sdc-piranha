@@ -27,25 +27,22 @@
                         }
 
                         var result = job.__read();
-                        Object.keys(result).forEach(function (key) {
-                            var datacenter = {
-                                name: key,
-                                url: result[key]
-                            };
-
+                        console
+                        result.forEach(function (datacenter) {
+                            console.log(datacenter);
                             var old = null;
 
-                            if (datacenters.index[key]) {
-                                old = datacenters.list.indexOf(datacenters.index[key]);
+                            if (datacenters.index[datacenter.name]) {
+                                old = datacenters.list.indexOf(datacenters.index[datacenter.name]);
                             }
 
-                            datacenters.index[key] = datacenter;
+                            datacenters.index[datacenter.name] = datacenter;
 
-                            if (datacenters.search[key]) {
-                                datacenters.search[key].forEach(function (r) {
+                            if (datacenters.search[datacenter.name]) {
+                                datacenters.search[datacenter.name].forEach(function (r) {
                                     r.resolve(datacenter);
                                 });
-                                delete datacenters.search[key];
+                                delete datacenters.search[datacenter.name];
                             }
 
                             if (old !== null) {
