@@ -100,10 +100,10 @@ Possible tar builder flags:
 1. Stop portal: `svcadm disable portal`
 2. Change working directory: `cd /opt/portal`
 3. Remove installed node.js modules: `rm -rf node_modules/`
-4. Pull latest changes from repo: `git pull`
-5. Install node.js modules: `npm install --production`
-6. Start portal: `svcadm enable portal`
-
+4. Pull latest changes from repo: `git fetch origin; git fetch --tags origin`
+5. Merge fetched changes: `git merge origin`
+6. Install node.js modules: `npm install --production`
+7. Start portal: `svcadm enable portal`
 
 ## Configuration
 
