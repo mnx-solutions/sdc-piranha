@@ -16,11 +16,9 @@
 
                 $scope.loading = true;
                 $scope.account = Account.getAccount();
-                $scope.sshKeys = Account.getKeys();
 
                 $q.all([
-                    $scope.account,
-                    $scope.sshKeys
+                    $scope.account
                 ]).then(function () {
                     $scope.loading = false;
                 });
