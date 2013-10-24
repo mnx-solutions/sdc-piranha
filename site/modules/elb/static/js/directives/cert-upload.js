@@ -9,6 +9,28 @@
                 model: '='
             },
             link: function (scope, element, attrs) {
+                function uploadCertificate(file) {
+                    var data = new FormData(), xhr = new XMLHttpRequest();
+                    xhr.onerror = function () {
+                        scope.$apply(function () {
+                            notification.replace('elb', { type: 'error' }, 'Error while uploading certificate');
+                        });
+                    };
+                    xhr.onload = function () {
+                        scope.$apply(function () {
+                            if (xhr.status === 200) {
+                                notification.replace('elb', { type: 'success' }, 'Certificate added');
+                                scope.model = JSON.parse(xhr.responseText).id;
+                            } else {
+                                notification.replace('elb', { type: 'error' }, xhr.responseText);
+                            }
+                        });
+                    };
+                    data.append('certificate', file, file.name);
+                    xhr.open('POST', '/main/elb/certificates');
+                    xhr.send(data);
+                }
+
                 $('.certUpload').change(function (e) {
                     if (e.target.files && e.target.files.length) {
                         uploadCertificate(e.target.files[0]);
@@ -22,28 +44,6 @@
                     $('.certUpload').val('');
                     scope.model = '00000000-0000-0000-0000-000000000000';
                 };
-
-                function uploadCertificate(file) {
-                    var data = new FormData(), xhr = new XMLHttpRequest();
-                    xhr.onerror = function (e) {
-                        scope.$apply(function () {
-                            notification.replace('elb', { type: 'error' }, 'Error while uploading certificate');
-                        });
-                    };
-                    xhr.onload = function (e) {
-                        scope.$apply(function () {
-                            if (xhr.status == 200) {
-                                notification.replace('elb', { type: 'success' }, 'Certificate added');
-                                scope.model = JSON.parse(xhr.responseText).id;
-                            } else {
-                                notification.replace('elb', { type: 'error' }, xhr.responseText);
-                            }
-                        });
-                    };
-                    data.append('certificate', file, file.name);
-                    xhr.open('POST', '/main/elb/certificates');
-                    xhr.send(data);
-                }
             }
         };
     }]);

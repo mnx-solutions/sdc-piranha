@@ -120,11 +120,11 @@
                         return machine.name === 'ELBController';
                     });
                 });
-            }
+            };
 
             service.createController = function createController() {
                 var d = $q.defer();
-                // TODO: Change minimal Ubuntu package to STM when ready
+                //TODO: Change minimal Ubuntu package to STM when ready
                 var data = {
                     datacenter: hardDataCenter,
                     dataset: 'd2ba0f30-bbe8-11e2-a9a2-6bc116856d85',
@@ -142,7 +142,7 @@
                         var result = job.__read();
                         d.resolve(result);
                     },
-                    error: function(err, job) {
+                    error: function (err, job) {
                         d.reject(err);
                         return;
                     }

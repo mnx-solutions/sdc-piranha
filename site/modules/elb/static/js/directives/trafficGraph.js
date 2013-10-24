@@ -59,47 +59,49 @@
 
                         ]
                     }));
-                    
+
                     graph.render();
                     scatterPlot.render();
-                    
+
                     scatterPlot.element.firstChild.style.position = 'absolute';
                     $element.prepend(scatterPlot.element.firstChild);
-                    
+
                     if ($attrs.title) {
                         $element.prepend('<div style="position: absolute;padding-left: 8px;">'+$attrs.title+'</div>')
                     }
 
-                    new Rickshaw.Graph.HoverDetail( {
+                    new Rickshaw.Graph.HoverDetail({
                         graph: graph
-                    } );
+                    });
 
-                    var legend = new Rickshaw.Graph.Legend( {
+                    var legend = new Rickshaw.Graph.Legend({
                         graph: graph,
                         element: $('<div>').get()[0]//document.getElementById('legend')
-                    } );
+                    });
 
-                    new Rickshaw.Graph.Behavior.Series.Toggle( {
+                    new Rickshaw.Graph.Behavior.Series.Toggle({
                         graph: graph,
                         legend: legend
-                    } );
+                    });
 
-                    var xAxis = new Rickshaw.Graph.Axis.Time( {
+                    var xAxis = new Rickshaw.Graph.Axis.Time({
                         graph: graph
-                    } );
+                    });
                     xAxis.render();
 
-                    var yAxis = new Rickshaw.Graph.Axis.Y( {
+                    var yAxis = new Rickshaw.Graph.Axis.Y({
                         graph: graph,
                         tickFormat: Rickshaw.Fixtures.Number.formatKMBT
-                    } );
+                    });
 
                     yAxis.render();
                 }
 
-                $scope.$watch('traffic', function(data) {
+                $scope.$watch('traffic', function (data) {
 
-                    if (!data) return;
+                    if (!data) {
+                        return;
+                    }
 
                     drawGraph(data.inbound, data.outbound);
                 });
