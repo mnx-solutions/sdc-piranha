@@ -148,7 +148,7 @@
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <li data-ng-repeat="opsys in operating_systems">
+                                            <li data-ng-repeat="opsys in operating_systems | orderBy:'toString()'">
                                                 <a data-ng-click="selectOpsys(opsys)">{{opsys}}</a>
                                             </li>
                                         </ul>
