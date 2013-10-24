@@ -16,6 +16,7 @@
                 });
                 scope.upload = function () {
                     $('.certUpload').click();
+                    $('.btn-joyent-blue').blur();
                 };
                 scope.remove = function () {
                     $('.certUpload').val('');
