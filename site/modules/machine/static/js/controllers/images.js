@@ -57,7 +57,7 @@
             };
 
             $scope.provisionInstance = function(image) {
-                $location.path('/instance/create/'+ image.id);
+                $location.path('/compute/create/'+ image.id);
             };
 
 

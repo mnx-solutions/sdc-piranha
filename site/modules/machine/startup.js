@@ -498,7 +498,7 @@ module.exports = function execute(scope) {
                     pollForMachineStateChange(cloud, call, (60 * 60 * 1000), null, null, options.name);
                 } else {
                     call.log.error(err);
-                    call.immediate(err);
+                    call.done(err);
                 }
 
             });

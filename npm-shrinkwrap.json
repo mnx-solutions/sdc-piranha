@@ -39,8 +39,9 @@
       }
     },
     "uglify-js": {
-      "version": "2.4.0",
+      "version": "2.4.1",
       "from": "uglify-js@*",
+      "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.1.tgz",
       "dependencies": {
         "async": {
           "version": "0.2.9",
@@ -83,6 +84,7 @@
         "connect": {
           "version": "2.9.2",
           "from": "connect@2.9.2",
+          "resolved": "https://registry.npmjs.org/connect/-/connect-2.9.2.tgz",
           "dependencies": {
             "qs": {
               "version": "0.6.5",
@@ -150,7 +152,7 @@
         },
         "mkdirp": {
           "version": "0.3.5",
-          "from": "mkdirp@~0.3.4"
+          "from": "mkdirp@0.3.5"
         },
         "cookie": {
           "version": "0.1.0",
@@ -184,7 +186,7 @@
       "dependencies": {
         "mime": {
           "version": "1.2.11",
-          "from": "mime@~1.2"
+          "from": "mime@1.2.x"
         },
         "request": {
           "version": "2.27.0",
@@ -286,7 +288,7 @@
         },
         "mkdirp": {
           "version": "0.3.5",
-          "from": "mkdirp@~0.3.5"
+          "from": "mkdirp@~0.3.4"
         },
         "clean-css": {
           "version": "1.0.12",
@@ -416,7 +418,44 @@
         },
         "with": {
           "version": "1.1.1",
-          "from": "with@~1.1.0"
+          "from": "with@~1.1.0",
+          "dependencies": {
+            "uglify-js": {
+              "version": "2.4.0",
+              "from": "uglify-js@2.4.0",
+              "resolved": "https://registry.npmjs.org/uglify-js/-/uglify-js-2.4.0.tgz",
+              "dependencies": {
+                "async": {
+                  "version": "0.2.9",
+                  "from": "async@~0.2.6"
+                },
+                "source-map": {
+                  "version": "0.1.30",
+                  "from": "source-map@~0.1.7",
+                  "dependencies": {
+                    "amdefine": {
+                      "version": "0.1.0",
+                      "from": "amdefine@>=0.0.4"
+                    }
+                  }
+                },
+                "optimist": {
+                  "version": "0.3.7",
+                  "from": "optimist@~0.3.5",
+                  "dependencies": {
+                    "wordwrap": {
+                      "version": "0.0.2",
+                      "from": "wordwrap@~0.0.2"
+                    }
+                  }
+                },
+                "uglify-to-browserify": {
+                  "version": "1.0.1",
+                  "from": "uglify-to-browserify@~1.0.0"
+                }
+              }
+            }
+          }
         },
         "constantinople": {
           "version": "1.0.2",
@@ -499,7 +538,7 @@
             },
             "once": {
               "version": "1.1.1",
-              "from": "once@1.1.1"
+              "from": "once@~1.1.1"
             },
             "qs": {
               "version": "0.5.5",
@@ -507,7 +546,7 @@
             },
             "semver": {
               "version": "1.1.4",
-              "from": "semver@1.1.4"
+              "from": "semver@~1.1.0"
             },
             "spdy": {
               "version": "1.7.1",
@@ -627,7 +666,7 @@
           "dependencies": {
             "mime": {
               "version": "1.2.11",
-              "from": "mime@~1.2"
+              "from": "mime@1.x"
             },
             "request": {
               "version": "2.27.0",
@@ -751,7 +790,7 @@
       "dependencies": {
         "mkdirp": {
           "version": "0.3.5",
-          "from": "mkdirp@~0.3.4"
+          "from": "mkdirp@0.3.x"
         },
         "rimraf": {
           "version": "2.0.3",
@@ -775,7 +814,7 @@
           "dependencies": {
             "mkdirp": {
               "version": "0.3.5",
-              "from": "mkdirp@~0.3.4"
+              "from": "mkdirp@0.3.x"
             },
             "rimraf": {
               "version": "2.0.3",
@@ -984,8 +1023,7 @@
         },
         "sprintf": {
           "version": "0.1.1",
-          "from": "sprintf@0.1.1",
-          "resolved": "https://registry.npmjs.org/sprintf/-/sprintf-0.1.1.tgz"
+          "from": "sprintf@0.1.1"
         },
         "smartdc": {
           "version": "6.1.0",
@@ -1013,7 +1051,7 @@
                 },
                 "semver": {
                   "version": "1.0.14",
-                  "from": "semver@~1.0.14"
+                  "from": "semver@~1.0.8"
                 }
               }
             },
@@ -1142,7 +1180,7 @@
             },
             "mime": {
               "version": "1.2.11",
-              "from": "mime@~1.2.11"
+              "from": "mime@1.x"
             },
             "form-data": {
               "version": "0.1.2",

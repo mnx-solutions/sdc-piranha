@@ -151,10 +151,6 @@
                     });
                 }
 
-                m.primaryIps = m.ips.filter(function (ip) {
-                    return !util.isPrivateIP(ip);
-                });
-
                 $scope.dataset = Dataset.dataset(m.image);
                 $scope.package = Package.package(m.package);
 
@@ -285,7 +281,7 @@
                 } else {
                     return '';
                 }
-            }
+            };
 
             $scope.enableRename = function(name) {
                 if($scope.features.instanceRename === 'enabled') {
@@ -315,11 +311,13 @@
                         'Rename this instance'
                     ), function () {
                         $$track.event('machine', 'rename');
+		                $scope.renaming = true;
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                         job.getJob().done(function() {
                             $scope.machine.name = $scope.newInstanceName;
                             $scope.changingName = false;
+	                        $scope.renaming = false;
                         });
                     }
                 );
@@ -341,7 +339,7 @@
 
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
-                            if($location.url() === '/instance/details/'+ machineid) {
+                            if($location.url() === '/compute/instance/'+ machineid) {
                                 $location.url('/compute');
                                 $location.replace();
                             }
@@ -396,8 +394,7 @@
             };
 
             $scope.filterPackages = function (item) {
-
-                if($scope.currentPackage && item.type && item.type === 'smartos' && item.memory >= $scope.currentPackage.memory) {
+                if($scope.currentPackage && item.type && item.type === 'smartos' && item.memory > $scope.currentPackage.memory) {
                     //Old images don't have currentPackage.type
                     return (!$scope.currentPackage.type && item.group === 'High CPU') || (item.group === $scope.currentPackage.group);
                 }
