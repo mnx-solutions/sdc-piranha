@@ -176,10 +176,8 @@
                                     return true;
                                 }
                             }
-                        } else {
-                            if ($scope.errs && ($scope.errs[field])) {
-                                return true;
-                            }
+                        } else if ($scope.errs && ($scope.errs[field]) && !errorType) {
+                            return true;
                         }
 
                         if ($scope.formSubmitted &&
@@ -301,7 +299,8 @@
                                 $scope.errs = {};
                                 Object.keys(errs)
                                     .filter(function (k) {
-                                        return typeof errs[k] !== 'object';
+	                                    //Ignore zuora errors and creditCardType (that is calculated by us)
+                                        return typeof errs[k] !== 'object' && k !== 'creditCardType';
                                     })
                                     .forEach(function (k) {
                                         $scope.errs[k] = errs[k];
