@@ -125,17 +125,17 @@
                 },
                 {
                     id: 'datacenter',
-                    name: 'Datacenter',
+                    name: 'Data Center',
                     sequence: 2
                 },
                 {
                     id: 'created',
-                    name: 'Created at',
+                    name: 'Created',
                     sequence: 3
                 },
                 {
                     id: 'ips',
-                    name: 'IP-s',
+                    name: 'IP',
                     sequence: 4
                 },
                 {
@@ -158,12 +158,12 @@
                 {
                     id: '_Dataset',
                     id2: 'name',
-                    name: "Image name",
+                    name: "Image Name",
                     sequence: 3
                 },
                 {
                     id: 'ips',
-                    name: 'IP-s',
+                    name: 'IP',
                     sequence: 4
                 }
             ];
