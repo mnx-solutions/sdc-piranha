@@ -130,7 +130,7 @@
                 <tbody>
                 <tr data-ng-repeat="machine in machines">
                     <td width="10"><input type="checkbox" class="group-checkable" data-ng-model="machine.selected"></td>
-                    <td title="{{machine.name}}"><a href="#!/instance/details/{{machine.id}}">{{machine.name}}</a></td>
+                    <td title="{{machine.name}}"><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a></td>
                     <td title="{{machine.datacenter}}">{{machine.datacenter}}</td>
                     <td title="{{machine.created | dateTime:'YYYY-MM-DD'}}">{{machine.created | dateTime:'YYYY-MM-DD'}}</td>
                     <td>
