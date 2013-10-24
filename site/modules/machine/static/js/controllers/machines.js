@@ -131,28 +131,33 @@
                 {
                     id: 'created',
                     name: 'Created at',
-	                getClass: function (type) {
-		                if(type === 'header') {
-			                return 'span3';
-		                }
-		                return 'span3 machine-list-content';
-	                },
+                    getClass: function (type) {
+                        if (type === 'header') {
+                            return 'span3';
+                        }
+                        return 'span3 machine-list-content';
+                    },
                     sequence: 3
                 },
                 {
                     id: 'ips',
                     name: 'IP-s',
-	                type: 'html',
-	                _getter: function (machine) {
-		                if(!ng.isArray(machine.ips)) {
-			                return '';
-		                }
-		                return machine.publicIps
-			                .concat(machine.privateIps)
-			                .slice(0,2)
-			                .join('<br/>');
+                    type: 'html',
+                    _getter: function (machine) {
+                        if (!ng.isArray(machine.ips)) {
+                            return '';
+                        }
 
-	                },
+                        if (ng.isArray(machine.publicIps)) {
+                            return machine.publicIps
+                                .concat(machine.privateIps)
+                                .slice(0,2)
+                                .join('<br/>');
+                        } else {
+                            return '';
+                        }
+
+                    },
                     sequence: 4
                 },
                 {
