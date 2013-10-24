@@ -24,7 +24,7 @@
             $scope.servers = [];
 
             service.getController().then(function (isEnabled) {
-                if (!isEnabled || $scope.features.elb !== 'enabled') {
+                if (!isEnabled) {
                     $location.path('/elb');
                     return;
                 }

@@ -20,7 +20,7 @@
                 };
                 scope.remove = function () {
                     $('.certUpload').val('');
-                    scope.model = null;
+                    scope.model = '00000000-0000-0000-0000-000000000000';
                 };
 
                 function uploadCertificate(file) {

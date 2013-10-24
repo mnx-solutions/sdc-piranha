@@ -5,6 +5,7 @@ var fs = require('fs');
 var httpSignature = require('http-signature');
 var key = fs.readFileSync(config.elb.keyPath).toString(); 
 var pem = require('pem');
+var multiparty = require('multiparty');
 module.exports = function execute(scope, app) {
     var client = restify.createJsonClient({
         url: config.elb.url,
@@ -124,31 +125,36 @@ module.exports = function execute(scope, app) {
     }
 
     app.post('/certificates', function (req, res) {
-        if (!req.files || !req.files.certificate) {
-            res.send(400, 'Certificate not found');
-            return;
-        }
-        var data = {};
-        var pemSrc = fs.readFileSync(req.files.certificate.path, 'utf8');
-        data.private = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
-        if (!data.private) {
-            res.send(400, 'Private key not found in PEM');
-            return;
-        }
-        pem.getPublicKey(pemSrc, function (err, publicKey) {
-            if (err) {
-                res.send(400, 'Public key not found in PEM: ' + err);
+        var form = new multiparty.Form();
+        form.parse(req, function(err, fieldsObject, filesObject) {
+            if (err || !filesObject.certificate) {
+                res.send(400, 'Certificate not found');
                 return;
             }
-            data.public = publicKey;
-            client.post('/certificates', data, function (err, creq, cres, obj) {
+            var data = {};
+            var pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
+            data.private = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
+            if (!data.private) {
+                res.send(400, 'Private key not found in PEM');
+                return;
+            }
+            pem.getPublicKey(pemSrc, function (err, publicKey) {
                 if (err) {
-                    res.send(400, err);
+                    res.send(400, 'Public key not found in PEM: ' + err);
                     return;
                 }
-                res.json(obj);
+                data.public = publicKey;
+                client.post('/certificates', data, function (err, creq, cres, obj) {
+                    if (err) {
+                        res.send(400, err);
+                        return;
+                    }
+                    res.json(obj);
+                });
             });
         });
+
+
     });
     console.log(config.elb);
 };
