@@ -210,9 +210,6 @@ module.exports = function execute(scope) {
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
         call.log.info('Handling list datacenters event');
-        //call.cloud.listDatacenters(call.done.bind(call));
-
-        console.log('.----------------------------');
         call.cloud.listDatacenters(function (err, datacenters) {
             if (err) {
                 call.log.debug('Unable to list datacenters');
