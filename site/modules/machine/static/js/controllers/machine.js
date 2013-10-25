@@ -143,6 +143,20 @@
                 }
             );
 
+            $scope.$watch('machines', function (machines) {
+                $q.when(Machine.machine(machineid)).then(
+                    function (machine) {
+                        $scope.machine = machine;
+
+                        if ($scope.features.firewall === 'enabled') {
+                            Machine.listFirewallRules(machine.id).then(function (rules) {
+                                $scope.firewallRules = rules;
+                            });
+                        }
+                    }
+                );
+            }, true);
+
             $scope.packages = Package.package();
 
             $q.when($scope.machine, function (m) {
