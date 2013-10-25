@@ -125,23 +125,23 @@
                 },
                 {
                     id: 'datacenter',
-                    name: 'Datacenter',
+                    name: 'Data Center',
                     sequence: 2
                 },
                 {
                     id: 'created',
-                    name: 'Created at',
-                    getClass: function (type) {
-                        if (type === 'header') {
-                            return 'span3';
-                        }
-                        return 'span3 machine-list-content';
-                    },
+	                name: 'Created',
+	                getClass: function (type) {
+		                if(type === 'header') {
+			                return 'span3';
+		                }
+		                return 'span3 machine-list-content';
+	                },
                     sequence: 3
                 },
                 {
                     id: 'ips',
-                    name: 'IP-s',
+                    name: 'IP',
                     type: 'html',
                     _getter: function (machine) {
                         if (!ng.isArray(machine.ips)) {
@@ -180,12 +180,12 @@
                 {
                     id: '_Dataset',
                     id2: 'name',
-                    name: "Image name",
+                    name: "Image Name",
                     sequence: 3
                 },
                 {
                     id: 'ips',
-                    name: 'IP-s',
+                    name: 'IP',
                     sequence: 4
                 }
             ];

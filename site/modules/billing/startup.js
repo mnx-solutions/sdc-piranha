@@ -45,10 +45,21 @@ module.exports = function execute(scope, callback) {
         call.log.debug('Calling addPaymentMethod');
 
         function error(err, resp, msg) {
-            call.log.error(msg || 'Failed to save to zuora', err, resp && resp.reasons);
+	        var logObj = {
+		        err: err
+	        };
+	        if(resp && resp.reasons) {
+		        logObj.zuoraErr = resp.reasons;
+	        }
+	        var lvl = 'error';
+	        if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
+		        || !err.statusCode) {
+				lvl = 'info';
+	        }
+	        call.log[lvl](logObj, msg || 'Failed to save to zuora');
             zHelpers.updateErrorList(scope, resp, function () {
                 err.zuora = err.zuora || resp;
-                call.done(err);
+                call.done(err, true);
             });
         }
 
