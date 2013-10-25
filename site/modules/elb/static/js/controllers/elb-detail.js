@@ -31,7 +31,8 @@
                     return collector;
                 }
 
-                $q.all([service.getBalancer(balancerId), service.getMachines(), service.getBalancerUsage(balancerId)]).then(function (results) {
+                $q.all([service.getBalancer(balancerId), service.getMachines(),
+                        service.getBalancerUsage(balancerId)]).then(function (results) {
                     $scope.server = results[0];
                     var hostNames = {}, machines = results[1][0].machines, usage = results[2];
 
@@ -58,5 +59,5 @@
                 };
 
             }]
-    );
+        );
 }(window.JP.getModule('elb')));

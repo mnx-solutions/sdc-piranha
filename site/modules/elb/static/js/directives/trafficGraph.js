@@ -8,7 +8,7 @@
             transclude: true,
             replace: true,
             scope: {
-                traffic:'=trafficgrid'
+                traffic: '=trafficgrid'
             },
 
             link: function ($scope, $element, $attrs) {
@@ -56,7 +56,6 @@
                                 data: outbound,
                                 name: 'outbound'
                             }
-
                         ]
                     }));
 
@@ -67,7 +66,7 @@
                     $element.prepend(scatterPlot.element.firstChild);
 
                     if ($attrs.title) {
-                        $element.prepend('<div style="position: absolute;padding-left: 8px;">'+$attrs.title+'</div>')
+                        $element.prepend('<div style="position: absolute; padding-left: 8px;">' + $attrs.title + '</div>')
                     }
 
                     new Rickshaw.Graph.HoverDetail({
@@ -76,7 +75,7 @@
 
                     var legend = new Rickshaw.Graph.Legend({
                         graph: graph,
-                        element: $('<div>').get()[0]//document.getElementById('legend')
+                        element: $('<div>').get()[0]
                     });
 
                     new Rickshaw.Graph.Behavior.Series.Toggle({
@@ -105,7 +104,6 @@
 
                     drawGraph(data.inbound, data.outbound);
                 });
-
             }
         };
     });

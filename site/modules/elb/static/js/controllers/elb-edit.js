@@ -2,7 +2,8 @@
 
 (function (app) {
     app.controller(
-        'elb.EditController', ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'elb.Service',
+        'elb.EditController',
+        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'elb.Service',
             function ($scope, requestContext, localization, $location, util, $q, service) {
                 localization.bind('elb', $scope);
                 requestContext.setUpRenderContext('elb.edit', $scope, {
@@ -28,8 +29,7 @@
                     $scope.server.machines = $scope.server.machines || [];
                     var elbMachines = $scope.server.machines.map(function (machine) {
                         return machine.host;
-                    });
-                    var hosts = {};
+                    }), hosts = {};
                     balancers.forEach(function (balancer) {
                         (balancer.machines || []).forEach(function (machine) {
                             hosts[machine.host] = hosts[machine.host] || [];
@@ -37,7 +37,7 @@
                         });
                     });
 
-                    //TODO: We should only list machines form current DC
+                    //TODO: We should list machines from current/all DCs
                     $scope.machines = machines[0].machines.map(function (machine) {
                         if (elbMachines.indexOf(machine.primaryIp) !== -1) {
                             machine.selected = true;

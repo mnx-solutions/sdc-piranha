@@ -132,10 +132,9 @@ module.exports = function execute(scope, app) {
                 res.send(400, 'Certificate not found');
                 return;
             }
-            var data = {};
-            var pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
+            var data = {}, pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
             data['private'] = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
-            if (!data.private) {
+            if (!data['private']) {
                 res.send(400, 'Private key not found in PEM');
                 return;
             }
@@ -154,7 +153,5 @@ module.exports = function execute(scope, app) {
                 });
             });
         });
-
-
     });
 };

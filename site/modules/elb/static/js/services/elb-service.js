@@ -6,10 +6,9 @@
         '$http',
         '$q',
         function (serverTab, $http, $q) {
-            var service = {};
-            var hardDataCenter = 'us-west-x';
+            var service = {}, hardDataCenter = 'us-west-x';
 
-            function _filterBalancer(balancer) {
+            function filterBalancer(balancer) {
                 balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
                     return machine.status === 'up';
                 });
@@ -19,7 +18,7 @@
             service.getBalancer = function getBalancer(balancerId) {
                 var d = $q.defer();
                 $http.get('elb/item/' + (balancerId || '')).success(function (data) {
-                    d.resolve(_filterBalancer(data));
+                    d.resolve(filterBalancer(data));
                 }).error(function (err) {
                     d.reject(err);
                 });
@@ -85,7 +84,7 @@
                 var d = $q.defer();
                 $http.get('elb/list').success(function (data) {
                     data = data.map(function (balancer) {
-                        return _filterBalancer(balancer);
+                        return filterBalancer(balancer);
                     });
                     d.resolve(data);
                 }).error(function (err) {
@@ -190,7 +189,6 @@
                 });
                 return d.promise;
             };
-
             return service;
         }]);
 }(window.JP.getModule('elb')));
