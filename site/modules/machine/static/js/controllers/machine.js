@@ -134,10 +134,11 @@
                     Machine.updateMachines();
                     Machine.machine(machineid).then(function (m) {
                         $scope.machine = m;
-
-                        Machine.listFirewallRules(m.id).then(function (rules) {
-                            $scope.firewallRules = rules;
-                        });
+                        if ($scope.features.firewall === 'enabled') {
+                            Machine.listFirewallRules(m.id).then(function (rules) {
+                                $scope.firewallRules = rules;
+                            });
+                        }
                     });
                 }
             );
