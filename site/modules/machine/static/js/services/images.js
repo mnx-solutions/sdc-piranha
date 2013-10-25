@@ -13,7 +13,11 @@
             var service = {};
             var images = {index: {}, job: {}, list: [], search: {}};
 
-            service.updateImages = function (force) {
+            service.updateImages = function (force, showPublic) {
+                if(!showPublic) {
+                    showPublic = false;
+                }
+
                 if (!images.list.final || force) {
                     images.job = serverTab.call({
                         name: 'ImagesList',
@@ -22,6 +26,10 @@
                             var data = job.__read();
 
                             function handleChunk (image) {
+
+                                if(!showPublic && image.public !== false) {
+                                    return;
+                                }
 
                                 if(!images.index[image.id]) {
                                     images.index[image.id] = image;
