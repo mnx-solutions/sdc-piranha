@@ -21,8 +21,6 @@
                 title: localization.translate(null, 'machine', 'Image List')
             });
 
-            $scope.images = Image.image(true);
-
             $scope.loading = true;
 
             $scope.$watch('images.final', function (final) {
