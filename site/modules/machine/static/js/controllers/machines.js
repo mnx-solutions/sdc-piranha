@@ -130,13 +130,14 @@
                 },
                 {
                     id: 'created',
-	                name: 'Created',
-	                getClass: function (type) {
-		                if(type === 'header') {
-			                return 'span3';
-		                }
-		                return 'span3 machine-list-content';
-	                },
+                    name: 'Created',
+                    getClass: function (type) {
+                        if(type === 'header') {
+                            return 'span3';
+                        }
+                        return 'span3 machine-list-content';
+                    },
+
                     sequence: 3
                 },
                 {

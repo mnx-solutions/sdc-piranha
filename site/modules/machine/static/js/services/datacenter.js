@@ -29,7 +29,6 @@
                         var result = job.__read();
                         console
                         result.forEach(function (datacenter) {
-                            console.log(datacenter);
                             var old = null;
 
                             if (datacenters.index[datacenter.name]) {
