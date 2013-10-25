@@ -270,25 +270,27 @@
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
                                 }).then(function (account) {
-                                    notification.push(null, { type: 'success' },
+                                    notification.replace('addPaymentMethod', { type: 'success' },
                                         localization.translate(null,
                                             'billing',
                                             'Billing information updated'
                                         )
                                     );
 
+                                    window.scrollTo(0,0);
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.loading = false;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
                                 }, function () {
-                                    notification.push(null, { type: 'error' },
+                                    notification.push('addPaymentMethod', { type: 'error' },
                                         localization.translate(null,
                                             'billing',
                                             'Billing information not updated'
                                         )
                                     );
+                                    window.scrollTo(0,0);
                                 });
                                 return;
                             }
@@ -342,7 +344,7 @@
                                 addedMessage = ' ' + localization.translate(null, 'billing', 'We are unable to verify your credit card details.');
                             }
 
-                            notification.push(null, { type: 'error' }, message + addedMessage);
+                            notification.replace('addPaymentMethod', { type: 'error' }, message + addedMessage);
                             window.scrollTo(0,0);
                         });
                     };

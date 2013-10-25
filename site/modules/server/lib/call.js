@@ -175,10 +175,12 @@ function Call(opts) {
             }
         },
         error: {
-            value: function(err) {
+            value: function(err, noLog) {
                 if (err) {
                     self.err = err;
-                    self.log.error(err);
+	                if(!noLog) {
+		                self.log.error(err);
+	                }
                     self.status('error');
                 }
             }
@@ -187,7 +189,7 @@ function Call(opts) {
             value: function(err, result, done) { // Hack to ensure that events are binded
                 function update() {
                     if (err) {
-                        return self.error(err);
+                        return self.error(err, result);
                     }
                     self.result(result, done);
                 }
