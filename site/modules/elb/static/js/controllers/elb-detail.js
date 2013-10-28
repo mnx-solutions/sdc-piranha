@@ -9,8 +9,8 @@
                     title: localization.translate(null, 'elb', 'Load Balancer Details')
                 });
 
-	            //FIXME: We do not use comma separated declaration. Each var separately!
-                var balancerId = requestContext.getParam('balancerId'), traffic = {
+                var balancerId = requestContext.getParam('balancerId');
+                var traffic = {
                     inbound: [{x: 0, y: 0}],
                     outbound: [{x: 0, y: 0}]
                 };
@@ -35,25 +35,23 @@
                 $q.all([service.getBalancer(balancerId), service.getMachines(),
                         service.getBalancerUsage(balancerId)]).then(function (results) {
                     $scope.server = results[0];
-	                //FIXME: We do not use comma separated declaration. Each var separately!
-                    var hostNames = {}, machines = results[1][0].machines, usage = results[2];
+                    var machines = results[1][0].machines;
+                    var usage = results[2];
 
                     prepareTrafficData(usage[0].slice(-1), 'bytesin', traffic.inbound);
                     prepareTrafficData(usage[1].slice(-1), 'bytesout', traffic.outbound);
                     $scope.traffic = traffic;
 
-                    //FIXME: Readability
-                    //FIXME: Doesn't this run the risk of things being overwritten?
+                    var hostDetails = {};
                     machines.forEach(function (machine) {
-                        hostNames[machine.primaryIp] = machine.name;
-                        hostNames[machine.name] = machine.id;
-                        hostNames[machine.dc] = machine.datacenter;
+                        hostDetails[machine.primaryIp] = {
+                            id: machine.id,
+                            name: machine.name,
+                            datacenter: machine.datacenter
+                        };
                     });
-	                //FIXME: Readibility
                     $scope.server.machines = ($scope.server.machines || []).map(function (machine) {
-                        machine.name = hostNames[machine.host] || '';
-                        machine.id = hostNames[machine.name] || '';
-                        machine.datacenter = hostNames[machine.dc] || '';
+                        machine.details = hostDetails[machine.host];
                         return machine;
                     });
                     $scope.detailLoaded = true;

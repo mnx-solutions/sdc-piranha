@@ -9,7 +9,7 @@
                 model: '='
             },
             link: function (scope, element, attrs) {
-	            //FIXME: Seriously?? We have to support IE7 and up. This will only work in 10+
+                //FIXME: Seriously?? We have to support IE7 and up. This will only work in 10+
                 function uploadCertificate(file) {
                     var data = new FormData(), xhr = new XMLHttpRequest();
                     xhr.onerror = function () {
@@ -32,21 +32,21 @@
                     xhr.send(data);
                 }
 
-	            //FIXME: Do not mix jquery randomly - use angular
+                //FIXME: Do not mix jquery randomly - use angular
                 $('.certUpload').change(function (e) {
                     if (e.target.files && e.target.files.length) {
                         uploadCertificate(e.target.files[0]);
                     }
                 });
-	            //FIXME: Do not mix jquery randomly - use angular
+                //FIXME: Do not mix jquery randomly - use angular
                 scope.upload = function () {
                     $('.certUpload').click();
                     $('.btn-joyent-blue').blur();
                 };
-	            //FIXME: Do not mix jquery randomly - use angular
+                //FIXME: Do not mix jquery randomly - use angular
                 scope.remove = function () {
                     $('.certUpload').val('');
-	                //FIXME: Why this hardcode?
+                    // Can't set null certificate in ELBAPI, using empty GUID as empty/not-set certificate
                     scope.model = '00000000-0000-0000-0000-000000000000';
                 };
             }

@@ -19,98 +19,6 @@ module.exports = function execute(scope, app) {
         }
     });
 
-    app.get('/list', function (req, res) {
-        client.get('/loadbalancers', function getLoadBalancers(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
-    app.get('/item', function (req, res) {
-        res.json({});
-    });
-
-    app.post('/item', function (req, res) {
-        client.post('/loadbalancers', req.body, function addLoadBalancer(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
-    app.get('/item/:id', function (req, res) {
-        client.get('/loadbalancers/' + req.params.id, function getLoadBalancer(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
-    app.put('/item/:id', function (req, res) {
-        client.put('/loadbalancers/' + req.params.id, req.body, function updateLoadBalancer(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
-    app.delete('/item/:id', function (req, res) {
-        client.del('/loadbalancers/' + req.params.id, function deleteLoadBalancer(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
-    app.get('/item/:id/usage', function (req, res) {
-        client.get('/loadbalancers/' + req.params.id + '/usage?metric=bytesin', function getBytesIn(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            var result = [obj];
-            client.get('/loadbalancers/' + req.params.id + '/usage?metric=bytesout', function getBytesOut(err, creq, cres, obj) {
-                if (err) {
-                    res.send(400, err);
-                    return;
-                }
-                result.push(obj);
-                res.json(result);
-            });
-        });
-    });
-
-    app.put('/item/:id/machines/:host', function (req, res) {
-        client.put('/loadbalancers/' + req.params.id + '/machines/' + req.params.host, function addMachine(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
-    app.delete('/item/:id/machines/:host', function (req, res) {
-        client.del('/loadbalancers/' + req.params.id + '/machines/' + req.params.host, function deleteMachine(err, creq, cres, obj) {
-            if (err) {
-                res.send(400, err);
-                return;
-            }
-            res.json(obj);
-        });
-    });
-
     function parsePemSection(pemSrc, sectionName) {
         var start = -1, end = -1, startMatch, endMatch;
         if ((startMatch = pemSrc.match(new RegExp('\\-+BEGIN ' + sectionName + '\\-+$', 'm')))) {
@@ -132,7 +40,8 @@ module.exports = function execute(scope, app) {
                 res.send(400, 'Certificate not found');
                 return;
             }
-            var data = {}, pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
+            var data = {};
+            var pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
             data['private'] = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
             if (!data['private']) {
                 res.send(400, 'Private key not found in PEM');

@@ -57,8 +57,8 @@
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="machine in server.machines">
-                    <td><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a></td>
-                    <td>{{machine.datacenter}}</td>
+                    <td><a href="#!/compute/instance/{{machine.details.id}}">{{machine.details.name}}</a></td>
+                    <td>{{machine.details.datacenter}}</td>
                     <td>{{machine.status}}</td>
                 </tr>
                 </tbody>
