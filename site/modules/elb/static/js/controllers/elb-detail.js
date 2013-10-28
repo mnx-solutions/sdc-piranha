@@ -42,19 +42,16 @@
                     prepareTrafficData(usage[1].slice(-1), 'bytesout', traffic.outbound);
                     $scope.traffic = traffic;
 
-                    //FIXME: Readability
-                    //FIXME: Doesn't this run the risk of things being overwritten?
-                    var hostNames = {};
+                    var hostDetails = {};
                     machines.forEach(function (machine) {
-                        hostNames[machine.primaryIp] = machine.name;
-                        hostNames[machine.name] = machine.id;
-                        hostNames[machine.dc] = machine.datacenter;
+                        hostDetails[machine.primaryIp] = {
+                            id: machine.id,
+                            name: machine.name,
+                            datacenter: machine.datacenter
+                        };
                     });
-                    //FIXME: Readibility
                     $scope.server.machines = ($scope.server.machines || []).map(function (machine) {
-                        machine.name = hostNames[machine.host] || '';
-                        machine.id = hostNames[machine.name] || '';
-                        machine.datacenter = hostNames[machine.dc] || '';
+                        machine.details = hostDetails[machine.host];
                         return machine;
                     });
                     $scope.detailLoaded = true;

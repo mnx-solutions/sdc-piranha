@@ -63,10 +63,14 @@
                 ];
 
                 $scope.protocolSelect = function (protocolValue) {
-                    //FIXME: Inefficient and not very readable
-                    $scope.protocolSelected = $scope.protocols.filter(function (protocol) {
-                        return protocol.value === protocolValue;
-                    })[0] || $scope.protocols[0];
+                    $scope.protocolSelected = $scope.protocols[0];
+                    $scope.protocols.some(function (protocol) {
+                        if (protocol.value === protocolValue) {
+                            $scope.protocolSelected = protocol;
+                            return true;
+                        }
+                        return false;
+                    });
                 };
 
                 $scope.hcDelaySelect = function (name) {
