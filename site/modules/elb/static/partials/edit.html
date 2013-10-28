@@ -1,6 +1,6 @@
 <div class="container" data-ng-controller="elb.EditController">
     <div data-notification></div>
-    <form name="editForm">
+    <div data-ng-form name="editForm">
         <ul class="breadcrumb">
             <li class="ng-scope">
                 <a href="#!/elb" class="ng-binding">
@@ -155,18 +155,18 @@
             </div>
         </div>
 
-    <span class="span12" data-ng-show="allLoading">
-        <p class="logo_riverbed pull-left" data-translate>Powered by</p>
-        <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
-                class="btn btn-joyent-blue pull-right edit-btn-pos" data-translate="">
-            <span class="ng-scope" data-translate>Save</span>
-        </button>
-        <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
-                class="btn btn-joyent-blue pull-right delete-btn-pos" data-translate="">
-            <span class="ng-scope" data-translate>Delete</span>
-        </button>
-        <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>
-    </span>
+        <span class="span12" data-ng-show="allLoading">
+            <p class="logo_riverbed pull-left" data-translate>Powered by</p>
+            <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
+                    class="btn btn-joyent-blue pull-right edit-btn-pos" data-translate="">
+                <span class="ng-scope" data-translate>Save</span>
+            </button>
+            <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
+                    class="btn btn-joyent-blue pull-right delete-btn-pos" data-translate="">
+                <span class="ng-scope" data-translate>Delete</span>
+            </button>
+            <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>
+        </span>
 
-    </form>
+    </div>
 </div>
