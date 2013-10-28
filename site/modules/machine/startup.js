@@ -87,6 +87,13 @@ module.exports = function execute(scope) {
             }
         });
 
+	    // Clean null networks
+	    if(machine.networks) {
+		    machine.networks = machine.networks.filter(function (network) {
+			    return !!network;
+		    });
+	    }
+
         return machine;
     }
 
@@ -256,10 +263,11 @@ module.exports = function execute(scope) {
                             } else if (json !== oldTags) {
                                 clearInterval(timer);
                                 clearTimeout(timer2);
-                                call.done(new Error('Other call changed tags'));
+	                              call.log.warn('Other call changed tags, returning new tags %j', tags);
+                                call.done(null, tags);
                             }
                         } else {
-                            call.log.error('Cloud polling failed for %s , %o', tagsErr);
+                            call.log.error('Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
                         }
                     }, undefined, true);
                 }, config.polling.machineTags);
@@ -323,7 +331,7 @@ module.exports = function execute(scope) {
                 call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
             }
 
-            client.getMachine(machineId, function (err, machine) {
+            client.getMachine(machineId, true, function (err, machine) {
                 if (err) {
                     // in case we're waiting for deletion a http 410(Gone) is good enough
                     if (err.statusCode === 410 && state === 'deleted') {
@@ -347,6 +355,8 @@ module.exports = function execute(scope) {
                     // machine state check
                     if (state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
+                        machine.metadata.credentials = handleCredentials(machine);
+	                    machine = filterFields(machine);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
@@ -386,7 +396,7 @@ module.exports = function execute(scope) {
                     }
                 }
 
-            }, null, null, true);
+            }, null, true);
         }, config.polling.machineState);
 
         // timeout, so we wouldn't poll cloudapi forever
@@ -488,7 +498,7 @@ module.exports = function execute(scope) {
                     pollForMachineStateChange(cloud, call, (60 * 60 * 1000), null, null, options.name);
                 } else {
                     call.log.error(err);
-                    call.immediate(err);
+                    call.done(err);
                 }
 
             });
@@ -509,7 +519,7 @@ module.exports = function execute(scope) {
                 name: call.data.name,
                 package: call.data.package,
                 dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
-                networks: call.data.networks,
+                networks: call.data.networks
             };
 
             call.log.info({options: options}, 'Creating machine %s', call.data.name);
@@ -592,7 +602,7 @@ module.exports = function execute(scope) {
         }, (timeout || 5 * 60 * 1000));
     }
 
-    if(!config.features || config.features.image !== 'disabled') {
+    if(!config.features || config.features.imageCreate !== 'disabled') {
 
         /* CreateImage */
         server.onCall('ImageCreate', {
@@ -623,6 +633,9 @@ module.exports = function execute(scope) {
 
             }
         });
+    }
+
+    if(!config.features || config.features.imageUse !== 'disabled') {
 
         /* DeleteImage */
         server.onCall('ImageDelete', {
@@ -648,11 +661,48 @@ module.exports = function execute(scope) {
             }
         });
 
-        /*images list */
-        /* listNetworks */
+        /* images list */
         server.onCall('ImagesList', function(call) {
-            call.log.info('Retrieving images list');
-            call.cloud.listImages(call.done.bind(call));
+
+            var datacenters = call.cloud.listDatacenters();
+            var keys = Object.keys(datacenters);
+            var count = keys.length;
+
+            keys.forEach(function (name) {
+                var cloud = call.cloud.separate(name);
+                call.log.debug('List images for datacenter %s', name);
+
+                cloud.listImages(function (err, images) {
+                    var response = {
+                        name: name,
+                        status: 'pending',
+                        images: []
+                    };
+
+                    if (err) {
+                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                        response.status = 'error';
+                        response.error = err;
+                    } else {
+                        /* add datacenter to every image */
+                        images.forEach(function (image) {
+                            image.datacenter = name;
+                        });
+
+                        response.status = 'complete';
+                        response.images = images;
+
+                        call.log.debug('List images succeeded for datacenter %s', name);
+                    }
+                    call.update(null, response);
+
+                    if (--count === 0) {
+                        call.done();
+                    }
+                });
+            });
+
+
         });
     }
 };

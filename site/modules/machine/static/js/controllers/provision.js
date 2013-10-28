@@ -10,6 +10,7 @@
         'Package',
         'Account',
         'Network',
+        'Image',
         '$dialog',
         '$location',
         'localization',
@@ -17,11 +18,18 @@
         '$$track',
         'util',
 
-        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
+
+            $scope.preSelectedImageId = requestContext.getParam('imageid');
+            $scope.preSelectedImage = null;
+
+            if($scope.preSelectedImageId)
+                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+
 
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
@@ -31,16 +39,18 @@
             $scope.packageType = null;
             $scope.loading = true;
 
+            $scope.reConfigurable = false;
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
             $scope.visibilityFilter = 'Public';
 
             $q.all([
-                $q.when($scope.keys),
-                $q.when($scope.datacenters)
-            ]).then(function () {
-                $scope.loading = false;
-            });
+                    $q.when($scope.keys),
+                    $q.when($scope.datacenters),
+                    $q.when($scope.preSelectedImage)
+                ]).then(function () {
+                    $scope.loading = false;
+                });
 
             $scope.data = {};
             $scope.selectedDataset = null;
@@ -226,7 +236,6 @@
                         });
                     }
 
-                    $scope.showReConfigure = true;
                     $scope.slideCarousel();
                 });
 
@@ -261,7 +270,7 @@
             };
 
             $scope.filterDatasetsByVisibility = function(item) {
-                if($scope.features.image !== 'disabled'
+                if($scope.features.imageUse !== 'disabled'
                     && ($scope.selectedVisibility === false
                     || $scope.selectedVisibility === true)
                     && item.public !== $scope.selectedVisibility) {
@@ -408,12 +417,25 @@
                         $scope.packages = packages;
                         $scope.searchPackages = '';
                         $scope.reloading = (--count > 0);
+
+
+                        if($scope.preSelectedImageId)
+                            $scope.selectDataset($scope.preSelectedImageId);
                     });
+
                 }
             });
 
+            // if we have pre-selected image, select correct datacenter
             if (!$scope.data.datacenter) {
-                $scope.selectDatacenter();
+                if($scope.preSelectedImageId) {
+                    // wait until we have the pre-selected image (loading will not finish before it anyway)
+                    $q.when($scope.preSelectedImage).then(function(image) {
+                        $scope.selectDatacenter(image.datacenter);
+                    });
+                } else {
+                    $scope.selectDatacenter();
+                }
             }
 
             if (!$scope.data.opsys) {
@@ -426,13 +448,16 @@
 
             ng.element('.carousel').bind({
                 slide: function() {
-                    // ng.element('.item .header').hide();
+                    $scope.reConfigurable = !$scope.reConfigurable;
                 },
                 slid:function(){
-                    // ng.element('.item .header').show();
+                    if($scope.reConfigurable) {
+                        $scope.$apply(function (){
+                            $scope.showReConfigure = true;
+                        })
+                    }
                 }
             });
-
             $scope.slideCarousel = function() {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
 

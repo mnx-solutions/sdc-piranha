@@ -2,6 +2,7 @@
 
 var config = require('easy-config');
 var restify = require('restify');
+var metadata = require('./lib/metadata');
 
 if (!config.billing.url && !config.billing.noUpdate) {
     throw new Error('Billing.url must be defined in the config');
@@ -22,11 +23,15 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
 }
 
 module.exports = function execute(scope, register) {
-    register('Metadata', require('./lib/metadata'));
+    register('Metadata', metadata);
 
     //Compatibility with old version
     var api = {};
-    var steps = [ 'start', 'phone', 'billing','ssh' ];
+    var steps = [ 'start', 'phone', 'billing', 'ssh' ];
+
+    function _nextStep(step) {
+        return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step)+1];
+    }
 
     function getFromBilling(method, userId, cb) {
         jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {
@@ -59,7 +64,7 @@ module.exports = function execute(scope, register) {
             if (errs.length === 0) { // The only error was provisioning flag - letting through
                 state = 'completed';
             } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') { // There was only a billing error
-                state = 'billing';
+                state = 'phone'; // which means billing
             }
 
             cb(null, state);
@@ -67,13 +72,25 @@ module.exports = function execute(scope, register) {
     }
 
     api.addSshKey = function (req, name, keyData, cb) {
-        req.cloud.createKey({name: name, key: keyData}, function (err, resp) {
+        req.cloud.createKey({name: name, key: keyData}, function (err) {
             if(err) {
                 cb(err);
                 return;
             }
 
-            cb(null);
+            api.getSignupStep(req, function(err, step) {
+                if(step !== 'completed' || step !== 'complete') {
+                    api.setMinProgress(req, 'ssh', function(err) {
+                        if(err) {
+                            cb(err);
+                        }
+
+                        cb(null);
+                    });
+                } else {
+                    cb(null);
+                }
+            });
         });
     };
 
@@ -81,7 +98,7 @@ module.exports = function execute(scope, register) {
         var start = Date.now();
         if (req.session.userId) {
             getFromBilling('provision', req.session.userId, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
             return;
@@ -89,54 +106,83 @@ module.exports = function execute(scope, register) {
 
         req.cloud.getAccount(function (accErr, account) {
             if (accErr) {
-                scope.log.error('Failed to get info from cloudApi', accErr);
+                req.log.error('Failed to get info from cloudApi', accErr);
                 cb(accErr);
                 return;
             }
 
             var start = Date.now();
             getFromBilling('provision', account.id, function (err, state) {
-                scope.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
         });
     };
 
     api.getSignupStep = function (call, cb) {
-        scope.log.trace('getting signup step');
-
         var req = (call.done && call.req) || call;
-
+        req.log.trace('getting signup step');
         function end(step) {
-            if (steps.indexOf(step) === (steps.length - 1)) {
-                step = 'completed';
-            }
-
-            scope.log.trace('signup step is %s', step);
+            req.log.trace('signup step is %s', step);
             cb(null, step);
         }
 
         if (req.session.signupStep) {
-            end(req.session.signupStep);
+            setImmediate(end.bind(end, req.session.signupStep));
+            return;
+        }
+        function getMetadata(userId) {
+            metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
+                if (!err && storedStep) {
+                    call.log.info('Got signupStep from metadata: %s; landing at: %s',
+                        storedStep, _nextStep(storedStep));
+
+                    end(storedStep);
+                } else {
+                    api.getAccountVal(req, function (err, value) {
+                        if (err) {
+                            cb(err);
+                            return;
+                        }
+
+                        call.log.info('User landing in step:', _nextStep(value));
+                        end(value);
+                    });
+                }
+            });
+        }
+        if(req.session.userId) {
+            getMetadata(req.session.userId);
             return;
         }
 
-        api.getAccountVal(req, function (err, value) {
-            if (err) {
-                cb(err);
+        req.cloud.getAccount(function (accErr, account) {
+            if (accErr) {
+                req.log.error('Failed to get info from cloudApi', accErr);
+                cb(accErr);
                 return;
             }
-
-            end(value);
+            req.session.userId = account.id;
+            getMetadata(account.id);
         });
     };
 
     api.setSignupStep = function (call, step, cb) {
-        function updateBilling(req) {
-            if (step !== 'billing') {
-                setImmediate(cb);
-                return; // no zuora account yet created
+        function updateStep(req) {
+            if (req.session) {
+                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function () {
+                    call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
+                });
             }
+            // Billing server is updated on billing step and forward
+            if (steps.indexOf(step) >= steps.indexOf('billing')) {
+                updateBilling(req);
+            } else {
+                setImmediate(cb);
+            }
+        }
+
+        function updateBilling(req) {
             function update(userId) {
                 jsonClient.get('/update/' + userId, function (err) {
                     if (err) {
@@ -159,7 +205,6 @@ module.exports = function execute(scope, register) {
                             call.log.error(zuoraErr,'Something went wrong with billing API');
                         }
                     }
-
                     //No error handling or nothing here, just let it pass.
                     cb();
                 });
@@ -172,7 +217,7 @@ module.exports = function execute(scope, register) {
 
             req.cloud.getAccount(function (accErr, account) {
                 if (accErr) {
-                    scope.log.error('Failed to get info from cloudApi', accErr);
+                    req.log.error('Failed to get info from cloudApi', accErr);
                     cb(accErr);
                     return;
                 }
@@ -184,13 +229,13 @@ module.exports = function execute(scope, register) {
         if (!call.req && !call.done) { // Not a call, but request
             call.session.signupStep = step;
             call.session.save();
-            updateBilling(call);
+            updateStep(call);
         } else {
             call.session(function (req) {
                 req.session.signupStep = step;
                 req.session.save();
             });
-            updateBilling(call.req);
+            updateStep(call.req);
         }
     };
 
@@ -214,8 +259,6 @@ module.exports = function execute(scope, register) {
             if (steps.indexOf(step) === (steps.length -1)) { // Last step
                 step = 'completed';
             }
-
-            scope.log.info('Completed step %s, moving to step %s', oldStep, step);
             api.setSignupStep(call, step, cb);
         });
     };

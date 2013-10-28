@@ -71,6 +71,16 @@
              * @returns {Object}
              */
             getNotifications: function () {
+                return this._groupNotifications(notifications);
+            },
+
+            /**
+             * Return grouped notifications
+             *
+             * @param notifications
+             * @return {Object}
+             */
+            _groupNotifications: function(notifications) {
                 var groups = {};
 
                 // Group by context
@@ -91,6 +101,58 @@
 
                 return groups;
             },
+            /**
+             * Adds new notification to local storage
+             *
+             * @param notification
+             * @returns {boolean}
+             */
+            _addPersistentNotification: function(notification) {
+                if(!localStorage) {
+                    return false;
+                }
+
+                // using try / catch here because localStorage json might be invalid
+                try {
+                    var persistentNotifications = JSON.parse(localStorage.notifications);
+                } catch(e) {
+                }
+
+                var notifs = (persistentNotifications || []);
+                notifs.unshift(notification);
+                localStorage.notifications = JSON.stringify(notifs);
+
+                return true;
+            },
+            /**
+             * Clears persistent notifications
+             * @returns {boolean}
+             */
+            _clearPersistent: function() {
+                if(!localStorage) {
+                    return false;
+                }
+
+                localStorage.notifications = "";
+            },
+            /**
+             * Return persistent notifications
+             *
+             * @return {Object}
+             */
+            getPersistentNotifications: function() {
+                // persistent notifications will be deleted once shown
+                var notifs = {};
+                try {
+                    notifs = JSON.parse(localStorage.notifications);
+                } catch(e) {
+                    return notifs;
+                }
+
+                this._clearPersistent();
+                return this._groupNotifications(notifs);
+            },
+
 
             /**
              * Push a new notification
@@ -106,7 +168,8 @@
                     type: 'success',
                     force: false,
                     timeout: -1,
-                    group: true
+                    group: true,
+                    persistent: false
                 };
 
                 if (message === undefined) {
@@ -141,14 +204,26 @@
                     })(id, opts.group);
                 }
 
-                notifications.unshift({
-                    id: id,
-                    ctx: ctx,
-                    opts: opts,
-                    message: message
-                });
+                if(opts.persistent) {
+                    this._addPersistentNotification({
+                        id: id,
+                        ctx: ctx,
+                        opts: opts,
+                        message: message
+                    });
+                } else {
+                    notifications.unshift({
+                        id: id,
+                        ctx: ctx,
+                        opts: opts,
+                        message: message
+                    });
+                }
 
-                $rootScope.$broadcast('notification:change');
+                // don't broadcast change if persistent notification is added.
+                if(!opts.persistent) {
+                    $rootScope.$broadcast('notification:change');
+                }
             },
 
             /**
@@ -215,14 +290,14 @@
              * Dismiss given notifications
              *
              * @public
-             * @param _notifications
+             * @param _notifications dismissPersistent
              */
-            dismissNotifications: function (_notifications) {
+            dismissNotifications: function (_notifications, dismissPersistent) {
                 var changed = false;
 
                 _notifications.forEach(function (n1) {
                     notifications.forEach(function (n2, index) {
-                        if (n1.id === n2.id) {
+                        if (n1.id === n2.id && (!notifications[index].opts.persistent || dismissPersistent)) {
                             changed = true;
                             notifications.splice(index, 1);
                         }

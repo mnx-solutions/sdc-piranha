@@ -1,0 +1,5 @@
+{
+    "ip" : ["10.10.10.10", "11.1.11.1"],
+    "domain" : ["evil.com"],
+    "country" : ["CUB","IRN","PRK","SDN","SYR","CHN","SRB","VNM"]
+}

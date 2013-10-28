@@ -5,34 +5,35 @@
         'elb.IndexController',
         ['$scope', 'requestContext', 'localization', '$location', 'elb.Service',
                 function ($scope, requestContext, localization, $location, service) {
-            localization.bind('elb', $scope);
-            requestContext.setUpRenderContext('elb.index', $scope, {
-                title: localization.translate(null, 'elb', 'Enable Load Balancing')
-            });
+                localization.bind('elb', $scope);
+                requestContext.setUpRenderContext('elb.index', $scope, {
+                    title: localization.translate(null, 'elb', 'Enable Load Balancing')
+                });
 
-            $scope.allLoading = false;
-
-            service.getController().then(function (isEnabled) {
-                if (isEnabled) {
-                    $location.path('/elb/list');
-                }
-                $scope.allLoading = true;
-            })
-
-            $scope.enableElb = function () {
                 $scope.allLoading = false;
-                service.createController().then(function () {
-                    $location.path('/elb/list');
-                }, function (err) {
-                    console.log(err);
+
+                service.getController().then(function (isEnabled) {
+                    if (isEnabled) {
+                        $location.path('/elb/list');
+                    }
                     $scope.allLoading = true;
                 });
-            };
 
-            $scope.licenseAcceptCheck = false;
-            $scope.licenseAccept = function(){
-                $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
-            }
+                $scope.enableElb = function () {
+                    $scope.allLoading = false;
+                    service.createController().then(function () {
+                        $location.path('/elb/list');
+                    }, function (err) {
+                        console.log(err);
+                        $scope.allLoading = true;
+                    });
+                };
 
-        }]);
+                $scope.licenseAcceptCheck = false;
+                $scope.licenseAccept = function () {
+                    $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
+                } //FIXME: Missing semicolon
+
+            }]
+    );
 }(window.JP.getModule('elb')));

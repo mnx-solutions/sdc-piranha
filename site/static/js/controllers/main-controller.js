@@ -14,7 +14,7 @@
         function ($scope, $rootScope, $route, $routeParams, $window, $$track, requestContext, $location) {
             $rootScope.features = window.JP.get('features') || {};
 
-            $scope.windowTitle = 'Joyent Portal';
+            $scope.windowTitle = 'Joyent Cloud';
 
             $scope.setWindowTitle = function (title) {
                 $scope.windowTitle = title;
@@ -54,9 +54,18 @@
                     if (!$route.current.action) {
                         return;
                     }
-
-                    // Update the current request action change.
-                    requestContext.setContext($route.current.action, $routeParams);
+                    // Appropriate redirect for signup steps
+                    var currentStep = $('#signupStep').val();
+                    if (currentStep
+                        && !(currentStep === 'complete' || currentStep === 'completed')
+                        && $route.current.action.indexOf('signup') === -1) {
+                        requestContext.setContext('signup.'+currentStep, $routeParams);
+                    } else if ($scope.features.elb !== 'enabled' && $route.current.action.indexOf('elb') === 0) {
+                        requestContext.setContext('dashboard.index', $routeParams);
+                    } else {
+                        // Update the current request action change.
+                        requestContext.setContext($route.current.action, $routeParams);
+                    }
 
                     // Announce the change in render conditions.
                     $scope.$broadcast('requestContextChanged', requestContext);

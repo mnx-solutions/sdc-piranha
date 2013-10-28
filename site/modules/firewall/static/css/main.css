@@ -1,0 +1,47 @@
+input.ng-valid {
+    border: 1px solid #00b900;
+    color: #00b900;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #a2d573;
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #a2d573;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #a2d573;
+}
+
+input.ng-invalid, input.ng-pristine {
+    border: 1px solid #970805;
+    color: #970805;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #D59392;
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #d59392;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #D59392;
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.rules-content {
+    background-color: #eee;
+}
+
+.width-100 {
+    width: 100%;
+}
+
+.width-10 {
+    width: 10%;
+}
+
+.width-90 {
+    width: 90%;
+}
+
+.control-label {
+    font-weight: bold !important;
+}
+
+.padding-5 {
+    padding: 5px;
+}
+
+.row-height {
+    height: 200px;
+}

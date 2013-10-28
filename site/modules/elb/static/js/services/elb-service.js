@@ -1,4 +1,5 @@
 'use strict';
+//FIXME: Explain why you use direct requests not serverCall?
 
 (function (app) {
     app.factory('elb.Service', [
@@ -6,10 +7,11 @@
         '$http',
         '$q',
         function (serverTab, $http, $q) {
-            var service = {};
-            var hardDataCenter = 'us-west-x';
+	        //FIXME: We do not use comma separated declaration. Each var separately!
+	        //FIXME: Why is datacenter hardcoded?
+            var service = {}, hardDataCenter = 'us-west-x';
 
-            function _filterBalancer(balancer) {
+            function filterBalancer(balancer) {
                 balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
                     return machine.status === 'up';
                 });
@@ -19,7 +21,7 @@
             service.getBalancer = function getBalancer(balancerId) {
                 var d = $q.defer();
                 $http.get('elb/item/' + (balancerId || '')).success(function (data) {
-                    d.resolve(_filterBalancer(data));
+                    d.resolve(filterBalancer(data));
                 }).error(function (err) {
                     d.reject(err);
                 });
@@ -56,6 +58,16 @@
                 return d.promise;
             };
 
+            service.getBalancerUsage = function getBalancerUsage(balancerId) {
+                var d = $q.defer();
+                $http.get('elb/item/' + balancerId + '/usage').success(function (data) {
+                    d.resolve(data);
+                }).error(function (err) {
+                    d.reject(err);
+                });
+                return d.promise;
+            };
+
             service.getMachines = function getMachines() {
                 var d = $q.defer();
                 serverTab.call({
@@ -75,7 +87,7 @@
                 var d = $q.defer();
                 $http.get('elb/list').success(function (data) {
                     data = data.map(function (balancer) {
-                        return _filterBalancer(balancer);
+                        return filterBalancer(balancer);
                     });
                     d.resolve(data);
                 }).error(function (err) {
@@ -110,11 +122,11 @@
                         return machine.name === 'ELBController';
                     });
                 });
-            }
+            };
 
             service.createController = function createController() {
                 var d = $q.defer();
-                // TODO: Change minimal Ubuntu package to STM when ready
+                //TODO: Change minimal Ubuntu package to STM when ready
                 var data = {
                     datacenter: hardDataCenter,
                     dataset: 'd2ba0f30-bbe8-11e2-a9a2-6bc116856d85',
@@ -126,13 +138,14 @@
                     name: 'MachineCreate',
                     data: data,
                     done: function (err, job) {
+	                    //FIXME: Both reject and resolve??
                         if (err) {
                             d.reject(err);
                         }
                         var result = job.__read();
                         d.resolve(result);
                     },
-                    error: function(err, job) {
+                    error: function (err, job) {
                         d.reject(err);
                         return;
                     }
@@ -143,6 +156,7 @@
             service.deleteController = function deleteController() {
                 var d = $q.defer();
                 this.getMachines().then(function (result) {
+	                //FIXME: How does this work if I have another machine with that name? Or more datacenters?
                     var controllerMachines = result[0].machines.filter(function (machine) {
                         return machine.name === 'ELBController';
                     });
@@ -180,7 +194,6 @@
                 });
                 return d.promise;
             };
-
             return service;
         }]);
 }(window.JP.getModule('elb')));

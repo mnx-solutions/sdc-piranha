@@ -13,38 +13,29 @@
         'localization',
         'util',
         '$http',
+        '$location',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Image, localization, util, $http) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Image, localization, util, $http, $location) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.images', $scope, {
                 title: localization.translate(null, 'machine', 'Image List')
             });
 
-            $scope.imagesJob = Image.image(true);
-            $scope.loading = true;
-            $scope.images = [];
+            $scope.images = Image.image(true);
 
-            $q.when($scope.imagesJob).then(
-                function (data) {
-                    // TODO: images promise logic should be like machines
-                    $scope.images.push.apply($scope.images, data);
+            $scope.loading = true;
+
+            $scope.$watch('images.final', function (final) {
+                if(final) {
                     $scope.loading = false;
                 }
-            );
+            });
 
             $scope.$on(
                 'event:forceUpdate',
                 function () {
-                    $scope.imagesJob = Image.image(true);
-                    $q.when($scope.imagesJob).then(
-                        function (data) {
-                            $scope.images = [];
-                            // TODO: images promise logic should be like machines
-                            $scope.images.push.apply($scope.images, data);
-                            $scope.search();
-                            $scope.loading = false;
-                        }
-                    );
+                    $scope.images = Image.image(true);
+                    $scope.search();
                 }
             );
 
@@ -63,6 +54,10 @@
                         $$track.event('image', 'delete');
                         $scope.imageJob = Image.deleteImage(image);
                     });
+            };
+
+            $scope.provisionInstance = function(image) {
+                $location.path('/compute/create/'+ image.id);
             };
 
 
@@ -111,13 +106,32 @@
                     sequence: 3
                 },
                 {
+                    id: 'datacenter',
+                    name: 'Datacenter',
+                    sequence: 4
+                },
+                {
                     id: 'public',
                     name: "Public",
-                    sequence: 4
+                    sequence: 5
                 }
             ];
 
             $scope.gridActionButtons = [
+                {
+                    label: 'Create instance',
+                    disabled: function (object) {
+                        return false;
+                    },
+                    action: function (object) {
+                        $scope.provisionInstance(object);
+                    },
+                    show: function (object) {
+                        return true;
+                    },
+                    tooltip: 'Provision instance using this image.',
+                    sequence: 1
+                },
                 {
                     label: 'Delete',
                     disabled: function (object) {
@@ -130,7 +144,7 @@
                         return !object.public;
                     },
                     tooltip: 'You will not be able to create any instances with this image after this.',
-                    sequence: 1
+                    sequence: 2
                 }
             ];
 

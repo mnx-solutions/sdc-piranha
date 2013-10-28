@@ -3,29 +3,34 @@
 <div data-notification></div>
 
 <div class="page-header">
-    <h1 class="pull-left machine-name" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
-    <form name="instanceRename" class="machine-edit-form">
-        <div class="error"
-             data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
-             data-translate>
-            Invalid machine name
-        </div>
+    <div class="row">
+        <div class="span10">
+            <h1 class="pull-left machine-name hide-overflow" data-ng-class="renameClass()" data-ng-show="!changingName || features.instanceRename == 'disabled'" data-ng-click="enableRename(machine.name)">{{machine.name}}</h1>
+            <form name="instanceRename" class="machine-edit-form">
+                <div class="error"
+                     data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
+                     data-translate>
+                    Invalid machine name
+                </div>
 
-        <div class="error"
-             data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
-             data-translate>
-            Machine name is already in use
+                <div class="error"
+                     data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
+                     data-translate>
+                    Machine name is already in use
+                </div>
+                <div class="pull-left machine-edit" data-ng-show="changingName">
+                    <input class="machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
+                    <div class="btn-group machine-edit-buttons">
+                        <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name || renaming" type="button"><i class="icon-ok"/></button>
+                        <button class="btn" data-ng-click="cancelRename()" data-ng-disabled="renaming" type="button"><i class="icon-remove"/></button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="pull-left machine-edit" data-ng-show="changingName">
-            <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
-            <div class="btn-group machine-edit-buttons">
-                <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
-                <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
-            </div>
+        <div class="span2">
+            <div data-object-state data-object="machine" class="pull-right" data-type="machine"></div>
         </div>
-    </form>
-    <div data-object-state data-object="machine" class="pull-right" data-type="machine"></div>
-	<div class="clearfix"></div>
+    </div>
 </div>
 <div class="row-fluid">
 <div class="machine span8 listing text-medium">
@@ -39,7 +44,7 @@
                     </div>
                     <div data-ng-show="machine.name" class="row-fluid">
                         <span class="key span4" data-translate>Instance name</span>
-                        <span class="value span8 pull-right">{{machine.name}}&nbsp;</span>
+                        <span class="value span8 pull-right hide-overflow">{{machine.name}}&nbsp;</span>
                     </div>
 
                     <div class="row-fluid">
@@ -117,7 +122,7 @@
         </table>
     </fieldset>
 
-    <fieldset data-ng-show="canCreateImage(currentPackageName) && features.image != 'disabled'">
+    <fieldset data-ng-show="canCreateImage(currentPackageName) && features.imageCreate != 'disabled'">
         <legend>
             <span data-translate>Create Image</span>
         </legend>
@@ -151,7 +156,7 @@
             <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
         </div>
     </fieldset>
-    <fieldset>
+    <fieldset data-ng-show="features.instanceTagging != 'disabled'">
         <legend>
             <span data-translate>Tags</span>
             <small data-translate>Add tags for convenient instance searching</small>
@@ -172,7 +177,7 @@
                         <span class="value span5" data-ng-class="{error: o.conflict}">
                             {{o.val}}
                             <span class="icon-trash pull-right delete"
-                                  data-ng-click="removeTag(key)"
+                                  data-ng-click="removes(key)"
                                   data-ng-show="!tagsave"
                                   ></span>
                             <!-- <div class="clearfix"></div> -->
@@ -261,6 +266,24 @@
         </div>
     </fieldset>
 
+    <fieldset data-ng-show="firewallRules.length >= 1">
+        <legend>
+            <span data-translate>Firewall rules</span>
+            <small data-translate></small>
+        </legend>
+
+        <div>
+            <div class="span12">
+                <div data-grid-view
+                     data-props="gridProps"
+                     data-objects="firewallRules"
+                     data-paginated="false"
+                     data-order="gridOrder"
+                     data-filter-all="{{query}}"
+                     data-objects-type="firewall"></div>
+            </div>
+        </div>
+    </fieldset>
 
     <div class="clearfix"></div>
 </div>

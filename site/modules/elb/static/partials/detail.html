@@ -1,18 +1,20 @@
 <div class="container" data-ng-controller="elb.DetailController">
     <ul class="breadcrumb">
         <li class="ng-scope">
-            <a href="#!/elb" data-translate="" data-translate-expression="true" class="ng-binding">
-                <span class="ng-scope ng-binding">Load Balancers</span>
+            <a href="#!/elb" class="ng-binding">
+                <span class="ng-scope ng-binding" data-translate>Load Balancers</span>
             </a>
-            <span  class="divider">/</span>
+            <span class="divider">/</span>
         </li>
         <li class="ng-scope active">
-            <span class="ng-binding" > Load Balancer Details</span>
+            <span class="ng-binding" data-translate>Load Balancer Details</span>
         </li>
     </ul>
 
     <div class="page-header">
-        <h1 class="pull-left" data-ng-show="detailLoaded" data-translate>Load Balancer: {{server.name}}: {{server.host}}</h1>
+        <h1 class="pull-left" data-ng-show="detailLoaded" data-translate>Load Balancer: {{server.name}}:
+            {{server.host}}</h1>
+
         <div class="clearfix"></div>
     </div>
     <div class="loading-large" data-ng-hide="detailLoaded"></div>
@@ -20,19 +22,19 @@
     <div class="row-fluid lb-edit" data-ng-show="detailLoaded">
         <div class="span12 lb-line_allwidth">
             <div class="span3">
-                <span class="lb-label">Protocol: </span>
-                <span >&nbsp;&nbsp;<b>{{server.protocol | uppercase}}</b></span>
+                <span class="lb-label" data-translate>Protocol: </span>
+                <span>&nbsp;&nbsp;<b>{{server.protocol | uppercase}}</b></span>
             </div>
             <div class="span3">
-                <span class="lb-label">External port:</span>
+                <span class="lb-label" data-translate>External port:</span>
                 <span>&nbsp;<b>{{server.fromPort}}</b></span>
             </div>
             <div class="span3">
-                <span class="lb-label">Internal port:</span>
+                <span class="lb-label" data-translate>Internal port:</span>
                 <span>&nbsp;<b>{{server.toPort}}</b></span>
             </div>
             <div class="span3">
-                <span class="lb-label">Overall Health: </span>
+                <span class="lb-label" data-translate>Overall Health: </span>
                 <span>&nbsp;&nbsp;<b>{{server.machinesUp.length}}/{{server.machines.length}}</b></span>
             </div>
         </div>
@@ -42,14 +44,20 @@
             <table class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                 <tr>
-                    <th class="table-title sortable"><div class="block">Machine Name</div>
-                    <th class="table-title sortable"><div class="block">Data Center</div>
-                    <th class="table-title sortable"><div class="block">Health Status</div>
+                    <th class="table-title sortable">
+                        <div class="block" data-translate>Machine Name</div>
+                    </th>
+                    <th class="table-title sortable">
+                        <div class="block" data-translate>Data Center</div>
+                    </th>
+                    <th class="table-title sortable">
+                        <div class="block" data-translate>Health Status</div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="machine in server.machines">
-                    <td><a href="#!/instance/details/{{machine.id}}">{{machine.name}}</a></td>
+                    <td><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a></td>
                     <td>{{machine.datacenter}}</td>
                     <td>{{machine.status}}</td>
                 </tr>
@@ -58,19 +66,13 @@
         </div>
         <div class="clearfix"></div>
 
-        <div class="span6 img1">
-            <p>Traffic</p><br>
-            <span class=""></span>
-        </div>
-
-        <div class="span6 img2">
-            <p>Response Time per Instance</p><br>
-            <span class=""></span>
+        <div class="span6 img1" trafficGrid="traffic" title="Traffic">
         </div>
     </div>
 
     <span class="span12" data-ng-show="detailLoaded">
-        <p class="logo_riverbed pull-left">Powered by</p>
-        <button data-ng-click="edit()" class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 20px 30px 10px;"><span class="ng-scope">Edit</span></button>
+        <p class="logo_riverbed pull-left" data-translate>Powered by</p>
+        <button data-ng-click="edit()" class="btn btn-joyent-blue pull-right"
+                style="margin: -20px 20px 30px 10px;"><span class="ng-scope" data-translate>Edit</span></button>
     </span>
 </div>

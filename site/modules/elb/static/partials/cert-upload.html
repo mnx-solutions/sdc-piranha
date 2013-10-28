@@ -1,3 +1,9 @@
 <input type="file" class="certUpload" style="display: none">
-<button data-ng-hide="model" data-ng-click="upload()" class="btn btn-joyent-blue pull-right"><span class="ng-scope">Upload Certificate</span></button>
-<button data-ng-show="model" data-ng-click="remove()" class="btn btn-joyent-blue pull-right"><span class="ng-scope">Remove Certificate</span></button>
+<button data-ng-hide="model && model != '00000000-0000-0000-0000-000000000000'" data-ng-click="upload()"
+        class="btn btn-joyent-blue pull-right">
+    <span class="ng-scope" data-translate>Upload Certificate</span>
+</button>
+<button data-ng-show="model && model != '00000000-0000-0000-0000-000000000000'" data-ng-click="remove()"
+        class="btn btn-joyent-blue pull-right">
+    <span class="ng-scope" data-translate>Remove Certificate</span>
+</button>

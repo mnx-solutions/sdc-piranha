@@ -275,7 +275,7 @@ dialogModule.provider("$dialog", function(){
       // * `label`: the label of the button
       // * `cssClass`: additional css class(es) to apply to the button for styling
       messageBox: function(title, message, buttons, templateUrl){
-        return new Dialog({templateUrl: (templateUrl || '/static/partials/dialog.html'), controller: 'MessageBoxController', resolve:
+      var dlg = new Dialog({templateUrl: (templateUrl || '/static/partials/dialog.html'), controller: 'MessageBoxController', resolve:
           {model: function() {
             return {
               title: title,
@@ -285,6 +285,20 @@ dialogModule.provider("$dialog", function(){
             };
           }
         }});
+        var _originalOpen = dlg.open, _originalClose = dlg.close;
+        dlg.open = function () {
+          if (typeof _gaq !== 'undefined') {
+            _gaq.push(["_trackEvent", "Dialog", "Open " + title]);
+          }
+          return _originalOpen.apply(this, arguments);
+        };
+        dlg.close = function () {
+          if (typeof _gaq !== 'undefined') {
+            _gaq.push(["_trackEvent", "Dialog", "Close " + title]);
+          }
+          return _originalClose.apply(this, arguments);
+        };
+        return dlg;
       }
     };
   }];

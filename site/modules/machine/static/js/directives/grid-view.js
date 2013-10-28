@@ -2,13 +2,19 @@
 
 (function (ng, app) {
     app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
-        $scope.getLastPage = function (update) {
-            var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
-            if(update) {
-                $scope.lastPage = lastPage;
+        $scope.getLastPage = function (update, newValue, oldValue) {
+            if ($scope.objects) {
+                var lastPage =  Math.ceil($filter('filter')(newValue || $scope.objects, $scope.matchesFilter).length / $scope.perPage);
+
+                if(update && lastPage) {
+                    $scope.lastPage = lastPage;
+                }
+
+                return lastPage;
+
             }
-            return lastPage;
         };
+
         $scope.$watch('objects', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
@@ -71,7 +77,7 @@
                         return false;
                     }
 
-                    var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                    var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                     if (ng.isNumber(subject)) {
                         subject = subject.toString();
@@ -88,7 +94,7 @@
                     return false;
                 }
 
-                var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                 if (ng.isNumber(subject)) {
                     subject = subject.toString();
@@ -148,6 +154,9 @@
             if(!object) {
                 return $scope.actionButtons;
             }
+	        if(!$scope.actionButtons) {
+		        return [];
+	        }
 
             return $scope.actionButtons.filter(function (btn) {
                 if(btn.show === undefined) {
@@ -162,6 +171,7 @@
         };
     }])
     .constant('gridConfig', {
+        paginated: true,
         perPage: 15,
         page: 1,
         showPages: 5,
@@ -185,6 +195,7 @@
             templateUrl: 'machine/static/partials/grid-view.html',
             replace: true,
             link: function($scope, element, attrs) {
+                $scope.paginated = ng.isDefined(attrs.paginated) ? $scope.$eval(attrs.paginated) : gridConfig.paginated;
                 $scope.perPage = ng.isDefined(attrs.perPage) ? $scope.$eval(attrs.perPage) : gridConfig.perPage;
                 $scope.showPages = ng.isDefined(attrs.showPages) ? $scope.$eval(attrs.showPages) : gridConfig.showPages;
                 $scope.page = $scope.page || gridConfig.page;
@@ -193,7 +204,17 @@
 
                 $scope.props.forEach(function (el) {
                     el.active = true;
-                    if(!el.id2) {
+	                if(el._getter) {
+		                el.order = el._getter;
+		                el.rorder = function (obj) {
+			                var elem = el._getter(obj) + '';
+			                var next = '';
+			                for(var i = 0; i < elem.length; i++) {
+				                next += String.fromCharCode(255 - elem.charCodeAt(i));
+			                }
+			                return next;
+		                };
+	                } else if(!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {

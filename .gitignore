@@ -9,7 +9,8 @@ lib-cov
 *.DS_Store
 .idea
 
-config.dev.json
+config.*.json
+!config.blacklist.json
 
 pids
 logs
@@ -19,5 +20,6 @@ results
 node_modules
 nbproject
 site/modules/cms/data/old/*
+var/errors.json
 
 npm-debug.log

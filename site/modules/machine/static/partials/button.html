@@ -1,12 +1,13 @@
 <button role="button"
-        class="btn btn-mini button tooltip-hover"
+        class="btn button tooltip-hover"
         data-ng-disabled="isDisabled(object)"
         data-ng-click="doAction(object)"
+        data-ng-class="getClass(object) || 'btn-mini'"
         data-toggle="tooltip"
         data-placement="right"
         data-html="true"
         data-original-title="{{tooltip}}"
         data-translate-attributes="data-original-title"
         data-translate-value>
-    {{label}}
+    {{getLabel(object) || label}}
 </button>
