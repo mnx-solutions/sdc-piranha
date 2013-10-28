@@ -1,6 +1,22 @@
 'use strict';
 
 (function (app) {
+    // filters out invoices with != "Posted" state
+    app.filter('hideNotPosted', function() {
+        return function(invoices) {
+            if(invoices) {
+                for(var i = 0;i < invoices.length;i++) {
+                    if(invoices[i].status !== 'Posted') {
+                        invoices.splice(i, 1);
+                    }
+                }
+                return invoices;
+            } else {
+                return invoices;
+            }
+        };
+    });
+
     app.controller(
         'Account.InvoicesController', [
             '$scope',
