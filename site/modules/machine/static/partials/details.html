@@ -193,6 +193,7 @@
                                 <span class="span9">
                                     <input type="text"
                                            placeholder="Key"
+                                           data-tag
                                            data-translate="placeholder"
                                            data-ng-model="o.key"
                                            data-ng-required="key != tagnr"
@@ -207,15 +208,16 @@
                                 <span class="span9">
                                     <input type="text"
                                            placeholder="Value"
+                                           data-tag
                                            data-translate="placeholder"
                                            data-ng-model="o.val"
                                            data-ng-required="key != tagnr"
                                            data-ng-disabled="tagsave">
 
-                                                                <span class="icon-trash pull-right delete"
-                                                                      data-ng-click="removeTag(key)"
-                                                                      data-ng-show="key != tagnr && !tagsave">
-                                                                </span>
+                                    <span class="icon-trash pull-right delete"
+                                          data-ng-click="removeTag(key)"
+                                          data-ng-show="key != tagnr && !tagsave">
+                                    </span>
                                 </span>
                             </span>
                         </div>
@@ -229,7 +231,7 @@
                     <button class="btn btn-joyent-blue pull-right"
                             data-ng-click="clickSaveTags(machine.id)"
                             data-translate
-                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
+                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagForm.$pristine || tagsave">Save</button>
                     <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
                 </div>
             </form>
