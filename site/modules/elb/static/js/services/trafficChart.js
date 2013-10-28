@@ -2,7 +2,7 @@
 
 (function (app) {
     app.factory('elb.trafficChart', function () {
-        return function($element, title, traffic) {
+        return function ($element, title, traffic) {
             function createConfig(config) {
                 return angular.extend({
                     stroke: true,
@@ -14,29 +14,35 @@
                 }, config);
             }
             var data = {
-                inbound: [{x:0, y:0}],
-                outbound: [{x:0, y:0}]
+                inbound: [{x: 0, y: 0}],
+                outbound: [{x: 0, y: 0}]
             };
-            
+
             function setTraffic(traffic) {
-                if (!traffic) return;
-                if (!traffic.inbound) return;
-                if (!traffic.outbound) return;
-                
+                if (!traffic) {
+                    return;
+                }
+                if (!traffic.inbound) {
+                    return;
+                }
+                if (!traffic.outbound) {
+                    return;
+                }
+
                 data.inbound.splice(0);
                 data.outbound.splice(0);
-                
-                traffic.inbound.slice(-16).forEach(function(i) {
+
+                traffic.inbound.slice(-16).forEach(function (i) {
                     data.inbound.push(i);
                 });
-                
-                traffic.outbound.slice(-16).forEach(function(i) {
+
+                traffic.outbound.slice(-16).forEach(function (i) {
                     data.outbound.push(i);
                 });
             }
 
             setTraffic(traffic);
-            
+
             function createSeries(inColor, outColor) {
                 return [
                     {
@@ -49,21 +55,21 @@
                         data: data.outbound,
                         name: 'outbound'
                     }
-                ]
+                ];
             }
-            
+
             var graphConfig = createConfig({
                 element: $element.get()[0],
                 renderer: 'line',
                 series: createSeries('lightblue', 'gray')
             });
-            
+
             var scatterPlotConfig = createConfig({
                 element: document.createElement('div'),
                 renderer: 'scatterplot',
                 series: createSeries('blue', 'black')
             });
-            
+
             var graph = new Rickshaw.Graph(graphConfig);
 
             var scatterPlot = new Rickshaw.Graph(scatterPlotConfig);
@@ -75,7 +81,7 @@
             $element.prepend(scatterPlot.element.firstChild);
 
             if (title) {
-                $element.prepend('<div style="position: absolute; padding-left: 8px;">' + title + '</div>')
+                $element.prepend('<div style="position: absolute; padding-left: 8px;">' + title + '</div>');
             }
             var hoverDetail = new Rickshaw.Graph.HoverDetail({
                 graph: graph
@@ -102,14 +108,14 @@
             });
 
             yAxis.render();
-            
+
             return {
                 setTraffic: setTraffic,
-                update: function() {
+                update: function () {
                     graph.update();
                     scatterPlot.update();
                 }
-            }
-        }
+            };
+        };
     });
 }(window.JP.getModule('elb')));
