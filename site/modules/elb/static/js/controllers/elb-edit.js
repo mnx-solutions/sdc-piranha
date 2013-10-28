@@ -124,7 +124,7 @@
                     //FIXME: Readability
                     min = min || 1;
                     max = max || Infinity;
-                    input.$setValidity('port', !(value % 1) && value >= min && value <= max);
+                    input.$setValidity('port', (value % 1) != 0 && value >= min && value <= max);
                 };
 
                 $scope.delete = function () {
