@@ -1,5 +1,4 @@
 'use strict';
-//FIXME: Explain why you use direct requests not serverCall?
 
 (function (app) {
     app.factory('elb.Service', [
@@ -7,9 +6,9 @@
         '$http',
         '$q',
         function (serverTab, $http, $q) {
-	        //FIXME: We do not use comma separated declaration. Each var separately!
-	        //FIXME: Why is datacenter hardcoded?
-            var service = {}, hardDataCenter = 'us-west-x';
+            var service = {};
+            //TODO: Remove datacenter hardcode once we have UI selection for it
+            var hardDataCenter = 'us-west-x';
 
             function filterBalancer(balancer) {
                 balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
@@ -18,52 +17,91 @@
                 return balancer;
             }
 
+
+
             service.getBalancer = function getBalancer(balancerId) {
                 var d = $q.defer();
-                $http.get('elb/item/' + (balancerId || '')).success(function (data) {
-                    d.resolve(filterBalancer(data));
-                }).error(function (err) {
-                    d.reject(err);
+                serverTab.call({
+                    name: 'LoadBalancerLoad',
+                    data: {
+                        id: balancerId
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(filterBalancer(job.__read()));
+                    }
                 });
                 return d.promise;
             };
 
             service.updateBalancer = function updateBalancer(balancerId, data) {
                 var d = $q.defer();
-                $http.put('elb/item/' + balancerId, data).success(function (data) {
-                    d.resolve(data);
-                }).error(function (err) {
-                    d.reject(err);
+                data.id = balancerId;
+                serverTab.call({
+                    name: 'LoadBalancerUpdate',
+                    data: data,
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
+                    }
                 });
                 return d.promise;
             };
 
             service.addBalancer = function addBalancer(data) {
                 var d = $q.defer();
-                $http.post('elb/item', data).success(function (data) {
-                    d.resolve(data);
-                }).error(function (err) {
-                    d.reject(err);
+                serverTab.call({
+                    name: 'LoadBalancerAdd',
+                    data: data,
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
+                    }
                 });
                 return d.promise;
             };
 
             service.deleteBalancer = function deleteBalancer(balancerId) {
                 var d = $q.defer();
-                $http.delete('elb/item/' + balancerId).success(function (data) {
-                    d.resolve(data);
-                }).error(function (err) {
-                    d.reject(err);
+                serverTab.call({
+                    name: 'LoadBalancerDelete',
+                    data: {
+                        id: balancerId
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
+                    }
                 });
                 return d.promise;
             };
 
             service.getBalancerUsage = function getBalancerUsage(balancerId) {
                 var d = $q.defer();
-                $http.get('elb/item/' + balancerId + '/usage').success(function (data) {
-                    d.resolve(data);
-                }).error(function (err) {
-                    d.reject(err);
+                serverTab.call({
+                    name: 'LoadBalancerUsage',
+                    data: {
+                        id: balancerId
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
+                    }
                 });
                 return d.promise;
             };
@@ -85,34 +123,57 @@
 
             service.getBalancers = function getBalancers() {
                 var d = $q.defer();
-                $http.get('elb/list').success(function (data) {
-                    data = data.map(function (balancer) {
-                        return filterBalancer(balancer);
-                    });
-                    d.resolve(data);
-                }).error(function (err) {
-                    d.reject(err);
+                serverTab.call({
+                    name: 'LoadBalancersList',
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        var balancers = job.__read().map(function (balancer) {
+                            return filterBalancer(balancer);
+                        });
+                        d.resolve(balancers);
+                    }
                 });
                 return d.promise;
             };
 
             service.addMachine = function addMachine(balancerId, host) {
                 var d = $q.defer();
-                $http.put('elb/item/' + balancerId + '/machines/' + encodeURIComponent(host)).success(function (data) {
-                    d.resolve(data);
-                }).error(function (err) {
-                    d.reject(err);
+                serverTab.call({
+                    name: 'LoadBalancerMachineAdd',
+                    data: {
+                        id: balancerId,
+                        host: host
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
+                    }
                 });
                 return d.promise;
             };
 
             service.deleteMachine = function deleteMachine(balancerId, host) {
                 var d = $q.defer();
-                $http.delete('elb/item/' + balancerId + '/machines/' + encodeURIComponent(host)).success(function (data) {
-                    d.resolve(data);
-                }).error(function (err) {
-                        d.reject(err);
-                    });
+                serverTab.call({
+                    name: 'LoadBalancerMachineDelete',
+                    data: {
+                        id: balancerId,
+                        host: host
+                    },
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
+                    }
+                });
                 return d.promise;
             };
 
@@ -138,9 +199,9 @@
                     name: 'MachineCreate',
                     data: data,
                     done: function (err, job) {
-	                    //FIXME: Both reject and resolve??
                         if (err) {
                             d.reject(err);
+                            return;
                         }
                         var result = job.__read();
                         d.resolve(result);
@@ -156,7 +217,7 @@
             service.deleteController = function deleteController() {
                 var d = $q.defer();
                 this.getMachines().then(function (result) {
-	                //FIXME: How does this work if I have another machine with that name? Or more datacenters?
+                    //TODO: Get machine by special package type rather than hardcoded name once image is ready
                     var controllerMachines = result[0].machines.filter(function (machine) {
                         return machine.name === 'ELBController';
                     });

@@ -12,35 +12,37 @@
 
                 $scope.balancerId = requestContext.getParam('balancerId');
                 $scope.server = {};
-	            //FIXME: Naming convetion
-                $scope.hc_delays = [1, 3, 5, 10];
+                $scope.hcDelays = [1, 3, 5, 10];
                 $scope.timeouts = [1, 2, 5, 10, 20];
                 $scope.allLoading = false;
 
-	            //FIXME: Readability has really gone down in this function.
                 $q.all([service.getBalancer($scope.balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
-	                //FIXME: We do not use comma separated declaration. Each var separately!
-                    var currentBalancer = results[0], balancers = results[1], machines = results[2];
-                    $scope.server = currentBalancer;
-                    $scope.protocolSelect($scope.server.protocol);
-	                //FIXME: There are better ways to do this then keep writing $scope.server
-                    $scope.server.fromPort = $scope.server.fromPort || 80;
-                    $scope.server.toPort = $scope.server.toPort || 80;
-                    $scope.server.health = $scope.server.health || {};
-                    $scope.server.health.timeout = $scope.server.health.timeout || 2;
-                    $scope.server.health.delay = $scope.server.health.delay || 5;
-                    $scope.server.health.failThreshold = $scope.server.health.failThreshold || 5;
-                    $scope.server.machines = $scope.server.machines || [];
-	                //FIXME: We do not use comma separated declaration. Each var separately!
-                    var elbMachines = $scope.server.machines.map(function (machine) {
+                    var server = results[0];
+                    var balancers = results[1];
+                    var machines = results[2];
+
+                    // Set defaults
+                    server.fromPort = server.fromPort || 80;
+                    server.toPort = server.toPort || 80;
+                    server.health = server.health || {};
+                    server.health.timeout = server.health.timeout || 2;
+                    server.health.delay = server.health.delay || 5;
+                    server.health.failThreshold = server.health.failThreshold || 5;
+                    server.machines = server.machines || [];
+
+                    var elbMachines = server.machines.map(function (machine) {
                         return machine.host;
-                    }), hosts = {};
+                    });
+                    var hosts = {};
                     balancers.forEach(function (balancer) {
                         (balancer.machines || []).forEach(function (machine) {
                             hosts[machine.host] = hosts[machine.host] || [];
                             hosts[machine.host].push({id: balancer.id, name: balancer.name});
                         });
                     });
+
+                    $scope.server = server;
+                    $scope.protocolSelect(server.protocol);
 
                     //TODO: We should list machines from current/all DCs
                     $scope.machines = machines[0].machines.map(function (machine) {
@@ -61,14 +63,13 @@
                 ];
 
                 $scope.protocolSelect = function (protocolValue) {
-	                //FIXME: Inefficient and not very readable
+                    //FIXME: Inefficient and not very readable
                     $scope.protocolSelected = $scope.protocols.filter(function (protocol) {
                         return protocol.value === protocolValue;
                     })[0] || $scope.protocols[0];
                 };
 
-	            //FIXME: naming convetion
-                $scope.hc_delaySelect = function (name) {
+                $scope.hcDelaySelect = function (name) {
                     $scope.server.health.delay = name;
                 };
                 $scope.timeoutSelect = function (name) {
@@ -78,19 +79,20 @@
                 $scope.save = function () {
                     $scope.saving = true;
                     $scope.server.protocol = $scope.protocolSelected.value;
-	                //FIXME: We do not use comma separated declaration. Each var separately!
                     var selectedMachines = $scope.machines.filter(function (machine) {
                         return machine.selected;
                     }).map(function (machine) {
                         return machine.primaryIp;
-                    }), operations = [];
+                    });
+                    var operations = [];
                     if ($scope.balancerId) {
-	                    //FIXME: We do not use comma separated declaration. Each var separately!
                         var existingMachines = $scope.server.machines.map(function (machine) {
                             return machine.host;
-                        }), machinesToAdd = selectedMachines.filter(function (machine) {
+                        });
+                        var machinesToAdd = selectedMachines.filter(function (machine) {
                             return existingMachines.indexOf(machine) === -1;
-                        }), machinesToDelete = existingMachines.filter(function (machine) {
+                        });
+                        var machinesToDelete = existingMachines.filter(function (machine) {
                             return selectedMachines.indexOf(machine) === -1;
                         });
                         machinesToAdd.forEach(function (machine) {
@@ -112,16 +114,13 @@
                 };
 
                 $scope.validatePort = function (name, min, max) {
-	                //FIXME: We do not use comma separated declaration. Each var separately!
-                    var input = $scope.editForm[name], value = input.$viewValue;
+                    var input = $scope.editForm[name];
+                    var value = input.$viewValue;
 
-	                //FIXME: Readability
+                    //FIXME: Readability
                     min = min || 1;
                     max = max || Infinity;
-                    input.$setValidity('port',
-                        !(value % 1) &&
-                        value >= min && value <= max
-                    );
+                    input.$setValidity('port', !(value % 1) && value >= min && value <= max);
                 };
 
                 $scope.delete = function () {
