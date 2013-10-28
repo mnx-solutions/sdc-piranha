@@ -1,6 +1,7 @@
 'use strict';
 
 (function (app) {
+	//FIXME: Naming convetion - this includes file name
     app.directive('trafficgrid', function () {
         return {
             priority: 500,
@@ -13,7 +14,7 @@
 
             link: function ($scope, $element, $attrs) {
                 function drawGraph(inbound, outbound) {
-
+					//FIXME: Include angular like other services/controllers/directives
                     function createConfig(config) {
                         return angular.extend({
                             stroke: true,
@@ -42,6 +43,7 @@
                             }
                         ]
                     }));
+	                //FIXME: Why mix jquery here
                     var scatterPlot = new Rickshaw.Graph(createConfig({
                         element: $('<div></div>').get()[0],
                         renderer: 'scatterplot',
@@ -68,7 +70,7 @@
                     if ($attrs.title) {
                         $element.prepend('<div style="position: absolute; padding-left: 8px;">' + $attrs.title + '</div>')
                     }
-
+	                //FIXME: Why new object without var?
                     new Rickshaw.Graph.HoverDetail({
                         graph: graph
                     });
@@ -78,6 +80,7 @@
                         element: $('<div>').get()[0]
                     });
 
+	                //FIXME: Why new object without var?
                     new Rickshaw.Graph.Behavior.Series.Toggle({
                         graph: graph,
                         legend: legend

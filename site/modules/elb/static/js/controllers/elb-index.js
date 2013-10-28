@@ -32,7 +32,7 @@
                 $scope.licenseAcceptCheck = false;
                 $scope.licenseAccept = function () {
                     $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
-                }
+                } //FIXME: Missing semicolon
 
             }]
     );

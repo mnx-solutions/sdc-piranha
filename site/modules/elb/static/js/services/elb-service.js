@@ -1,4 +1,5 @@
 'use strict';
+//FIXME: Explain why you use direct requests not serverCall?
 
 (function (app) {
     app.factory('elb.Service', [
@@ -6,6 +7,8 @@
         '$http',
         '$q',
         function (serverTab, $http, $q) {
+	        //FIXME: We do not use comma separated declaration. Each var separately!
+	        //FIXME: Why is datacenter hardcoded?
             var service = {}, hardDataCenter = 'us-west-x';
 
             function filterBalancer(balancer) {
@@ -135,6 +138,7 @@
                     name: 'MachineCreate',
                     data: data,
                     done: function (err, job) {
+	                    //FIXME: Both reject and resolve??
                         if (err) {
                             d.reject(err);
                         }
@@ -152,6 +156,7 @@
             service.deleteController = function deleteController() {
                 var d = $q.defer();
                 this.getMachines().then(function (result) {
+	                //FIXME: How does this work if I have another machine with that name? Or more datacenters?
                     var controllerMachines = result[0].machines.filter(function (machine) {
                         return machine.name === 'ELBController';
                     });
