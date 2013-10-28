@@ -33,11 +33,11 @@
             $scope.changingName = false;
             $scope.newInstanceName = null;
             $scope.networks = [];
+            $scope.defaultSshUser = 'root';
 
 
             // Handle case when machine loading fails or machine uuid is invalid
-            $q.when($scope.machine).then(
-                function () {
+            $q.when($scope.machine).then(function () {
                     $scope.loading = false;
                     $scope.newInstanceName = $scope.machine.name;
                 }, function () {
@@ -176,6 +176,10 @@
                 }
 
                 $scope.dataset.then(function(ds){
+                    if(ds.tags && ds.tags.default_user) {
+                        $scope.defaultSshUser = ds.tags.default_user;
+                    }
+
                     var type = ds.type;
 
                     switch (ds.type) {

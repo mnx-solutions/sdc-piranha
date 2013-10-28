@@ -93,7 +93,7 @@
 
                     <div class="row-fluid" data-ng-show="machine.primaryIps.length">
                         <span class="key span4" data-translate>Login</span>
-                        <span class="value span8 pull-right" data-ng-show="machine.os != 'windows'">ssh root@{{machine.primaryIps[0]}}&nbsp;</span>
+                        <span class="value span8 pull-right" data-ng-show="machine.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIps[0]}}&nbsp;</span>
                         <span class="value span8 pull-right" data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIps[0]}}&nbsp;</span>
                     </div>
                 </div>
