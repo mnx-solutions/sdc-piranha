@@ -2,9 +2,9 @@
 
 (function (ng, app) {
     app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
-        $scope.getLastPage = function (update, newValue, oldValue) {
+        $scope.getLastPage = function (update) {
             if ($scope.objects) {
-                var lastPage =  Math.ceil($filter('filter')(newValue || $scope.objects, $scope.matchesFilter).length / $scope.perPage);
+                var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
 
                 if(update && lastPage) {
                     $scope.lastPage = lastPage;

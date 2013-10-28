@@ -655,14 +655,13 @@
       "from": "easy-config@0.2.x"
     },
     "express-modulizer": {
-      "version": "0.0.28",
-      "from": "express-modulizer@git+ssh://git@github.com:joyent/node-express-modulizer.git",
-      "resolved": "git+ssh://git@github.com:joyent/node-express-modulizer.git#7b2bd9deaac493c1f82fbb2d1fb44113ce919689",
+      "version": "0.0.30",
+      "from": "../node-express-modulizer/",
       "dependencies": {
         "easy-asset": {
-          "version": "0.1.2",
+          "version": "0.1.3",
           "from": "easy-asset@git+ssh://git@github.com:joyent/node-easy-asset.git",
-          "resolved": "git+ssh://git@github.com:joyent/node-easy-asset.git#6515e75c51fc690f543807e4a624b32ec32f808d",
+          "resolved": "git+ssh://git@github.com:joyent/node-easy-asset.git#dcf91302e5f08b380cd3b2777b504a209779525f",
           "dependencies": {
             "mime": {
               "version": "1.2.11",
@@ -687,24 +686,6 @@
                 "tunnel-agent": {
                   "version": "0.3.0",
                   "from": "tunnel-agent@~0.3.0"
-                },
-                "http-signature": {
-                  "version": "0.10.0",
-                  "from": "http-signature@~0.10.0",
-                  "dependencies": {
-                    "assert-plus": {
-                      "version": "0.1.2",
-                      "from": "assert-plus@0.1.2"
-                    },
-                    "asn1": {
-                      "version": "0.1.11",
-                      "from": "asn1@0.1.11"
-                    },
-                    "ctype": {
-                      "version": "0.5.2",
-                      "from": "ctype@0.5.2"
-                    }
-                  }
                 },
                 "hawk": {
                   "version": "1.0.0",
@@ -1203,6 +1184,24 @@
               }
             }
           }
+        }
+      }
+    },
+    "http-signature": {
+      "version": "0.10.0",
+      "from": "http-signature@0.10.0",
+      "dependencies": {
+        "assert-plus": {
+          "version": "0.1.2",
+          "from": "assert-plus@0.1.2"
+        },
+        "asn1": {
+          "version": "0.1.11",
+          "from": "asn1@0.1.11"
+        },
+        "ctype": {
+          "version": "0.5.2",
+          "from": "ctype@0.5.2"
         }
       }
     }
