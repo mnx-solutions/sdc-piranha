@@ -116,6 +116,134 @@
                     });
             };
 
+            $scope.actionButton = function(action){
+                var flag = false;
+                $scope.machines.forEach(function (el) {
+                    if(el.checked){
+                        flag = true;
+                    }
+                });
+
+
+
+
+
+//
+//                if(!$scope.allCheckboxSelected){
+//                    util.error(
+//                        localization.translate(
+//                            $scope,
+//                            null,
+//                            'Error'
+//                        ),
+//                        localization.translate(
+//                            $scope,
+//                            null,
+//                            'No instance selected for the action.'
+//                        ),function(){
+//                            this.close();
+//                        });
+//                }else{
+//                    if(action == 'start') $scope.startSelectedInstances();
+//                    if(action == 'stop') $scope.stopSelectedInstances();
+//                    if(action == 'delete') $scope.deleteSelectedInstances();
+//                    if(action == 'reboot') $scope.rebootSelectedInstances();
+//                }
+            };
+
+            $scope.startSelectedInstances = function(){
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Start instances'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Restart selected instances'
+                    ), function () {
+                        var check = 0;
+                        for (var i =0; i<$scope.machines.length;i++){
+                            if($scope.CheckBoxCur[$scope.machines[i].id]){
+                                Machine.startMachine($scope.machines[i].id);
+                                $$track.event('machine', 'start');
+                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
+                            }
+                        }
+                    });
+
+            };
+
+            $scope.stopSelectedInstances = function(){
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Stop instance'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Stopping selected instances does not stop billing, your instance can be restarted after it is stopped.'
+                    ), function () {
+                        var check = 0;
+                        for (var i =0; i<$scope.machines.length;i++){
+                            if($scope.CheckBoxCur[$scope.machines[i].id]){
+                                Machine.stopMachine($scope.machines[i].id);
+                                $$track.event('machine', 'stop');
+                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
+                            }
+                        }
+                    });
+            };
+
+            $scope.rebootSelectedInstances = function(){
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Restart instance'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Restart selected instances'
+                    ), function() {
+                        var check = 0;
+                        for (var i =0; i<$scope.machines.length;i++){
+                            if($scope.CheckBoxCur[$scope.machines[i].id]){
+                                Machine.rebootMachine($scope.machines[i].id);
+                                $$track.event('machine', 'reboot');
+                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
+                            }
+                        }
+                    });
+            };
+
+            $scope.deleteSelectedInstances = function(){
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete instance'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Destroy the information on this instance and stop billing for selected instances.'
+                    ), function () {
+                        var check = 0;
+                        for (var i =0; i<$scope.machines.length;i++){
+                            if($scope.CheckBoxCur[$scope.machines[i].id]){
+                                Machine.deleteMachine($scope.machines[i].id);
+                                $$track.event('machine', 'delete');
+                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
+                            }
+                        }
+                    });
+            };
+
             $scope.gridOrder = [];
             $scope.gridProps = [
                 {
