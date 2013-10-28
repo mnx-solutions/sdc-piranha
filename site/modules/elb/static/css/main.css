@@ -143,3 +143,68 @@ input.ng-invalid-port{
     border-color: red;
     box-shadow: 0px 0px 6px -1px red;
 }
+.no-display{
+    display: none;
+}
+.edit-btn-pos{
+    margin: -20px 20px 30px 10px;
+}
+.balancer-id{
+    padding-left: 37px;
+}
+.protocol-pos{
+    margin-left: 13px;
+}
+.int-port{
+    margin-top: -10px;
+}
+.hc-conf{
+    margin: 0 0 -10px 0;
+}
+.timeout{
+    margin: 0 0 0 20px;
+}
+.ht-btn-pos{
+    margin-left: -27px;
+}
+.hc-interval{
+    line-height: 30px;
+}
+.failure-threshold{
+    line-height: 15px;
+    margin-left: 28px;
+}
+.table-left-border{
+    border-left: 2px solid #ececec;
+    padding-left: 20px;
+    margin-left: 0;
+}
+.delete-btn-pos{
+    margin: -20px 0 30px 10px;
+}
+.load-pos{
+    width:30px;
+    height:30px;
+    min-width:30px;
+    min-height:30px;
+    margin-top:-20px
+}
+.lb-contr{
+    margin: 0;
+    list-style-type: none;
+}
+.lb-disabled{
+    margin-top: 20px;
+}
+.minus-icon-pos{
+    margin: 1px 0 0 0;
+}
+.eula-space{
+    padding-left: 10px;
+}
+.e-port{
+    margin-left: 3px;
+}
+.i-port{
+    margin-left: 7px;
+}

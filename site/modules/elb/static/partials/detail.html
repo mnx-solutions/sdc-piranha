@@ -23,19 +23,19 @@
         <div class="span12 lb-line_allwidth">
             <div class="span3">
                 <span class="lb-label" data-translate>Protocol: </span>
-                <span>&nbsp;&nbsp;<b>{{server.protocol | uppercase}}</b></span>
+                <span><b class="eula-space">{{server.protocol | uppercase}}</b></span>
             </div>
             <div class="span3">
                 <span class="lb-label" data-translate>External port:</span>
-                <span>&nbsp;<b>{{server.fromPort}}</b></span>
+                <span><b class="eula-space">{{server.fromPort}}</b></span>
             </div>
             <div class="span3">
                 <span class="lb-label" data-translate>Internal port:</span>
-                <span>&nbsp;<b>{{server.toPort}}</b></span>
+                <span><b class="eula-space">{{server.toPort}}</b></span>
             </div>
             <div class="span3">
                 <span class="lb-label" data-translate>Overall Health: </span>
-                <span>&nbsp;&nbsp;<b>{{server.machinesUp.length}}/{{server.machines.length}}</b></span>
+                <span><b class="eula-space">{{server.machinesUp.length}}/{{server.machines.length}}</b></span>
             </div>
         </div>
 
@@ -72,7 +72,6 @@
 
     <span class="span12" data-ng-show="detailLoaded">
         <p class="logo_riverbed pull-left" data-translate>Powered by</p>
-        <button data-ng-click="edit()" class="btn btn-joyent-blue pull-right"
-                style="margin: -20px 20px 30px 10px;"><span class="ng-scope" data-translate>Edit</span></button>
+        <button data-ng-click="edit()" class="btn btn-joyent-blue pull-right edit-btn-pos"><span class="ng-scope" data-translate>Edit</span></button>
     </span>
 </div>

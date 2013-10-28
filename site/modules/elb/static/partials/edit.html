@@ -29,16 +29,15 @@
                 </div>
                 <div data-ng-show="balancerId">
                     <span class="span2" data-translate>IP</span>
-                <span class="span9" style="padding-left: 37px;">
+                <span class="span9 balancer-id">
                     {{server.host}}
                 </span>
                 </div>
                 <div>
                     <span class="span3 lb-label" data-translate>Protocol</span>
-                    <div class="btn-group tooltip-hover span3 dd_margin"
+                    <div class="btn-group tooltip-hover span3 dd_margin protocol-pos"
                          data-toggle="tooltip"
-                         data-placement="bottom"
-                         style="margin-left: 13px;">
+                         data-placement="bottom">
                         <label class="btn dd_btn">{{protocolSelected.name}}</label>
                         <button class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
@@ -55,22 +54,22 @@
                 </div>
                 <div class="clearfix"></div>
                 <div>
-                    <span class="lb-label" data-translate>External port&nbsp;</span>
-                <span class="port-input">
+                    <span class="lb-label" data-translate>External port</span>
+                <span class="port-input e-port">
                     <input name="fromPort" type="text" required data-ng-model="server.fromPort"
                            data-ng-change="validatePort('fromPort', 1, 65535)"/>
                 </span>
                 </div>
-                <div style="margin-top: -10px;">
-                    <span class="lb-label" data-translate>Internal port &nbsp;</span>
-                <span class="port-input">
+                <div class="int-port">
+                    <span class="lb-label" data-translate>Internal port</span>
+                <span class="port-input i-port">
                     <input name="toPort" type="text" required data-ng-model="server.toPort"
                            data-ng-change="validatePort('toPort', 1, 65535)"/>
                 </span>
                 </div>
                 <div class="clearfix"></div>
                 <div class="lb-line"></div>
-                <p class="span12 pull-left" style="margin: 0 0 -10px 0;" data-translate>Health Check configuration</p>
+                <p class="span12 pull-left hc-conf" data-translate>Health Check configuration</p>
 
                 <div class="clearfix"></div>
                 <div style="margin-top: 10px;">
@@ -78,11 +77,10 @@
                 <span class="span3">
                     <input type="text" data-ng-model="server.health.url" class="url-input"/>
                 </span>
-                    <span class="span3 lb-label" style="margin: 0 0 0 20px;" data-translate>Timeout</span>
+                    <span class="span3 lb-label timeout" data-translate>Timeout</span>
 
-                    <div class="btn-group tooltip-hover span3 dd_margin"
+                    <div class="btn-group tooltip-hover span3 dd_margin ht-btn-pos"
                          data-toggle="tooltip"
-                         style="margin-left: -27px;"
                          data-placement="bottom">
                         <label class="btn dd_btn">{{server.health.timeout}} sec</label>
                         <button class="btn dropdown-toggle" data-toggle="dropdown">
@@ -97,7 +95,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div>
-                    <span class="span3" style="line-height: 30px;" data-translate>HC interval</span>
+                    <span class="span3 hc-interval" data-translate>HC interval</span>
                     <div class="btn-group tooltip-hover span3 dd_margin"
                          data-toggle="tooltip"
                          data-placement="bottom">
@@ -111,7 +109,7 @@
                             </li>
                         </ul>
                     </div>
-                    <span class="span3" style="line-height: 15px;margin-left: 28px;" data-translate>Failure Threshold</span>
+                    <span class="span3 failure-threshold" data-translate>Failure Threshold</span>
                 <span class="span2 port-input">
                     <input name="failThreshold" type="text" class="clb_input"
                            data-ng-model="server.health.failThreshold"
@@ -120,7 +118,7 @@
                 </div>
             </div>
 
-            <div class="span7 table_overflow" style="border-left: 2px solid #ececec;padding-left: 20px;margin-left: 0;">
+            <div class="span7 table_overflow table-left-border">
                 <table class="table table-striped table-bordered table-hover table-full-width">
                     <thead>
                     <tr>
@@ -159,16 +157,14 @@
     <span class="span12" data-ng-show="allLoading">
         <p class="logo_riverbed pull-left" data-translate>Powered by</p>
         <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
-                class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 20px 30px 10px;">
+                class="btn btn-joyent-blue pull-right edit-btn-pos" data-translate="">
             <span class="ng-scope" data-translate>Save</span>
         </button>
         <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
-                class="btn btn-joyent-blue pull-right" data-translate="" style="margin: -20px 0 30px 10px;">
+                class="btn btn-joyent-blue pull-right delete-btn-pos" data-translate="">
             <span class="ng-scope" data-translate>Delete</span>
         </button>
-        <div class="pull-right loading-medium"
-             style="width:30px; height:30px;min-width:30px;min-height:30px;margin-top:-20px"
-             data-ng-show="saving"></div>
+        <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>
     </span>
 
     </form>
