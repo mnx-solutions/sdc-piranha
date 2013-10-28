@@ -424,8 +424,7 @@
                     notification.push(m.id + '-tags', { type: 'error' },
                         localization.translate(null,
                             'machine',
-                            'Unable to save tags: {{message}}',
-                            { message: (err && err.message) || '' }
+                            'Unable to save tags'
                         )
                     );
                 });
