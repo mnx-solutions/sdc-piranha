@@ -404,6 +404,7 @@
     height: 16px;
     float: left;
     margin-left: -16px;
+    margin-top: 0 !important;
 }
 .icon-sort-up {
     background-image: url("../img/sort_asc.png") !important;
@@ -478,7 +479,9 @@ div.checker, div.checker span, div.checker input {
     width: 19px;
     height: 19px;
     display: inline-block;
-    margin-right: 5px;}
+    margin-right: 5px;
+    margin-top: 3px;
+}
 div.checker span {
     display: -moz-inline-box;
     display: inline-block;
@@ -638,13 +641,15 @@ ul.dropdown-menu{
     background-color: white !important;
 }
 .select_position{
-    padding-top: 14px;
-    color: #666666;
+    padding-top: 20px;
+    color: #666;
+    margin-left: -15px;
 }
 .page_row_info{
-    padding-left: 20px;
-    padding-top: 0;
+    /*padding-left: 20px;*/
+    /*padding-top: 0;*/
     float: left;
+    margin-left: -16px;
 }
 .page_row_info form{
     margin: 0;
@@ -917,8 +922,8 @@ ul.dropdown-menu{
     vertical-align: top;
 }
 .container_details{
-    width: 1000px;
-    padding-left: 48px;
+    width: 982px;
+    padding-left: 18px;
     padding-bottom: 55px;
 }
 .status .loading-small, .details_btn_block .loading-small {
@@ -958,7 +963,7 @@ ul.dropdown-menu{
     margin-bottom: 20px;
 }
 .item-list-container{
-    /*width: 1000px;*/
+    width: 996px;
     overflow: auto;
 }
 /*.basic-instance-box:hover{*/

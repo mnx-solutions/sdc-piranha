@@ -121,28 +121,112 @@
                 {
                     id: 'label',
                     name: 'Name',
-                    sequence: 1
+                    sequence: 1,
+                    active: true
                 },
                 {
                     id: 'datacenter',
                     name: 'Datacenter',
-                    sequence: 2
+                    sequence: 2,
+                    active: true
                 },
                 {
                     id: 'created',
                     name: 'Created at',
-                    sequence: 3
+                    sequence: 3,
+                    active: true
                 },
                 {
-                    id: 'ips',
-                    name: 'IP-s',
-                    sequence: 4
+                    id: 'primaryIp',
+                    name: 'IP',
+                    sequence: 4,
+                    active: true
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 5
+                    sequence: 5,
+                    active: true
+                },
+                {
+                    id: 'updated',
+                    name: 'Updated',
+                    sequence: 6,
+                    active: false
+                },
+                {
+                    id: 'id',
+                    name: 'ID',
+                    sequence: 7,
+                    active: false
+                },
+                {
+                    id: 'image',
+                    name: 'Image',
+                    sequence: 8,
+                    active: false
+                },
+                {
+                    id: 'type',
+                    name: 'Type',
+                    sequence: 9,
+                    active: false
+                },
+                {
+                    id: 'memory',
+                    name: 'Memory',
+                    sequence: 10,
+                    active: false
+                },
+                {
+                    id: 'disk',
+                    name: 'Disk',
+                    sequence: 11,
+                    active: false
+                },
+                {
+                    id: 'tags',
+                    name: 'Tags',
+                    sequence: 12,
+                    active: false
+                },
+                {
+                    id: 'credentials',
+                    name: 'Credentials',
+                    sequence: 13,
+                    active: false
+                },
+                {
+                    id: 'dataset',
+                    name: 'Dataset',
+                    sequence: 14,
+                    active: false
+                },
+                {
+                    id: 'firewall_enabled',
+                    name: 'Firewall Enabled',
+                    sequence: 15,
+                    active: false
+                },
+                {
+                    id: 'package',
+                    name: 'Package',
+                    sequence: 16,
+                    active: false
+                },
+                {
+                    id: '$$hashKey',
+                    name: '$$hashKey',
+                    sequence: 17,
+                    active: false
+                },
+                {
+                    id: 'ips',
+                    name: 'IP-s',
+                    sequence: 18,
+                    active: false
                 }
+
             ];
             $scope.gridDetailProps = [
                 {
@@ -218,9 +302,7 @@
             $scope.exportFields = {
                 ignore: ['metadata']
             };
-
         }
-
 
     ]);
 }(window.angular, window.JP.getModule('Machine')));

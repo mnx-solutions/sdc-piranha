@@ -26,7 +26,7 @@
             "concat": ["use-strict-rm"],
             "cache": "all",
             "ext": "js",
-            "transform": ["use-strict-add","uglify-js","gzip"]
+            "transform": ["use-strict-add","gzip"]
         },
         "css": {
             "concat":true,

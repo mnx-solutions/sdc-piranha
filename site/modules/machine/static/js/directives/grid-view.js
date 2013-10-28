@@ -32,6 +32,16 @@
             $scope.perPage = $scope.oldPerPage;
         };
 
+        $scope.showCurrentMachines = function (){
+            if(this.selectInstances == 'All'){
+                $scope.perPage = 10000;
+                return;
+            }
+            if(this.selectInstances != undefined){
+                $scope.perPage = this.selectInstances;
+            }else $scope.perPage = 5;
+        };
+
         $scope.openDetails = {};
 
         $scope.toggleDetails = function (id) {
@@ -65,6 +75,14 @@
             } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
                 $scope.order.push(reverse ? prop.rorder : prop.order);
             }
+
+            $scope.props.forEach(function (el) {
+                if(el.name == prop.name){
+                    el.columnActive = true;
+                } else {
+                    el.columnActive = false;
+                }
+            })
         };
 
         $scope.matchesFilter = function (obj) {
@@ -164,9 +182,45 @@
                 return !!btn.show;
             });
         };
+
+        if($scope.checkedCheckBox == undefined) $scope.checkedCheckBox = false;
+        $scope.selectAllCheckbox = function(){
+            $scope.checkedCheckBox = ($scope.checkedCheckBox) ? false : true;
+            $scope.objects.forEach(function (el) {
+                el.checked = $scope.checkedCheckBox;
+            });
+        };
+
+        $scope.selectCheckbox = function(id){
+            var checkedFlag = 0;
+            $scope.objects.forEach(function (el) {
+                if(el.id == id){
+                    if(!el.job || (el.job && el.job.finished)){
+                        el.checked = (el.checked) ? false : true;
+                    }
+                }
+                if(el.checked && el.checked != undefined){
+                    checkedFlag += 1;
+                }
+            });
+            if(checkedFlag > 0) $scope.checkedCheckBox = false;
+            if(checkedFlag == $scope.objects.length && $scope.objects.length > 0) $scope.checkedCheckBox = true;
+        };
+
+        $scope.selectColumnsCheckbox = function(id){
+            $scope.props.forEach(function (el) {
+                if(el.id == id){
+                    el.active = (el.active) ? false : true;
+                }
+            });
+        };
+
+        $scope.selectCheckbox();
+        $scope.showCurrentMachines();
+
     }])
     .constant('gridConfig', {
-        perPage: 15,
+        perPage: 5,
         page: 1,
         showPages: 5,
         order: [],
@@ -189,14 +243,13 @@
             templateUrl: 'machine/static/partials/grid-view.html',
             replace: true,
             link: function($scope, element, attrs) {
-                $scope.perPage = ng.isDefined(attrs.perPage) ? $scope.$eval(attrs.perPage) : gridConfig.perPage;
-                $scope.showPages = ng.isDefined(attrs.showPages) ? $scope.$eval(attrs.showPages) : gridConfig.showPages;
+                $scope.perPage = ng.isDefined(attrs.perPage) ? gridConfig.perPage : $scope.$eval(attrs.perPage);
+                $scope.showPages = ng.isDefined(attrs.showPages) ? gridConfig.showPages : $scope.$eval(attrs.showPages);
                 $scope.page = $scope.page || gridConfig.page;
                 $scope.order = $scope.order || gridConfig.order;
-                $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
+                $scope.propOn = ng.isDefined(attrs.propOn) ? gridConfig.propOn : $scope.$eval(attrs.propOn);
 
                 $scope.props.forEach(function (el) {
-                    el.active = true;
                     if(!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
@@ -205,7 +258,6 @@
                         el.rorder = '-' + el.id + '.' + el.id2;
                     }
                 });
-
             }
         };
     }])
