@@ -203,8 +203,8 @@ input.ng-invalid-port{
     padding-left: 10px;
 }
 .e-port{
-    margin-left: 3px;
+    margin-top: 10px;
 }
-.i-port{
-    margin-left: 7px;
+.port-m{
+    margin-left: 3px;
 }

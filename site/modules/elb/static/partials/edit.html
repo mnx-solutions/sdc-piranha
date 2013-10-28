@@ -23,15 +23,15 @@
             <div class="span5">
                 <div class="">
                     <span class="span2 lb-label" data-translate>Name</span>
-                <span class="span9 name-input">
-                    <input type="text" required data-ng-model="server.name"/>
-                </span>
+                    <span class="span9 name-input">
+                        <input type="text" required data-ng-model="server.name"/>
+                    </span>
                 </div>
                 <div data-ng-show="balancerId">
                     <span class="span2" data-translate>IP</span>
-                <span class="span9 balancer-id">
-                    {{server.host}}
-                </span>
+                    <span class="span9 balancer-id">
+                        {{server.host}}
+                    </span>
                 </div>
                 <div>
                     <span class="span3 lb-label" data-translate>Protocol</span>
@@ -47,25 +47,26 @@
                                 <a data-ng-click="protocolSelect(protocol.value)">{{protocol.name}}</a>
                             </li>
                         </ul>
-                    <span class="upload_btn" data-ng-show="protocolSelected.name == 'HTTPS'">
-                        <span data-cert-upload model="server.certificate"></span>
-                    </span>
+                        <span class="upload_btn" data-ng-show="protocolSelected.name == 'HTTPS'">
+                            <span data-cert-upload model="server.certificate"></span>
+                        </span>
                     </div>
                 </div>
                 <div class="clearfix"></div>
                 <div>
-                    <span class="lb-label" data-translate>External port</span>
-                <span class="port-input e-port">
-                    <input name="fromPort" type="text" required data-ng-model="server.fromPort"
-                           data-ng-change="validatePort('fromPort', 1, 65535)"/>
-                </span>
+                    <span class="span3 lb-label e-port" data-translate>External port</span>
+                    <span class="port-input port-m">
+                        <input name="fromPort" type="text" required data-ng-model="server.fromPort"
+                               data-ng-change="validatePort('fromPort', 1, 65535)"/>
+                    </span>
                 </div>
+                <div class="clearfix"></div>
                 <div class="int-port">
-                    <span class="lb-label" data-translate>Internal port</span>
-                <span class="port-input i-port">
-                    <input name="toPort" type="text" required data-ng-model="server.toPort"
-                           data-ng-change="validatePort('toPort', 1, 65535)"/>
-                </span>
+                    <span class="span3 lb-label e-port" data-translate>Internal port</span>
+                    <span class="port-input port-m">
+                        <input name="toPort" type="text" required data-ng-model="server.toPort"
+                               data-ng-change="validatePort('toPort', 1, 65535)"/>
+                    </span>
                 </div>
                 <div class="clearfix"></div>
                 <div class="lb-line"></div>
