@@ -4,11 +4,14 @@ var config = require('easy-config');
 var moment = require('moment');
 var zHelpers = require('./lib/zuora-helpers');
 
-var isProduction = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+var isProduction = config.isProduction();
 
 module.exports = function execute(scope, callback) {
     var options = config.zuora.api;
     options.log = scope.log;
+	options.password = config.zuora.password;
+	options.user = config.zuora.user;
+
     var zuora = require('zuora').create(options);
 
     var server = scope.api('Server');

@@ -3,7 +3,11 @@
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
-var zuora = require('zuora').create(config.zuora.api);
+var options = config.zuora.api;
+options.password = config.zuora.password;
+options.user = config.zuora.user;
+
+var zuora = require('zuora').create(options);
 var zuoraSoap = require('./zuora');
 var moment = require('moment');
 
@@ -42,6 +46,11 @@ function init(zuoraInit, callback) {
         zuoraErrors = JSON.parse(data);
         end();
     });
+
+	var options = config.zuora.soap;
+	options.password = config.zuora.password;
+	options.user = config.zuora.user;
+	options.tenantId = config.zuora.tenantId;
 
     zuoraSoap.connect(config.zuora.soap, function (err) {
         if(err) {

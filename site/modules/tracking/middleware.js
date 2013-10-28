@@ -1,7 +1,7 @@
 'use strict';
 
 var config = require('easy-config');
-var production = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+var production = config.isProduction();
 
 module.exports = function execute(scope) {
 
