@@ -121,10 +121,10 @@
                     var input = $scope.editForm[name];
                     var value = input.$viewValue;
 
-                    //FIXME: Readability
                     min = min || 1;
-                    max = max || Infinity;
-                    input.$setValidity('port', (value % 1) === 0 && value >= min && value <= max);
+                    max = max || 65535; // max tcp port value
+                    var isInteger = (value % 1) === 0;
+                    input.$setValidity('port', isInteger && value >= min && value <= max);
                 };
 
                 $scope.delete = function () {

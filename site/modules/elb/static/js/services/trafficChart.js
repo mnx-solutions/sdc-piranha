@@ -19,13 +19,7 @@
             };
 
             function setTraffic(traffic) {
-                if (!traffic) {
-                    return;
-                }
-                if (!traffic.inbound) {
-                    return;
-                }
-                if (!traffic.outbound) {
+                if (!traffic || !traffic.inbound || !traffic.outbound) {
                     return;
                 }
 
