@@ -4,15 +4,12 @@ var config = require('easy-config');
 var restify = require('restify');
 var fs = require('fs');
 var httpSignature = require('http-signature');
-//FIXME: Even if feature flag is disabled then this will break code.
-var key = fs.readFileSync(config.elb.keyPath).toString();
+var key = config.elb && config.elb.keyPath ? fs.readFileSync(config.elb.keyPath).toString() : null;
 
-//FIXME: Where is logging?
-
-module.exports = function execute(scope, app) {
+//Logging is done by serverTab itself, no need for additional info/error logging in each request
+var elb = function execute(scope) {
     var server = scope.api('Server');
 
-    //FIXME: Even if feature flag is disabled then this will break code.
     var client = restify.createJsonClient({
         url: config.elb.url,
         rejectUnauthorized: false,
@@ -35,7 +32,7 @@ module.exports = function execute(scope, app) {
     });
 
     server.onCall('LoadBalancerLoad', function (call) {
-        //FIXME: Should't this send 400 ? And use the onCall built in request verifier for that matter machine/startup.js:230 for example
+        //Get empty load balancer template is it's new load balancer
         if (!call.data.id) {
             call.done(null, {});
             return;
@@ -80,21 +77,26 @@ module.exports = function execute(scope, app) {
     });
 
     server.onCall('LoadBalancerUsage', function (call) {
-        //FIXME: Why aren't the calls done in parallel?
+        var result = [];
         client.get('/loadbalancers/' + call.data.id + '/usage?metric=bytesin', function getBytesIn(err, creq, cres, obj) {
             if (err) {
                 call.done(err);
                 return;
             }
-            var result = [obj];
-            client.get('/loadbalancers/' + call.data.id + '/usage?metric=bytesout', function getBytesOut(err, creq, cres, obj) {
-                if (err) {
-                    call.done(err);
-                    return;
-                }
-                result.push(obj);
+            result.push(obj);
+            if (result.length === 2) {
                 call.done(null, result);
-            });
+            }
+        });
+        client.get('/loadbalancers/' + call.data.id + '/usage?metric=bytesout', function getBytesOut(err, creq, cres, obj) {
+            if (err) {
+                call.done(err);
+                return;
+            }
+            result.push(obj);
+            if (result.length === 2) {
+                call.done(null, result);
+            }
         });
     });
 
@@ -118,3 +120,7 @@ module.exports = function execute(scope, app) {
         });
     });
 };
+
+if (!config.features || config.features.elb === 'enabled') {
+    module.exports = elb;
+}
