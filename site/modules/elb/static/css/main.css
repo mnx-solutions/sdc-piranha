@@ -25,7 +25,7 @@
     width: 35px !important;
     margin: 10px;
 }
-.clb_input{
+.clb-input{
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
@@ -49,11 +49,11 @@
     width: 355px;
     padding-bottom: 15px;
 }
-.lb-line_allwidth{
+.lb-line-allwidth{
     border-bottom: 2px solid #ececec;
     width: 100%;
 }
-.logo_riverbed{
+.logo-riverbed{
     background-image: url("../img/logo_riverbed.png");
     width: 133px;
     height: 58px;
@@ -106,23 +106,23 @@
     padding-top: 20px;
     padding-bottom: 40px;
 }
-.dd_margin{
+.dd-margin{
     margin-left: -10px;
     margin-right: 10px;
 }
-.dd_btn_small{
+.dd-btn-small{
     min-width: 45px;
 }
-.dd_btn{
+.dd-btn{
     min-width: 45px;
     max-width: 45px;
 }
-.table_pos{
+.table-pos{
     margin: 0;
     padding-top: 20px;
     padding-bottom: 20px;
 }
-.table_overflow{
+.table-overflow{
     overflow: auto;
     text-overflow: ellipsis;
 }
@@ -134,7 +134,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.upload_btn{
+.upload-btn{
     display: inline-block;
     vertical-align: middle;
     margin-left: 20px;

@@ -35,10 +35,10 @@
                 </div>
                 <div>
                     <span class="span3 lb-label" data-translate>Protocol</span>
-                    <div class="btn-group tooltip-hover span3 dd_margin protocol-pos"
+                    <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-                        <label class="btn dd_btn">{{protocolSelected.name}}</label>
+                        <label class="btn dd-btn">{{protocolSelected.name}}</label>
                         <button class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>
@@ -47,7 +47,7 @@
                                 <a data-ng-click="protocolSelect(protocol.value)">{{protocol.name}}</a>
                             </li>
                         </ul>
-                        <span class="upload_btn" data-ng-show="protocolSelected.name == 'HTTPS'">
+                        <span class="upload-btn" data-ng-show="protocolSelected.name == 'HTTPS'">
                             <span data-cert-upload model="server.certificate"></span>
                         </span>
                     </div>
@@ -80,10 +80,10 @@
                 </span>
                     <span class="span3 lb-label timeout" data-translate>Timeout</span>
 
-                    <div class="btn-group tooltip-hover span3 dd_margin ht-btn-pos"
+                    <div class="btn-group tooltip-hover span3 dd-margin ht-btn-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-                        <label class="btn dd_btn">{{server.health.timeout}} sec</label>
+                        <label class="btn dd-btn">{{server.health.timeout}} sec</label>
                         <button class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>
@@ -97,10 +97,10 @@
                 <div class="clearfix"></div>
                 <div>
                     <span class="span3 hc-interval" data-translate>HC interval</span>
-                    <div class="btn-group tooltip-hover span3 dd_margin"
+                    <div class="btn-group tooltip-hover span3 dd-margin"
                          data-toggle="tooltip"
                          data-placement="bottom">
-                        <label class="btn dd_btn">{{server.health.delay}} mins</label>
+                        <label class="btn dd-btn">{{server.health.delay}} mins</label>
                         <button class="btn dropdown-toggle" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>
@@ -112,14 +112,14 @@
                     </div>
                     <span class="span3 failure-threshold" data-translate>Failure Threshold</span>
                 <span class="span2 port-input">
-                    <input name="failThreshold" type="text" class="clb_input"
+                    <input name="failThreshold" type="text" class="clb-input"
                            data-ng-model="server.health.failThreshold"
                            data-ng-change="validatePort('failThreshold', 1)"/>
                 </span>
                 </div>
             </div>
 
-            <div class="span7 table_overflow table-left-border">
+            <div class="span7 table-overflow table-left-border">
                 <table class="table table-striped table-bordered table-hover table-full-width">
                     <thead>
                     <tr>
@@ -156,7 +156,7 @@
         </div>
 
     <span class="span12" data-ng-show="allLoading">
-        <p class="logo_riverbed pull-left" data-translate>Powered by</p>
+        <p class="logo-riverbed pull-left" data-translate>Powered by</p>
         <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
                 class="btn btn-joyent-blue pull-right edit-btn-pos" data-translate="">
             <span class="ng-scope" data-translate>Save</span>
