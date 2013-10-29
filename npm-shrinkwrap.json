@@ -1135,30 +1135,6 @@
           "from": "ctype@0.5.2"
         }
       }
-    },
-    "multiparty": {
-      "version": "2.2.0",
-      "from": "multiparty@~2.2.0",
-      "dependencies": {
-        "readable-stream": {
-          "version": "1.1.9",
-          "from": "readable-stream@~1.1.9",
-          "dependencies": {
-            "core-util-is": {
-              "version": "1.0.0",
-              "from": "core-util-is@~1.0.0"
-            },
-            "debuglog": {
-              "version": "0.0.2",
-              "from": "debuglog@0.0.2"
-            }
-          }
-        },
-        "stream-counter": {
-          "version": "0.2.0",
-          "from": "stream-counter@~0.2.0"
-        }
-      }
     }
   }
 }

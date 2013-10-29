@@ -34,8 +34,7 @@
         "fwrule": "git+ssh://git@git.joyent.com:fwrule.git",
         "soap": "~0.3.0",
         "pem": "~1.2.2",
-        "http-signature": "~0.10.0",
-        "multiparty": "~2.2.0"
+        "http-signature": "~0.10.0"
     },
     "devDependencies": {
         "grunt": ">=0.4.0",

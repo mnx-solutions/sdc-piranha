@@ -4,16 +4,11 @@ var config = require('easy-config');
 var restify = require('restify');
 var fs = require('fs');
 var httpSignature = require('http-signature');
-//FIXME: Even if feature flag is disabled then this will break code.
-var key = fs.readFileSync(config.elb.keyPath).toString();
+var key = config.elb && config.elb.keyPath ? fs.readFileSync(config.elb.keyPath).toString() : null;
 var pem = require('pem');
-//FIXME: Why use multiparty not the built in express plugins?
-var multiparty = require('multiparty');
+var express = require('express');
 
-//FIXME: Where is logging?
-
-module.exports = function execute(scope, app) {
-    //FIXME: Even if feature flag is disabled then this will break code.
+var elb = function execute(scope, app) {
     var client = restify.createJsonClient({
         url: config.elb.url,
         rejectUnauthorized: false,
@@ -26,14 +21,14 @@ module.exports = function execute(scope, app) {
     });
 
     function parsePemSection(pemSrc, sectionName) {
-        //FIXME: We do not use comma separated declaration. Each var separately!
-        var start = -1, end = -1, startMatch, endMatch;
-        //FIXME: We do not use assignments in IF sentences
-        if ((startMatch = pemSrc.match(new RegExp('\\-+BEGIN ' + sectionName + '\\-+$', 'm')))) {
+        var start = -1;
+        var end = -1;
+        var startMatch = pemSrc.match(new RegExp('\\-+BEGIN ' + sectionName + '\\-+$', 'm'));
+        var endMatch = pemSrc.match(new RegExp('^\\-+END ' + sectionName + '\\-+', 'm'));
+        if (startMatch) {
             start = startMatch.index;
         }
-        //FIXME: We do not use assignments in IF sentences
-        if ((endMatch = pemSrc.match(new RegExp('^\\-+END ' + sectionName + '\\-+', 'm')))) {
+        if (endMatch) {
             end = endMatch.index + (endMatch[0] || '').length;
         }
         if (start >= 0 && end >= 0) {
@@ -53,33 +48,40 @@ module.exports = function execute(scope, app) {
         res.send('');
     });
 
-    app.post('/certificates', function (req, res) {
+    app.post('/certificates', [express.multipart()], function (req, res) {
+        req.log.info('Uploading certificate');
         var callback = req.query.callback;
-        var form = new multiparty.Form();
-        form.parse(req, function handleForm(err, fieldsObject, filesObject) {
-            if (err || !filesObject.certificate) {
+        if (!req.files || !req.files.certificate) {
+            req.log.info('Certificate not found in request');
+            res.send(getUploadResult(callback, {success: false, message: 'Certificate not found'}));
+            return;
+        }
+        var data = {};
+        fs.readFile(req.files.certificate.path, 'utf8', function (err, pemSrc) {
+            if (err) {
+                req.log.info('Certificate not found in request, cannot read file');
                 res.send(getUploadResult(callback, {success: false, message: 'Certificate not found'}));
                 return;
             }
-            var data = {};
-            //FIXME: We do not do sync file reading after startup!
-            var pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
-            //FIXME: Why not use dot notation as in data.private?
+            //Not using dot notation here cause private/public are reserved in future JS versions
             data['private'] = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
             if (!data['private']) {
+                req.log.info('Private key not found in PEM');
                 res.send(getUploadResult(callback, {success: false, message: 'Private key not found in PEM'}));
                 return;
             }
-            //FIXME: What happens if the key is password protected?
+            //If the key is password protected, public key won't be found in it
             pem.getPublicKey(pemSrc, function (err, publicKey) {
                 if (err) {
-                    res.send(getUploadResult(callback, {success: false, message: 'Public key not found in PEM: ' + err}));
+                    req.log.info({err: err}, 'Public key not found in PEM');
+                    res.send(getUploadResult(callback, {success: false, message: 'Public key not found in PEM'}));
                     return;
                 }
                 data['public'] = publicKey;
                 client.post('/certificates', data, function (err, creq, cres, obj) {
                     if (err) {
-                        res.send(getUploadResult(callback, {success: false, message: err}));
+                        req.log.warn({err: err}, 'Error saving certificate into ELB API');
+                        res.send(getUploadResult(callback, {success: false, message: 'Error saving certificate into ELB API'}));
                         return;
                     }
                     obj.success = true;
@@ -89,3 +91,7 @@ module.exports = function execute(scope, app) {
         });
     });
 };
+
+if (!config.features || config.features.elb === 'enabled') {
+    module.exports = elb;
+}
