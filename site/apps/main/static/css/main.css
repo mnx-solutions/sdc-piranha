@@ -857,7 +857,7 @@ div .disabled{
 	height:100px;
 	min-height:100px;
 	max-width:100%;
-	min-width:50px;
+    min-width: 1000px;
 }
 
 /*
