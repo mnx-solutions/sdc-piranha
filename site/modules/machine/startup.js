@@ -276,13 +276,7 @@ module.exports = function execute(scope) {
             var oldTags = null;
             var cloud = call.cloud.separate(call.data.datacenter);
 
-            cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
-                if (err) {
-                    call.log.error(err);
-                    call.error(err);
-                    return;
-                }
-
+            function updateState () {
                 var timer = setInterval(function () {
                     call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
                     cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
@@ -298,7 +292,7 @@ module.exports = function execute(scope) {
                             } else if (json !== oldTags) {
                                 clearInterval(timer);
                                 clearTimeout(timer2);
-	                              call.log.warn('Other call changed tags, returning new tags %j', tags);
+                                call.log.warn('Other call changed tags, returning new tags %j', tags);
                                 call.done(null, tags);
                             }
                         } else {
@@ -312,7 +306,29 @@ module.exports = function execute(scope) {
                     clearInterval(timer);
                     call.error(new Error('Operation timed out'));
                 }, 1 * 60 * 1000);
-            });
+            }
+
+            if (Object.keys(call.data.tags).length > 0) {
+                cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
+                    if (err) {
+                        call.log.error(err);
+                        call.error(err);
+                        return;
+                    }
+
+                    updateState();
+                });
+            } else {
+                cloud.deleteMachineTags(call.data.uuid, function (err) {
+                    if (err) {
+                        call.log.error(err);
+                        call.error(err);
+                        return;
+                    }
+
+                    updateState();
+                });
+            }
         }
     });
 
