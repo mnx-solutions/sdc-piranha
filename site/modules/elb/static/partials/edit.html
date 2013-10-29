@@ -35,6 +35,8 @@
                 </div>
                 <div>
                     <span class="span3 lb-label" data-translate>Protocol</span>
+
+                    <!--FIXME: Naming convention uses - not _ -->
                     <div class="btn-group tooltip-hover span3 dd_margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
@@ -47,6 +49,8 @@
                                 <a data-ng-click="protocolSelect(protocol.value)">{{protocol.name}}</a>
                             </li>
                         </ul>
+
+                        <!--FIXME: Naming convention uses - not _ -->
                         <span class="upload_btn" data-ng-show="protocolSelected.name == 'HTTPS'">
                             <span data-cert-upload model="server.certificate"></span>
                         </span>
@@ -97,6 +101,8 @@
                 <div class="clearfix"></div>
                 <div>
                     <span class="span3 hc-interval" data-translate>HC interval</span>
+
+                    <!--FIXME: Naming convention uses - not _ -->
                     <div class="btn-group tooltip-hover span3 dd_margin"
                          data-toggle="tooltip"
                          data-placement="bottom">
@@ -119,6 +125,7 @@
                 </div>
             </div>
 
+            <!--FIXME: Naming convention uses - not _ -->
             <div class="span7 table_overflow table-left-border">
                 <table class="table table-striped table-bordered table-hover table-full-width">
                     <thead>
@@ -156,6 +163,7 @@
         </div>
 
         <span class="span12" data-ng-show="allLoading">
+            <!--FIXME: Naming convention uses - not _ -->
             <p class="logo_riverbed pull-left" data-translate>Powered by</p>
             <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
                     class="btn btn-joyent-blue pull-right edit-btn-pos" data-translate="">

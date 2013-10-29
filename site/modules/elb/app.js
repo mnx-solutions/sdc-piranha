@@ -4,10 +4,16 @@ var config = require('easy-config');
 var restify = require('restify');
 var fs = require('fs');
 var httpSignature = require('http-signature');
+//FIXME: Even if feature flag is disabled then this will break code.
 var key = fs.readFileSync(config.elb.keyPath).toString();
 var pem = require('pem');
+//FIXME: Why use multiparty not the built in express plugins?
 var multiparty = require('multiparty');
+
+//FIXME: Where is logging?
+
 module.exports = function execute(scope, app) {
+    //FIXME: Even if feature flag is disabled then this will break code.
     var client = restify.createJsonClient({
         url: config.elb.url,
         rejectUnauthorized: false,
@@ -20,10 +26,13 @@ module.exports = function execute(scope, app) {
     });
 
     function parsePemSection(pemSrc, sectionName) {
+        //FIXME: We do not use comma separated declaration. Each var separately!
         var start = -1, end = -1, startMatch, endMatch;
+        //FIXME: We do not use assignments in IF sentences
         if ((startMatch = pemSrc.match(new RegExp('\\-+BEGIN ' + sectionName + '\\-+$', 'm')))) {
             start = startMatch.index;
         }
+        //FIXME: We do not use assignments in IF sentences
         if ((endMatch = pemSrc.match(new RegExp('^\\-+END ' + sectionName + '\\-+', 'm')))) {
             end = endMatch.index + (endMatch[0] || '').length;
         }
@@ -53,12 +62,15 @@ module.exports = function execute(scope, app) {
                 return;
             }
             var data = {};
+            //FIXME: We do not do sync file reading after startup!
             var pemSrc = fs.readFileSync(filesObject.certificate.path, 'utf8');
+            //FIXME: Why not use dot notation as in data.private?
             data['private'] = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
             if (!data['private']) {
                 res.send(getUploadResult(callback, {success: false, message: 'Private key not found in PEM'}));
                 return;
             }
+            //FIXME: What happens if the key is password protected?
             pem.getPublicKey(pemSrc, function (err, publicKey) {
                 if (err) {
                     res.send(getUploadResult(callback, {success: false, message: 'Public key not found in PEM: ' + err}));

@@ -36,7 +36,7 @@
         }
     },
     "zuora": {
-        "tenantID": "11333",
+        "tenantID": "",
         "api": {
             "user": "piranha-api@joyent.com",
             "password": "904WeugM6Uw6hRWv",

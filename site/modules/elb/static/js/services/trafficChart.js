@@ -1,5 +1,5 @@
 'use strict';
-
+//FIXME: Why is the file name still in camelcase?
 (function (app) {
     app.factory('elb.trafficChart', function () {
         return function ($element, title, traffic) {

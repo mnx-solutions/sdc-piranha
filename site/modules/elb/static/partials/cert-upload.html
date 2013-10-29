@@ -1,3 +1,4 @@
+<!--FIXME: shouldn't use absolute paths in modules -->
 <form id="certificate_upload_form" action="/main/elb/certificates?callback=window.top.window.__uploadCallback__"
       target="certificate_upload_target" enctype="multipart/form-data" method="post" style="margin: 0">
     <input id="certificate_upload_file" name="certificate" type="file" style="display: none">
@@ -10,5 +11,6 @@
         <span class="ng-scope" data-translate>Remove Certificate</span>
     </button>
 </form>
-<iframe id="certificate_upload_target" name="certificate_upload_target" src="/main/elb/blank"
+<!--FIXME: Why not just display none?-->
+<iframe id="certificate_upload_target" name="certificate_upload_target" src=""
         style="width: 0; height: 0; border: 0px solid #fff;"></iframe>

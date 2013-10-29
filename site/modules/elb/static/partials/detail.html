@@ -65,12 +65,13 @@
             </table>
         </div>
         <div class="clearfix"></div>
-
+        <!--FIXME: Always use data- prefix for custom attributes-->
         <div class="span6 img1" traffic-grid traffic="traffic" title="Traffic">
         </div>
     </div>
 
     <span class="span12" data-ng-show="detailLoaded">
+        <!--FIXME: Naming convention uses - not _ -->
         <p class="logo_riverbed pull-left" data-translate>Powered by</p>
         <button data-ng-click="edit()" class="btn btn-joyent-blue pull-right edit-btn-pos"><span class="ng-scope" data-translate>Edit</span></button>
     </span>

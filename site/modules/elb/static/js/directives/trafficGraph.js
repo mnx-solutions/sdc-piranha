@@ -1,5 +1,6 @@
 'use strict';
 
+//FIXME: Why is the file name in camelcase and why doesn't it match the directive name???
 (function (app) {
     app.directive('trafficGrid', [
         'elb.trafficChart',
