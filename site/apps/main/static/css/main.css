@@ -1210,10 +1210,6 @@ iframe {
 }
 .select2-results .select2-result-label {
     padding-left: 10px;
-    /*color: #000000 !important;*/
-    /*font-weight: bold !important;*/
-    /*font-family: Menlo,Menlo-Regular,Inconsolata,Monaco,monospace !important;*/
-    /*font-size: 13px !important;*/
 }
 .select2-choice span{
     color: rgb(51, 51, 51);
