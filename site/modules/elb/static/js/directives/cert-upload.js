@@ -30,11 +30,6 @@
                     }
                 };
 
-                scope.upload = function () {
-                    uploadFile.click();
-                    uploadBtn.blur();
-                };
-
                 scope.remove = function () {
                     uploadFile.value = '';
                     // Can't set null certificate in ELBAPI, using empty GUID as empty/not-set certificate
