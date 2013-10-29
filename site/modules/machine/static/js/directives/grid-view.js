@@ -49,23 +49,33 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
-            var existed = null;
-            if($scope.order.indexOf(prop.order) !== -1) {
-                existed = 'order';
-                delete $scope.order[$scope.order.indexOf(prop.order)];
-            }
-            if($scope.order.indexOf(prop.rorder) !== -1) {
-                existed = 'rorder';
-                delete $scope.order[$scope.order.indexOf(prop.rorder)];
-            }
-            if(reverse === undefined) {
-                if(!existed) {
-                    $scope.order.push(prop.order);
-                } else if(existed === 'order'){
-                    $scope.order.push(prop.rorder);
+            if($scope.multisort !== 'false') {
+                var existed = null;
+                if($scope.order.indexOf(prop.order) !== -1) {
+                    existed = 'order';
+                    delete $scope.order[$scope.order.indexOf(prop.order)];
                 }
-            } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
-                $scope.order.push(reverse ? prop.rorder : prop.order);
+                if($scope.order.indexOf(prop.rorder) !== -1) {
+                    existed = 'rorder';
+                    delete $scope.order[$scope.order.indexOf(prop.rorder)];
+                }
+                if(reverse === undefined) {
+                    if(!existed) {
+                        $scope.order.push(prop.order);
+                    } else if(existed === 'order'){
+                        $scope.order.push(prop.rorder);
+                    }
+                } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
+                    $scope.order.push(reverse ? prop.rorder : prop.order);
+                }
+            } else {
+                var order = $scope.order[0];
+
+                if(order === prop.order) {
+                    $scope.order = [prop.rorder];
+                } else {
+                    $scope.order = [prop.order];
+                }
             }
         };
 
@@ -176,7 +186,8 @@
         page: 1,
         showPages: 5,
         order: [],
-        propOn: false
+        propOn: false,
+        multisort: true
     })
     .directive('gridView', ['gridConfig', function(gridConfig) {
         return {
@@ -189,7 +200,8 @@
                 actionButtons:'=',
                 filterAll: '@',
                 exportFields: '=',
-                objectsType: '@'
+                objectsType: '@',
+                multisort: '@'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
@@ -201,6 +213,7 @@
                 $scope.page = $scope.page || gridConfig.page;
                 $scope.order = $scope.order || gridConfig.order;
                 $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
+                $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
 
                 $scope.props.forEach(function (el) {
                     el.active = true;
