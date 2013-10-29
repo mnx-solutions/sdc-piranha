@@ -1195,3 +1195,6 @@ ul.dropdown-menu{
     background-color: #f60;
     color: white !important;
 }
+.select2-result-label2 {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;font-weight: normal!important;
+}
