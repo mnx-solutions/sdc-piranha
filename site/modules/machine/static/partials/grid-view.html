@@ -20,11 +20,20 @@
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                 Actions <i class="icon-drop-down"></i>
             </a>
-            <ul class="dropdown-menu">
-                <li><a href="" data-ng-click="actionButton('start')" role="button" class="btn btn-warning">Start</a></li>
-                <li><a href="" data-ng-click="actionButton('stop')"  role="button" class="btn btn-warning">Stop</a></li>
-                <li><a href="" data-ng-click="actionButton('reboot')"  role="button" class="btn btn-warning">Reboot</a></li>
-                <li><a href="" data-ng-click="actionButton('delete')"  role="button" class="btn btn-warning">Delete</a></li>
+            <ul class="dropdown-menu dd-btn">
+                <li data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
+                    <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="dd-btn"></a>
+                    <!--<a href="" data-ng-click="actionButton('start')" role="button" class="btn btn-warning">Start</a>-->
+                </li>
+
+                <!--<div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">-->
+                    <!--<div data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>-->
+                    <!--<div class="clearfix"></div>-->
+                <!--</div>-->
+                <!--<li><a href="" data-ng-click="actionButton('start')" role="button" class="btn btn-warning">Start</a></li>-->
+                <!--<li><a href="" data-ng-click="actionButton('stop')"  role="button" class="btn btn-warning">Stop</a></li>-->
+                <!--<li><a href="" data-ng-click="actionButton('reboot')"  role="button" class="btn btn-warning">Reboot</a></li>-->
+                <!--<li><a href="" data-ng-click="actionButton('delete')"  role="button" class="btn btn-warning">Delete</a></li>-->
             </ul>
         </div>
         <div class="btn-group">

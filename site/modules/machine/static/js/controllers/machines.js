@@ -48,200 +48,30 @@
                 }
             });
 
-            $scope.startMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Start instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Restart this instance'
-                    ), function () {
-                        $$track.event('machine', 'start');
-                        Machine.startMachine(id);
-                    });
-            };
-
-            $scope.stopMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Stop instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
-                    ), function () {
-                        Machine.stopMachine(id);
-                        $$track.event('machine', 'stop');
-                    });
-            };
-
-            $scope.deleteMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Delete instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Destroy the information on this instance and stop billing for this instance.'
-                    ), function () {
-                        $$track.event('machine', 'delete');
-                        Machine.deleteMachine(id);
-                    });
-            };
-
-            $scope.rebootMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Restart instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Restart this instance'
-                    ), function() {
-                        $$track.event('machine', 'reboot');
-                        Machine.rebootMachine(id);
-                    });
-            };
-
-            $scope.actionButton = function(action){
+            $scope.actionButton = function(){
                 var flag = false;
                 $scope.machines.forEach(function (el) {
                     if(el.checked){
                         flag = true;
                     }
                 });
-
-
-
-
-
-//
-//                if(!$scope.allCheckboxSelected){
-//                    util.error(
-//                        localization.translate(
-//                            $scope,
-//                            null,
-//                            'Error'
-//                        ),
-//                        localization.translate(
-//                            $scope,
-//                            null,
-//                            'No instance selected for the action.'
-//                        ),function(){
-//                            this.close();
-//                        });
-//                }else{
-//                    if(action == 'start') $scope.startSelectedInstances();
-//                    if(action == 'stop') $scope.stopSelectedInstances();
-//                    if(action == 'delete') $scope.deleteSelectedInstances();
-//                    if(action == 'reboot') $scope.rebootSelectedInstances();
-//                }
+                return flag;
             };
 
-            $scope.startSelectedInstances = function(){
-                util.confirm(
+            $scope.noCheckBoxChecked = function(){
+                util.error(
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Start instances'
+                        'Error'
                     ),
                     localization.translate(
                         $scope,
                         null,
-                        'Restart selected instances'
-                    ), function () {
-                        var check = 0;
-                        for (var i =0; i<$scope.machines.length;i++){
-                            if($scope.CheckBoxCur[$scope.machines[i].id]){
-                                Machine.startMachine($scope.machines[i].id);
-                                $$track.event('machine', 'start');
-                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
-                            }
-                        }
-                    });
-
-            };
-
-            $scope.stopSelectedInstances = function(){
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Stop instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Stopping selected instances does not stop billing, your instance can be restarted after it is stopped.'
-                    ), function () {
-                        var check = 0;
-                        for (var i =0; i<$scope.machines.length;i++){
-                            if($scope.CheckBoxCur[$scope.machines[i].id]){
-                                Machine.stopMachine($scope.machines[i].id);
-                                $$track.event('machine', 'stop');
-                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
-                            }
-                        }
-                    });
-            };
-
-            $scope.rebootSelectedInstances = function(){
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Restart instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Restart selected instances'
-                    ), function() {
-                        var check = 0;
-                        for (var i =0; i<$scope.machines.length;i++){
-                            if($scope.CheckBoxCur[$scope.machines[i].id]){
-                                Machine.rebootMachine($scope.machines[i].id);
-                                $$track.event('machine', 'reboot');
-                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
-                            }
-                        }
-                    });
-            };
-
-            $scope.deleteSelectedInstances = function(){
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Delete instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Destroy the information on this instance and stop billing for selected instances.'
-                    ), function () {
-                        var check = 0;
-                        for (var i =0; i<$scope.machines.length;i++){
-                            if($scope.CheckBoxCur[$scope.machines[i].id]){
-                                Machine.deleteMachine($scope.machines[i].id);
-                                $$track.event('machine', 'delete');
-                                $scope.CheckBoxCur[$scope.machines[i].id] = ($scope.CheckBoxCur[$scope.machines[i].id]) ? false : true;
-                            }
-                        }
-                    });
+                        'No instance selected for the action.'
+                    ),function(){
+                    }
+                );
             };
 
             $scope.gridOrder = [];
@@ -383,46 +213,127 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Start',
-                    disabled: function (object) {
-                        return object.state === 'running' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state === 'running' || (object.job && !object.job.finished);
+//                    },
                     action: function (object) {
-                        $scope.startMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Start instances'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Restart selected instances'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            $$track.event('machine', 'start');
+                                            Machine.startMachine(el.id);
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.',
+//                    tooltip: 'Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.',
                     sequence: 1
                 },
                 {
                     label: 'Stop',
-                    disabled: function (object) {
-                        return object.state === 'stopped' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state === 'stopped' || (object.job && !object.job.finished);
+//                    },
                     action: function (object) {
-                        $scope.stopMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Stop instance'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Stopping selected instances does not stop billing, your instance can be restarted after it is stopped.'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            $$track.event('machine', 'stop');
+                                            Machine.stopMachine(el.id);
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'Stopping an instance does not stop billing. You can restart your instance after you stop your machine.',
+//                    tooltip: 'Stopping an instance does not stop billing. You can restart your instance after you stop your machine.',
                     sequence: 2
                 },
                 {
                     label: 'Delete',
-                    disabled: function (object) {
-                        return object.state !== 'stopped' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state !== 'stopped' || (object.job && !object.job.finished);
+//                    },
                     action: function (object) {
-                        $scope.deleteMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Delete instance'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Destroy the information on this instance and stop billing for selected instances.'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            Machine.deleteMachine(id);
+                                            $$track.event('machine', 'delete');
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.',
+//                    tooltip: 'You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.',
                     sequence: 3
                 },
                 {
                     label: 'Reboot',
-                    disabled: function (object) {
-                        return object.state !== 'running' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state !== 'running' || (object.job && !object.job.finished);
+//                    },
+
                     action: function (object) {
-                        $scope.rebootMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Restart instance'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Restart selected instances'
+                                ), function() {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            Machine.rebootMachine(id);
+                                            $$track.event('machine', 'reboot');
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'Click here to reboot your instance.',
+//                    tooltip: 'Click here to reboot your instance.',
                     sequence: 4
                 }
             ];

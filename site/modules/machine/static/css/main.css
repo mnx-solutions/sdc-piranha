@@ -525,10 +525,10 @@ label.checkbox {
     margin: 0 10px;
 }
 .dropdown-menu {
-    min-width: 160px;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
+    min-width: 135px;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
 }
 .dropdown-checkboxes label {
     color: #333;
@@ -623,7 +623,7 @@ table.table {
     color: #333333;
 }
 ul.dropdown-menu{
-    min-width: 100px !important;
+    /*min-width: 100px !important;*/
 }
 .select2-drop {
     width: 100%;
@@ -1186,4 +1186,12 @@ ul.dropdown-menu{
     margin-left: 20px;
     margin-top: 10px;
     padding-bottom: 20px;
+}
+.dd-btn{
+    min-width: 75px !important;
+    text-align: left;
+}
+.dd-btn button:hover{
+    background-color: #f60;
+    color: white !important;
 }
