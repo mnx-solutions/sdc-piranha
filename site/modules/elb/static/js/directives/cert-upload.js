@@ -25,7 +25,7 @@
                 var uploadBtn = document.getElementById('certificate_upload_btn');
 
                 uploadFile.onchange = function uploadFileChange(e) {
-                    if (e.target.files && e.target.files.length) {
+                    if (e.target.value || (e.target.files && e.target.files.length)) {
                         uploadForm.submit();
                     }
                 };
