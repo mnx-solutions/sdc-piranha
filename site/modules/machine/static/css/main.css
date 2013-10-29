@@ -61,10 +61,8 @@
 .tag.editable {
     margin-top: 10px;
 }
-.delete {
-/*    margin-top: 5px;
-    margin-left: 30px
-*/
+.delete:hover {
+    cursor: pointer;
 }
 
 .tag input.tag-key {
