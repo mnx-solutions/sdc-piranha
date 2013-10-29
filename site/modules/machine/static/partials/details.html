@@ -92,10 +92,10 @@
                             <span class="value span8 pull-right">{{machine.datacenter}}&nbsp;</span>
                         </div>
 
-                        <div class="row-fluid" data-ng-show="machine.primaryIps.length">
+                        <div class="row-fluid" data-ng-show="machine.primaryIp">
                             <span class="key span4" data-translate>Login</span>
-                            <span class="value span8 pull-right" data-ng-show="machine.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIps[0]}}&nbsp;</span>
-                            <span class="value span8 pull-right" data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIps[0]}}&nbsp;</span>
+                            <span class="value span8 pull-right" data-ng-show="machine.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIp}}&nbsp;</span>
+                            <span class="value span8 pull-right" data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIp}}&nbsp;</span>
                         </div>
                     </div>
                 </div>
