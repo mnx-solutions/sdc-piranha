@@ -382,6 +382,9 @@
                 $scope.retinfo.then(function(tags) {
                     $scope.tagcloud = tagcloud(tags);
                     $scope.tagsave = false;
+                    //console.log($scope.tagForm);
+                    $scope.tagForm.$pristine = true;
+                    $scope.tagForm.$dirty = false;
                 }, function (err) {
                     $scope.tagsave = false;
                 });
@@ -392,6 +395,7 @@
             };
 
             $scope.removeTag = function(k) {
+                $scope.tagForm.$setDirty();
                 delete $scope.tagcloud.$$v[k];
             };
 
