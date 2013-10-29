@@ -4,10 +4,15 @@ var config = require('easy-config');
 var restify = require('restify');
 var fs = require('fs');
 var httpSignature = require('http-signature');
+//FIXME: Even if feature flag is disabled then this will break code.
 var key = fs.readFileSync(config.elb.keyPath).toString();
+
+//FIXME: Where is logging?
+
 module.exports = function execute(scope, app) {
     var server = scope.api('Server');
 
+    //FIXME: Even if feature flag is disabled then this will break code.
     var client = restify.createJsonClient({
         url: config.elb.url,
         rejectUnauthorized: false,
@@ -30,6 +35,7 @@ module.exports = function execute(scope, app) {
     });
 
     server.onCall('LoadBalancerLoad', function (call) {
+        //FIXME: Should't this send 400 ? And use the onCall built in request verifier for that matter machine/startup.js:230 for example
         if (!call.data.id) {
             call.done(null, {});
             return;
@@ -74,6 +80,7 @@ module.exports = function execute(scope, app) {
     });
 
     server.onCall('LoadBalancerUsage', function (call) {
+        //FIXME: Why aren't the calls done in parallel?
         client.get('/loadbalancers/' + call.data.id + '/usage?metric=bytesin', function getBytesIn(err, creq, cres, obj) {
             if (err) {
                 call.done(err);
