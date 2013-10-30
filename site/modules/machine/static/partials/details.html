@@ -157,7 +157,7 @@
                     <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
                 </div>
             </fieldset>
-            <fieldset data-ng-show="features.instanceTagging != 'disabled'">
+            <fieldset data-ng-show="machine && features.instanceTagging != 'disabled'">
                 <legend>
                     <span data-translate>Tags</span>
                     <small data-translate>Add tags for convenient instance searching</small>
@@ -368,7 +368,7 @@
         </div>
     </div>
 
-    <div class="row-fluid">
+    <div class="row-fluid" data-ng-show="machine">
         <div class="span12">
             <fieldset>
                 <legend data-translate>Resize Instance</legend>
