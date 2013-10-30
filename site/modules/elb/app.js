@@ -20,23 +20,6 @@ var elb = function execute(scope, app) {
         }
     });
 
-    function parsePemSection(pemSrc, sectionName) {
-        var start = -1;
-        var end = -1;
-        var startMatch = pemSrc.match(new RegExp('\\-+BEGIN ' + sectionName + '\\-+$', 'm'));
-        var endMatch = pemSrc.match(new RegExp('^\\-+END ' + sectionName + '\\-+', 'm'));
-        if (startMatch) {
-            start = startMatch.index;
-        }
-        if (endMatch) {
-            end = endMatch.index + (endMatch[0] || '').length;
-        }
-        if (start >= 0 && end >= 0) {
-            return pemSrc.substring(start, end);
-        }
-        return null;
-    }
-
     function getUploadResult(callback, resultObj) {
         return '<script language="javascript" type="text/javascript">' +
             callback + '(' + JSON.stringify(resultObj) + ');' +
@@ -63,29 +46,40 @@ var elb = function execute(scope, app) {
                 res.send(getUploadResult(callback, {success: false, message: 'Certificate not found'}));
                 return;
             }
-            //Not using dot notation here cause private/public are reserved in future JS versions
-            data['private'] = parsePemSection(pemSrc, 'RSA PRIVATE KEY');
-            if (!data['private']) {
-                req.log.info('Private key not found in PEM');
-                res.send(getUploadResult(callback, {success: false, message: 'Private key not found in PEM'}));
-                return;
-            }
-            //If the key is password protected, public key won't be found in it
-            pem.getPublicKey(pemSrc, function (err, publicKey) {
+            pem.getPrivateKey(pemSrc, req.body.passphrase, function (err, privateKey) {
                 if (err) {
-                    req.log.info({err: err}, 'Public key not found in PEM');
-                    res.send(getUploadResult(callback, {success: false, message: 'Public key not found in PEM'}));
-                    return;
-                }
-                data['public'] = publicKey;
-                client.post('/certificates', data, function (err, creq, cres, obj) {
-                    if (err) {
-                        req.log.warn({err: err}, 'Error saving certificate into ELB API');
-                        res.send(getUploadResult(callback, {success: false, message: 'Error saving certificate into ELB API'}));
+                    if (err && (err.message.indexOf('bad password') !== -1 || err.message.indexOf('bad decrypt') !== -1)) {
+                        req.log.info('Certificate has passphrase, asking user for it');
+                        res.send(getUploadResult(callback, {success: false, passphrase: true, message: 'Certificate has passphrase'}));
                         return;
                     }
-                    obj.success = true;
-                    res.send(getUploadResult(callback, obj));
+                    req.log.info({err: err}, 'Private key not found in PEM');
+                    res.send(getUploadResult(callback, {success: false, message: 'Private key not found in PEM'}));
+                    return;
+                }
+                //Not using dot notation here cause private/public are reserved in future JS versions
+                data['private'] = privateKey;
+                pem.getPublicKey(pemSrc, req.body.passphrase, function (err, publicKey) {
+                    if (err) {
+                        if (err && (err.message.indexOf('bad password') !== -1 || err.message.indexOf('bad decrypt') !== -1)) {
+                            req.log.info('Certificate has passphrase, asking user for it');
+                            res.send(getUploadResult(callback, {success: false, passphrase: true, message: 'Certificate has passphrase'}));
+                            return;
+                        }
+                        req.log.info({err: err}, 'Public key not found in PEM');
+                        res.send(getUploadResult(callback, {success: false, message: 'Public key not found in PEM'}));
+                        return;
+                    }
+                    data['public'] = publicKey;
+                    client.post('/certificates', data, function (err, creq, cres, obj) {
+                        if (err) {
+                            req.log.warn({err: err}, 'Error saving certificate into ELB API');
+                            res.send(getUploadResult(callback, {success: false, message: 'Error saving certificate into ELB API'}));
+                            return;
+                        }
+                        obj.success = true;
+                        res.send(getUploadResult(callback, obj));
+                    });
                 });
             });
         });
