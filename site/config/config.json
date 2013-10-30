@@ -51,7 +51,7 @@
         },
         "soap": {
             "tenantName"   : "",
-	        "endpoint"     : "/https://apisandbox.zuora.com/apps/services/a/45.0",
+	        "endpoint"     : "https://apisandbox.zuora.com/apps/services/a/45.0",
 	        "wsdl"         : "zuora.a.joyent.45.0.wsdl",
 	        "objectNS"     : "ons",
 	        "zuoraNS"      : "zns",
