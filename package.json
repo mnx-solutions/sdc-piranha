@@ -32,7 +32,9 @@
         "speakeasy": "*",
         "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
         "fwrule": "git+ssh://git@git.joyent.com:fwrule.git",
-        "soap": "~0.3.0"
+        "soap": "~0.3.0",
+        "pem": "~1.2.2",
+        "http-signature": "~0.10.0"
     },
     "devDependencies": {
         "grunt": ">=0.4.0",

@@ -103,11 +103,12 @@
         "riskScoreFraudLimit": 90
     },
     "features": {
-        "instanceRename": "enabled"
-        , "instanceTagging": "enabled"
-        , "invoices": "enabled"
-        , "imageUse": "enable"
-        , "imageCreate": "disabled"
-        , "firewall": "disabled"
+        "instanceRename": "enabled",
+        "instanceTagging": "enabled",
+        "invoices": "enabled",
+        "imageUse": "enable",
+        "imageCreate": "disabled",
+        "firewall": "disabled",
+        "elb": "disabled"
     }
 }
