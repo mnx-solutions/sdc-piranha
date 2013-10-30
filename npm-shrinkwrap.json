@@ -109,30 +109,6 @@
             "negotiator": {
               "version": "0.2.8",
               "from": "negotiator@0.2.8"
-            },
-            "multiparty": {
-              "version": "2.2.0",
-              "from": "multiparty@2.2.0",
-              "dependencies": {
-                "readable-stream": {
-                  "version": "1.1.9",
-                  "from": "readable-stream@~1.1.9",
-                  "dependencies": {
-                    "core-util-is": {
-                      "version": "1.0.0",
-                      "from": "core-util-is@~1.0.0"
-                    },
-                    "debuglog": {
-                      "version": "0.0.2",
-                      "from": "debuglog@0.0.2"
-                    }
-                  }
-                },
-                "stream-counter": {
-                  "version": "0.2.0",
-                  "from": "stream-counter@~0.2.0"
-                }
-              }
             }
           }
         },
@@ -207,24 +183,6 @@
             "tunnel-agent": {
               "version": "0.3.0",
               "from": "tunnel-agent@~0.3.0"
-            },
-            "http-signature": {
-              "version": "0.10.0",
-              "from": "http-signature@~0.10.0",
-              "dependencies": {
-                "assert-plus": {
-                  "version": "0.1.2",
-                  "from": "assert-plus@0.1.2"
-                },
-                "asn1": {
-                  "version": "0.1.11",
-                  "from": "asn1@0.1.11"
-                },
-                "ctype": {
-                  "version": "0.5.2",
-                  "from": "ctype@0.5.2"
-                }
-              }
             },
             "hawk": {
               "version": "1.0.0",
@@ -688,24 +646,6 @@
                   "version": "0.3.0",
                   "from": "tunnel-agent@~0.3.0"
                 },
-                "http-signature": {
-                  "version": "0.10.0",
-                  "from": "http-signature@~0.10.0",
-                  "dependencies": {
-                    "assert-plus": {
-                      "version": "0.1.2",
-                      "from": "assert-plus@0.1.2"
-                    },
-                    "asn1": {
-                      "version": "0.1.11",
-                      "from": "asn1@0.1.11"
-                    },
-                    "ctype": {
-                      "version": "0.5.2",
-                      "from": "ctype@0.5.2"
-                    }
-                  }
-                },
                 "hawk": {
                   "version": "1.0.0",
                   "from": "hawk@~1.0.0",
@@ -895,20 +835,6 @@
         "formidable": {
           "version": "1.0.14",
           "from": "formidable@1.0.14"
-        },
-        "http-signature": {
-          "version": "0.10.0",
-          "from": "http-signature@0.10.0",
-          "dependencies": {
-            "asn1": {
-              "version": "0.1.11",
-              "from": "asn1@0.1.11"
-            },
-            "ctype": {
-              "version": "0.5.2",
-              "from": "ctype@0.5.2"
-            }
-          }
         },
         "keep-alive-agent": {
           "version": "0.0.1",
@@ -1122,24 +1048,6 @@
               "version": "0.3.0",
               "from": "tunnel-agent@~0.3.0"
             },
-            "http-signature": {
-              "version": "0.10.0",
-              "from": "http-signature@~0.10.0",
-              "dependencies": {
-                "assert-plus": {
-                  "version": "0.1.2",
-                  "from": "assert-plus@0.1.2"
-                },
-                "asn1": {
-                  "version": "0.1.11",
-                  "from": "asn1@0.1.11"
-                },
-                "ctype": {
-                  "version": "0.5.2",
-                  "from": "ctype@0.5.2"
-                }
-              }
-            },
             "hawk": {
               "version": "1.0.0",
               "from": "hawk@~1.0.0",
@@ -1203,6 +1111,28 @@
               }
             }
           }
+        }
+      }
+    },
+    "pem": {
+      "version": "1.2.2",
+      "from": "pem@~1.2.2"
+    },
+    "http-signature": {
+      "version": "0.10.0",
+      "from": "http-signature@~0.10.0",
+      "dependencies": {
+        "assert-plus": {
+          "version": "0.1.2",
+          "from": "assert-plus@0.1.2"
+        },
+        "asn1": {
+          "version": "0.1.11",
+          "from": "asn1@0.1.11"
+        },
+        "ctype": {
+          "version": "0.5.2",
+          "from": "ctype@0.5.2"
         }
       }
     }

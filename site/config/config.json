@@ -36,7 +36,7 @@
         }
     },
     "zuora": {
-        "tenantID": "11333",
+        "tenantID": "",
         "api": {
             "user": "piranha-api@joyent.com",
             "password": "904WeugM6Uw6hRWv",
@@ -105,11 +105,12 @@
         "riskScoreFraudLimit": 90
     },
     "features": {
-        "instanceRename": "enabled"
-        , "instanceTagging": "enabled"
-        , "invoices": "enabled"
-        , "imageUse": "enable"
-        , "imageCreate": "disabled"
-        , "firewall": "disabled"
+        "instanceRename": "enabled",
+        "instanceTagging": "enabled",
+        "invoices": "enabled",
+        "imageUse": "enable",
+        "imageCreate": "disabled",
+        "firewall": "disabled",
+        "elb": "disabled"
     }
 }

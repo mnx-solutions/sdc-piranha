@@ -20,7 +20,8 @@
             "storage",
             "timeout",
             "feature-flags",
-			"maxmind"
+			"maxmind",
+            "elb"
         ],
 		"auth": true,
         "error": true,
