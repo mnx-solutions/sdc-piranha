@@ -37,9 +37,10 @@
     },
     "zuora": {
         "tenantId": "11333",
-	    "user": "piranha-api@joyent.com",
-	    "password": "904WeugM6Uw6hRWv",
+	    "user": "piranha-api-test@joyent.com",
+	    "password": "ZvPpggpdRMB8U8uLEWTAaxRCaFqc",
         "api": {
+            "production": false,
             "validation": {
                 "countries": {
                     "type": "deny",
@@ -50,7 +51,7 @@
         },
         "soap": {
             "tenantName"   : "",
-	        "endpoint"     : "https://api.zuora.com/apps/services/a/45.0",
+	        "endpoint"     : "/https://apisandbox.zuora.com/apps/services/a/45.0",
 	        "wsdl"         : "zuora.a.joyent.45.0.wsdl",
 	        "objectNS"     : "ons",
 	        "zuoraNS"      : "zns",
