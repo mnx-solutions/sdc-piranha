@@ -2,11 +2,13 @@
 
 var vasync = require('vasync');
 var config = require('easy-config');
+var ursa = require('ursa');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
     var info = scope.api('Info');
     var utils = scope.get('utils');
+    var Metadata = scope.api('Metadata');
 
     var langs = {};
     var oldLangs = {};
@@ -550,7 +552,25 @@ module.exports = function execute(scope) {
             });
         }
     });
+    
+    function createKeyPairs() {
+        var kp = ursa.generatePrivateKey();
+        return {
+            privateKey: kp.toPrivatePem('utf8'),
+            publicKey: kp.toPublicPem('utf8'),
+            publicSsh: 'ssh-rsa ' + kp.toPublicSsh('base64') + ' piranha@portal',
+            fingerprint: kp.toPublicSshFingerprint('hex').replace(/(.{2})/g, '$1:').slice(0,-1)
+        };
+    }
+    
+    function updateUserMetadata(call, metadata) {
+        Metadata.set(call.req.session.userId, 'ssc_private_key', metadata.ssc_private_key);
+        Metadata.set(call.req.session.userId, 'elbapi_url', metadata.elbapi_url);
 
+        call.cloud.createKey({name: 'ssc_public_key', key: metadata.ssc_public_key}, function (err, resp) {
+            call.log.warn(err);
+        });
+    }
     /* CreateMachine */
     server.onCall('MachineCreate', {
         verify: function (data) {
@@ -567,7 +587,23 @@ module.exports = function execute(scope) {
                 dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
                 networks: call.data.networks
             };
-
+            
+            if (call.data.elbController) {
+                var sscKeyPair = createKeyPairs();
+                var portalKeyPair = createKeyPairs();
+                var metatdata = {
+                    ssc_private_key: sscKeyPair.privateKey,
+                    ssc_public_key: sscKeyPair.publicSsh,
+                    portal_public_key: portalKeyPair.publicSsh,
+                    account_name: 'mriou',
+                    datacenter_name: options.datacenter,
+                    elb_code_url: 'https://us-east.manta.joyent.com/mriou/public/elbapi-1.tgz'
+                };
+                for (var key in metatdata) {
+                    options['metadata.' + key] = metatdata[key];
+                }
+            }
+            
             call.log.info({options: options}, 'Creating machine %s', call.data.name);
             call.getImmediate(false);
 
@@ -579,6 +615,10 @@ module.exports = function execute(scope) {
 
                     // poll for machine status to get running (provisioning)
                     pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000));
+                    if (call.data.elbController) {
+                        metatdata.elbapi_url = 'https://' + machine.primaryIp + ':4000';
+                        updateUserMetadata(call, metatdata);
+                    }
                 } else {
                     call.log.error(err);
                     call.immediate(err);

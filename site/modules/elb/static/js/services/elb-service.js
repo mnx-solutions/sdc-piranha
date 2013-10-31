@@ -9,7 +9,9 @@
             var service = {};
             //TODO: Remove datacenter hardcode once we have UI selection for it
             var hardDataCenter = 'us-west-x';
-
+            var hardControllerName = 'elb-ssc';
+            var privateKey = 'generated_private_key';
+            var publicKey = 'generate_public_key';
             function filterBalancer(balancer) {
                 balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
                     return machine.status === 'up';
@@ -180,20 +182,20 @@
             service.getController = function getController() {
                 return this.getMachines().then(function (result) {
                     return result[0].machines.some(function (machine) {
-                        return machine.name === 'ELBController';
+                        return machine.name === hardControllerName;
                     });
                 });
             };
 
             service.createController = function createController() {
                 var d = $q.defer();
-                //TODO: Change minimal Ubuntu package to STM when ready
                 var data = {
                     datacenter: hardDataCenter,
-                    dataset: 'd2ba0f30-bbe8-11e2-a9a2-6bc116856d85',
-                    name: 'ELBController',
-                    package: 'd6987187-e4c6-4e89-990c-cd314c216add',
-                    networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f']
+                    dataset: 'e5f146a6-4188-11e3-9250-c73e9d9101fd',
+                    name: hardControllerName,
+                    package: '5d367f42-867b-4cc3-883c-b329cbaad9d4',
+                    networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f'],
+                    elbController: true
                 };
                 serverTab.call({
                     name: 'MachineCreate',
@@ -219,7 +221,7 @@
                 this.getMachines().then(function (result) {
                     //TODO: Get machine by special package type rather than hardcoded name once image is ready
                     var controllerMachines = result[0].machines.filter(function (machine) {
-                        return machine.name === 'ELBController';
+                        return machine.name === hardControllerName;
                     });
                     if (!controllerMachines.length) {
                         d.reject('Controller not found');
