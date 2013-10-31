@@ -65,8 +65,8 @@
             <div data-ng-show="sshKeys.length>1" class="alert alert-info">
                 <label for="keySel">You have multiple keys, please select the
                     one you want to use:</label>
-                <select id="keySel" ng-model="keyId"
-                        ng-options="c.fingerprint as c.name for c in sshKeys"></select>
+                <select id="keySel" data-ng-model="keyId"
+                        data-ng-options="c.fingerprint as c.name for c in sshKeys"></select>
             </div>
 
             <div data-ng-show="sshKeys.length==0" class="alert alert-warning">

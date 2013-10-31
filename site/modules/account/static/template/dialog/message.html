@@ -17,6 +17,6 @@
 		</div>
     </div>
     <div class="modal-footer">
-        <button ng-repeat="btn in buttons" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">{{ btn.label }}</button>
+        <button data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
     </div>
 </div>

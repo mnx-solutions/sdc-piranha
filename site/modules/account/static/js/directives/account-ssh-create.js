@@ -49,11 +49,7 @@
                             .open(templateUrl, sshKeyModalCtrl)
                             .then(function(data) {
                                 if(data && data.generate === true) {
-                                    var createUrl = '/main/account/ssh/create/';
-
-                                    if($scope.nextStep) {
-                                        createUrl = '/signup/account/ssh/create/';
-                                    }
+                                    var createUrl = 'account/ssh/create/';
 
 
                                     $http.post(createUrl, {name: data.keyName})
