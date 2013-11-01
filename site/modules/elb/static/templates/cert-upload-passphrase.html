@@ -1,17 +1,17 @@
 <div>
     <div class="modal-header">
-        <h1>Enter certificate passphrase</h1>
+        <h1 data-translate>Enter certificate passphrase</h1>
     </div>
     <div class="modal-body">
         <div class="control-group">
-            <label class="control-label">Passphrase</label>
+            <label class="control-label" data-translate>Passphrase</label>
             <div class="controls">
-                <input type="text" class="span5" data-ng-model="passphrase" />
+                <input type="password" class="span5" data-ng-model="passphrase" />
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button ng-click="close()" class="btn pull-left">Cancel</button>
-        <button ng-click="close(passphrase)" class="btn btn-joyent-blue">OK</button>
+        <button ng-click="close()" class="btn pull-left" data-translate>Cancel</button>
+        <button ng-click="close(passphrase)" class="btn btn-joyent-blue" data-translate>OK</button>
     </div>
 </div>

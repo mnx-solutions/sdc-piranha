@@ -1114,15 +1114,10 @@
         }
       }
     },
-    "pem": {
-      "version": "1.2.2",
-      "from": "pem@git+ssh://git@github.com:rysenko/pem.git",
-      "resolved": "git+ssh://git@github.com:rysenko/pem.git#87ef29e7910d13ea1abc8298b17ef16bdda17022"
-    },
     "ursa": {
       "version": "0.8.0",
       "from": "ursa@git+ssh://git@github.com:13W/ursa.git",
-      "resolved": "git+ssh://git@github.com:13W/ursa.git"
+      "resolved": "git+ssh://git@github.com:13W/ursa.git#4475573f5334d5d30e55cdaf81dc1a3a2d82eeb5"
     },
     "http-signature": {
       "version": "0.10.0",
