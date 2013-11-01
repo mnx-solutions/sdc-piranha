@@ -71,26 +71,35 @@ module.exports = function execute(scope, register) {
         });
     }
 
+    function searchFromList(list, resp, cb) {
+        var found = Object.keys(list).some(function(key, data) {
+            if(list[key].fingerprint === resp.fingerprint) {
+                return true;
+            }
+        });
+
+        cb(found);
+    }
+
     api.addSshKey = function (req, name, keyData, cb) {
-        req.cloud.createKey({name: name, key: keyData}, function (err) {
+        req.cloud.createKey({name: name, key: keyData}, function (err, resp) {
             if(err) {
                 cb(err);
                 return;
             }
 
-            api.getSignupStep(req, function(err, step) {
-                if(step !== 'completed' || step !== 'complete') {
-                    api.setMinProgress(req, 'ssh', function(err) {
-                        if(err) {
-                            cb(err);
+            // hold this call until cloudApi really has this key in the list
+            (function checkList() {
+                req.cloud.listKeys({login: 'my'}, function(err, data) {
+                    searchFromList(data, resp, function(found) {
+                        if(found) {
+                            cb(null);
+                        } else {
+                            setTimeout(function() { checkList(); }, 2000)
                         }
-
-                        cb(null);
                     });
-                } else {
-                    cb(null);
-                }
-            });
+                }, true);
+            })();
         });
     };
 

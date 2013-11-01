@@ -23,7 +23,5 @@
             $scope.key = {};
             $scope.userPlatform = $window.navigator.platform;
 
-            $scope.updateKeys();
-
         }]);
 }(window.JP.getModule('Account')));

@@ -37,7 +37,14 @@ module.exports = function execute(scope, app) {
     app.get('/signup/skipSsh', function(req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function() {
             scope.log.info('User skipped SSH step');
-            res.redirect('/main');
+            res.json({success:true});
+        });
+    });
+
+    app.get('/signup/passSsh', function(req, res) {
+        SignupProgress.setMinProgress(req, 'ssh', function() {
+            scope.log.info('User passed SSH step');
+            res.json({success:true});
         });
     });
 
@@ -45,6 +52,7 @@ module.exports = function execute(scope, app) {
         res.redirect(config.sso.url + '/changepassword/' + req.params.uuid);
     });
 
+    /* SSH keys logic */
     app.post('/ssh/create/:name?', function(req, res, next) {
         var jobId = uuid.v4();
         jobs[jobId] = {status: 'pending'};
@@ -55,9 +63,15 @@ module.exports = function execute(scope, app) {
         var name = (req.body.name || crypto.createHash('sha1').update(filePath).digest('hex').substr(0, 10));
         var cmd = 'ssh-keygen -t rsa -q -f ' + filePath + ' -N "" -C "' + req.session.userName +'" && cat ' + filePath +'.pub';
 
+
         req.log.debug('Generating SSH key pair');
 
         exec(cmd, function(err, stdout, stderr) {
+
+            jobs[jobId].filePath = filePath;
+            jobs[jobId].name = name;
+            jobs[jobId].fileName = randomBytes;
+
             req.log.debug('Adding SSH key to the account');
 
             SignupProgress.addSshKey(req, name, stdout, function(err) {
@@ -96,31 +110,33 @@ module.exports = function execute(scope, app) {
         if(jobs[req.params.jobId]) {
             res.json(jobs[req.params.jobId]);
         } else {
-            res.json(404);
+            res.send(404);
         }
     });
 
 
-    app.get('/ssh/download/:jobId/:hash/:name?', function(req, res, next) {
-        var hash = req.params.hash;
-        var name = req.params.name;
+    app.get('/ssh/download/:jobId', function(req, res, next) {
         var jobId = req.params.jobId;
-        var filePath = os.tmpdir() +'/'+ hash;
 
-        if(!hash) {
+        if(!jobs[jobId]) {
             jobs[jobId] = {
                 error: 'Invalid SSH key requested',
                 success: false,
                 status: 'finished'
-            }
+            };
             req.log.error('Invalid SSH key requested');
             return;
         }
 
+        var filePath = jobs[jobId].filePath;
+
+        // file name for download
+        var fileName = (jobs[jobId].name || jobs[jobId].fileName) +'_id_rsa';
+
         fs.readFile(filePath, {encoding: 'UTF8'}, function(err, data) {
             if(err) {
                 jobs[jobId] = {
-                    error: err,
+                    error: 'Internal error',
                     success: false,
                     status: 'finished'
                 };
@@ -129,13 +145,12 @@ module.exports = function execute(scope, app) {
             }
 
             res.set('Content-type', 'application/x-pem-file');
-            res.set('Content-Disposition', 'attachment; filename="'+ (name || hash) +'_id_rsa"');
+            res.set('Content-Disposition', 'attachment; filename="'+ fileName +'"');
             res.send(data);
 
             fs.unlink(filePath, function(err) {
                 if(err) {
                     req.log.error(err);
-                    return;
                 }
             });
 

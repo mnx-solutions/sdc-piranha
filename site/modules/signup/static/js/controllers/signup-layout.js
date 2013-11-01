@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$$track',
-            function ($scope, requestContext, $location, $cookies, Process, $$track) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track',
+            function ($scope, requestContext, $location, $cookies, Process, $http, $$track) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
@@ -53,8 +53,13 @@
                     });
                 };
 
+
                 $scope.skipSsh = function() {
-                    window.location.href = '/signup/account/signup/skipSsh';
+                    $http.get('/signup/account/signup/skipSsh').success(function(data) {
+                        if(data.success === true) {
+                            window.top.location.href = '/main';
+                        }
+                    });
                 };
 
                 $scope.location = window.location;
