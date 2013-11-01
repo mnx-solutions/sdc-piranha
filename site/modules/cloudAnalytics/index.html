@@ -43,24 +43,24 @@
 				<div class="pull-right alert alert-info span3">
 					<h5>Choose your components</h5>
 
-					<select ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
+					<select data-ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones">
 	                    <option value="">-- Choose Instance --</option>
 	                </select>
 					<div class="clearfix"></div>
 			            <!-- <span data-translate>Currently selected zone id</span>: {{zoneId}} -->
-			        <select ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
+			        <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
 			            <option value="">-- Choose Metric --</option>
 			        </select>
 					<div class="clearfix"></div>
 			        <span class="nullable">
-			            <select ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
+			            <select data-ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
 			                <option value="">-- None --</option>
 			            </select>
 						<div class="clearfix"></div>
 			        </span>
 					<div class="clearfix"></div>
 			        <span class="nullable">
-			            <select ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
+			            <select data-ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
 			                <option value="">-- None --</option>
 			            </select>
 			        </span>

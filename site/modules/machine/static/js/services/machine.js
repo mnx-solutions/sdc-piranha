@@ -17,6 +17,79 @@
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
 
+        function wrapMachine (machine) {
+            var p = null;
+            var i = null;
+            if(!machine._Package && !machine._Dataset) {
+                Object.defineProperties(machine, {
+                    _Package: {
+                        get: function () {
+                            if(!p) {
+                                p = {};
+                                if(machine.package) {
+                                    $q.when(Package.package(machine.package), function (pack) {
+                                        Object.keys(pack).forEach(function (k) {
+                                            p[k] = pack[k];
+                                        });
+                                    });
+                                }
+                            }
+                            return p;
+
+                        }
+                    },
+                    _Dataset: {
+                        get: function () {
+                            if(!i) {
+                                i = {};
+                                if(machine.image) {
+                                    Dataset.dataset(machine.image).then(function (dataset) {
+                                        Object.keys(dataset).forEach(function (k) {
+                                            i[k] = dataset[k];
+                                        });
+                                    });
+                                }
+                            }
+                            return i;
+                        }
+                    }
+                });
+            }
+            return machine;
+        }
+
+        function handleChunk (machine) {
+            var old = null;
+
+            machine = wrapMachine(machine);
+            machine.publicIps = machine.privateIps = [];
+            if(ng.isArray(machine.ips)) {
+                machine.publicIps = machine.ips.filter(function (ip) {
+                    return !util.isPrivateIP(ip);
+                });
+                machine.privateIps = machine.ips.filter(util.isPrivateIP);
+            }
+
+            if (machines.index[machine.id]) {
+                old = machines.list.indexOf(machines.index[machine.id]);
+            }
+
+            machines.index[machine.id] = machine;
+
+            if (machines.search[machine.id]) {
+                machines.search[machine.id].forEach(function (r) {
+                    r.resolve(machine);
+                });
+                delete machines.search[machine.id];
+            }
+
+            if (old === null) {
+                machines.list.push(machine);
+            } else {
+                machines.list[old] = machine;
+            }
+        }
+
         service.updateMachines = function () {
             if (!machines.job || machines.job.finished) {
                 machines.list.final = false;
@@ -24,79 +97,6 @@
                     name: 'MachineList',
                     progress: function machineProgress(err, job) {
                         var data = job.__read();
-
-                        function wrapMachine (machine) {
-                            var p = null;
-                            var i = null;
-                            if(!machine._Package && !machine._Dataset) {
-                                Object.defineProperties(machine, {
-                                    _Package: {
-                                        get: function () {
-                                            if(!p) {
-                                                p = {};
-                                                if(machine.package) {
-                                                    $q.when(Package.package(machine.package), function (pack) {
-                                                        Object.keys(pack).forEach(function (k) {
-                                                            p[k] = pack[k];
-                                                        });
-                                                    });
-                                                }
-                                            }
-                                            return p;
-
-                                        }
-                                    },
-                                    _Dataset: {
-                                        get: function () {
-                                            if(!i) {
-                                                i = {};
-                                                if(machine.image) {
-                                                    Dataset.dataset(machine.image).then(function (dataset) {
-                                                        Object.keys(dataset).forEach(function (k) {
-                                                            i[k] = dataset[k];
-                                                        });
-                                                    });
-                                                }
-                                            }
-                                            return i;
-                                        }
-                                    }
-                                });
-                            }
-                            return machine;
-                        }
-
-                        function handleChunk (machine) {
-                            var old = null;
-
-                            machine = wrapMachine(machine);
-	                        machine.publicIps = machine.privateIps = [];
-	                        if(ng.isArray(machine.ips)) {
-		                        machine.publicIps = machine.ips.filter(function (ip) {
-			                        return !util.isPrivateIP(ip);
-		                        });
-		                        machine.privateIps = machine.ips.filter(util.isPrivateIP);
-	                        }
-
-                            if (machines.index[machine.id]) {
-                                old = machines.list.indexOf(machines.index[machine.id]);
-                            }
-
-                            machines.index[machine.id] = machine;
-
-                            if (machines.search[machine.id]) {
-                                machines.search[machine.id].forEach(function (r) {
-                                    r.resolve(machine);
-                                });
-                                delete machines.search[machine.id];
-                            }
-
-                            if (old === null) {
-                                machines.list.push(machine);
-                            } else {
-                                machines.list[old] = machine;
-                            }
-                        }
 
                         function handleResponse(chunk) {
                             if(chunk.status === 'error') {
@@ -331,7 +331,7 @@
                         'machine',
                         'Unable to create instance {{name}}',
                         {
-                            name: (instanceName ? instanceName : '')
+                            name: (instanceName || '')
                         }
                     ) +' '+ ((err.message) ? '<br />'+ err.message : '')
                 );
@@ -365,8 +365,8 @@
                     }
 
                     var result = job.__read();
-                    copy(result);
-                    machine.datacenter = data.datacenter; //TODO: Should be gotten from server
+                    result.datacenter = data.datacenter;
+                    handleChunk(result);
                 },
 
                 progress: function (err, job) {

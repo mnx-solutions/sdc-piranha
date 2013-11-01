@@ -80,6 +80,8 @@
                 return d.promise;
             }
 
+            $scope.tagcloudarr = [];
+
             function checkTags (val, old) {
                 if (val) {
                     var keys = Object.keys(val);
@@ -120,6 +122,10 @@
                             delete val[$scope.tagnr];
                             $scope.tagnr = +nextToLastKey;
                         }
+                    }
+                    $scope.tagcloudarr = [];
+                    for(var i = 0; i < (+$scope.tagnr + 1); i++) {
+                        $scope.tagcloudarr.push(val[i]);
                     }
                 }
             }
