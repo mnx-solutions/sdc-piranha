@@ -100,7 +100,7 @@
             "serviceFails": 3,
             "pinTries": 3
         },
-        "riskScoreFraudLimit": 90
+        "riskScoreFraudLimit": 60
     },
     "features": {
         "instanceRename": "enabled",
