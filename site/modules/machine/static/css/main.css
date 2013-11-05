@@ -1198,7 +1198,8 @@ ul.dropdown-menu{
     padding-bottom: 20px;
 }
 .dd-btn{
-    min-width: 75px !important;
+    width: 75px !important;
+    min-width: 0px !important;
     text-align: left;
 }
 .dd-btn button:hover{
