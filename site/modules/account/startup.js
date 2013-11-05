@@ -81,8 +81,7 @@ module.exports = function execute(scope) {
             (function checkList() {
                 call.cloud.listKeys({login: 'my'}, function(err, data) {
 
-                    var found = searchFromList(data, resp);
-                    if(found) {
+                    if(searchFromList(data, resp)) {
                         SignupProgress.setMinProgress(call, 'ssh', function (err2) {
                             if(err2) {
                                 call.log.error(err2);
@@ -108,11 +107,10 @@ module.exports = function execute(scope) {
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
                 call.cloud.listKeys({login: 'my'}, function(err, data) {
-                    var found = searchFromList(data, call.data);
-                    if(!found) {
+                    if(!searchFromList(data, call.data)) {
                         call.done(null);
                     } else {
-                        setTimeout(function() { checkList(); }, 2000)
+                        setTimeout(checkList, 2000)
                     }
                 }, true);
             })();
