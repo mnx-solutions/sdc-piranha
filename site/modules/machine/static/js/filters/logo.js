@@ -7,8 +7,8 @@
             var name = name.toLowerCase();
 
             var instances = {
-                base: "base",
-                base64: "base64",
+                base: "smartos",
+                base64: "smartos",
                 hadoop: "hadoop",
                 riak: "riak",
                 sngl: "sngl",
