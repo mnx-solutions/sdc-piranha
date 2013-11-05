@@ -12,10 +12,9 @@
 
                 $scope.allLoading = false;
 
-                service.getController().then(function (isEnabled) {
-                    if (isEnabled) {
-                        $location.path('/elb/list');
-                    }
+                service.getController().then(function () {
+                    $location.path('/elb/list');
+                }, function () {
                     $scope.allLoading = true;
                 });
 

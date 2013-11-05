@@ -1,14 +1,13 @@
 'use strict';
 
-var vasync = require('vasync');
 var config = require('easy-config');
-var ursa = require('ursa');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
     var info = scope.api('Info');
     var utils = scope.get('utils');
     var Metadata = scope.api('Metadata');
+    var machine = scope.api('Machine');
 
     var langs = {};
     var oldLangs = {};
@@ -56,104 +55,8 @@ module.exports = function execute(scope) {
     info.images.pointer.__listen('change', mapImageInfo);
     info.images.pointer.__startWatch();
 
-    function handleCredentials(machine) {
-        var systemsToLogins = {
-            'mysql' : ['MySQL', 'root'],
-            'pgsql' : ['PostgreSQL', 'postgres'],
-            'virtualmin' : ['Virtualmin', 'admin']
-        };
-
-        var credentials = [];
-        if (machine.metadata && machine.metadata.credentials) {
-            Object.keys(machine.metadata.credentials).forEach(function (username) {
-                var system = systemsToLogins[username] ? systemsToLogins[username][0] : 'Operating System';
-                var login = systemsToLogins[username] ? systemsToLogins[username][1] : username;
-
-                credentials.push(
-                    {
-                        'system' : system,
-                        'username' : login.split('_')[0],
-                        'password' : machine.metadata.credentials[username]
-                    }
-                );
-            });
-        }
-
-        return credentials;
-    }
-
-    function filterFields(machine) {
-        [ 'user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw' ].forEach(function (f) {
-            if (machine.metadata[f]) {
-                machine.metadata[f] = '__cleaned';
-            }
-        });
-
-	    // Clean null networks
-	    if(machine.networks) {
-		    machine.networks = machine.networks.filter(function (network) {
-			    return !!network;
-		    });
-	    }
-
-        return machine;
-    }
-
     server.onCall('MachineList', function (call) {
-        call.log.info('Handling machine list event');
-
-        var datacenters = call.cloud.listDatacenters();
-        var keys = Object.keys(datacenters);
-        var count = keys.length;
-
-        keys.forEach(function (name) {
-            var cloud = call.cloud.separate(name);
-            call.log.debug('List machines for datacenter %s', name);
-
-            cloud.listMachines({ credentials: true }, function (err, machines) {
-                var response = {
-                    name: name,
-                    status: 'pending',
-                    machines: []
-                };
-
-                if (err) {
-                    call.log.error('List machines failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                    response.status = 'error';
-                    response.error = err;
-                } else {
-                    machines = machines.filter(function (el) {
-                        return el.state !== 'failed';
-                    });
-
-                    machines.forEach(function (machine, i) {
-                        machine.datacenter = name;
-                        machine.metadata.credentials = handleCredentials(machine);
-                        machines[i] = filterFields(machine);
-
-                        if (info.instances && info.instances.data[machine.id]) {
-                            machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
-
-                            if (config.features.scheduledCNMaintenance === 'disabled' && machines[i].maintenanceStartTime) {
-                                delete machines[i].maintenanceStartTime;
-                            }
-                        }
-                    });
-
-                    response.status = 'complete';
-                    response.machines = machines;
-
-                    call.log.debug('List machines succeeded for datacenter %s', name);
-                }
-
-                call.update(null, response);
-
-                if (--count === 0) {
-                    call.done();
-                }
-            });
-        });
-
+        machine.List(call, call.done);
     });
 
     /* listPackages */
@@ -172,7 +75,7 @@ module.exports = function execute(scope) {
 
             var filteredPackages = [];
             data.forEach(function (p) {
-                if(info.packages.data[call.data.datacenter][p.name]) {
+                if (info.packages.data[call.data.datacenter][p.name]) {
                     filteredPackages.push(utils.extend(p, info.packages.data[call.data.datacenter][p.name]));
                 } else {
                     filteredPackages.push(p);
@@ -362,10 +265,10 @@ module.exports = function execute(scope) {
 
     /* GetNetwork */
     server.onCall('getNetwork', {
-        verify: function(data) {
+        verify: function (data) {
             return data && typeof data.uuid === 'string';
         },
-        handler: function(call) {
+        handler: function (call) {
             var networkId = call.data.uuid;
             var machineInfo = {'datacenter': call.data.datacenter};
             call.log.info(machineInfo, 'Handling network call, network %s', networkId);
@@ -373,131 +276,34 @@ module.exports = function execute(scope) {
         }
     });
 
-    function createPoller(call, timeout, fn) {
-        var poller = setInterval(fn, config.polling.machineState);
-        var pollerTimeout = setTimeout(function () {
-            clearInterval(poller);
-            call.done('Operation timed out');
-        }, timeout);
+    function machineAction(func) {
+        var opts = {};
 
-        return function clearPoller() {
-            clearInterval(poller);
-            clearTimeout(pollerTimeout);
-            call.done.apply(call, arguments);
-        };
-    }
-
-    /**
-     * Waits for machine state, package or name change
-     * @param {Object} client
-     * @param {Object} call - machine ID is taken from call.data.uuid or call.data if it's a string
-     * @param {String} prop - what to poll
-     * @param {String} expect - what to expect
-     * @param {Number} [timeout=300000] - timeout in milliseconds, defaults to 5m
-     * @param {String} [type=Machine] - type we are polling, defaults to machine
-     */
-    function pollForObjectStateChange(client, call, prop, expect, timeout, type) {
-        var objectId = typeof call.data === 'object' ? call.data.uuid : call.data;
-
-        timeout = timeout || 5 * 60 * 1000;
-        type = type || 'Machine';
-
-        var processNames = {
-            name: 'renaming',
-            package: 'resizing'
+        opts.verify = function (data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('uuid') &&
+                data.hasOwnProperty('datacenter');
         };
 
-        call.log = call.log.child({datacenter: client._currentDC});
-
-        var clearPoller = createPoller(call, timeout, function () {
-
-            // acknowledge what are we doing to logs
-            call.log.debug('Polling for %s %s %s to become %s', type.toLowerCase(), objectId, prop, expect);
-
-            client['get' + type](objectId, true, function (err, object) {
-                if (err) {
-                    // in case we're waiting for deletion a http 410(Gone) or 404 is good enough
-                    if ((err.statusCode === 410 || err.statusCode === 404) && prop === 'state' && expect === 'deleted') {
-                        call.log.debug('%s %s is deleted, returning call', type, objectId);
-                        clearPoller(null, object);
-                        return;
-                    }
-
-                    call.log.error({error:err}, 'Cloud polling failed');
-                    clearPoller(err, true);
-                    return;
-                }
-                if (object.state === 'failed') {
-                    call.log.error('%s %s fell into failed state', type, objectId);
-                    clearPoller(new Error('Machine fell into failed state'));
-                    return;
-                }
-                if (object[prop] === expect) {
-
-                    if (type === 'Machine' && object.package === '') {
-                        call.log.error('Machine %s package is empty after %s!', objectId, (processNames[prop] || prop));
-                    }
-
-                    call.log.debug('%s %s %s is %s as expected, returing call', type, objectId, prop, expect);
-                    if (type === 'Machine') {
-                        object.metadata.credentials = handleCredentials(object);
-                        object = filterFields(object);
-                    }
-                    clearPoller(null, object);
-                } else {
-                    call.log.trace('%s %s %s is %s, waiting for %s', type, objectId, prop, object[prop], expect);
-                    call.step = {
-                        state: processNames[prop] || object.state
-                    };
-                }
-
-            }, null, true);
-        });
-    }
-
-    function changeState(func, logVerb, endstate, opts) {
-        if (!opts) {
-            opts = {};
-        }
-
-        if (!opts.verify) {
-            opts.verify = function(data) {
-                return typeof data === 'object' &&
-                    data.hasOwnProperty('uuid') &&
-                    data.hasOwnProperty('datacenter');
+        opts.handler = function (call) {
+            var options = {
+                uuid: call.data.uuid,
+                datacenter: call.data.datacenter
             };
-        }
 
-        if (!opts.handler) {
-            opts.handler = function (call) {
-                var machineId = call.data.uuid;
-                call.log.debug(logVerb + ' machine %s', machineId);
-
-                var cloud = call.cloud.separate(call.data.datacenter);
-                cloud[func](machineId, function (err) {
-                    if (!err) {
-                        pollForObjectStateChange(cloud, call, 'state', endstate);
-                    } else {
-                        call.log.error(err);
-                        call.error(err);
-                    }
-                });
-            };
-        }
+            machine[func](call, options, call.done);
+        };
 
         return opts;
     }
 
-    /* GetMachine */
-    server.onCall('MachineStart', changeState('startMachine','Starting', 'running'));
+    server.onCall('MachineStart', machineAction('Start'));
 
-    /* GetMachine */
-    server.onCall('MachineStop', changeState('stopMachine','Stopping', 'stopped'));
+    server.onCall('MachineStop', machineAction('Stop'));
 
-    /* GetMachine */
-    server.onCall('MachineDelete', changeState('deleteMachine','Deleting', 'deleted'));
+    server.onCall('MachineDelete', machineAction('Delete'));
 
-    server.onCall('MachineReboot', changeState('rebootMachine','Rebooting', 'running'));
+    server.onCall('MachineReboot', machineAction('Reboot'));
 
     /* ResizeMachine */
     server.onCall('MachineResize', {
@@ -508,69 +314,31 @@ module.exports = function execute(scope) {
                 data.hasOwnProperty('sdcpackage');
         },
         handler: function (call) {
-            var machineId = call.data.uuid;
             var options = {
-                package: call.data.sdcpackage
+                package: call.data.sdcpackage,
+                datacenter: call.data.datacenter,
+                uuid: call.data.uuid
             };
-
-            call.log.info('Resizing machine %s', machineId);
-
-            var cloud = call.cloud.separate(call.data.datacenter);
-            cloud.resizeMachine(machineId, options, function (err) {
-                if (!err) {
-                    // poll for machine package change (resize)
-                    pollForObjectStateChange(cloud, call, 'package', options.package);
-                } else {
-                    call.log.error(err);
-                    call.error(err);
-                }
-            });
+            machine.Resize(call, options, call.done);
         }
     });
 
     /* RenameMachine */
     server.onCall('MachineRename', {
-        verify: function(data) {
+        verify: function (data) {
             return true;
         },
-        handler: function(call) {
-            var machineId = call.data.uuid;
+        handler: function (call) {
             var options = {
-                name: call.data.name
+                uuid: call.data.uuid,
+                name: call.data.name,
+                datacenter: call.data.datacenter
             };
 
-            var cloud = call.cloud.separate(call.data.datacenter);
-            cloud.renameMachine(machineId, options, function(err) {
-                if(!err) {
-                    // poll for machine name change (rename)
-                    pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000));
-                } else {
-                    call.log.error(err);
-                    call.done(err);
-                }
-
-            });
+            machine.Rename(call, options, call.done);
         }
     });
-    
-    function createKeyPairs() {
-        var kp = ursa.generatePrivateKey();
-        return {
-            privateKey: kp.toPrivatePem('utf8'),
-            publicKey: kp.toPublicPem('utf8'),
-            publicSsh: 'ssh-rsa ' + kp.toPublicSsh('base64') + ' piranha@portal',
-            fingerprint: kp.toPublicSshFingerprint('hex').replace(/(.{2})/g, '$1:').slice(0,-1)
-        };
-    }
-    
-    function updateUserMetadata(call, metadata) {
-        Metadata.set(call.req.session.userId, 'ssc_private_key', metadata.ssc_private_key);
-        Metadata.set(call.req.session.userId, 'elbapi_url', metadata.elbapi_url);
 
-        call.cloud.createKey({name: 'ssc_public_key', key: metadata.ssc_public_key}, function (err, resp) {
-            call.log.warn(err);
-        });
-    }
     /* CreateMachine */
     server.onCall('MachineCreate', {
         verify: function (data) {
@@ -585,45 +353,10 @@ module.exports = function execute(scope) {
                 name: call.data.name,
                 package: call.data.package,
                 dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
-                networks: call.data.networks
+                networks: call.data.networks,
+                elbController: call.data.elbController
             };
-            
-            if (call.data.elbController) {
-                var sscKeyPair = createKeyPairs();
-                var portalKeyPair = createKeyPairs();
-                var metatdata = {
-                    ssc_private_key: sscKeyPair.privateKey,
-                    ssc_public_key: sscKeyPair.publicSsh,
-                    portal_public_key: portalKeyPair.publicSsh,
-                    account_name: 'mriou',
-                    datacenter_name: options.datacenter,
-                    elb_code_url: 'https://us-east.manta.joyent.com/mriou/public/elbapi-1.tgz'
-                };
-                for (var key in metatdata) {
-                    options['metadata.' + key] = metatdata[key];
-                }
-            }
-            
-            call.log.info({options: options}, 'Creating machine %s', call.data.name);
-            call.getImmediate(false);
-
-            var cloud = call.cloud.separate(call.data.datacenter);
-            cloud.createMachine(options, function (err, machine) {
-                if (!err) {
-                    call.immediate(null, {machine: machine});
-                    call.data.uuid = machine.id;
-
-                    // poll for machine status to get running (provisioning)
-                    pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000));
-                    if (call.data.elbController) {
-                        metatdata.elbapi_url = 'https://' + machine.primaryIp + ':4000';
-                        updateUserMetadata(call, metatdata);
-                    }
-                } else {
-                    call.log.error(err);
-                    call.immediate(err);
-                }
-            });
+            machine.Create(call, options, call.done);
         }
     });
 
@@ -663,71 +396,71 @@ module.exports = function execute(scope) {
         });
     }
 
-    /* DeleteImage */
-    server.onCall('ImageDelete', {
-        verify: function(data) {
-            return typeof data === 'object' &&
-                data.hasOwnProperty('imageId');
-        },
+    if (!config.features || config.features.imageUse !== 'disabled') {
 
-        handler: function(call) {
-            call.log.info('Deleting image %s', call.data.imageId);
+        /* DeleteImage */
+        server.onCall('ImageDelete', {
+            verify: function (data) {
+                return typeof data === 'object' &&
+                    data.hasOwnProperty('imageId');
+            },
 
-            var cloud = call.cloud.separate(call.data.datacenter);
-            call.cloud.deleteImage(call.data.imageId, function(err) {
-                if (!err) {
-                    call.data.uuid = call.data.imageId;
-                    pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image');
-                } else {
-                    call.log.error(err);
-                    call.done(err);
-                }
-            });
+            handler: function(call) {
+                call.log.info('Deleting image %s', call.data.imageId);
 
-        }
-    });
-
-    /* images list */
-    server.onCall('ImagesList', function(call) {
-
-        var datacenters = call.cloud.listDatacenters();
-        var keys = Object.keys(datacenters);
-        var count = keys.length;
-
-        keys.forEach(function (name) {
-            var cloud = call.cloud.separate(name);
-            call.log.debug('List images for datacenter %s', name);
-
-            cloud.listImages(function (err, images) {
-                var response = {
-                    name: name,
-                    status: 'pending',
-                    images: []
-                };
-
-                if (err) {
-                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                    response.status = 'error';
-                    response.error = err;
-                } else {
-                    /* add datacenter to every image */
-                    images.forEach(function (image) {
-                        image.datacenter = name;
-                    });
-
-                    response.status = 'complete';
-                    response.images = images;
-
-                    call.log.debug('List images succeeded for datacenter %s', name);
-                }
-                call.update(null, response);
-
-                if (--count === 0) {
-                    call.done();
-                }
-            });
+                var cloud = call.cloud.separate(call.data.datacenter);
+                call.cloud.deleteImage(call.data.imageId, function (err) {
+                    if (!err) {
+                        call.data.uuid = call.data.imageId;
+                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
+                    } else {
+                        call.log.error(err);
+                        call.done(err);
+                    }
+                });
+            }
         });
 
+        /* images list */
+        server.onCall('ImagesList', function(call) {
 
-    });
-};
+            var datacenters = call.cloud.listDatacenters();
+            var keys = Object.keys(datacenters);
+            var count = keys.length;
+
+            keys.forEach(function (name) {
+                var cloud = call.cloud.separate(name);
+                call.log.debug('List images for datacenter %s', name);
+
+                cloud.listImages(function (err, images) {
+                    var response = {
+                        name: name,
+                        status: 'pending',
+                        images: []
+                    };
+
+                    if (err) {
+                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                        response.status = 'error';
+                        response.error = err;
+                    } else {
+                        /* add datacenter to every image */
+                        images.forEach(function (image) {
+                            image.datacenter = name;
+                        });
+
+                        response.status = 'complete';
+                        response.images = images;
+
+                        call.log.debug('List images succeeded for datacenter %s', name);
+                    }
+                    call.update(null, response);
+
+                    if (--count === 0) {
+                        call.done();
+                    }
+                });
+            });
+        });
+    }
+}

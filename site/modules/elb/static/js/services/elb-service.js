@@ -7,19 +7,13 @@
         '$q',
         function (serverTab, $http, $q) {
             var service = {};
-            //TODO: Remove datacenter hardcode once we have UI selection for it
-            var hardDataCenter = 'us-west-x';
-            var hardControllerName = 'elb-ssc';
-            var privateKey = 'generated_private_key';
-            var publicKey = 'generate_public_key';
+
             function filterBalancer(balancer) {
                 balancer.machinesUp = (balancer.machines || []).filter(function (machine) {
                     return machine.status === 'up';
                 });
                 return balancer;
             }
-
-
 
             service.getBalancer = function getBalancer(balancerId) {
                 var d = $q.defer();
@@ -180,37 +174,30 @@
             };
 
             service.getController = function getController() {
-                return this.getMachines().then(function (result) {
-                    return result[0].machines.some(function (machine) {
-                        return machine.name === hardControllerName;
-                    });
-                });
-            };
-
-            service.createController = function createController() {
                 var d = $q.defer();
-                var data = {
-                    datacenter: hardDataCenter,
-                    dataset: 'e5f146a6-4188-11e3-9250-c73e9d9101fd',
-                    name: hardControllerName,
-                    package: '5d367f42-867b-4cc3-883c-b329cbaad9d4',
-                    networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f'],
-                    elbController: true
-                };
                 serverTab.call({
-                    name: 'MachineCreate',
-                    data: data,
+                    name: 'SscMachineLoad',
                     done: function (err, job) {
                         if (err) {
                             d.reject(err);
                             return;
                         }
-                        var result = job.__read();
-                        d.resolve(result);
-                    },
-                    error: function (err, job) {
-                        d.reject(err);
-                        return;
+                        d.resolve(job.__read());
+                    }
+                });
+                return d.promise;
+            };
+
+            service.createController = function createController() {
+                var d = $q.defer();
+                serverTab.call({
+                    name: 'SscMachineCreate',
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve(job.__read());
                     }
                 });
                 return d.promise;
@@ -218,42 +205,15 @@
 
             service.deleteController = function deleteController() {
                 var d = $q.defer();
-                this.getMachines().then(function (result) {
-                    //TODO: Get machine by special package type rather than hardcoded name once image is ready
-                    var controllerMachines = result[0].machines.filter(function (machine) {
-                        return machine.name === hardControllerName;
-                    });
-                    if (!controllerMachines.length) {
-                        d.reject('Controller not found');
-                    }
-                    var controllerId = controllerMachines[0].id;
-                    serverTab.call({
-                        name: 'MachineStop',
-                        data: {
-                            uuid: controllerId,
-                            datacenter: hardDataCenter
-                        },
-                        done: function (err, job) {
-                            if (err) {
-                                d.reject(err);
-                                return;
-                            }
-                            serverTab.call({
-                                name: 'MachineDelete',
-                                data: {
-                                    uuid: controllerId,
-                                    datacenter: hardDataCenter
-                                },
-                                done: function (err, job) {
-                                    if (err) {
-                                        d.reject(err);
-                                        return;
-                                    }
-                                    d.resolve();
-                                }
-                            });
+                serverTab.call({
+                    name: 'SscMachineDelete',
+                    done: function (err, job) {
+                        if (err) {
+                            d.reject(err);
+                            return;
                         }
-                    });
+                        d.resolve(job.__read());
+                    }
                 });
                 return d.promise;
             };
