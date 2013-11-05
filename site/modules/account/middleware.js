@@ -25,11 +25,6 @@ module.exports = function execute(scope) {
                 return;
             }
 
-            if (req.originalUrl === '/main/account/key-generator.sh') {
-                next();
-                return;
-            }
-
             if (/^\/signup/.test(req.originalUrl)) {
                 if (step === 'completed') {
                     res.redirect('/main/');

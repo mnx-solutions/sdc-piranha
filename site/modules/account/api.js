@@ -71,14 +71,12 @@ module.exports = function execute(scope, register) {
         });
     }
 
-    function searchFromList(list, resp, cb) {
-        var found = Object.keys(list).some(function(key, data) {
+    function searchFromList(list, resp) {
+        return Object.keys(list).some(function(key, data) {
             if(list[key].fingerprint === resp.fingerprint) {
                 return true;
             }
         });
-
-        cb(found);
     }
 
     api.addSshKey = function (req, name, keyData, cb) {
@@ -91,13 +89,12 @@ module.exports = function execute(scope, register) {
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
                 req.cloud.listKeys({login: 'my'}, function(err, data) {
-                    searchFromList(data, resp, function(found) {
-                        if(found) {
-                            cb(null);
-                        } else {
-                            setTimeout(function() { checkList(); }, 2000)
-                        }
-                    });
+                    var found = searchFromList(data, resp);
+                    if(found) {
+                        cb(null);
+                    } else {
+                        setTimeout(checkList, 2000)
+                    }
                 }, true);
             })();
         });

@@ -8,6 +8,7 @@ var countryCodes = require('./data/country-codes');
 var exec = require('child_process').exec;
 var os = require('os');
 var uuid = require('../../static/vendor/uuid/uuid.js');
+var jobs = {};
 
 /**
  * @ngdoc service
@@ -19,7 +20,6 @@ var uuid = require('../../static/vendor/uuid/uuid.js');
  */
 module.exports = function execute(scope, app) {
 
-    var jobs = {};
     var SignupProgress = scope.api('SignupProgress');
 
     app.get('/countryCodes',function(req, res) {
@@ -89,7 +89,6 @@ module.exports = function execute(scope, app) {
                             fs.unlink(filePath, function(err) {
                                 if(err) {
                                     req.log.error(err);
-                                    return;
                                 }
                             });
                         }
