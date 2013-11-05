@@ -281,7 +281,6 @@
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
 
                 $scope.props.forEach(function (el) {
-                    el.active = true;
 	                if(el._getter) {
 		                el.order = el._getter;
 		                el.rorder = function (obj) {

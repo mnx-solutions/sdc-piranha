@@ -82,7 +82,7 @@
                         </label>
                     </td>
                     <td data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
-                        <a data-ng-switch-when="label" href="#!/instance/details/{{object.id}}">{{object.label}}</a>
+                        <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
                         <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                             <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
                         </span>
