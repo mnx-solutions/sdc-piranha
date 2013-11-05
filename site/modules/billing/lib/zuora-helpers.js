@@ -3,7 +3,8 @@
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
-var options = config.zuora.api;
+var options = config.zuora.rest;
+options.url = options.endpoint;
 options.password = config.zuora.password;
 options.user = config.zuora.user;
 

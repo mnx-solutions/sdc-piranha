@@ -7,7 +7,8 @@ var zHelpers = require('./lib/zuora-helpers');
 var isProduction = config.isProduction();
 
 module.exports = function execute(scope, callback) {
-    var options = config.zuora.api;
+    var options = config.zuora.rest;
+    options.url = options.endpoint;
     options.log = scope.log;
 	options.password = config.zuora.password;
 	options.user = config.zuora.user;
