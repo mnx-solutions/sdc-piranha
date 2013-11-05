@@ -928,6 +928,7 @@ ul.dropdown-menu{
     width: 982px;
     padding-left: 18px;
     padding-bottom: 55px;
+    float:left;
 }
 .status .loading-small, .details_btn_block .loading-small {
     padding-top: 6px;
