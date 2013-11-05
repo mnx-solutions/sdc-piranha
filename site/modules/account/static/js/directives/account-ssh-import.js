@@ -23,7 +23,7 @@
                 link: function ($scope) {
 
                     /* ssh key creating popup with custom template */
-                    var newKeyPopup = function(question, callback) {
+                    $scope.addNewKey = function(question, callback) {
                         var title = 'Add new ssh key';
                         var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue'}];
                         var templateUrl = 'account/static/template/dialog/message.html';
@@ -33,21 +33,25 @@
                             .open()
                             .then(function(result) {
                                 if(result && result.value === 'add') {
-                                    callback(result.data);
-                                }
-
-                                if(result === 'add') {
-                                    callback(null);
+                                    $scope.createNewKey({
+                                        name: result.data.keyName,
+                                        data: result.data.keyData
+                                    });
                                 } else {
                                     $rootScope.loading = false;
                                 }
 
+                                if(result === 'add') {
+                                    notification.push(null, { type: 'error' },
+                                        localization.translate($scope, null,
+                                            'Please enter a SSH key'
+                                        )
+                                    );
+                                }
                             });
                     };
 
                     $scope.createNewKey = function (key) {
-                        $rootScope.loading = true;
-                        console.log($scope.loading, $rootScope.loading);
                         // If key is not given as an argument but exist in a scope
                         if (!key && $scope.key) {
                             key = $scope.key;
@@ -99,31 +103,6 @@
                             );
                         });
                     };
-
-                    /* SSH key creating */
-                    $scope.addNewKey = function () {
-                        newKeyPopup('', function (keyData) {
-                            if (!keyData) {
-                                keyData = {};
-                            }
-
-                            if (!keyData.keyData) {
-                                notification.push(null, { type: 'error' },
-                                    localization.translate($scope, null,
-                                        'Please enter a SSH key'
-                                    )
-                                );
-
-                                return;
-                            }
-
-                            $scope.createNewKey({
-                                name: keyData.keyName,
-                                data: keyData.keyData
-                            });
-                        });
-                    };
-
                 },
                 templateUrl: 'account/static/partials/account-ssh-import.html'
             };
