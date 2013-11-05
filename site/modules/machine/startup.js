@@ -128,6 +128,10 @@ module.exports = function execute(scope) {
                         machine.datacenter = name;
                         machine.metadata.credentials = handleCredentials(machine);
                         machines[i] = filterFields(machine);
+
+                        if (info.instances && info.instances.data[machine.id]) {
+                            machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
+                        }
                     });
 
                     response.status = 'complete';
