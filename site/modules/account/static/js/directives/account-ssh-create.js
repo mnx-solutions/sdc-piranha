@@ -23,30 +23,30 @@
                     $rootScope.downloadLink = false;
                 },
                 link: function ($scope) {
-                    /* ssh key generating popup with custom template */
-                    var sshKeyModalCtrl = function($scope, dialog) {
-                        $scope.keyName = '';
-
-                        $scope.close = function(res) {
-                            if(!res || !res.generate) {
-                                $rootScope.loading = false;
-                            }
-                            dialog.close(res);
-                        };
-
-                        $scope.generateKey = function() {
-                            $rootScope.loading = true;
-                            $scope.close({generate: true, keyName: $scope.keyName});
-                        };
-                    };
-
-                    var generateKeyPopup = function(question, callback) {
+                    /* SSH Key generation popup */
+                    $scope.generateSshKey = function() {
                         var title = 'Create SSH Key';
                         var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
                         var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
+                        /* ssh key generating popup with custom template */
+                        var sshKeyModalCtrl = function($scope, dialog) {
+                            $scope.keyName = '';
+
+                            $scope.close = function(res) {
+                                if(!res || !res.generate) {
+                                    $rootScope.loading = false;
+                                }
+                                dialog.close(res);
+                            };
+
+                            $scope.generateKey = function() {
+                                $rootScope.loading = true;
+                                $scope.close({generate: true, keyName: $scope.keyName});
+                            };
+                        };
 
                         $rootScope.loading = true;
-                        $dialog.messageBox(title, question, btns, templateUrl)
+                        $dialog.messageBox(title, '', btns, templateUrl)
                             .open(templateUrl, sshKeyModalCtrl)
                             .then(function(data) {
                                 if(data && data.generate === true) {
@@ -143,14 +143,6 @@
                                 }
                             });
                     };
-
-                    /* SSH Key generation popup */
-                    $scope.generateSshKey = function() {
-                        generateKeyPopup('', function(keyData){
-
-                        });
-                    };
-
                 },
                 templateUrl: 'account/static/partials/account-ssh-create.html'
         };

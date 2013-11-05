@@ -60,13 +60,11 @@ module.exports = function execute(scope) {
     });
 
     function searchFromList(list, resp, cb) {
-        var found = Object.keys(list).some(function(key) {
+        return Object.keys(list).some(function(key) {
             if(list[key].fingerprint === resp.fingerprint) {
                 return true;
             }
         });
-
-        cb(found);
     }
 
     server.onCall('createKey', function(call) {
@@ -83,21 +81,16 @@ module.exports = function execute(scope) {
             (function checkList() {
                 call.cloud.listKeys({login: 'my'}, function(err, data) {
 
-                    console.log('callbacked', Date.now());
-                    searchFromList(data, resp, function(found) {
-                        console.log('POLLING', found, resp, JSON.stringify(data));
-
-                        if(found) {
-                            SignupProgress.setMinProgress(call, 'ssh', function (err2) {
-                                if(err2) {
-                                    call.log.error(err2);
-                                }
-                                call.done(null, resp);
-                            });
-                        } else {
-                            setTimeout(function() { checkList(); }, 2000)
-                        }
-                    });
+                    if(searchFromList(data, resp)) {
+                        SignupProgress.setMinProgress(call, 'ssh', function (err2) {
+                            if(err2) {
+                                call.log.error(err2);
+                            }
+                            call.done(null, resp);
+                        });
+                    } else {
+                        setTimeout(checkList, 2000)
+                    }
                 }, true);
             })();
         });
@@ -114,13 +107,11 @@ module.exports = function execute(scope) {
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
                 call.cloud.listKeys({login: 'my'}, function(err, data) {
-                    searchFromList(data, call.data , function(found) {
-                        if(!found) {
-                            call.done(null);
-                        } else {
-                            setTimeout(function() { checkList(); }, 2000)
-                        }
-                    });
+                    if(!searchFromList(data, call.data)) {
+                        call.done(null);
+                    } else {
+                        setTimeout(checkList, 2000)
+                    }
                 }, true);
             })();
         });
