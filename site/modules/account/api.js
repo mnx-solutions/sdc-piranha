@@ -30,7 +30,7 @@ module.exports = function execute(scope, register) {
     var steps = [ 'start', 'phone', 'billing', 'ssh' ];
 
     function _nextStep(step) {
-        return (step == 'completed' || step == 'complete') ?  step : steps[steps.indexOf(step)+1];
+        return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step)+1];
     }
 
     function getFromBilling(method, userId, cb) {
@@ -64,33 +64,42 @@ module.exports = function execute(scope, register) {
             if (errs.length === 0) { // The only error was provisioning flag - letting through
                 state = 'completed';
             } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') { // There was only a billing error
-                state = 'billing';
+                state = 'phone'; // which means billing
             }
 
             cb(null, state);
         });
     }
 
+    function searchFromList(list, resp, cb) {
+        var found = Object.keys(list).some(function(key, data) {
+            if(list[key].fingerprint === resp.fingerprint) {
+                return true;
+            }
+        });
+
+        cb(found);
+    }
+
     api.addSshKey = function (req, name, keyData, cb) {
-        req.cloud.createKey({name: name, key: keyData}, function (err) {
+        req.cloud.createKey({name: name, key: keyData}, function (err, resp) {
             if(err) {
                 cb(err);
                 return;
             }
 
-            api.getSignupStep(req, function(err, step) {
-                if(step !== 'completed' || step !== 'complete') {
-                    api.setMinProgress(req, 'ssh', function(err) {
-                        if(err) {
-                            cb(err);
+            // hold this call until cloudApi really has this key in the list
+            (function checkList() {
+                req.cloud.listKeys({login: 'my'}, function(err, data) {
+                    searchFromList(data, resp, function(found) {
+                        if(found) {
+                            cb(null);
+                        } else {
+                            setTimeout(function() { checkList(); }, 2000)
                         }
-
-                        cb(null);
                     });
-                } else {
-                    cb(null);
-                }
-            });
+                }, true);
+            })();
         });
     };
 
@@ -132,10 +141,10 @@ module.exports = function execute(scope, register) {
             return;
         }
         function getMetadata(userId) {
-            metadata.get(userId, 'signupStep', function (err, storedStep) {
+            metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (!err && storedStep) {
-                    call.log.info('Got signupStep from metadata', {step: storedStep});
-                    call.log.info('User landing in step: ', _nextStep(storedStep));
+                    call.log.info('Got signupStep from metadata: %s; landing at: %s',
+                        storedStep, _nextStep(storedStep));
 
                     end(storedStep);
                 } else {
@@ -145,7 +154,7 @@ module.exports = function execute(scope, register) {
                             return;
                         }
 
-                        call.log.info('User landing in step', _nextStep(storedStep));
+                        call.log.info('User landing in step:', _nextStep(value));
                         end(value);
                     });
                 }
@@ -170,7 +179,7 @@ module.exports = function execute(scope, register) {
     api.setSignupStep = function (call, step, cb) {
         function updateStep(req) {
             if (req.session) {
-                metadata.set(req.session.userId, 'signupStep', step, function () {
+                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function () {
                     call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
                 });
             }

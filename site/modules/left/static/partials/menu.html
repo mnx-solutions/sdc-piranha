@@ -15,16 +15,20 @@
                 <span class="selected"></span>
             </a>
         </li>
-        <li class="second" data-ng-class="{active: location.path() == '/instance' || location.path() == '/elb', over: t_second && sideBarMin, collapse: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
-            <a href="#!/instance">
+        <li class="second" data-ng-class="{active: location.path() == '/compute' || location.path() == '/elb', over: t_second && sideBarMin, collapse: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
+            <a href="#!/compute">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_second">Compute</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li class="sub0" data-ng-class="{active: location.path() == '/instance'}"><a href="#!/instance"><span class="titles" data-ng-show="!sideBarMin || t_second">Instances</span></a></li>
+                <li class="sub0" data-ng-class="{active: location.path() == '/compute'}"><a href="#!/compute"><span class="titles" data-ng-show="!sideBarMin || t_second">Instances</span></a></li>
                 <li class="sub1"><a href="#!/elb"><span class="titles" data-ng-show="!sideBarMin || t_second">Load Balancers</span></a></li>
                 <li class="sub2"><a><span class="titles" data-ng-show="!sideBarMin || t_second">Firewall Rules</span></a></li>
+
+                <!--<a href="#!/firewall/" data-ng-show="features.firewall != 'disabled'" data-translate>Firewall</a>-->
+                <!--<a href="#!/elb/" data-ng-show="features.elb == 'enabled'" data-translate>Load Balancers</a>-->
+
                 <li class="sub3"><a><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span></a></li>
             </ul>
         </li>

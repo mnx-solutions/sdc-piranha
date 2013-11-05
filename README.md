@@ -46,23 +46,28 @@ Development regularly occurs on Linux until it is ready for staging. Lloyd encou
 The production environment is currently SmartOS 64-bit - base64 13.1.0, so we use the same for staged development.
 * Use 'ssh -A' to connect to the instance, forwarding your authentication agent.
 
-1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.  
-2. `pkgin up; pkgin in scmgit-base redis build-essential`
-3. `svcadm enable redis:default`
-4. `git clone git@github.com:joyent/piranha.git /opt/portal`  
-5. `cd /opt/portal; npm install --production`
-6. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
-7. Make sure portal user has rights to write var/error.json `chown -R portal var/`
-8. `svccfg import /opt/portal/smf/portal.xml`
-9. `svcadm enable portal`
+1. Test access to Joyent git repos: `ssh git@git.joyent.com` (Confirms access to the private repositories. Connection will immediately close)  
+2. Update and install system packages: `pkgin up; pkgin -y install scmgit-base redis build-essential`
+3. Enable local Redis service: `svcadm enable redis:default`
+4. Clone Piranha repo from GitHub: `git clone git@github.com:joyent/piranha.git /opt/portal` 
+5. Create a new non-root user for portal: `useradd -s /bin/false -m portal`
+6. Install node.js modules: `cd /opt/portal; npm install --production`
+6. Make sure that portal user owns its files: `chown -R portal /opt/portal`
+7. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+8. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
+9. Start portal: `svcadm enable portal`
 
 ### Production
 
-1. `node tools/build-tar.js` to run tar-builder
+#### Build tarball
 
-#### build-tar.js
+1. Pull latest changes from repo: `git pull`
+2. Check out latest release tag: `git checkout tagname` (where tagname is release tag name, e.g. v1.3.6)
+3. Build: `make build`
+4. Copy `portal-tagname.tar.gz` tarball to production environment
 
-NodeJS script that will build deployment tar.
+`make build` step executes `tools/build-tar.js` node script that will build deployment tarball.
+
 Script will do the following:
 
 1. Check if latest tags & branch is checked out and correct
@@ -78,19 +83,27 @@ Possible tar builder flags:
 * `--debug` - When this flag is present, debug.log is generated with output
 * `--help` - Displays possible flags
 
+#### Deploy tarball
+
+1. Create a new non-root user for portal if it doesn't exist: `useradd -s /bin/false -m portal`
+2. Create directory for portal files: `/opt/portal`
+3. Unpack production tarball: `tar xvzf portal-tagname.tar.gz --directory=/opt/portal`
+4. Make sure that portal user owns its files: `chown -R portal /opt/portal`
+5. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+6. Import portal service configuration file: `svccfg import /opt/portal/smf/portal.xml`
+7. Start portal: `svcadm enable portal`
+
 ## Update
 
 ### Development & Staged
 
-1. `svcadm disable portal`
-2. `rm -rf /opt/portal/node_modules/*`
-3. `git pull`
-5. `cd /opt/portal; npm install --production`
-8. `svcadm enable portal`
-
-### Production
-
-FIXME: with a `make install`
+1. Stop portal: `svcadm disable portal`
+2. Change working directory: `cd /opt/portal`
+3. Remove installed node.js modules: `rm -rf node_modules/`
+4. Pull latest changes from repo: `git fetch origin; git fetch --tags origin`
+5. Merge fetched changes: `git merge origin`
+6. Install node.js modules: `npm install --production`
+7. Start portal: `svcadm enable portal`
 
 ## Configuration
 

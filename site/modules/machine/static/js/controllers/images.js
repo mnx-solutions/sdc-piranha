@@ -21,8 +21,6 @@
                 title: localization.translate(null, 'machine', 'Image List')
             });
 
-            $scope.images = Image.image(true);
-
             $scope.loading = true;
 
             $scope.$watch('images.final', function (final) {
@@ -57,7 +55,7 @@
             };
 
             $scope.provisionInstance = function(image) {
-                $location.path('/instance/create/'+ image.id);
+                $location.path('/compute/create/'+ image.id);
             };
 
 

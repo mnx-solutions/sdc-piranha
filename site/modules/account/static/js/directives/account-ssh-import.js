@@ -19,8 +19,6 @@
                 scope: true,
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
-
-                    $scope.loading = false;
                 },
                 link: function ($scope) {
 
@@ -30,6 +28,7 @@
                         var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue'}];
                         var templateUrl = 'account/static/template/dialog/message.html';
 
+                        $rootScope.loading = true;
                         $dialog.messageBox(title, question, btns, templateUrl)
                             .open()
                             .then(function(result) {
@@ -39,12 +38,16 @@
 
                                 if(result === 'add') {
                                     callback(null);
+                                } else {
+                                    $rootScope.loading = false;
                                 }
+
                             });
                     };
 
                     $scope.createNewKey = function (key) {
                         $rootScope.loading = true;
+                        console.log($scope.loading, $rootScope.loading);
                         // If key is not given as an argument but exist in a scope
                         if (!key && $scope.key) {
                             key = $scope.key;
@@ -57,17 +60,6 @@
                             if (key.name && key.fingerprint && key.key) {
                                 $scope.key = null;
 
-                                // start interval
-                                if($scope.updateInterval) {
-                                    $scope.updateInterval();
-                                }
-
-                                notification.push(null, { type: 'success' },
-                                    localization.translate($scope, null,
-                                        'New key successfully added'
-                                    )
-                                );
-
                                 if($scope.nextStep) {
                                     // show a persistent notification
                                     notification.push(null, { type: 'success', persistent: true },
@@ -76,6 +68,14 @@
                                         )
                                     );
                                     $scope.nextStep();
+                                } else {
+                                    $scope.updateKeys(function() {
+                                        notification.push(null, { type: 'success' },
+                                            localization.translate($scope, null,
+                                                'New key successfully added'
+                                            )
+                                        );
+                                    });
                                 }
                             } else {
                                 notification.push(null, { type: 'error' },

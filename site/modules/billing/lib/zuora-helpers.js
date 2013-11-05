@@ -3,7 +3,11 @@
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
-var zuora = require('zuora').create(config.zuora.api);
+var options = config.zuora.api;
+options.password = config.zuora.password;
+options.user = config.zuora.user;
+
+var zuora = require('zuora').create(options);
 var zuoraSoap = require('./zuora');
 var moment = require('moment');
 
@@ -42,6 +46,11 @@ function init(zuoraInit, callback) {
         zuoraErrors = JSON.parse(data);
         end();
     });
+
+	var options = config.zuora.soap;
+	options.password = config.zuora.password;
+	options.user = config.zuora.user;
+	options.tenantId = config.zuora.tenantId;
 
     zuoraSoap.connect(config.zuora.soap, function (err) {
         if(err) {
@@ -94,7 +103,7 @@ function composeCreditCardObject(call, cb) {
     };
     // Copy all properties except first and last name
     Object.keys(call.data).forEach(function (k) {
-        if(k !== 'firstName' && k !== 'lastName'){
+        if(k !== 'firstName' && k !== 'lastName' && k !== 'workPhone'){
             data[k] = call.data[k];
         }
     });
@@ -139,7 +148,8 @@ function composeBillToContact(call, acc, cb) {
             firstName: call.data.firstName,
             lastName: call.data.lastName,
             country: call.data.cardHolderInfo.country || data.country || null,
-            workEmail: data.email
+            workEmail: data.email,
+	        workPhone: call.data.workPhone
         };
 
         Object.keys(call.data.cardHolderInfo).forEach(function (k) {
@@ -235,7 +245,7 @@ function composeZuoraAccount(call, cb) {
                 };
 
                 Object.keys(cc).forEach(function (k) {
-                    if(k === 'firstName' || k === 'lastName') {
+                    if(k === 'firstName' || k === 'lastName' || k === 'workPhone') {
                         return;
                     }
                     var key = ((k === 'creditCardType' && 'cardType')
@@ -243,7 +253,6 @@ function composeZuoraAccount(call, cb) {
                         || k);
                     obj.creditCard[key] = cc[k];
                 });
-
                 composeBillToContact(call, data, function (err3, billToContact) {
                     if(err3) {
                         cb(err3);
@@ -323,7 +332,7 @@ function createZuoraAccount(call, cb) {
     composeZuoraAccount(call, call.log.noErr('Unable to compose Account', cb, function (obj, user) {
         obj.creditCard = {};
         Object.keys(call.data).forEach(function (k) {
-            if(k === 'firstName' || k === 'lastName') {
+            if(k === 'firstName' || k === 'lastName' || k === 'workPhone') {
                 return;
             }
             var key = ((k === 'creditCardType' && 'cardType')

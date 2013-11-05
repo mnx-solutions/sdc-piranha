@@ -10,6 +10,7 @@
         'Network',
         'rule',
         'firewall',
+        '$filter',
         '$dialog',
         '$$track',
         'localization',
@@ -18,7 +19,7 @@
         'util',
         'Image',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $dialog, $$track, localization, $q, $location, util, Image) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -33,11 +34,11 @@
             $scope.loadingNewName = false;
             $scope.newInstanceName = null;
             $scope.networks = [];
+            $scope.defaultSshUser = 'root';
 
 
             // Handle case when machine loading fails or machine uuid is invalid
-            $q.when($scope.machine).then(
-                function () {
+            $q.when($scope.machine).then(function () {
                     $scope.loading = false;
                     $scope.newInstanceName = $scope.machine.name;
                 }, function () {
@@ -80,7 +81,7 @@
                 return d.promise;
             }
 
-            $scope.tagcloud = tagcloud();
+            $scope.tagcloudarr = [];
 
             function checkTags (val, old) {
                 if (val) {
@@ -123,6 +124,10 @@
                             $scope.tagnr = +nextToLastKey;
                         }
                     }
+                    $scope.tagcloudarr = [];
+                    for(var i = 0; i < (+$scope.tagnr + 1); i++) {
+                        $scope.tagcloudarr.push(val[i]);
+                    }
                 }
             }
 
@@ -136,16 +141,37 @@
                     Machine.updateMachines();
                     Machine.machine(machineid).then(function (m) {
                         $scope.machine = m;
+                        if ($scope.features.firewall === 'enabled') {
+                            Machine.listFirewallRules(m.id).then(function (rules) {
+                                $scope.firewallRules = rules;
+                            });
+                        }
                     });
                 }
             );
 
+            $scope.$watch('machines', function (machines) {
+                $q.when(Machine.machine(machineid)).then(
+                    function (machine) {
+                        $scope.machine = machine;
+
+                        if ($scope.features.firewall === 'enabled') {
+                            Machine.listFirewallRules(machine.id).then(function (rules) {
+                                $scope.firewallRules = rules;
+                            });
+                        }
+                    }
+                );
+            }, true);
+
             $scope.packages = Package.package();
 
             $q.when($scope.machine, function (m) {
-                m.primaryIps = m.ips.filter(function (ip) {
-                    return !util.isPrivateIP(ip);
-                });
+                if ($scope.features.firewall === 'enabled') {
+                    Machine.listFirewallRules(m.id).then(function (rules) {
+                        $scope.firewallRules = rules;
+                    });
+                }
 
                 $scope.dataset = Dataset.dataset(m.image);
                 $scope.package = Package.package(m.package);
@@ -157,6 +183,10 @@
                 }
 
                 $scope.dataset.then(function(ds){
+                    if(ds.tags && ds.tags.default_user) {
+                        $scope.defaultSshUser = ds.tags.default_user;
+                    }
+
                     var type = ds.type;
 
                     switch (ds.type) {
@@ -285,6 +315,14 @@
                 $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
             };
 
+            $scope.renameClass = function() {
+                if($scope.features.instanceRename === 'enabled') {
+                    return 'machine-name-rename';
+                } else {
+                    return '';
+                }
+            };
+
             $scope.messageDialog = function () {
                 util.message(
                     localization.translate(
@@ -300,10 +338,12 @@
                         this.close();
                     });
             };
-
+            
             $scope.enableRename = function(name) {
-                $scope.changingName = true;
-                $scope.newInstanceName = name;
+                if($scope.features.instanceRename === 'enabled') {
+                    $scope.changingName = true;
+                    $scope.newInstanceName = name;
+                }
             };
 
             $scope.cancelRename = function() {
@@ -329,10 +369,13 @@
                         $scope.loadingNewName = true;
                         $scope.changingName = false;
                         $$track.event('machine', 'rename');
+		                $scope.renaming = true;
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                         job.getJob().done(function() {
                             $scope.machine.name = $scope.newInstanceName;
+                            $scope.changingName = false;
+	                        $scope.renaming = false;
                             $scope.loadingNewName = false;
                         });
                     }
@@ -355,7 +398,7 @@
 
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
-                            if($location.url() === '/instance/details/'+ machineid) {
+                            if ($location.url() === '/compute/instance/'+ machineid) {
                                 $location.url('/compute');
                                 $location.replace();
                             }
@@ -379,6 +422,9 @@
                 $scope.retinfo.then(function(tags) {
                     $scope.tagcloud = tagcloud(tags);
                     $scope.tagsave = false;
+                    //console.log($scope.tagForm);
+                    $scope.tagForm.$pristine = true;
+                    $scope.tagForm.$dirty = false;
                 }, function (err) {
                     $scope.tagsave = false;
                 });
@@ -389,6 +435,7 @@
             };
 
             $scope.removeTag = function(k) {
+                $scope.tagForm.$setDirty();
                 delete $scope.tagcloud.$$v[k];
             };
 
@@ -410,8 +457,7 @@
             };
 
             $scope.filterPackages = function (item) {
-
-                if($scope.currentPackage && item.type && item.type === 'smartos' && item.memory >= $scope.currentPackage.memory) {
+                if($scope.currentPackage && item.type && item.type === 'smartos' && item.memory > $scope.currentPackage.memory) {
                     //Old images don't have currentPackage.type
                     return (!$scope.currentPackage.type && item.group === 'High CPU') || (item.group === $scope.currentPackage.group);
                 }
@@ -425,6 +471,68 @@
                     name.length >= ending.length &&
                     name.indexOf(ending, name.length - ending.length) !== -1;
             };
+
+            // Enable features
+            // Instance tagging
+            if ($scope.features.instanceTagging === 'enabled') {
+                $scope.tagcloud = tagcloud();
+            }
+
+            if ($scope.features.firewall === 'enabled') {
+                $scope.gridOrder = [];
+                $scope.gridProps = [
+                    {
+                        id: 'parsed',
+                        id2: 'from',
+                        name: 'From',
+                        getClass: function () {
+                            return 'span4 padding-5';
+                        },
+                        _getter: function (object) {
+                            var arr = object.parsed.from.map(function (from) {
+                                return $filter('targetInfo')(from);
+                            });
+                            return arr.join('; ');
+                        },
+                        sequence: 1
+                    },
+                    {
+                        id: 'parsed',
+                        id2: 'to',
+                        name: 'To',
+                        getClass: function () {
+                            return 'span4 padding-5';
+                        },
+                        _getter: function (object) {
+                            var arr = object.parsed.to.map(function (to) {
+                                return $filter('targetInfo')(to);
+                            });
+                            return arr.join('; ');
+                        },
+                        sequence: 2
+                    },
+                    {
+                        id: 'parsed',
+                        id2: 'action',
+                        name: 'Action',
+                        getClass: function () {
+                            return 'span2 padding-5';
+                        },
+                        sequence: 3
+                    },
+                    {
+                        id: 'protocol',
+                        name: 'Protocol',
+                        getClass: function () {
+                            return 'span2 padding-5';
+                        },
+                        _getter: function (object) {
+                            return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
+                        },
+                        sequence: 4
+                    }
+                ];
+            }
         }
 
     ]);

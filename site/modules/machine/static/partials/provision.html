@@ -278,7 +278,7 @@
                                         </button>
                                         <ul class="dropdown-menu dd-datacenter" style="margin-left: 50px !important;">
                                             <li data-ng-repeat="opsys in operating_systems">
-                                                <a data-ng-click="selectOpsys(opsys)">{{opsys}}</a>
+                                                <a data-ng-click="selectOpsys(opsys) | orderBy:'toString()'">{{opsys}}</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -634,11 +634,6 @@
 
                                         </div>
                                     </div>
-
-
-
-
-
                                 </div>
                                 <div class="item-scrolling">
                                 </div>

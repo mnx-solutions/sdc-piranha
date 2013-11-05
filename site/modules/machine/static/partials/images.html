@@ -1,7 +1,7 @@
 <div class="container" data-ng-controller="Machine.ImagesController">
     <div class="loading-large" data-ng-show="loading"></div>
 
-    <div class="machines container" data-ng-show="images.length">
+    <div class="images container" data-ng-show="images.length">
         <div  data-breadcrumb></div>
         <div data-notification></div>
 
@@ -30,5 +30,8 @@
                      data-objects-type="image"></div>
             </div>
         </div>
+    </div>
+    <div class="container" data-ng-show="images.length < 1 && !loading">
+        <div class="alert alert-joyent-blue alert-global">You don't have any images</div>
     </div>
 </div>

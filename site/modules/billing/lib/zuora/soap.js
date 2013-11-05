@@ -12,7 +12,6 @@
  * TODO DM: http 500 errors happen. We need to retry if we hit them!
  */
 
-var fs = require('fs');
 var path = require('path');
 var soap = require('soap');
 
@@ -68,8 +67,8 @@ function connect () {
 
     newClient.setEndpoint(config.endpoint);
     var loginCreds = {
-        'username': config.user,
-        'password': config.password
+        username: config.user,
+        password: config.password
     };
     // TODO: dm: it may be possible for this to hang?
     newClient.ZuoraService.Soap.login(loginCreds, function (err, resp) {
@@ -78,8 +77,8 @@ function connect () {
         }
 
         newClient.addSoapHeader({
-            'SessionHeader': {
-                'session': resp.result.Session
+            SessionHeader: {
+                session: resp.result.Session
             }
         });
 
@@ -119,7 +118,7 @@ function query (zObject, callback) {
 
     // Safety checking:
     if (typeof zObject === 'object') {
-        if (zObject['queryString'].indexOf('[object Object]') !== -1) {
+        if (zObject.queryString.indexOf('[object Object]') !== -1) {
             return callback(new Error('Query found [object Object] inside string.'));
         }
     }

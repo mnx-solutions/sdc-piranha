@@ -1,0 +1,210 @@
+.load-balancers{
+    float: right;
+    margin-top: -65px;
+    margin-right: 18px;
+    /*margin-top: 50px;*/
+    /*margin-left: 40%;*/
+    /*margin-right: 45%;*/
+    /*margin-bottom: 50px;*/
+    /*width: 230px;*/
+}
+
+.lb-label{
+    padding: 5px 0 0 0;
+    line-height: 20px;
+}
+
+.protocol-input input{
+    width: 60px;
+}
+.url-input{
+    width: 80px;
+    margin-left: -17px;
+}
+.port-input > input{
+    width: 35px !important;
+    margin: 10px;
+}
+.clb-input{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+.name-input input{
+    /*width: 265px;*/
+    /*margin-left: 14px;*/
+    width: 242px;
+    margin-left: 37px;
+}
+.group-checkable{
+    margin: 0;
+}
+.lb-edit{
+    border: 2px solid #ececec;
+    padding: 15px;
+    margin-bottom: 40px;
+    width: auto;
+}
+.lb-line{
+    border-top: 2px solid #ececec;
+    width: 355px;
+    padding-bottom: 15px;
+}
+.lb-line-allwidth{
+    border-bottom: 2px solid #ececec;
+    width: 100%;
+}
+.logo-riverbed{
+    background-image: url("../img/logo_riverbed.png");
+    width: 133px;
+    height: 58px;
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-position: 14px;
+    margin-top: -30px;
+}
+.img1{
+/*
+    background-image: url("../img/img1.png");
+*/
+    width: 272px;
+    height: 176px;
+    background-repeat: no-repeat;
+    background-position: 0 20px;
+}
+.img2{
+    background-image: url("../img/img2.png");
+    width: 272px;
+    height: 176px;
+    background-repeat: no-repeat;
+    background-position: 0 20px;
+    margin-left: 120px;
+}
+.license-eula-logo{
+    background-image: url("../img/logo_riverbed.png");
+    width: 133px;
+    height: 58px;
+    background-repeat: no-repeat;
+    /*background-size: 60%;*/
+    /*background-position: 14px;*/
+    /*margin-top: -30px;*/
+}
+.license-eula{
+    width: 900px;
+    height: 400px;
+    overflow: auto;
+    border: 1px solid #D4D7D8;
+    padding: 10px;
+}
+.license-eula p{
+    font-size: 12px;
+}
+.accept-checkbox input{
+    margin-top: -3px;
+    margin-right: 10px;
+}
+.accept-checkbox{
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+.dd-margin{
+    margin-left: -10px;
+    margin-right: 10px;
+}
+.dd-btn-small{
+    min-width: 45px;
+}
+.dd-btn{
+    min-width: 45px;
+    max-width: 45px;
+}
+.table-pos{
+    margin: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.table-overflow{
+    overflow: auto;
+    text-overflow: ellipsis;
+}
+.table{
+    white-space: nowrap;
+}
+.table td{
+    max-width: 100px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.upload-btn{
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 20px;
+}
+input.ng-invalid-port{
+    border-color: red;
+    box-shadow: 0px 0px 6px -1px red;
+}
+.no-display{
+    display: none;
+}
+.edit-btn-pos{
+    margin: -20px 20px 30px 10px;
+}
+.balancer-id{
+    padding-left: 37px;
+}
+.protocol-pos{
+    margin-left: 13px;
+}
+.int-port{
+    margin-top: -10px;
+}
+.hc-conf{
+    margin: 0 0 -10px 0;
+}
+.timeout{
+    margin: 0 0 0 20px;
+}
+.ht-btn-pos{
+    margin-left: -27px;
+}
+.hc-interval{
+    line-height: 30px;
+}
+.failure-threshold{
+    line-height: 15px;
+    margin-left: 28px;
+}
+.table-left-border{
+    border-left: 2px solid #ececec;
+    padding-left: 20px;
+    margin-left: 0;
+}
+.delete-btn-pos{
+    margin: -20px 0 30px 10px;
+}
+.load-pos{
+    width:30px;
+    height:30px;
+    min-width:30px;
+    min-height:30px;
+    margin-top:-20px
+}
+.lb-contr{
+    margin: 0;
+    list-style-type: none;
+}
+.lb-disabled{
+    margin-top: 20px;
+}
+.minus-icon-pos{
+    margin: 1px 0 0 0;
+}
+.eula-space{
+    padding-left: 10px;
+}
+.e-port{
+    margin-top: 10px;
+}
+.port-m{
+    margin-left: 3px;
+}

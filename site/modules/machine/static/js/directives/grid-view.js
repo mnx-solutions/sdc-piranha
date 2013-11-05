@@ -6,13 +6,15 @@
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
                 var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
-                if (update) {
+                if (update && lastPage) {
                     $scope.lastPage = lastPage;
                 }
+
                 return lastPage;
 
             }
         };
+
         $scope.$watch('objects', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
@@ -69,25 +71,35 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
-            var existed = null;
-            if ($scope.order.indexOf(prop.order) !== -1) {
-                existed = 'order';
-                delete $scope.order[$scope.order.indexOf(prop.order)];
-            }
-            if ($scope.order.indexOf(prop.rorder) !== -1) {
-                existed = 'rorder';
-                delete $scope.order[$scope.order.indexOf(prop.rorder)];
-            }
-            if (reverse === undefined) {
-                if (!existed) {
-                    $scope.order.push(prop.order);
-                } else if (existed === 'order') {
-                    $scope.order.push(prop.rorder);
+            if ($scope.multisort !== 'false') {
+                var existed = null;
+                if ($scope.order.indexOf(prop.order) !== -1) {
+                    existed = 'order';
+                    delete $scope.order[$scope.order.indexOf(prop.order)];
                 }
-            } else if ((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
-                $scope.order.push(reverse ? prop.rorder : prop.order);
-            }
+                if ($scope.order.indexOf(prop.rorder) !== -1) {
+                    existed = 'rorder';
+                    delete $scope.order[$scope.order.indexOf(prop.rorder)];
+                }
+                if (reverse === undefined) {
+                    if(!existed) {
+                        $scope.order.push(prop.order);
+                    } else if(existed === 'order'){
+                        $scope.order.push(prop.rorder);
+                    }
+                } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
+                    $scope.order.push(reverse ? prop.rorder : prop.order);
+                }
+            } else {
+                var order = $scope.order[0];
 
+                if (order === prop.order) {
+                    $scope.order = [prop.rorder];
+                } else {
+                    $scope.order = [prop.order];
+                }
+            }
+            
             $scope.props.forEach(function (el) {
                 if (el.name == prop.name){
                     el.columnActive = true;
@@ -105,7 +117,7 @@
                         return false;
                     }
 
-                    var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                    var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                     if (ng.isNumber(subject)) {
                         subject = subject.toString();
@@ -122,7 +134,7 @@
                     return false;
                 }
 
-                var subject = (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
                 if (ng.isNumber(subject)) {
                     subject = subject.toString();
@@ -182,6 +194,9 @@
             if (!object) {
                 return $scope.actionButtons;
             }
+	        if (!$scope.actionButtons) {
+		        return [];
+	        }
 
             return $scope.actionButtons.filter(function (btn) {
                 if (btn.show === undefined) {
@@ -231,12 +246,15 @@
         $scope.showCurrentMachines();
 
     }]).constant('gridConfig', {
+        paginated: true,
         perPage: 5,
         page: 1,
         showPages: 5,
         order: [],
-        propOn: false
-    }).directive('gridView', ['gridConfig', function(gridConfig) {
+        propOn: false,
+        multisort: true
+    })
+    .directive('gridView', ['gridConfig', function(gridConfig) {
         return {
             restrict: 'EA',
             scope: {
@@ -247,20 +265,33 @@
                 actionButtons:'=',
                 filterAll: '@',
                 exportFields: '=',
-                objectsType: '@'
+                objectsType: '@',
+                multisort: '@'
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
             replace: true,
             link: function($scope, element, attrs) {
-                $scope.perPage = ng.isDefined(attrs.perPage) ? gridConfig.perPage : $scope.$eval(attrs.perPage);
-                $scope.showPages = ng.isDefined(attrs.showPages) ? gridConfig.showPages : $scope.$eval(attrs.showPages);
+                $scope.paginated = ng.isDefined(attrs.paginated) ? $scope.$eval(attrs.paginated) : gridConfig.paginated;
+                $scope.perPage = ng.isDefined(attrs.perPage) ? $scope.$eval(attrs.perPage) : gridConfig.perPage;
+                $scope.showPages = ng.isDefined(attrs.showPages) ? $scope.$eval(attrs.showPages) : gridConfig.showPages;
                 $scope.page = $scope.page || gridConfig.page;
                 $scope.order = $scope.order || gridConfig.order;
-                $scope.propOn = ng.isDefined(attrs.propOn) ? gridConfig.propOn : $scope.$eval(attrs.propOn);
+                $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
+                $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
 
                 $scope.props.forEach(function (el) {
-                    if (!el.id2) {
+	                if(el._getter) {
+		                el.order = el._getter;
+		                el.rorder = function (obj) {
+			                var elem = el._getter(obj) + '';
+			                var next = '';
+			                for(var i = 0; i < elem.length; i++) {
+				                next += String.fromCharCode(255 - elem.charCodeAt(i));
+			                }
+			                return next;
+		                };
+	                } else if(!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {

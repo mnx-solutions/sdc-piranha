@@ -35,9 +35,33 @@ var firewall = function execute (scope) {
         }
     });
 
-    server.onCall('MachineRuleList', function (call) {
-        call.log.info('Retrieving firewall rules list');
-        call.cloud.listMachineRules(machineId, call.done.bind(call));
+    server.onCall('MachineRuleList', {
+        verify: function (data) {
+            return data && data.hasOwnProperty('machineId');
+        },
+
+        handler: function (call) {
+            var machineId = call.data.machineId;
+            var cloud = call.cloud.separate(call.data.datacenter);
+
+            call.log.info('Retrieving firewall rules list for machine %s', machineId);
+            cloud.listMachineRules(machineId, function (err, rules) {
+                if (err) {
+                    call.log.debug('Unable to list firewall rules for machine %s', machineId);
+                    call.log.error(err);
+                    call.done(err);
+                } else {
+                    // Serialize rules
+                    rules.forEach(function (rule) {
+                        rule.parsed = fwrule.parse(rule.rule);
+                        rule.uuid = rule.id;
+                    });
+
+                    call.log.debug('List rules succeeded for machine %s', machineId);
+                    call.done(null, rules);
+                }
+            });
+        }
     });
 
     server.onCall('RuleCreate', {
@@ -71,13 +95,12 @@ var firewall = function execute (scope) {
                                 clearInterval(poll);
                                 clearTimeout(timeout);
                             }
-                        });
+                        }, undefined, true);
                     }, 500);
 
                     // When timeout reached
                     timeout = setTimeout(function () {
                         var err = new Error('Rule not created');
-                        call.log.error(err);
                         call.done(err);
                         clearInterval(poll);
                     }, 10000);
@@ -167,17 +190,16 @@ var firewall = function execute (scope) {
             call.log.debug('List rules for datacenter %s', name);
 
             cloud.listFwRules(function (err, rules) {
+                if (err) {
+                    call.log.debug('Unable to list firewall rules for datacenter %s', name);
+                    call.log.error(err);
+                    return;
+                }
+
                 var response = {
                     name: name,
                     rules: []
                 };
-
-                // Serialize rules
-                rules.forEach(function (rule) {
-                    rule.datacenter = name;
-                    rule.parsed = fwrule.parse(rule.rule);
-                    rule.uuid = rule.id;
-                });
 
                 if (err) {
                     call.log.error('List rules failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
@@ -185,6 +207,13 @@ var firewall = function execute (scope) {
                     response.error = err;
                 } else {
                     response.rules = rules;
+
+                    // Serialize rules
+                    rules.forEach(function (rule) {
+                        rule.datacenter = name;
+                        rule.parsed = fwrule.parse(rule.rule);
+                        rule.uuid = rule.id;
+                    });
 
                     call.log.debug('List rules succeeded for datacenter %s', name);
                 }
@@ -194,7 +223,7 @@ var firewall = function execute (scope) {
                 if (--count === 0) {
                     call.done();
                 }
-            });
+            }, undefined, true);
         });
 
     });

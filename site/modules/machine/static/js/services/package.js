@@ -35,7 +35,8 @@
                                     { name: datacenter }
                                 )
                             );
-                            packages.job.deferred.reject(err);
+
+                            //packages.job[datacenter].deferred.reject(err);
                             Object.keys(packages.search[datacenter]).forEach(function (job) {
                                 job.reject(err);
                             });

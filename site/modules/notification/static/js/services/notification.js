@@ -211,9 +211,7 @@
                         opts: opts,
                         message: message
                     });
-                }
-
-                if(!opts.persistent) {
+                } else {
                     notifications.unshift({
                         id: id,
                         ctx: ctx,

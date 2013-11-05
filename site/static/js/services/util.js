@@ -79,6 +79,29 @@ window.JP.main.service('util', [
                 });
         };
 
+        service.clone = function clone (obj) {
+            if (!obj || typeof obj !== 'object') {
+                return obj;
+            }
+
+            var ret = {};
+            if (window.angular.isArray(obj)) {
+                ret = [];
+                obj.forEach(function (el) {
+                    ret.push(clone(el));
+                });
+                return ret;
+            }
+
+            Object.keys(obj).forEach(function (key) {
+                if (key.indexOf('$') !== 0 && key !== 'job') {
+                    ret[key] = clone(obj[key]);
+                }
+            });
+
+            return ret;
+        };
+
         return service;
     }]
 );

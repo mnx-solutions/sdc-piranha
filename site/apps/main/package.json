@@ -20,7 +20,9 @@
             "tfa",
             "storage",
             "timeout",
-            "feature-flags"
+            "feature-flags",
+			"maxmind",
+            "elb"
         ],
 		"auth": true,
         "error": true,

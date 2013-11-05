@@ -134,5 +134,28 @@
         "nr": "00"
       }
     }
+  },
+  "Invalid parameter(s): 'workPhone'.": {
+    "code": 51020021,
+    "message": "Invalid parameter(s): 'workPhone'.",
+    "human": "REST API: POSTAccountCreditCard,_general - Unknown field in request",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTAccountCreditCard",
+        "nr": "102"
+      },
+      "field": {
+        "name": "_general",
+        "nr": "00"
+      },
+      "category": {
+        "name": "Unknown field in request",
+        "nr": "21"
+      }
+    }
   }
 }

@@ -220,7 +220,7 @@ var makeTar = function makeTar(next) {
     console.log(successc +'Making tar...');
 
     var tarName = 'portal-'+ latestTag +'.tar';
-    exec(dirFix +'&& tar -cvf '+ tarName +' -X .gitignore * &&  tar -uvf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName +' '+ debug, function(err, stdout, stderr) {
+    exec(dirFix +'&& tar -cf '+ tarName +' -X ./tools/.tarignore * &&  tar -uf '+ tarName +' ./site/config/config.blacklist.json && gzip -f  '+ tarName +' '+ debug, function(err, stdout, stderr) {
         stdout = clean(stdout);
 
         if(err || stderr) {

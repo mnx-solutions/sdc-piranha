@@ -39,6 +39,10 @@ select.date-month, select.date-year {
 .ssh .new-key-button {
     margin-top: 20px;
 }
+
+.new-key-button {
+    margin-top: 20px;
+}
 .ssharea {
     resize: none;
 }

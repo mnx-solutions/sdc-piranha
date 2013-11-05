@@ -70,62 +70,70 @@
                     $scope.countries = $http.get('billing/countries');
                     var statesPromise = $http.get('billing/states');
 
-                    $q.when($scope.prev, function (prev) {
-                        if (prev && prev.cardHolderInfo) {
-                            [ 'addressLine1','addressLine2','country','state','city','zipCode' ].forEach(function (key) {
-                                $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];
-                            });
+	                function usePrevious(prev) {
+		                $scope.prev = prev;
+		                if (prev && prev.cardHolderInfo) {
+			                [ 'addressLine1','addressLine2','country','state','city','zipCode' ].forEach(function (key) {
+				                $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];
+			                });
 
-                            $scope.countries.then(function (countries) {
-                                countries.data.some(function (country){
-                                    if (country.name === prev.cardHolderInfo.country) {
-                                        $scope.form.cardHolderInfo.country = country.iso3;
-                                        return true;
-                                    }
-                                });
+			                $scope.countries.then(function (countries) {
+				                countries.data.some(function (country){
+					                if (country.name === prev.cardHolderInfo.country) {
+						                $scope.form.cardHolderInfo.country = country.iso3;
+						                return true;
+					                }
+				                });
 
-                                var country = $scope.form.cardHolderInfo.country;
-                                if (country === 'CAN' || country === 'USA') {
-                                    statesPromise.then(function (allStates) {
-                                        var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
-                                        Object.keys(states).some(function (state) {
-                                            if (states[state] === prev.cardHolderInfo.state) {
-                                                $scope.form.cardHolderInfo.state = state;
-                                                return true;
-                                            }
-                                        });
-                                    });
-                                }
-                            });
+				                var country = $scope.form.cardHolderInfo.country;
+				                if (country === 'CAN' || country === 'USA') {
+					                statesPromise.then(function (allStates) {
+						                var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
+						                Object.keys(states).some(function (state) {
+							                if (states[state] === prev.cardHolderInfo.state) {
+								                $scope.form.cardHolderInfo.state = state;
+								                return true;
+							                }
+						                });
+					                });
+				                }
+			                });
 
-                            $scope.useExistingPossible = $scope.useExisting = true;
-                        } else {
-                            $q.when(Account.getAccount(), function(account) {
-                                var form = $scope.form.cardHolderInfo;
-                                form.zipCode = account.postalCode;
-                                form.city = account.city;
-                                form.state = account.state;
-                                form.addressLine1 = account.address;
+			                $scope.useExistingPossible = $scope.useExisting = true;
+		                } else {
+			                $q.when(Account.getAccount(), function(account) {
+				                var form = $scope.form.cardHolderInfo;
+				                form.zipCode = account.postalCode;
+				                form.city = account.city;
+				                form.state = account.state;
+				                form.addressLine1 = account.address;
 
-                                if (account.country.length === 3) {
-                                    form.country = account.country;
-                                } else {
-                                    form.country = 'USA';
-                                }
+				                if (account.country.length === 3) {
+					                form.country = account.country;
+				                } else {
+					                form.country = 'USA';
+				                }
 
-                                $scope.useExistingPossible = true;
+				                $scope.useExistingPossible = true;
 
-                                [ 'zipCode','city','state','addressLine1','country' ].some(function (e) {
-                                    if(!form[e] || form[e] === '') {
-                                        $scope.useExistingPossible = false;
-                                        return true;
-                                    }
-                                });
+				                [ 'zipCode','city','state','addressLine1','country' ].some(function (e) {
+					                if(!form[e] || form[e] === '') {
+						                $scope.useExistingPossible = false;
+						                return true;
+					                }
+				                });
 
-                                $scope.useExisting = $scope.useExistingPossible;
-                            });
-                        }
-                    });
+				                $scope.useExisting = $scope.useExistingPossible;
+			                });
+		                }
+	                }
+                    $q.when($scope.prev, usePrevious);
+
+	                $scope.$watch('useExisting', function (newVal, oldVal) {
+		                if(newVal === true) {
+			                usePrevious($scope.prev);
+		                }
+	                });
 
                     var c = (new Date()).getFullYear();
                     var i = c;
@@ -168,10 +176,8 @@
                                     return true;
                                 }
                             }
-                        } else {
-                            if ($scope.errs && ($scope.errs[field])) {
-                                return true;
-                            }
+                        } else if ($scope.errs && ($scope.errs[field]) && !errorType) {
+                            return true;
                         }
 
                         if ($scope.formSubmitted &&
@@ -257,32 +263,34 @@
                         if ($scope.form.cardHolderInfo.state === '') {
                             delete $scope.form.cardHolderInfo.state;
                         }
-
+						$scope.form.workPhone = $scope.selectedCountryCode + ' ' + $scope.phone.number;
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (!errs) {
                                 Account.updateAccount({
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
                                 }).then(function (account) {
-                                    notification.push(null, { type: 'success' },
+                                    notification.replace('addPaymentMethod', { type: 'success' },
                                         localization.translate(null,
                                             'billing',
                                             'Billing information updated'
                                         )
                                     );
 
+                                    window.scrollTo(0,0);
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.loading = false;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
                                 }, function () {
-                                    notification.push(null, { type: 'error' },
+                                    notification.push('addPaymentMethod', { type: 'error' },
                                         localization.translate(null,
                                             'billing',
                                             'Billing information not updated'
                                         )
                                     );
+                                    window.scrollTo(0,0);
                                 });
                                 return;
                             }
@@ -293,7 +301,8 @@
                                 $scope.errs = {};
                                 Object.keys(errs)
                                     .filter(function (k) {
-                                        return typeof errs[k] !== 'object';
+	                                    //Ignore zuora errors and creditCardType (that is calculated by us)
+                                        return typeof errs[k] !== 'object' && k !== 'creditCardType';
                                     })
                                     .forEach(function (k) {
                                         $scope.errs[k] = errs[k];
@@ -335,7 +344,7 @@
                                 addedMessage = ' ' + localization.translate(null, 'billing', 'We are unable to verify your credit card details.');
                             }
 
-                            notification.push(null, { type: 'error' }, message + addedMessage);
+                            notification.replace('addPaymentMethod', { type: 'error' }, message + addedMessage);
                             window.scrollTo(0,0);
                         });
                     };

@@ -36,10 +36,11 @@
         }
     },
     "zuora": {
-        "tenantID": "11333",
+        "tenantId": "11333",
+	    "user": "piranha-api-test@joyent.com",
+	    "password": "ZvPpggpdRMB8U8uLEWTAaxRCaFqc",
         "api": {
-            "user": "piranha-api@joyent.com",
-            "password": "904WeugM6Uw6hRWv",
+            "production": false,
             "validation": {
                 "countries": {
                     "type": "deny",
@@ -49,16 +50,13 @@
             }
         },
         "soap": {
-            "tenantId"     : "",
             "tenantName"   : "",
-            "user"         : "",
-            "password"     : "",
-            "endpoint"     : "",
-            "wsdl"         : "",
-            "objectNS"     : "",
-            "zuoraNS"      : "",
-            "product"      : "",
-            "UOM_postfix"  : ""
+	        "endpoint"     : "https://apisandbox.zuora.com/apps/services/a/45.0",
+	        "wsdl"         : "zuora.a.joyent.45.0.wsdl",
+	        "objectNS"     : "ons",
+	        "zuoraNS"      : "zns",
+	        "product"      : "Cloud",
+	        "UOM_postfix"  : "_Machine_Hrs"
         }
     },
     "billing":{
@@ -102,12 +100,15 @@
             "serviceFails": 3,
             "pinTries": 3
         },
-        "riskScoreFraudLimit": 90
+        "riskScoreFraudLimit": 60
     },
     "features": {
-        "imageUse": "disabled",
+        "instanceRename": "enabled",
+        "instanceTagging": "enabled",
+        "invoices": "enabled",
+        "imageUse": "enable",
         "imageCreate": "disabled",
-        "invoices": "disabled",
-        "firewall": "enabled"
+        "firewall": "disabled",
+        "elb": "disabled"
     }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 var config = require('easy-config');
-var production = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+var production = config.isProduction();
 
 module.exports = function execute(scope) {
 
@@ -39,7 +39,7 @@ module.exports = function execute(scope) {
                 '  $(document).on("mousedown", "a", function (e) {' +
                 '    var href = $(this).attr("href");' +
                 '    if (e.which == 3) return;' +
-                '    if (href.indexOf("joyent.com") > -1 || href.indexOf("github.com") > -1) {' +
+                '    if (href && (href.indexOf("joyent.com") > -1 || href.indexOf("github.com") > -1)) {' +
                 '      _gaq.push(["_trackEvent", "External Link", href]);' +
                 '    }'+
                 '  });'+

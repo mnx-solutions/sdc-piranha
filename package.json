@@ -18,13 +18,13 @@
         "jade": "*",
         "smartdc": "git://github.com/joyent/node-smartdc.git",
         "vasync": "1.3.x",
-        "easy-config": "0.1.10",
+        "easy-config": "0.2.x",
         "express-modulizer": "git+ssh://git@github.com:joyent/node-express-modulizer.git",
         "connect-redis": "*",
         "file-pointer": "0.0.x",
         "foldermap": "0.3.x",
         "redis": "*",
-        "zuora": "0.1.3",
+        "zuora": "0.1.5",
         "moment": "*",
         "xml2js": "*",
         "mustache": "*",
@@ -32,7 +32,9 @@
         "speakeasy": "*",
         "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
         "fwrule": "git+ssh://git@git.joyent.com:fwrule.git",
-        "soap": "~0.3.0"
+        "soap": "~0.3.0",
+        "pem": "~1.2.2",
+        "http-signature": "~0.10.0"
     },
     "devDependencies": {
         "grunt": ">=0.4.0",

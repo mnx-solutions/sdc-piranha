@@ -11,7 +11,6 @@
 			<div class="row-fluid">
                 <div class="span12">
 					<h1  class="span11" data-translate>SSH Public Keys</h1>
-					<div ng-show="!account || !keys"  class="span1 loading-medium-after-h1" data-ng-show="loading" ></div>
                 </div>
 			</div>
         </div>
@@ -27,8 +26,12 @@
                                 <span class="span12 item-list-container-header">Key Name / Fingerprint</span>
                             </div>
 
-                            <div data-ng-show="keys.length < 1">
+                            <div data-ng-show="keys.length < 1 && !loadingKeys">
                                 <div class="alert alert-joyent-blue alert-global">You don't have any SSH keys</div>
+                            </div>
+
+                            <div data-ng-show="loadingKeys">
+                                <div class="loading-medium"></div>
                             </div>
 
                             <div class="item row-fluid" data-ng-repeat="key in keys | reverse">
@@ -59,11 +62,11 @@
 
                         </div>
 
-                        <div class="new-key-button" data-ng-hide="loading">
+                        <div class="new-key-button" data-ng-hide="loading || pollingJob">
                             <div data-account-ssh-create></div>
                             <div data-account-ssh-import></div>
                         </div>
-                        <div data-ng-show="loading && downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></div>
+                        <div data-ng-show="(pollingJob && downloadLink)" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></div>
                         <div class="new-key-button pull-right" data-ng-show="loading">
                             <div class="row">
                                 <div class="loading-medium span4"></div>
@@ -76,7 +79,7 @@
 
             <div class="span3 hidden-phone">
 
-			    <div account-right-menu></div>
+			    <div data-account-right-menu></div>
 				
                 <div class="separation-container">
                     <h5 data-translate>Secure Shell (SSH)</h5>

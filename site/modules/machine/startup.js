@@ -87,6 +87,13 @@ module.exports = function execute(scope) {
             }
         });
 
+	    // Clean null networks
+	    if(machine.networks) {
+		    machine.networks = machine.networks.filter(function (network) {
+			    return !!network;
+		    });
+	    }
+
         return machine;
     }
 
@@ -202,8 +209,43 @@ module.exports = function execute(scope) {
 
     /* listDatasets */
     server.onCall('DatacenterList', function (call) {
-        call.log.info('Handling list datasets event');
-        call.cloud.listDatacenters(call.done.bind(call));
+        call.log.info('Handling list datacenters event');
+        call.cloud.listDatacenters(function (err, datacenters) {
+            if (err) {
+                call.log.debug('Unable to list datacenters');
+                call.log.error(err);
+                call.done(err);
+            } else {
+                // Serialize datacenters
+                var datacenterList = [];
+
+                Object.keys(datacenters).forEach(function (name) {
+                    var url = datacenters[name];
+                    var index = scope.config.cloudapi.urls ?
+                        scope.config.cloudapi.urls.indexOf(url) : -1;
+
+                    datacenterList.push({
+                        name: name,
+                        url: url,
+                        index: index
+                    });
+                });
+
+                // Sort by index
+                datacenterList.sort(function (dc1, dc2) {
+                    if (dc1.index > dc2.index) {
+                        return 1;
+                    } else if (dc1.index === dc2.index) {
+                        return 0;
+                    } else {
+                        return -1;
+                    }
+                });
+
+                call.log.debug('Got datacenters list %j', datacenters);
+                call.done(null, datacenterList);
+            }
+        });
     });
 
     /* listMachineTags */
@@ -234,13 +276,7 @@ module.exports = function execute(scope) {
             var oldTags = null;
             var cloud = call.cloud.separate(call.data.datacenter);
 
-            cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
-                if (err) {
-                    call.log.error(err);
-                    call.error(err);
-                    return;
-                }
-
+            function updateState () {
                 var timer = setInterval(function () {
                     call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
                     cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
@@ -256,7 +292,7 @@ module.exports = function execute(scope) {
                             } else if (json !== oldTags) {
                                 clearInterval(timer);
                                 clearTimeout(timer2);
-	                              call.log.warn('Other call changed tags, returning new tags %j', tags);
+                                call.log.warn('Other call changed tags, returning new tags %j', tags);
                                 call.done(null, tags);
                             }
                         } else {
@@ -270,7 +306,29 @@ module.exports = function execute(scope) {
                     clearInterval(timer);
                     call.error(new Error('Operation timed out'));
                 }, 1 * 60 * 1000);
-            });
+            }
+
+            if (Object.keys(call.data.tags).length > 0) {
+                cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
+                    if (err) {
+                        call.log.error(err);
+                        call.error(err);
+                        return;
+                    }
+
+                    updateState();
+                });
+            } else {
+                cloud.deleteMachineTags(call.data.uuid, function (err) {
+                    if (err) {
+                        call.log.error(err);
+                        call.error(err);
+                        return;
+                    }
+
+                    updateState();
+                });
+            }
         }
     });
 
@@ -349,6 +407,7 @@ module.exports = function execute(scope) {
                     if (state && state === machine.state) {
                         call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
                         machine.metadata.credentials = handleCredentials(machine);
+	                    machine = filterFields(machine);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
@@ -490,7 +549,7 @@ module.exports = function execute(scope) {
                     pollForMachineStateChange(cloud, call, (60 * 60 * 1000), null, null, options.name);
                 } else {
                     call.log.error(err);
-                    call.immediate(err);
+                    call.done(err);
                 }
 
             });

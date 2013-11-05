@@ -59,25 +59,70 @@ module.exports = function execute(scope) {
         }
     });
 
+    function searchFromList(list, resp, cb) {
+        var found = Object.keys(list).some(function(key) {
+            if(list[key].fingerprint === resp.fingerprint) {
+                return true;
+            }
+        });
+
+        cb(found);
+    }
+
     server.onCall('createKey', function(call) {
+
+        console.log('creating key');
         // create new ssh key for this account
         call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
             if(err) {
                 call.done(err);
                 return;
             }
-            SignupProgress.setMinProgress(call, 'ssh', function (err2) {
-                if(err2) {
-                    call.log.error(err2);
-                }
-                call.done(null, resp);
-            });
+
+            // hold this call until cloudApi really has this key in the list
+            (function checkList() {
+                call.cloud.listKeys({login: 'my'}, function(err, data) {
+
+                    console.log('callbacked', Date.now());
+                    searchFromList(data, resp, function(found) {
+                        console.log('POLLING', found, resp, JSON.stringify(data));
+
+                        if(found) {
+                            SignupProgress.setMinProgress(call, 'ssh', function (err2) {
+                                if(err2) {
+                                    call.log.error(err2);
+                                }
+                                call.done(null, resp);
+                            });
+                        } else {
+                            setTimeout(function() { checkList(); }, 2000)
+                        }
+                    });
+                }, true);
+            })();
         });
     });
 
     server.onCall('deleteKey', function(call) {
         // delete ssh key
         call.log.debug('server call, delete key:', call.data.fingerprint);
-        call.cloud.deleteKey(call.data.fingerprint, call.done.bind(call));
+        call.cloud.deleteKey(call.data.fingerprint, function(err) {
+            if(err) {
+                call.done(err);
+            }
+
+            // hold this call until cloudApi really has this key in the list
+            (function checkList() {
+                call.cloud.listKeys({login: 'my'}, function(err, data) {
+                    searchFromList(data, call.data , function(found) {
+                        if(!found) {
+                            call.done(null);
+                        } else {
+                            setTimeout(function() { checkList(); }, 2000)
+                        }
+                    });
+                }, true);
+            })();
+        });
     });
 };
