@@ -51,12 +51,12 @@
 
                         <div class="details">
                             <div>
-                                <p class="number">7</p>
+                                <p class="number">{{balancers.length}}</p>
 
                                 <p class="desc"> configured</p>
                             </div>
                         </div>
-                        <a class="more" data-toggle="modal" data-ng-click="messageDialog()" href="">
+                        <a class="more" href="#!/elb/list">
                             <span>
                                 VIEW LOAD BALANCER DETAILS <i class="m-icon-white-arrow"></i>
                             </span>
@@ -64,7 +64,7 @@
                         </a>
                     </div>
                     <div class="dashboard-stat-btn">
-                        <a class="more" data-toggle="modal" data-ng-click="errorDialog()"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create LB Instance</b></button></a>
+                        <a class="more" href="#!/elb/edit/"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create LB Instance</b></button></a>
                     </div>
                 </div>
                 <div class="pull-left padding_left10">
