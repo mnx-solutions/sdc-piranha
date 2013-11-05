@@ -202,7 +202,6 @@
                     4:false
                 };
                 return $scope.accordionIcon[item] = true;
-
             };
 
             $scope.clickStart = function () {

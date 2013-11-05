@@ -140,6 +140,7 @@
                 } else {
                     provision();
                 }
+
             };
 
             $scope.selectDatacenter = function (name) {
@@ -240,7 +241,7 @@
                     $scope.slideCarousel();
                 });
 
-
+                $scope.collapseTrigger2($scope.packageTypes.length-1, $scope.packageTypes.length);
             };
 
             $scope.selectVersion = function (name, version) {
@@ -461,6 +462,26 @@
 
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
+            };
+
+            $scope.firstOpen = true;
+            $scope.secondOpen = true;
+            $scope.accordionIcon2 = {};
+            $scope.collapseTrigger2 = function(item, items){
+                for(var i = 0; i < items; i++){
+                    $scope.accordionIcon2[i] = false;
+                }
+
+                if($scope.firstOpen && $scope.secondOpen){
+                    $scope.firstOpen = false;
+                } else if(!$scope.firstOpen && $scope.secondOpen) $scope.secondOpen = false;
+
+                $scope.accordionIcon2[item] = true;
+                return $scope.accordionIcon2[item];
+            };
+
+            $scope.reviewPage = function(){
+                $scope.slideCarousel();
             };
         }
 
