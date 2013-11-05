@@ -61,7 +61,7 @@ Version: 3.3.2 Timestamp: Mon Mar 25 12:14:18 PDT 2013
     background-image: -moz-linear-gradient(center bottom, #eeeeee 0%, white 50%);
     background-image: -o-linear-gradient(bottom, #eeeeee 0%, #ffffff 50%);
     background-image: -ms-linear-gradient(top, #ffffff 0%, #eeeeee 50%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr = '#ffffff', endColorstr = '#eeeeee', GradientType = 0);*/
     background-image: linear-gradient(top, #ffffff 0%, #eeeeee 50%);
 }
 
@@ -77,7 +77,7 @@ Version: 3.3.2 Timestamp: Mon Mar 25 12:14:18 PDT 2013
     background-image: -moz-linear-gradient(center bottom, #eeeeee 0%, white 90%);
     background-image: -o-linear-gradient(bottom, #eeeeee 0%, white 90%);
     background-image: -ms-linear-gradient(top, #eeeeee 0%,#ffffff 90%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eeeeee',GradientType=0 );
+    /*filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eeeeee',GradientType=0 );*/
     background-image: linear-gradient(top, #eeeeee 0%,#ffffff 90%);
 }
 
