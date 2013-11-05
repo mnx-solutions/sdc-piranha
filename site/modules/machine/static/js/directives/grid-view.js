@@ -1,12 +1,12 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', function ($scope, $filter, $http) {
         $scope.getLastPage = function (update) {
-            if($scope.objects)
-            {
-                var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
-                if(update) {
+            if ($scope.objects) {
+                $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
+                var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
+                if (update) {
                     $scope.lastPage = lastPage;
                 }
                 return lastPage;
@@ -17,9 +17,19 @@
         $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
 
-        $scope.getLastPage(true);
+        $scope.calcPageLimits = function calcPageLimits() {
+            $scope.pageNumFirst = ($scope.page - 1) * $scope.perPage + 1;
+            $scope.pageNumLast = Math.min($scope.page * $scope.perPage, $scope.pageNumSum);
+        };
 
-        $scope.isOnPage = function(index) {
+        $scope.$watch('page', $scope.calcPageLimits);
+        $scope.$watch('perPage', $scope.calcPageLimits);
+        $scope.$watch('pageNumSum', $scope.calcPageLimits);
+
+        $scope.getLastPage(true);
+        $scope.calcPageLimits();
+
+        $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
 
@@ -32,14 +42,16 @@
             $scope.perPage = $scope.oldPerPage;
         };
 
-        $scope.showCurrentMachines = function (){
-            if(this.selectInstances == 'All'){
+        $scope.showCurrentMachines = function () {
+            if (this.selectInstances == 'All') {
                 $scope.perPage = 10000;
                 return;
             }
-            if(this.selectInstances != undefined){
+            if (this.selectInstances != undefined) {
                 $scope.perPage = this.selectInstances;
-            }else $scope.perPage = 5;
+            } else {
+                $scope.perPage = 5;
+            }
         };
 
         $scope.openDetails = {};
@@ -58,38 +70,38 @@
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
             var existed = null;
-            if($scope.order.indexOf(prop.order) !== -1) {
+            if ($scope.order.indexOf(prop.order) !== -1) {
                 existed = 'order';
                 delete $scope.order[$scope.order.indexOf(prop.order)];
             }
-            if($scope.order.indexOf(prop.rorder) !== -1) {
+            if ($scope.order.indexOf(prop.rorder) !== -1) {
                 existed = 'rorder';
                 delete $scope.order[$scope.order.indexOf(prop.rorder)];
             }
-            if(reverse === undefined) {
-                if(!existed) {
+            if (reverse === undefined) {
+                if (!existed) {
                     $scope.order.push(prop.order);
-                } else if(existed === 'order'){
+                } else if (existed === 'order') {
                     $scope.order.push(prop.rorder);
                 }
-            } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
+            } else if ((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
                 $scope.order.push(reverse ? prop.rorder : prop.order);
             }
 
             $scope.props.forEach(function (el) {
-                if(el.name == prop.name){
+                if (el.name == prop.name){
                     el.columnActive = true;
                 } else {
                     el.columnActive = false;
                 }
-            })
+            });
         };
 
         $scope.matchesFilter = function (obj) {
             var all = true;
-            if($scope.filterAll) {
+            if ($scope.filterAll) {
                 all = $scope.props.some(function (el) {
-                    if(!el.active) {
+                    if (!el.active) {
                         return false;
                     }
 
@@ -106,7 +118,7 @@
             }
 
             return all && !$scope.props.some(function (el) {
-                if(!el.active || !el.filter) {
+                if (!el.active || !el.filter) {
                     return false;
                 }
 
@@ -135,10 +147,10 @@
 
             var order = ($scope.objects[0] && Object.keys($scope.objects[0])) || [];
             var final = [];
-            if($scope.exportFields.ignore) {
+            if ($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
             }
-            if($scope.exportFields.fields) {
+            if ($scope.exportFields.fields) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
             }
 
@@ -167,15 +179,15 @@
         };
 
         $scope.getActionButtons = function (object) {
-            if(!object) {
+            if (!object) {
                 return $scope.actionButtons;
             }
 
             return $scope.actionButtons.filter(function (btn) {
-                if(btn.show === undefined) {
+                if (btn.show === undefined) {
                     return true;
                 }
-                if(typeof btn.show === 'function') {
+                if (typeof btn.show === 'function') {
                     return btn.show(object);
                 }
 
@@ -191,23 +203,23 @@
             });
         };
 
-        $scope.selectCheckbox = function(id){
+        $scope.selectCheckbox = function (id) {
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
-                if(el.id == id){
-                    if(!el.job || (el.job && el.job.finished)){
+                if (el.id == id) {
+                    if (!el.job || (el.job && el.job.finished)){
                         el.checked = (el.checked) ? false : true;
                     }
                 }
-                if(el.checked && el.checked != undefined){
+                if (el.checked && el.checked != undefined) {
                     checkedFlag += 1;
                 }
             });
-            if(checkedFlag > 0) $scope.checkedCheckBox = false;
-            if(checkedFlag == $scope.objects.length && $scope.objects.length > 0) $scope.checkedCheckBox = true;
+            if (checkedFlag > 0) $scope.checkedCheckBox = false;
+            if (checkedFlag == $scope.objects.length && $scope.objects.length > 0) $scope.checkedCheckBox = true;
         };
 
-        $scope.selectColumnsCheckbox = function(id){
+        $scope.selectColumnsCheckbox = function (id) {
             $scope.props.forEach(function (el) {
                 if(el.id == id){
                     el.active = (el.active) ? false : true;
@@ -218,15 +230,13 @@
         $scope.selectCheckbox();
         $scope.showCurrentMachines();
 
-    }])
-    .constant('gridConfig', {
+    }]).constant('gridConfig', {
         perPage: 5,
         page: 1,
         showPages: 5,
         order: [],
         propOn: false
-    })
-    .directive('gridView', ['gridConfig', function(gridConfig) {
+    }).directive('gridView', ['gridConfig', function(gridConfig) {
         return {
             restrict: 'EA',
             scope: {
@@ -250,7 +260,7 @@
                 $scope.propOn = ng.isDefined(attrs.propOn) ? gridConfig.propOn : $scope.$eval(attrs.propOn);
 
                 $scope.props.forEach(function (el) {
-                    if(!el.id2) {
+                    if (!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {
@@ -260,15 +270,13 @@
                 });
             }
         };
-    }])
-    .filter('dateTime', function () {
+    }]).filter('dateTime', function () {
         return function (dateString) {
             return window.moment(new Date(dateString)).format("MMM Do");
         };
-    })
-    .filter('jsonArray', function () {
+    }).filter('jsonArray', function () {
         return function (array) {
-            if(ng.isArray(array)) {
+            if (ng.isArray(array)) {
                 return array.join('; ');
             }
             return JSON.parse(array).join('; ');
