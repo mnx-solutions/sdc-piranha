@@ -4,11 +4,11 @@
             <!--<data-breadcrumb></data-breadcrumb>-->
             <ul class="breadcrumb">
                 <li><a href="#!/dashboard">Dashboard</a> /</li>
-                <li><a href="#!/instance"> Compute</a> /</li>
+                <li><a href="#!/compute"> Compute</a> /</li>
             </ul>
             <h3 class="page-title">Instances</h3>
             <div class="header-btn-ci">
-                <a href="#!/instance/create">
+                <a href="#!/compute/create">
                     <button type="button" class="btn btn_ci orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;<b>Create
                         Instance</b></button></a>
             </div>
@@ -169,78 +169,17 @@
                          data-objects="machines"
                          data-per-page="15"
                          data-order="gridOrder"
+                         data-multisort="false"
                          data-filter-all="{{query}}"
                          data-export-fields="exportFields"
                          data-objects-type="machine"></div>
 				</div>
-
-    <!--GRID PAGINATION Start-->
-                <!--<div class="row-fluid">-->
-                    <!--<div class="span3 pagination pagination-small pagination-centered">-->
-                        <!--<ul class="pagination grid-view-pagination pull-left" data-ng-show="perPage < 9000" >-->
-                            <!--<li data-ng-click="showAll();" data-translate>Show All</li>-->
-                        <!--</ul>-->
-                        <!--<ul class="pagination grid-view-pagination pull-left" data-ng-show="perPage > 9000" >-->
-                            <!--<li data-ng-click="showPaginated();" data-translate>Show Paginated</li>-->
-                        <!--</ul>-->
-                    <!--</div>-->
-                    <!--<div class="span6 pagination pagination-small pagination-centered" style="text-align: center;">-->
-                        <!--<div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>-->
-                    <!--</div>-->
-                    <!--<div class="span3 pull-right pagination">-->
-                        <!--<div class="btn-group pull-right">-->
-                            <!--&lt;!&ndash;<button class="btn btn-mini"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-translate-attributes="data-original-title"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-toggle="tooltip"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-placement="right"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-html="true"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-original-title="Export machine list in .json"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-ng-click="export('json')"&ndash;&gt;-->
-                            <!--&lt;!&ndash;data-translate>JSON</button>&ndash;&gt;-->
-                            <!--<button class="btn btn-mini"-->
-                                    <!--data-translate-attributes="data-original-title"-->
-                                    <!--data-toggle="tooltip"-->
-                                    <!--data-placement="right"-->
-                                    <!--data-html="true"-->
-                                    <!--data-original-title="Export machine list in .csv"-->
-                                    <!--data-ng-click="export('csv')"-->
-                                    <!--data-translate>Export .csv</button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>-->
-<!--GRID PAGINATION END-->
-
-                <!--<div class="pull-right span3">-->
-	                <!--<button data-ng-click="changeLocation('/instance/create/')"-->
-	                        <!--class="create-instance btn btn-joyent-blue btn-large"-->
-	                        <!--data-translate>Create Instance</button>-->
-		                <!--<div class="alert alert-joyent-blue">-->
-		                    <!--<h4 data-translate>Need help?</h4>-->
-		                    <!--<p class="text-medium" data-translate>Help will open in new window</p>-->
-		                    <!--<form class="form-search" method="GET" action="http://www.joyent.com/developers/search" target="_blank">-->
-		                        <!--<div class="input-append">-->
-		                            <!--<input type="text" name="q" class="input-small search-query" placeholder="Search help" data-translate="placeholder">-->
-		                            <!--<button type="submit" class="btn" data-translate>Search</button>-->
-		                        <!--</div>-->
-		                    <!--</form>-->
-		                <!--</div>-->
-                    <!--<button data-ng-show="features.imageUse != 'disabled'" data-ng-click="changeLocation('/images')"-->
-                            <!--class="list-my-images btn btn-joyent-blue btn-large"-->
-                            <!--data-translate>List My Images</button>-->
-	            <!--</div>-->
+				
+                <button data-ng-show="features.imageUse != 'disabled' && images.length" data-ng-click="changeLocation('/images')"
+                        class="list-my-images btn btn-joyent-blue btn-large"
+                        data-translate>List My Images</button>
+	            
             </div>
         </div>
-        <!--<div class="machines container" data-ng-hide="(machines.length || loading || query)">-->
-            <!--<data-notification></data-notification>-->
-            <!--<div class="alert alert-joyent-blue alert-global">-->
-                <!--<div class="pull-left">-->
-                    <!--<h4>Hello there!</h4>-->
-                    <!--<div data-translate>I see you have no instances configured.</div>-->
-                <!--</div>-->
-                <!--<a class="btn btn-joyent-blue pull-right alert-global" href="#!/instance/create" data-translate>Create an instance</a>-->
-                <!--<div class="clearfix"></div>-->
-            <!--</div>-->
-        <!--</div>-->
 </div>
 

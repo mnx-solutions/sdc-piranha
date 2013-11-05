@@ -8,6 +8,8 @@
             scope: {
                 doAction: '=actionFn',
                 isDisabled: '=disabledFn',
+	            getClass: '=classFn',
+	            getLabel: '=labelFn',
                 label: '=',
                 tooltip: '=tooltipText',
                 object: '='

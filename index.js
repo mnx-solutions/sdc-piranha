@@ -13,7 +13,8 @@ var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
 app.use(app.router);
-app.use(express.bodyParser());
+app.use(express.urlencoded());
+app.use(express.json());
 app.use(express.cookieParser());
 
 app.use(express.session({
@@ -79,6 +80,10 @@ function error(err, req, res, next) {
 }
 
 m.init(opts, function (err) {
+	if(err) {
+		logger.fatal('Failed to initialize modulizer -> %s', err.message);
+		process.exit();
+	}
     app.use(function (res, req, next) {
         var err = new Error('Page not found');
         err.statusCode = 404;

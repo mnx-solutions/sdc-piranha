@@ -20,5 +20,6 @@ results
 node_modules
 nbproject
 site/modules/cms/data/old/*
+var/errors.json
 
 npm-debug.log

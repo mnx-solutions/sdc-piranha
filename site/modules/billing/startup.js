@@ -4,11 +4,14 @@ var config = require('easy-config');
 var moment = require('moment');
 var zHelpers = require('./lib/zuora-helpers');
 
-var isProduction = ['pro','production'].indexOf(config.getDefinedOptions().env) !== -1;
+var isProduction = config.isProduction();
 
 module.exports = function execute(scope, callback) {
     var options = config.zuora.api;
     options.log = scope.log;
+	options.password = config.zuora.password;
+	options.user = config.zuora.user;
+
     var zuora = require('zuora').create(options);
 
     var server = scope.api('Server');
@@ -23,6 +26,12 @@ module.exports = function execute(scope, callback) {
     server.onCall('defaultCreditCard', function (call) {
         zHelpers.getPaymentMethods(call, function (err, pms) {
             if (err) {
+
+                // changing zuoras errorCode from 401's to 500
+                if(err.statusCode === 401) {
+                    err.statusCode = 500;
+                }
+
                 call.done(err);
                 return;
             }
@@ -45,16 +54,36 @@ module.exports = function execute(scope, callback) {
         call.log.debug('Calling addPaymentMethod');
 
         function error(err, resp, msg) {
-            call.log.error(msg || 'Failed to save to zuora', err, resp && resp.reasons);
+            // changing zuoras errorCode from 401's to 500
+            if(err.statusCode === 401) {
+                err.statusCode = 500;
+            }
+
+	        var logObj = {
+		        err: err
+	        };
+	        if(resp && resp.reasons) {
+		        logObj.zuoraErr = resp.reasons;
+	        }
+	        var lvl = 'error';
+	        if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
+		        || !err.statusCode) {
+				lvl = 'info';
+	        }
+	        call.log[lvl](logObj, msg || 'Failed to save to zuora');
             zHelpers.updateErrorList(scope, resp, function () {
                 err.zuora = err.zuora || resp;
-                call.done(err);
+                call.done(err, true);
             });
         }
 
         call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if (err) {
+                // changing zuoras errorCode from 401's to 500
+                if(err.statusCode === 401) {
+                    err.statusCode = 500;
+                }
                 if (!zHelpers.notFound(acc)) {
                     error(err, acc, 'Account check with zuora failed');
                     return;
@@ -64,10 +93,13 @@ module.exports = function execute(scope, callback) {
 
                 zHelpers.createZuoraAccount(call, function (err, data, user) {
                     if (err) {
+                        // changing zuoras errorCode from 401's to 500
+                        if(err.statusCode === 401) {
+                            err.statusCode = 500;
+                        }
                         error(err, data, 'Zuora account.create failed');
                         return;
                     }
-
                     MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
                         if (fraudErr) {
                             call.log.warn(fraudErr);
@@ -76,9 +108,12 @@ module.exports = function execute(scope, callback) {
                         }
                         if (result.riskScore) {
                             call.log.info('Saving user riskScore in metadata');
-                            Metadata.set(call.req.session.userId, 'riskScore', result.riskScore);
+                            Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
                         }
                         if (result.block) {
+                            if (result.blockReason) {
+                                Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
+                            }
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
                                 if (blockErr) {
                                     call.log.error(blockErr);
@@ -110,6 +145,10 @@ module.exports = function execute(scope, callback) {
             //Compose the creditcard object
             zHelpers.composeCreditCardObject(call, function (err, data) {
                 if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if(err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
                     error(err, data, 'CC failed local validation');
                     return;
                 }
@@ -117,6 +156,10 @@ module.exports = function execute(scope, callback) {
                 // Create payment
                 zuora.payment.create(data, function (err, resp) {
                     if (err) {
+                        // changing zuoras errorCode from 401's to 500
+                        if(err.statusCode === 401) {
+                            err.statusCode = 500;
+                        }
                         error(err, resp);
                         return;
                     }
@@ -171,6 +214,10 @@ module.exports = function execute(scope, callback) {
         server.onCall('listInvoices', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if(err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
                     call.done(err);
                     return;
                 }
@@ -182,6 +229,10 @@ module.exports = function execute(scope, callback) {
         server.onCall('getLastInvoice', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if(err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
                     call.done(err);
                     return;
                 }
@@ -202,6 +253,11 @@ module.exports = function execute(scope, callback) {
         server.onCall('getSubscriptions', function (call) {
             zuora.subscription.getByAccount(call.req.session.userId, function (err, resp) {
                 if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if(err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
+
                     call.done(err);
                     return;
                 }

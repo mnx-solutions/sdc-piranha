@@ -37,7 +37,7 @@ window.fn = [];
                                     { name: datacenter }
                                 )
                             );
-                            datasets.job.deferred.reject(err);
+                            //datasets.job[datacenter].deferred.reject(err);
                             Object.keys(datasets.search[datacenter]).forEach(function (job) {
                                 job.reject(err);
                             });

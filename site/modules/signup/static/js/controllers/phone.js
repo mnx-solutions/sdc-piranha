@@ -21,16 +21,16 @@
             $scope.fullPhoneNumber = null;
 
             $scope.isoToObj = function(iso) {
-                if(!$scope.countryCodes){
+                if (!$scope.countryCodes) {
                     return;
                 }
                 var selected = null;
                 var usa = null;
                 $scope.countryCodes.some(function (el) {
-                    if(el.iso3 === 'USA') {
+                    if (el.iso3 === 'USA') {
                         usa = el;
                     }
-                    if(el.iso3 === iso) {
+                    if (el.iso3 === iso) {
                         selected = el;
                         return true;
                     }

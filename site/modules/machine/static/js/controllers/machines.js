@@ -74,7 +74,7 @@
                 );
             };
 
-            $scope.gridOrder = [];
+            $scope.gridOrder = ['created'];
             $scope.gridProps = [
                 {
                     id: 'label',
@@ -84,13 +84,13 @@
                 },
                 {
                     id: 'datacenter',
-                    name: 'Datacenter',
+                    name: 'Data Center',
                     sequence: 2,
                     active: true
                 },
                 {
                     id: 'created',
-                    name: 'Created at',
+                    name: 'Created',
                     sequence: 3,
                     active: true
                 },
@@ -184,7 +184,6 @@
                     sequence: 18,
                     active: false
                 }
-
             ];
             $scope.gridDetailProps = [
                 {
@@ -200,12 +199,12 @@
                 {
                     id: '_Dataset',
                     id2: 'name',
-                    name: "Image name",
+                    name: "Image Name",
                     sequence: 3
                 },
                 {
                     id: 'ips',
-                    name: 'IP-s',
+                    name: 'IP',
                     sequence: 4
                 }
             ];

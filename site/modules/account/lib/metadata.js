@@ -2,4 +2,10 @@
 
 var config = require('easy-config');
 
-module.exports = (config.capishim && config.capishim.noUpdate) ? require('./metadata-redis') : require('./metadata-shim');
+var metadataObj = (!config.capishim || config.capishim.noUpdate) ? require('./metadata-redis') : require('./metadata-shim');
+metadataObj.PHONE_VERIFICATION = 'phoneVerification';
+metadataObj.RISK_SCORE = 'riskScore';
+metadataObj.SIGNUP_STEP = 'signupStep';
+metadataObj.BLOCK_REASON = 'blockingReason';
+
+module.exports = metadataObj;

@@ -22,7 +22,12 @@
                 };
 
                 $scope.$on('notification:change', function (scope) {
-                    $scope.notifications = notification.getNotifications();
+                    try {
+                        $scope.notifications = notification.getNotifications();
+                        $scope.$digest();
+                    } catch (err) {
+
+                    }
                 });
             },
             template: '<div class="notification-wrapper">' +
