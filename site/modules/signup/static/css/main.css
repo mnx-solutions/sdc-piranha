@@ -217,7 +217,7 @@ body{
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.03px;
-    width: 565px;
+    width: 715px;
     padding-top: 45px;
     float: left;
     clear: both;
@@ -333,7 +333,7 @@ body{
 }
 .table{
     margin-top: 3px;
-    width: 996px;
+    width: 996px !important;
     font-size: 16px;
 }
 .table tr{
