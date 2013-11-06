@@ -18,8 +18,9 @@
         '$location',
         'util',
         'Image',
+        'notification',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image, notification) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -170,6 +171,10 @@
                     Machine.listFirewallRules(m.id).then(function (rules) {
                         $scope.firewallRules = rules;
                     });
+                }
+
+                if(m.maintenanceStartTime) {
+                    notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'This instance has been scheduled for maintenance on '+ m.maintenanceStartTime);
                 }
 
                 $scope.dataset = Dataset.dataset(m.image);

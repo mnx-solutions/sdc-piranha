@@ -12,12 +12,11 @@
 
     </div>
 
-
     <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" class="item row-fluid">
         <span class="text-medium crop"
               data-ng-class="prop.getClass('body') || {'span3 machine-list-content': $first, 'pull-right machine-list-state state pointer': $last, 'span2  machine-list-content': ($index > 0 && !$last)}"
               data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
-            <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
+            <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}} <div class="tooltip-hover" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>" style="float:right;"><i data-ng-show="object.maintenanceStartTime" class="icon-warning-sign"></i></div></a>
             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                 <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
             </span>
