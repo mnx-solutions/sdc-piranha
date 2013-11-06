@@ -14,7 +14,6 @@ var elb = function execute(scope) {
     var machine = scope.api('Machine');
     var metadata = scope.api('Metadata');
 
-    var hardDataCenter = 'us-west-x';
     var hardControllerName = 'elb-ssc';
 
     function getMachinesList(call, cb) {
@@ -252,22 +251,28 @@ var elb = function execute(scope) {
         });
     });
 
-    server.onCall('SscMachineCreate', function (call) {
-        var data = {
-            datacenter: hardDataCenter,
-            dataset: '0132c5b0-4586-11e3-ad73-b360f35434c7',
-            name: hardControllerName,
-            package: '5d367f42-867b-4cc3-883c-b329cbaad9d4',
-            networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f'],
-            elbController: true
-        };
-        machine.Create(call, data, function (err, result) {
-            if (err) {
-                call.done(err);
-                return;
-            }
-            call.done(null, result);
-        });
+    server.onCall('SscMachineCreate', {
+        verify: function (data) {
+            return data && typeof data.datacenter === 'string';
+        },
+        handler: function (call) {
+            var data = {
+                datacenter: call.data.datacenter,
+                dataset: '0132c5b0-4586-11e3-ad73-b360f35434c7',
+                name: hardControllerName,
+                package: '5d367f42-867b-4cc3-883c-b329cbaad9d4',
+                networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f'],
+                elbController: true
+            };
+            machine.Create(call, data, function (err, result) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
+                call.done(null, result);
+            });
+        }
+
     });
 
     server.onCall('SscMachineDelete', function (call) {
