@@ -262,15 +262,16 @@
     margin:0;
 }
 .key {
-    border-bottom:1px solid #ddd;
+    /*border-bottom:1px solid #ddd;*/
     color:#888;
     margin-left:0px;
+    text-align: left;
 }
 
 .value {
     text-align: left !important;
-    border-bottom: 1px solid #ddd;
-    min-width: 300px;
+    /*border-bottom: 1px solid #ddd;*/
+    /*min-width: 300px;*/
 }
 
 .key.error, .value.error {
@@ -279,8 +280,8 @@
 }
 
 .key, .value {
-    padding: 3px 0 3px 0;
-    float: left;
+    padding: 0;
+    /*float: left;*/
 }
 
 .tag.editable input {
@@ -307,7 +308,7 @@
     margin-top: -73px;
 }
 .page-title{
-    margin: -15px 0 10px 0 !important;
+    margin: -4px 0 10px 0 !important;
 }
 .btn {
     background-color: #e5e5e5;
@@ -331,6 +332,12 @@
     color: white;
     text-shadow: none;
     background-color: #ff6600;
+}
+.btn.light {
+    color: #ff6600;
+    text-shadow: none;
+    background-color: #f3f3f3;
+    font-size: 16px;
 }
 .btn.green {
     color: black;
@@ -361,8 +368,8 @@
 }
 #tableBtnAdd {
     float: right;
-    /*margin-right: 40px;*/
     margin-bottom: 10px;
+    margin-right: 15px;
 }
 .inst_page{
     padding-left: 25px;
@@ -394,7 +401,7 @@
     height: 14px;
     float: left;
     position: relative;
-    left: -2px;
+    left: 4px;
     top: 3px;
     background-repeat: no-repeat;
     background-image: url("../img/warn_icon.png");
@@ -423,7 +430,7 @@
 }
 .label-info, .badge-info {
     background-color: #999999;
-    min-width: 85px;
+    min-width: 94px;
 }
 .label {
     padding: 7px 14px;
@@ -442,7 +449,7 @@
 }
 
 .btn-success{
-    min-width: 85px;
+    min-width: 94px;
     color: black;
     text-shadow: none;
     background-color: #afd46c;
@@ -711,32 +718,40 @@ ul.dropdown-menu{
 }
 
 .accordion-heading a {
-    color: #666666;
+    color: black;
     font-size: 16px;
     text-decoration: none;
+    font-weight: 500;
 }
 
 .accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i {
     width: 15px;
     height: 15px;
-    float: left;
-    margin-top: 18px;
-    position: relative;
-    left: 10px;
+    /*float: left;*/
+    /*margin-top: 18px;*/
+    /*position: relative;*/
+    /*left: 10px;*/
     background-repeat: no-repeat;
     background-image: url("../img/accord_i_plus.png") !important;
-    padding-right: 20px;
+    padding-right: 25px;
+    vertical-align: middle;
 }
 .accordion-toggle.active i {
     width: 15px;
     height: 15px;
-    float: left;
-    margin-top: 18px;
-    position: relative;
-    left: 10px;
+    /*float: left;*/
+    /*margin-top: 18px;*/
+    /*position: relative;*/
+    /*left: 10px;*/
     background-repeat: no-repeat;
     background-image: url("../img/accord_i_down.png") !important;
-    padding-right: 20px;
+    padding-right: 25px;
+    vertical-align: middle;
+}
+.details-accordion{
+    margin-top: 3px;
+    padding-right: 5px;
+    margin-left: -5px;
 }
 .accordion-inner {
     border-top: 0 !important;
@@ -754,7 +769,8 @@ ul.dropdown-menu{
     line-height: 28px;
 }
 .accordion-inner table td:first-child {
-    color: #375675;
+    /*color: #375675;*/
+    color: #5D80A7;
 }
 .accordion-inner table td:last-child {
     font-size: 16px;
@@ -776,7 +792,7 @@ ul.dropdown-menu{
     width: 14px;
     height: 14px;
     float: left;
-    margin-top: 4px;
+    margin-top: 3px;
     position: relative;
     left: -4px;
     background-repeat: no-repeat;
@@ -794,7 +810,9 @@ ul.dropdown-menu{
     background-image: url("../img/btn_i_reboot.png");
 }
 .details_btn_block{
-    padding-bottom: 0;
+    padding: 18px;
+    background-color: #fef1d2;
+    max-width: 450px;
 }
 
 /*.details_btn_block_margin span{*/
@@ -804,7 +822,7 @@ ul.dropdown-menu{
     /*margin-top: 4px;*/
 /*}*/
 .font_size {
-    font-size: 18px;
+    font-size: 16px;
     text-align: left;
 }
 .help-inline {
@@ -920,20 +938,21 @@ ul.dropdown-menu{
 }
 .details_btn_block p{
     display: inline-block;
-    width: 65px;
+    /*width: 65px;*/
     height: 8px !important;
     vertical-align: top;
 }
 .container_details{
-    width: 982px;
-    padding-left: 18px;
+    width: 1005px;
+    padding-left: 45px;
     padding-bottom: 55px;
-    float:left;
+    padding-top: 10px;
+    float: left;
 }
 .status .loading-small, .details_btn_block .loading-small {
     padding-top: 6px;
     padding-right: 15px;
-    margin-left: -12px;
+    margin-left: -7px;
 }
 
 .container_details .error{
@@ -955,16 +974,50 @@ ul.dropdown-menu{
     width: 14px !important;
     height: 14px !important;
 }
-.tags-width{
-    width: 220px !important;
-    min-width: 300px;
-    padding-right: 10px;
-    padding-left: 10px;
+/*.tags-width{*/
+    /*width: 150px;*/
+    /*min-width: 300px;*/
+    /*padding-right: 10px;*/
+    /*padding-left: 10px;*/
+    /*overflow: hidden;*/
+/*}*/
+.key-width{
+    min-width: 160px;
+    max-width: 160px;
+    display: inline-block;
     overflow: hidden;
+    border-radius: 0;
+}
+.value-width{
+    min-width: 210px;
+    max-width: 210px;
+    display: inline-block;
+    overflow: hidden;
+    border-radius: 0;
+}
+.tags-title{
+    color: #5D80A7;
+    font-size: 14px;
+    line-height: 15px;
+    font-weight: 300;
+    margin-top: 10px;
+}
+.tag-add-btn{
+    margin-top: -10px;
+    height: 31px;
+    padding-bottom: 7px;
+    padding-top: 5px;
+    max-width: 54px;
+}
+.controls{
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 .tags-delete-pos{
-    margin-top: 12px;
-    margin-bottom: 20px;
+    /*margin-top: 12px;*/
+    /*margin-bottom: 20px;*/
 }
 .item-list-container{
     width: 996px;
@@ -1488,6 +1541,7 @@ ul.dropdown-menu{
 }
 #accordion2 .accordion-heading .accordion-toggle {
     padding: 0;
+    padding-left: 10px;
 }
 #accordion2 .accordion-group {
     border: 0 none;
@@ -1750,4 +1804,40 @@ ul.dropdown-menu{
 }
 .create-instance-btn-pos{
     margin-top: 47px;
+}
+.pb-top{
+    padding-top: 7px;
+}
+.btn-machine-ctrl{
+    margin-left: 5px;
+}
+.chart-icon {
+    width: 16px;
+    height: 16px;
+    float: left;
+    margin-top: 0;
+    /*position: relative;*/
+    /*left: 3px;*/
+    background-image: url("../img/icon-chart.png");
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    padding-right: 10px;
+}
+.container-grid {
+    width: 996px;
+    padding-left: 18px;
+    padding-bottom: 55px;
+    float: left;
+}
+.dpl-inline{
+    display: inline-block;
+}
+.remove-icon {
+    width: 13px;
+    height: 13px;
+    background-image: url("../img/remove-icon.png");
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 5px;
 }

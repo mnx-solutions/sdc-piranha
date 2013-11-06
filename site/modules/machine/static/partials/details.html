@@ -27,7 +27,7 @@
     </div>
 </form>
 
-<div class="portlet-body">
+<div class="portlet-body pb-top">
     <div class="inst_left">
         <div class="accordion" id="accordion1">
             <div class="accordion-group">
@@ -107,20 +107,18 @@
                             identify your instances.
                         </p>
                         <form name="tagForm">
-                            <div class="tags" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
-                                <div class="tag row-fluid" data-ng-show="!o.edit">
-                                    <div class="control-group">
-                                        <div class="controls">
-                                            <!--<label class="control-label">Key<span class="required">*</span></label>-->
-                                            <span class="key tags-width" data-ng-class="{error: o.conflict}">{{o.key}}</span>
-                                        </div>
-                                        <div class="controls">
-                                            <!--<label class="control-label">Value</label>-->
-                                            <span class="value tags-width" data-ng-class="{error: o.conflict}">{{o.val}}</span>
-                                            <span class="icon-trash delete pull-left tags-delete-pos"
-                                                data-ng-click="removeTag(key)"
-                                                data-ng-show="!tagsave">
-                                            </span>
+                            <div class="controls">
+                                <div class="key key-width tags-title">Key</div>
+                                <div class="value value-width tags-title">Value</div>
+                            </div>
+                            <div class="" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
+                                <div class="" data-ng-show="!o.edit">
+                                    <div class="controls">
+                                        <div class="key key-width" data-ng-class="{error: o.conflict}">{{o.key}}</div>
+                                        <div class="value value-width" data-ng-class="{error: o.conflict}">{{o.val}}</div>
+                                        <div class="remove-icon delete pull-right tags-delete-pos"
+                                              data-ng-click="removeTag(key)"
+                                              data-ng-show="!tagsave">
                                         </div>
                                     </div>
                                 </div>
@@ -130,44 +128,35 @@
 
 
                                     <div class="control-group">
-                                        <label class="control-label">Key<span class="required">*</span></label>
-
-                                        <div class="controls">
+                                        <div class="dpl-inline">
                                             <input type="text"
                                                    placeholder="Key"
                                                    data-translate="placeholder"
                                                    data-ng-model="o.key"
                                                    data-ng-required="key != tagnr"
                                                    data-ng-disabled="tagsave"
-                                                   class="tags-width">
-
-                                            <span class="help-inline">Provide a key</span>
+                                                   class="key-width">
                                         </div>
-                                        <div>
-                                            <label class="control-label">Value<span class="required">*</span></label>
+                                        <div class="dpl-inline">
                                             <input type="text"
                                                    placeholder="Value"
                                                    data-translate="placeholder"
                                                    data-ng-model="o.val"
                                                    data-ng-required="key != tagnr"
                                                    data-ng-disabled="tagsave"
-                                                   class="tags-width"/>
-                                            <span class="icon-trash delete"
-                                                  data-ng-click="removeTag(key)"
-                                                  data-ng-show="key != tagnr && !tagsave">
-                                            </span>
+                                                   class="value-width"/>
                                         </div>
-                                    </div>
+                                        <div class="spacer-input"></div>
+                                        <button class="btn light tag-add-btn"
+                                                data-ng-click="clickSaveTags(machine.id)"
+                                                data-translate
+                                                data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Add</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="tags row-fluid">
-                                <!--<a class="btn orange" href="#collapse_2" target="_blank">Save Tag</a>-->
-                                <button class="btn orange"
-                                        data-ng-click="clickSaveTags(machine.id)"
-                                        data-translate
-                                        data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save Tag</button>
-                                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
+                                <div class="pull-right loading-small" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
                             </div>
                         </form>
                     </div>
@@ -222,7 +211,7 @@
                                 </select>
 
                                 <div class="control-group resize-button">
-                                    <button class="btn orange" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
+                                    <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
                                 </div>
                             </div>
                             <div class="clearfix"></div>
@@ -252,7 +241,7 @@
                             <div class="clearfix"></div>
 
                             <div>
-                                <div class="loading-medium span1 pull-right"
+                                <div class="loading-small span1 pull-right"
                                      data-ng-show="imageJob && !imageJob.finished"></div>
                                 <form name="imageForm">
                                     <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
@@ -261,13 +250,13 @@
                                            data-ng-model="imageDescription"
                                            value="" />
                                     <br />
-                                    <button class="btn btn-joyent-blue pull-right"
+                                    <button class="btn light pull-right"
                                             data-ng-click="clickCreateImage()"
                                             data-translate
                                             data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || machine.state != 'stopped'">
                                         Create Image
                                     </button>
-                                    <div class="loading-medium span1 pull-right"
+                                    <div class="loading-small span1 pull-right"
                                          data-ng-show="imageJob && !imageJob.finished"></div>
                                 </form>
                                 <br />
@@ -291,7 +280,7 @@
                         <div>
                             <label class="control-label">Image Name</label>
                             <input type="text" class="span3" name="iname"/><br>
-                            <a class="btn orange" data-toggle="modal" href="" data-ng-click="messageDialog()">Create
+                            <a class="btn light" data-toggle="modal" href="" data-ng-click="messageDialog()">Create
                                 Image</a>
                         </div>
                     </div>
@@ -312,7 +301,7 @@
                         </p>
 
                         <p>
-                            <a class="btn orange" data-toggle="modal" href="" data-ng-click="messageDialog()">Activate
+                            <a class="btn light" data-toggle="modal" href="" data-ng-click="messageDialog()">Activate
                                 Firewall Rules</a>
                         </p>
                     </div>
@@ -323,9 +312,15 @@
     </div>
     <div class="pull-left">
         <div class="details_btn_block">
-            <span>
-                <div class="details_btn_block_margin state" data-machine-status machine="machine"></div>
+            <span class="status label label-info pull-left"
+                  data-ng-class="{'btn-success': machine.state == 'running'}"
+                  data-ng-show="machine.state.length">
+                <span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>
+                <i class="icon-ok" data-ng-show="(machine.state == 'running' && !machine.job) || (machine.state == 'running' && machine.job.finished)"></i>
+                <i class="warn_icon" data-ng-show="(machine.state == 'stopped' && !machine.job) || (machine.state == 'stopped' && machine.job.finished)"></i>
+                <span data-translate>{{machine.state}}</span>
             </span>
+
             <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
                   data-ng-show="machine.state == 'stopped'"
                   data-ng-click="clickStart(machine.id)"
@@ -333,10 +328,10 @@
                   data-placement="top"
                   data-html="true"
                   data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
-                  data-ng-class="{'btn-success': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                  class="state btn orange font_size tooltip-hover">
+
+                  class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                   <i class="icon-play"></i>
-                <p data-translate>start</p>
+                <p data-translate>Start</p>
             </button>
 
             <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
@@ -348,9 +343,9 @@
                   data-html="true"
                   data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
                   data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                  class="state btn orange font_size tooltip-hover">
+                  class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                 <i class="pause_icon"></i>
-                <p data-translate>pause</p>
+                <p data-translate>Pause</p>
             </button>
 
             <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
@@ -361,9 +356,9 @@
                   data-html="true"
                   data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
                   data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
-                  class="state btn orange font_size tooltip-hover">
+                  class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                 <i class="stop_icon"></i>
-                <p data-translate>delete</p>
+                <p data-translate>Delete</p>
             </button>
 
             <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
@@ -375,22 +370,22 @@
                   data-html="true"
                   data-original-title="Click here to reboot your instance."
                   data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
-                  class="state btn orange font_size  tooltip-hover">
+                  class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                 <!--<span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>-->
                 <i class="reboot_icon"></i>
-                <p data-translate>reboot</p>
+                <p data-translate>Reboot</p>
             </button>
         </div>
         <div data-ng-controller="cloudController">
                 <div class="detail_chart" >
-                    <div class="loading-large" data-ng-hide="cpuGraphs && memGraphs"></div>
+                    <div class="loading-small" data-ng-hide="cpuGraphs && memGraphs"></div>
                     <graph data-ng-repeat="i in cpuGraphs" options="i" style="max-width: 480px;"></graph>
                 </div>
 
             <div class="detail_chart">
                 <graph data-ng-repeat="i in memGraphs" options="i" style="max-width: 480px;"></graph>
             </div>
-            <a href="#!/cloudAnalytics/{{machine.id}}" class="btn orange pull-right">View Detailed Analytics</a>
+            <a href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right"><i class="chart-icon"></i>View Detailed Analytics</a>
         </div>
 
     </div>
