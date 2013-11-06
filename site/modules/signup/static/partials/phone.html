@@ -36,7 +36,7 @@
                                        required/>
                             </div>
                         </td>
-                        <td>
+                        <td class="error-message">
                             <div data-ng-show="phoneError" class="error alert-icon" style="margin-top: 4px;">
                                 <span>{{phoneError}}</span>
                             </div>
@@ -58,7 +58,7 @@
                             <td>
                                 <input data-ng-model="pin" type="text" required style="border-radius: 0;">
                             </td>
-                            <td>
+                            <td class="error-message">
                                 <div data-ng-show="pinError" class="error alert-icon" style="margin-top: 4px;">
                                     <span>{{pinError}}</span>
                                 </div>
@@ -69,6 +69,9 @@
                 </form>
             </div>
             <div class="line"></div>
+            <div style="padding:42px 0 42px 0">
+                <button class=" grey_btn" data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</button>
+            </div>
 
         </div>
         <div class="message-box">

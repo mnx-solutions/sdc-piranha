@@ -196,6 +196,7 @@ body{
     display: block;
     color: #3d3d3d;
     font-weight: 200;
+    line-height: 30px;
     border-bottom: 1px solid #cccccc;
     padding-bottom: 20px;
     max-width: 1005px;
@@ -217,9 +218,10 @@ body{
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.03px;
-    width: 565px;
+    width: 715px;
     padding-top: 45px;
     float: left;
+    clear: both;
 }
 .sigin{
     padding-top: 35px;
@@ -323,6 +325,19 @@ body{
     /*width: 18px;*/
     /*height: 16px;*/
 }
+.table td.error-message{
+    width: 40px;
+}
+.table td .alert-icon{
+    position: relative;
+    width: 18px;
+    height: 16px;
+    float: left;
+}
+.table td .alert-icon span{
+    position: absolute;
+    width: 500px;
+}
 .hide{
     display: none;
 }
@@ -332,7 +347,7 @@ body{
 }
 .table{
     margin-top: 3px;
-    width: 996px;
+    width: 996px !important;
     font-size: 16px;
 }
 .table tr{
@@ -355,10 +370,10 @@ body{
 }
 .wizard-steps {
     width: 730px;
-    position: absolute;
     clear: both;
     margin-top: -2px;
     display: inline-block;
+    float: left;
 }
 .wizard-steps div {
     position:relative;
