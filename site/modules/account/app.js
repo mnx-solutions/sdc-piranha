@@ -23,7 +23,7 @@ module.exports = function execute(scope, app) {
     var SignupProgress = scope.api('SignupProgress');
 
     app.get('/countryCodes',function(req, res) {
-        var data = countryCodes.getArray(config.zuora.api.validation.countries);
+        var data = countryCodes.getArray(config.zuora.rest.validation.countries);
         data.forEach(function (el) {
             if(['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
                 el.group = 'Default';
