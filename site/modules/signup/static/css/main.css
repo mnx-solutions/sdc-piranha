@@ -575,3 +575,7 @@ legend {
     padding-bottom: 35px;
     margin-left: 200px;
 }
+
+.notification-wrapper {
+    max-width: 1010px;
+}

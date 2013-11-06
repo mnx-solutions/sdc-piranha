@@ -91,7 +91,7 @@
                         $scope.updateStep();
                     } else {
                         $scope.phoneError = null;
-                        // maybe display 'calling...' message somewhere
+                        notification.replace('phone', { type: 'success' }, data.message);
                     }
                 });
             };
