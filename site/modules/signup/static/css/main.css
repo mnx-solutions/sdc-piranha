@@ -220,6 +220,7 @@ body{
     width: 565px;
     padding-top: 45px;
     float: left;
+    clear: both;
 }
 .sigin{
     padding-top: 35px;
@@ -355,10 +356,10 @@ body{
 }
 .wizard-steps {
     width: 730px;
-    position: absolute;
     clear: both;
     margin-top: -2px;
     display: inline-block;
+    float: left;
 }
 .wizard-steps div {
     position:relative;
