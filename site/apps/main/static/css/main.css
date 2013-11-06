@@ -116,6 +116,8 @@ h4 {
 }
 .breadcrumb >li {
     color: #a9a9a9;
+    font-weight: 300;
+    text-shadow: none;
 }
 .breadcrumb li a {
     color: #ff6600;
