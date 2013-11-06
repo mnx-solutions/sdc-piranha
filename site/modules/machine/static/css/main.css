@@ -928,6 +928,7 @@ ul.dropdown-menu{
     width: 982px;
     padding-left: 18px;
     padding-bottom: 55px;
+    float:left;
 }
 .status .loading-small, .details_btn_block .loading-small {
     padding-top: 6px;
@@ -1197,7 +1198,8 @@ ul.dropdown-menu{
     padding-bottom: 20px;
 }
 .dd-btn{
-    min-width: 75px !important;
+    width: 75px !important;
+    min-width: 0px !important;
     text-align: left;
 }
 .dd-btn button:hover{

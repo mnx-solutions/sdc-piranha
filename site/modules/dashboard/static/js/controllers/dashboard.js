@@ -15,14 +15,17 @@
         'BillingService',
         '$http',
         '$cookies',
+        'elb.Service',
 
-        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies) {
+        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, elbService) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
             // populate all datasources
             $scope.account     = Account.getAccount();
+            $scope.balancers = elbService.getBalancers();
+
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
                 'Getting Started': 'http://wiki.joyent.com/gettingstarted',
@@ -54,7 +57,8 @@
                         $q.when($scope.systemStatusTopics),
                         $q.when($scope.softwareUpdateTopics),
                         $q.when($scope.account),
-                        $q.when($scope.rssentries)
+                        $q.when($scope.rssentries),
+                        $q.when($scope.balancers)
                     ]).then( function(){
                     $scope.loading = false;
                 });
