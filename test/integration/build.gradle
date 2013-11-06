@@ -1,0 +1,45 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenCentral()
+    maven {
+    	url 'https://repository-saucelabs.forge.cloudbees.com/release'
+    }
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile 'com.codeborne:selenide:2.4'
+    testCompile 'com.saucelabs:sauce_junit:1.0.13'
+    testCompile 'org.seleniumhq.selenium:selenium-safari-driver:2.35.0'
+    testCompile 'com.google.code.gson:gson:2.2.4'
+    testCompile 'org.apache.commons:commons-lang3:3.0'
+}
+
+tasks.withType(Test) {
+	systemProperties = System.getProperties()
+    systemProperties loadConf()
+    def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['staging'])
+    systemProperties['endpoint'] = appEndpoint
+	systemProperties['file.encoding'] = 'UTF-8'
+	reports.html.enabled false
+	reports.junitXml.destination = "$buildDir/test-results/" + systemProperties['browser']
+}
+
+task smokeTests(type: Test) {
+	include '**/SmokeTests.class'	
+}
+
+task allTests(type: Test) {
+	include '**/AllTests.class'	
+}
+
+def loadConf() {
+	file("build.properties").withReader { reader ->
+		def buildProps = new Properties()
+		buildProps.load(reader)
+		return buildProps
+	}
+}
