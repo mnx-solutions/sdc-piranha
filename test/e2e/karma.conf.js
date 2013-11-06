@@ -1,35 +1,42 @@
-module.exports = function(config) {
+module.exports = function (config) {
     config.set({
-        basePath : '../',
-        frameworks : ["jasmine", "ng-scenario"],
-        files : [
-            "http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
-            "site/static/vendor/bootstrap/js/bootstrap.min.js",
+        basePath: '../../',
+        frameworks: [ 'jasmine', 'ng-scenario' ],
+
+        files: [
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
             "site/static/vendor/angular/angular.js",
             "site/static/vendor/angular/angular-resource.js",
             "site/static/vendor/angular/angular-cookies.js",
-            "site/static/vendor/angular/angular-cookies.js",
-            "site/static/vendor/bootstrap/js/*.js",
+            "site/static/vendor/angular/angular-mocks.js",
+            "site/static/vendor/zendesk/zenbox.js",
+            "site/static/vendor/bootstrap/js/angular-ui.min.js",
+            "site/static/vendor/bootstrap/js/bootstrap.min.js",
+            "site/static/vendor/bootstrap/js/dialog.js",
+            "site/static/vendor/bootstrap/js/transition.js",
+            "site/static/vendor/moment/moment.min.js",
+            "site/static/vendor/uuid/uuid.js",
+
             "site/static/js/jp.js",
-            "site/static/js/app.js",
-            "site/static/js/config/routes.js",
-            "site/static/js/http-auth-interceptor.js",
-            "site/static/js/controllers/main-controller.js",
-            "site/static/js/services/*.js",
-            "site/static/js/values/render-context.js",
-            "test/angular-mocks.js",
             "site/modules/**/static/js/module.js",
+            "site/static/js/*.js",
+            "site/static/js/**/*.js",
             "site/modules/**/static/js/**/*.js",
             "site/modules/**/static/vendor/**/*.js",
-            "test/spec/**/*.js"
+            "**/modules/machine/**/test/mock/*.js",
+
+            "site/modules/**/test/*.js"
         ],
-        autoWatch : true,
-        browsers : ['PhantomJS'],
+
+        singleRun: true,
+        browsers: [ 'PhantomJS' ],
+        reporters: 'progress',
+
         plugins: [
-            "karma-jasmine",
-            "karma-phantomjs-launcher",
-            "karma-chrome-launcher",
-            "karma-ng-scenario",
+            'karma-jasmine',
+            'karma-phantomjs-launcher',
+            'karma-chrome-launcher',
+            'karma-ng-scenario'
         ]
     });
 };
