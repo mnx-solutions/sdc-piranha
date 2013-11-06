@@ -1,0 +1,10 @@
+{
+    "EVEREST": {
+        "ratePlanName": "100% Account Discount - 3 Months",
+        "expired": false
+    },
+    "TANKIST": {
+        "ratePlanId": "SLA Credit",
+        "expired": true
+    }
+}
