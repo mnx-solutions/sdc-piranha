@@ -325,6 +325,19 @@ body{
     /*width: 18px;*/
     /*height: 16px;*/
 }
+.table td.error-message{
+    width: 40px;
+}
+.table td .alert-icon{
+    position: relative;
+    width: 18px;
+    height: 16px;
+    float: left;
+}
+.table td .alert-icon span{
+    position: absolute;
+    width: 500px;
+}
 .hide{
     display: none;
 }
