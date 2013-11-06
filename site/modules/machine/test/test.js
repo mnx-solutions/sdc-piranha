@@ -5,7 +5,11 @@ describe("Machine module", function () {
     beforeEach(function () {
         // load module
         module('JoyentPortal', 'Machine');
-
+        module('JoyentPortal', 'Tracking');
+        module('JoyentPortal', 'Server');
+        module('JoyentPortal', 'localization');
+        module('JoyentPortal', 'notification');
+        module('JoyentPortal', 'error');
 
         inject(function ($controller, $rootScope) {
             $scope = $rootScope.$new();
@@ -16,7 +20,7 @@ describe("Machine module", function () {
     });
 
     it('searches for machines', function () {
-        console.log($scope);
+
     });
 
     /*
