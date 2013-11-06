@@ -101,11 +101,11 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 }
 .start .title, .second .title, .three .title, .last .title {
     color: #ffffff;
-    font-weight: 600;
+    font-weight: 400;
 }
 .start.active .title, .second.active .title, .three.active .title, .last.active .title{
     color: #ff6600 !important;
-    font-weight: 600;
+    font-weight: 400;
 }
 .sidebar-toggler {
     background-color: #242424;
@@ -172,7 +172,7 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     padding-left: 47px;
     text-decoration: none;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 300;
     color: #999999;
 }
 .sub0 .titles, .sub1 .titles, .sub2 .titles, .sub3 .titles{
