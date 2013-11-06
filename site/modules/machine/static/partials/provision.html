@@ -461,8 +461,8 @@
                                     <div class="span3 pull-right selected-package-container">
                                         <div data-ng-show="selectedPackageInfo" class="selected-package-box">
                                             <div class="selected-package-box-content">
-                                                <p>IMAGE:</p>
-                                                <span><h2>{{selectedDataset.name}}</h2><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a></span>
+                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc">{{selectedDataset.description}}</div>
 
                                                 <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
@@ -486,7 +486,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="dataset-coast">
-                                                    <p>EST. MONTHLY COAST:</p>
+                                                    <p>EST. MONTHLY COST:</p>
                                                     <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
                                                 </div>
                                                 <div class="pull-left">
@@ -642,17 +642,139 @@
 
 
                             <div class="item outer-provisioning-item">
-                            <div class="item provisioning-item header row-fluid">
-                            <div class="wizard-steps">
-                                <div><p>Choose Image</p></div>
-                                <div><p>Select Package</p></div>
-                                <div class="active-step"><p>Review</p></div>
-                                <div><p class="laststep"></p></div>
-                            </div>
-
-                            </div>
+                                <div class="item provisioning-item header row-fluid">
+                                    <div class="wizard-steps">
+                                        <div><p>Choose Image</p></div>
+                                        <div><p>Select Package</p></div>
+                                        <div class="active-step"><p>Review</p></div>
+                                        <div><p class="laststep"></p></div>
+                                    </div>
+                                </div>
                             <div class="item-scrolling">
+                                <div class="review-box">
+                                    <table>
+                                        <td style="vertical-align: top;">
+                                            <div class="selected-package-box-1">
+                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <span><h2>{{selectedDataset.name}}</h2></span>
+                                                <div class="dataset-desc">{{selectedDataset.description}}</div>
 
+                                                <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
+                                                <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
+                                                    <div class="btn-group pull-left">
+                                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]">
+                                                            {{selectedVersions[selectedDataset.name].version}}
+                                                        </button>
+
+                                                        <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                                                            <span class="caret"></span>
+                                                        </button>
+
+                                                        <ul class="dropdown-menu dd-image-versions">
+                                                            <li data-ng-repeat="version in versions[selectedDataset.name]">
+                                                                <a data-ng-click="selectVersion(selectedDataset.name, version)">
+                                                                    {{version.version}}
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="selected-package-box-2">
+                                                <p>PACKAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <span>
+                                                    <div class="package-info-title">Configuration</div>
+                                                    <div class="package-info-desc">{{selectedPackageInfo.short_name}}</div>
+                                                </span>
+                                                <span>
+                                                    <div class="package-info-title">Memory</div>
+                                                    <div class="package-info-desc">{{selectedPackageInfo.memory | sizeFormat}}</div>
+                                                </span>
+                                                <span>
+                                                    <div class="package-info-title">Disk</div>
+                                                    <div class="package-info-desc">{{selectedPackageInfo.disk | sizeFormat}}</div>
+                                                </span>
+                                                <span>
+                                                    <div class="package-info-title">vCPUs</div>
+                                                    <div class="package-info-desc">{{selectedPackageInfo.vcpus}} vCPUs</div>
+                                                </span>
+                                                <span>
+                                                    <div class="package-info-title">DataCenter</div>
+                                                    <div class="package-info-desc">{{data.datacenter}} </div>
+                                                </span>
+
+                                                <div class="package-info-cost">
+                                                    <p>COST:</p>
+                                                    <div class="dataset-cost">
+                                                        <h3>${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</h3>
+                                                        <p class="small-text-info">per hour</p>
+                                                    </div>
+                                                    <div class="dataset-cost">
+                                                        <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
+                                                        <p class="small-text-info">est. monthly</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div class="selected-package-box-3">
+                                                <p class="title-box-3">OPTIONAL SETTINGS:</p>
+                                                <span><h2>Name Instance</h2><p> (Optional)</p></span>
+                                                <input name="machineName"
+                                                       type="text"
+                                                       data-ng-model="data.name"
+                                                       data-machine-name
+                                                       data-machine-unique
+                                                       class="instance-name-input"/>
+                                                <div><h2>Networks</h2></div>
+                                                <div class="networks-box-3">
+                                                    <label data-ng-repeat="network in networks">
+                                                        <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                                                            <span data-ng-class="{checked: network.active}">
+                                                                 <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox" checked=""
+                                                                        value="{{network.id}}"
+                                                                        name="{{network.name}}"
+                                                                        data-ng-model="selectedNetworkId"
+                                                                        data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1"/>
+                                                            </span>
+                                                         </div>
+                                                        <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                                                    </label>
+                                                </div>
+                                                <div><h2>Tags</h2></div>
+                                                <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
+                                                <div class="tags-input-box">
+                                                    <input type="text"
+                                                           placeholder="Key"
+                                                           data-translate="placeholder"
+                                                           data-ng-model="o.key"
+                                                           data-ng-required="key != tagnr"
+                                                           class="tags-inputs"/>
+                                                    <div class="spacer-input"></div>
+                                                    <input type="text"
+                                                           placeholder="Value"
+                                                           data-translate="placeholder"
+                                                           data-ng-model="o.val"
+                                                           data-ng-required="key != tagnr"
+                                                           class="tags-inputs"/>
+                                                    <div class="spacer-input"></div>
+                                                    <button class="btn addtag-btn"
+                                                            data-ng-click="addTag()"
+                                                            data-translate>Add</button>
+                                                </div>
+
+
+
+                                                <button class="btn orange create-instance-btn-pos"
+                                                        data-ng-disabled="provisionForm.$invalid"
+                                                        data-ng-click="clickProvision()"
+                                                        data-translate>Create instance</button>
+                                            </div>
+                                        </td>
+                                    </table>
+                                </div>
                             </div>
 
                             </div>

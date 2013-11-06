@@ -96,6 +96,15 @@
                 }
             };
 
+            $scope.selectNetworkCheckbox = function(id){
+                $scope.networks.forEach(function (el) {
+                    if(el.id == id){
+                        el.active = (el.active) ? false : true;
+                    }
+                });
+                $scope.selectNetwork(id);
+            };
+
             $scope.clickProvision = function () {
                 function provision() {
                     util.confirm(

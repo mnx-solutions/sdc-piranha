@@ -1068,7 +1068,7 @@ ul.dropdown-menu{
 }
 .basic-instance-btn.btn_s{
     float: right;
-    margin-top: -25px;
+    margin-top: -22px;
     margin-left: 30px;
 }
 .basic-instance-btn{
@@ -1556,6 +1556,7 @@ ul.dropdown-menu{
 
 .selected-package-box{
     width: 253px;
+    height: 420px;
     /*min-height: 360px;*/
     /*max-height: 600px;*/
     background-color: #fef1d2;
@@ -1563,37 +1564,54 @@ ul.dropdown-menu{
 .selected-package-box .selected-package-box-content{
     padding: 25px;
     min-height: 360px;
-    max-height: 600px;
+    max-height: 800px;
+    white-space: normal;
+
 }
-.selected-package-box-content p{
+.selected-package-box-content p, .selected-package-box-1 p, .selected-package-box-2 p, .selected-package-box-3 p{
     font-size: 14px;
     font-weight: 300;
+    display: inline-block;
+    padding-right: 5px;
 }
-.selected-package-box-content h2{
+.selected-package-box-3 p.title-box-3{
+    display: block !important;
+}
+
+.selected-package-box-content h2, .selected-package-box-1 h2, .selected-package-box-3 h2{
     font-size: 18px;
     font-weight: 500;
     line-height: 18px;
     margin-top: -5px;
+    padding-top: 7px;
     padding-right: 10px;
-    display: inline-block;
+    /*display: inline-block;*/
+    word-wrap: break-word;
 }
-.selected-package-box-content .small-btn{
+.selected-package-box-3 h2{
+    font-size: 16px !important;
+    display: inline-block;
+    padding-top: 14px !important;
+}
+
+.small-btn{
     width: 56px!important;
     height: 21px;
     color: #f60;
     background-color: #fffbf2;
     padding: 0;
     font-size: 12px;
-    margin-top: -6px;
+    /*margin-top: -6px;*/
     font-weight: 400;
 }
-.selected-package-box-content .dataset-desc{
+.dataset-desc{
     max-width: 200px;
     white-space: normal;
     font-size: 14px;
     font-weight: 300;
     line-height: 20px;
     padding-bottom: 25px;
+    padding-top: 4px;
 }
 .selected-package-container{
     margin-right: 35px;
@@ -1615,4 +1633,119 @@ ul.dropdown-menu{
     height: 35px;
     font-size: 16px;
     font-weight: 400 !important;
+}
+.review-box{
+    margin-top: 10px;
+    width: 1000px;
+    background-color: #fef1d2;
+    height: auto;
+    min-height: 490px;
+}
+
+/*.vertical-line{*/
+    /*border-right: 1px solid #cbc1a8;*/
+    /*height: 100%;*/
+    /*padding-top: 25px;*/
+    /*padding-bottom: 25px;*/
+/*}*/
+.selected-package-box-1{
+    min-width: 200px;
+    max-width: 200px;
+    padding: 25px;
+    display: inline-block;
+}
+.selected-package-box-2{
+    min-width: 270px;
+    max-width: 270px;
+    border-right: 1px solid #cbc1a8;
+    border-left: 1px solid #cbc1a8;
+    height: 408px;
+    margin-top: 25px;
+    padding: 0 0 0 25px;
+}
+.selected-package-box-3{
+    /*min-width: 200px;*/
+    /*max-width: 200px;*/
+    padding: 25px;
+    display: inline-block;
+}
+.selected-package-box-2 span{
+    display: block;
+    padding-top: 10px;
+}
+.package-info-desc{
+    font-size: 14px;
+    font-weight: 500;
+}
+.package-info-title{
+    font-size: 14px;
+    font-weight: 300;
+    display: inline-block;
+    width: 100px;
+    float: left;
+}
+/*.table-review table td{*/
+    /*vertical-align: top;*/
+/*}*/
+
+.small-text-info{
+    text-align: left;
+    color: #000;
+    padding-left: 5px;
+    font-size: 13px !important;
+}
+
+.dataset-cost{
+    padding-top: 15px;
+}
+.dataset-cost h3{
+    font-weight: 500;
+    font-size: 24px;
+    margin-top: -25px;
+    display: inline-block;
+    line-height: 24px;
+}
+.package-info-cost{
+    padding-top: 50px;
+}
+.instance-name-input{
+    width: 300px;
+    border-radius: 0;
+}
+.networks-box-3 span{
+    font-size: 14px;
+    font-weight: 300;
+    /*padding-left: 5px;*/
+}
+.networks-box-3 input[type=checkbox]{
+    margin-right: 5px;
+}
+.item-position{
+    line-height: 25px;
+}
+.tags-inputs{
+    width: 137px;
+    border-radius: 0;
+}
+.tags-input-box input[type=text]{
+    /*z-index: 0;*/
+}
+.tags-text-p{
+    line-height: 20px;
+}
+.spacer-input{
+    display: inline-block;
+    padding-left: 5px;
+}
+.addtag-btn{
+    background-color: #fffbf2;
+    width: 47px;
+    height: 30px;
+    color: #f60;
+    vertical-align: middle;
+    padding: 0;
+    margin-top: -9px;
+}
+.create-instance-btn-pos{
+    margin-top: 47px;
 }
