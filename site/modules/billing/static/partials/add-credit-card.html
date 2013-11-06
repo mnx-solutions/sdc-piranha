@@ -1,6 +1,6 @@
 <div class="{{currentStep && 'row-fluid' || 'container span9'}}">
     <form name="paymentForm" novalidate="" class="row-fluid" id="paymentForm">
-    <legend>Credit Card Details <span class="orange-asterix pull-right required-text">* required</span></legend>
+        <legend>Credit Card Details <span class="orange-asterix pull-right required-text">* required</span></legend>
         <table>
             <tbody>
                 <tr>
@@ -171,7 +171,7 @@
                 </tr>
             </tbody>
         </table>
-    <legend>Billing Address</legend>
+        <legend>Billing Address</legend>
         <table>
             <tbody>
                 <tr>
@@ -389,6 +389,39 @@
                                  data-translate
                                  data-ng-show="isError('phone', 'required') || isError('phone', 'submitRequired')">
                                 Missing phone number
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <legend data-ng-show="currentStep" data-translate>Promotional Code</legend>
+        <table data-ng-show="currentStep">
+            <tbody>
+                <tr>
+                    <td>
+                        <span data-translate>Enter Code</span>
+                    </td>
+                    <td>
+                        <div class="controls">
+                            <input type="text"
+                                   id="promoCode"
+                                   name="promoCode"
+                                   data-ng-class="{error: isError('promoCode')}"
+                                   data-ng-model="form.promoCode"
+                                   size="255"
+                                   data-ng-required="false"/>
+                                <span data-html="true"
+                                      data-translate-attributes="data-original-title"
+                                      data-toggle="tooltip"
+                                      data-trigger="hover"
+                                      data-placement="right"
+                                      class="tooltip-hover icon-info-sign"
+                                      data-original-title="Promotional Code for a discount"></span>
+                            <div class="error"
+                                 data-translate="value"
+                                 data-ng-show="isError('promoCode')">
+                                {{errs.promoCode}}
                             </div>
                         </div>
                     </td>
