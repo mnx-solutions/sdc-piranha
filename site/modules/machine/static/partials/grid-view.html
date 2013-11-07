@@ -20,7 +20,7 @@
             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                 <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
             </span>
-            <span data-ng-switch-when="created" data-ng-show="object[prop.id]">{{object[prop.id] | dateTime}}</span>
+            <span data-ng-switch-when="created" data-ng-show="object[prop.id]">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
             <span data-ng-switch-default data-ng-switch="prop.type">
                 <span data-ng-switch-when="button">
                     <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>

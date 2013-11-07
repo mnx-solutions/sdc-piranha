@@ -239,11 +239,6 @@
             }
         };
     }])
-    .filter('dateTime', function () {
-        return function (dateString) {
-            return window.moment(new Date(dateString)).format("MMM Do");
-        };
-    })
     .filter('jsonArray', function () {
         return function (array) {
             if(ng.isArray(array)) {

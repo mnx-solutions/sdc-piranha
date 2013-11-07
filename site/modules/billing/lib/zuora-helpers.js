@@ -387,7 +387,8 @@ function getInvoicePDF(req, res, next) {
         var buffer = new Buffer(data.Body,'base64');
         res.set({
             'Accept-Ranges':'bytes',
-            'Content-Disposition':'attachment; filename="' + data.InvoiceNumber + '.pdf"',
+            'Content-Disposition':'attachment; filename="Joyent_Invoice_' +
+                data.InvoiceNumber + '_' + moment(data.InvoiceDate).format('MMM_YYYY') + '.pdf"',
             'Content-Length': buffer.length,
             'Content-Type':'application/pdf'
         });

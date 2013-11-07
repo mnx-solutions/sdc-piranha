@@ -53,7 +53,7 @@
                     </h4>
                         <div class="separation-container separation-container-top text-medium">
                             <div class="row-fluid text-medium" data-ng-repeat="entry in rssentries">
-                                <span class="pull-left span3 text-small text-gray">{{entry.publishedDate | date}}</span>
+                                <span class="pull-left span3 text-small text-gray">{{entry.publishedDate | dateTime}}</span>
                                 <span class="pull-left span8"><a target="_blank" href="{{entry.link}}">{{entry.title}}</a></span>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                 </h4>
                 <div class="separation-container separation-container-top text-medium">
                     <div class="row-fluid text-medium" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-                        <span class="pull-left span3 text-small text-gray">{{topic.created_at | date}}</span>
+                        <span class="pull-left span3 text-small text-gray">{{topic.created_at | dateTime}}</span>
                         <span class="pull-left span8"><a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.title}}</a></span>
 
                     </div>
