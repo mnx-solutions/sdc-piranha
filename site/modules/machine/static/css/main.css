@@ -727,10 +727,6 @@ ul.dropdown-menu{
 .accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i {
     width: 15px;
     height: 15px;
-    /*float: left;*/
-    /*margin-top: 18px;*/
-    /*position: relative;*/
-    /*left: 10px;*/
     background-repeat: no-repeat;
     background-image: url("../img/accord_i_plus.png") !important;
     padding-right: 25px;
@@ -739,10 +735,6 @@ ul.dropdown-menu{
 .accordion-toggle.active i {
     width: 15px;
     height: 15px;
-    /*float: left;*/
-    /*margin-top: 18px;*/
-    /*position: relative;*/
-    /*left: 10px;*/
     background-repeat: no-repeat;
     background-image: url("../img/accord_i_down.png") !important;
     padding-right: 25px;
@@ -1179,14 +1171,7 @@ ul.dropdown-menu{
     margin-left: 67px;
     height: 24px;
 }
-.no-breadcrumb{
-    padding-top: 40px;
-    border-bottom: 1px solid #ffffff;
-}
-.no-breadcrumb-line{
-    padding-top: 40px;
-    border-bottom: 1px solid #eeeeee;
-}
+
 .search-images{
     margin: 0!important;
     background-color: #eef0f2 !important;

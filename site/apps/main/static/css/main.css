@@ -1219,3 +1219,12 @@ iframe {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
 }
+.no-breadcrumb{
+    padding-top: 41px;
+    border-bottom: 1px solid #ffffff;
+}
+.no-breadcrumb-line{
+    padding-top: 41px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
