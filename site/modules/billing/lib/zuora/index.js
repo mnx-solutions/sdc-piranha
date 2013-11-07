@@ -11,6 +11,7 @@ function queryPDF (AccountId, id, callback) {
         'Id',
         'AccountId',
         'InvoiceNumber',
+        'InvoiceDate',
         'Body'].join(',');
     var query = 'SELECT ' + fieldList + ' FROM Invoice WHERE Id = \'' + id + '\' AND AccountId = \'' + AccountId + '\'';
 
