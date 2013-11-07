@@ -137,6 +137,8 @@
                         });
                 }
 
+                $scope.data.tags = $scope.tags || {};
+
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
                         var keys = Object.keys(datacenters);
@@ -179,7 +181,6 @@
             $scope.reconfigure = function () {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
-                $scope.selectedDataset = null;
                 $scope.selectedPackage = null;
                 $scope.selectedPackageInfo = null;
                 $scope.packageType = null;

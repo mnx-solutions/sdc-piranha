@@ -106,59 +106,7 @@
                             Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and
                             identify your instances.
                         </p>
-                        <form name="tagForm">
-                            <div class="controls">
-                                <div class="key key-width tags-title">Key</div>
-                                <div class="value value-width tags-title">Value</div>
-                            </div>
-                            <div class="" data-ng-click="editTag(key)" data-ng-repeat="(key, o) in tagcloud">
-                                <div class="" data-ng-show="!o.edit">
-                                    <div class="controls">
-                                        <div class="key key-width" data-ng-class="{error: o.conflict}">{{o.key}}</div>
-                                        <div class="value value-width" data-ng-class="{error: o.conflict}">{{o.val}}</div>
-                                        <div class="remove-icon delete pull-right tags-delete-pos"
-                                              data-ng-click="removeTag(key)"
-                                              data-ng-show="!tagsave">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="tag editable" data-ng-show="o.edit">
-                                    <div data-ng-class="{error: o.conflict}" class="tag row-fluid">
-
-
-                                    <div class="control-group">
-                                        <div class="dpl-inline">
-                                            <input type="text"
-                                                   placeholder="Key"
-                                                   data-translate="placeholder"
-                                                   data-ng-model="o.key"
-                                                   data-ng-required="key != tagnr"
-                                                   data-ng-disabled="tagsave"
-                                                   class="key-width">
-                                        </div>
-                                        <div class="dpl-inline">
-                                            <input type="text"
-                                                   placeholder="Value"
-                                                   data-translate="placeholder"
-                                                   data-ng-model="o.val"
-                                                   data-ng-required="key != tagnr"
-                                                   data-ng-disabled="tagsave"
-                                                   class="value-width"/>
-                                        </div>
-                                        <div class="spacer-input"></div>
-                                        <button class="btn light tag-add-btn"
-                                                data-ng-click="clickSaveTags(machine.id)"
-                                                data-translate
-                                                data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Add</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tags row-fluid">
-                                <div class="pull-right loading-small" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
-                            </div>
-                        </form>
+                        <div data-tags machineid="machineid"></div>
                     </div>
                 </div>
             </div>

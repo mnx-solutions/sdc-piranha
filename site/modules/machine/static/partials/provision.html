@@ -655,7 +655,7 @@
                                     <table>
                                         <td style="vertical-align: top;">
                                             <div class="selected-package-box-1">
-                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="" data-slide-to="0">Change</a>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc">{{selectedDataset.description}}</div>
 
@@ -745,27 +745,7 @@
                                                 </div>
                                                 <div><h2>Tags</h2></div>
                                                 <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
-                                                <div class="tags-input-box">
-                                                    <input type="text"
-                                                           placeholder="Key"
-                                                           data-translate="placeholder"
-                                                           data-ng-model="o.key"
-                                                           data-ng-required="key != tagnr"
-                                                           class="tags-inputs"/>
-                                                    <div class="spacer-input"></div>
-                                                    <input type="text"
-                                                           placeholder="Value"
-                                                           data-translate="placeholder"
-                                                           data-ng-model="o.val"
-                                                           data-ng-required="key != tagnr"
-                                                           class="tags-inputs"/>
-                                                    <div class="spacer-input"></div>
-                                                    <button class="btn addtag-btn"
-                                                            data-ng-click="addTag()"
-                                                            data-translate>Add</button>
-                                                </div>
-
-
+                                                <div class="create-tags" data-tags tags="tags"></div>
 
                                                 <button class="btn orange create-instance-btn-pos"
                                                         data-ng-disabled="provisionForm.$invalid"

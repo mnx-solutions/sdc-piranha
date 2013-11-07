@@ -1,0 +1,53 @@
+<div data-ng-form="tagForm">
+    <div class="controls" data-ng-show="internalTags.length > 1">
+        <div class="key key-width tags-title">Key</div>
+        <div class="value value-width tags-title">Value</div>
+    </div>
+    <div data-ng-click="editTag(tag)" data-ng-repeat="tag in internalTags">
+        <div data-ng-show="!tag.edit">
+            <div class="controls">
+                <div class="key key-width" data-ng-class="{error: tag.conflict}">{{tag.key}}</div>
+                <div class="value value-width" data-ng-class="{error: tag.conflict}">{{tag.val}}</div>
+                <div class="remove-icon delete pull-right tags-delete-pos"
+                     data-ng-click="removeTag(tag)"
+                     data-ng-show="!saving">
+                </div>
+            </div>
+        </div>
+
+        <div class="tag editable" data-ng-show="tag.edit">
+            <div data-ng-class="{error: tag.conflict}" class="tag row-fluid">
+
+
+                <div class="control-group">
+                    <div class="dpl-inline">
+                        <input type="text"
+                               placeholder="Key"
+                               data-translate="placeholder"
+                               data-ng-model="tag.key"
+                               data-ng-required="true"
+                               data-ng-disabled="saving"
+                               class="key-width">
+                    </div>
+                    <div class="dpl-inline">
+                        <input type="text"
+                               placeholder="Value"
+                               data-translate="placeholder"
+                               data-ng-model="tag.val"
+                               data-ng-required="true"
+                               data-ng-disabled="saving"
+                               class="value-width"/>
+                    </div>
+                    <div class="spacer-input"></div>
+                    <button class="btn light tag-add-btn"
+                            data-ng-click="addTag()"
+                            data-translate
+                            data-ng-disabled="!tag.val || !tag.key || saving">{{tag.isNew && 'Add' || 'Save'}}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tags row-fluid">
+        <div class="pull-right loading-small" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="saving"></div>
+    </div>
+</div>
