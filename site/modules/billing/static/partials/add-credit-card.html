@@ -4,7 +4,7 @@
         <table>
             <tbody>
                 <tr>
-                    <td><span data-translate>Card number</span><span class="orange-asterix"> *</span></td>
+                    <td class="fixed-width-td"><span data-translate>Card number</span><span class="orange-asterix"> *</span></td>
                     <td>
                         <div class="controls">
                         <input type="text"
@@ -183,7 +183,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td>
+                    <td class="fixed-width-td">
                         <span data-translate>Address line 1</span><span class="orange-asterix"> *</span>
                     </td>
                     <td>
@@ -395,11 +395,11 @@
                 </tr>
             </tbody>
         </table>
-        <legend data-ng-show="currentStep" data-translate>Promotional Code</legend>
-        <table data-ng-show="currentStep">
+        <legend data-ng-show="currentStep && features.promocode != 'disabled'" data-translate>Promotional Code</legend>
+        <table data-ng-show="currentStep && features.promocode != 'disabled'">
             <tbody>
                 <tr>
-                    <td>
+                    <td class="fixed-width-td">
                         <span data-translate>Enter Code</span>
                     </td>
                     <td>

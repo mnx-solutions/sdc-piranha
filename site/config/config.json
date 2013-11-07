@@ -122,5 +122,6 @@
   , "imageCreate": "disabled"
   , "firewall": "disabled"
   , "elb": "disabled"
+  , "promocode": "disabled"
   }
 }
