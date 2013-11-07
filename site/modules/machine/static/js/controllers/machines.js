@@ -14,8 +14,9 @@
         'Package',
         'localization',
         'util',
+        'notification',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, notification) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -44,6 +45,12 @@
                 if(final) {
                     $q.when($scope.packages, function () {
                         $scope.loading = false;
+                        $scope.machines.some(function(machine) {
+                            if(machine.maintenanceStartTime) {
+                                notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details. Please contact support if you have any questions or concerns.');
+                                return true;
+                            }
+                        });
                     });
                 }
             });
