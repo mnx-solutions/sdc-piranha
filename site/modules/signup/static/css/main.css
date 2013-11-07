@@ -346,7 +346,6 @@ body{
     position: relative;
     width: 18px;
     height: 16px;
-    float: left;
 }
 .table td .alert-icon span{
     position: absolute;
