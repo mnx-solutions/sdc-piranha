@@ -989,11 +989,19 @@ ul.dropdown-menu{
     border-radius: 0;
 }
 .value-width{
-    min-width: 210px;
-    max-width: 210px;
+    min-width: 202px;
+    max-width: 202px;
     display: inline-block;
     overflow: hidden;
     border-radius: 0;
+}
+.create-tags .value-width{
+    min-width: 162px;
+    max-width: 162px;
+}
+.create-tags .key-width{
+    min-width: 120px;
+    max-width: 120px;
 }
 .tags-title{
     color: #5D80A7;
@@ -1007,7 +1015,7 @@ ul.dropdown-menu{
     height: 31px;
     padding-bottom: 7px;
     padding-top: 5px;
-    max-width: 54px;
+    max-width: 62px;
 }
 .controls{
     width: 100%;
