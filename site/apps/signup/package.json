@@ -14,7 +14,8 @@
             "account",
             "tfa",
             "maxmind",
-            "feature-flags"
+            "feature-flags",
+            "dialog"
         ]
 	}
 }

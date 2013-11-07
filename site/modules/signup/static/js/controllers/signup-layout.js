@@ -3,8 +3,8 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track',
-            function ($scope, requestContext, $location, $cookies, Process, $http, $$track) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track','PopupDialog',
+            function ($scope, requestContext, $location, $cookies, Process, $http, $$track,popupDialog) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
                 $scope.stepNames = {
@@ -81,12 +81,16 @@
                 $scope.nextStep();
 
                 $scope.signOut = function() {
-                    var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
-                    if(msg){
+                    popupDialog.confirm("Warning",'Clicking OK will cancel the sign-up to Joyent Cloud',function(){
                         $$track.event('Signup', 'Cancel Signup');
                         window.location = '/landing/forgetToken';
-                    }
-                    return false;
+                    });
+//                    var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
+//                    if(msg){
+//                        $$track.event('Signup', 'Cancel Signup');
+//                        window.location = '/landing/forgetToken';
+//                    }
+//                    return false;
                 };
             }
         ]);

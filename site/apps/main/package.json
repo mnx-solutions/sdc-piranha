@@ -22,7 +22,8 @@
             "timeout",
             "feature-flags",
 			"maxmind",
-            "elb"
+            "elb",
+            "dialog"
         ],
 		"auth": true,
         "error": true,
