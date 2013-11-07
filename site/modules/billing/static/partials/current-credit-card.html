@@ -1,14 +1,24 @@
 <div class="{{summary && ' ' || '' }}" data-ng-show="creditCard">
-		<div class="{{summary && 'text-medium' || 'separation-container' }}" data-ng-show="creditCard.cardNumber">
-			<strong>{{creditCard.cardHolderInfo.cardHolderName}}</strong><br />
-			Card type: {{creditCard.cardType}}<br />
-			Card No: {{creditCard.cardNumber}}<br />
-			Exp. Date: {{creditCard.expirationMonth}}/{{creditCard.expirationYear}}<br />
-		</div>
-
-        <div data-ng-show="!creditCard.cardNumber" data-translate>
-            Alternative Payment Method on File
-        </div>
-	<!-- {{creditCardJSON}} -->
+    <div class="{{summary && 'text-medium' || 'separation-container' }}" data-ng-show="creditCard.cardNumber">
+        <p class="field">
+            <span class="name" data-translate>Card type</span>
+            <span class="value">{{creditCard.cardType}}</span>
+        </p>
+        <p class="field">
+            <span class="name" data-translate>Card No</span>
+            <span class="value">{{creditCard.cardNumber}}</span>
+        </p>
+        <p class="field">
+            <span class="name" data-translate>Exp. Date</span>
+            <span class="value">{{creditCard.expirationMonth}}/{{creditCard.expirationYear}}</span>
+        </p>
+        <p class="field">
+            <span class="name" >Value</span>
+            <span class="value">{{creditCard.cardHolderInfo.cardHolderName}}</span>
+        </p>
+    </div>
+    <div data-ng-show="!creditCard.cardNumber" class="name" data-translate>
+        Alternative Payment Method on File
+    </div>
+    <!-- {{creditCardJSON}} -->
 </div>
-

@@ -81,16 +81,11 @@
                 $scope.nextStep();
 
                 $scope.signOut = function() {
-                    popupDialog.confirm("Warning",'Clicking OK will cancel the sign-up to Joyent Cloud',function(){
+                    popupDialog.confirm("Warning",'Clicking Yes will cancel the sign-up to Joyent Cloud',function(){
                         $$track.event('Signup', 'Cancel Signup');
                         window.location = '/landing/forgetToken';
                     });
-//                    var msg = confirm('Clicking OK will cancel the sign-up to Joyent Cloud');
-//                    if(msg){
-//                        $$track.event('Signup', 'Cancel Signup');
-//                        window.location = '/landing/forgetToken';
-//                    }
-//                    return false;
+                   return false;
                 };
             }
         ]);

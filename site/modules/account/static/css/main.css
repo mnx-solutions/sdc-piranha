@@ -22,15 +22,18 @@ select.date-month, select.date-year {
 
 .account .field {
     margin-bottom: 2px;
+    font-size: 16px;
+    height: 34px;
 }
 
 .account .field .name {
-     width: 90px;
+     width: 120px;
+     font-weight: 300;
      display: inline-block;
 }
 
 .account .field .value {
-    padding: 0px;
+    padding: 0;
     float: none;
     text-decoration: none;
     border: none;
@@ -132,4 +135,228 @@ select.date-month, select.date-year {
     width:300px;
     float:left;
     margin-top: 20px;
+}
+.container-account{
+    padding-left: 48px;
+}
+.account legend{
+    border-bottom: 0;
+    font-size: 19px;
+    line-height: 18px;
+    color: #333;
+    font-weight: 500;
+    letter-spacing: 0.6px;
+    margin-left: -2px;
+}
+.account fieldset{
+    margin-top: -15px;
+}
+.account .line{
+    border-bottom: 1px solid #cccccc;
+    width: 723px;
+    margin-left: -2px;
+    padding-bottom: 2px;
+}
+.account .fieldset-spacer{
+    padding-top: 25px;
+}
+
+.accordion-package-title{
+    height: 40px;
+    width: 681px;
+    border: 1px solid #dadcdd;
+    border-bottom: none;
+    margin-left: -2px;
+    padding-left: 40px;
+}
+
+.accordion-package-title span{
+    padding-top: 10px;
+}
+
+#accordion3{
+    margin-left: -11px;
+    width: 732px;
+}
+#accordion3 .accordion-group {
+    min-height: 50px;
+}
+#accordion3 .accordion-inner{
+    padding: 0;
+    padding-bottom: 25px;
+    border: 1px solid #dadcdd;
+    margin-left: 18px;
+    margin-top: 10px;
+    border-top: 0;
+    background-color: #f3f7fb;
+}
+
+#accordion3 .accordion-inner span{
+    font-size: 15px;
+    color: #333;
+    font-weight: 300;
+    height: 50px;
+    width: 100px;
+    display: inline-block;
+    padding-right: 10px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#accordion3 .accordion-inner span p{
+    display: inline-block;
+    font-size: 15px;
+    color: #333333;
+    text-align: left;
+    vertical-align: top;
+}
+
+#accordion3 .accordion-heading{
+    height: 50px;
+    background-color: white;
+    border: 1px solid #dadcdd;
+    margin-left: 9px;
+}
+#accordion3 .accordion-heading .accordion-toggle.active {
+    background-color: #f3f7fb !important;
+    border-bottom: 0;
+}
+
+#accordion3 .accordion-heading .accordion-toggle.active.collapsed {
+    background-color: white !important;
+    border-bottom: 1px solid #dadcdd;
+}
+
+#accordion3 .accordion-toggle.active .small-btn{
+    display: block !important;
+}
+#accordion3 .accordion-toggle.active.collapsed .small-btn{
+    display: none !important;
+}
+
+#accordion3 .accordion-heading .accordion-toggle {
+    padding: 0;
+    padding-left: 10px;
+}
+#accordion3 .accordion-group {
+    border: 0 none;
+    margin-bottom: 0 !important;
+    margin-top: -1px;
+}
+#accordion3 .accordion-body{
+    margin-top: -11px;
+    margin-left: -9px;
+}
+#accordion3 .accordion-heading a {
+    color: #333333;
+    font-size: 15px;
+    text-decoration: none;
+    line-height: 50px;
+    font-weight: 500;
+}
+
+#accordion3 .key-info:hover{
+    background-color: #f6f7f8 !important;
+}
+
+#accordion3 .key-info{
+    margin-left: 3px;
+}
+.key-name{
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+}
+.key-hash{
+    font-weight: 300;
+    display: inline-block;
+}
+.accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i {
+    width: 15px;
+    height: 15px;
+    background-repeat: no-repeat;
+    background-image: url("../img/accord_i_plus.png") !important;
+    padding-right: 27px;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+.accordion-toggle.active i {
+    width: 15px;
+    height: 15px;
+    background-repeat: no-repeat;
+    background-image: url("../img/accord_i_down.png") !important;
+    padding-right: 27px;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+.key-info-content{
+    padding-left: 40px;
+    padding-top: 15px;
+}
+.txt-name span{
+    font-weight: 500 !important;
+    font-size: 16px !important;
+}
+.txt-value{
+    font-weight: 300 !important;
+    font-size: 16px !important;
+    border: 1px solid #e7ebee !important;
+    background-color: #fafcfd !important;
+    padding: 7px 15px !important;
+    height: 20px !important;
+    width: 515px !important;
+    vertical-align: top !important;
+    margin-top: -6px !important;
+}
+.ssh-key-value{
+    font-size: 16px !important;
+    border: 1px solid #bac7cd !important;
+    background-color: #fafcfd !important;
+    padding: 7px 15px !important;
+    height: 170px !important;
+    width: 515px !important;
+    vertical-align: top !important;
+    word-wrap: break-word !important;
+}
+.small-btn {
+    width: 56px!important;
+    height: 21px;
+    color: #f60;
+    background-color: #ebebeb;
+    padding: 0;
+    font-size: 12px!important;
+    font-weight: 500!important;
+    text-shadow: none;
+    border: 0;
+    margin-left: 10px;
+    margin-top: -3px;
+    display: none;
+}
+.inline-pos{
+    display: inline-block;
+}
+.btn.light {
+    color: #f60;
+    text-shadow: none;
+    background-color: #f3f3f3;
+    font-size: 16px;
+}
+.edit-btn {
+    width: 56px!important;
+    height: 21px;
+    color: #f60;
+    background-color: #ebebeb;
+    font-size: 12px!important;
+    font-weight: 500!important;
+    text-shadow: none;
+    border: 0;
+    margin-left: 10px;
+    text-decoration: none;
+    vertical-align: middle;
+    text-align: left;
+    padding: 2px 6px;
+}
+.edit-btn:hover {
+    background-color: #f60 !important;
+    color: white !important;
 }
