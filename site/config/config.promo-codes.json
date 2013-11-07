@@ -1,10 +1,6 @@
 {
-    "EVEREST": {
-        "ratePlanName": "100% Account Discount - 3 Months",
+    "JOYENT2FREE": {
+        "ratePlanName": "Free Trial",
         "expired": false
-    },
-    "TANKIST": {
-        "ratePlanId": "SLA Credit",
-        "expired": true
     }
 }

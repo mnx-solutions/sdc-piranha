@@ -264,7 +264,7 @@ function composeZuoraAccount(call, cb) {
                     ratePlans[ratePlan.name] = ratePlan.id;
                 });
 
-                if (call.data.promoCode && config.ns['promo-codes']) {
+                if (config.features.promocode !== 'disabled' && call.data.promoCode && config.ns['promo-codes']) {
                     var code = call.data.promoCode.toUpperCase();
                     var promo = config.ns['promo-codes'][code];
                     if (!promo) {
