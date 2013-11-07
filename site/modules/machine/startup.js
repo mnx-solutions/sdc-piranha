@@ -573,6 +573,12 @@ module.exports = function execute(scope) {
                 networks: call.data.networks
             };
 
+            if(call.data.tags) {
+                for (var tagKey in call.data.tags) {
+                    options['tag.' + tagKey] = call.data.tags[tagKey];
+                }
+            }
+
             call.log.info({options: options}, 'Creating machine %s', call.data.name);
             call.getImmediate(false);
 

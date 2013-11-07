@@ -317,8 +317,22 @@ body{
     font-weight: 300;
     margin-left: 15px;
 }
+.info span{
+    color: green;
+    font-size: 14px;
+    font-weight: 300;
+    margin-left: 17px;
+}
 .alert-icon{
     background-image: url("../img/alert-icon.png");
+    background-repeat: no-repeat;
+    margin-left: 5px;
+    background-position: left;
+    /*width: 18px;*/
+    /*height: 16px;*/
+}
+.info-icon{
+    background-image: url("../img/info-icon.png");
     background-repeat: no-repeat;
     margin-left: 5px;
     background-position: left;
@@ -332,7 +346,6 @@ body{
     position: relative;
     width: 18px;
     height: 16px;
-    float: left;
 }
 .table td .alert-icon span{
     position: absolute;

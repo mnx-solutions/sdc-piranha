@@ -26,7 +26,7 @@
             $scope.account     = Account.getAccount();
             $scope.balancers = elbService.getBalancers();
             elbService.getController().then(function (isEnabled) {
-                $scope.elbEnabledHref = isEnabled ? '#!/elb/edit/' : '#!/elb/';
+                $scope.elbEnabled = isEnabled;
             });
 
 //                $scope.forums      = Zendesk.getForumsList();

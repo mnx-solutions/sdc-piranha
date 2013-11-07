@@ -50,10 +50,13 @@
                         <h4>Load Balancers</h4>
 
                         <div class="details">
-                            <div>
-                                <p class="number">{{balancers.length}}</p>
+                            <div ng-show="elbEnabled">
+                                <p class="number">{{balancers.length || 0}}</p>
 
                                 <p class="desc"> configured</p>
+                            </div>
+                            <div ng-hide="elbEnabled">
+                                <p class="desc">not available</p>
                             </div>
                         </div>
                         <a class="more" href="#!/elb/list">
@@ -64,7 +67,7 @@
                         </a>
                     </div>
                     <div class="dashboard-stat-btn">
-                        <a class="more" ng-href="{{elbEnabledHref}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
+                        <a class="more" ng-href="{{(elbEnabled && '#!/elb/edit/') || '#!/elb/'}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
                     </div>
                 </div>
                 <div class="pull-left padding_left10">
