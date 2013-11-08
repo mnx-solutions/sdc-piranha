@@ -43,15 +43,15 @@ app.get('/version', function (req, res, next) {
     var ret = {};
     version(function (err, gitInfo) {
 
-        if(err) {
+        if (err) {
             res.send(500, err);
             return;
         }
 
-        if(features.fullVersion != 'enabled') {
+        if (features.fullVersion !== 'enabled') {
             ret = {
                 'git':{
-                    'commit_id': gitInfo.commitId
+                    'commitId': gitInfo.commitId
                 }
             }
         } else {
