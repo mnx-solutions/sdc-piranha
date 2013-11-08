@@ -19,7 +19,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'account.payment'
         });
 
-    if(window.JP.get('features').invoices !== 'disabled') {
+    var features = window.JP.get('features');
+    if(features && features.invoices !== 'disabled') {
         routeProvider.when('/account/invoices', {
             title: 'Invoices',
             action: 'account.invoices'
