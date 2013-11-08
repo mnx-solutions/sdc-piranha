@@ -208,3 +208,23 @@ input.ng-invalid-port{
 .port-m{
     margin-left: 3px;
 }
+
+.instance_btn_icon{
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-top: 0;
+    position: relative;
+    left: 3px;
+    background-image: url("../img/plus_icon.png");
+    background-repeat: no-repeat;
+}
+
+input {
+    border-radius: 0px;
+}
+
+.clear-link {
+    color: #333333;
+    text-decoration: none;
+}

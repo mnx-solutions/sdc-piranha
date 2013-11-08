@@ -989,6 +989,13 @@ a .feature1 {
     color: #fff !important;
 }
 
+.btn.light {
+    color: #ff6600;
+    text-shadow: none;
+    background-color: #f3f3f3;
+    font-size: 16px;
+}
+
 .btn_stat{
     width: 240px !important;
     height: 55px;
@@ -1227,4 +1234,63 @@ iframe {
     padding-top: 41px;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
+}
+
+.table-bordered {
+    border-collapse: separate;
+    border-left: 0 none !important;
+    border-right: 0 none !important;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0 !important;
+}
+table.table {
+    clear: both;
+    margin-bottom: 6px !important;
+    max-width: none !important;
+    font-size: 16px;
+    overflow: auto;
+}
+.table-bordered th, .table-bordered td {
+    padding-left: 15px;
+    border-left: 0 none !important;
+    border-right: 0 none !important;
+}
+.table th, .table td {
+    padding-right: 25px;
+    line-height: 20px;
+    text-align: left;
+    vertical-align: middle;
+    border-top: none;
+    white-space: nowrap;
+}
+.table td a{
+    color: #375675;
+    text-decoration: none;
+}
+.table .checkbox{
+    padding-left: 2px;
+}
+.table .table-title{
+    color: #666666;
+    font-size: 16px;
+}
+.table .table-title.active{
+    color: #000000;
+}
+.table > thead th{
+    height: 37px;
+    padding-top: 12px;
+    padding-bottom: 2px;
+}
+.table > tbody td{
+    height: 38px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
+    background-color: #f4f4f4;
+}
+.table-hover tbody tr:hover > td, .table-hover tbody tr:hover > th {
+    background-color: #f9f9f9;
 }

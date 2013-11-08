@@ -14,8 +14,8 @@
             </li>
         </ul>
         <div class="page-header">
-            <h1 class="pull-left" data-ng-show="balancerId" data-translate>Edit Load Balancer</h1>
-            <h1 class="pull-left" data-ng-hide="balancerId" data-translate>Create Load Balancer</h1>
+            <h3 data-ng-show="balancerId" class="page-title" data-translate>Edit Load Balancer</h3>
+            <h3 data-ng-hide="balancerId" class="page-title" data-translate>Create Load Balancer</h3>
             <div class="clearfix"></div>
         </div>
         <div class="loading-large" data-ng-hide="allLoading"></div>
@@ -131,9 +131,9 @@
                         <th class="table-title sortable">
                             <div class="block" data-translate>Data Center</div>
                         </th>
-                        <th class="table-title sortable">
+                        <!--th class="table-title sortable">
                             <div class="block" data-translate>Creation Date</div>
-                        </th>
+                        </th-->
                         <th class="table-title sortable">
                             <div class="block" data-translate>Load Balancer</div>
                         </th>
@@ -146,7 +146,7 @@
                         <td title="{{machine.name}}"><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a>
                         </td>
                         <td title="{{machine.datacenter}}">{{machine.datacenter}}</td>
-                        <td title="{{machine.created | dateTime:'YYYY-MM-DD'}}">{{machine.created | dateTime:'YYYY-MM-DD'}}</td>
+                        <!--td title="{{machine.created | dateTime:'YYYY-MM-DD'}}">{{machine.created | dateTime:'YYYY-MM-DD'}}</td-->
                         <td>
                             <span title="{{balancer.name}}" data-ng-repeat="balancer in machine.balancers">{{balancer.name}}<br></span>
                         </td>
@@ -156,14 +156,14 @@
             </div>
         </div>
 
-    <span class="span12" data-ng-show="allLoading">
+    <span data-ng-show="allLoading">
         <p class="logo-riverbed pull-left" data-translate>Powered by</p>
         <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
-                class="btn btn-joyent-blue pull-right edit-btn-pos" data-translate="">
+                class="btn light pull-right edit-btn-pos" data-translate="">
             <span class="ng-scope" data-translate>Save</span>
         </button>
         <button data-ng-show="balancerId" data-ng-disabled="!editForm.$valid" data-ng-click="delete()"
-                class="btn btn-joyent-blue pull-right delete-btn-pos" data-translate="">
+                class="btn light pull-right delete-btn-pos" data-translate="">
             <span class="ng-scope" data-translate>Delete</span>
         </button>
         <div class="pull-right loading-medium load-pos" data-ng-show="saving"></div>
