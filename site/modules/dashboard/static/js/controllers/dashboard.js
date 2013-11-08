@@ -81,7 +81,7 @@
 
 
                 if(maintenanceFlag) {
-                    notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details. Please contact support if you have any questions or concerns.');
+                    notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details.<br>Please contact support if you have any questions or concerns.');
                 }
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
