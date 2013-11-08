@@ -42,14 +42,6 @@ module.exports = function (grunt) {
 
             protractor_install: {
                 command: 'node ./node_modules/protractor/bin/install_selenium_standalone'
-            },
-
-            testserver: {
-                command: 'node index.js',
-                options: {
-                    stdout: false,
-                    async: true
-                }
             }
         },
 
@@ -155,28 +147,15 @@ module.exports = function (grunt) {
 
         karma: {
             unit: {
-                configFile: './test/karma-unit.conf.js',
+                configFile: './test/karma.conf.js',
                 autoWatch: false,
                 singleRun: true
             },
             unit_auto: {
-                configFile: './test/karma-unit.conf.js',
+                configFile: './test/karma.conf.js',
                 autoWatch: true,
                 singleRun: false
-            },
-            unit_coverage: {
-                configFile: './test/karma-unit.conf.js',
-                autoWatch: false,
-                singleRun: true,
-                reporters: ['progress', 'coverage'],
-                preprocessors: {
-                    'app/scripts/*.js': ['coverage']
-                },
-                coverageReporter: {
-                    type : 'html',
-                    dir : 'coverage/'
-                }
-            },
+            }
         },
 
         protractor: {
@@ -380,7 +359,7 @@ module.exports = function (grunt) {
     grunt.registerTask('precommit', ['jsLint:diff']);
     grunt.registerTask('prepush', [ 'jsLint', 'jsStyle', 'test' ]);
 
-    grunt.registerTask('install', [ 'shell:protractor_install' ]);
+    grunt.registerTask('install:dev', [ 'shell:protractor_install' ]);
 
     // Single run tests
     grunt.registerTask('test', [ 'test:unit', 'test:e2e' ]);

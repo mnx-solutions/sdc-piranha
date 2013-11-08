@@ -5,7 +5,7 @@ module.exports = function (config) {
 
         files: [
             "https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js",
-            "../site/static/vendor/angular/angular.js",
+            "site/static/vendor/angular/angular.js",
             "site/static/vendor/angular/angular-resource.js",
             "site/static/vendor/angular/angular-cookies.js",
             "site/static/vendor/angular/angular-mocks.js",
