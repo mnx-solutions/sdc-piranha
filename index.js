@@ -1,6 +1,5 @@
 'use strict';
 
-var exec = require('child_process').exec;
 //var agent = require('webkit-devtools-agent');
 var config = require('easy-config');
 var express = require('express');
@@ -10,31 +9,11 @@ var util = require('util');
 var utils = require('./lib/utils');
 var redirect = require('./lib/redirect');
 var SmartCloud = require('./lib/smartcloud');
+var version = require('./lib/version');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
 var features = config.features;
-var git_commit_id = null;
-var git_branch = null;
-var git_description = null;
-
-exec('git rev-parse --abbrev-ref HEAD', function (error, stdout) {
-    if(stdout && typeof stdout === 'string') {
-        git_branch = stdout.split("\n")[0];
-    }
-});
-
-exec('git rev-parse HEAD', function (error, stdout) {
-    if(stdout && typeof stdout === 'string') {
-        git_commit_id = stdout.split("\n")[0];
-    }
-});
-
-exec('git describe', function (error, stdout) {
-    if(stdout && typeof stdout === 'string') {
-        git_description = stdout.split("\n")[0];
-    }
-});
 
 app.use(app.router);
 app.use(express.urlencoded());
@@ -59,27 +38,32 @@ app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
 });
 
-app.get('/version', function(req, res, next) {
+app.get('/version', function (req, res, next) {
 
     var ret = {};
-    if(features.fullVersion != 'enabled') {
-        ret = {
-            "git":{
-                "commit_id": git_commit_id
-            }
-        }
-    } else {
-        ret = {
-            "features": features,
-            "git": {
-                "commit_id": git_commit_id,
-                "branch": git_branch,
-                "description": git_description
-            }
-        }
-    }
+    version(function (err, gitInfo) {
 
-    res.send(ret);
+        if(err) {
+            res.send(500, err);
+            return;
+        }
+
+        if(features.fullVersion != 'enabled') {
+            ret = {
+                'git':{
+                    'commit_id': gitInfo.commitId
+                }
+            }
+        } else {
+            ret = {
+                'features': features,
+                'git': gitInfo
+            }
+        }
+
+        res.send(ret);
+
+    });
 });
 
 app.get('/old-browser', require('./lib/old-browser'));
