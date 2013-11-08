@@ -18,8 +18,8 @@ var git_commit_id = null;
 var git_branch = null;
 var git_description = null;
 
-exec('git branch', function (error, stdout) {
-    git_branch = stdout.split("\n")[0].substr(2);
+exec('git rev-parse --abbrev-ref HEAD', function (error, stdout) {
+    git_branch = stdout.split("\n")[0];
 });
 
 exec('git rev-parse HEAD', function (error, stdout) {
