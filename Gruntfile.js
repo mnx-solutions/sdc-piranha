@@ -375,11 +375,10 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.registerTask('default', ['jsLint', 'jsStyle', 'test']);
-    grunt.registerTask('check', ['jsLint', 'jsStyle']);
-
+    grunt.registerTask('default', [ 'jsLint', 'jsStyle', 'test' ]);
+    grunt.registerTask('check', [ 'jsLint', 'jsStyle' ]);
     grunt.registerTask('precommit', ['jsLint:diff']);
-    grunt.registerTask('prepush', ['jsLint', 'jsStyle', 'test']);
+    grunt.registerTask('prepush', [ 'jsLint', 'jsStyle', 'test' ]);
 
     grunt.registerTask('install', [ 'shell:protractor_install' ]);
 
