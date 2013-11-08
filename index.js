@@ -19,15 +19,21 @@ var git_branch = null;
 var git_description = null;
 
 exec('git rev-parse --abbrev-ref HEAD', function (error, stdout) {
-    git_branch = stdout.split("\n")[0];
+    if(stdout && typeof stdout === 'string') {
+        git_branch = stdout.split("\n")[0];
+    }
 });
 
 exec('git rev-parse HEAD', function (error, stdout) {
-    git_commit_id = stdout.split("\n")[0];
+    if(stdout && typeof stdout === 'string') {
+        git_commit_id = stdout.split("\n")[0];
+    }
 });
 
 exec('git describe', function (error, stdout) {
-    git_description = stdout.split("\n")[0];
+    if(stdout && typeof stdout === 'string') {
+        git_description = stdout.split("\n")[0];
+    }
 });
 
 app.use(app.router);
