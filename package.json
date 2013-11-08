@@ -50,7 +50,11 @@
     "karma": "~0.10.4",
     "karma-ng-scenario": "~0.1.0",
     "grunt-karma": "~0.6.2",
-    "karma-chrome-launcher": "~0.1.0"
+    "karma-chrome-launcher": "~0.1.0",
+    "protractor": "~0.12.0",
+    "grunt-protractor-runner": "~0.1.7",
+    "grunt-shell-spawn": "~0.3.0",
+    "grunt-contrib-watch": "~0.5.3"
   },
   "optionalDependencies": {},
   "engines": {
