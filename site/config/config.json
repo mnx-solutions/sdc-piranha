@@ -115,7 +115,8 @@
   , "riskScoreFraudLimit": 60
   }
 , "features": {
-    "instanceRename": "enabled"
+    "fullVersion": "enabled"
+  , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
   , "invoices": "enabled"
   , "imageUse": "enable"

@@ -1,5 +1,6 @@
 'use strict';
 
+var exec = require('child_process').exec;
 //var agent = require('webkit-devtools-agent');
 var config = require('easy-config');
 var express = require('express');
@@ -11,6 +12,23 @@ var redirect = require('./lib/redirect');
 var SmartCloud = require('./lib/smartcloud');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
+
+var features = config.features;
+var git_commit_id = null;
+var git_branch = null;
+var git_description = null;
+
+exec('git branch', function (error, stdout) {
+    git_branch = stdout.split("\n")[0].substr(2);
+});
+
+exec('git rev-parse HEAD', function (error, stdout) {
+    git_commit_id = stdout.split("\n")[0];
+});
+
+exec('git describe', function (error, stdout) {
+    git_description = stdout.split("\n")[0];
+});
 
 app.use(app.router);
 app.use(express.urlencoded());
@@ -33,6 +51,29 @@ app.use(express.session({
 
 app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
+});
+
+app.get('/version', function(req, res, next) {
+
+    var ret = {};
+    if(features.fullVersion != 'enabled') {
+        ret = {
+            "git":{
+                "commit_id": git_commit_id
+            }
+        }
+    } else {
+        var git = {
+            "git": {
+                "commit_id": git_commit_id,
+                "branch": git_branch,
+                "description": git_description
+            }
+        }
+        ret = utils.extend(features, git);
+    }
+
+    res.send(ret);
 });
 
 app.get('/old-browser', require('./lib/old-browser'));
