@@ -69,14 +69,14 @@ app.get('/version', function(req, res, next) {
             }
         }
     } else {
-        var git = {
+        ret = {
+            "features": features,
             "git": {
                 "commit_id": git_commit_id,
                 "branch": git_branch,
                 "description": git_description
             }
         }
-        ret = utils.extend(features, git);
     }
 
     res.send(ret);
