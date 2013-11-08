@@ -74,7 +74,7 @@
                         othercount += 1;
                     }
 
-                    if(machine.maintenanceStartTime) {
+                    if(machine.maintenanceStartTime && !machine.compute_node) {
                         maintenanceFlag = true;
                     }
                 });
