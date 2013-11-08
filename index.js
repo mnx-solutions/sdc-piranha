@@ -9,8 +9,11 @@ var util = require('util');
 var utils = require('./lib/utils');
 var redirect = require('./lib/redirect');
 var SmartCloud = require('./lib/smartcloud');
+var version = require('./lib/version');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
+
+var features = config.features;
 
 app.use(app.router);
 app.use(express.urlencoded());
@@ -33,6 +36,34 @@ app.use(express.session({
 
 app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
+});
+
+app.get('/version', function (req, res, next) {
+
+    var ret = {};
+    version(function (err, gitInfo) {
+
+        if (err) {
+            res.send(500, err);
+            return;
+        }
+
+        if (features.fullVersion !== 'enabled') {
+            ret = {
+                'git':{
+                    'commitId': gitInfo.commitId
+                }
+            }
+        } else {
+            ret = {
+                'features': features,
+                'git': gitInfo
+            }
+        }
+
+        res.send(ret);
+
+    });
 });
 
 app.get('/old-browser', require('./lib/old-browser'));
