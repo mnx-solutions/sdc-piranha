@@ -90,6 +90,20 @@
             }
         }
 
+        service.getSimpleImgList = function(cb) {
+            serverTab.call({
+                name: 'ImagesSimpleList',
+                done: function (err, job) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+
+                    cb(null, job.__read()['images']);
+                }
+            });
+        };
+
         service.updateMachines = function () {
             if (!machines.job || machines.job.finished) {
                 machines.list.final = false;

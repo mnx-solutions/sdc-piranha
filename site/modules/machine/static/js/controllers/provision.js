@@ -45,6 +45,15 @@
             $scope.showFinishConfiguration = false;
             $scope.visibilityFilter = 'Public';
 
+            Machine.getSimpleImgList(function (err, data) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+
+                $scope.simpleImages = data;
+            });
+
             $q.all([
                     $q.when($scope.keys),
                     $q.when($scope.datacenters),
@@ -105,38 +114,43 @@
                 $scope.selectNetwork(id);
             };
 
-            $scope.clickProvision = function () {
-                function provision() {
-                    util.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: Create Instance'
-                        ),
-                        localization.translate(
-                            $scope,
-                            'machine',
-                            'Billing will start once this instance is created'
-                        ), function () {
-                            // add networks to data
-                            $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                            $scope.retinfo = Machine.provisionMachine($scope.data);
-                            $scope.retinfo.done(function(err, job) {
-                                var newMachine = job.__read();
-                                if(newMachine.id) {
-                                    var listMachines = Machine.machine();
-                                    $q.when(listMachines, function() {
-                                        if(listMachines.length == 1) {
-                                            $$track.marketo_machine_provision($scope.account);
-                                        }
-                                    });
-                                }
-                            });
-
-                            $location.path('/compute');
+            function provision(machine) {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Create Instance'
+                    ),
+                    localization.translate(
+                        $scope,
+                        'machine',
+                        'Billing will start once this instance is created'
+                    ), function () {
+                        if (machine && !machine.dataset) {
+                            util.message('Error', 'Instance not found', function () {});
+                            return;
+                        }
+                        $scope.retinfo = Machine.provisionMachine( machine || $scope.data);
+                        $scope.retinfo.done(function(err, job) {
+                            var newMachine = job.__read();
+                            if(newMachine.id) {
+                                var listMachines = Machine.machine();
+                                $q.when(listMachines, function() {
+                                    if(listMachines.length == 1) {
+                                        $$track.marketo_machine_provision($scope.account);
+                                    }
+                                });
+                            }
                         });
-                }
 
+                        $location.path('/compute');
+                    });
+            }
+
+            $scope.clickProvision = function () {
+
+                // add networks to data
+                $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
                 $scope.data.tags = $scope.tags || {};
 
                 if (!$scope.data.datacenter) {
@@ -153,6 +167,10 @@
                     provision();
                 }
 
+            };
+
+            $scope.createSimple = function (data) {
+                provision(data);
             };
 
             $scope.selectDatacenter = function (name) {

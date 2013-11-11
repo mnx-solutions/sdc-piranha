@@ -966,9 +966,10 @@ ul.dropdown-menu{
 .basic-instance-box{
     width: 240px;
     height: 206px;
+    position: relative;
+    margin: 0 10px 10px 0;
     border-radius: 3px;
     float: left;
-    margin-right: 10px;
     background-color: #eef0f2;
 }
 .smartos-logo {
@@ -1048,19 +1049,24 @@ ul.dropdown-menu{
     font-weight: bold;
     line-height: 10px;
 }
-.basic-instance-title span p{
+.basic-instance-title span p,
+.basic-instance-description{
     font-size: 12px;
     font-weight: normal;
     line-height: 16px;
+}
+.basic-instance-description{
+    padding: 0 50px 0 20px;
 }
 .basic-instance-line{
     /*border-bottom: 1px solid #d6d8d9;*/
     margin: 18px 20px 0 20px;
 }
 .basic-instance-btn.btn_s{
-    float: right;
-    margin-top: -22px;
-    margin-left: 30px;
+    position: absolute;
+    right: -20px;
+    margin-top: 0;
+    top: -2px;
 }
 .basic-instance-btn{
     width: 65px !important;
@@ -1076,7 +1082,10 @@ ul.dropdown-menu{
     /*background-color: #FF6600;*/
 /*}*/
 .basic-instance-btn-block{
-    display: inline-block;
+    position: absolute;
+    bottom: 20px;
+    left:20px;
+    right: 20px;
 }
 .basic-instance-btn-block span p{
     font-size: 12px;
@@ -1091,10 +1100,12 @@ ul.dropdown-menu{
     float: left;
     margin: 17px 50px 0 20px;
 }
-.basic-instance-btn-block p.price{
-    margin: 17px 0 0 20px;
+.basic-instance-price{
     font-size: 18px;
     font-weight: bold;
+}
+.basic-instance-price-per-time{
+    font-size: 12px;
 }
 .ci_desc{
     font-size: 16px;
