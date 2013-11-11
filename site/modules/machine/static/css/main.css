@@ -1125,7 +1125,7 @@ ul.dropdown-menu{
 .btn_browse{
     margin-top: 14px;
     padding: 0 10px 0 10px;
-    margin-left: 67px;
+    float: right;
     height: 24px;
 }
 
@@ -1264,11 +1264,11 @@ ul.dropdown-menu{
     min-height: 65px;
 }
 .advanced-instance-btn-block{
-    position: absolute;
-    text-transform: uppercase;
-    font-weight: bold;
-    float: right;
-    margin: 0 0 0 105px;
+    /*position: absolute;*/
+    /*text-transform: uppercase;*/
+    /*font-weight: bold;*/
+    /*float: right;*/
+    /*margin: 0 0 0 105px;*/
 }
 .advaced-instance-btn{
     width: 56px!important;
@@ -1278,7 +1278,8 @@ ul.dropdown-menu{
     background-color: #f7f8f9;
     padding: 0;
     margin-right: 20px;
-    margin-top: 14px;
+    margin-top: 20px;
+    text-transform: none !important ;
 }
 .advanced-table{
     width: 1020px;

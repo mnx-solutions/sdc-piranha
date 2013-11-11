@@ -74,7 +74,7 @@
 
                     <div class="basic-instance-line"></div>
                     <div class="basic-instance-btn-block">
-                        <button type="button" class="btn orange btn_browse" data-ng-click="basicCreateInstance = false"><b>View More Images</b></button>
+                        <button type="button" class="btn orange btn_browse" data-ng-click="basicCreateInstance = false">View More Images</button>
                     </div>
                 </div>
 
@@ -206,7 +206,7 @@
                                                         value="{{selectedVersions[dataset.name].id || dataset.id}}"
                                                         data-ng-checked="selectedDataset.id == dataset.id"
                                                         data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))"
-                                                        class="btn advaced-instance-btn"><b>Select</b>
+                                                        class="btn advaced-instance-btn pull-right"><b>Select</b>
                                                 </button>
                                             </div>
 
@@ -626,7 +626,7 @@
 
                             </div>
                         </div>
-                        <button type="button" class="btn grey" data-ng-click="basicCreateInstance = true" data-ng-show="currentSlidePageIndex != 2"><b>Back to Quick Start</b></button>
+                        <button type="button" class="btn grey" data-ng-click="basicCreateInstance = true"><b>Back to Quick Start</b></button>
 
                     </div>
                 </div>
@@ -634,7 +634,6 @@
             </div>
         </div>
         </div>
-
 
         <div class="alert alert-joyent-blue alert-global" data-ng-show="keys.length == 0">
             <div class="pull-left">
