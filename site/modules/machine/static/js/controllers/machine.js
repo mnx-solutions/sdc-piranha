@@ -343,10 +343,12 @@
                 $scope.$watch('tagsArray', function (newVal, oldVal){
                     // Search for conflicts
                     var keyMap = {};
-                    newVal.forEach(function (tag) {
-                        if(keyMap[tag.key]) {
+                    newVal.forEach(function (tag, index) {
+                        if (keyMap[tag.key] && index !== (newVal.length - 1)) {
                             tag.conflict = true;
                             keyMap[tag.key].conflict = true;
+                        } else if (!tag.key && index !== (newVal.length - 1)){
+                            tag.conflict = true;
                         } else {
                             tag.conflict = false;
                             keyMap[tag.key] = tag;
