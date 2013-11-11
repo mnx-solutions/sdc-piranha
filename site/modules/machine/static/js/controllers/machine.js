@@ -335,68 +335,66 @@
                 $scope.tagsArray.push({key:'', val: '', edit: true, conflict:false});
             }
 
-            Machine.tags(machineid).then(initTags);
-
-            $scope.$watch('tagsArray', function (newVal, oldVal){
-                // Search for conflicts
-                var keyMap = {};
-                newVal.forEach(function (tag) {
-                    if(keyMap[tag.key]) {
-                        tag.conflict = true;
-                        keyMap[tag.key].conflict = true;
-                    } else {
-                        tag.conflict = false;
-                        keyMap[tag.key] = tag;
-                    }
-                });
-
-                // Add empty value at the end if necessary
-                var last = newVal[newVal.length - 1];
-                if (!last || last.key !== '' || last.val !== '') {
-                    newVal.splice(newVal.length, 0, {key:'', val: '', edit: true, conflict: false });
-                }
-
-                // Remove empty value from the end if necessary
-                var nextToLast = newVal[newVal.length - 2];
-                if (nextToLast) {
-                    // Last to values are empty
-                    if (!last.key && !last.val && !nextToLast.key && !nextToLast.val) {
-                        var oldLast = oldVal[newVal.length - 1];
-                        // The last value hasn't changed so remove it
-                        if (!oldLast.key && !oldLast.val) {
-                            newVal.pop();
-                        }
-                    }
-                }
-
-            }, true);
-
-            $scope.editTag = function (index) {
-                $scope.tagsArray[index].edit = true;
-            };
-
-            $scope.removeTag = function (index) {
-                $scope.tagsArray.splice(index, 1);
-            };
-
-            $scope.saveTags = function () {
-                $$track.event('machine', 'saveTags');
-
-                var data = {};
-                $scope.tagsArray.forEach(function (tag){
-                    if(tag.key && tag.val) {
-                        data[tag.key] = tag.val;
-                    }
-                });
-
-                $scope.tagsave = true;
-                Machine.tags(machineid, data).then(initTags);
-            };
-
             // Enable features
             // Instance tagging
             if ($scope.features.instanceTagging === 'enabled') {
+                Machine.tags(machineid).then(initTags);
 
+                $scope.$watch('tagsArray', function (newVal, oldVal){
+                    // Search for conflicts
+                    var keyMap = {};
+                    newVal.forEach(function (tag) {
+                        if(keyMap[tag.key]) {
+                            tag.conflict = true;
+                            keyMap[tag.key].conflict = true;
+                        } else {
+                            tag.conflict = false;
+                            keyMap[tag.key] = tag;
+                        }
+                    });
+
+                    // Add empty value at the end if necessary
+                    var last = newVal[newVal.length - 1];
+                    if (!last || last.key !== '' || last.val !== '') {
+                        newVal.splice(newVal.length, 0, {key:'', val: '', edit: true, conflict: false });
+                    }
+
+                    // Remove empty value from the end if necessary
+                    var nextToLast = newVal[newVal.length - 2];
+                    if (nextToLast) {
+                        // Last to values are empty
+                        if (!last.key && !last.val && !nextToLast.key && !nextToLast.val) {
+                            var oldLast = oldVal[newVal.length - 1];
+                            // The last value hasn't changed so remove it
+                            if (!oldLast.key && !oldLast.val) {
+                                newVal.pop();
+                            }
+                        }
+                    }
+
+                }, true);
+
+                $scope.editTag = function (index) {
+                    $scope.tagsArray[index].edit = true;
+                };
+
+                $scope.removeTag = function (index) {
+                    $scope.tagsArray.splice(index, 1);
+                };
+
+                $scope.saveTags = function () {
+                    $$track.event('machine', 'saveTags');
+
+                    var data = {};
+                    $scope.tagsArray.forEach(function (tag){
+                        if(tag.key && tag.val) {
+                            data[tag.key] = tag.val;
+                        }
+                    });
+
+                    $scope.tagsave = true;
+                    Machine.tags(machineid, data).then(initTags);
+                };
             }
 
             if ($scope.features.firewall === 'enabled') {
