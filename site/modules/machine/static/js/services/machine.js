@@ -313,6 +313,8 @@
             var machine = {
                 state: 'creating',
                 name: data.name,
+                created: Date.now(),
+                datacenter: data.datacenter,
                 id: id
             };
 
