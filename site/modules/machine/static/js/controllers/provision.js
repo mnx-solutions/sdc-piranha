@@ -44,6 +44,7 @@
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
             $scope.visibilityFilter = 'Public';
+            $scope.currentSlidePageIndex = 0;
 
             Machine.getSimpleImgList(function (err, data) {
                 if (err) {
@@ -230,7 +231,8 @@
                     .removeClass('active-step')
                     .eq(index).
                     addClass('active-step');
-            }
+                $scope.currentSlidePageIndex = index;
+            };
 
             $scope.selectDataset = function (id) {
                 Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {

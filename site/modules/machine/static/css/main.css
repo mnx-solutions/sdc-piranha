@@ -1111,6 +1111,7 @@ ul.dropdown-menu{
     font-size: 16px;
     font-weight: 400;
     padding-bottom: 30px;
+    padding-top: 15px;
 }
 .basic-instance-box-padding{
     padding-bottom: 10px;
@@ -1313,7 +1314,7 @@ ul.dropdown-menu{
 }
 
 .wizard-steps {
-    width: 100%;
+    width: 1010px;
     position: absolute;
     clear: both;
     margin-top: 11px;
@@ -1790,4 +1791,9 @@ ul.dropdown-menu{
     vertical-align: middle;
     cursor: pointer;
     margin-top: 5px;
+}
+.btn.grey{
+    background-color: #ebebeb;
+    color: #f60;
+    margin-top: 20px;
 }
