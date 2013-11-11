@@ -333,12 +333,6 @@
     text-shadow: none;
     background-color: #ff6600;
 }
-.btn.light {
-    color: #ff6600;
-    text-shadow: none;
-    background-color: #f3f3f3;
-    font-size: 16px;
-}
 .btn.green {
     color: black;
     text-shadow: none;
@@ -563,64 +557,7 @@ label.checkbox {
 }
 
 
-.table-bordered {
-    border-collapse: separate;
-    border-left: 0 none !important;
-    border-right: 0 none !important;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    border-radius: 0 !important;
-}
-table.table {
-    clear: both;
-    margin-bottom: 6px !important;
-    max-width: none !important;
-    font-size: 16px;
-    overflow: auto;
-}
-.table-bordered th, .table-bordered td {
-    padding-left: 15px;
-    border-left: 0 none !important;
-    border-right: 0 none !important;
-}
-.table th, .table td {
-    padding-right: 25px;
-    line-height: 20px;
-    text-align: left;
-    vertical-align: middle;
-    border-top: none;
-    white-space: nowrap;
-}
-.table td a{
-    color: #375675;
-    text-decoration: none;
-}
-.table .checkbox{
-    padding-left: 2px;
-}
-.table .table-title{
-    color: #666666;
-    font-size: 16px;
-}
-.table .table-title.active{
-    color: #000000;
-}
-.table > thead th{
-    height: 37px;
-    padding-top: 12px;
-    padding-bottom: 2px;
-}
-.table > tbody td{
-    height: 38px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-.table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
-    background-color: #f4f4f4;
-}
-.table-hover tbody tr:hover > td, .table-hover tbody tr:hover > th {
-    background-color: #f9f9f9;
-}
+
 .dropdown-menu > li{
     background-color: white;
 }
@@ -1029,9 +966,10 @@ ul.dropdown-menu{
 .basic-instance-box{
     width: 240px;
     height: 206px;
+    position: relative;
+    margin: 0 10px 10px 0;
     border-radius: 3px;
     float: left;
-    margin-right: 10px;
     background-color: #eef0f2;
 }
 .smartos-logo {
@@ -1111,19 +1049,24 @@ ul.dropdown-menu{
     font-weight: bold;
     line-height: 10px;
 }
-.basic-instance-title span p{
+.basic-instance-title span p,
+.basic-instance-description{
     font-size: 12px;
     font-weight: normal;
     line-height: 16px;
+}
+.basic-instance-description{
+    padding: 0 50px 0 20px;
 }
 .basic-instance-line{
     /*border-bottom: 1px solid #d6d8d9;*/
     margin: 18px 20px 0 20px;
 }
 .basic-instance-btn.btn_s{
-    float: right;
-    margin-top: -22px;
-    margin-left: 30px;
+    position: absolute;
+    right: -20px;
+    margin-top: 0;
+    top: -2px;
 }
 .basic-instance-btn{
     width: 65px !important;
@@ -1139,7 +1082,10 @@ ul.dropdown-menu{
     /*background-color: #FF6600;*/
 /*}*/
 .basic-instance-btn-block{
-    display: inline-block;
+    position: absolute;
+    bottom: 20px;
+    left:20px;
+    right: 20px;
 }
 .basic-instance-btn-block span p{
     font-size: 12px;
@@ -1154,10 +1100,12 @@ ul.dropdown-menu{
     float: left;
     margin: 17px 50px 0 20px;
 }
-.basic-instance-btn-block p.price{
-    margin: 17px 0 0 20px;
+.basic-instance-price{
     font-size: 18px;
     font-weight: bold;
+}
+.basic-instance-price-per-time{
+    font-size: 12px;
 }
 .ci_desc{
     font-size: 16px;

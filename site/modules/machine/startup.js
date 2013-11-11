@@ -598,6 +598,11 @@ module.exports = function execute(scope) {
         }
     });
 
+    server.onCall('ImagesSimpleList', function (call) {
+        var images = config.ns.images;
+        call.done(null, images);
+    });
+
 
     /* Images */
 

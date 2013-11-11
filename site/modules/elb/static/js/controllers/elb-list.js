@@ -33,6 +33,10 @@
                         $scope.listLoaded = true;
                     });
                 });
+
+                $scope.createNew = function createNew() {
+                    $location.path('/elb/edit/');
+                };
             }]
     );
 }(window.JP.getModule('elb')));
