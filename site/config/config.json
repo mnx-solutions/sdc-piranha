@@ -119,7 +119,7 @@
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
   , "invoices": "enabled"
-  , "imageUse": "enable"
+  , "imageUse": "enabled"
   , "imageCreate": "disabled"
   , "firewall": "disabled"
   , "elb": "disabled"

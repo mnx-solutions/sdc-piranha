@@ -690,74 +690,71 @@ module.exports = function execute(scope) {
         });
     }
 
-    if(!config.features || config.features.imageUse !== 'disabled') {
+    /* DeleteImage */
+    server.onCall('ImageDelete', {
+        verify: function(data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('imageId');
+        },
 
-        /* DeleteImage */
-        server.onCall('ImageDelete', {
-            verify: function(data) {
-                return typeof data === 'object' &&
-                    data.hasOwnProperty('imageId');
-            },
+        handler: function(call) {
+            call.log.info('Deleting image %s', call.data.imageId);
 
-            handler: function(call) {
-                call.log.info('Deleting image %s', call.data.imageId);
-
-                var cloud = call.cloud.separate(call.data.datacenter);
-                call.cloud.deleteImage(call.data.imageId, function(err) {
-                    if (!err) {
-                        call.data.uuid = call.data.imageId;
-                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
-                    } else {
-                        call.log.error(err);
-                        call.done(err);
-                    }
-                });
-
-            }
-        });
-
-        /* images list */
-        server.onCall('ImagesList', function(call) {
-
-            var datacenters = call.cloud.listDatacenters();
-            var keys = Object.keys(datacenters);
-            var count = keys.length;
-
-            keys.forEach(function (name) {
-                var cloud = call.cloud.separate(name);
-                call.log.debug('List images for datacenter %s', name);
-
-                cloud.listImages(function (err, images) {
-                    var response = {
-                        name: name,
-                        status: 'pending',
-                        images: []
-                    };
-
-                    if (err) {
-                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                        response.status = 'error';
-                        response.error = err;
-                    } else {
-                        /* add datacenter to every image */
-                        images.forEach(function (image) {
-                            image.datacenter = name;
-                        });
-
-                        response.status = 'complete';
-                        response.images = images;
-
-                        call.log.debug('List images succeeded for datacenter %s', name);
-                    }
-                    call.update(null, response);
-
-                    if (--count === 0) {
-                        call.done();
-                    }
-                });
+            var cloud = call.cloud.separate(call.data.datacenter);
+            call.cloud.deleteImage(call.data.imageId, function(err) {
+                if (!err) {
+                    call.data.uuid = call.data.imageId;
+                    pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
+                } else {
+                    call.log.error(err);
+                    call.done(err);
+                }
             });
 
+        }
+    });
 
+    /* images list */
+    server.onCall('ImagesList', function(call) {
+
+        var datacenters = call.cloud.listDatacenters();
+        var keys = Object.keys(datacenters);
+        var count = keys.length;
+
+        keys.forEach(function (name) {
+            var cloud = call.cloud.separate(name);
+            call.log.debug('List images for datacenter %s', name);
+
+            cloud.listImages(function (err, images) {
+                var response = {
+                    name: name,
+                    status: 'pending',
+                    images: []
+                };
+
+                if (err) {
+                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                    response.status = 'error';
+                    response.error = err;
+                } else {
+                    /* add datacenter to every image */
+                    images.forEach(function (image) {
+                        image.datacenter = name;
+                    });
+
+                    response.status = 'complete';
+                    response.images = images;
+
+                    call.log.debug('List images succeeded for datacenter %s', name);
+                }
+                call.update(null, response);
+
+                if (--count === 0) {
+                    call.done();
+                }
+            });
         });
-    }
+
+
+    });
 };
