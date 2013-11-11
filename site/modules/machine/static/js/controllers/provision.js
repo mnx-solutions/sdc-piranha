@@ -196,7 +196,7 @@
                 return parseInt(pkg.memory);
             };
 
-            $scope.reconfigure = function () {
+            $scope.reconfigure = function (goto) {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
                 $scope.selectedPackage = null;
@@ -211,7 +211,7 @@
                     datacenter: ds,
                     opsys: opsys
                 };
-
+                $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
             };
@@ -222,6 +222,14 @@
                 }
 
                 return +((el + '').replace(/,/g, ''));
+            }
+
+            $scope.setCurrentStep = function(index) {
+                ng.element('.wizard-steps')
+                    .children('div')
+                    .removeClass('active-step')
+                    .eq(index).
+                    addClass('active-step');
             }
 
             $scope.selectDataset = function (id) {
@@ -240,6 +248,7 @@
                     $scope.selectedDataset = dataset;
                     ng.element('#pricing').removeClass('alert-muted');
                     ng.element('#pricing').addClass('alert-info');
+                    $scope.setCurrentStep(1);
 
                     $scope.data.dataset = dataset.id;
                     $scope.searchText = '';
@@ -511,8 +520,9 @@
                 return $scope.accordionIcon2[item];
             };
 
-            $scope.reviewPage = function(){
+            $scope.reviewPage = function () {
                 $scope.slideCarousel();
+                $scope.setCurrentStep(2);
             };
         }
 

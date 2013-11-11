@@ -95,6 +95,12 @@
                     <!--<li><a href="#!/instance"> Compute</a> /</li>-->
                 <!--</ul>-->
                 <h3 class="page-title no-breadcrumb-line" data-translate>Create Instance</h3>
+                <div class="wizard-steps">
+                    <div class="active-step"><p>Choose Image</p></div>
+                    <div><p>Select Package</p></div>
+                    <div><p>Review</p></div>
+                    <div><p class="laststep"></p></div>
+                </div>
                 <!--<div class="header-btn-ci">-->
                     <!--<a href="#!/instance/create">-->
                         <!--<button type="button" class="btn btn_ci orange" data-ng-click="basicCreateInstance = true"><b>Basic mode</b></button></a>-->
@@ -103,17 +109,11 @@
                 <!--<h1 data-translate>Create Instance</h1>-->
             <!--</div>-->
 
-            <div class="row-fluid">
+            <div class="row-fluid carousel-container">
                 <div class="span8 provisioning-carousel-span">
                     <div id="myCarousel" class="carousel slide">
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box advanced-table" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
-                                <div class="wizard-steps">
-                                    <div class="active-step"><p>Choose Image</p></div>
-                                    <div><p>Select Package</p></div>
-                                    <div><p>Review</p></div>
-                                    <div><p class="laststep"></p></div>
-                                </div>
 
                                 <div class="row-fluid advanced-ci-step1">
                                     <div class="" style="display: inline-block;">
@@ -301,13 +301,7 @@
 
                             <div class="item outer-provisioning-item">
                                 <div class="item provisioning-item header row-fluid">
-                                    <div class="wizard-steps">
-                                        <div><p>Choose Image</p></div>
-                                        <div class="active-step"><p>Select Package</p></div>
-                                        <div><p>Review</p></div>
-                                        <div><p class="laststep"></p></div>
-                                    </div>
-                                    <div class="row-fluid advanced-ci-step2">
+                                    <!--<div class="row-fluid advanced-ci-step2">-->
                                         <!--<div class="provisioning-header-left-button btn-group pull-left tooltip-hover span3"-->
                                              <!--data-toggle="tooltip"-->
                                              <!--data-placement="right"-->
@@ -335,11 +329,11 @@
                                             <!--&lt;!&ndash;data-ng-model="searchPackages"&ndash;&gt;-->
                                             <!--&lt;!&ndash;data-translate="placeholder" />&ndash;&gt;-->
                                         <!--</div>-->
-                                    </div>
+                                    <!--</div>-->
                                     <div class="span3 pull-right selected-package-container">
                                         <div data-ng-show="selectedPackageInfo" class="selected-package-box">
                                             <div class="selected-package-box-content">
-                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure(0)" href="#myCarousel" id="prev" data-slide="prev">Change</a>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc">{{selectedDataset.description}}</div>
 
@@ -520,20 +514,14 @@
 
 
                             <div class="item outer-provisioning-item">
-                                <div class="item provisioning-item header row-fluid">
-                                    <div class="wizard-steps">
-                                        <div><p>Choose Image</p></div>
-                                        <div><p>Select Package</p></div>
-                                        <div class="active-step"><p>Review</p></div>
-                                        <div><p class="laststep"></p></div>
-                                    </div>
-                                </div>
+                                <!--<div class="item provisioning-item header row-fluid">
+                                </div>-->
                             <div class="item-scrolling">
                                 <div class="review-box">
                                     <table>
                                         <td style="vertical-align: top;">
                                             <div class="selected-package-box-1">
-                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="" data-slide-to="0">Change</a>
+                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure(0)" href="#myCarousel" id="" data-slide-to="0">Change</a>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc">{{selectedDataset.description}}</div>
 
@@ -561,7 +549,7 @@
                                         </td>
                                         <td style="vertical-align: top;">
                                             <div class="selected-package-box-2">
-                                                <p>PACKAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure()" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <p>PACKAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure(1)" href="#myCarousel" id="prev" data-slide="prev">Change</a>
                                                 <span>
                                                     <div class="package-info-title">Configuration</div>
                                                     <div class="package-info-desc">{{selectedPackageInfo.short_name}}</div>

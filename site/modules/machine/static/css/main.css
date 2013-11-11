@@ -1286,8 +1286,11 @@ ul.dropdown-menu{
     display: inline-block;
     padding-bottom: 30px;
 }
-.advanced-ci-step1{
+/*.advanced-ci-step1{
     padding-top: 60px;
+}*/
+.row-fluid.carousel-container {
+    margin-top: 60px;
 }
 .advanced-ci-step2{
     padding-top: 20px;
