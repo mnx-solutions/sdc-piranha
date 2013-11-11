@@ -55,7 +55,7 @@
                     };
 
                     $scope.loading = false;
-                    $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+                    $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
                     $scope.years = [];
                     $scope.prev = $scope.prev || BillingService.getDefaultCreditCard();
                     $scope.useExisting = false;
@@ -63,81 +63,90 @@
 
                     $scope.saveButton = 'Submit';
 
-                    if($scope.nextStep) {
+                    if ($scope.nextStep) {
                         $scope.saveButton = 'Next';
                     }
 
                     $scope.countries = $http.get('billing/countries');
                     var statesPromise = $http.get('billing/states');
 
-	                function usePrevious(prev) {
-		                $scope.prev = prev;
-		                if (prev && prev.cardHolderInfo) {
-			                [ 'addressLine1','addressLine2','country','state','city','zipCode' ].forEach(function (key) {
-				                $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];
-			                });
+                    function usePrevious(prev) {
+                        $scope.prev = prev;
+                        if (prev && prev.cardHolderInfo) {
+                            $scope.form.expirationMonth = prev.expirationMonth < 10 ? '0' + prev.expirationMonth : prev.expirationMonth.toString();
+                            $scope.form.expirationYear = prev.expirationYear;
+                            $scope.form.creditCardNumber = prev.cardNumber;
+                            var nameSpaceIndex = prev.cardHolderInfo.cardHolderName.indexOf(' ');
+                            if (nameSpaceIndex > 0) {
+                                $scope.form.firstName = prev.cardHolderInfo.cardHolderName.substring(0, nameSpaceIndex);
+                                $scope.form.lastName = prev.cardHolderInfo.cardHolderName.substring(nameSpaceIndex + 1);
+                            }
 
-			                $scope.countries.then(function (countries) {
-				                countries.data.some(function (country){
-					                if (country.name === prev.cardHolderInfo.country) {
-						                $scope.form.cardHolderInfo.country = country.iso3;
-						                return true;
-					                }
-				                });
+                            ['addressLine1', 'addressLine2', 'country', 'state', 'city', 'zipCode'].forEach(function (key) {
+                                $scope.form.cardHolderInfo[key] = prev.cardHolderInfo[key];
+                            });
 
-				                var country = $scope.form.cardHolderInfo.country;
-				                if (country === 'CAN' || country === 'USA') {
-					                statesPromise.then(function (allStates) {
-						                var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
-						                Object.keys(states).some(function (state) {
-							                if (states[state] === prev.cardHolderInfo.state) {
-								                $scope.form.cardHolderInfo.state = state;
-								                return true;
-							                }
-						                });
-					                });
-				                }
-			                });
+                            $scope.countries.then(function (countries) {
+                                countries.data.some(function (country) {
+                                    if (country.name === prev.cardHolderInfo.country) {
+                                        $scope.form.cardHolderInfo.country = country.iso3;
+                                        return true;
+                                    }
+                                });
 
-			                $scope.useExistingPossible = $scope.useExisting = true;
-		                } else {
-			                $q.when(Account.getAccount(), function(account) {
-				                var form = $scope.form.cardHolderInfo;
-				                form.zipCode = account.postalCode;
-				                form.city = account.city;
-				                form.state = account.state;
-				                form.addressLine1 = account.address;
+                                var country = $scope.form.cardHolderInfo.country;
+                                if (country === 'CAN' || country === 'USA') {
+                                    statesPromise.then(function (allStates) {
+                                        var states = country === 'USA' ? allStates.data.us.obj : allStates.data.canada.obj;
+                                        Object.keys(states).some(function (state) {
+                                            if (states[state] === prev.cardHolderInfo.state) {
+                                                $scope.form.cardHolderInfo.state = state;
+                                                return true;
+                                            }
+                                        });
+                                    });
+                                }
+                            });
 
-				                if (account.country.length === 3) {
-					                form.country = account.country;
-				                } else {
-					                form.country = 'USA';
-				                }
+                            $scope.useExistingPossible = $scope.useExisting = true;
+                        } else {
+                            $q.when(Account.getAccount(), function(account) {
+                                var form = $scope.form.cardHolderInfo;
+                                form.zipCode = account.postalCode;
+                                form.city = account.city;
+                                form.state = account.state;
+                                form.addressLine1 = account.address;
 
-				                $scope.useExistingPossible = true;
+                                if (account.country.length === 3) {
+                                    form.country = account.country;
+                                } else {
+                                    form.country = 'USA';
+                                }
 
-				                [ 'zipCode','city','state','addressLine1','country' ].some(function (e) {
-					                if(!form[e] || form[e] === '') {
-						                $scope.useExistingPossible = false;
-						                return true;
-					                }
-				                });
+                                $scope.useExistingPossible = true;
 
-				                $scope.useExisting = $scope.useExistingPossible;
-			                });
-		                }
-	                }
+                                [ 'zipCode', 'city', 'state', 'addressLine1', 'country' ].some(function (e) {
+                                    if (!form[e] || form[e] === '') {
+                                        $scope.useExistingPossible = false;
+                                        return true;
+                                    }
+                                });
+
+                                $scope.useExisting = $scope.useExistingPossible;
+                            });
+                        }
+                    }
                     $q.when($scope.prev, usePrevious);
 
-	                $scope.$watch('useExisting', function (newVal, oldVal) {
-		                if(newVal === true) {
-			                usePrevious($scope.prev);
-		                }
-	                });
+                    $scope.$watch('useExisting', function (newVal, oldVal) {
+                        if (newVal === true) {
+                            usePrevious($scope.prev);
+                        }
+                    });
 
                     var c = (new Date()).getFullYear();
                     var i = c;
-                    for(i; i < c + 20; i++) {
+                    for (i; i < c + 20; i++) {
                         $scope.years.push(i);
                     }
 
@@ -263,7 +272,7 @@
                         if ($scope.form.cardHolderInfo.state === '') {
                             delete $scope.form.cardHolderInfo.state;
                         }
-						$scope.form.workPhone = $scope.selectedCountryCode + ' ' + $scope.phone.number;
+                        $scope.form.workPhone = $scope.selectedCountryCode + ' ' + $scope.phone.number;
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (!errs) {
                                 Account.updateAccount({
@@ -290,7 +299,7 @@
                                             'Billing information not updated'
                                         )
                                     );
-                                    window.scrollTo(0,0);
+                                    window.scrollTo(0, 0);
                                 });
                                 return;
                             }
@@ -301,7 +310,7 @@
                                 $scope.errs = {};
                                 Object.keys(errs)
                                     .filter(function (k) {
-	                                    //Ignore zuora errors and creditCardType (that is calculated by us)
+                                        //Ignore zuora errors and creditCardType (that is calculated by us)
                                         return typeof errs[k] !== 'object' && k !== 'creditCardType';
                                     })
                                     .forEach(function (k) {
