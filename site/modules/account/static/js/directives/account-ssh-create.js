@@ -85,12 +85,8 @@
                                                 // start polling
                                                 var pollingJob = setInterval(function() {
                                                     $http.get('account/ssh/job/'+ jobId).success(function(data) {
-                                                        if(data.success === true) {
+                                                        if (data.success === true) {
                                                             // user has downloaded the key
-                                                            $rootScope.loading = false;
-                                                            $rootScope.pollingJob = false;
-                                                            clearInterval(pollingJob);
-
                                                             if($scope.nextStep) {
                                                                 $http.get('/signup/account/signup/passSsh').success(function(data) {
                                                                     // marked ssh step as passed
@@ -98,17 +94,19 @@
                                                                 });
                                                             }
                                                         }
-                                                        if(data.success === false) {
+                                                        if (data.success === false) {
                                                             // key download failed, show error
-                                                            $rootScope.loading = false;
-                                                            $rootScope.pollingJob = false;
                                                             notification.push(null, { type: 'error' },
                                                                 localization.translate($scope, null,
                                                                     'SSH Key generation error'
                                                                 )
                                                             );
-
+                                                        }
+                                                        if (data.success !== undefined) {
+                                                            $rootScope.loading = false;
+                                                            $rootScope.pollingJob = false;
                                                             clearInterval(pollingJob);
+                                                            clearTimeout(pollingTimeout);
                                                         }
                                                     })
                                                 }, 1000);
