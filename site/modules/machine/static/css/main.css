@@ -1290,7 +1290,7 @@ ul.dropdown-menu{
     padding-top: 60px;
 }*/
 .row-fluid.carousel-container {
-    margin-top: 60px;
+    margin-top: 75px;
 }
 .advanced-ci-step2{
     padding-top: 20px;
@@ -1316,7 +1316,7 @@ ul.dropdown-menu{
     width: 100%;
     position: absolute;
     clear: both;
-    margin-top: -2px;
+    margin-top: 11px;
     display: inline-block;
 }
 .wizard-steps div {
@@ -1376,20 +1376,26 @@ ul.dropdown-menu{
 .wizard-steps .active-step p:before {
     border-top: 17px solid #3d3d3d;
     border-bottom: 16px solid #3d3d3d;
-    /*border-right: 17px;*/
-    /*border-left: 17px;*/
+
+}
+.wizard-steps .firststep.active-step p:before{
+    border-right: 17px;
+    border-left: 17px;
 }
 .wizard-steps .active-step p:after {
     border-left: 17px solid #3d3d3d;
 }
-.wizard-steps p.firststep:before{
+
+.wizard-steps .firststep p:before{
     width:0;
     height:0;
     position: absolute;
     content: "";
     top: 0;
     left: -17px;
-    border: 0;
+    /*border: 0;*/
+    border-bottom: 0;
+    border-top: 0;
 }
 
 .package-select tbody{
