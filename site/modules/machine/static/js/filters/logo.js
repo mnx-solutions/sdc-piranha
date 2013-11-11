@@ -7,8 +7,8 @@
             var name = name.toLowerCase();
 
             var instances = {
-                base: "smartos",
-                base64: "smartos",
+                base: "smart",
+                base64: "smart",
                 hadoop: "hadoop",
                 riak: "riak",
                 sngl: "sngl",
@@ -22,7 +22,7 @@
                 "ws2012std": "windows"
             }
 
-            return instances[name] ? 'advanced-instance-' + instances[name] : 'advanced-instance-default';
+            return instances[name] ? instances[name] : 'advanced-instance-default';
         };
     });
 

@@ -189,7 +189,7 @@
                                 <div class="advanced-table tooltip-hover">
                                     <div class="" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
                                         <div
-                                                class="advanced-instance-box"
+                                                class="advanced-instance-box small-icon"
                                                 data-ng-class="selectedVersions[dataset.name].name || dataset.name | logo"
                                                 data-toggle="tooltip" data-tooltip-text="{{selectedVersions[dataset.name].description || dataset.description}}">
                                             <div class="advanced-instance-title">
