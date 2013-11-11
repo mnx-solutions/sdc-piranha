@@ -90,6 +90,7 @@
                                                             $rootScope.loading = false;
                                                             $rootScope.pollingJob = false;
                                                             clearInterval(pollingJob);
+                                                            clearTimeout(pollingTimeout);
 
                                                             if($scope.nextStep) {
                                                                 $http.get('/signup/account/signup/passSsh').success(function(data) {
@@ -109,6 +110,7 @@
                                                             );
 
                                                             clearInterval(pollingJob);
+                                                            clearTimeout(pollingTimeout);
                                                         }
                                                     })
                                                 }, 1000);
