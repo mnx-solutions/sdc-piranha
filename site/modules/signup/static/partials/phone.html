@@ -1,5 +1,5 @@
 <div class="container-fluid" data-ng-controller="Signup.PhoneController">
-    <div class="content-container-signup">
+    <div class="content-container-signup signup-progress-container">
         <div class="page-title">Identity Verification by Phone</div>
         <div class="wizard-steps">
             <div><p class="firststep">Account Details</p></div>
@@ -7,7 +7,10 @@
             <div><p>Payment Information</p></div>
             <div><p class="laststep"></p></div>
         </div>
-        <div class="login-form">
+        <div class="message-box">
+            <p style="color: #7C7C7C;padding-left: 70px;padding-top: 8px;font-size: 16px;">Marketing Info</p>
+        </div>
+        <div class="login-form first-block">
             <p data-translate>After you enter a phone number where you can be reached below, you will then be called by an automated system and provided a PIN number over the phone. Once completed, you’ll be able to proceed to finalize your registration process.</p>
             <form data-ng-submit="makeCall()">
                 <table class="table">
@@ -49,7 +52,7 @@
                 </table>
                 <div class="phone_btn_pos"><button class="si_btn" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button></div>
             </form>
-            <div class="line"></div>
+            <div class="line-st1"></div>
             <div style="padding-top: 42px;">
                 <p>
                     A call will be placed to you at this number and a PIN number will be provided to you. Please enter the PIN number here to complete the verification process.
@@ -71,15 +74,13 @@
                     <div class="phone_btn_pos"><button class="si_btn">Verify</button></div>
                 </form>
             </div>
-            <div class="line"></div>
+            <div class="line-st1"></div>
             <div style="padding:42px 0 42px 0">
                 <button class=" grey_btn" data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</button>
             </div>
 
         </div>
-        <div class="message-box">
-            <p style="color: #7C7C7C;padding-left: 70px;padding-top: 8px;font-size: 16px;">Marketing Info</p>
-        </div>
+
     </div>
 
 

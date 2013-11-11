@@ -1,19 +1,63 @@
-<div class="{{currentStep && 'row-fluid' || ''}}">
+<div class="{{currentStep && 'row-fluid' || ''}} ">
     <form name="accountForm" class="row-fluid">
-        <fieldset class="span5">
-            <legend data-translate data-ng-hide="currentStep">Contact Info</legend>
+        <fieldset class="line">
+            <legend data-translate data-ng-hide="currentStep">Contact Information</legend>
             <div class="control-group">
-                <label class="control-label" for="email" data-translate>
-                    Email
-                </label>
-                <div class="controls">
+                <span class="edit-name" data-translate>
+                    First Name
+                </span>
+                <span class="edit-value">
+                    <input type="text"
+                           id="firstName"
+                           class="span12"
+                           name="firstName"
+                           data-ng-model="account.firstName"
+                           data-ng-class="{error: isError('firstName')}"
+                           required/>
+                </span>
+                <span class="edit-error">
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('firstName', 'required')">
+                        Missing first name
+                    </div>
+                </span>
+            </div>
+
+            <div class="control-group">
+                <span class="edit-name" data-translate>
+                    Last Name
+                </span>
+                <span class="edit-value">
+                     <input type="text"
+                            id="lastName"
+                            class="span12"
+                            name="lastName"
+                            data-ng-model="account.lastName"
+                            data-ng-class="{error: isError('lastName')}"
+                            required/>
+                </span>
+                <span class="edit-error">
+                    <div class="error"
+                         data-translate
+                         data-ng-show="isError('lastName', 'required')">
+                        Missing last name
+                    </div>
+                </span>
+            </div>
+
+            <div class="control-group">
+                <span class="edit-name">Email Address</span>
+                <span class="edit-value">
                     <input type="email"
                            id="email"
                            name="email"
-							class="span12"
+                           class="span12"
                            data-ng-model="account.email"
                            data-ng-class="{error: isError('email')}"
                            required/>
+                </span>
+                <span class="edit-error">
                     <div class="error"
                          data-translate
                          data-ng-show="isError('email', 'required')">
@@ -24,90 +68,52 @@
                          data-ng-show="isError('email', 'email')">
                         Invalid email address
                     </div>
-                </div>
+                </span>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="firstName" data-translate>
-                    First name
-                </label>
-                <div class="controls">
-                    <input type="text"
-                           id="firstName"
-						class="span12"
-                           name="firstName"
-                           data-ng-model="account.firstName"
-                           data-ng-class="{error: isError('firstName')}"
-                           required/>
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('firstName', 'required')">
-                        Missing first name
-                    </div>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="lastName" data-translate>
-                    Last name
-                </label>
-                <div class="controls">
-                    <input type="text"
-                           id="lastName"
-							class="span12"
-                           name="lastName"
-                           data-ng-model="account.lastName"
-                           data-ng-class="{error: isError('lastName')}"
-                           required/>
-                    <div class="error"
-                         data-translate
-                         data-ng-show="isError('lastName', 'required')">
-                        Missing last name
-                    </div>
-                </div>
-            </div>
-
-            <div class="control-group">
-                <label class="control-label" for="companyName" data-translate>
-                    Company name
-                </label>
-                <div class="controls">
+                <span class="edit-name">Company Name</span>
+                <span class="edit-value">
                     <input type="text"
                            id="companyName"
-							class="span12"
+                           class="span12"
                            name="companyName"
                            data-ng-model="account.companyName"/>
+                </span>
+                <span class="edit-error">
                     <div class="error"
                          data-translate
                          data-ng-show="isError('companyName', 'required')">
                         Missing company name
                     </div>
-                </div>
+                </span>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="phone" data-translate>
-                    Phone
-                </label>
-                <div class="controls">
+                <span class="edit-name">Phone</span>
+                <span class="edit-value edit-country">
                     <select data-ng-style="countryStyle"
                             data-ng-model="account.country"
-                            style="width:255px"
                             name="countryCode"
                             id="countryCode"
                             data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
                     </select>
-                    <div class="input-prepend">
-                        <span class="add-on" style="width:50px;text-align:left">(+{{selectedCountryCode}})</span>
-                        <input type="text"
-                               id="phone"
-                               name="phone"
-								style="width:160px"
-                               data-ng-model="account.phone"
-                               data-ng-pattern="/^([\d#\*]+)$/"
-                               data-ng-class="{error: isError('phone')}"
-                               required/>
-                    </div> <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
+                    <i class="arrow-select"></i>
+                </span>
+                <span class="edit-value edit-phone">
+                     <div class="input-prepend">
+                         <span class="add-on" style="">(+{{selectedCountryCode}})</span>
+                         <input type="text"
+                                id="phone"
+                                name="phone"
+                                data-ng-model="account.phone"
+                                data-ng-pattern="/^([\d#\*]+)$/"
+                                data-ng-class="{error: isError('phone')}"
+                                required/>
+                     </div>
+                    <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
+                </span>
+                <span class="edit-error">
                     <div class="error"
                          data-translate
                          data-ng-show="isError('phone', 'required')">
@@ -118,60 +124,71 @@
                          data-ng-show="isError('phone', 'pattern')">
                         Invalid phone number
                     </div>
-                </div>
+                </span>
             </div>
-			<button class="btn btn-joyent-blue pull-right" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
         </fieldset>
 
-		<div class="span7 pull-right" data-ng-hide="currentStep">
-			<fieldset  data-ng-hide="currentStep">
-	            <legend data-translate>Change password</legend>
-					<p>Pop-up window will direct you to SSO pages. No sensitive data is exchanged between two sites.</p>
-					<p>Change password will open a pop-up window. Please ensure you don't have popup blocker active.</p>
+        <!--<div class="fieldset-spacer"></div>-->
 
-					<a data-ng-click="changePassword()" class="btn pull-right" data-translate>Change password</a>
+		<!--<div class="" data-ng-hide="currentStep">-->
+			<fieldset  data-ng-hide="currentStep" class="line">
+	            <legend data-translate>Your Password</legend>
+					<p class="content-p">Pop-up window will direct you to SSO pages. No sensitive data is exchanged between two sites.
+					Change password will open a pop-up window. Please ensure you don't have popup blocker active.</p>
+
+					<a data-ng-click="changePassword()" class="btn light" data-translate>Change Password</a>
+                <div class="fieldset-spacer"></div>
 			</fieldset>
-				<br />
-			<fieldset  data-ng-hide="currentStep">
-	           	<legend data-translate>Two factor authentication</legend>
-
+            <!--<div class="fieldset-spacer"></div>-->
+			<fieldset  data-ng-hide="currentStep" class="line">
+	           	<legend data-translate>Two Factor Authentication</legend>
+                <p class="content-p">You have enabled two-factor authentication. You will be asked to provide an extra verification code the next time that you login.</p>
+                <button data-ng-show="!account.tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn light" data-translate>Enable</button>
+                <button data-ng-show="account.tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn light" data-translate>Disable</button>
+                <div class="fieldset-spacer"></div>
 	            <div data-ng-show="qrImage">
-	                <p>You have enabled two-factor authentication. You will be asked to provide an extra verification code the next time that you login.</p>
 	                <ol>
-	                    <li>Please download 'Google Authenticator' from your phone's App Store.</li>
-	                    <li>
+	                    <li class="content-li">Please download 'Google Authenticator' from your phone's App Store.</li>
+	                    <li class="content-li">
 	                        Scan the QR code below using the application
 	                        <div style="margin: 15px; padding-left: 20px" data-ng-bind-html-unsafe="qrImage">
 	                        </div>
 	                    </li>
-
-	                    <li>
+	                    <li class="content-li">
 	                        Type the code from your new application below to verify your configuration.<hr />
 	                        <div class="control-group">
-	                            <label class="control-label b" for="otpass">Enter your code</label>
-	                            <div class="controls">
-	                                <input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" />
-	                            </div>
+                                <span class="edit-name">Enter your code</span>
+                                <span class="edit-value"><input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" /></span>
+                                <span class="edit-error" data-ng-show="tfaError" data-translate>Failed to enable TFA</span>
+	                            <!--<label class="control-label b" for="otpass">Enter your code</label>-->
+	                            <!--<div class="controls">-->
+	                                <!--<input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" />-->
+	                            <!--</div>-->
 	                        </div>
 	                    </li>
 	                </ol>
-                    <div data-ng-show="tfaError" data-translate>Failed to enable TFA</div>
-	                <button class="btn btn-joyent-blue pull-right" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
+                    <!--<div data-ng-show="tfaError" data-translate>Failed to enable TFA</div>-->
+	                <button class="btn light" data-ng-click="testTwoFactorAuth()" style="margin-left: 38px;" data-translate>Verify</button>
+                    <div class="fieldset-spacer"></div>
 	                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaTestLoading"></div>
 	            </div>
 
-	            <button data-ng-show="!account.tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn btn-joyent-blue pull-right" data-translate>Enable</button>
-	            <button data-ng-show="account.tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn btn-danger pull-right" data-translate>Disable</button>
+
 
 	            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaLoading"></div>
 			</fieldset>
-		</div>
+		<!--</div>-->
 
         <hr data-ng-show="currentStep" />
         <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
-		<button class="btn btn-joyent-blue pull-right"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+		<button class="btn orange"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
 
 
         <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
     </form>
+    <button class="btn orange inline-pos" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
+    <p class="content-p inline-pos or">or</p>
+    <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
+    <div class="fieldset-spacer"></div>
+
 </div>

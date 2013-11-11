@@ -62,12 +62,9 @@
 /*.navbar-inner .top-menu span a {*/
 	/*color:#375775;*/
 /*}*/
-/*.signup-progress-container {*/
-	/*border:1px solid #ddd;*/
-	/*border-top:none;*/
-	/*margin-top:-20px;*/
-	/*padding:20px 20px 20px 20px;*/
-/*}*/
+.signup-progress-container {
+    width: 1015px;
+}
 /*h1 {*/
 	/*font-weight:normal;*/
 /*}*/
@@ -198,7 +195,7 @@ body{
     font-weight: 200;
     line-height: 30px;
     border-bottom: 1px solid #cccccc;
-    padding-bottom: 20px;
+    padding-bottom: 15px;
     max-width: 1005px;
     width: 1020px;
 }
@@ -219,8 +216,8 @@ body{
     line-height: 24px;
     letter-spacing: 0.03px;
     width: 715px;
-    padding-top: 45px;
-    float: left;
+    padding-top: 20px;
+    /*float: left;*/
     clear: both;
 }
 .sigin{
@@ -292,7 +289,7 @@ body{
     text-shadow: none;
     background-color: #ededed;
     min-width: 46px;
-    padding: 5px 11px;
+    padding: 7px 11px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
@@ -318,18 +315,16 @@ body{
     margin-left: 15px;
 }
 .info span{
-    color: green;
-    font-size: 14px;
+    color: #3cc051;
+    font-size: 16px;
     font-weight: 300;
-    margin-left: 17px;
+    margin-left: 23px;
 }
 .alert-icon{
     background-image: url("../img/alert-icon.png");
     background-repeat: no-repeat;
     margin-left: 5px;
-    background-position: left;
-    /*width: 18px;*/
-    /*height: 16px;*/
+    background-position: 0 3px;
 }
 .info-icon{
     background-image: url("../img/info-icon.png");
@@ -345,7 +340,7 @@ body{
 .table td .alert-icon{
     position: relative;
     width: 18px;
-    height: 16px;
+    height: 20px;
 }
 .table td .alert-icon span{
     position: absolute;
@@ -384,7 +379,6 @@ body{
 .wizard-steps {
     width: 730px;
     clear: both;
-    margin-top: -2px;
     display: inline-block;
     float: left;
 }
@@ -458,18 +452,18 @@ body{
     left: -17px;
     border: 0;
 }
-.line{
+.line-st1{
     width: 723px;
     border-bottom: 1px solid #9e9e9e;
     padding-top: 20px;
     margin-bottom: -12px;
 }
-.line_billing{
-    width: 723px;
-    border-bottom: 1px solid #9e9e9e;
-    padding-top: 20px;
-    margin-bottom: 11px;
-}
+/*.line_billing{*/
+    /*width: 723px;*/
+    /*border-bottom: 1px solid #9e9e9e;*/
+    /*padding-top: 20px;*/
+    /*margin-bottom: 11px;*/
+/*}*/
 .position_ca{
     padding-top: 30px;
 }
@@ -491,14 +485,14 @@ body{
     text-decoration: none;
     color: #f60;
 }
-.message-box{
-    width: 253px;
-    height: 400px;
-    background-color: #e8f0f7;
-    position: relative;
-    margin-left: 752px;
-    margin-top: -2px;
-}
+/*.message-box{*/
+    /*width: 253px;*/
+    /*height: 400px;*/
+    /*background-color: #e8f0f7;*/
+    /*display: inline-block;*/
+    /*float: right;*/
+    /*margin-top: 10px;*/
+/*}*/
 .prom-code-box{
     width: 253px;
     height: 392px;
@@ -540,7 +534,7 @@ body{
     padding-top: 10px;
 }
 .content-container-signup{
-    margin-top: 31px;
+    margin-top: 11px;
     margin-left: -12px;
     line-height: 21px;
 }
@@ -550,17 +544,17 @@ body{
     float: left;
 }
 
-.content-container-signup-billing span{
-    float: right;
-}
+/*.content-container-signup-billing span{*/
+    /*float: right;*/
+/*}*/
 .content-container-signup-billing, content-container-ssh{
-    margin-top: 29px;
+    margin-top: 11px;
     margin-left: 9px;
     line-height: 21px;
 }
 legend {
     border-bottom: none;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 20px;
     margin-left: 3px;
     padding-top: 4px;
@@ -591,4 +585,8 @@ legend {
 
 .notification-wrapper {
     max-width: 1010px;
+}
+.first-block{
+    width: 725px;
+    display: inline-block;
 }

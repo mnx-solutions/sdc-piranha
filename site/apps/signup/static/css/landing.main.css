@@ -349,3 +349,164 @@ div.error {
     background-color: #405f7c !important;
     color: #fff !important;
 }
+
+/*add new styles*/
+
+.account fieldset {
+    margin-bottom: 20px;
+}
+
+.account .field {
+    margin-bottom: 2px;
+    font-size: 16px;
+    height: 34px;
+}
+
+.account .field .name {
+    width: 120px;
+    font-weight: 300;
+    display: inline-block;
+}
+
+.account .field .value {
+    padding: 0;
+    float: none;
+    text-decoration: none;
+    border: none;
+}
+.account legend{
+    border-bottom: 0;
+    font-size: 19px;
+    line-height: 18px;
+    color: #333;
+    font-weight: 500 !important;
+    letter-spacing: 0.6px;
+    margin-left: -2px;
+    padding-top: 5px;
+    margin-bottom: 0;
+}
+.account fieldset{
+    /*margin-top: -15px;*/
+    padding-left: 5px;
+}
+.account .line, .account.line{
+    border-bottom: 1px solid #cccccc;
+    width: 725px;
+    margin-left: -2px;
+    padding-bottom: 2px;
+}
+.account .fieldset-spacer, .fieldset-spacer{
+    padding-top: 25px;
+}
+
+.inline-pos{
+    display: inline-block;
+}
+.btn.light {
+    color: #f60;
+    text-shadow: none;
+    background-color: #f3f3f3;
+    font-size: 16px;
+}
+
+.edit-name{
+    display: inline-block;
+    width: 175px;
+    text-align: right;
+    padding-right: 15px;
+    vertical-align: middle;
+    height: 30px;
+    font-size: 16px;
+    /*color: #7d7d7d;*/
+}
+.edit-value{
+    width: 218px;
+    display: inline-block;
+}
+.edit-value input{
+    padding: 0;
+    width: 205px;
+    border-radius: 0;
+    height: 28px;
+    border: 1px solid #ccc;
+    background-color: #fafcfd;
+    font-size: 16px;
+    font-weight: 300;
+    padding-left: 10px;
+}
+.edit-value-two select, .edit-value select, .edit-value-double{
+    display: inline-block;
+    height: 30px;
+    border-radius: 0;
+    padding-left: 0;
+    padding-right: 10px;
+}
+.edit-value select{
+    width: 205px !important;
+}
+.edit-value-two select{
+    width: 108px !important;
+}
+.edit-value-one select{
+    width: 218px !important;
+}
+.edit-value-double{
+    width: 455px !important;
+}
+.edit-value-double select{
+    display: inline-block;
+    margin-right: 5px;
+}
+.edit-error{
+    width: 285px;
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+.edit-phone{
+    width: 242px !important;
+    padding: 0;
+}
+.edit-country{
+    width: 205px !important;
+    padding: 0;
+}
+.content-p, .content-li{
+    font-size: 16px;
+    color: #3d3d3d;
+    line-height: 24px;
+    font-weight: 300;
+}
+.content-p{
+    padding-bottom: 15px;
+}
+.content-p.or{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.edit-form form{
+    margin: 0;
+}
+.orange-asterix{
+    font-size: 20px;
+    vertical-align: bottom;
+}
+.required-txt{
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+    margin-right: 20px;
+}
+.message-box{
+    width: 253px;
+    height: 400px;
+    background-color: #e8f0f7;
+    display: inline-block;
+    float: right;
+    /*margin-top: 10px;*/
+}
+.first-block{
+    width: 725px;
+    display: inline-block;
+}
