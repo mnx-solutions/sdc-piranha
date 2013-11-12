@@ -344,7 +344,7 @@ body{
 }
 .table td .alert-icon span{
     position: absolute;
-    width: 500px;
+    width: 240px;
 }
 .hide{
     display: none;
