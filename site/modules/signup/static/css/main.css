@@ -296,6 +296,7 @@ body{
     display: block;
     float: left;
     border: none;
+    text-decoration: none;
 }
 .error{
     display: inline-block;
@@ -344,7 +345,7 @@ body{
 }
 .table td .alert-icon span{
     position: absolute;
-    width: 500px;
+    width: 240px;
 }
 .hide{
     display: none;

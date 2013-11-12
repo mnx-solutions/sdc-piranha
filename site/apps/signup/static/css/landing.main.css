@@ -510,3 +510,6 @@ div.error {
     width: 725px;
     display: inline-block;
 }
+.icon-info-sign, .icon-warning-sign, .icon-question-sign{
+    background-image: url(../img/glyphicons-halflings-white.png) !important;
+}
