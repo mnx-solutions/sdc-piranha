@@ -171,12 +171,12 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Stop instance'
+                        'Confirm: Pause instance'
                     ),
                     localization.translate(
                         $scope,
                         null,
-                        'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
+                        'Pausing an instance does not stop billing, your instance can be restarted after it is paused.'
                     ), function () {
                         Machine.stopMachine(machineid);
                         $$track.event('machine', 'stop');

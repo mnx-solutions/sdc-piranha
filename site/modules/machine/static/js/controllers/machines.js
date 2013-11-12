@@ -242,7 +242,7 @@
                     sequence: 1
                 },
                 {
-                    label: 'Stop',
+                    label: 'Pause',
 //                    disabled: function (object) {
 //                        return object.state === 'stopped' || (object.job && !object.job.finished);
 //                    },
@@ -252,12 +252,12 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Confirm: Stop instance'
+                                    'Confirm: Pause instance'
                                 ),
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Stopping selected instances does not stop billing, your instance can be restarted after it is stopped.'
+                                    'Pausing selected instances does not stop billing, your instance can be restarted after it is paused.'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if(el.checked){

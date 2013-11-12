@@ -495,7 +495,7 @@ module.exports = function execute(scope) {
     server.onCall('MachineStart', changeState('startMachine','Starting', 'running'));
 
     /* GetMachine */
-    server.onCall('MachineStop', changeState('stopMachine','Stopping', 'stopped'));
+    server.onCall('MachineStop', changeState('stopMachine','Pausing', 'paused'));
 
     /* GetMachine */
     server.onCall('MachineDelete', changeState('deleteMachine','Deleting', 'deleted'));
