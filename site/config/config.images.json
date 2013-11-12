@@ -1,32 +1,6 @@
 {
     "images": [
         {
-            "name": "Basic SmartOS",
-            "description": "The high-performance cloud OS",
-            "className": "smartos-logo",
-            "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "f669428c-a939-11e2-a485-b790efc0f0c1",
-                "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
-                "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
-            }
-        },
-        {
-            "name": "Basic CentOS",
-            "description": "Linux distro with Yum, RPM, Gnome",
-            "className": "centos-logo",
-            "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
-                "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
-                "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
-            }
-        },
-        {
             "name": "Standard Node.js",
             "description": "Optimized Node.js on SmartOS for dev & prod",
             "className": "nodejs-logo",
