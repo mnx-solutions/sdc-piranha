@@ -127,7 +127,16 @@
             var filtered = $filter('filter')($scope.objects, $scope.matchesFilter);
             var ordered = $filter('orderBy')(filtered, $scope.order);
 
-            var order = ($scope.objects[0] && Object.keys($scope.objects[0])) || [];
+            // List all the different properties from all objects
+            var order = [];
+            $scope.objects.forEach(function (object) {
+                Object.keys(object).forEach(function (property) {
+                    if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
+                        order.push(property);
+                    }
+                });
+            });
+
             var final = [];
             if($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
@@ -139,7 +148,7 @@
             ordered.forEach(function (el) {
                 var obj = {};
                 order.forEach(function (id) {
-                    obj[id] = el[id];
+                    obj[id] = el[id] !== undefined ? el[id] : '';
                 });
                 final.push(obj);
             });
