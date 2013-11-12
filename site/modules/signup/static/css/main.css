@@ -296,6 +296,7 @@ body{
     display: block;
     float: left;
     border: none;
+    text-decoration: none;
 }
 .error{
     display: inline-block;

@@ -54,12 +54,12 @@ window.JP.createModule('timeout', [ 'notification' ])
                 {
                     result: 'cancel',
                     label: 'Log out',
-                    cssClass: 'pull-left'
+                    cssClass: 'grey_new'
                 },
                 {
                     result:'ok',
                     label: 'Keep me logged in',
-                    cssClass: 'btn-joyent-blue'
+                    cssClass: 'orange'
                 }
             ];
 
