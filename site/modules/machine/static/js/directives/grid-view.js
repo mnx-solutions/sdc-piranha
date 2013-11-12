@@ -44,18 +44,6 @@
             $scope.perPage = $scope.oldPerPage;
         };
 
-        $scope.showCurrentMachines = function () {
-            if (this.selectInstances == 'All') {
-                $scope.perPage = 10000;
-                return;
-            }
-            if (this.selectInstances != undefined) {
-                $scope.perPage = this.selectInstances;
-            } else {
-                $scope.perPage = 5;
-            }
-        };
-
         $scope.openDetails = {};
 
         $scope.toggleDetails = function (id) {
@@ -243,7 +231,6 @@
         };
 
         $scope.selectCheckbox();
-        $scope.showCurrentMachines();
 
     }]).constant('gridConfig', {
         paginated: true,
