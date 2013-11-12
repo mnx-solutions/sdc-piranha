@@ -54,12 +54,12 @@ window.JP.createModule('timeout', [ 'notification' ])
                 {
                     result: 'cancel',
                     label: 'Log out',
-                    cssClass: 'grey_new'
+                    cssClass: 'btn orange grey_new'
                 },
                 {
-                    result:'ok',
+                    result: 'ok',
                     label: 'Keep me logged in',
-                    cssClass: 'orange'
+                    cssClass: 'btn orange'
                 }
             ];
 
