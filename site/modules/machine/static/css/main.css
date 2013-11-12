@@ -1234,6 +1234,13 @@ ul.dropdown-menu{
     /*background-repeat: no-repeat;*/
     /*background-position: 0 0;*/
 }
+.advanced-instance-box:hover{
+    background-color: #e2e8ec !important;
+}
+.advanced-instance-box:hover .advaced-instance-btn{
+    background-color: #FF6600;
+    color: white;
+}
 .advanced-instance-title{
     padding: 15px 20px 0 22px;
 }
