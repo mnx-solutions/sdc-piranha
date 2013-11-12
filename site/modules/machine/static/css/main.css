@@ -1826,3 +1826,10 @@ ul.dropdown-menu{
 .small-icon.stingray {background-image: url(../img/icons/stingray.png);}
 .small-icon.ubuntu {background-image: url(../img/icons/ubuntu.png);}
 .small-icon.windows {background-image: url(../img/icons/windows.png);}
+
+.btn.light {
+    color: #f60;
+    text-shadow: none;
+    background-color: #f3f3f3;
+    font-size: 16px;
+}
