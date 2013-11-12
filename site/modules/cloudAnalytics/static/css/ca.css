@@ -22,9 +22,25 @@
     color: #a9a9a9;
 }
 .alert-info{
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    color: #555;
+    width: 210px;
+    background: #fef1d2;
+    border: 0;
+    color: #000000;
+    border-radius: 0;
+    padding: 25px 20px 25px 20px;
+}
+.alert-info h5{
+    text-shadow: none;
+}
+
+.alert-info select{
+    width: 210px;
+    height: 28px;
+}
+.alert-info p{
+    font-size: 14px;
+    font-weight: 300;
+    text-shadow: none;
 }
 .rickshaw_legend ul>li{
     margin-left: 20px !important;
@@ -34,4 +50,66 @@
 }
 .margin_btn_0{
     margin-bottom: 0 !important;
+}
+.start-analytics-btn{
+    text-align: left;
+    width: 210px;
+    margin-bottom: 25px;
+    margin-top: 5px;
+}
+.p-padding{
+    padding-top: 20px;
+    border-top: 1px solid #cbc1a8;
+}
+
+.icon-zoom-in, .icon-zoom-out{
+    background-repeat: no-repeat;
+    background-size: 24px;
+    background-position: center center;
+    width: 34px;
+    height: 34px;
+}
+.icon-zoom-in{
+    background-image: url(../img/zoomin.png);
+}
+
+.icon-zoom-out{
+    background-image: url(../img/zoomout.png);
+}
+
+.options-ctrl{
+    background-color: #fffbf2 !important;
+    padding: 0 10px;
+    min-width: 10px;
+    text-shadow: none;
+    color: #f60;
+    height: 34px;
+    margin-top: 1px;
+}
+.chart-info{
+    display: block;
+    padding-bottom: 10px;
+}
+.chart-info span{
+    text-align: left;
+}
+.name-chart{
+    width: 120px;
+    color: #375675;
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 300;
+}
+.value-chart, .value-chart-in{
+    display: inline-block;
+    font-size: 15px;
+    width: 500px;
+}
+.value-chart{
+    color: #000;
+    font-weight: 500;
+}
+.value-chart-in{
+    color: #666;
+    font-weight: 300;
 }

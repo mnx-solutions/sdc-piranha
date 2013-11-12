@@ -13,6 +13,7 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
     }
 
     $scope.zoneId = $routeParams.machine || null;
+    $scope.zoneName = null;
     $scope.zones = Machine.machine();
     $scope.location = $location;
 
@@ -97,6 +98,14 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
         }
 
     });
+
+    $scope.instanceName = function(){
+      $scope.zones.forEach(function(el){
+          if(el.id == $scope.zoneId){
+              $scope.zoneName = el.name;
+          }
+      })
+    };
 
     $scope.createDefaultInstrumentations = function() {
         var datacenter = null;

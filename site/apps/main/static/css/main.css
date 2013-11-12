@@ -952,6 +952,12 @@ a .feature1 {
 .btn.yellow-stripe {
     border-left: 3px solid #ffb848;
 }
+.btn.light {
+    color: #f60;
+    text-shadow: none;
+    background-color: #f3f3f3;
+    font-size: 16px;
+}
 .btn.light-blue {
     color: #ff6600;
     text-shadow: none;
