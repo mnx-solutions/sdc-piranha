@@ -72,7 +72,9 @@
                             </tr>
                             <tr>
                                 <td>IP addresses</td>
-                                <td data-ng-repeat="ip in machine.ips">{{ip}}</td>
+                                <td>
+                                    <span data-ng-repeat="ip in machine.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
+                                </td>
                             </tr>
                             <tr>
                                 <td>Created</td>
