@@ -127,5 +127,6 @@
     "Image \"{{name}}\" successfully created": "Image \"{{name}}\" successfully created",
     "Unable to create image \"{{name}}\"": "Unable to create image \"{{name}}\"",
     "Image \"{{name}}\" successfully deleted": "Image \"{{name}}\" successfully deleted",
-    "Unable to delete image \"{{name}}\"": "Unable to delete image \"{{name}}\""
+    "Unable to delete image \"{{name}}\"": "Unable to delete image \"{{name}}\"",
+    "Unable to create instance {{name}} ({{uuid}})": "Unable to create instance {{name}} ({{uuid}})"
 }
