@@ -228,3 +228,7 @@ input {
     color: #333333;
     text-decoration: none;
 }
+
+.dropdown-menu {
+    border-radius: 0px;
+}
