@@ -156,7 +156,7 @@ module.exports = function execute(scope, register) {
         }, config.polling.machineState);
 
         // timeout, so we wouldn't poll cloudapi forever
-        var timerTimeout = setTimeout(function() {
+        var timerTimeout = setTimeout(function () {
             call.log.error('Operation timed out');
             clearInterval(timer);
             call.error(new Error('Operation timed out'));
@@ -179,26 +179,26 @@ module.exports = function execute(scope, register) {
             var metadata = {
                 ssc_private_key: sscKeyPair.privateKey,
                 ssc_public_key: sscKeyPair.publicSsh,
-                portal_public_key: portalKeyPair.publicSsh,
-                account_name: 'dbqp',
-                datacenter_name: options.datacenter,
-                elb_code_url: 'https://us-east.manta.joyent.com/dbqp/public/elbapi-3.tgz',
-                sdc_url: 'https://us-west-1.api.joyentcloud.com',
-                manta_user: 'dbqp'
+                portal_public_key: (new Buffer(portalKeyPair.publicSsh).toString('base64')),
+                account_name: (config.elb && config.elb.account) || call.req.session.userName,
+                datacenter_name: call.data.datacenter,
+                elb_code_url: (config.elb && config.elb.elb_code_url) || "https://us-east.manta.joyent.com/dbqp/public/elbapi-1.tgz",
+                sdc_url: (config.elb && config.elb.sdc_url) || "https://us-west-1.api.joyentcloud.com"
             };
-            var metadata = {
-                datacenter_name: 'us-west-x',
-                sdc_url: 'https://us-west-1.api.joyentcloud.com',
-                ssc_private_key: '-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEAtbgl5+BBQARk6ZVwijRtns3XSATmjqca9KKGdFnqK4S5WSZF\nZdPWiIOOBgzp4OvwV60GEx64R0AjPSVPQeNkQwUpMAGu4rKv/NdlmpTF5KXC1go1\nH7YaoUYgeCNPSgJO4fcHHCSVyphaeHitvdTW8Z0CJqPCMX9xjaEf3gnqJw0IOHsn\na/Dc97ynu5QpBcHVdCb9G9qFuTlnMwKeCwuSlTtIsg2zwPA9E5Ze4qT7tLAx8yLC\nzVIWYBRLpXXTZE7MMoz70JIT3F/Kobca9d5XCWsSPpEJCqbAMQYHb4nGCqgnwJSv\nvLctg7ECx4uQsuQb7ZvbQBVilyi0+MK3fiub8QIDAQABAoIBACZraJg9sY33X96C\n2ehebU7F9l4jqxs9+VT/h63R1NCenxFaJhIBV7pFFiHxWQFU4NuomUAxnoRx6wFi\ngf9MNEZ3MN4VfQQxA0RRxgmIqs5MvYTDY7fwqHCwguzjij/7fPIJaFdq5MCQtZAC\n87jO5yLuLyY8OTJ932QyTKqFLhxTKdC8verpwTptUPRulEAhmPy61M2duUxDQemQ\nFtFMMj9AEQxt3RWHyek9sWAGrclZPPPj1okqtxSU7KkLX2LSCYl9lwHkdMGwCn59\nnXEFJDoR9LCRMoI+zE6ksWuOfA1WeDMUk3FneMyMSNsrnrgNla189K3kAQ5S4Yw8\nziGsdoECgYEA3D59yWL5U2iftOsS5LB+ol/3lxy0/dvlhUhnGXwmzD3ReDGMlUUZ\n2EGk/JiE1vMwEoSWm2FO1OE2JGIqmGLynNij4leTEkrSPS9QruZ2KBSDF4vKH3tK\nhTYOlL+ZpYm0pCHkL/10Dp+iuCvhN39SUiH4yxMPkk4B4vd02XYmZPsCgYEA0ziJ\nztFACJhNz08JFol6T30OjqKSx4hBSurdulV9Pr1bUu59/LikvcfAaW0nkwTFLfhJ\nvoj1pzL4JO98vM/3ctVYPYv/xSZz56K7CtQ8oasvPqR6lm3ulcfOpwGHVvk3/msE\nVRGJSa4pF6AEU9AEO2bI3In65TsvZTx0/fxLtwMCgYAkgZs5+VTYdXwbceeUzoh/\nA6c3fgOmHH/j4sdsGv8XVZvV72idCXIqPV9Km0FRm8e5Gg8YvD1j3dyqlTb4QVZz\nlxk7GEcBfjNw/tnB0+N760J7calUJIyKnhY2o7elD7lIh3GaXsmQ7vb6zhMrrsgH\nYygpCQTIvHNlmpzcus/MZwKBgAq/msuqfE6zqWn+RKEf99hprb72aO+8cE4mq4fa\n59e0fRw4RLMClmeN7a2vv07M9FfFhcMrZwzOHDCM+1UEZDw0vRvMrwRSU52a+1eu\nuzMi6fGPHyneiECY/VwkSMXVQtMwkPTfQpQ8R50LKI03Ta/UKC6I2vqlS2EkdXOj\nThsPAoGBAM6syMnZlLLZ3H6x7emT3xlAI3bYSP7VPQt8CgHpRQ0ut6goTzoGebgC\njozR884vpMKWESzdJUm/dE+/+4/uKrDvt+boLzK43vOt9CzMGg4eoe6iNGXwh45v\njputcd1nJ5Y8ZbILAcuhOulr8BEV9QF7C3K5wDYsorRlGq0zxPAj\n-----END RSA PRIVATE KEY-----\n',
-                ssc_public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1uCXn4EFABGTplXCKNG2ezddIBOaOpxr0ooZ0WeorhLlZJkVl09aIg44GDOng6/BXrQYTHrhHQCM9JU9B42RDBSkwAa7isq/812WalMXkpcLWCjUfthqhRiB4I09KAk7h9wccJJXKmFp4eK291NbxnQImo8Ixf3GNoR/eCeonDQg4eydr8Nz3vKe7lCkFwdV0Jv0b2oW5OWczAp4LC5KVO0iyDbPA8D0Tll7ipPu0sDHzIsLNUhZgFEulddNkTswyjPvQkhPcX8qhtxr13lcJaxI+kQkKpsAxBgdvicYKqCfAlK+8ty2DsQLHi5Cy5Bvtm9tAFWKXKLT4wrd+K5vx piranha@portal',
-                portal_public_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDESYgQMAgEembZjy5R8FhdMqV2dtEUhJ+Cl6oZbH26VpU6ZzxpFIUtFN8FuFKJ9z9rd4KqMcs3y2rhw2G3tKBbNWYCo3L7fmjVug5OIbdltUPypgAIg80ypVrmDQb6A14gPE4m/mVH87n0v2sKUgZkXOnb5/rm+Jw/3JdVo500ppOwmWLoEUtVRRbLvR/Scmf5GhnZ6aALxZGxiKsqNDx5yWN8hL3qkv2x3V153lcqyrtI0foWvFDeMX57htqPv6U2OVvccerUZ+y86r5xDuyQcRwV5bJdUKD6R9powZMa6Ch6EqZsDTr/6J3ki8wz/InFmzUWEuTcONRncwEqa8Dt piranha@portal',
-                account_name: 'dbqp',
-                elb_code_url: 'https://us-east.manta.joyent.com/dbqp/public/elbapi-3.tgz',
-                manta_user: 'dbqp',
-                root_authorized_keys: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDZyGxUG76NE0Spf3bzedho0603rQPWPGr35qACL0glcCAVL5gNDvtwi+1SpEGD6Fj4AJ7dCvpedvA67OLRBs/hoWwOYnysScjRqeUDv0aV9agjWU6rsAHWg5/Qwbsy91og1yWVoaFA+WDl3uhgIhbQ7xlwi8G+m/FyWLJucnGYEb//Cu6f/x8+gYroFJLHx80Q6AS1VuogFkEHss/MTZvpm02b4udDo6vKj38YEC1kJrUjHLkYNy9oeXtuptDGEgbJETK/4N8N89N93IbzkzU8YkUFkpMiulinQHe0j0IEShmMqqWSleYAJ5bVgOa10mPk0vXU8wqbhWX2qd+i/xCv igor@igorxps\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvQ5AipRq8EK8wy47hAZnk91g3XPHeOOd8FitVEQcRs4KR+6kdZJxTj20n1Iq/uFPLkQWmUk3G7rw2/Xnmgel//7mGYgqV8ziy7VD/epojwfwDwXmKi5USo+1QedR/wK2Qh0KkA1umZmvseX+Hp48xu6Yjh1do9Epz0DDH9Y1epbIty6RsSQEJD2EvYOpgC1zPLf6jnVBRFb2rKayNxH6XEiZbyaK8llwiH+pfil7b4BnP+tD89emH0dN+cLGkCUicUCQrVDjYtg5/CgRPPCfgIouADiR4BzpDC/w5H8w7HXydBIZyesjyPlqKd8qAbuA+nB+KucyB3wqi4nH4d5RJ piranha@portal\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyeqdQ76YcsY1Djdc6tFVGxqqcUBaGVwzjZ7nP3QkObP1ILPf6A12qDiowkIp99kMQZuN2eSYfhZPXy3jrf7u4GyLK3K/1BJAXf6sTJJSRT3Abwp7cUevhI7cIEthtgqtZPVVImykT6FWKVtv5y7ue3sewpT2FO/swa69uZvhdcfDZroK7XkTbSOg72nwfLBaqYzqvkIJGUyTKLE6Avw5yYOxw2ouYAaQh5yXSx9sWzmCAP1ZO4Nt8uemV66KNp1ls/yyOtunLW7WJ+7dqljkUPG2PuS3nzEa7+AjV542SmZniojULMUlBQcEcHzkzMkw6juCE6xRK2JeqXK5vMAM7 zero@cetku.net\n'
-            };
+
+            if (config.elb.ssc_private_key) {
+                metadata.ssc_private_key = config.elb.ssc_private_key;
+                metadata.ssc_public_key = config.elb.ssc_public_key;
+            }
+
+            if (!metadata.datacenter_name) {
+                metadata.datacenter_name = 'us-west-x';
+            }
+
             for (var key in metadata) {
-                options['metadata.' + key] = metadata[key];
+                if (metadata.hasOwnProperty(key)) {
+                    options['metadata.' + key] = metadata[key];
+                }
             }
         }
 
@@ -209,15 +209,12 @@ module.exports = function execute(scope, register) {
         cloud.createMachine(options, function (err, machine) {
             if (!err) {
                 call.immediate(null, {machine: machine});
-                //call.data.uuid = machine.id;
 
                 // poll for machine status to get running (provisioning)
                 pollForMachineStateChange(cloud, call, machine.id, (60 * 60 * 1000), 'running', null, null, callback);
                 if (options.elbController) {
                     metadata.portal_private_key = portalKeyPair.privateKey;
                     metadata.portal_fingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
-                    metadata.portal_fingerprint = '/' + call.req.session.userName + '/keys/95:f2:92:65:c1:78:b4:66:2c:d9:d1:1d:3c:af:de:10';
-                    metadata.portal_private_key = '-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEAxEmIEDAIBHpm2Y8uUfBYXTKldnbRFISfgpeqGWx9ulaVOmc8\naRSFLRTfBbhSifc/a3eCqjHLN8tq4cNht7SgWzVmAqNy+35o1boOTiG3ZbVD8qYA\nCIPNMqVa5g0G+gNeIDxOJv5lR/O59L9rClIGZFzp2+f65vicP9yXVaOdNKaTsJli\n6BFLVUUWy70f0nJn+RoZ2emgC8WRsYirKjQ8ecljfIS96pL9sd1ded5XKsq7SNH6\nFrxQ3jF+e4baj7+lNjlb3HHq1GfsvOq+cQ7skHEcFeWyXVCg+kfaaMGTGugoehKm\nbA06/+id5IvMM/yJxZs1FhLk3DjUZ3MBKmvA7QIDAQABAoIBAQCVT0nM5nxyy5kI\nzT1y3tyYqDntDxyj+u5LLIsbo8dPwyTotDbjx9Q2IrYzZ66BfC4l1Vbzl8T5wCah\nbTobv65rMwdR4ntIizO7wDe5fzQ+jdAN9+/2iivA5r9qV2aDL6Sd6MGaL9FjFibR\n4fnOc+6g0Xyi5qeYomxYt7f2UOr4bJimUmAtfRckyNsCABBnSSHnZvTQctWCxvMl\nUnkJhSKJYZBWVbqfDbn0msqdV77NKNcdco7BOPkW666tDYunY0/9S1m5Ikc93ouT\nYbEV9O48igda39idEZfqMZhKusBgzRGyQXhFabx8ebnbFXeAO4aD9baQTgCWZ5ON\n3R+scNIBAoGBAOa818wXZszDmwbgoiNl/hhaW/qPaIdbxRoF51EXD03ETkU/2LwW\n7pxbpII/he9JNXrP2nVDkJY4w6WEXSOyteVP5plfVCNKN0/fY7hzmEwXtUAfgj4y\ncVwdu19IM/xdkctsAsluRxPmLGeq14X/x+74YNsQVz8lAEAJp5bQf7XNAoGBANnH\nGwLMfVzvH/zsjEwa0TtC674DSoeuhUD9Ss0k9mhBpp1dUjfoGVWYlekCleI3sR/S\nSkwXonvviU1oUjJUUuYKdTtzdk7xqk9AltZg2Zdn089yzufEMqja8FZrSRG9fodK\nT/qI4vYzun61sSOFt2T3hTB6gSm/+HYvPuNO2RehAoGBAI3XyVFNkYSPOt4feY0J\nRgrygVimkDulzqUQvAK9ikrkQrmPZk06S7UTIS5wnoVbG+VDoag0wM2YV62IkTlA\nw1EUrU3brH2FQjt3uHXLmfQtHt8sf4R8vfNC08zfNhYN73J+E7iAcnFpLiMMgzF8\n7Aub5O7GPNw0gtLbHIs54UiBAoGAR8J24Q42xNe6p6HefPldNnTPr1XwShM0r3yH\nGF/0ndf8KeBlRizBpFXaF+SVNOx6/exSNQ6YqNP+XzZf11u30Tti88sREeRJ5UF4\nMn3JVT2OKs4+5VneA4vZI/DILANP3Q6cmgZfGxdifXwrOXRHQQrapWXIh9RM78yT\noV0K5eECgYBktmQ0IZTqfEYNQr8VBYq57M3/2M+Y6UImPefTELFG/iWk3A18wM1S\n5Q1GNZOc2LbMEz8o/D8/2XLxbY4ZRsr+33qsIXojUHmc2cNhcDR5kYWoFR7lGY5r\nF6w2oBBL3FZFLTcDTm7yql1yJgE1ly+2WKkMuuErKQufRBFkbuKNjg==\n-----END RSA PRIVATE KEY-----\n';
                     updateUserMetadata(call, metadata);
                 }
             } else {
@@ -360,7 +357,7 @@ module.exports = function execute(scope, register) {
                 }
             });
         });
-    }
+    };
 
     register('Machine', api);
 };

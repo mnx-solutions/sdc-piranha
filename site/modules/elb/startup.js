@@ -1,12 +1,9 @@
 'use strict';
 
 var config = require('easy-config');
-var restify = require('restify');
-var fs = require('fs');
-var vasync = require('vasync');
-var httpSignature = require('http-signature');
-var key = config.elb && config.elb.keyPath ? fs.readFileSync(config.elb.keyPath).toString() : null;
-var sscName = config.elb && config.elb.sscName || 'elb-ssc';
+var ssc = require('./ssc-client');
+var getSscMachine = ssc.getSscMachine;
+var getSscClient = ssc.getSscClient;
 
 //Logging is done by serverTab itself, no need for additional info/error logging in each request
 var elb = function execute(scope) {
@@ -16,93 +13,7 @@ var elb = function execute(scope) {
 
     var hardControllerName = 'elb-ssc';
 
-    function getMachinesList(call, cb) {
-        var datacenterKeys = Object.keys(call.cloud.listDatacenters());
-        var datacentersCount = datacenterKeys.length;
-        var result = [];
-        var errs = [];
-        datacenterKeys.forEach(function (name) {
-            call.cloud.separate(name).listMachines({ credentials: true }, function (err, machines) {
-                machines = machines || [];
-                machines.forEach(function (machine) {
-                    machine.datacenter = name;
-                    result.push(machine);
-                });
-                datacentersCount -= 1;
-                if (datacentersCount === 0) {
-                    cb(null, result);
-                }
-            });
-        });
-    }
-
-    function getSscMachine(call, cb) {
-        getMachinesList(call, function (err, machines) {
-            if (err) {
-                cb(err);
-                return;
-            }
-            var sscMachines = machines.filter(function (machine) {
-                return machine.name === sscName;
-            });
-            if (sscMachines.length !== 1) {
-                cb('SSC machine not found or multiple SSC machines');
-                return;
-            }
-            cb(null, sscMachines[0]);
-        });
-    }
-
-    var sscClient = null;
-    function getSscClient(call, cb) {
-        function getElbApiKey(call, callback) {
-            var result = {};
-            vasync.parallel({
-                funcs: [
-                    function _getSscMachine(callback) {
-                        getSscMachine(call, function(error, machine) {
-                            result.primaryIp = machine.primaryIp;
-                            callback(error);
-                        });
-                    },
-                    function _getElbAPIKey(callback) {
-                        vasync.forEachParallel({
-                            func: function(key, callback) {
-                                metadata.get(call.req.session.userId, key, callback);
-                            },
-                            inputs: ['portal_private_key', 'portal_fingerprint']
-                        }, function(error, response) {
-                            result.privateKey = response.successes[0];
-                            result.fingerprint = response.successes[1];
-                            callback(error);
-                        });
-                    }
-                ]
-            }, function(error) {
-                callback(error, result);
-            });
-        }
-        getElbApiKey(call, function(error, result) {
-            console.log(error, result);
-            if (error) {
-                cb(error);
-                return;
-            }
-            var sscUrl = 'http://' + result.primaryIp + ':4000';
-//            var sscUrl = 'https://localhost:4000';
-            sscClient = restify.createJsonClient({
-                url: sscUrl,
-                rejectUnauthorized: false,
-                signRequest: function (req) {
-                    httpSignature.sign(req, {
-                        key: result.privateKey,
-                        keyId: result.fingerprint
-                    });
-                }
-            });
-            cb(null, sscClient);
-        });
-    }
+    ssc.init(metadata);
 
     server.onCall('LoadBalancersList', function (call) {
         getSscClient(call, function (err, client) {
@@ -258,7 +169,7 @@ var elb = function execute(scope) {
         handler: function (call) {
             var data = {
                 datacenter: call.data.datacenter,
-                dataset: '0132c5b0-4586-11e3-ad73-b360f35434c7',
+                dataset: (config.elb && config.elb.ssc_image) || '110929de-4b12-11e3-befe-8fc147c00b6f',
                 name: hardControllerName,
                 package: '5d367f42-867b-4cc3-883c-b329cbaad9d4',
                 networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f'],

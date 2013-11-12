@@ -8,17 +8,10 @@ var key = config.elb && config.elb.keyPath ? fs.readFileSync(config.elb.keyPath)
 var ursa = require('ursa');
 var express = require('express');
 
+var ssc = require('./ssc-client');
+var getSscClient = ssc.getSscClient;
+
 var elb = function execute(scope, app) {
-    var client = restify.createJsonClient({
-        url: config.elb.url,
-        rejectUnauthorized: false,
-        signRequest: function (req) {
-            httpSignature.sign(req, {
-                key: key,
-                keyId: config.elb.keyId
-            });
-        }
-    });
 
     function getUploadResult(callback, resultObj) {
         return '<script language="javascript" type="text/javascript">' +
@@ -48,19 +41,24 @@ var elb = function execute(scope, app) {
             try {
                 var privateKey = ursa.createPrivateKey(pemSrc, req.body.passphrase || '');
                 var data = {
-                    'private': privateKey.toPrivatePem(),
-                    'public': privateKey.toPublicPem()
+                    'private': privateKey.toPrivatePem('utf8'),
+                    'public': privateKey.toPublicPem('utf8')
                 };
-                client.post('/certificates', data, function (err, creq, cres, obj) {
-                    if (err) {
-                        req.log.warn({err: err}, 'Error saving certificate into ELB API');
-                        res.send(getUploadResult(callback, {success: false, message: 'Error saving certificate into ELB API'}));
-                        return;
-                    }
-                    obj.success = true;
-                    res.send(getUploadResult(callback, obj));
+                console.log('Data:', data);
+                getSscClient({req: req}, function (err, client) {
+                    console.log('getSscClient', err, client);
+                    client.post('/certificates', data, function (err, creq, cres, obj) {
+                        if (err) {
+                            req.log.warn({err: err}, 'Error saving certificate into ELB API');
+                            res.send(getUploadResult(callback, {success: false, message: 'Error saving certificate into ELB API'}));
+                            return;
+                        }
+                        obj.success = true;
+                        res.send(getUploadResult(callback, obj));
+                    });
                 });
             } catch (ex) {
+                console.error(ex);
                 if (ex.message.indexOf('bad password') !== -1 || ex.message.indexOf('bad decrypt') !== -1) {
                     req.log.info('Certificate has passphrase, asking user for it');
                     res.send(getUploadResult(callback, {success: false, passphrase: true, message: 'Certificate has passphrase'}));
@@ -68,7 +66,6 @@ var elb = function execute(scope, app) {
                 }
                 req.log.info({ex: ex}, 'Private key not found in PEM');
                 res.send(getUploadResult(callback, {success: false, message: 'Private key not found in PEM'}));
-                return;
             }
         });
     });
