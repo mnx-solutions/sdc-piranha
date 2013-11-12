@@ -110,7 +110,7 @@
                     id: 'updated',
                     name: 'Updated',
                     sequence: 6,
-                    active: false
+                    active: true
                 },
                 {
                     id: 'id',
