@@ -360,6 +360,8 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             $scope.current.decomposition.secondary = null;
         }
     };
+
+    if($scope.zoneId != null)$scope.instanceName();
 }
 
     ]);
