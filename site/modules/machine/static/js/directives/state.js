@@ -21,13 +21,13 @@
                     if(scope.type ===  'machine') {
                         switch (state) {
                             case 'provisioning':
-                            case 'stopping':
+                            case 'pausing':
                                 return 'btn-warning';
 
                             case 'running':
                                 return 'btn-success';
 
-                            case 'stopped':
+                            case 'paused':
                                 return '';
 
                             default:
@@ -37,7 +37,7 @@
                         switch (state) {
                             case 'active':
                                 return 'btn-success';
-                            case 'stopped':
+                            case 'paused':
                                 return '';
                             default:
                                 return '';
