@@ -400,9 +400,9 @@ module.exports = function execute(scope) {
                     machineInfo.cn = machine.compute_node
                 }
                 if (err) {
-                    // in case we're waiting for deletion a http 410(Gone) is good enough
-                    if (err.statusCode === 410 && state === 'deleted') {
-                        call.log.debug(machineInfo, 'Machine %s is deleted, returning call', machineId);
+                    // in case we're waiting for deletion a http 410(Gone) or 404 is good enough
+                    if ((err.statusCode === 410 || err.statusCode === 404) && state === 'deleted') {
+                        call.log.debug('Machine %s is deleted, returning call', machineId);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
@@ -628,8 +628,8 @@ module.exports = function execute(scope) {
 
             client.getImage(imageId, function (err, image) {
                 if (err) {
-                    // in case we're waiting for deletion a http 410(Gone) is good enough
-                    if (err.statusCode === 404 && state === 'deleted') {
+                    // in case we're waiting for deletion a http 410(Gone) or 404 is good enough
+                    if ((err.statusCode === 410 || err.statusCode === 404) && state === 'deleted') {
                         call.log.debug('Image %s is deleted, returning call', imageId);
                         call.done(null, image);
                         clearInterval(timer);
