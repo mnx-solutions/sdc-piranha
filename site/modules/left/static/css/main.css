@@ -133,7 +133,8 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     margin-left: 15px;
 }
 .second.active, .second.active.over.collapse {
-    height: 170px;
+    height: auto;
+    /*height: 170px;*/
     position: relative !important;
     z-index: 2000;
     display: block !important;
