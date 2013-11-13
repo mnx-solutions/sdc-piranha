@@ -377,7 +377,7 @@ select.date-month, select.date-year {
     color: #7d7d7d;
 }
 .edit-value{
-    width: 450px;
+    width: 459px;
     display: inline-block;
 }
 .edit-value input{
@@ -408,9 +408,16 @@ select.date-month, select.date-year {
     width: 457px !important;
 }
 .edit-error{
-    width: 125px;
+    width: 110px;
     display: inline-block;
     vertical-align: top;
+    margin-left: 8px;
+    position: absolute;
+    line-height: 14px;
+}
+.edit-error .error span{
+    margin-left: 20px;
+    vertical-align: middle;
 }
 .edit-phone{
     width: 242px !important;
@@ -555,4 +562,9 @@ label.checkbox {
     -moz-box-shadow: inset 0 1px 0 #ffffff;
     box-shadow: inset 0 1px 0 #ffffff;
 }
-
+.alert-icon{
+    background-image: url("../img/alert-icon.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    font-weight: normal;
+}
