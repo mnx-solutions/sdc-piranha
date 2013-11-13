@@ -251,10 +251,10 @@
                         </div>
                     </span>
         </div>
-        <div class="control-group" data-ng-switch="!!stateSel" data-ng-switch-default>
+        <div class="control-group">
             <span class="edit-name">State<span data-ng-show="!!stateSel" class="orange-asterix">*</span></span>
-            <div data-ng-switch="!!stateSel">
-                <div class="controls" data-ng-switch-default>
+            <span data-ng-switch="!!stateSel">
+                <span class="controls" data-ng-switch-default>
                             <span class="edit-value">
                                 <input type="text"
                                        id="state"
@@ -275,9 +275,9 @@
                                     Missing state
                                 </div>
                             </span>
-                </div>
-                <div class="controls" data-ng-switch-when="true">
-                            <span class="edit-value">
+                </span>
+                <span class="controls" data-ng-switch-when="true">
+                            <span class="edit-value-one">
                                 <select id="stateSel"
                                         name="state"
                                         data-ng-class="{error: isError('state')}"
@@ -299,8 +299,8 @@
                                     Missing state
                                 </div>
                             </span>
-                </div>
-            </div>
+                </span>
+            </span>
         </div>
         <div class="control-group">
             <span class="edit-name">Zip Code<span class="orange-asterix"> *</span></span>
