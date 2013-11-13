@@ -35,7 +35,11 @@
                         </li>
                     </ul>
                 </div>
-                <div class="hotlinks pull-right"><a href="" data-ng-click="basicCreateInstance = false">View More Images </a> | <a href=""> Saved Images</a></div>
+                <div class="hotlinks pull-right">
+                    <a href="" data-ng-click="basicCreateInstance = false">View More Images </a>
+                    <span data-ng-show="features.imageUse != 'disabled'">
+                        | <a data-ng-click="basicCreateInstance = false; selectVisibility(false);" href=""> Saved Images</a></span>
+                </div>
             </div>
 
             <div class="row-fluid basic-instance-box-padding">
@@ -161,27 +165,10 @@
                                         </ul>
                                     </div>
 
-                                    <div class="btn-group tooltip-hover hidden-phone"
-                                         data-ng-show="features.imageUse != 'disabled'"
-                                         data-html="true"
-                                         data-toggle="tooltip"
-                                         data-placement="right"
-                                         data-original-title="Filter by visibility"
-                                         style="padding-left: 20px;">
-                                        <span class="btn-control-pos">
-                                            Image Type:
-                                        </span>
-                                        <button class="btn datacenter-select dd-fixed-width">{{visibilityFilter}}</button>
-                                        <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu dd-datacenter" style="margin-left: 105px !important;">
-                                            <!-- <li><a data-ng-click="selectVisibility(null);">All</a></li> -->
-                                            <li><a data-ng-click="selectVisibility(true);">Public</a></li>
-                                            <li><a data-ng-click="selectVisibility(false);">Private</a></li>
-                                        </ul>
+                                    <div data-ng-show="features.imageUse != 'disabled'" class="hotlinks pull-right link">
+                                        <a href="" data-ng-show="visibilityFilter != 'Public'" data-ng-click="selectVisibility(true);">Public Images</a>
+                                        <a href="" data-ng-show="visibilityFilter != 'Saved'" data-ng-click="selectVisibility(false);">Saved Images</a>
                                     </div>
-                                    <div class="hotlinks pull-right link"><a href="">Saved Images</a></div>
                                 </div>
 
 

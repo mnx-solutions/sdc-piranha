@@ -327,7 +327,7 @@
                 } else if(type === true) {
                     $scope.visibilityFilter = 'Public';
                 } else if(type === false) {
-                    $scope.visibilityFilter = 'Private';
+                    $scope.visibilityFilter = 'Saved';
                 }
 
                 $scope.selectedVisibility = type;
