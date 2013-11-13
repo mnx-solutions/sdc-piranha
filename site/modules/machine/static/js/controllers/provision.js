@@ -438,7 +438,14 @@
                     });
 
                     Network.network(newVal).then(function(networks) {
+                        var externalNetworkId = null;
                         $scope.networks = networks;
+                        $scope.networks.forEach(function(network) {
+                            if(network.name === "JPC-WESTX-External") {
+                                externalNetworkId = network.id;
+                            }
+                        });
+                        $scope.selectNetworkCheckbox(externalNetworkId);
                     });
 
                     Package.package({ datacenter: newVal }).then(function (packages) {

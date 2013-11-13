@@ -586,8 +586,11 @@
                                                 <div class="networks-box-3">
                                                     <label data-ng-repeat="network in networks">
                                                         <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                                                            <span data-ng-class="{checked: network.active}">
-                                                                 <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox" checked=""
+                                                            <span
+                                                                    data-ng-class="{checked: network.active}"
+                                                                    class="{{network.name == 'JPC-WESTX-External' && 'checked'}}">
+                                                                 <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
+                                                                        data-ng-checked="{{network.name == 'JPC-WESTX-External'}}"
                                                                         value="{{network.id}}"
                                                                         name="{{network.name}}"
                                                                         data-ng-model="selectedNetworkId"
