@@ -153,6 +153,7 @@
                     start: {
                         value: function () {
                             _status = 'started';
+
                             $http({
                                 method:'POST',
                                 url:'server/call',
