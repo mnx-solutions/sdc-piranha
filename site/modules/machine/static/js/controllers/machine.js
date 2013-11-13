@@ -322,7 +322,10 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Your instance ' + $scope.machine['name'] + ' has been successfully deleted.'
+                                    'Your instance "{{name}}" has been successfully deleted.',
+                                    {
+                                        name: $scope.machine['name']
+                                    }
                                 ),
                                 function () {}
                             );
