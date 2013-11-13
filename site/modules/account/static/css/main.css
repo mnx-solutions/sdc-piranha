@@ -395,8 +395,6 @@ select.date-month, select.date-year {
     display: inline-block;
     height: 30px;
     border-radius: 0;
-    padding-left: 0;
-    padding-right: 10px;
 }
 .edit-value select{
     width: 205px !important;
@@ -568,3 +566,16 @@ label.checkbox {
     background-position: 0 0;
     font-weight: normal;
 }
+/*select {*/
+    /*border-radius: 0;*/
+    /*-webkit-appearance: none;*/
+    /*overflow: hidden;*/
+    /*background: url(../img/select-arrow.png) no-repeat right #ddd;*/
+    /*border: 1px solid #ccc;*/
+    /*background-color: #fafcfd;*/
+    /*padding: 0 0 0 10px;*/
+    /*font-size: 16px;*/
+/*}*/
+/*select option{*/
+    /*background: white;*/
+/*}*/

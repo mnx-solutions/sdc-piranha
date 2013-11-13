@@ -1295,3 +1295,25 @@ table.table {
 .table-hover tbody tr:hover > td, .table-hover tbody tr:hover > th {
     background-color: #f9f9f9;
 }
+select {
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none !important;
+    appearance: none;
+    overflow: hidden;
+    background: url(../img/select-arrow.png) no-repeat right #ddd;
+    border: 1px solid #ccc;
+    background-color: #fafcfd;
+    padding: 0 0 0 10px;
+    font-size: 16px;
+    text-indent: 0.01px;
+    text-overflow: '';
+}
+select option{
+    background: white;
+}
+@-moz-document url-prefix() {
+    select {
+        padding: 3px 0 0 10px;
+    }
+}

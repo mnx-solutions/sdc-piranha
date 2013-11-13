@@ -445,9 +445,9 @@ div.error {
     width: 205px !important;
 }
 .edit-value-two select{
-    width: 108px !important;
+    width: 107px !important;
 }
-.edit-value-one select{
+.edit-value-one select,.edit-value-double select{
     width: 218px !important;
 }
 .edit-value-double{
@@ -512,4 +512,26 @@ div.error {
 }
 .icon-info-sign, .icon-warning-sign, .icon-question-sign{
     background-image: url(../img/glyphicons-halflings-white.png) !important;
+}
+select {
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none !important;
+    appearance: none;
+    overflow: hidden;
+    background: url(../img/select-arrow.png) no-repeat right #ddd;
+    border: 1px solid #ccc;
+    background-color: #fafcfd;
+    padding: 0 0 0 10px;
+    font-size: 16px;
+    text-indent: 0.01px;
+    text-overflow: '';
+}
+select option{
+    background: white;
+}
+@-moz-document url-prefix() {
+    select {
+        padding: 3px 0 0 10px;
+    }
 }
