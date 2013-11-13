@@ -207,7 +207,7 @@ module.exports = function execute(scope) {
 
     /* listNetworks */
     server.onCall('NetworksList', function(call) {
-        call.log.info('Retrieving networks list');
+        call.log.info({'datacenter': call.data.datacenter}, 'Retrieving networks list');
         call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
     });
 
@@ -260,7 +260,9 @@ module.exports = function execute(scope) {
                 typeof data.datacenter === 'string';
         },
         handler: function (call) {
-            call.log.info('Handling machine tags list call, machine %s', call.data.uuid);
+            var machineId = call.data.uuid;
+            var machineInfo = {'datacenter': call.data.datacenter};
+            call.log.info(machineInfo, 'Handling machine tags list call, machine %s', machineId);
             call.cloud.separate(call.data.datacenter).listMachineTags(call.data.uuid, call.done.bind(call));
         }
     });
@@ -279,15 +281,18 @@ module.exports = function execute(scope) {
             var newTags = JSON.stringify(call.data.tags);
             var oldTags = null;
             var cloud = call.cloud.separate(call.data.datacenter);
+            var machineInfo = {
+                'datacenter': call.data.datacenter
+            };
 
             function updateState () {
                 var timer = setInterval(function () {
-                    call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
+                    call.log.debug(machineInfo, 'Polling for machine %s tags to become %s', call.data.uuid, newTags);
                     cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
                         if (!tagsErr) {
                             var json = JSON.stringify(tags);
                             if (json === newTags) {
-                                call.log.debug('Machine %s tags changed successfully', call.data.uuid);
+                                call.log.debug(machineInfo, 'Machine %s tags changed successfully', call.data.uuid);
                                 clearInterval(timer);
                                 clearTimeout(timer2);
                                 call.done(null, tags);
@@ -296,17 +301,17 @@ module.exports = function execute(scope) {
                             } else if (json !== oldTags) {
                                 clearInterval(timer);
                                 clearTimeout(timer2);
-                                call.log.warn('Other call changed tags, returning new tags %j', tags);
+                                call.log.warn(machineInfo, 'Other call changed tags, returning new tags %j', tags);
                                 call.done(null, tags);
                             }
                         } else {
-                            call.log.error('Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
+                            call.log.error(machineInfo, 'Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
                         }
                     }, undefined, true);
                 }, config.polling.machineTags);
 
                 var timer2 = setTimeout(function () {
-                    call.log.error('Operation timed out');
+                    call.log.error(machineInfo, 'Operation timed out');
                     clearInterval(timer);
                     call.error(new Error('Operation timed out'));
                 }, 1 * 60 * 1000);
@@ -343,7 +348,8 @@ module.exports = function execute(scope) {
         },
         handler: function (call) {
             var machineId = call.data.uuid;
-            call.log.info('Handling machine details call, machine %s', machineId);
+            var machineInfo = {'datacenter': call.data.datacenter};
+            call.log.info(machineInfo, 'Handling machine details call, machine %s', machineId);
             call.cloud.separate(call.data.datacenter).getMachine(machineId, call.done.bind(call));
         }
     });
@@ -355,7 +361,8 @@ module.exports = function execute(scope) {
         },
         handler: function(call) {
             var networkId = call.data.uuid;
-            call.log.info('Handling network call, network %s', networkId);
+            var machineInfo = {'datacenter': call.data.datacenter};
+            call.log.info(machineInfo, 'Handling network call, network %s', networkId);
             call.cloud.separate(call.data.datacenter).getNetwork(networkId, call.done.bind(call));
         }
     });
@@ -372,25 +379,30 @@ module.exports = function execute(scope) {
     function pollForMachineStateChange(client, call, timeout, state, sdcpackage, newName) {
         var timer = setInterval(function () {
             var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
-
+            var machineInfo = {
+                'datacenter': client._currentDC
+            }
             // acknowledge what are we doing to logs
             if (state) {
-                call.log.debug('Polling for machine %s to become %s', machineId, state);
+                call.log.debug(machineInfo, 'Polling for machine %s to become %s', machineId, state);
             }
 
             if (sdcpackage) {
-                call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage);
+                call.log.debug(machineInfo, 'Polling for machine %s to resize to %s', machineId, sdcpackage);
             }
 
             if (newName) {
-                call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
+                call.log.debug(machineInfo, 'Polling for machine %s to rename to %s', machineId, newName);
             }
 
             client.getMachine(machineId, true, function (err, machine) {
+                if (machine) {
+                    machineInfo.cn = machine.compute_node
+                }
                 if (err) {
                     // in case we're waiting for deletion a http 410(Gone) is good enough
                     if (err.statusCode === 410 && state === 'deleted') {
-                        call.log.debug('Machine %s is deleted, returning call', machineId);
+                        call.log.debug(machineInfo, 'Machine %s is deleted, returning call', machineId);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
@@ -402,21 +414,21 @@ module.exports = function execute(scope) {
                     clearTimeout(timerTimeout);
                     clearInterval(timer);
                 } else if (machine.state === 'failed') {
-                    call.log.error('Machine %s fell into failed state', machineId);
+                    call.log.error(machineInfo, 'Machine %s fell into failed state', machineId);
                     call.done(new Error('Machine fell into failed state'));
                     clearTimeout(timerTimeout);
                     clearInterval(timer);
                 } else {
                     // machine state check
                     if (state && state === machine.state) {
-                        call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
+                        call.log.debug(machineInfo, 'Machine %s state is %s as expected, returing call', machineId, state);
                         machine.metadata.credentials = handleCredentials(machine);
 	                    machine = filterFields(machine);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
                     } else if(state && state !== machine.state) {
-                        call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
+                        call.log.trace(machineInfo, 'Machine %s state is %s, waiting for %s', machineId, machine.state, state);
                         call.step = {state: machine.state};
                     }
                 }
@@ -424,12 +436,12 @@ module.exports = function execute(scope) {
                 if (!err) {
                     // resize check
                     if (sdcpackage && sdcpackage === machine.package) {
-                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
+                        call.log.debug(machineInfo, 'Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
                         call.done(null, machine);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
                     } else if(sdcpackage) {
-                        call.log.debug('Machine %s package is %s, waiting for %s', machineId, machine.package, sdcpackage);
+                        call.log.debug(machineInfo, 'Machine %s package is %s, waiting for %s', machineId, machine.package, sdcpackage);
                         call.step = { state: 'resizing' };
                     }
 
@@ -437,16 +449,16 @@ module.exports = function execute(scope) {
                     if (newName && newName === machine.name) {
                         // make sure machine package didn't go lost
                         if (machine.package === '') {
-                            call.log.error('Machine %s package is empty after rename!', machineId);
+                            call.log.error(machineInfo, 'Machine %s package is empty after rename!', machineId);
                         }
 
-                        call.log.debug('Machine %s renamed to %s as expected, returing call', machineId, newName);
+                        call.log.debug(machineInfo, 'Machine %s renamed to %s as expected, returing call', machineId, newName);
                         clearTimeout(timerTimeout);
                         clearInterval(timer);
                         call.done(null, machine);
 
                     } else if(newName) {
-                        call.log.debug('Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
+                        call.log.debug(machineInfo, 'Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
                         call.step = { state: 'renaming' };
                     }
                 }
