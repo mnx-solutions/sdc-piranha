@@ -28,7 +28,7 @@ module.exports = function execute(scope, register) {
             var value = comparison[el] || data[el];
             var block = Array.isArray(blacklist[el]) && blacklist[el].indexOf(value) !== -1;
             if (block) {
-                blockBy.push(el + ': ' + comparison[el]);
+                blockBy.push(el + ': ' + value);
             }
         });
         return blockBy;
@@ -54,7 +54,7 @@ module.exports = function execute(scope, register) {
         var result = {};
         var block = checkBlackList(query);
         if (block.length) {
-            call.log.warn('User matched against black list and was blocked');
+            call.log.warn('User matched against black list and was blocked: %s', block);
             setImmediate(function () {
                 callback(null, {block: true, blockReason: 'Blacklisted. ' + block.join('\n')});
             });
