@@ -313,6 +313,19 @@
 
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
+                            util.message(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Your instance ' + $scope.machine['name'] + ' has been successfully deleted.'
+                                ),
+                                function () {}
+                            );
                             if ($location.url() === '/compute/instance/'+ machineid) {
                                 $location.url('/compute');
                                 $location.replace();
