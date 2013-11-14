@@ -1,0 +1,58 @@
+#!/usr/bin/env node
+
+var unblockUser = false;
+var argumentsError = false;
+var uuid = null;
+process.argv.forEach(function (argument, index) {
+    if (argument.indexOf('-') === 0) {
+        if (argument === '-u' || argument === '--unblock') {
+            unblockUser = true;
+        } else {
+            argumentsError = true;
+        }
+    } else if (/^[0-9a-f\-]+$/.test(argument)) {
+        if (!uuid) {
+            uuid = argument;
+        } else {
+            argumentsError = true;
+        }
+    } else if (index >= 2) {
+        argumentsError = true;
+    }
+});
+if (!uuid || argumentsError) {
+    console.log('Fraud Utility');
+    console.log('');
+    console.log('fraudutil <UUID> [-u | --unblock]');
+    process.exit();
+}
+
+process.chdir(__dirname + '/..');
+var config = require('easy-config');
+var metadata = require('../site/modules/account/lib/metadata');
+if (unblockUser) {
+    metadata.set(uuid, metadata.SIGNUP_STEP, '', function (err) {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        console.log('User unblocked');
+        process.exit();
+    });
+} else {
+    metadata.get(uuid, metadata.SIGNUP_STEP, function (err, val) {
+        if (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        console.log('User passed step: ' + val);
+        metadata.get(uuid, metadata.RISK_SCORE, function (scoreError, scoreValue) {
+            if (scoreError) {
+                console.error(scoreError);
+                process.exit(1);
+            }
+            console.log('User risk score: ' + scoreValue);
+            process.exit();
+        });
+    });
+}

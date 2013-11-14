@@ -11,10 +11,11 @@ function queryPDF (AccountId, id, callback) {
         'Id',
         'AccountId',
         'InvoiceNumber',
+        'InvoiceDate',
         'Body'].join(',');
     var query = 'SELECT ' + fieldList + ' FROM Invoice WHERE Id = \'' + id + '\' AND AccountId = \'' + AccountId + '\'';
 
-    soap.query({'queryString': query}, function (err, result) {
+    soap.query({queryString: query}, function (err, result) {
         console.log(arguments);
         if(err) {
             callback(err);

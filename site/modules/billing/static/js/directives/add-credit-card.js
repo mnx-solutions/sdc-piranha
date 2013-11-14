@@ -51,7 +51,8 @@
 
                     $scope.form = {
                         cardHolderInfo: {
-                        }
+                        },
+                        promoCode: 'JOYENT2FREE'
                     };
 
                     $scope.loading = false;
@@ -338,11 +339,13 @@
                                     addedMessage += (addedMessage === '' ? ' ' : '<br/>') + translated;
 
                                 } else {
+                                    var params = {};
+                                    params[key] = $scope.form[key];
                                     var tKey = localization.translate(null, 'billing', key);
-                                    var tMessage = localization.translate(null, 'billing', err);
+                                    var tMessage = localization.translate(null, 'billing', err, params);
 
                                     if (tKey.charAt(0) !== '_') {
-                                        fieldErrors += (fieldErrors === '' ? ' ' : '<br/>') + tKey + ':' + tMessage;
+                                        fieldErrors += (fieldErrors === '' ? ' ' : '<br/>') + (tKey.charAt(0) !== '?' ? tKey + ':' : '') + tMessage;
                                     }
                                 }
                             });

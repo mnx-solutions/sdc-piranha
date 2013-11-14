@@ -3,14 +3,15 @@
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
-var options = config.zuora.api;
+var options = config.zuora.rest;
+options.url = options.endpoint;
 options.password = config.zuora.password;
 options.user = config.zuora.user;
 
 var zuora = require('zuora').create(options);
 var zuoraSoap = require('./zuora');
 var moment = require('moment');
-
+var noCopyFields = ['lastName','firstName', 'workPhone', 'promoCode'];
 
 var zuoraErrors = {};
 
@@ -103,7 +104,7 @@ function composeCreditCardObject(call, cb) {
     };
     // Copy all properties except first and last name
     Object.keys(call.data).forEach(function (k) {
-        if(k !== 'firstName' && k !== 'lastName' && k !== 'workPhone'){
+        if (noCopyFields.indexOf(k) === -1){
             data[k] = call.data[k];
         }
     });
@@ -210,6 +211,43 @@ function composeZuoraAccount(call, cb) {
                 cb(err);
                 return;
             }
+            function createObjects(ratePlanId) {
+                var obj = {
+                    accountNumber: data.id,
+                    currency: 'USD',
+                    paymentTerm: 'Due Upon Receipt',
+                    Category__c: 'Credit Card',
+                    billCycleDay: 1,
+                    name: data.companyName || ((data.firstName || call.data.firstName) + ' ' + (data.lastName || call.data.lastName)),
+                    subscription: {
+                        termType: 'EVERGREEN',
+                        contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
+                        subscribeToRatePlans: [{
+                            productRatePlanId: ratePlanId
+                        }]
+                    },
+                    invoiceCollect: false,
+                    creditCard: {}
+                };
+
+                Object.keys(cc).forEach(function (k) {
+                    if (noCopyFields.indexOf(k) !== -1) {
+                        return;
+                    }
+                    var key = ((k === 'creditCardType' && 'cardType')
+                        || (k === 'creditCardNumber' && 'cardNumber')
+                        || k);
+                    obj.creditCard[key] = cc[k];
+                });
+                composeBillToContact(call, data, function (err3, billToContact) {
+                    if(err3) {
+                        cb(err3);
+                        return;
+                    }
+                    obj.billToContact = billToContact;
+                    cb(null, obj, data);
+                });
+            }
             // Find the trial product
             zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
                 if(err2) {
@@ -226,41 +264,27 @@ function composeZuoraAccount(call, cb) {
                     ratePlans[ratePlan.name] = ratePlan.id;
                 });
 
-                var obj = {
-                    accountNumber: data.id,
-                    currency: 'USD',
-                    paymentTerm: 'Due Upon Receipt',
-                    Category__c: 'Credit Card',
-                    billCycleDay: 1,
-                    name: data.companyName || ((data.firstName || call.data.firstName) + ' ' + (data.lastName || call.data.lastName)),
-                    subscription: {
-                        termType: 'EVERGREEN',
-                        contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
-                        subscribeToRatePlans: [{
-                            productRatePlanId: ratePlans['Free Trial']
-                        }]
-                    },
-                    invoiceCollect: false,
-                    creditCard: {}
-                };
+                if (config.features.promocode !== 'disabled' && call.data.promoCode && config.ns['promo-codes']) {
+                    var code = call.data.promoCode.toUpperCase();
+                    var promo = config.ns['promo-codes'][code];
+                    if (!promo) {
+                        call.done({promoCode: 'Promo code is not valid'});
+                        return;
+                    }
+                    if (promo.expired) {
+                        call.done({promoCode: 'Promo code has expired'});
+                        return;
+                    }
+                    if (!ratePlans[promo.ratePlanName]) {
+                        call.log.error('Unable to find %s ratePlan from zuora', promo.ratePlanName);
+                        call.done({promoCode: 'Promo code is not valid'});
+                        return;
+                    }
+                    createObjects(ratePlans[promo.ratePlanName]);
+                    return;
+                }
 
-                Object.keys(cc).forEach(function (k) {
-                    if(k === 'firstName' || k === 'lastName' || k === 'workPhone') {
-                        return;
-                    }
-                    var key = ((k === 'creditCardType' && 'cardType')
-                        || (k === 'creditCardNumber' && 'cardNumber')
-                        || k);
-                    obj.creditCard[key] = cc[k];
-                });
-                composeBillToContact(call, data, function (err3, billToContact) {
-                    if(err3) {
-                        cb(err3);
-                        return;
-                    }
-                    obj.billToContact = billToContact;
-                    cb(null, obj, data);
-                });
+                createObjects(ratePlans['Free Trial']);
             });
         });
     });
@@ -332,7 +356,7 @@ function createZuoraAccount(call, cb) {
     composeZuoraAccount(call, call.log.noErr('Unable to compose Account', cb, function (obj, user) {
         obj.creditCard = {};
         Object.keys(call.data).forEach(function (k) {
-            if(k === 'firstName' || k === 'lastName' || k === 'workPhone') {
+            if(noCopyFields.indexOf(k) !== -1) {
                 return;
             }
             var key = ((k === 'creditCardType' && 'cardType')
@@ -363,7 +387,8 @@ function getInvoicePDF(req, res, next) {
         var buffer = new Buffer(data.Body,'base64');
         res.set({
             'Accept-Ranges':'bytes',
-            'Content-Disposition':'attachment; filename="' + data.InvoiceNumber + '.pdf"',
+            'Content-Disposition':'attachment; filename="Joyent_Invoice_' +
+                data.InvoiceNumber + '_' + moment(data.InvoiceDate).format('MMM_YYYY') + '.pdf"',
             'Content-Length': buffer.length,
             'Content-Type':'application/pdf'
         });

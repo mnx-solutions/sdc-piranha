@@ -128,6 +128,10 @@ module.exports = function execute(scope) {
                         machine.datacenter = name;
                         machine.metadata.credentials = handleCredentials(machine);
                         machines[i] = filterFields(machine);
+
+                        if (info.instances && info.instances.data[machine.id]) {
+                            machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
+                        }
                     });
 
                     response.status = 'complete';
@@ -203,7 +207,7 @@ module.exports = function execute(scope) {
 
     /* listNetworks */
     server.onCall('NetworksList', function(call) {
-        call.log.info('Retrieving networks list');
+        call.log.info({'datacenter': call.data.datacenter}, 'Retrieving networks list');
         call.cloud.separate(call.data.datacenter).listNetworks(call.done.bind(call));
     });
 
@@ -256,7 +260,9 @@ module.exports = function execute(scope) {
                 typeof data.datacenter === 'string';
         },
         handler: function (call) {
-            call.log.info('Handling machine tags list call, machine %s', call.data.uuid);
+            var machineId = call.data.uuid;
+            var machineInfo = {'datacenter': call.data.datacenter};
+            call.log.info(machineInfo, 'Handling machine tags list call, machine %s', machineId);
             call.cloud.separate(call.data.datacenter).listMachineTags(call.data.uuid, call.done.bind(call));
         }
     });
@@ -275,15 +281,18 @@ module.exports = function execute(scope) {
             var newTags = JSON.stringify(call.data.tags);
             var oldTags = null;
             var cloud = call.cloud.separate(call.data.datacenter);
+            var machineInfo = {
+                'datacenter': call.data.datacenter
+            };
 
             function updateState () {
                 var timer = setInterval(function () {
-                    call.log.debug('Polling for machine %s tags to become %s', call.data.uuid, newTags);
+                    call.log.debug(machineInfo, 'Polling for machine %s tags to become %s', call.data.uuid, newTags);
                     cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
                         if (!tagsErr) {
                             var json = JSON.stringify(tags);
                             if (json === newTags) {
-                                call.log.debug('Machine %s tags changed successfully', call.data.uuid);
+                                call.log.debug(machineInfo, 'Machine %s tags changed successfully', call.data.uuid);
                                 clearInterval(timer);
                                 clearTimeout(timer2);
                                 call.done(null, tags);
@@ -292,17 +301,17 @@ module.exports = function execute(scope) {
                             } else if (json !== oldTags) {
                                 clearInterval(timer);
                                 clearTimeout(timer2);
-                                call.log.warn('Other call changed tags, returning new tags %j', tags);
+                                call.log.warn(machineInfo, 'Other call changed tags, returning new tags %j', tags);
                                 call.done(null, tags);
                             }
                         } else {
-                            call.log.error('Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
+                            call.log.error(machineInfo, 'Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
                         }
                     }, undefined, true);
                 }, config.polling.machineTags);
 
                 var timer2 = setTimeout(function () {
-                    call.log.error('Operation timed out');
+                    call.log.error(machineInfo, 'Operation timed out');
                     clearInterval(timer);
                     call.error(new Error('Operation timed out'));
                 }, 1 * 60 * 1000);
@@ -339,7 +348,8 @@ module.exports = function execute(scope) {
         },
         handler: function (call) {
             var machineId = call.data.uuid;
-            call.log.info('Handling machine details call, machine %s', machineId);
+            var machineInfo = {'datacenter': call.data.datacenter};
+            call.log.info(machineInfo, 'Handling machine details call, machine %s', machineId);
             call.cloud.separate(call.data.datacenter).getMachine(machineId, call.done.bind(call));
         }
     });
@@ -351,111 +361,92 @@ module.exports = function execute(scope) {
         },
         handler: function(call) {
             var networkId = call.data.uuid;
-            call.log.info('Handling network call, network %s', networkId);
+            var machineInfo = {'datacenter': call.data.datacenter};
+            call.log.info(machineInfo, 'Handling network call, network %s', networkId);
             call.cloud.separate(call.data.datacenter).getNetwork(networkId, call.done.bind(call));
         }
     });
+
+    function createPoller(call, timeout, fn) {
+        var poller = setInterval(fn, config.polling.machineState);
+        var pollerTimeout = setTimeout(function () {
+            clearInterval(poller);
+            call.done('Operation timed out');
+        }, timeout);
+
+        return function clearPoller() {
+            clearInterval(poller);
+            clearTimeout(pollerTimeout);
+            call.done.apply(call, arguments);
+        };
+    }
 
     /**
      * Waits for machine state, package or name change
      * @param {Object} client
      * @param {Object} call - machine ID is taken from call.data.uuid or call.data if it's a string
+     * @param {String} prop - what to poll
+     * @param {String} expect - what to expect
      * @param {Number} [timeout=300000] - timeout in milliseconds, defaults to 5m
-     * @param {String} [state=null]
-     * @param {Object} [sdcpackage=null]
-     * @param {String} [newName=null]
+     * @param {String} [type=Machine] - type we are polling, defaults to machine
      */
-    function pollForMachineStateChange(client, call, timeout, state, sdcpackage, newName) {
-        var timer = setInterval(function () {
-            var machineId = typeof call.data === 'object' ? call.data.uuid : call.data;
+    function pollForObjectStateChange(client, call, prop, expect, timeout, type) {
+        var objectId = typeof call.data === 'object' ? call.data.uuid : call.data;
+
+        timeout = timeout || 5 * 60 * 1000;
+        type = type || 'Machine';
+
+        var processNames = {
+            name: 'renaming',
+            package: 'resizing'
+        };
+
+        call.log = call.log.child({datacenter: client._currentDC});
+
+        var clearPoller = createPoller(call, timeout, function () {
 
             // acknowledge what are we doing to logs
-            if (state) {
-                call.log.debug('Polling for machine %s to become %s', machineId, state);
-            }
+            call.log.debug('Polling for %s %s %s to become %s', type.toLowerCase(), objectId, prop, expect);
 
-            if (sdcpackage) {
-                call.log.debug('Polling for machine %s to resize to %s', machineId, sdcpackage);
-            }
-
-            if (newName) {
-                call.log.debug('Polling for machine %s to rename to %s', machineId, newName);
-            }
-
-            client.getMachine(machineId, true, function (err, machine) {
+            client['get' + type](objectId, true, function (err, object) {
                 if (err) {
-                    // in case we're waiting for deletion a http 410(Gone) is good enough
-                    if (err.statusCode === 410 && state === 'deleted') {
-                        call.log.debug('Machine %s is deleted, returning call', machineId);
-                        call.done(null, machine);
-                        clearTimeout(timerTimeout);
-                        clearInterval(timer);
+                    // in case we're waiting for deletion a http 410(Gone) or 404 is good enough
+                    if ((err.statusCode === 410 || err.statusCode === 404) && prop === 'state' && expect === 'deleted') {
+                        call.log.debug('%s %s is deleted, returning call', type, objectId);
+                        clearPoller(null, object);
                         return;
                     }
 
                     call.log.error({error:err}, 'Cloud polling failed');
-                    call.error(err);
-                    clearTimeout(timerTimeout);
-                    clearInterval(timer);
-                } else if (machine.state === 'failed') {
-                    call.log.error('Machine %s fell into failed state', machineId);
-                    call.done(new Error('Machine fell into failed state'));
-                    clearTimeout(timerTimeout);
-                    clearInterval(timer);
-                } else {
-                    // machine state check
-                    if (state && state === machine.state) {
-                        call.log.debug('Machine %s state is %s as expected, returing call', machineId, state);
-                        machine.metadata.credentials = handleCredentials(machine);
-	                    machine = filterFields(machine);
-                        call.done(null, machine);
-                        clearTimeout(timerTimeout);
-                        clearInterval(timer);
-                    } else if(state && state !== machine.state) {
-                        call.log.trace('Machine %s state is %s, waiting for %s', machineId, machine.state, state);
-                        call.step = {state: machine.state};
-                    }
+                    clearPoller(err, true);
+                    return;
                 }
+                if (object.state === 'failed') {
+                    call.log.error('%s %s fell into failed state', type, objectId);
+                    clearPoller(new Error('Machine fell into failed state'));
+                    return;
+                }
+                if (object[prop] === expect) {
 
-                if (!err) {
-                    // resize check
-                    if (sdcpackage && sdcpackage === machine.package) {
-                        call.log.debug('Machine %s resized to %s as expected, returing call', machineId, sdcpackage);
-                        call.done(null, machine);
-                        clearTimeout(timerTimeout);
-                        clearInterval(timer);
-                    } else if(sdcpackage) {
-                        call.log.debug('Machine %s package is %s, waiting for %s', machineId, machine.package, sdcpackage);
-                        call.step = { state: 'resizing' };
+                    if (type === 'Machine' && object.package === '') {
+                        call.log.error('Machine %s package is empty after %s!', objectId, (processNames[prop] || prop));
                     }
 
-                    // name change check
-                    if (newName && newName === machine.name) {
-                        // make sure machine package didn't go lost
-                        if (machine.package === '') {
-                            call.log.error('Machine %s package is empty after rename!', machineId);
-                        }
-
-                        call.log.debug('Machine %s renamed to %s as expected, returing call', machineId, newName);
-                        clearTimeout(timerTimeout);
-                        clearInterval(timer);
-                        call.done(null, machine);
-
-                    } else if(newName) {
-                        call.log.debug('Machine %s name is %s, waiting for %s', machineId, machine.name, newName);
-                        call.step = { state: 'renaming' };
+                    call.log.debug('%s %s %s is %s as expected, returing call', type, objectId, prop, expect);
+                    if (type === 'Machine') {
+                        object.metadata.credentials = handleCredentials(object);
+                        object = filterFields(object);
                     }
+                    clearPoller(null, object);
+                } else {
+                    call.log.trace('%s %s %s is %s, waiting for %s', type, objectId, prop, object[prop], expect);
+                    call.step = {
+                        state: processNames[prop] || object.state
+                    };
                 }
 
             }, null, true);
-        }, config.polling.machineState);
-
-        // timeout, so we wouldn't poll cloudapi forever
-        var timerTimeout = setTimeout(function() {
-            call.log.error('Operation timed out');
-            clearInterval(timer);
-            call.error(new Error('Operation timed out'));
-        }, (timeout || 5 * 60 * 1000));
+        });
     }
 
     function changeState(func, logVerb, endstate, opts) {
@@ -479,7 +470,7 @@ module.exports = function execute(scope) {
                 var cloud = call.cloud.separate(call.data.datacenter);
                 cloud[func](machineId, function (err) {
                     if (!err) {
-                        pollForMachineStateChange(cloud, call, null, endstate, null, null);
+                        pollForObjectStateChange(cloud, call, 'state', endstate);
                     } else {
                         call.log.error(err);
                         call.error(err);
@@ -522,7 +513,7 @@ module.exports = function execute(scope) {
             cloud.resizeMachine(machineId, options, function (err) {
                 if (!err) {
                     // poll for machine package change (resize)
-                    pollForMachineStateChange(cloud, call, null, null, options.package, null);
+                    pollForObjectStateChange(cloud, call, 'package', options.package);
                 } else {
                     call.log.error(err);
                     call.error(err);
@@ -546,7 +537,7 @@ module.exports = function execute(scope) {
             cloud.renameMachine(machineId, options, function(err) {
                 if(!err) {
                     // poll for machine name change (rename)
-                    pollForMachineStateChange(cloud, call, (60 * 60 * 1000), null, null, options.name);
+                    pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000));
                 } else {
                     call.log.error(err);
                     call.done(err);
@@ -589,7 +580,7 @@ module.exports = function execute(scope) {
                     call.data.uuid = machine.id;
 
                     // poll for machine status to get running (provisioning)
-                    pollForMachineStateChange(cloud, call, (60 * 60 * 1000), 'running', null, null);
+                    pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000));
                 } else {
                     call.log.error(err);
                     call.immediate(err);
@@ -605,64 +596,6 @@ module.exports = function execute(scope) {
 
 
     /* Images */
-
-    /**
-     * Waits for image state
-     * @param {Object} client
-     * @param {Object} call - image ID is taken from call.data.uuid or call.data if it's a string
-     * @param {Number} [timeout=300000] - timeout in milliseconds, defaults to 5m
-     * @param {String} [state=null]
-     */
-    function pollForImageStateChange(client, call, timeout, state) {
-        var timer = setInterval(function () {
-            var imageId = typeof call.data === 'object' ? call.data.uuid : call.data;
-
-            if (state) {
-                call.log.debug('Polling for image %s to become %s', imageId, state);
-            }
-
-            client.getImage(imageId, function (err, image) {
-                if (err) {
-                    // in case we're waiting for deletion a http 410(Gone) is good enough
-                    if (err.statusCode === 404 && state === 'deleted') {
-                        call.log.debug('Image %s is deleted, returning call', imageId);
-                        call.done(null, image);
-                        clearInterval(timer);
-                        clearTimeout(timerTimeout);
-                        return;
-                    }
-
-                    call.log.error({ error:err }, 'Cloud polling failed');
-                    call.error(err);
-                    clearInterval(timer);
-                    clearTimeout(timerTimeout);
-                } else if (image.state === 'failed') {
-                    call.log.error('Image %s fell into failed state', imageId);
-                    call.done(new Error('Image fell into failed state'));
-                    clearInterval(timer);
-                    clearTimeout(timerTimeout);
-                } else {
-                    // machine state check
-                    if (state && state === image.state) {
-                        call.log.debug('Image %s state is %s as expected, returing call', imageId, state);
-                        call.done(null, image);
-                        clearTimeout(timer);
-                        clearInterval(timerTimeout);
-                    } else if (state && state !== image.state) {
-                        call.log.trace('Image %s state is %s, waiting for %s', imageId, image.state, state);
-                        call.step = { state: image.state };
-                    }
-                }
-            }, null, null, true);
-        }, config.polling.machineState);
-
-        // timeout, so we wouldn't poll cloudapi forever
-        var timerTimeout = setTimeout(function() {
-            call.log.error('Operation timed out');
-            clearInterval(timer);
-            call.error(new Error('Operation timed out'));
-        }, (timeout || 5 * 60 * 1000));
-    }
 
     if(!config.features || config.features.imageCreate !== 'disabled') {
 
@@ -686,7 +619,7 @@ module.exports = function execute(scope) {
                 call.cloud.createImageFromMachine(options, function(err, image) {
                     if (!err) {
                         call.data.uuid = image.id;
-                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'active', null, null);
+                        pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image');
                     } else {
                         call.log.error(err);
                         call.done(err);
@@ -697,74 +630,71 @@ module.exports = function execute(scope) {
         });
     }
 
-    if(!config.features || config.features.imageUse !== 'disabled') {
+    /* DeleteImage */
+    server.onCall('ImageDelete', {
+        verify: function(data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('imageId');
+        },
 
-        /* DeleteImage */
-        server.onCall('ImageDelete', {
-            verify: function(data) {
-                return typeof data === 'object' &&
-                    data.hasOwnProperty('imageId');
-            },
+        handler: function(call) {
+            call.log.info('Deleting image %s', call.data.imageId);
 
-            handler: function(call) {
-                call.log.info('Deleting image %s', call.data.imageId);
-
-                var cloud = call.cloud.separate(call.data.datacenter);
-                call.cloud.deleteImage(call.data.imageId, function(err) {
-                    if (!err) {
-                        call.data.uuid = call.data.imageId;
-                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
-                    } else {
-                        call.log.error(err);
-                        call.done(err);
-                    }
-                });
-
-            }
-        });
-
-        /* images list */
-        server.onCall('ImagesList', function(call) {
-
-            var datacenters = call.cloud.listDatacenters();
-            var keys = Object.keys(datacenters);
-            var count = keys.length;
-
-            keys.forEach(function (name) {
-                var cloud = call.cloud.separate(name);
-                call.log.debug('List images for datacenter %s', name);
-
-                cloud.listImages(function (err, images) {
-                    var response = {
-                        name: name,
-                        status: 'pending',
-                        images: []
-                    };
-
-                    if (err) {
-                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                        response.status = 'error';
-                        response.error = err;
-                    } else {
-                        /* add datacenter to every image */
-                        images.forEach(function (image) {
-                            image.datacenter = name;
-                        });
-
-                        response.status = 'complete';
-                        response.images = images;
-
-                        call.log.debug('List images succeeded for datacenter %s', name);
-                    }
-                    call.update(null, response);
-
-                    if (--count === 0) {
-                        call.done();
-                    }
-                });
+            var cloud = call.cloud.separate(call.data.datacenter);
+            call.cloud.deleteImage(call.data.imageId, function(err) {
+                if (!err) {
+                    call.data.uuid = call.data.imageId;
+                    pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image');
+                } else {
+                    call.log.error(err);
+                    call.done(err);
+                }
             });
 
+        }
+    });
 
+    /* images list */
+    server.onCall('ImagesList', function(call) {
+
+        var datacenters = call.cloud.listDatacenters();
+        var keys = Object.keys(datacenters);
+        var count = keys.length;
+
+        keys.forEach(function (name) {
+            var cloud = call.cloud.separate(name);
+            call.log.debug('List images for datacenter %s', name);
+
+            cloud.listImages(function (err, images) {
+                var response = {
+                    name: name,
+                    status: 'pending',
+                    images: []
+                };
+
+                if (err) {
+                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                    response.status = 'error';
+                    response.error = err;
+                } else {
+                    /* add datacenter to every image */
+                    images.forEach(function (image) {
+                        image.datacenter = name;
+                    });
+
+                    response.status = 'complete';
+                    response.images = images;
+
+                    call.log.debug('List images succeeded for datacenter %s', name);
+                }
+                call.update(null, response);
+
+                if (--count === 0) {
+                    call.done();
+                }
+            });
         });
-    }
+
+
+    });
 };

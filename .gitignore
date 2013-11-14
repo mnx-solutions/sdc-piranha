@@ -11,6 +11,7 @@ lib-cov
 
 config.*.json
 !config.blacklist.json
+!config.promo-codes.json
 
 pids
 logs

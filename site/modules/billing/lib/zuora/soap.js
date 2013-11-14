@@ -14,75 +14,75 @@
 
 var path = require('path');
 var soap = require('soap');
+var url = require('url');
 
 var defaultMaxClientAge = 2 * 60 * 60 * 1000; // 2 hour
 
 // client is cached and shared here
-var client,
-    config,
-    clientCreatedAt = 0;
-
-function parseArgs(args) {
-    var a = Array.prototype.slice.call(args, 0);
-    var r = {};
-    if (typeof a[a.length - 1] === 'function') {
-        r.callback = a.pop();
-    }
-    if (typeof a[0] === 'object') {
-        r.config = a.pop();
-    }
-    if (typeof a[0] === 'object') {
-        r.requestNewClient = a.pop();
-    }
-    return r;
-}
+var client;
+var config;
+var clientCreatedAt = 0;
 /**
  * Connect: Creates a client
  * Overloaded function. It will create a new client, or use an existing one.
  *
  * @param {object} config (optional) Config object for SoapClient
- * @param {object} requestNewClient (optional) force creation of new client
  * @param {function} callback Fn called after connected
  */
-function connect () {
-    var args = parseArgs(arguments);
-    var callback = args.callback;
-    config = args.config || config;
+function connect (newConfig, callback) {
 
-    if (!config) {
-        return callback(new Error('SOAP config is undefined'));
+    if (!callback) {
+        callback = newConfig;
+    } else {
+        config = newConfig;
+    }
+
+    if (!config || typeof config !== 'object'
+        || !callback || typeof callback !== 'function') {
+
+        setImmediate(callback.bind(callback, new Error('Expected (config[object], callback[function]) as input')));
+        return;
     }
 
     var maxClientAge = config.maxClientAge || defaultMaxClientAge;
     var clientExpired = (maxClientAge < Date.now() - clientCreatedAt);
-    if (client && !clientExpired && !args.requestNewClient) {
-        return callback(null, client);
+    if (client && !clientExpired) {
+        setImmediate(callback.bind(callback, null, client));
+        return;
     }
 
-    var wsdl = path.resolve(__dirname, 'config', config.wsdl);
+    var wsdl = path.resolve(__dirname, 'config', 'zuora.wsdl');
     soap.createClient(wsdl, function (err, newClient) {
-    if (err) {
-        return callback(err);
-    }
-
-    newClient.setEndpoint(config.endpoint);
-    var loginCreds = {
-        username: config.user,
-        password: config.password
-    };
-    // TODO: dm: it may be possible for this to hang?
-    newClient.ZuoraService.Soap.login(loginCreds, function (err, resp) {
         if (err) {
             return callback(err);
         }
+        var endpoint = config.endpoint;
+        try {
+            var parsed = url.parse(newClient.wsdl.services.ZuoraService.ports.Soap.location);
+            endpoint += parsed.path;
+        } catch (e) {
+            callback(new Error('Invalid WSDL file. Expected to have services.ZuoraService.ports.Soap.location'));
+            return;
+        }
 
-        newClient.addSoapHeader({
-            SessionHeader: {
-                session: resp.result.Session
+        newClient.setEndpoint(endpoint);
+        var loginCreds = {
+            username: config.user,
+            password: config.password
+        };
+        // TODO: dm: it may be possible for this to hang?
+        newClient.ZuoraService.Soap.login(loginCreds, function (err, resp) {
+            if (err) {
+                return callback(err);
             }
-        });
 
-        client = newClient;
+            newClient.addSoapHeader({
+                SessionHeader: {
+                    session: resp.result.Session
+                }
+            });
+
+            client = newClient;
             clientCreatedAt = Date.now();
             callback(null, client);
         });
@@ -117,10 +117,9 @@ function checkResults(err, resp, body, callback) {
 function query (zObject, callback) {
 
     // Safety checking:
-    if (typeof zObject === 'object') {
-        if (zObject.queryString.indexOf('[object Object]') !== -1) {
-            return callback(new Error('Query found [object Object] inside string.'));
-        }
+    if (typeof zObject === 'object' && zObject.queryString.indexOf('[object Object]') !== -1) {
+        setImmediate(callback.bind(callback, new Error('Query found [object Object] inside string.')));
+        return ;
     }
 
     connect(function (err, client) {

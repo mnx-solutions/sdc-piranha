@@ -775,8 +775,8 @@
       "from": "redis@*"
     },
     "zuora": {
-      "version": "0.1.5",
-      "from": "zuora@0.1.5",
+      "version": "0.1.6",
+      "from": "zuora@0.1.6",
       "dependencies": {
         "validator": {
           "version": "1.5.1",

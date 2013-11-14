@@ -82,12 +82,12 @@
                         </label>
                     </td>
                     <td data-ng-repeat="prop in props | orderBy:sequence | filter:{active:true}" data-ng-switch="prop.id">
-                        <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
+                        <a data-ng-switch-when="label" href="#!/compute/instance/{{object.id}}">{{object.label}} <div data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>" style="float:right;"><i class="icon-warning-sign"></i></div></a>
                         <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                             <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
                         </span>
-                        <span data-ng-switch-when="created">{{object[prop.id] | dateTime}}</span>
-                        <span data-ng-switch-when="updated">{{object[prop.id] | dateTime}}</span>
+                        <span data-ng-switch-when="created">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
+                        <span data-ng-switch-when="updated">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
                         <span data-ng-switch-when="ips">
                             <span data-ng-show="object.ips.length">{{object.ips[0]}}{{object.ips[1]}}</span>
                         </span>

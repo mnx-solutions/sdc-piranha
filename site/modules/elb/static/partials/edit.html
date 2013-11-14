@@ -146,7 +146,7 @@
                         <td title="{{machine.name}}"><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a>
                         </td>
                         <td title="{{machine.datacenter}}">{{machine.datacenter}}</td>
-                        <!--td title="{{machine.created | dateTime:'YYYY-MM-DD'}}">{{machine.created | dateTime:'YYYY-MM-DD'}}</td-->
+                        <!-- <td title="{{machine.created | date:'yyyy-MM-dd'}}">{{machine.created | date:'yyyy-MM-dd'}}</td> -->
                         <td>
                             <span title="{{balancer.name}}" data-ng-repeat="balancer in machine.balancers">{{balancer.name}}<br></span>
                         </td>

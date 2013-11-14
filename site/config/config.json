@@ -1,114 +1,128 @@
 {
-    "server": {
-      "port": 3000,
-      "headerClientIpKey": "x-forwarded-for"
-    },
-    "log": {
-      "name": "piranha",
-      "level": "debug"
-    },
-    "cloudapi": {
-        "DCCallTimeout": 5000
-    },
-    "localization": {
-        "defaultLocale": "en",
-        "locales": [ "en" ]
-    },
-    "redis": {
-        "host": "redis-gtint.piranha.ee",
-        "port": 6379,
-        "db": 1,
-        "signupDB": 5,
-        "password": ""
-    },
-    "assets":{
-        "js": {
-            "concat": ["use-strict-rm"],
-            "cache": "all",
-            "ext": "js",
-            "transform": ["use-strict-add","gzip"]
-        },
-        "css": {
-            "concat":true,
-            "cache": "all",
-            "ext": "css",
-            "transform": ["less", "sqwish", "gzip"]
-        }
-    },
-    "zuora": {
-        "tenantId": "11333",
-	    "user": "piranha-api-test@joyent.com",
-	    "password": "ZvPpggpdRMB8U8uLEWTAaxRCaFqc",
-        "api": {
-            "production": false,
-            "validation": {
-                "countries": {
-                    "type": "deny",
-                    "name": "iso3",
-                    "list": ["CUB","IRN","SYR","SDN","PRK"]
-                }
-            }
-        },
-        "soap": {
-            "tenantName"   : "",
-	        "endpoint"     : "https://apisandbox.zuora.com/apps/services/a/45.0",
-	        "wsdl"         : "zuora.a.joyent.45.0.wsdl",
-	        "objectNS"     : "ons",
-	        "zuoraNS"      : "zns",
-	        "product"      : "Cloud",
-	        "UOM_postfix"  : "_Machine_Hrs"
-        }
-    },
-    "billing":{
-        "url":"",
-        "noUpdate":true
-    },
-    "googleAnalytics": {
-        "identifier": "",
-        "t2identifier": "",
-        "domain": "joyentcloud.com"
-    },
-    "zendesk": {
-        "account": "jaan.oras@joyent.com/token",
-        "token"  : "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ",
-        "host"   : "https://help.joyent.com",
-        "forumsPath" : "/api/v2/categories/20066858/forums.json",
-        "systemStatusPath"  : "/api/v2/forums/20715782/topics.json",
-        "packageUpdatePath" : "/api/v2/forums/21147498/topics.json"
-    },
-    "marketo": {
-        "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8",
-        "accountId": ""
-    },
-    "polling": {
-        "machineTags": 5000,
-        "machineState": 10000,
-        "packageChange": 1000
-    },
-    "capishim": {
-        "username":"",
-        "password":"",
-        "url":"",
-        "noUpdate":true
-    },
-    "maxmind": {
-        "phoneApiUrl": "https://api.maxmind.com",
-        "fraudApiUrl": "https://minfraud.maxmind.com",
-        "licenseId": "bQg6oKXwLfWj",
-        "limits" : {
-            "calls": 3,
-            "serviceFails": 3,
-            "pinTries": 3
-        },
-        "riskScoreFraudLimit": 60
-    },
-    "features": {
-        "instanceRename": "enabled",
-        "instanceTagging": "enabled",
-        "invoices": "enabled",
-        "imageUse": "enable",
-        "imageCreate": "disabled",
-        "firewall": "disabled",
-        "elb": "disabled"
+  "server": {
+    "port": 3000
+  , "headerClientIpKey": "x-forwarded-for"
+  }
+, "log": {
+    "name": "piranha"
+  , "level": "debug"
+  }
+, "cloudapi": {
+    "DCCallTimeout": 5000
+  }
+, "localization": {
+    "defaultLocale": "en"
+  , "locales": [
+      "en"
+    ]
+  }
+, "redis": {
+    "host": "redis-gtint.piranha.ee"
+  , "port": 6379
+  , "db": 1
+  , "signupDB": 5
+  , "password": ""
+  }
+, "assets": {
+    "js": {
+      "concat": [
+        "use-strict-rm"
+      ]
+    , "cache": "all"
+    , "ext": "js"
+    , "transform": [
+        "use-strict-add"
+      , "uglify-js"
+      , "gzip"
+      ]
     }
+  , "css": {
+      "concat": true
+    , "cache": "all"
+    , "ext": "css"
+    , "transform": [
+        "less"
+      , "sqwish"
+      , "gzip"
+      ]
+    }
+  }
+, "zuora": {
+    "tenantId": "11333"
+  , "user": "piranha-api-test@joyent.com"
+  , "password": "ZvPpggpdRMB8U8uLEWTAaxRCaFqc"
+  , "rest": {
+      "endpoint": "https://apisandbox-api.zuora.com"
+    , "validation": {
+        "countries": {
+          "type": "deny"
+        , "name": "iso3"
+        , "list": [
+            "CUB"
+          , "IRN"
+          , "SYR"
+          , "SDN"
+          , "PRK"
+          ]
+        }
+      }
+    }
+  , "soap": {
+      "endpoint": "https://apisandbox.zuora.com"
+    }
+  }
+, "billing": {
+    "url": ""
+  , "noUpdate": true
+  }
+, "googleAnalytics": {
+    "identifier": ""
+  , "t2identifier": ""
+  , "domain": "joyentcloud.com"
+  }
+, "zendesk": {
+    "account": "jaan.oras@joyent.com/token"
+  , "token": "fRopSquyImEk77yw9ha46MVBcxALPrwOf4Mws2gQ"
+  , "host": "https://help.joyent.com"
+  , "forumsPath": "/api/v2/categories/20066858/forums.json"
+  , "systemStatusPath": "/api/v2/forums/20715782/topics.json"
+  , "packageUpdatePath": "/api/v2/forums/21147498/topics.json"
+  }
+, "marketo": {
+    "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
+  , "accountId": ""
+  }
+, "polling": {
+    "machineTags": 5000
+  , "machineState": 10000
+  , "packageChange": 1000
+  }
+, "capishim": {
+    "username": ""
+  , "password": ""
+  , "url": ""
+  , "noUpdate": true
+  }
+, "maxmind": {
+    "phoneApiUrl": "https://api.maxmind.com"
+  , "fraudApiUrl": "https://minfraud.maxmind.com"
+  , "licenseId": "bQg6oKXwLfWj"
+  , "limits": {
+      "calls": 3
+    , "serviceFails": 3
+    , "pinTries": 3
+    }
+  , "riskScoreFraudLimit": 60
+  }
+, "features": {
+    "fullVersion": "enabled"
+  , "instanceRename": "enabled"
+  , "instanceTagging": "enabled"
+  , "invoices": "enabled"
+  , "imageUse": "enabled"
+  , "imageCreate": "disabled"
+  , "firewall": "disabled"
+  , "elb": "disabled"
+  , "promocode": "disabled"
+  }
 }

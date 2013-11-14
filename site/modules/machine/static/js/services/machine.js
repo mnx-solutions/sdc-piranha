@@ -327,6 +327,8 @@
             var machine = {
                 state: 'creating',
                 name: data.name,
+                created: Date.now(),
+                datacenter: data.datacenter,
                 id: id
             };
 
@@ -339,13 +341,14 @@
                 });
             }
 
-            function showError(id, instanceName, err) {
+            function showError(id, instance, err) {
                 notification.push(id, { type: 'error' },
                     localization.translate(null,
                         'machine',
-                        'Unable to create instance {{name}}',
+                        'Unable to create instance {{name}} ({{uuid}})',
                         {
-                            name: (instanceName || '')
+                            name: (machine.name || ''),
+                            uuid: (machine.id || '')
                         }
                     ) +' '+ ((err.message) ? '<br />'+ err.message : '')
                 );
@@ -356,7 +359,7 @@
                 data: data,
                 initialized: function (err, job) {
                     if (err) {
-                        showError(id, machine.name, err);
+                        showError(id, machine, err);
                         return;
                     }
 
@@ -371,7 +374,7 @@
 
                 done: function (err, job) {
                     if (err) {
-                        showError(id, machine.name, err);
+                        showError(id, machine, err);
 
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         delete machines.index[id];
@@ -393,7 +396,7 @@
                 },
 
                 error: function(err, job) {
-                    showError(id, machine.name, err);
+                    showError(id, machine, err);
 
                     machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];

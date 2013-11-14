@@ -105,6 +105,43 @@ Possible tar builder flags:
 6. Install node.js modules: `npm install --production`
 7. Start portal: `svcadm enable portal`
 
+## Testing
+
+### E2E
+
+piranha uses [Protractor][5] as AngularJS E2E tests runner.
+
+Install development dependencies:
+
+    npm install --development
+    grunt install:dev
+    
+Create local configuration for E2E tests:
+
+    cp test/e2e/config/config.json test/e2e/config/config.test.json # Copy main config
+    vi test/e2e/config/config.test.json  # Override options
+    
+Run tests:
+
+    grunt test:e2e
+    
+Run tests in automatic mode:
+
+    grunt autotest:e2e
+
+### UI unit tests
+
+piranha uses [Karma][6] as AngularJS unit tests runner.
+
+To run unit tests: 
+
+    grunt test:unit
+
+To run unit tests in automatic mode: 
+
+    grunt autotest:unit
+
+
 ## Configuration
 
 piranha uses [easy-config][1] for configuration handling. The default config file is `site/config/config.json`. When piranha is started with the `-env={environment}` command line option, the values in `site/config/config.{environment}.json` overwrite those from `config.json`.
@@ -179,3 +216,5 @@ You can also define configuration options using command line. ex: `$ node index.
 [2]:https://github.com/trentm/node-bunyan
 [3]:https://github.com/joyent/node-express-modulizer
 [4]:https://github.com/joyent/piranha-billing-server
+[5]:https://github.com/angular/protractor
+[6]:http://karma-runner.github.io/

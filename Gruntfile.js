@@ -1,12 +1,50 @@
+"use strict";
 var exec = require('child_process').exec;
 var fs = require('fs');
-module.exports = function(grunt) {
+
+module.exports = function (grunt) {
+    grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-protractor-runner');
+    grunt.loadNpmTasks('grunt-shell-spawn');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+
+    var diffCommand = 'git diff-index --name-only --diff-filter=AM HEAD -- | grep .js';
 
     grunt.initConfig({
         init: {
             precommitDest: './.git/hooks/pre-commit',
             precommit: './tools/pre-commit'
         },
+
+        watch: {
+            protractor: {
+                files: [
+                    'site/modules/**/test/*.scenario.js',
+                    'test/e2e/**/*.js'
+                ],
+                tasks: [ 'protractor:auto' ]
+            }
+        },
+
+        shell: {
+            options: {
+                stdout: true
+            },
+
+            selenium: {
+                command: './selenium/start',
+                options: {
+                    stdout: false,
+                    async: true
+                }
+            },
+
+            protractor_install: {
+                command: 'node ./node_modules/protractor/bin/install_selenium_standalone'
+            }
+        },
+
         deps: {
             jsLint: {
                 path: 'deps/javascriptlint',
@@ -21,7 +59,18 @@ module.exports = function(grunt) {
                 url: 'git://github.com/trentm/restdown'
             }
         },
+
+        jsLintChanges: {},
+
         jsLint: {
+            diff: {
+                path: './<%= deps.jsLint.path %>/build/install/jsl',
+                files: {
+                    src: []
+                },
+                conf: './tools/jsl.node.conf',
+                options: '--nologo --nofilelisting --conf=<%= jsLint.node.conf %>'
+            },
             node: {
                 path: './<%= deps.jsLint.path %>/build/install/jsl',
                 files: {
@@ -35,7 +84,8 @@ module.exports = function(grunt) {
                     ]
                 },
                 conf: './tools/jsl.node.conf',
-                options: '--nologo --nofilelisting --conf=<%= jsLint.node.conf %>'
+                options:
+                    '--nologo --nofilelisting --conf=<%= jsLint.node.conf %>'
             },
             client: {
                 path: './<%= deps.jsLint.path %>/build/install/jsl',
@@ -44,14 +94,25 @@ module.exports = function(grunt) {
                         '**/static/**/*.js',
                         '!**/node_modules/**',
                         '!**/vendor/**',
-                        '!**/*.spec.js'
+                        '!**/*.spec.js',
+                        '!site/modules/tracking/static/js/munchkin.js'
                     ]
                 },
                 conf: './tools/jsl.web.conf',
-                options: '--nologo --nofilelisting --conf=<%= jsLint.client.conf %>'
+                options:
+                    '--nologo --nofilelisting --conf=<%= jsLint.client.conf %>'
             }
         },
+
         jsStyle: {
+            diff: {
+                path: './<%= deps.jsStyle.path %>/jsstyle',
+                conf: './tools/jsstyle.conf',
+                options: '-f <%= jsStyle.client.conf %>',
+                files: {
+                    src: []
+                }
+            },
             node: {
                 path: './<%= deps.jsStyle.path %>/jsstyle',
                 conf: './tools/jsstyle.conf',
@@ -82,90 +143,52 @@ module.exports = function(grunt) {
             }
 
         },
-        jasmineNode: {
-            directory: './test/spec'
-        },
-        jasmine: {
-            tests: {
-                src: [
-                    "site/static/vendor/angular/angular.js",
-                    "site/static/vendor/angular/angular-resource.js",
-                    "site/static/vendor/angular/angular-cookies.js",
-                    "test/angular-mocks.js",
-                    "site/static/js/jp.js",
-                    "site/static/js/*.js",
-                    "site/static/js/**/*.js",
-                    "site/modules/**/static/js/module.js",
-                    "site/modules/**/static/js/**/*.js",
-                    "site/modules/**/static/vendor/**/*.js",
-                    "**/modules/machine/**/test/mock/*.js"
-                ],
-                options: {
-                    specs: [
-                        "site/modules/**/test/*.js"
-                    ]
-                }
-            }
-        },
 
-        docular: {
-            baseUrl: 'http://localhost:8000',
-            showAngularDocs: false,
-            showDocularDocs: false,
-            groups: [
-                {
-                    groupTitle: 'Portal modules',
-                    groupId: 'modules',
-                    groupIcon: 'icon-fire',
-                    sections: [
-                        {
-                            id: 'modules',
-                            title: 'Modules',
-                            scripts: [
-                                'site/modules',
-                                'site/static/js'
-                            ]
-                        }
-                    ]
-                },
-
-                {
-                    groupTitle: 'Portal documentation',
-                    groupId: 'portal',
-                    groupIcon: 'icon-book',
-                    sections: [
-                        {
-                            id: 'documentation',
-                            title: 'Documentation',
-                            scripts: [
-                                'site/docs'
-                            ]
-                        }
-                    ]
-                }
-            ] //groups of documentation to parse
-        },
 
         karma: {
             unit: {
-                configFile: 'test/karma.conf.js'
+                configFile: './test/karma.conf.js',
+                autoWatch: false,
+                singleRun: true
+            },
+            unit_auto: {
+                configFile: './test/karma.conf.js',
+                autoWatch: true,
+                singleRun: false
+            }
+        },
+
+        protractor: {
+            options: {
+                keepAlive: false,
+                configFile: './test/protractor.conf.js'
+            },
+
+            singlerun: {},
+
+            auto: {
+                keepAlive: true,
+                options: {
+                    args: {
+                        seleniumPort: 4444
+                    }
+                }
             }
         }
     });
-    grunt.loadNpmTasks('grunt-docular');
 
-    grunt.registerMultiTask('deps', 'set up dependencies', function() {
+    grunt.registerMultiTask('deps', 'set up dependencies', function () {
         var command = 'git clone ' + this.data.url + ' ' + this.data.path;
 
         var done = this.async();
         var self = this;
-        exec(command, function(error, stdout, stderr) {
+        exec(command, function (error, stdout) {
             console.log(stdout);
             // if jsLint, we need to install it
             if (self.target === 'jsLint') {
                 exec('make install',
                     {cwd: self.data.path},
-                    function(err, stdoutInstall, stderrInstall) {
+                    function (err, stdoutInstall) {
                         console.log(stdoutInstall);
                         done();
                     });
@@ -177,11 +200,11 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('npmDeps', 'set up npm dependencies', function() {
+    grunt.registerTask('npmDeps', 'set up npm dependencies', function () {
         var command = 'npm install';
 
         var done = this.async();
-        exec(command, function(error, stdout, stderr) {
+        exec(command, function (error, stdout) {
             console.log(stdout);
             done();
         });
@@ -189,7 +212,7 @@ module.exports = function(grunt) {
     });
 
     // task for setting up deps and git hook for testing
-    grunt.registerTask('init', 'set up', function() {
+    grunt.registerTask('init', 'set up', function () {
         var done = this.async();
 
         grunt.task.run('deps');
@@ -198,7 +221,7 @@ module.exports = function(grunt) {
         var precommit = grunt.config('init.precommit');
         var precommitDest = grunt.config('init.precommitDest');
 
-        fs.exists(precommitDest, function(exists) {
+        fs.exists(precommitDest, function (exists) {
             if (!exists) {
                 grunt.file.copy(precommit, precommitDest);
                 exec('chmod +x ' + precommitDest);
@@ -207,36 +230,6 @@ module.exports = function(grunt) {
         });
 
     });
-
-    // npm Task for running client-side jasmine tests
-    grunt.loadNpmTasks('grunt-contrib-jasmine');
-
-    // task for running jasmine-node with tap reporter
-    grunt.registerTask('jasmineNode',
-        'jasmine testing for node',
-        function() {
-
-            var done = this.async();
-            var dir = grunt.config('jasmineNode.directory');
-            var command = 'node ./node_modules/jasmine-node/lib/jasmine-node/cli.js ' + dir + ' --verbose';
-
-            exec(command, function(testError, stdout, stderr) {
-                if (stderr) {
-                    throw new Error(stderr);
-                }
-
-                grunt.log.writeln(stdout);
-
-                if (testError) {
-                    grunt.warn('fix issues before continuing');
-                } else {
-                    grunt.log.ok('All tests passed!');
-                }
-
-                done();
-            });
-
-        });
 
     function getErrors(stdout, useStrictErr) {
         var messages = stdout[stdout.length - 2].split(', ');
@@ -250,11 +243,11 @@ module.exports = function(grunt) {
 
         return false;
     }
-    function useStrictFilter(line) {
-        if (line.indexOf('(1):') !== -1 && line.indexOf('want_assign_or_call') !== -1)
-            return false;
 
-        return true;
+    function useStrictFilter(line) {
+        return !(line.indexOf('(1):') !== -1 &&
+            line.indexOf('want_assign_or_call') !== -1);
+
     }
 
     // task for running javascript lint for node files and
@@ -265,88 +258,116 @@ module.exports = function(grunt) {
     // they are identified by line 1 and errorflag "want_assign_or_call"
     // (see getErrors and useStrictFilter functions)
     //
-    grunt.registerMultiTask('jsLint', 'javascript lint', function() {
+    grunt.registerMultiTask('jsLint', 'javascript lint', function () {
 
         var done = this.async();
         var files = this.filesSrc;
-        var command = this.data.path + ' ' + this.data.options + ' ' + files.join(' ');
+        var self = this;
+        function runLinter() {
+            var command = self.data.path + ' ' + self.data.options + ' ' + files.join(' ');
+            exec(command, function(lintError, stdout, stderr) {
 
-        exec(command, function(lintError, stdout, stderr) {
-
-            if (stderr) {
-                throw new Error(stderr);
-            }
-
-            var errors = false;
-
-            var stdoutList = stdout.split('\n');
-            var newStd = stdoutList.filter(useStrictFilter);
-            var useStrictErr = stdoutList.length - newStd.length;
-
-            var output = newStd.slice(0, newStd.length - 2).join('\n');
-            grunt.log.writeln(output);
-
-            if (lintError) {
-                errors = getErrors(newStd, useStrictErr);
-            }
-            if (errors) {
-                grunt.log.error(errors);
-                grunt.warn('fix Lint issues before continuing');
-            } else {
-                if (useStrictErr) {
-                    grunt.log.writeln('>> ' + useStrictErr + ' use strict warning(s)');
+                if (stderr) {
+                    throw new Error(stderr);
                 }
-                grunt.log.ok(files.length +
-                    ' file' + (files.length === 1 ? '' : 's') +
-                    ' without fatal warnings/errors.');
-            }
 
-            done();
+                var errors = false;
 
-        });
+                var stdoutList = stdout.split('\n');
+                var newStd = stdoutList.filter(useStrictFilter);
+                var useStrictErr = stdoutList.length - newStd.length;
 
+                var output = newStd.slice(0, newStd.length - 2).join('\n');
+                grunt.log.writeln(output);
+
+                if (lintError) {
+                    errors = getErrors(newStd, useStrictErr);
+                }
+                if (errors) {
+                    grunt.log.error(errors);
+                    grunt.warn('fix Lint issues before continuing');
+                } else {
+                    if (useStrictErr) {
+                        grunt.log.writeln('>> ' + useStrictErr + ' use strict warning(s)');
+                    }
+                    grunt.log.ok(files.length +
+                        ' file' + (files.length === 1 ? '' : 's') +
+                        ' without fatal warnings/errors.');
+                }
+
+                done();
+
+            });
+        }
+
+        if (this.target === 'diff') {
+            exec(diffCommand, function(error, stdout) {
+                files = stdout.split(/\n/);
+                files.pop();
+                runLinter();
+            });
+        } else {
+            runLinter();
+        }
     });
 
     // task for running javascript style check
 
-    grunt.registerMultiTask('jsStyle', 'javascript style check', function() {
+    grunt.registerMultiTask('jsStyle', 'javascript style check', function () {
 
         var done = this.async();
         var files = this.filesSrc;
-        var command = this.data.path + ' ' + this.data.options + ' ' + files.join(' ');
+        var self = this;
+        function runStyler() {
+            var command = self.data.path + ' ' + self.data.options + ' ' + files.join(' ');
+            exec(command, function(styleError, stdout, stderr) {
 
-        exec(command, function(styleError, stdout, stderr) {
+                if (stderr) {
+                    throw new Error(stderr);
+                }
 
-            if (stderr) {
-                throw new Error(stderr);
-            }
+                grunt.log.writeln(stdout);
 
-            grunt.log.writeln(stdout);
+                if (styleError) {
+                    grunt.log.error(stdout.split('\n').length - 1 + ' warnings');
+                    grunt.warn('fix Style issues before continuing');
+                } else {
+                    grunt.log.ok(files.length +
+                        ' file' + (files.length === 1 ? '' : 's') +
+                        ' without fatal warnings/errors.');
+                }
 
-            if (styleError) {
-                grunt.log.error(stdout.split('\n').length - 1 + ' warnings');
-                grunt.warn('fix Style issues before continuing');
-            } else {
-                grunt.log.ok(files.length +
-                    ' file' + (files.length === 1 ? '' : 's') +
-                    ' without fatal warnings/errors.');
-            }
+                done();
 
-            done();
+            });
+        }
 
-        });
+        if (this.target === 'diff') {
+            exec(diffCommand, function(error, stdout) {
+                files = stdout.split(/\n/);
+                files.pop();
+                runStyler();
+            });
+        } else {
+            runStyler();
+        }
 
     });
 
-    grunt.loadNpmTasks('grunt-karma');
+    grunt.registerTask('default', [ 'jsLint', 'jsStyle', 'test' ]);
+    grunt.registerTask('check', [ 'jsLint', 'jsStyle' ]);
+    grunt.registerTask('precommit', ['jsLint:diff']);
+    grunt.registerTask('prepush', [ 'jsLint', 'jsStyle', 'test' ]);
 
-// register tasks as they should be in the makefile
-    grunt.registerTask('default', ['jsLint', 'jsStyle', 'test']);
-    grunt.registerTask('check', ['jsLint', 'jsStyle']);
-//  grunt.registerTask('clean', '');
-    grunt.registerTask('prepush', ['jsLint', 'jsStyle', 'test']);
-    grunt.registerTask('test', ['jasmineNode', 'jasmine']);
-    grunt.registerTask('unit', ['karma']);
-//  grunt.registerTask('release', ['jsLint', 'jsStyle test']);
+    grunt.registerTask('install:dev', [ 'shell:protractor_install' ]);
 
+    // Single run tests
+    grunt.registerTask('test', [ 'test:unit', 'test:e2e' ]);
+    grunt.registerTask('test:unit', [ 'karma:unit' ]);
+    grunt.registerTask('test:e2e', [ 'protractor:singlerun' ]);
+
+    // Autotest and watch tests
+    grunt.registerTask('autotest', [ 'karma:unit_auto' ]);
+    grunt.registerTask('autotest:unit', [ 'karma:unit_auto' ]);
+    grunt.registerTask('autotest:e2e', [ 'shell:selenium', 'watch:protractor' ]);
 };

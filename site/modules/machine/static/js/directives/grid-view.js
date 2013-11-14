@@ -145,7 +145,16 @@
             var filtered = $filter('filter')($scope.objects, $scope.matchesFilter);
             var ordered = $filter('orderBy')(filtered, $scope.order);
 
-            var order = ($scope.objects[0] && Object.keys($scope.objects[0])) || [];
+            // List all the different properties from all objects
+            var order = [];
+            $scope.objects.forEach(function (object) {
+                Object.keys(object).forEach(function (property) {
+                    if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
+                        order.push(property);
+                    }
+                });
+            });
+
             var final = [];
             if ($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
@@ -157,7 +166,7 @@
             ordered.forEach(function (el) {
                 var obj = {};
                 order.forEach(function (id) {
-                    obj[id] = el[id];
+                    obj[id] = el[id] !== undefined ? el[id] : '';
                 });
                 final.push(obj);
             });
@@ -268,7 +277,7 @@
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
 
                 $scope.props.forEach(function (el) {
-	                if(el._getter) {
+	                if (el._getter) {
 		                el.order = el._getter;
 		                el.rorder = function (obj) {
 			                var elem = el._getter(obj) + '';
@@ -278,7 +287,7 @@
 			                }
 			                return next;
 		                };
-	                } else if(!el.id2) {
+	                } else if (!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {
@@ -288,11 +297,8 @@
                 });
             }
         };
-    }]).filter('dateTime', function () {
-        return function (dateString) {
-            return window.moment(new Date(dateString)).format("MMM Do");
-        };
-    }).filter('jsonArray', function () {
+    }])
+    .filter('jsonArray', function () {
         return function (array) {
             if (ng.isArray(array)) {
                 return array.join('; ');

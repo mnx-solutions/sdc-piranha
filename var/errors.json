@@ -157,5 +157,28 @@
         "nr": "21"
       }
     }
+  },
+  "'subscription.subscribeToRatePlans.productRatePlanId' must be 32 length string constructed by digits and the characters from 'a' to 'f'.": {
+    "code": 53010120,
+    "message": "'subscription.subscribeToRatePlans.productRatePlanId' must be 32 length string constructed by digits and the characters from 'a' to 'f'.",
+    "human": "REST API: POSTSrpCreate,subscription.subscribeToRatePlans.productRatePlanId - Invalid format or value",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTSrpCreate",
+        "nr": "301"
+      },
+      "field": {
+        "name": "subscription.subscribeToRatePlans.productRatePlanId",
+        "nr": "01"
+      },
+      "category": {
+        "name": "Invalid format or value",
+        "nr": "20"
+      }
+    }
   }
 }
