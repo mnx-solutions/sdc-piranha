@@ -50,14 +50,14 @@ app.get('/version', function (req, res, next) {
 
         if (features.fullVersion !== 'enabled') {
             ret = {
-                'git':{
-                    'commitId': gitInfo.commitId
+                git: {
+                    commitId: gitInfo.commitId
                 }
             }
         } else {
             ret = {
-                'features': features,
-                'git': gitInfo
+                features: features,
+                git: gitInfo
             }
         }
 
@@ -69,6 +69,18 @@ app.get('/version', function (req, res, next) {
 app.get('/old-browser', require('./lib/old-browser'));
 
 redirect(app); //Add redirects for old urls
+
+config.log.serializers = {
+    error: function (err) {
+        if (typeof err === 'string') {
+            return {
+                message: err
+            };
+        } else {
+            return bunyan.stdSerializers.err(err);
+        }
+    }
+};
 
 var log = bunyan.createLogger(config.log);
 
