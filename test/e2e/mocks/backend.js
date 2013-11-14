@@ -1,3 +1,4 @@
+var fs = require('fs');
 
 function serializeFunction (func, params) {
     var template = func.toString();
@@ -103,29 +104,33 @@ var backend = module.exports =  {
 
                         for (var name in session) {
                             var context = session[name];
+                            var type = 'chunked';
+                            var status = 'finished';
+                            var data = null;
 
                             if (context.call.response instanceof Array) {
-                                var type = 'chunked';
-                                var status = null;
-                                var data = null;
+                                // Chunked responses
+                                if (context.call.response.length > 1) {
+                                    // Final step
+                                    if ((context.state + 1) >= context.call.response.length) {
+                                        data = context.call.response[context.state++];
+                                        status = 'finished';
+                                    } else { // Update
+                                        data = context.call.response[context.state++];
+                                        status = 'updated';
+                                    }
 
-                                if ((context.state + 1) >= context.call.response.length) {
-                                    data = context.call.response[context.state++];
-                                    status = 'finished';
-                                    context.state = 0;
-                                } else {
-                                    data = context.call.response[context.state++];
-                                    status = 'updated';
-                                }
-
-                                if (data.type && data.type === 'error') {
-                                    type = 'error';
-                                    status = 'finished';
-                                    data = context.call.response.message;
-
-                                    context.state = 0;
+                                    // Error
+                                    if (data.type && data.type === 'error') {
+                                        type = 'error';
+                                        status = 'finished';
+                                        data = context.call.response.message;
+                                    }
 
                                     results.push(formatResult(data, type, status));
+                                } else { // Return array
+                                    status = 'finished';
+                                    results.push(formatResult(context.call.response[0]));
                                 }
                             } else if (context.call.response.type && context.call.response.type === 'error') {
                                 results.push(formatResult(context.call.response.message, 'error'));
@@ -133,15 +138,17 @@ var backend = module.exports =  {
                                 results.push(formatResult(context.call.response));
                             }
 
-                            delete sessions[sessionId][context.id];
+                            if (status === 'finished') {
+                                delete sessions[sessionId][context.id];
+                            }
                         }
 
                         if (results.length > 0) {
                             return [ 200, {
                                 results: results
-                            }, {} ];
+                            }, headers ];
                         } else {
-                            return [ 202, {}, {} ];
+                            return [ 202, {}, headers ];
                         }
                     });
             }
@@ -150,7 +157,6 @@ var backend = module.exports =  {
             if (angular.isArray(handlers.requests)) {
                 for (var i = 0, c = handlers.requests.length; i < c; i++) {
                     var request = handlers.requests[i];
-                    console.log(request);
                     $httpBackend.when(request.method, request.url, request.body, request.headers).respond(request.data);
                 }
             }
@@ -195,5 +201,14 @@ var backend = module.exports =  {
         };
 
         return context;
+    },
+
+    data: function loadData (name) {
+        var fileName = __dirname + '/data/' + name + '.json';
+        if (fs.existsSync(fileName)) {
+            return require(fileName);
+        } else {
+            return {};
+        }
     }
 };
