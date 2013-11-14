@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app) {
+(function (app, ng) {
     app.directive('mainLeft', ['localization', function (localization) {
         return {
             templateUrl: 'left/static/partials/menu.html',
@@ -11,6 +11,7 @@
                 $scope.t_start = false;
                 $scope.t_second = false;
                 $scope.t_three = false;
+                $scope.openMenu = false;
                 $scope.toggleSideBar = function () {
                     $scope.sideBarMin = ($scope.sideBarMin == false) ? true : false;
                     if($scope.sideBarMin){
@@ -18,6 +19,9 @@
                     }else{
                         $('.footer').removeClass('leftpanel-small');
                     }
+                };
+                $scope.openSubMenu = function(){
+                    $scope.openMenu = ($scope.openMenu) ? false : true;
                 }
             },
 

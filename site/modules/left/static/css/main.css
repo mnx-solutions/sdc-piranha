@@ -10,7 +10,11 @@
 .page-sidebar-closed .sidebar-toggler {
     margin-right: 3px;
 }
-ul.page-sidebar-menu > li.active > a .selected {
+
+ul.page-sidebar-menu > li.active > a .selected,
+ul.page-sidebar-menu .second.active .sub-menu  > li.active > a .selected-sub,
+.second.active.collapses > li.active > a .selected,
+ul.page-sidebar-menu > li.second.active.collapses > a .selected{
     display: block;
     width: 8px;
     height: 0;
@@ -27,6 +31,11 @@ ul.page-sidebar-menu > li.active > a .selected {
     -o-transform: rotate(180deg);
     -ms-transform: rotate(180deg);
     transform: rotate(180deg);
+}
+ul.page-sidebar-menu > li.second.active > a .selected,
+ul.page-sidebar-menu .second.active.collapses .sub-menu  > li.active > a .selected-sub
+{
+    display: none;
 }
 ul.page-sidebar-menu > li.active.over > a .selected {
     right: 2000px !important;
@@ -48,7 +57,7 @@ ul.page-sidebar-menu > li > a {
     display: block;
     position: relative;
     margin: 0;
-    border: 0px;
+    border: 0;
     padding: 7px 15px;
     text-decoration: none;
     font-size: 14px;
@@ -129,26 +138,29 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     opacity: 1;
 }
 
-.second.active.over.collapse .title{
+.second.active.over.collapses .title, .second.open.over.collapses .title{
     margin-left: 15px;
 }
-.second.active, .second.active.over.collapse {
+.second.active, .second.active.over.collapses, .second.open, .second.open.over.collapses {
     height: auto;
     /*height: 170px;*/
     position: relative !important;
     z-index: 2000;
     display: block !important;
 }
-.second.active.over, .second.active.collapse{
+
+.second.active.over,
+
+.second.open.over{
     height: 34px;
 }
-.second.active.over .sub-menu >li a{
+.second.active.over .sub-menu >li a, .second.open.over .sub-menu >li a{
     padding-left: 7px !important;
 }
-.second.active.over.collapse .sub-menu{
+.second.active.over.collapses .sub-menu, .second.open.over.collapses .sub-menu{
     margin-left: 56px !important;
 }
-.second.active .sub-menu {
+.second.active .sub-menu, .second.open .sub-menu {
     display: block;
     margin-left: 0;
 }

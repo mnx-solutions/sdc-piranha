@@ -8,32 +8,36 @@
         </li>
         <!--<li ng-repeat="item in items" ng-click="select(item)" ng-class="{active: isActive(item)}">{{item}}</li>-->
 
-        <li class="start " ng-class="{active: location.path() == '/dashboard', over: t_start && sideBarMin}" data-ng-mouseenter="t_start=true" ng-mouseleave="t_start=false">
-            <a href="#!/dashboard">
+        <li class="start " ng-class="{active: location.path().search('dashboard') == 1, over: t_start && sideBarMin}" data-ng-mouseenter="t_start=true" ng-mouseleave="t_start=false">
+            <a href="#!/dashboard" data-ng-click="openMenu = false">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_start">Dashboard</span>
                 <span class="selected"></span>
             </a>
         </li>
-        <li class="second" data-ng-class="{active: location.path() == '/compute' || location.path() == '/elb', over: t_second && sideBarMin, collapse: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
-            <a href="#!/compute">
+        <li class="second" data-ng-class="{active: location.path().search('compute') == 1 ||
+                                                   location.path().search('elb') == 1 ||
+                                                   location.path().search('firewall') == 1 ||
+                                                   location.path().search('images') == 1, open: openMenu, over: t_second && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
+            <a data-ng-click="openSubMenu()">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_second">Compute</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li class="sub0" data-ng-class="{active: location.path() == '/compute'}"><a href="#!/compute"><span class="titles" data-ng-show="!sideBarMin || t_second">Instances</span></a></li>
-                <li class="sub1"><a href="#!/elb"><span class="titles" data-ng-show="!sideBarMin || t_second">Load Balancers</span></a></li>
-                <li class="sub2"><a><span class="titles" data-ng-show="!sideBarMin || t_second">Firewall Rules</span></a></li>
-
-                <!--<a href="#!/firewall/" data-ng-show="features.firewall != 'disabled'" data-translate>Firewall</a>-->
-                <!--<a href="#!/elb/" data-ng-show="features.elb == 'enabled'" data-translate>Load Balancers</a>-->
-
-                <li class="sub3"><a><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span></a></li>
+                <li class="sub0" data-ng-class="{active: location.path() == '/compute'}">
+                    <a href="#!/compute">
+                        <span class="titles" data-ng-show="!sideBarMin || t_second">Instances</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li class="sub1" data-ng-class="{active: location.path().search('elb') == 1}" data-ng-show="features.elb == 'enabled'"><a href="#!/elb"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Load Balancers</span><span class="selected-sub"></span></a></li>
+                <li class="sub2" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'"><a href="#!/firewall"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Firewall Rules</span><span class="selected-sub"></span></a></li>
+                <li class="sub3" data-ng-class="{active: location.path().search('images') == 1}"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span><span class="selected-sub"></span></a></li>
             </ul>
         </li>
-        <li class="three" data-ng-class="{active: location.path() == '/storage', over: t_three && sideBarMin}" data-ng-mouseenter="t_three=true" ng-mouseleave="t_three=false">
-            <a href="#!/storage">
+        <li class="three" data-ng-class="{active: location.path().search('storage') == 1, over: t_three && sideBarMin}" data-ng-mouseenter="t_three=true" ng-mouseleave="t_three=false">
+            <a href="#!/storage" data-ng-click="openMenu = false">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_three" >Storage</span>
                 <span class="selected"></span>
