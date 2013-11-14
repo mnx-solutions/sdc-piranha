@@ -12,7 +12,8 @@
         '$timeout',
         '$http',
         '$rootScope',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope) {
+        'util',
+        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope, util) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -70,10 +71,18 @@
                                                         $scope.iframe = '<iframe src="'+ downloadLink +'"></iframe>';
                                                         $rootScope.downloadLink = downloadLink;
 
-                                                        notification.push(null, { type: 'success' },
-                                                            localization.translate($scope, null,
-                                                                'SSH key successfully added to your account<br />You will be prompted for private key download shortly. Please keep your private key safe'
-                                                            )
+                                                        util.message(
+                                                            localization.translate(
+                                                                $scope,
+                                                                null,
+                                                                'Message'
+                                                            ),
+                                                            localization.translate(
+                                                                $scope,
+                                                                null,
+                                                                'SSH key successfully added to your account'
+                                                            ),
+                                                            function () {}
                                                         );
                                                     });
                                                 } else {
@@ -96,10 +105,18 @@
                                                         }
                                                         if (data.success === false) {
                                                             // key download failed, show error
-                                                            notification.push(null, { type: 'error' },
-                                                                localization.translate($scope, null,
+                                                            util.error(
+                                                                localization.translate(
+                                                                    $scope,
+                                                                    null,
+                                                                    'Error'
+                                                                ),
+                                                                localization.translate(
+                                                                    $scope,
+                                                                    null,
                                                                     'SSH Key generation error'
-                                                                )
+                                                                ),
+                                                                function () {}
                                                             );
                                                         }
                                                         if (data.success !== undefined) {
@@ -116,10 +133,18 @@
                                                     clearTimeout(pollingTimeout);
                                                     $rootScope.loading = false;
                                                     $rootScope.pollingJob = false;
-                                                    notification.push(null, { type: 'error' },
-                                                        localization.translate($scope, null,
+                                                    util.error(
+                                                        localization.translate(
+                                                            $scope,
+                                                            null,
+                                                            'Error'
+                                                        ),
+                                                        localization.translate(
+                                                            $scope,
+                                                            null,
                                                             'SSH Key generation error'
-                                                        )
+                                                        ),
+                                                        function () {}
                                                     );
 
                                                 }, 2*60*1000);
@@ -128,10 +153,21 @@
                                                 // error
                                                 $rootScope.loading = false;
                                                 $rootScope.pollingJob = false;
-                                                notification.push(null, { type: 'error' },
-                                                    localization.translate($scope, null,
-                                                        'Unable to generate SSH key: '+ data.err.message
-                                                    )
+                                                util.error(
+                                                    localization.translate(
+                                                        $scope,
+                                                        null,
+                                                        'Error'
+                                                    ),
+                                                    localization.translate(
+                                                        $scope,
+                                                        null,
+                                                        'Unable to generate SSH key: {{message}}',
+                                                        {
+                                                            message: data.err.message
+                                                        }
+                                                    ),
+                                                    function () {}
                                                 );
                                             }
                                         });

@@ -87,10 +87,18 @@
                                 $scope.loading = false;
                                 $scope.openKeyDetails = null;
 
-                                notification.push(null, { type: 'success' },
-                                    localization.translate($scope, null,
+                                util.message(
+                                    localization.translate(
+                                        $scope,
+                                        null,
+                                        'Message'
+                                    ),
+                                    localization.translate(
+                                        $scope,
+                                        null,
                                         'Key successfully deleted'
-                                    )
+                                    ),
+                                    function () {}
                                 );
                             });
                         });
