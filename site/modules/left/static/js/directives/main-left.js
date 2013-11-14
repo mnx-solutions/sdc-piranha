@@ -16,6 +16,7 @@
                     $scope.sideBarMin = ($scope.sideBarMin == false) ? true : false;
                     if($scope.sideBarMin){
                         $('.footer').addClass('leftpanel-small');
+                        $scope.openMenu = false;
                     }else{
                         $('.footer').removeClass('leftpanel-small');
                     }

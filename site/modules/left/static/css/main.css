@@ -37,6 +37,9 @@ ul.page-sidebar-menu .second.active.collapses .sub-menu  > li.active > a .select
 {
     display: none;
 }
+/*.second.active.open.collapses .sub-menu{*/
+    /*display: none;*/
+/*}*/
 ul.page-sidebar-menu > li.active.over > a .selected {
     right: 2000px !important;
 }
@@ -52,6 +55,7 @@ ul.page-sidebar-menu > li {
     border: 0;
     height: 34px;
     line-height: 20px;
+
 }
 ul.page-sidebar-menu > li > a {
     display: block;
@@ -63,6 +67,7 @@ ul.page-sidebar-menu > li > a {
     font-size: 14px;
     font-weight: 300;
     color: white;
+    cursor: pointer;
 }
 ul.page-sidebar-menu > li.active > a {
     background: #282828 !important;
@@ -163,6 +168,12 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 .second.active .sub-menu, .second.open .sub-menu {
     display: block;
     margin-left: 0;
+}
+.second.active.collapses .sub-menu{
+    display: none;
+}
+.second.active.collapses:hover .sub-menu{
+    display: block !important;
 }
 .second .sub-menu {
     display: none;

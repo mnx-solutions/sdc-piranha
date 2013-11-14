@@ -4,10 +4,7 @@
     <ul class="page-sidebar-menu">
         <li>
             <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
-            <!--<div class="sidebar-toggler" data-ng-click="sideBarMin()"></div>-->
         </li>
-        <!--<li ng-repeat="item in items" ng-click="select(item)" ng-class="{active: isActive(item)}">{{item}}</li>-->
-
         <li class="start " ng-class="{active: location.path().search('dashboard') == 1, over: t_start && sideBarMin}" data-ng-mouseenter="t_start=true" ng-mouseleave="t_start=false">
             <a href="#!/dashboard" data-ng-click="openMenu = false">
                 <i class=""></i>
