@@ -625,13 +625,12 @@
         </div>
         </div>
 
-        <div class="alert alert-joyent-blue alert-global" data-ng-show="keys.length == 0">
-            <div class="pull-left">
-                <h4>Hello there!</h4>
-                <div data-translate>I see you have no SSH keys configured.</div>
+        <div data-ng-show="keys.length === 0">
+            <h4>Hello there!</h4>
+            <div data-translate>I see you have no SSH keys configured.</div>
+            <div class="pull-left" style="margin-top: 20px">
+                <a href="#!/account/ssh" class="btn orange align_text_btn">Add a SSH key</a>
             </div>
-            <a class="btn btn-joyent-blue pull-right alert-global" href="#!/account/ssh" data-translate>Add a SSH key</a>
-            <div class="clearfix"></div>
         </div>
     </div>
 </div>
