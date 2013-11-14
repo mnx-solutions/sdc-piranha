@@ -34,13 +34,5 @@
 
                 $scope.summary = true;
 
-                $scope.accordionIcon3 = {};
-                $scope.collapseTrigger3 = function(item, items){
-                    for(var i = 0; i < items; i++){
-                        $scope.accordionIcon3[i] = false;
-                    }
-                    $scope.accordionIcon3[item] = true;
-                    return $scope.accordionIcon3[item];
-                };
             }]);
 }(window.JP.getModule('Account')));
