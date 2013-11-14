@@ -438,8 +438,13 @@ div.error {
     display: inline-block;
     height: 30px;
     border-radius: 0;
-    padding-left: 0;
     padding-right: 10px;
+}
+.edit-value select, .edit-value-double{
+    padding-left: 0;
+}
+.edit-value-two select{
+    padding-left: 10px;
 }
 .edit-value select{
     width: 205px !important;
@@ -449,6 +454,9 @@ div.error {
 }
 .edit-value-one select,.edit-value-double select{
     width: 218px !important;
+    padding-right: 17px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 .edit-value-double{
     width: 455px !important;
@@ -456,6 +464,9 @@ div.error {
 .edit-value-double select{
     display: inline-block;
     margin-right: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-right: 17px;
 }
 .edit-error{
     width: 285px;
@@ -534,4 +545,17 @@ select option{
     select {
         padding: 3px 0 0 10px;
     }
+}
+
+.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
+    width: 50px;
+    border-radius: 0;
+    float: left;
+    text-shadow: none;
+    font-size: 16px;
+    color: #555555;
+}
+#phone{
+    width: 150px;
+    font-size: 16px;
 }
