@@ -84,7 +84,8 @@
                 "primaryIp":"10.224.6.166",
                 "firewall_enabled":false,
                 "package":"g3-standard-0.25-smartos",
-                "datacenter":"eu-ams-1"
+                "datacenter":"eu-ams-1",
+                "maintenanceStartTime": "11/13/2013 @ 2pm PST"
             }
         ]
     }
