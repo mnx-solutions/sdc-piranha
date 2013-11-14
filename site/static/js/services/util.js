@@ -70,7 +70,7 @@ window.JP.main.service('util', [
                 }
             ];
 
-            return $dialog.messageBox(title, question, btns, 'dashboard/static/template/dialog/messageDialog.html')
+            return $dialog.messageBox(title, question, btns)
                 .open()
                 .then(function (result) {
                     if (result === 'ok') {
