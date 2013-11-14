@@ -1,0 +1,15 @@
+{
+    "id": "95793595-8fd6-4434-b802-67c9e8e609b6",
+    "login": "user",
+    "email": "user.name@gmail.com",
+    "companyName": "Joyent",
+    "firstName": "User",
+    "lastName": "S",
+    "address": "",
+    "postalCode": "",
+    "city": "",
+    "state": "",
+    "country": "USA",
+    "phone": "54534543543541",
+    "tfaEnabled": false
+}
