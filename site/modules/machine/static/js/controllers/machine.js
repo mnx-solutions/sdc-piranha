@@ -47,93 +47,7 @@
                 }
             );
 
-            $scope.tagnr = 0;
             $scope.visiblePasswords = {};
-
-            function tagcloud(tags) {
-                if (!tags) {
-                    tags = Machine.tags(machineid);
-                }
-
-                var d = $q.defer();
-                var cloud = {};
-
-                function addVal(k, val, edit) {
-                    var id = ++$scope.tagnr;
-                    cloud[id] = {key: k, val: val, edit: edit};
-                }
-
-                function split() {
-                    $scope.tagnr = -1;
-                    Object.keys(tags).forEach(function(k) {
-                        addVal(k, tags[k], false);
-                    });
-
-                    addVal('', '', true);
-                    d.resolve(cloud);
-                }
-
-                $q.when(tags).then(function (t) {
-                    tags = t;
-                    split();
-                });
-
-                return d.promise;
-            }
-
-            $scope.tagcloudarr = [];
-
-            function checkTags (val, old) {
-                if (val) {
-                    var keys = Object.keys(val);
-                    var map = {};
-                    keys.forEach(function (k) {
-                        delete val[k].conflict;
-
-                        // Delete the element if there is no key and value and it is not the last tag row
-                        if (!val[k].key &&
-                            !val[k].val &&
-                            old &&
-                            old[k] &&
-                            !old[k].key &&
-                            !old[k].val &&
-                            +k !== +$scope.tagnr) {
-                            delete val[k];
-                        } else if (val[k].key) {
-                            if (map[val[k].key] !== undefined){
-                                val[map[val[k].key]].conflict = true;
-                                val[k].conflict = true;
-                            }
-
-                            map[val[k].key] = k;
-                        }
-                    });
-
-                    if (val[$scope.tagnr] && (val[$scope.tagnr].key || val[$scope.tagnr].val)) {
-                        val[++$scope.tagnr] = {key: '', val: '', edit: true};
-                    }
-
-                    if (keys.length > 1) {
-                        var nextToLastKey = keys[keys.length - 2];
-                        var nextToLast = val[nextToLastKey];
-                        var last = val[$scope.tagnr];
-
-                        // Remove last tag if both nextToLast and last tag element have missing keys and values
-                        if (!nextToLast.key && !nextToLast.val && !last.val && !last.key) {
-                            delete val[$scope.tagnr];
-                            $scope.tagnr = +nextToLastKey;
-                        }
-                    }
-                    $scope.tagcloudarr = [];
-                    for(var i = 0; i < (+$scope.tagnr + 1); i++) {
-                        $scope.tagcloudarr.push(val[i]);
-                    }
-                }
-            }
-
-            $q.when($scope.tagcloud).then(function (){
-                $scope.$watch('tagcloud', checkTags, true);
-            });
 
             $scope.$on(
                 'event:forceUpdate',
@@ -377,39 +291,6 @@
                     });
             };
 
-            $scope.clickSaveTags = function () {
-                $$track.event('machine', 'saveTags');
-                var data = {};
-                var tags = $scope.tagcloud.$$v;
-
-                for (var i = 0; i < $scope.tagnr; i++) {
-                    if (tags[i] && tags[i].key && tags[i].val){
-                        data[tags[i].key] = tags[i].val;
-                    }
-                }
-
-                $scope.tagsave = true;
-                $scope.retinfo = Machine.tags(machineid, data);
-                $scope.retinfo.then(function(tags) {
-                    $scope.tagcloud = tagcloud(tags);
-                    $scope.tagsave = false;
-                    //console.log($scope.tagForm);
-                    $scope.tagForm.$pristine = true;
-                    $scope.tagForm.$dirty = false;
-                }, function (err) {
-                    $scope.tagsave = false;
-                });
-            };
-
-            $scope.editTag = function (k) {
-                $scope.tagcloud.$$v[k].edit = true;
-            };
-
-            $scope.removeTag = function(k) {
-                $scope.tagForm.$setDirty();
-                delete $scope.tagcloud.$$v[k];
-            };
-
             $scope.togglePassword = function (id) {
                 if ($scope.isPasswordVisible(id)) {
                     $scope.visiblePasswords[id] = false;
@@ -443,10 +324,79 @@
                     name.indexOf(ending, name.length - ending.length) !== -1;
             };
 
+            $scope.tagsArray = [];
+            // Tags
+            function initTags(tags) {
+                $scope.tagsArray = [];
+                $scope.tagsave = false;
+                Object.keys(tags).forEach(function (key) {
+                    $scope.tagsArray.push({key: key, val: tags[key], conflict: false, edit: false});
+                });
+                $scope.tagsArray.push({key:'', val: '', edit: true, conflict:false});
+            }
+
             // Enable features
             // Instance tagging
             if ($scope.features.instanceTagging === 'enabled') {
-                $scope.tagcloud = tagcloud();
+                Machine.tags(machineid).then(initTags);
+
+                $scope.$watch('tagsArray', function (newVal, oldVal){
+                    // Search for conflicts
+                    var keyMap = {};
+                    newVal.forEach(function (tag, index) {
+                        if (keyMap[tag.key] && index !== (newVal.length - 1)) {
+                            tag.conflict = true;
+                            keyMap[tag.key].conflict = true;
+                        } else if (!tag.key && index !== (newVal.length - 1)){
+                            tag.conflict = true;
+                        } else {
+                            tag.conflict = false;
+                            keyMap[tag.key] = tag;
+                        }
+                    });
+
+                    // Add empty value at the end if necessary
+                    var last = newVal[newVal.length - 1];
+                    if (!last || last.key !== '' || last.val !== '') {
+                        newVal.splice(newVal.length, 0, {key:'', val: '', edit: true, conflict: false });
+                    }
+
+                    // Remove empty value from the end if necessary
+                    var nextToLast = newVal[newVal.length - 2];
+                    if (nextToLast) {
+                        // Last to values are empty
+                        if (!last.key && !last.val && !nextToLast.key && !nextToLast.val) {
+                            var oldLast = oldVal[newVal.length - 1];
+                            // The last value hasn't changed so remove it
+                            if (!oldLast.key && !oldLast.val) {
+                                newVal.pop();
+                            }
+                        }
+                    }
+
+                }, true);
+
+                $scope.editTag = function (index) {
+                    $scope.tagsArray[index].edit = true;
+                };
+
+                $scope.removeTag = function (index) {
+                    $scope.tagsArray.splice(index, 1);
+                };
+
+                $scope.saveTags = function () {
+                    $$track.event('machine', 'saveTags');
+
+                    var data = {};
+                    $scope.tagsArray.forEach(function (tag){
+                        if(tag.key && tag.val) {
+                            data[tag.key] = tag.val;
+                        }
+                    });
+
+                    $scope.tagsave = true;
+                    Machine.tags(machineid, data).then(initTags);
+                };
             }
 
             if ($scope.features.firewall === 'enabled') {

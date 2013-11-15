@@ -168,79 +168,70 @@
                     and identify your instances.
                 </p>
 
-                <div class="clearfix"></div>
+                <div data-ng-form="tagForm">
+                    <div class="tags" data-ng-repeat="(key, o) in tagsArray">
+                        <div class="tag row-fluid" data-ng-show="!o.edit">
+                        <span class="key span5"
+                              data-ng-click="editTag(key)"
+                              data-ng-class="{error: o.conflict}">{{o.key}}</span>
 
-                <div>
-                    <form name="tagForm">
-                        <div class="tags" data-ng-repeat="(key, o) in tagcloudarr">
-                            <div class="tag row-fluid" data-ng-show="!o.edit">
-                                <span class="key span5"
-                                      data-ng-click="editTag(key)"
-                                      data-ng-class="{error: o.conflict}">{{o.key}}</span>
+                        <span class="value span5"
+                              data-ng-click="editTag(key)"
+                              data-ng-class="{error: o.conflict}">{{o.val}}</span>
 
-                                <span class="value span5"
-                                      data-ng-click="editTag(key)"
-                                      data-ng-class="{error: o.conflict}">
-                                    {{o.val}}
-                                </span>
-
-                                <span class="icon-trash pull-right delete"
-                                      data-ng-click="removeTag(key)"
-                                      data-ng-show="!tagsave">
-                                </span>
-                            </div>
-
-                            <div class="tag editable" data-ng-show="o.edit">
-                                <div data-ng-class="{error: o.conflict}" class="tag row-fluid">
-                                    <span class="key span5">
-                                        <span class="span3 tag-label">
-                                            <label>Key <span class="required-asterix">*</span></label>
-                                        </span>
-                                        <span class="span9">
-                                            <input type="text"
-                                                   placeholder="Key"
-                                                   data-tag
-                                                   data-translate="placeholder"
-                                                   data-ng-model="o.key"
-                                                   data-ng-required="key != tagnr"
-                                                   data-ng-disabled="tagsave">
-                                        </span>
-                                    </span>
-
-                                    <span class="value span5">
-                                        <span class="span3 tag-label">
-                                            <label>Value <span class="required-asterix">*</span></label>
-                                        </span>
-                                        <span class="span9">
-                                            <input type="text"
-                                                   placeholder="Value"
-                                                   data-tag
-                                                   data-translate="placeholder"
-                                                   data-ng-model="o.val"
-                                                   data-ng-required="key != tagnr"
-                                                   data-ng-disabled="tagsave">
-                                        </span>
-                                    </span>
-
-                                    <span class="icon-trash pull-right delete"
-                                          data-ng-click="removeTag(key)"
-                                          data-ng-show="key != tagnr && !tagsave">
-                                    </span>
-                                </div>
-                            </div>
+                        <span class="icon-trash pull-right delete"
+                              data-ng-click="removeTag(key)"
+                              data-ng-show="!tagsave">
+                        </span>
                         </div>
 
-                        <div class="tags row-fluid">
-                            <button class="btn btn-joyent-blue pull-right"
-                                    data-ng-click="clickSaveTags(machine.id)"
-                                    data-translate
-                                    data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagForm.$pristine || tagsave">Save</button>
-                            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
-                        </div>
-                    </form>
+                        <div class="tag editable" data-ng-show="o.edit">
+                            <div data-ng-class="{error: o.conflict}" class="tag row-fluid control-group">
+                            <span class="key span5">
+                                <span class="span3 tag-label">
+                                    <label>Key <span class="required-asterix">*</span></label>
+                                </span>
+                                <span class="span9">
+                                    <input type="text"
+                                           placeholder="Key"
+                                           data-tag
+                                           data-translate="placeholder"
+                                           data-ng-model="o.key"
+                                           data-ng-disabled="tagsave">
+                                </span>
+                            </span>
 
-                    <div class="clearfix"></div>
+                            <span class="value span5">
+                                <span class="span3 tag-label">
+                                    <label>Value <span class="required-asterix">*</span></label>
+                                </span>
+                                <span class="span9">
+                                    <input type="text"
+                                           placeholder="Value"
+                                           data-tag
+                                           data-translate="placeholder"
+                                           data-ng-model="o.val"
+                                           data-ng-disabled="tagsave">
+                                </span>
+                            </span>
+
+                            <span class="icon-trash pull-right delete"
+                                  data-ng-click="removeTag(key)"
+                                  data-ng-show="!$last && !tagsave">
+                            </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="tags row-fluid">
+                    <button class="btn btn-joyent-blue pull-right"
+                            data-ng-click="saveTags()"
+                            data-translate
+                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
+                    <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
+                </div>
+
                 <div class="clearfix"></div>
             </fieldset>
             <fieldset data-ng-show="networks.length >= 1">
