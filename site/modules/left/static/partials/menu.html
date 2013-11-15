@@ -22,15 +22,15 @@
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li class="sub0" data-ng-class="{active: location.path() == '/compute'}">
-                    <a href="#!/compute">
+                <li class="sub0" data-ng-class="{active: location.path().search('compute') == 1}">
+                    <a href="#!/compute/">
                         <span class="titles" data-ng-show="!sideBarMin || t_second">Instances</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub1" data-ng-class="{active: location.path().search('elb') == 1}" data-ng-show="features.elb == 'enabled'"><a href="#!/elb"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Load Balancers</span><span class="selected-sub"></span></a></li>
+                <li class="sub1" data-ng-class="{active: location.path().search('elb') == 1}" data-ng-show="features.elb != 'disabled'"><a href="#!/elb"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Load Balancers</span><span class="selected-sub"></span></a></li>
                 <li class="sub2" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'"><a href="#!/firewall"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Firewall Rules</span><span class="selected-sub"></span></a></li>
-                <li class="sub3" data-ng-class="{active: location.path().search('images') == 1}"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span><span class="selected-sub"></span></a></li>
+                <li class="sub3" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span><span class="selected-sub"></span></a></li>
             </ul>
         </li>
         <li class="three" data-ng-class="{active: location.path().search('storage') == 1, over: t_three && sideBarMin}" data-ng-mouseenter="t_three=true" ng-mouseleave="t_three=false">

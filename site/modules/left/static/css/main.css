@@ -146,16 +146,17 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 .second.active.over.collapses .title, .second.open.over.collapses .title{
     margin-left: 15px;
 }
+/*.second.over.collapses .title{*/
+    /*margin-left: 25px;*/
+/*}*/
 .second.active, .second.active.over.collapses, .second.open, .second.open.over.collapses {
     height: auto;
-    /*height: 170px;*/
     position: relative !important;
     z-index: 2000;
     display: block !important;
 }
 
 .second.active.over,
-
 .second.open.over{
     height: 34px;
 }
@@ -169,10 +170,10 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     display: block;
     margin-left: 0;
 }
-.second.active.collapses .sub-menu{
+.second.active.collapses .sub-menu, .second.open.collapses .sub-menu{
     display: none;
 }
-.second.active.collapses:hover .sub-menu{
+.second.active.collapses:hover .sub-menu, .second.open.collapses:hover .sub-menu, .second.collapses:hover .sub-menu{
     display: block !important;
 }
 .second .sub-menu {
