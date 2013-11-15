@@ -96,7 +96,7 @@ var backend = module.exports =  {
                                 finished: true,
                                 chunked: isChunked,
                                 error: isError ? data : null,
-                                step: null,
+                                step: data.step ? data.step : null,
                                 status: status,
                                 result: !isError ? data : {}
                             };
