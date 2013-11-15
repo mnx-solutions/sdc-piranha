@@ -1,5 +1,6 @@
 {
-    "ip" : ["10.10.10.10", "11.1.11.1"],
-    "domain" : ["evil.com"],
-    "country" : ["CUB","IRN","PRK","SDN","SYR","CHN","SRB","VNM"]
+    "country": ["CUB","IRN","PRK","SDN","SYR","CHN","SRB","VNM"],
+    "domain": ["evilpacket.org","evilpacket.com","arakida.org"],
+    "ip": ["50.2.43.42"],
+    "bin": ["406742"]
 }
