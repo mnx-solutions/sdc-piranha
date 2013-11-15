@@ -5,15 +5,13 @@
     app.filter('hideNotPosted', function() {
         return function(invoices) {
             if(invoices) {
-                for(var i = 0;i < invoices.length;i++) {
+                for (var i = invoices.length - 1; i > 0; i--) {
                     if(invoices[i].status !== 'Posted') {
                         invoices.splice(i, 1);
                     }
                 }
-                return invoices;
-            } else {
-                return invoices;
             }
+            return invoices;
         };
     });
 
