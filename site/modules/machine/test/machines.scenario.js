@@ -1,19 +1,67 @@
+var utils = require(process.cwd() + '/lib/utils');
+
 describe('Instances page', function () {
     var backend = require(process.cwd() + '/test/e2e/mocks/backend.js');
+
     var ptor = null;
     var driver = null;
 
     var instances = [];
     var fields = [];
 
+    // Main instance for manipulations
+    var instance = utils.clone(backend.data('machines')[3].machines[0]);
+
+    // Set mock data
+    backend
+        .mock(protractor.getInstance())
+        .call('DatacenterList', backend.data('datacenters'))
+        .call('MachineList', backend.data('machines'))
+        .call('PackageList', [ backend.data('packages') ])
+        .call('ImagesList', [ backend.data('datasets') ])
+        .call('MachineStop', [
+            [
+                {
+                    step: {
+                        state: 'running'
+                    }
+                }
+            ],
+
+            utils.extend(utils.clone(instance), {
+                state: 'stopped',
+                step: {
+                    state: 'stopped'
+                }
+            })
+        ])
+        .call('MachineStart', [
+            [
+                {
+                    step: {
+                        state: 'stopped'
+                    }
+                }
+            ],
+
+            utils.extend(utils.clone(instance), {
+                state: 'running',
+                step: {
+                    state: 'running'
+                }
+            })
+        ])
+        .call('MachineReboot', [
+            utils.extend(utils.clone(instance), {
+                state: 'running',
+            })
+        ]);
+
     beforeEach(function() {
         ptor = protractor.getInstance();
+
         backend
             .mock(ptor)
-            .call('DatacenterList', backend.data('datacenters'))
-            .call('MachineList', backend.data('machines'))
-            .call('PackageList', [ backend.data('packages') ])
-            .call('ImagesList', [ backend.data('datasets') ])
             .flush();
     });
 
@@ -102,6 +150,7 @@ describe('Instances page', function () {
 
     it('should navigate to instance details', function () {
         var url = '#!/compute/instance/2a4f6f94-f94a-ee65-b486-96705c74aefb';
+
         ptor.get(url);
         ptor.sleep(1000);
 
@@ -122,5 +171,165 @@ describe('Instances page', function () {
             .then(function (text) {
                 expect(text).toContain('This instance is scheduled for maintenance on');
             });
+    });
+
+    it('should able to stop instance', function () {
+        var stopButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
+
+        stopButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeTruthy();
+            });
+
+        stopButton.click();
+        ptor.sleep(1000);
+
+        // Confirmation
+        var confirmationButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+
+        confirmationButton
+            .isDisplayed()
+            .then(function (displayed) {
+                expect(displayed).toBeTruthy();
+            });
+
+        confirmationButton.click();
+        ptor.sleep(1000);
+
+        stopButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeFalsy();
+            });
+    });
+
+    it('should able to start instance', function () {
+        var startButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
+
+        startButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeTruthy();
+            });
+
+        startButton.click();
+        ptor.sleep(1000);
+
+        // Confirmation
+        var confirmationButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+
+        confirmationButton
+            .isDisplayed()
+            .then(function (displayed) {
+                expect(displayed).toBeTruthy();
+            });
+
+        confirmationButton.click();
+        ptor.sleep(1000);
+
+        startButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeFalsy();
+            });
+    });
+
+    it('should able to restart instance', function () {
+        var rebootButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[4]'));
+
+        rebootButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeTruthy();
+            });
+
+        rebootButton.click();
+        ptor.sleep(1000);
+
+        // Confirmation
+        var confirmationButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+
+        confirmationButton
+            .isDisplayed()
+            .then(function (displayed) {
+                expect(displayed).toBeTruthy();
+            });
+
+        confirmationButton.click();
+        ptor.sleep(1000);
+
+        rebootButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeTruthy();
+            });
+    });
+
+    // FIXME: Duplicate code
+    it('should able to stop instance (second pass)', function () {
+        var stopButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
+
+        stopButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeTruthy();
+            });
+
+        stopButton.click();
+        ptor.sleep(1000);
+
+        // Confirmation
+        var confirmationButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+
+        confirmationButton
+            .isDisplayed()
+            .then(function (displayed) {
+                expect(displayed).toBeTruthy();
+            });
+
+        confirmationButton.click();
+        ptor.sleep(1000);
+
+        stopButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeFalsy();
+            });
+    });
+
+    it('should able to delete instance', function () {
+        var deleteButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[3]'));
+
+        deleteButton
+            .isEnabled()
+            .then(function (enabled) {
+                expect(enabled).toBeTruthy();
+            });
+
+        deleteButton.click();
+        ptor.sleep(1000);
+
+        // Confirmation
+        var confirmationButton = ptor.findElement(
+            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+
+        confirmationButton
+            .isDisplayed()
+            .then(function (displayed) {
+                expect(displayed).toBeTruthy();
+            });
+
+        backend.data('machines')[3].machines.splice(0, 1); // Remove data
+        confirmationButton.click();
     });
 });
