@@ -96,7 +96,10 @@
             };
 
             $scope.verifyPin = function () {
-                if (!$scope.pin) {
+                var expr = /^\d{4}$/g; //only 4 digits
+                $scope.pinIsInvalid = !expr.test($scope.pin);
+
+                if (!$scope.pin || $scope.pinIsInvalid) {
                     return;
                 }
                 $scope.callInProgress = false;
