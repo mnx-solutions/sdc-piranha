@@ -1842,10 +1842,28 @@ ul.dropdown-menu{
 .warn-yellow{
     background-image: url(../img/warn-yellow.png);
     background-repeat: no-repeat;
-    background-position: 0 7px;
-    width: 24px;
-    height: 39px;
-    margin-left: 10px;
+    background-position: 0 center;
+    width: 18px;
+    height: 15px;
     display: inline-block;
     vertical-align: middle;
+}
+.warn-sign{
+    margin-left: 10px;
+    display: inline-block;
+    float: right;
+}
+.tooltip-inner{
+    max-width:300px;
+    font-size: 14px;
+    color:black;
+    text-align:left;
+    text-decoration:none;
+    background-color:#ffff00;
+    padding: 20px;
+    border: 2px solid #000000;
+}
+.tooltip.in{
+    opacity:1;
+    filter:alpha(opacity=100)
 }
