@@ -22,7 +22,6 @@
                                     data-ng-model="country"
                                     name="countryCode"
                                     id="countryCode"
-                                    style="border-radius: 0;"
                                     data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
                             </select>
                         </td>

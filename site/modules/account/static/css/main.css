@@ -572,3 +572,15 @@ label.checkbox {
     margin-top: 20px;
     margin-bottom: 10px!important;
 }
+.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
+    width: 50px;
+    border-radius: 0;
+    float: left;
+    text-shadow: none;
+    font-size: 16px;
+    color: #555555;
+}
+#phone{
+    width: 150px;
+    font-size: 16px;
+}
