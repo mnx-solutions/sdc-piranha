@@ -97,6 +97,7 @@
 
             $scope.verifyPin = function () {
                 var expr = /^\d{4}$/g; //only 4 digits
+                $scope.pinError = null;
                 $scope.pinIsInvalid = !expr.test($scope.pin);
 
                 if (!$scope.pin || $scope.pinIsInvalid) {
