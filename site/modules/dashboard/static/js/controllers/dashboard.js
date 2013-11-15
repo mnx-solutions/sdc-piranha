@@ -50,15 +50,15 @@
 
             // when all datasources are loaded, disable loader
             $q.all(
-                    [$q.when($scope.machines),
-                        $q.when($scope.forums),
-                        $q.when($scope.systemStatusTopics),
-                        $q.when($scope.softwareUpdateTopics),
-                        $q.when($scope.account),
-                        $q.when($scope.rssentries)
-                    ]).then( function(){
-                    $scope.loading = false;
-                });
+                [$q.when($scope.machines),
+                    $q.when($scope.forums),
+                    $q.when($scope.systemStatusTopics),
+                    $q.when($scope.softwareUpdateTopics),
+                    $q.when($scope.account),
+                    $q.when($scope.rssentries)
+                ]).then( function(){
+                $scope.loading = false;
+            });
 
 
             // count running/not running machines
