@@ -146,10 +146,8 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 .second.active.over.collapses .title, .second.open.over.collapses .title{
     margin-left: 15px;
 }
-/*.second.over.collapses .title{*/
-    /*margin-left: 25px;*/
-/*}*/
-.second.active, .second.active.over.collapses, .second.open, .second.open.over.collapses {
+
+.second.active,  .second.open, .second.open.collapses {
     height: auto;
     position: relative !important;
     z-index: 2000;
@@ -163,8 +161,14 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 .second.active.over .sub-menu >li a, .second.open.over .sub-menu >li a{
     padding-left: 7px !important;
 }
-.second.active.over.collapses .sub-menu, .second.open.over.collapses .sub-menu{
+.second.active.over.collapses .sub-menu, .second.open.over.collapses .sub-menu, .second.over.collapses .sub-menu{
     margin-left: 56px !important;
+}
+.second.over.collapses .sub-menu > li a{
+    padding-left: 7px !important;
+}
+.second.over.collapses .title{
+    margin-left: 15px;
 }
 .second.active .sub-menu, .second.open .sub-menu {
     display: block;
