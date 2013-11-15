@@ -15,10 +15,10 @@
                 $scope.toggleSideBar = function () {
                     $scope.sideBarMin = ($scope.sideBarMin == false) ? true : false;
                     if($scope.sideBarMin){
-                        $('.footer').addClass('leftpanel-small');
+                        ng.element('.footer').addClass('leftpanel-small');
                         $scope.openMenu = false;
                     }else{
-                        $('.footer').removeClass('leftpanel-small');
+                        ng.element('.footer').removeClass('leftpanel-small');
                     }
                 };
                 $scope.openSubMenu = function(){
@@ -32,4 +32,4 @@
         };
     }]);
 
-}(window.JP.getModule('Left')));
+}(window.JP.getModule('Left'), angular));
