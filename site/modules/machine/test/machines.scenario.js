@@ -12,9 +12,9 @@ describe('Instances page', function () {
     // Main instance for manipulations
     var instance = utils.clone(backend.data('machines')[3].machines[0]);
 
-    // Set mock data
+    // Set stub data
     backend
-        .mock(protractor.getInstance())
+        .stub(protractor.getInstance())
         .call('DatacenterList', backend.data('datacenters'))
         .call('MachineList', backend.data('machines'))
         .call('PackageList', [ backend.data('packages') ])
@@ -61,7 +61,7 @@ describe('Instances page', function () {
         ptor = protractor.getInstance();
 
         backend
-            .mock(ptor)
+            .stub(ptor)
             .flush();
     });
 
