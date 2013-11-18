@@ -104,6 +104,7 @@
                     <div><p>Review</p></div>
                     <div><p class="laststep"></p></div>
                 </div>
+
                 <!--<div class="header-btn-ci">-->
                     <!--<a href="#!/instance/create">-->
                         <!--<button type="button" class="btn btn_ci orange" data-ng-click="basicCreateInstance = true"><b>Basic mode</b></button></a>-->
@@ -569,42 +570,59 @@
                                             </div>
                                         </td>
                                         <td style="vertical-align: top;">
-                                            <div class="selected-package-box-3">
-                                                <p class="title-box-3">OPTIONAL SETTINGS:</p>
-                                                <span><h2>Name Instance</h2><p> (Optional)</p></span>
-                                                <input name="machineName"
-                                                       type="text"
-                                                       data-ng-model="data.name"
-                                                       data-machine-name
-                                                       data-machine-unique
-                                                       class="instance-name-input"/>
-                                                <div><h2>Networks</h2></div>
-                                                <div class="networks-box-3">
-                                                    <label data-ng-repeat="network in networks">
-                                                        <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                                                            <span
-                                                                    data-ng-class="{checked: network.active}"
-                                                                    class="{{network.name == 'JPC-WESTX-External' && 'checked'}}">
-                                                                 <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
-                                                                        data-ng-checked="{{network.name == 'JPC-WESTX-External'}}"
-                                                                        value="{{network.id}}"
-                                                                        name="{{network.name}}"
-                                                                        data-ng-model="selectedNetworkId"
-                                                                        data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1"/>
-                                                            </span>
-                                                         </div>
-                                                        <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
-                                                    </label>
+                                            <form name="provisionForm">
+                                                <div class="selected-package-box-3">
+                                                    <p class="title-box-3">OPTIONAL SETTINGS:</p>
+                                                    <span><h2>Name Instance</h2><p> (Optional)</p></span>
+                                                    <input name="machineName"
+                                                           type="text"
+                                                           data-ng-model="data.name"
+                                                           data-machine-name
+                                                           data-machine-unique
+                                                           class="instance-name-input"/>
+                                                <div class="error"
+                                                    data-ng-show="provisionForm.machineName.$error.machineName"
+                                                    data-translate>
+                                                    Invalid machine name
                                                 </div>
-                                                <div><h2>Tags</h2></div>
-                                                <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
-                                                <div class="create-tags ci-tags" data-tags tags="tags"></div>
 
-                                                <button class="btn orange create-instance-btn-pos"
-                                                        data-ng-disabled="provisionForm.$invalid"
-                                                        data-ng-click="clickProvision()"
-                                                        data-translate>Create instance</button>
-                                            </div>
+                                                <div class="error"
+                                                     data-ng-show="provisionForm.machineName.$error.machineUnique"
+                                                     data-translate>
+                                                    Machine name is already in use
+                                                </div>
+                                                    <div><h2>Networks</h2></div>
+                                                    <div class="networks-box-3">
+                                                        <label data-ng-repeat="network in networks">
+                                                            <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                                                                <span
+                                                                        data-ng-class="{checked: network.active}"
+                                                                        class="{{network.name == 'JPC-WESTX-External' && 'checked'}}">
+                                                                     <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
+                                                                            data-ng-checked="{{network.name == 'JPC-WESTX-External'}}"
+                                                                            value="{{network.id}}"
+                                                                            name="{{network.name}}"
+                                                                            data-ng-model="selectedNetworkId"
+                                                                            data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1"/>
+                                                                </span>
+                                                             </div>
+                                                            <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                                                        </label>
+                                                    </div>
+                                                    <div><h2>Tags</h2></div>
+                                                    <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
+                                                    <div class="create-tags ci-tags" data-tags tags="tags"></div>
+
+                                                    <!--<button class="btn orange create-instance-btn-pos"-->
+                                                            <!--data-ng-disabled="provisionForm.$invalid"-->
+                                                            <!--data-ng-click="clickProvision()"-->
+                                                            <!--data-translate>Create instance</button>-->
+                                                    <button class="btn orange create-instance-btn-pos"
+                                                            data-ng-disabled="provisionForm.machineName.$error.machineName || provisionForm.machineName.$error.machineUnique"
+                                                            data-ng-click="clickProvision()"
+                                                            data-translate>Create instance</button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </table>
                                 </div>
