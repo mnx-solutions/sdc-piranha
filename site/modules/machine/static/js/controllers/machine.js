@@ -325,6 +325,7 @@
             };
 
             $scope.tagsArray = [];
+            $scope.showTagSave = false;
             // Tags
             function initTags(tags) {
                 $scope.tagsArray = [];
@@ -332,7 +333,7 @@
                 Object.keys(tags).forEach(function (key) {
                     $scope.tagsArray.push({key: key, val: tags[key], conflict: false, edit: false});
                 });
-                $scope.tagsArray.push({key:'', val: '', edit: true, conflict:false});
+                $scope.showTagSave = !!$scope.tagsArray.length;
             }
 
             // Enable features
@@ -355,26 +356,12 @@
                         }
                     });
 
-                    // Add empty value at the end if necessary
-                    var last = newVal[newVal.length - 1];
-                    if (!last || last.key !== '' || last.val !== '') {
-                        newVal.splice(newVal.length, 0, {key:'', val: '', edit: true, conflict: false });
-                    }
-
-                    // Remove empty value from the end if necessary
-                    var nextToLast = newVal[newVal.length - 2];
-                    if (nextToLast) {
-                        // Last to values are empty
-                        if (!last.key && !last.val && !nextToLast.key && !nextToLast.val) {
-                            var oldLast = oldVal[newVal.length - 1];
-                            // The last value hasn't changed so remove it
-                            if (!oldLast.key && !oldLast.val) {
-                                newVal.pop();
-                            }
-                        }
-                    }
-
                 }, true);
+
+                $scope.addTag = function() {
+                    $scope.tagsArray.push({key:'', val: '', edit: true, conflict:false});
+                    $scope.showTagSave = true;
+                };
 
                 $scope.editTag = function (index) {
                     $scope.tagsArray[index].edit = true;

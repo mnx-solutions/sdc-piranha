@@ -217,19 +217,23 @@
 
                             <span class="icon-trash pull-right delete"
                                   data-ng-click="removeTag(key)"
-                                  data-ng-show="!$last && !tagsave">
+                                  data-ng-show="!tagsave">
                             </span>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="tags row-fluid">
-                    <button class="btn btn-joyent-blue pull-right"
-                            data-ng-click="saveTags()"
-                            data-translate
-                            data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
-                    <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
+                    <div class="tag tag-add row-fluid">
+                        <div class="key span5"></div>
+                        <div class="value span5">
+                            <button class="btn btn-joyent-blue pull-right"
+                                    data-ng-show="showTagSave"
+                                    data-ng-click="saveTags()"
+                                    data-translate
+                                    data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
+                            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
+                            <div class="btn btn-link pull-right" data-ng-click="addTag()" data-translate>+ Add New Tag</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="clearfix"></div>
