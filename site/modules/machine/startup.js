@@ -131,6 +131,10 @@ module.exports = function execute(scope) {
 
                         if (info.instances && info.instances.data[machine.id]) {
                             machines[i] = utils.extend(machines[i], info.instances.data[machine.id]);
+
+                            if (config.features.scheduledCNMaintenance === 'disabled' && machines[i].maintenanceStartTime) {
+                                delete machines[i].maintenanceStartTime;
+                            }
                         }
                     });
 

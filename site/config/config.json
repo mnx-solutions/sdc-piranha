@@ -116,6 +116,7 @@
   }
 , "features": {
     "fullVersion": "enabled"
+  , "scheduledCNMaintenance": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
   , "invoices": "enabled"
