@@ -59,7 +59,7 @@
                 name: 'listInvoices',
                 data: {},
                 done: callback || function (err, job) {
-                    if(err) {
+                    if(err && err !== 'Not Implemented') {
                         notification.push('invoices', { type: 'error' },
                             localization.translate(null,
                                 'billing',
@@ -77,7 +77,7 @@
                 name: 'getSubscriptions',
                 data: {},
                 done: callback || function (err, job) {
-                    if(err) {
+                    if(err && err !== 'Not Implemented') {
                         notification.push('subscriptions', { type: 'error' },
                             localization.translate(null,
                                 'billing',

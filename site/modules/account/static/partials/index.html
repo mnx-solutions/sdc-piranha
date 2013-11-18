@@ -68,7 +68,7 @@
                     <legend><span>SSH</span></legend>
                     <div data-ssh-form></div>
                 </fieldset>
-                <fieldset data-ng-controller="Account.InvoicesController">
+                <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled">
                     <legend><span>Invoices</span></legend>
                     <div class="row-fluid">
                         <div data-ng-hide="invoices.length">
