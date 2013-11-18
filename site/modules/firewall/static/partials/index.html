@@ -314,22 +314,22 @@
                 <span class="span6 text-medium">
                     <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
                     <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp' && !isAllPorts()">
-                        <span class="row-fluid">
+                        <div class="row-fluid">
                             <span class="span6">
                                 <input name="port"
                                        type="text"
                                        data-ng-model="current.port"
                                        data-range="1-65535"/>
                             </span>
-                        </span>
-                        <span class="row-fluid">
+                        </div>
+                        <div class="row-fluid">
                             <span class="span6 margin-top-10">
                                 <button class="btn"
                                         data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
                                         data-ng-click="addPort()">ADD</button>
                                 <button class="btn" data-ng-click="useAllPorts()">Use All</button>
                             </span>
-                        </span>
+                        </div>
                     </span>
                     <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
                         <span class="row-fluid">
