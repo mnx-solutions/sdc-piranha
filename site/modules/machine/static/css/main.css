@@ -136,7 +136,7 @@
 }
 .item-scrolling {
     min-height: 470px;
-    max-height: 470px;
+    max-height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -925,10 +925,12 @@ ul.dropdown-menu{
 .create-tags .value-width{
     min-width: 162px;
     max-width: 162px;
+    vertical-align: middle;
 }
 .create-tags .key-width{
     min-width: 120px;
     max-width: 120px;
+    vertical-align: middle;
 }
 .tags-title{
     color: #5D80A7;
@@ -949,6 +951,7 @@ ul.dropdown-menu{
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
     padding-top: 5px;
+    line-height: 20px;
 }
 .tags-delete-pos{
     /*margin-top: 12px;*/
@@ -1874,4 +1877,8 @@ ul.dropdown-menu{
     min-height: 560px;
     max-height: 100%;
     overflow-y: auto;
+}
+
+.ci-tags{
+    font-size: 14px;
 }
