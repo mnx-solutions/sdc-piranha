@@ -25,7 +25,7 @@
                                placeholder="Key"
                                data-translate="placeholder"
                                data-ng-model="tag.key"
-                               data-ng-required="true"
+                               data-ng-required="{{ !review }}"
                                data-ng-disabled="saving"
                                class="key-width">
                     </div>
@@ -34,7 +34,7 @@
                                placeholder="Value"
                                data-translate="placeholder"
                                data-ng-model="tag.val"
-                               data-ng-required="true"
+                               data-ng-required="{{ !review }}"
                                data-ng-disabled="saving"
                                class="value-width"/>
                     </div>

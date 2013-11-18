@@ -7,7 +7,8 @@
             restrict: 'EA',
             scope: {
                 tags: '=',
-                machineid: '='
+                machineid: '=',
+                review: '='
             },
             link: function (scope, element, attrs) {
                 /*if ($scope.features.instanceTagging === 'enabled') {
