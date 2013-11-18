@@ -318,8 +318,8 @@
                                         data-ng-class="{error: isError('state')}"
                                         data-ng-model="form.cardHolderInfo.state"
                                         data-ng-required="true"
-                                        data-ng-disabled="useExisting">
-                                    <option data-ng-repeat="(k, v) in stateSel" value="{{k}}" data-ng-selected="k == form.cardHolderInfo.state">{{v}}</option>
+                                        data-ng-disabled="useExisting"
+                                        data-ng-options="value as label for (value, label) in stateSel">
                                 </select>
                                 <div class="error"
                                      data-translate
