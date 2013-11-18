@@ -267,20 +267,19 @@ function composeZuoraAccount(call, cb) {
                 if (config.features.promocode !== 'disabled' && call.data.promoCode && config.ns['promo-codes']) {
                     var code = call.data.promoCode.toUpperCase();
                     var promo = config.ns['promo-codes'][code];
-                    if (!promo) {
+                    if (!promo
+                        || (promo.expirationDate && (new Date()) > (new Date(promo.expirationDate)))
+                        || (promo.startDate && (new Date()) < (new Date(promo.startDate)))) {
                         call.done({promoCode: 'Promo code is not valid'});
                         return;
                     }
-                    if (promo.expired) {
-                        call.done({promoCode: 'Promo code has expired'});
-                        return;
-                    }
-                    if (!ratePlans[promo.ratePlanName]) {
-                        call.log.error('Unable to find %s ratePlan from zuora', promo.ratePlanName);
+                    var ratePlanName = promo.ratePlanName || code;
+                    if (!ratePlans[ratePlanName]) {
+                        call.log.error('Unable to find %s ratePlan from zuora', ratePlanName);
                         call.done({promoCode: 'Promo code is not valid'});
                         return;
                     }
-                    createObjects(ratePlans[promo.ratePlanName]);
+                    createObjects(ratePlans[ratePlanName]);
                     return;
                 }
 
