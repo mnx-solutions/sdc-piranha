@@ -27,9 +27,9 @@
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
-            if($scope.preSelectedImageId)
+            if($scope.preSelectedImageId) {
                 $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
-
+            }
 
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
@@ -442,22 +442,20 @@
                 $scope.data.opsys = 'All';
             }
 
-            ng.element('.carousel').carousel({
+            ng.element('#provisionCarousel').carousel({
                 interval:false
             });
 
-            ng.element('.carousel').bind({
+            ng.element('#provisionCarousel').bind({
                 slide: function() {
                     $scope.reConfigurable = !$scope.reConfigurable;
-                },
-                slid:function(){
                     if($scope.reConfigurable) {
-                        $scope.$apply(function (){
-                            $scope.showReConfigure = true;
-                        })
+                        $scope.showReConfigure = true;
                     }
                 }
             });
+
+
             $scope.slideCarousel = function() {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
 
