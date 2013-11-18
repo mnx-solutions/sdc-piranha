@@ -7,35 +7,60 @@ window.JP.main.provider('route', [
             this._navigation = [];
         }
 
-        Provider.prototype._findNavigationContext = function (action, context) {
-            context = context ? context : null;
+        Provider.prototype._findRootContext = function (action) {
+            for (var i = 0, c = this._navigation.length; i < c; i++) {
+                // Direct resolve
+                if (this._navigation[i].action === action) {
+                    return this._navigation[i];
+                }
 
-            if (!context) {
-                for (var i = 0, c = this._navigation.length; i < c; i++) {
-                    // Direct resolve
-                    if (this._navigation[i].action === action) {
-                        context = this._navigation[i];
-                        break;
-                    }
+                // Resolve by module prefix
+                var p1 = this._navigation[i].action.split('.');
+                var p2 = action.split('.');
 
-                    // Resolve by module prefix
-                    var p1 = this._navigation[i].action.split('.');
-                    var p2 = action.split('.');
-
-                    if (p1[0] === p2[0]) {
-                        context = this._navigation[i];
-                        break;
-                    }
+                if (p1[0] === p2[0]) {
+                    return this._navigation[i];
                 }
             }
 
+            return null;
+        };
+
+        Provider.prototype._matchParams = function (params, context) {
+            var keys = params ? Object.keys(params) : [];
+
+            if (params) {
+                var match = true;
+
+                for (var i = 0, c = keys.length; i < c; i++) {
+                    var key = keys[i];
+
+                    if (context.path.indexOf(':' + key) === -1) {
+                        match = false;
+                        break;
+                    }
+                }
+
+                return match;
+            }
+
+            return true;
+        };
+
+        Provider.prototype._findNavigationContext = function (action, params, context) {
+            context = context ? context : null;
+
+            if (!context) {
+                context = this._findRootContext(action);
+            }
+
             if (context) {
-                if (context.action === action) {
+                if (context.action === action && this._matchParams(params, context)) {
                     return context;
                 }
 
                 for (var i = 0, c = context.children.length; i < c; i++) {
-                    var childContext = this._findNavigationContext(action, context.children[i]);
+                    var childContext = this._findNavigationContext(action, params, context.children[i]);
                     if (childContext) {
                         return childContext;
                     }
@@ -45,43 +70,30 @@ window.JP.main.provider('route', [
             return null;
         };
 
-        Provider.prototype._buildNavigationPath = function (action, context) {
+        Provider.prototype._buildNavigationPath = function (action, params, context) {
             var navigationPath = [];
             context = context ? context : null;
 
             if (!context) {
-                for (var i = 0, c = this._navigation.length; i < c; i++) {
-                    // Direct resolve
-                    if (this._navigation[i].action === action) {
-                        context = this._navigation[i];
-                        break;
-                    }
-
-                    // Resolve by module prefix
-                    var p1 = this._navigation[i].action.split('.');
-                    var p2 = action.split('.');
-
-                    if (p1[0] === p2[0]) {
-                        context = this._navigation[i];
-                        break;
-                    }
-                }
+                context = this._findRootContext(action);
             }
 
             if (context) {
-                if (context.children.length > 0 || context.action === action) {
+                if (context.children.length > 0 || 
+                    (context.action === action  && this._matchParams(params, context))) {
                     navigationPath.push({
                         title: context.title,
-                        path: context.path
+                        path: context.path,
+                        params: params
                     });
                 }
 
-                if (context.action === action) {
+                if (context.action === action && this._matchParams(params, context)) {
                     return navigationPath;
                 }
 
                 for (var a = 0, c = context.children.length; a < c; a++) {
-                    var childContext = this._buildNavigationPath(action, context.children[a]);
+                    var childContext = this._buildNavigationPath(action, params, context.children[a]);
                     if (childContext) {
                         navigationPath = navigationPath.concat(childContext);
                     }
@@ -117,10 +129,10 @@ window.JP.main.provider('route', [
             }
         };
 
-        Provider.prototype.resolveNavigation = function (action) {
-            var currentContext = this._findNavigationContext(action);
+        Provider.prototype.resolveNavigation = function (action, params) {
+            var currentContext = this._findNavigationContext(action, params);
             if (currentContext) {
-                return this._buildNavigationPath(currentContext.action);
+                return this._buildNavigationPath(action, params);
             }
 
             return [];
@@ -133,7 +145,10 @@ window.JP.main.provider('route', [
                 return {
                     registerNavigation: provider.registerNavigation,
                     resolveNavigation: function () {
-                        return provider.resolveNavigation(this.$route.current.$$route.action);
+                        return provider.resolveNavigation(
+                            this.$route.current.$$route.action,
+                            this.$route.current.pathParams
+                        );
                     },
 
                     $route: $route
