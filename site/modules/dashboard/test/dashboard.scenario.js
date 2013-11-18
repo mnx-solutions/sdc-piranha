@@ -7,7 +7,7 @@ describe('Dashboard', function () {
     beforeEach(function() {
         ptor = protractor.getInstance();
         backend
-            .mock(ptor)
+            .stub(ptor)
             .call('getAccount', backend.data('account'))
             .call('DatacenterList', backend.data('datacenters'))
             .call('MachineList', backend.data('machines'))

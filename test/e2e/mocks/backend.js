@@ -22,7 +22,7 @@ var handlers = {
 };
 
 var backend = module.exports =  {
-    clientHandlers: function mockHandlers () {
+    clientHandlers: function handlers () {
         var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E' ]);
 
         module.value('handlers', $$handlers);
@@ -96,7 +96,7 @@ var backend = module.exports =  {
                                 finished: true,
                                 chunked: isChunked,
                                 error: isError ? data : null,
-                                step: null,
+                                step: data.step ? data.step : null,
                                 status: status,
                                 result: !isError ? data : {}
                             };
@@ -167,7 +167,7 @@ var backend = module.exports =  {
         });
     },
 
-    mock: function mockBackend (protractor) {
+    stub: function stub (protractor) {
         var context = {
             call: function call (name, response) {
                 handlers.calls.push({
@@ -191,11 +191,9 @@ var backend = module.exports =  {
             },
 
             flush: function endMockChain () {
-                var mockTemplate = serializeFunction(backend.clientHandlers, {
+                protractor.addMockModule('httpBackendMock', serializeFunction(backend.clientHandlers, {
                     handlers: handlers
-                });
-
-                protractor.addMockModule('httpBackendMock', mockTemplate);
+                }));
                 return context;
             }
         };
