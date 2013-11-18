@@ -1882,3 +1882,14 @@ ul.dropdown-menu{
 .ci-tags{
     font-size: 14px;
 }
+
+.accordiaon-line{
+    width: 100%;
+    border-bottom: 1px solid #cccccc;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.btn.show-hide{
+    min-width: 48px;
+}
