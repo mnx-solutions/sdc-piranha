@@ -67,7 +67,7 @@ describe('Instances page', function () {
 
     it('should contain list of instances', function () {
         ptor.get('#!/compute');
-        ptor.sleep(1000);
+        ptor.waitForAngular();
 
         expect(ptor.getCurrentUrl()).toContain('#!/compute');
 
@@ -152,7 +152,7 @@ describe('Instances page', function () {
         var url = '#!/compute/instance/2a4f6f94-f94a-ee65-b486-96705c74aefb';
 
         ptor.get(url);
-        ptor.sleep(1000);
+        ptor.waitForAngular();
 
         expect(ptor.getCurrentUrl()).toContain(url);
     });
@@ -184,7 +184,6 @@ describe('Instances page', function () {
             });
 
         stopButton.click();
-        ptor.sleep(1000);
 
         // Confirmation
         var confirmationButton = ptor.findElement(
@@ -197,7 +196,6 @@ describe('Instances page', function () {
             });
 
         confirmationButton.click();
-        ptor.sleep(1000);
 
         stopButton
             .isEnabled()
@@ -217,7 +215,6 @@ describe('Instances page', function () {
             });
 
         startButton.click();
-        ptor.sleep(1000);
 
         // Confirmation
         var confirmationButton = ptor.findElement(
@@ -230,7 +227,6 @@ describe('Instances page', function () {
             });
 
         confirmationButton.click();
-        ptor.sleep(1000);
 
         startButton
             .isEnabled()
@@ -250,7 +246,6 @@ describe('Instances page', function () {
             });
 
         rebootButton.click();
-        ptor.sleep(1000);
 
         // Confirmation
         var confirmationButton = ptor.findElement(
@@ -263,7 +258,6 @@ describe('Instances page', function () {
             });
 
         confirmationButton.click();
-        ptor.sleep(1000);
 
         rebootButton
             .isEnabled()
@@ -284,7 +278,6 @@ describe('Instances page', function () {
             });
 
         stopButton.click();
-        ptor.sleep(1000);
 
         // Confirmation
         var confirmationButton = ptor.findElement(
@@ -297,7 +290,6 @@ describe('Instances page', function () {
             });
 
         confirmationButton.click();
-        ptor.sleep(1000);
 
         stopButton
             .isEnabled()
@@ -317,7 +309,6 @@ describe('Instances page', function () {
             });
 
         deleteButton.click();
-        ptor.sleep(1000);
 
         // Confirmation
         var confirmationButton = ptor.findElement(
