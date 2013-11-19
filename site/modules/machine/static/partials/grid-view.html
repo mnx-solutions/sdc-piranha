@@ -92,8 +92,7 @@
                         <span data-ng-switch-when="created">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
                         <span data-ng-switch-when="updated">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
                         <span data-ng-switch-when="ips">
-                            <span data-ng-show="object.ips.length">{{object.ips[0]}}</span>
-                            <span data-ng-show="object.ips.length>1"> , {{object.ips[1]}}</span>
+                            <span data-ng-repeat="ip in object.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
                         </span>
                         <span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>
                     </td>
