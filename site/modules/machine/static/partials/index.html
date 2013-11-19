@@ -1,18 +1,5 @@
 <div data-ng-controller="Machine.IndexController" class="container-fluid">
     <div class="loading-large" data-ng-show="loading"></div>
-        <div class="machines container" data-ng-hide="(machines.length || loading || query)">
-            <div>
-                <h4>Hello there!</h4>
-                <div data-translate>I see you have no instances configured.</div>
-            </div>
-            <div class="pull-left" style="margin-top: 20px">
-                <a href="#!/compute/create">
-                    <button type="button" class="btn btn_ci orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create
-                        Instance
-                    </button>
-                </a>
-            </div>
-        </div>
         <div class="machines container" data-ng-show="machines.length || query">
 
             <div class="row-fluid">
