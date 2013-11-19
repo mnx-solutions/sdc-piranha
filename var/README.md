@@ -1,0 +1,1 @@
+This file is here so that the var directory would exist in git.

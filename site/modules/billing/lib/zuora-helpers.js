@@ -13,6 +13,8 @@ var zuoraSoap = require('./zuora');
 var moment = require('moment');
 var noCopyFields = ['lastName','firstName', 'workPhone', 'promoCode'];
 
+var errorsFile = path.join(process.cwd(), '/var/errors.json');
+
 var zuoraErrors = {};
 
 function init(zuoraInit, callback) {
@@ -39,12 +41,15 @@ function init(zuoraInit, callback) {
         }
     }
     // Here we init the zuora errors (its a mess)
-    fs.readFile(path.join(process.cwd(), '/var/errors.json'), function (err, data) {
-        if(err) {
-            end(err, 'errors');
-            return;
+    fs.readFile(errorsFile, function (err, data) {
+        // Ignore err and create empty object if file missing or unreadable
+        if (!err) {
+            try {
+                zuoraErrors = JSON.parse(data);
+            } catch (e) {
+                zuoraErrors = {};
+            }
         }
-        zuoraErrors = JSON.parse(data);
         end();
     });
 
@@ -82,7 +87,7 @@ function updateErrorList(scope, resp, callback) {
             }
         });
         if(newErr) {
-            fs.writeFile(path.join(process.cwd(), '/var/errors.json'), JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
+            fs.writeFile(errorsFile, JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
                 if(err) {
                     scope.log.error('Failed to update zuora error file', err);
                 }
