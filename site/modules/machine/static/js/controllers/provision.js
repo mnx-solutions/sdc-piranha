@@ -524,19 +524,14 @@
                 ng.element('.carousel').carousel('next');
             };
 
-            $scope.firstOpen = true;
-            $scope.secondOpen = true;
             $scope.accordionIcon2 = {};
             $scope.collapseTrigger2 = function(item, items){
                 for(var i = 0; i < items; i++){
                     $scope.accordionIcon2[i] = false;
                 }
 
-                if($scope.firstOpen && $scope.secondOpen){
-                    $scope.firstOpen = false;
-                } else if(!$scope.firstOpen && $scope.secondOpen) $scope.secondOpen = false;
-
                 $scope.accordionIcon2[item] = true;
+
                 return $scope.accordionIcon2[item];
             };
 
