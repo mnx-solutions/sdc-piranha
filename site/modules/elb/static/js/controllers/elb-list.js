@@ -16,22 +16,19 @@
                     service.deleteController().then(function () {
                         $location.path('/elb');
                     }, function (err) {
-                        console.log(err);
                         $scope.listLoaded = true;
                     });
                 };
 
                 $scope.servers = [];
 
-                service.getController().then(function (isEnabled) {
-                    if (!isEnabled) {
-                        $location.path('/elb');
-                        return;
-                    }
+                service.getController().then(function () {
                     service.getBalancers().then(function (data) {
                         $scope.servers = data;
                         $scope.listLoaded = true;
                     });
+                }, function () {
+                    $location.path('/elb');
                 });
             }]
     );

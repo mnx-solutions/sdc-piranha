@@ -50,12 +50,24 @@ module.exports = function execute(scope) {
         call.cloud.updateAccount(data, call.done.bind(call));
     });
 
-    server.onCall('listKeys', function(call) {
+    server.onCall('listKeys', function (call) {
+        var serveKeys = function (err, data) {
+            if (!err && data) {
+                data = data.filter(function (key) {
+                    if (config.elb && !config.elb.showHiddenObjects && key.name === 'ssc_public_key') {
+                        return false;
+                    }
+                    return true;
+                });
+            }
+            call.done(err, data);
+        };
+
         // get account ssh keys
         if (call.data.noCache) {
-            call.cloud.listKeys({ login: 'my' }, call.done.bind(call), call.data.noCache);
+            call.cloud.listKeys({ login: 'my' }, serveKeys, call.data.noCache);
         } else {
-            call.cloud.listKeys(call.done.bind(call));
+            call.cloud.listKeys(serveKeys);
         }
     });
 

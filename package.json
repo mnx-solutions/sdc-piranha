@@ -33,15 +33,17 @@
     "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git#323f892c776f790cf1842e2ba26aeb87e6a2f8ea",
     "fwrule": "git+ssh://git@git.joyent.com:fwrule.git",
     "soap": "~0.3.0",
-    "pem": "~1.2.2",
     "http-signature": "~0.10.0",
-    "protractor": "~0.12.1"
+    "ursa": "git+ssh://git@github.com:13W/ursa.git",
+    "protractor": "~0.12.1",
+    "multiparty": "~3.0.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-jasmine": "*",
     "jasmine-node": "*",
     "karma-script-launcher": "~0.1.0",
+    "karma-chrome-launcher": "~0.1.0",
     "karma-firefox-launcher": "~0.1.0",
     "karma-html2js-preprocessor": "~0.1.0",
     "karma-jasmine": "~0.1.3",

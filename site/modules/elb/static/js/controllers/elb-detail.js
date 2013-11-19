@@ -22,12 +22,14 @@
 
                     data.forEach(function (day) {
                         var date = new Date(day.date);
-                        day[key].forEach(function (value, hour) {
-                            collector.push({
-                                x: date.setHours(hour) / 1000,
-                                y: value
+                        if (Array.isArray(day.key)) {
+                            day[key].forEach(function (value, hour) {
+                                collector.push({
+                                    x: date.setHours(hour) / 1000,
+                                    y: value
+                                });
                             });
-                        });
+                        }
                     });
                     return collector;
                 }
