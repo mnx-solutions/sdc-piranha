@@ -3,10 +3,10 @@
 (function (app, ng) {
     app.controller(
             'cloudController',
-            ['$scope', 'ca', 'notification', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
-            '$location',
+            ['$scope', 'ca', 'util', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            '$location', 'localization',
 
-function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout, $location) {
+function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout, $location, localization) {
     function tick() {
         $scope.endtime++;
         $timeout(tick, 1000);
@@ -81,7 +81,19 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                 }
 
                 if (listErr) {
-                    notification.push( 'ca', { type: 'error' }, listErr);
+                    util.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            listErr
+                        ),
+                        function () {}
+                    );
                 }
 
                 for (var i in insts) {
@@ -94,7 +106,19 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
 
             });
         } else {
-            notification.push( 'ca', { type: 'error' }, err);
+            util.error(
+                localization.translate(
+                    $scope,
+                    null,
+                    'Error'
+                ),
+                localization.translate(
+                    $scope,
+                    null,
+                    err
+                ),
+                function () {}
+            );
         }
 
     });
@@ -118,8 +142,18 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
         }
 
         if (!datacenter) {
-            notification.push( 'ca', { type: 'error' },
-                'no datacenter specified'
+            util.error(
+                localization.translate(
+                    $scope,
+                    null,
+                    'Error'
+                ),
+                localization.translate(
+                    $scope,
+                    null,
+                    'no datacenter specified'
+                ),
+                function () {}
             );
             return;
         }
@@ -212,8 +246,14 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                             }
                         }
 
-                        notification.push( 'ca', { type: 'error' },
-                            datacenter ? datacenter + ': ' + errors : errors
+                        util.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            datacenter ? datacenter + ': ' + errors : errors,
+                            function () {}
                         );
                     }
                 });
@@ -289,8 +329,14 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                     }
                 }
 
-                notification.push( 'ca', { type: 'error' },
-                    datacenter ? datacenter + ': ' + errors : errors
+                util.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    datacenter ? datacenter + ': ' + errors : errors,
+                    function () {}
                 );
             }
         });

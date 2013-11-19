@@ -5,10 +5,10 @@
         'serverTab',
         '$q',
         'localization',
-        'notification',
+        'util',
         'errorContext',
         '$rootScope',
-        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
+        function (serverTab, $q, localization, util, errorContext, $rootScope) {
 
             var service = {};
             var images = {index: {}, job: {}, list: [], search: {}};
@@ -40,12 +40,19 @@
                             function handleResponse(chunk) {
                                 if(chunk.status === 'error') {
 
-                                    notification.push(chunk.name, { type: 'error' },
-                                        localization.translate(null,
+                                    util.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            null,
                                             'machine',
                                             'Unable to retrieve images from datacenter {{name}}',
                                             { name: chunk.name }
-                                        )
+                                        ),
+                                        function () {}
                                     );
                                     return;
                                 }
@@ -113,20 +120,34 @@
                     data: { machineId: machineId, name: name, description: description },
                     done: function(err, image) {
                         if (!err) {
-                            notification.push(image.name, { type: 'success' },
-                                localization.translate(null,
+                            util.message(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    null,
                                     'machine',
                                     'Image "{{name}}" successfully created',
                                     { name: image.data.name }
-                                )
+                                ),
+                                function () {}
                             );
                         } else {
-                            notification.push(image.name, { type: 'error' },
-                                localization.translate(null,
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
                                     'machine',
                                     'Unable to create image "{{name}}"',
                                     { name: image.data.name }
-                                )
+                                ),
+                                function () {}
                             );
                         }
                     }
@@ -142,22 +163,36 @@
                     data: { imageId: image.id },
                     done: function(err, job) {
                         if (!err) {
-                            notification.push(image, { type: 'success' },
-                                localization.translate(null,
+                            util.message(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    null,
                                     'machine',
                                     'Image "{{name}}" successfully deleted',
                                     { name: image.name }
-                                )
+                                ),
+                                function () {}
                             );
 
                             $rootScope.$emit('forceUpdate');
                         } else {
-                            notification.push(image, { type: 'error' },
-                                localization.translate(null,
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
                                     'machine',
                                     'Unable to delete image "{{name}}"',
                                     { name: image.name }
-                                )
+                                ),
+                                function () {}
                             );
                         }
                     }

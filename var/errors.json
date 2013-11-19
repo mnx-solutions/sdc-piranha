@@ -180,5 +180,28 @@
         "nr": "20"
       }
     }
+  },
+  "'creditCard.cardType' value should be one of: Visa, MasterCard, AmericanExpress, Discover": {
+    "code": 51020120,
+    "message": "'creditCard.cardType' value should be one of: Visa, MasterCard, AmericanExpress, Discover",
+    "human": "REST API: POSTAccountCreditCard,creditCard.cardType - Invalid format or value",
+    "split": {
+      "entry": {
+        "name": "REST API",
+        "nr": "5"
+      },
+      "object": {
+        "name": "POSTAccountCreditCard",
+        "nr": "102"
+      },
+      "field": {
+        "name": "creditCard.cardType",
+        "nr": "01"
+      },
+      "category": {
+        "name": "Invalid format or value",
+        "nr": "20"
+      }
+    }
   }
 }

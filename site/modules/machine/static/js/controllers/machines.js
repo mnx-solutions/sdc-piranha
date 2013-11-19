@@ -69,7 +69,6 @@
                                     ), function () {
 
                                     });
-//                                notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details.<br>Please contact support if you have any questions or concerns.');
                                 return true;
                             }
                         });

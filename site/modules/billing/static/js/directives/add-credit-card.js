@@ -295,12 +295,6 @@
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
                                 }, function () {
-                                    /*notification.push('addPaymentMethod', { type: 'error' },
-                                        localization.translate(null,
-                                            'billing',
-                                            'Billing information not updated'
-                                        )
-                                    );*/
                                     util.message(
                                         localization.translate(
                                             $scope,

@@ -6,10 +6,10 @@ window.fn = [];
         'serverTab',
         '$q',
         'localization',
-        'notification',
+        'util',
         'errorContext',
         '$rootScope',
-        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
+        function (serverTab, $q, localization, util, errorContext, $rootScope) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
@@ -30,12 +30,19 @@ window.fn = [];
                         datasets.job.finished = true;
 
                         if (err) {
-                            notification.push(datacenter, { type: 'error' },
-                                localization.translate(null,
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
                                     'machine',
                                     'Unable to retrieve datasets from datacenter {{name}}',
                                     { name: datacenter }
-                                )
+                                ),
+                                function () {}
                             );
                             //datasets.job[datacenter].deferred.reject(err);
                             Object.keys(datasets.search[datacenter]).forEach(function (job) {
