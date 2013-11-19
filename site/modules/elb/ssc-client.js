@@ -74,6 +74,22 @@ exports.getSscClient = function (call, callback) {
             callback(error, result);
         });
     }
+    function checkSscClient(client, callback, firstStart) {
+        firstStart = firstStart || new Date().getTime();
+        if (new Date().getTime() - firstStart > 10 * 60 * 1000) {
+            callback(new Error('SSC Connection Timeout'));
+            return;
+        }
+        client.get('/ping', function (err, req, res, body) {
+            if (!err && body === 'pong') {
+                callback(null, client);
+            } else {
+                setTimeout(function () {
+                    checkSscClient(client, callback, firstStart);
+                }, 1000);
+            }
+        });
+    }
     getElbApiKey(call, function (error, result) {
         console.log(error, result);
         if (error) {
@@ -86,7 +102,7 @@ exports.getSscClient = function (call, callback) {
             return;
         }
 
-        var sscUrl = 'http://' + result.primaryIp + ':4000';
+        var sscUrl = config.elb.ssc_protocol + '://' + result.primaryIp + ':' + config.elb.ssc_port;
         var sscClient = restify.createJsonClient({
             url: sscUrl,
             rejectUnauthorized: false,
@@ -97,6 +113,6 @@ exports.getSscClient = function (call, callback) {
                 });
             }
         });
-        callback(null, sscClient);
+        checkSscClient(sscClient, callback);
     });
 };
