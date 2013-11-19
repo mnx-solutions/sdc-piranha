@@ -1528,6 +1528,7 @@ ul.dropdown-menu{
     border-top: none;
     margin-left: 3px;
     margin-top: 0;
+    cursor: pointer;
 }
 #accordion2 .machine-info:hover{
     background-color: #f6f7f8 !important;
@@ -1535,6 +1536,9 @@ ul.dropdown-menu{
 #accordion2 .machine-info:hover .small-btn{
     background-color: #f60 !important;
     color: white !important;
+}
+#accordion2 .machine-info.active{
+    background-color: #ebebeb;
 }
 .accordion-package-title{
     height: 40px;

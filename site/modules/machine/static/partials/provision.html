@@ -475,18 +475,21 @@
                                                 </div>
                                                 <div id="collapse_{{$index}}" class="accordion-body collapse" data-ng-class="{in:secondOpen && $index == packageTypes.length-1}">
                                                     <div class="accordion-inner">
-                                                        <div class="machine-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages | filter:package">
+                                                        <div class="machine-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages | filter:package"
+                                                             data-ng-click="selectPackage(package.id)"
+                                                             data-ng-checked="selectedPackage == package.id"
+                                                             data-ng-class="{active: selectedPackage == package.id}">
                                                             <span class="short-name">{{package.short_name}}</span>
                                                             <span class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</span>
                                                             <span class="disk">{{package.vcpus}} vCPUs</span>
                                                             <span>{{package.disk | sizeFormat}} Disk</span>
                                                             <span class="w500">${{package.full_price || package.price}} <p data-translate>per hour</p></span>
-                                                            <span class="select-package"><button class="btn small-btn"
-                                                                          data-ng-click="selectPackage(package.id)"
-                                                                          data-ng-checked="selectedPackage == package.id">
-                                                            <b>Select</b>
+                                                            <!--<span class="select-package"><button class="btn small-btn"-->
+                                                                          <!--data-ng-click="selectPackage(package.id)"-->
+                                                                          <!--data-ng-checked="selectedPackage == package.id">-->
+                                                            <!--<b>Select</b>-->
 
-                                                        </button></span>
+                                                        <!--</button></span>-->
                                                         </div>
                                                     </div>
                                                 </div>
