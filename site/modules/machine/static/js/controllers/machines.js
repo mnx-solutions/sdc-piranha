@@ -320,10 +320,15 @@
                                     'Destroy the information on this instance and stop billing for selected instances.'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
-                                        if(el.checked){
-                                            Machine.deleteMachine(id);
-                                            $$track.event('machine', 'delete');
-                                            el.checked = false;
+                                        if (el.checked) {
+                                            if (el.state === 'running') {
+                                                $$track.event('machine', 'stop');
+                                                Machine.stopMachine(el.id).getJob().done(function () {
+                                                    $scope.deleteInstance(el);
+                                                });
+                                            } else {
+                                                $scope.deleteInstance(el);
+                                            }
                                         }
                                     });
                                 });
@@ -369,6 +374,16 @@
             $scope.exportFields = {
                 ignore: ['metadata']
             };
+
+            $scope.deleteInstance = function(el) {
+                $$track.event('machine', 'delete');
+                Machine.deleteMachine(el.id).getJob().done(function () {
+                    if (!$scope.machines.length) {
+                        $location.path("compute/create");
+                    }
+                    el.checked = false;
+                });
+            }
         }
 
     ]);
