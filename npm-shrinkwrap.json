@@ -86,6 +86,10 @@
           "from": "connect@2.9.2",
           "resolved": "https://registry.npmjs.org/connect/-/connect-2.9.2.tgz",
           "dependencies": {
+            "multiparty": {
+              "version": "2.2.0",
+              "from": "multiparty@2.2.0"
+            },
             "qs": {
               "version": "0.6.5",
               "from": "qs@~0.6.0"
@@ -1117,7 +1121,7 @@
     "ursa": {
       "version": "0.8.0",
       "from": "ursa@git+ssh://git@github.com:13W/ursa.git",
-      "resolved": "git+ssh://git@github.com:13W/ursa.git#4475573f5334d5d30e55cdaf81dc1a3a2d82eeb5"
+      "resolved": "git+ssh://git@github.com:13W/ursa.git"
     },
     "http-signature": {
       "version": "0.10.0",
