@@ -4,6 +4,9 @@ var ursa = require('ursa');
 var config = require('easy-config');
 
 module.exports = function execute(scope, register) {
+    var info = scope.api('Info');
+    var utils = scope.get('utils');
+
     var api = {};
 
     var Metadata = scope.api('Metadata');
@@ -353,7 +356,80 @@ module.exports = function execute(scope, register) {
                 call.update(null, response);
 
                 if (--count === 0) {
-                    call.done(null, allMachines);
+                    callback(null, allMachines);
+                }
+            });
+        });
+    };
+
+    api.ImageDelete = function (call, options, callback) {
+        call.log.info('Deleting image %s', options.imageId);
+
+        var cloud = call.cloud.separate(options.datacenter);
+        call.cloud.deleteImage(options.imageId, function (err) {
+            if (!err) {
+                call.data.uuid = options.imageId;
+                // TODO: enable poller back
+                //pollForImageStateChange(options.cloud, call, (60 * 60 * 1000), 'deleted', null, null);
+            } else {
+                call.log.error(err);
+                callback(err);
+            }
+        });
+    };
+
+    api.ImageCreate = function (call, options, callback) {
+
+        call.log.info({ options: options }, 'Creating image %s', options.name);
+
+        var cloud = call.cloud.separate(options.datacenter);
+        call.cloud.createImageFromMachine(options, function(err, image) {
+            if (!err) {
+                call.data.uuid = image.id;
+                // TODO: enable poller back
+                //pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image');
+            } else {
+                call.log.error(err);
+                callback(err);
+            }
+        });
+    };
+
+    api.ImageList = function (call, callback) {
+        var datacenters = call.cloud.listDatacenters();
+        var keys = Object.keys(datacenters);
+        var count = keys.length;
+
+        keys.forEach(function (name) {
+            var cloud = call.cloud.separate(name);
+            call.log.debug('List images for datacenter %s', name);
+
+            cloud.listImages(function (err, images) {
+                var response = {
+                    name: name,
+                    status: 'pending',
+                    images: []
+                };
+
+                if (err) {
+                    call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
+                    response.status = 'error';
+                    response.error = err;
+                } else {
+                    /* add datacenter to every image */
+                    images.forEach(function (image) {
+                        image.datacenter = name;
+                    });
+
+                    response.status = 'complete';
+                    response.images = images;
+
+                    call.log.debug('List images succeeded for datacenter %s', name);
+                }
+                call.update(null, response);
+
+                if (--count === 0) {
+                    callback();
                 }
             });
         });

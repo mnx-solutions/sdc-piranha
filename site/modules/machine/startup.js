@@ -6,7 +6,6 @@ module.exports = function execute(scope) {
     var server = scope.api('Server');
     var info = scope.api('Info');
     var utils = scope.get('utils');
-    var Metadata = scope.api('Metadata');
     var machine = scope.api('Machine');
 
     var langs = {};
@@ -376,91 +375,35 @@ module.exports = function execute(scope) {
                     machine: call.data.machineId,
                     name: (call.data.name || 'My Image'),
                     version: '1.0.0', // We default to version 1.0.0
-                    description: (call.data.description || 'Default image description')
+                    description: (call.data.description || 'Default image description'),
+                    datacenter: call.data.datacenter
                 };
 
-                call.log.info({ options: options }, 'Creating image %s', options.name);
-
-                var cloud = call.cloud.separate(call.data.datacenter);
-                call.cloud.createImageFromMachine(options, function(err, image) {
-                    if (!err) {
-                        call.data.uuid = image.id;
-                        pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image');
-                    } else {
-                        call.log.error(err);
-                        call.done(err);
-                    }
-                });
-
+                machine.ImageCreate(call, options, call.done);
             }
         });
     }
 
-    if (!config.features || config.features.imageUse !== 'disabled') {
+    /* DeleteImage */
+    server.onCall('ImageDelete', {
+        verify: function (data) {
+            return typeof data === 'object' &&
+                data.hasOwnProperty('imageId');
+        },
 
-        /* DeleteImage */
-        server.onCall('ImageDelete', {
-            verify: function (data) {
-                return typeof data === 'object' &&
-                    data.hasOwnProperty('imageId');
-            },
+        handler: function(call) {
+            var options = {
+                imageId: call.data.imageId,
+                datacenter: call.data.datacenter
+            };
 
-            handler: function(call) {
-                call.log.info('Deleting image %s', call.data.imageId);
+            machine.ImageDelete(call, options, call.done);
 
-                var cloud = call.cloud.separate(call.data.datacenter);
-                call.cloud.deleteImage(call.data.imageId, function (err) {
-                    if (!err) {
-                        call.data.uuid = call.data.imageId;
-                        pollForImageStateChange(cloud, call, (60 * 60 * 1000), 'deleted', null, null);
-                    } else {
-                        call.log.error(err);
-                        call.done(err);
-                    }
-                });
-            }
-        });
+        }
+    });
 
-        /* images list */
-        server.onCall('ImagesList', function(call) {
-
-            var datacenters = call.cloud.listDatacenters();
-            var keys = Object.keys(datacenters);
-            var count = keys.length;
-
-            keys.forEach(function (name) {
-                var cloud = call.cloud.separate(name);
-                call.log.debug('List images for datacenter %s', name);
-
-                cloud.listImages(function (err, images) {
-                    var response = {
-                        name: name,
-                        status: 'pending',
-                        images: []
-                    };
-
-                    if (err) {
-                        call.log.error('List images failed for datacenter %s, url %s; err.message: %s', name, datacenters[name], err.message, err);
-                        response.status = 'error';
-                        response.error = err;
-                    } else {
-                        /* add datacenter to every image */
-                        images.forEach(function (image) {
-                            image.datacenter = name;
-                        });
-
-                        response.status = 'complete';
-                        response.images = images;
-
-                        call.log.debug('List images succeeded for datacenter %s', name);
-                    }
-                    call.update(null, response);
-
-                    if (--count === 0) {
-                        call.done();
-                    }
-                });
-            });
-        });
-    }
-}
+    /* images list */
+    server.onCall('ImagesList', function(call) {
+        machine.ImageList(call, call.done);
+    });
+};
