@@ -66,6 +66,8 @@
                 }
             );
 
+            $scope.machines = Machine.machine();
+
             $scope.$watch('machines', function (machines) {
                 $q.when(Machine.machine(machineid)).then(
                     function (machine) {
@@ -351,10 +353,12 @@
                                 $location.url('/compute');
                                 $location.replace();
                             }
+                            if(!$scope.machines.length) {
+                                $location.path('/compute/create')
+                            }
                         });
                     });
             };
-
             $scope.togglePassword = function (id) {
                 if ($scope.isPasswordVisible(id)) {
                     $scope.visiblePasswords[id] = false;
