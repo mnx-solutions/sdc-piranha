@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng, $) {
-     app.directive('graph', function (notification, ca) {
+     app.directive('graph', function (util, ca, localization) {
         return {
             restrict: 'E',
             replace: true,
@@ -62,7 +62,19 @@
                             endtime: heatmaptime
                         }, function(err, values) {
                             if (err) {
-                                notification.push( 'ca', { type: 'error' }, err);
+                                util.error(
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        'Error'
+                                    ),
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        err
+                                    ),
+                                    function () {}
+                                );
                             } else {
                                 if (values &&
                                     values[0] &&

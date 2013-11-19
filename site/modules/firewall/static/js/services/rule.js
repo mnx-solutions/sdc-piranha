@@ -8,10 +8,9 @@
         '$q',
         '$timeout',
         'localization',
-        'notification',
         'util',
 
-        function (serverTab, $rootScope, $q, $timeout, localization, notification, util) {
+        function (serverTab, $rootScope, $q, $timeout, localization, util) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
@@ -56,14 +55,21 @@
                 rules.map[rule.datacenter].push(rule);
 
                 function showError (err) {
-                    notification.push(rule.uuid, { type: 'error' },
-                        localization.translate(null,
+                    util.error(
+                        localization.translate(
+                            null,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            null,
                             'firewall',
                             'Unable to a create rule: {{error}}',
                             {
                                 error: (err.message) ? '<br />' + err.message : ''
                             }
-                        )
+                        ),
+                        function () {}
                     );
 
                     removeRule(rule);
@@ -101,14 +107,21 @@
                 return function (rule) {
 	                rule = cleanRule(rule);
                     function showError (err) {
-                        notification.push(rule.uuid, { type: 'error' },
-                            localization.translate(null,
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
                                 'firewall',
                                 'Unable to update rule: {{error}}',
                                 {
                                     error: (err.message) ? '<br />' + err.message : ''
                                 }
-                            )
+                            ),
+                            function () {}
                         );
                     }
 
@@ -243,12 +256,19 @@
 
                             function handleResponse(chunk) {
                                 if (chunk.status === 'error') {
-                                    notification.push(chunk.name, { type: 'error' },
-                                        localization.translate(null,
+                                    util.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            null,
                                             'rule',
                                             'Unable to retrieve rules from datacenter {{name}}',
                                             { name: chunk.name }
-                                        )
+                                        ),
+                                        function () {}
                                     );
                                     return;
                                 }

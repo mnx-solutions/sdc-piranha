@@ -105,7 +105,6 @@
                         ), function () {
 
                         });
-//                    notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'This instance is scheduled for maintenance on '+ m.maintenanceStartTime + '. The physical server this instance resides on will be rebooted. This instance will be unavailable approximately 15 minutes.');
                 }
 
                 $scope.dataset = Dataset.dataset(m.image);
