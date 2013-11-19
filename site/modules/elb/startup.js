@@ -1,5 +1,6 @@
 'use strict';
 
+var assert = require('assert');
 var config = require('easy-config');
 var ssc = require('./ssc-client');
 var getSscMachine = ssc.getSscMachine;
@@ -169,12 +170,14 @@ var elb = function execute(scope) {
         handler: function (call) {
             var data = {
                 datacenter: call.data.datacenter,
-                dataset: (config.elb && config.elb.ssc_image) || '110929de-4b12-11e3-befe-8fc147c00b6f',
+                dataset: config.elb.ssc_image,
                 name: hardControllerName,
-                package: '5d367f42-867b-4cc3-883c-b329cbaad9d4',
-                networks: ['7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f'],
+                package: config.elb.ssc_package,
                 elbController: true
             };
+            if (config.elb.ssc_networks) {
+                data.networks = config.elb.ssc_networks;
+            }
             machine.Create(call, data, function (err, result) {
                 if (err) {
                     call.done(err);
@@ -224,5 +227,12 @@ var elb = function execute(scope) {
 };
 
 if (!config.features || config.features.elb === 'enabled') {
+    assert(config.elb, "elb section is required");
+    assert(config.elb.elb_code_url, "elb.elb_code_url is required");
+    assert(config.elb.ssc_image, "elb.ssc_image is required");
+    assert(config.elb.ssc_package, "elb.ssc_package is required");
+    assert(config.elb.ssc_protocol, "elb.ssc_protocol is required");
+    assert(config.elb.ssc_port, "elb.ssc_port is required");
+
     module.exports = elb;
 }

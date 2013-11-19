@@ -54,10 +54,7 @@ module.exports = function execute(scope) {
         var serveKeys = function (err, data) {
             if (!err && data) {
                 data = data.filter(function (key) {
-                    if (config.elb && !config.elb.showHiddenObjects && key.name === 'ssc_public_key') {
-                        return false;
-                    }
-                    return true;
+                    return config.showLBaaSObjects || key.name !== 'ssc_public_key';
                 });
             }
             call.done(err, data);

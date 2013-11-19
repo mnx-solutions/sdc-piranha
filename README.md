@@ -162,6 +162,16 @@ You can also define configuration options using command line. ex: `$ node index.
 - `cloudapi.username` Username from AdminUI
 - `cloudapi.keyId` Your SSH key fingerprint from Admin portal
 - `cloudapi.keyPath` Full local path to your private key file
+- `elb.ssc_private_key` Hardcode if on west-x, do not use on west-1
+- `elb.ssc_public_key` Hardcode if on west-x, do not use on west-1
+- `elb.elb_code_url` Download location for ELB API code
+- `elb.sdc_url` Hardcode if on west-x, do not use on west-1
+- `elb.ssc_image` UUID of LBaaS controller image
+- `elb.ssc_package` UUID of LBaaS controller package
+- `elb.ssc_networks` Hardcode if on west-x, do not use on west-1
+- `elb.account` Hardcode if on west-x, do not use on west-1
+- `elb.ssc_protocol` Protocol to communicate with LBaaS controller
+- `elb.ssc_port` Port to communicate with LBaaS controller
 - `googleAnalytics.identifier` Google analytics ID
 - `googleAnalytics.domain` Google analytics domain
 - `localization.defaultLocale` Default language for portal
@@ -188,6 +198,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `redis.password` Redis storage password
 - `server.port` Port on which piranha portal runs on.
 - `server.headerClientIpKey` Client IP address placeholder for load balancer / reverse proxy
+- `showLBaaSObjects` Dev option to see LBaaS keys, images & machines
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file

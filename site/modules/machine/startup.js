@@ -94,13 +94,10 @@ module.exports = function execute(scope) {
                 return;
             }
 
-            data = data.filter(function (img) {
-                // Don't show ELB images unless in dev mode (showHiddenObjects = true)
-                if (config.elb && config.elb.ssc_image && !config.elb.showHiddenObjects &&
-                        img.tags && img.tags.lbaas && (img.tags.lbaas === 'ssc' || img.tags.lbaas === 'stm')) {
-                    return false;
-                }
-                return true;
+            data = data.filter(function (el) {
+                // Don't show ELB images unless in dev mode
+                var lbaasTagged = el.tags && el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm');
+                return config.showLBaaSObjects || !lbaasTagged;
             });
 
             data.forEach(function (img, i) {
