@@ -165,19 +165,15 @@ module.exports = function execute(scope, register) {
                 ssc_private_key: sscKeyPair.privateKey,
                 ssc_public_key: sscKeyPair.publicSsh,
                 portal_public_key: (new Buffer(portalKeyPair.publicSsh).toString('base64')),
-                account_name: (config.elb && config.elb.account) || call.req.session.userName,
+                account_name: config.elb.account || call.req.session.userName,
                 datacenter_name: call.data.datacenter,
-                elb_code_url: (config.elb && config.elb.elb_code_url) || "https://us-east.manta.joyent.com/dbqp/public/elbapi-1.tgz",
-                sdc_url: (config.elb && config.elb.sdc_url) || "https://us-west-1.api.joyentcloud.com"
+                elb_code_url: config.elb.elb_code_url,
+                sdc_url: config.elb.sdc_url || "https://us-west-1.api.joyentcloud.com"
             };
 
             if (config.elb.ssc_private_key) {
                 metadata.ssc_private_key = config.elb.ssc_private_key;
                 metadata.ssc_public_key = config.elb.ssc_public_key;
-            }
-
-            if (!metadata.datacenter_name) {
-                metadata.datacenter_name = 'us-west-x';
             }
 
             for (var key in metadata) {
@@ -317,12 +313,9 @@ module.exports = function execute(scope, register) {
                     response.error = err;
                 } else {
                     machines = machines.filter(function (el) {
-                        // Don't show ELB SSC machine unless in dev mode (showHiddenObjects = true)
-                        if (config.elb && config.elb.ssc_image && !config.elb.showHiddenObjects &&
-                                el.tags && el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm')) {
-                            return false;
-                        }
-                        return el.state !== 'failed';
+                        // Don't show ELB SSC machine unless in dev mode
+                        var lbaasTagged = el.tags && el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm');
+                        return el.state !== 'failed' && (config.showLBaaSObjects || !lbaasTagged);
                     });
 
                     machines.forEach(function (machine, i) {
