@@ -16,7 +16,7 @@
                                                    location.path().search('elb') == 1 ||
                                                    location.path().search('firewall') == 1 ||
                                                    location.path().search('images') == 1, open: openMenu, over: t_second && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
-            <a data-ng-click="openSubMenu()">
+            <a href="#!/compute/" data-ng-click="openSubMenu()">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_second">Compute</span>
                 <span class="selected"></span>
