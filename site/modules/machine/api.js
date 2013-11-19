@@ -185,6 +185,8 @@ module.exports = function execute(scope, register) {
                     options['metadata.' + key] = metadata[key];
                 }
             }
+
+            options['tag.lbaas'] = 'ssc';
         }
 
         call.log.info({options: options}, 'Creating machine %s', options.name);
@@ -315,6 +317,11 @@ module.exports = function execute(scope, register) {
                     response.error = err;
                 } else {
                     machines = machines.filter(function (el) {
+                        // Don't show ELB SSC machine unless in dev mode (showHiddenObjects = true)
+                        if (config.elb && config.elb.ssc_image && !config.elb.showHiddenObjects &&
+                                el.tags && el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm')) {
+                            return false;
+                        }
                         return el.state !== 'failed';
                     });
 

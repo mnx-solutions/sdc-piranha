@@ -16,7 +16,6 @@
                     service.deleteController().then(function () {
                         $location.path('/elb');
                     }, function (err) {
-                        console.log(err);
                         $scope.listLoaded = true;
                     });
                 };

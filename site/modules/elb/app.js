@@ -44,9 +44,8 @@ var elb = function execute(scope, app) {
                     'private': privateKey.toPrivatePem('utf8'),
                     'public': privateKey.toPublicPem('utf8')
                 };
-                console.log('Data:', data);
+
                 getSscClient({req: req}, function (err, client) {
-                    console.log('getSscClient', err, client);
                     client.post('/certificates', data, function (err, creq, cres, obj) {
                         if (err) {
                             req.log.warn({err: err}, 'Error saving certificate into ELB API');
@@ -58,7 +57,6 @@ var elb = function execute(scope, app) {
                     });
                 });
             } catch (ex) {
-                console.error(ex);
                 if (ex.message.indexOf('bad password') !== -1 || ex.message.indexOf('bad decrypt') !== -1) {
                     req.log.info('Certificate has passphrase, asking user for it');
                     res.send(getUploadResult(callback, {success: false, passphrase: true, message: 'Certificate has passphrase'}));

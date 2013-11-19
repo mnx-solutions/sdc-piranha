@@ -94,6 +94,15 @@ module.exports = function execute(scope) {
                 return;
             }
 
+            data = data.filter(function (img) {
+                // Don't show ELB images unless in dev mode (showHiddenObjects = true)
+                if (config.elb && config.elb.ssc_image && !config.elb.showHiddenObjects &&
+                        img.tags && img.tags.lbaas && (img.tags.lbaas === 'ssc' || img.tags.lbaas === 'stm')) {
+                    return false;
+                }
+                return true;
+            });
+
             data.forEach(function (img, i) {
                 if (info.images.data[img.id]) {
                     data[i] = utils.extend(img, info.images.data[img.id]);

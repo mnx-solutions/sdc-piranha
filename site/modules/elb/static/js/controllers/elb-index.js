@@ -30,7 +30,6 @@
                     service.createController($scope.datacenter.name).then(function () {
                         $location.path('/elb/list');
                     }, function (err) {
-                        console.log(err);
                         $scope.allLoading = true;
                     });
                 };

@@ -91,8 +91,7 @@ exports.getSscClient = function (call, callback) {
         });
     }
     getElbApiKey(call, function (error, result) {
-        console.log(error, result);
-        if (error) {
+       if (error) {
             callback(error);
             return;
         }
