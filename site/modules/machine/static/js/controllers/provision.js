@@ -280,7 +280,7 @@
                     $scope.slideCarousel();
                 });
 
-                $scope.collapseTrigger2($scope.packageTypes.length-1, $scope.packageTypes.length);
+                $scope.collapseTrigger2(0, $scope.packageTypes.length);
             };
 
             $scope.selectVersion = function (name, version) {
