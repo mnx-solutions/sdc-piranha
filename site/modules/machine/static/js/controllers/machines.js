@@ -307,6 +307,16 @@
 //                    },
                     action: function (object) {
                         if($scope.actionButton()) {
+                            var checkedInstances = [];
+                            var message = '';
+                            $scope.machines.forEach(function (el) {
+                                if (el.checked) {
+                                    checkedInstances.push(el);
+                                }
+                            });
+                            message = checkedInstances.length > 1 ?
+                                'Destroy the information on these instances and stop billing for them.' :
+                                'Destroy the information on this instance and stop billing for selected instances.';
                             util.confirm(
                                 localization.translate(
                                     $scope,
@@ -316,18 +326,16 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Destroy the information on this instance and stop billing for selected instances.'
+                                    message
                                 ), function () {
-                                    $scope.machines.forEach(function (el) {
-                                        if (el.checked) {
-                                            if (el.state === 'running') {
-                                                $$track.event('machine', 'stop');
-                                                Machine.stopMachine(el.id).getJob().done(function () {
-                                                    $scope.deleteInstance(el);
-                                                });
-                                            } else {
+                                    checkedInstances.forEach(function (el) {
+                                        if (el.state === 'running') {
+                                            $$track.event('machine', 'stop');
+                                            Machine.stopMachine(el.id).getJob().done(function () {
                                                 $scope.deleteInstance(el);
-                                            }
+                                            });
+                                        } else {
+                                            $scope.deleteInstance(el);
                                         }
                                     });
                                 });
