@@ -21,10 +21,6 @@ module.exports = function execute(scope) {
             var response = {};
             accountFields.forEach(function (field) {
                 response[field] = data[field] || '';
-
-                if (field === 'phone') {
-                    response[field] = response[field].replace(/[^0-9\.]+/g, '');
-                }
             });
 
             TFA.get(data.id, function (err, secret) {

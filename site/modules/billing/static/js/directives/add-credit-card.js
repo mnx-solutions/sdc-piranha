@@ -46,8 +46,7 @@
                         return '';
                     }
 
-                    $scope.phone = {};
-                    $scope.selectedCountryCode = '1'; // default to USA
+                    $scope.phone = '';
 
                     $scope.form = {
                         cardHolderInfo: {
@@ -221,45 +220,7 @@
                     };
 
                     $q.when(Account.getAccount(true), function (account) {
-                        $q.when($http.get('account/countryCodes'), function(data) {
-                            $scope.countryCodes = data.data;
-
-                            account.country = $scope.isoToObj(account.country);
-                            $scope.selectedCountryCode = account.country.areaCode;
-
-                            $scope.phone = {
-                                number: account.phone.replace(new RegExp(/[^0-9#\*]/g), ''),
-                                country: account.country
-                            };
-
-                            $scope.account = account;
-                        });
-                    });
-
-                    $scope.isoToObj = function(iso) {
-                        if (!$scope.countryCodes){
-                            return;
-                        }
-
-                        var selected = null;
-                        var usa = null;
-
-                        $scope.countryCodes.some(function (el) {
-                            if (el.iso3 === 'USA') {
-                                usa = el;
-                            }
-
-                            if (el.iso3 === iso) {
-                                selected = el;
-                                return true;
-                            }
-                        });
-
-                        return selected || usa;
-                    };
-
-                    $scope.$watch('phone.country', function(newVal) {
-                        $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
+                        $scope.account = account;
                     });
 
                     $scope.submitForm = function() {
@@ -279,8 +240,8 @@
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (!errs) {
                                 Account.updateAccount({
-                                    country: $scope.phone.country.iso3,
-                                    phone: $scope.phone.number
+                                    country: $scope.form.cardHolderInfo.country,
+                                    phone: account.phone
                                 }).then(function (account) {
                                     notification.replace('addPaymentMethod', { type: 'success' },
                                         localization.translate(null,
