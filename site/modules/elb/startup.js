@@ -202,7 +202,7 @@ var elb = function execute(scope) {
                 callback(new Error('Time for removing elb config timed out'));
                 return;
             }
-            client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', function(err) {
+            client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', function (err) {
                 if (err && err.statusCode !== 404) {
                     setTimeout(waitForManta.bind(this, startTime), 1000);
                 } else {
@@ -254,7 +254,11 @@ var elb = function execute(scope) {
                     call.done(err);
                     return;
                 }
-                removeSscConfig(data, function () {
+                removeSscConfig(data, function (err) {
+                    if (err) {
+                        call.done(err);
+                        return;
+                    }
                     machine.Create(call, data, function (err, result) {
                         if (err) {
                             call.done(err);
