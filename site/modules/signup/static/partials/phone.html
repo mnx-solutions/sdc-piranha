@@ -17,30 +17,10 @@
         <form data-ng-submit="makeCall()">
             <div class="row">
                 <div class="span3">
-                    <div class="control-group">
-                        <div class="controls">
-                            <select
-                                    data-ng-style="countryStyle"
-                                    data-ng-model="country"
-                                    style="width: 245px"
-                                    name="countryCode"
-                                    id="countryCode"
-                                    data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-                            </select>
-                            <br />
-                            <div class="input-prepend">
-                                <span class="add-on" style="width:50px">(+{{selectedCountryCode}})</span>
-                                <input style="width: 170px" type="text"
-                                       id="phone"
-                                       name="phone"
-                                       data-ng-model="phone"
-                                       required/>
-                            </div>
-                        </div>
-                    </div>
+                    <div data-phone-number data-number="phone" data-country="country" data-is-error="isError(field, type)" data-el-width="220"></div>
                 </div>
                 <div class="span3">
-                    <button class="btn btn-joyent-blue span2" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button>
+                    <button class="btn btn-joyent-blue span2" data-ng-disabled="!phone || callInProgress || !numberChanged">Call Me Now</button>
                 </div>
             </div>
         </form>
