@@ -9,6 +9,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import com.codeborne.selenide.WebDriverProvider;
 
+@SuppressWarnings("deprecation")
 public class LocalFirefox implements WebDriverProvider {
 	@Override
 	public WebDriver createDriver() {

@@ -1,18 +1,27 @@
 package pageobjects;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.cssClass;
+import static com.codeborne.selenide.Condition.hasClass;
+import static com.codeborne.selenide.Condition.hasNotClass;
+import static com.codeborne.selenide.Condition.hidden;
+import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.page;
 
-import util.Common;
-
 import com.codeborne.selenide.SelenideElement;
 
 import data.CreateInstanceObject;
 
+/**
+ * "Create Instance" and its child pages page object. Holds methods to interact
+ * with given pages.
+ * 
+ */
 public class CreateInstanceCarousel {
 
 	private static final int BASE_TIMEOUT = Integer.parseInt(System
@@ -23,7 +32,7 @@ public class CreateInstanceCarousel {
 		$(".outer-provisioning-item", page).shouldHave(cssClass("active"));
 	}
 
-	public void selectZoneFilter(String zone) {
+	public void selectDataCenter(String zone) {
 		waitForListingUpdate();
 		SelenideElement t = $(byAttribute("data-original-title",
 				"Filter by zone"));
@@ -41,6 +50,13 @@ public class CreateInstanceCarousel {
 		toClick.click();
 	}
 
+	/**
+	 * Method for getting the element from the carousel content listing
+	 * 
+	 * @param name
+	 *            - text to filter the element by
+	 * @return
+	 */
 	public SelenideElement getListElement(String name) {
 		return Common.checkTextInCollection(
 				$$(".active .item-scrolling .provisioning-item"), name);
@@ -51,13 +67,8 @@ public class CreateInstanceCarousel {
 				hasNotClass("loading-medium"), BASE_TIMEOUT);
 	}
 
-	public void waitForCarouselPageToLoad(int item) {
-		$(".outer-provisioning-item", item).shouldBe(visible);
-	}
-
 	public void selectInstanceType(String type) {
 		waitForListingUpdate();
-		// waitForCarouselPageToLoad(1);
 		SelenideElement t = $(byAttribute("data-original-title",
 				"Filter by instance type"));
 		t.shouldBe(visible);
@@ -65,16 +76,14 @@ public class CreateInstanceCarousel {
 		t.$(byText(type)).click();
 	}
 
-	public void selectPackage(String type) {
+	public void selectPackage(String name) {
 		waitForListingUpdate();
-		waitForCarouselPageToLoad(1);
-		SelenideElement el = getListElement(type);
+		SelenideElement el = getListElement(name);
 		el.find(byAttribute("type", "radio")).click();
 	}
 
-	public void selectOsVersion(String os, String version) {
+	public void setOsVersion(String os, String version) {
 		waitForListingUpdate();
-		//waitForCarouselPageToLoad(0);
 		SelenideElement t = Common.checkTextInCollection(
 				$$(".active .item-scrolling .provisioning-item"), os);
 		if (t.$(byText("Choose image version")).isDisplayed()) {
@@ -90,12 +99,12 @@ public class CreateInstanceCarousel {
 
 	public void selectOsImage(String os) {
 		waitForListingUpdate();
-		// waitForCarouselPageToLoad(0);
 		getListElement(os).find(byAttribute("type", "radio")).click();
 	}
 
-	public void checkSelectedImageText(String text) {
-		$(byText("Selected configuration")).shouldBe(visible);
+	public void checkSelectedImageDescription(String text) {
+		$(".reconfigure-box").$(byText("Selected configuration")).shouldBe(
+				visible);
 		$("#selected-image").should(text(text));
 	}
 
@@ -115,17 +124,25 @@ public class CreateInstanceCarousel {
 				text("Est. Monthly $"));
 	}
 
+	/**
+	 * If instance with desired name exists, add a number at the end of the
+	 * name.
+	 * 
+	 * @param name
+	 *            desired name of the instance
+	 * @return actual name of instance
+	 */
 	public String setInstanceNameValue(String name) {
 		int i = 0;
 		String n = name;
 		do {
-			i++;
 			if (i >= 1) {
 				n = name + i;
 				$(byAttribute("name", "machineName")).setValue(n);
 			} else {
 				$(byAttribute("name", "machineName")).setValue(n);
 			}
+			i++;
 		} while ($(
 				byAttribute("data-ng-show",
 						"provisionForm.machineName.$error.machineUnique"))
@@ -133,32 +150,46 @@ public class CreateInstanceCarousel {
 		return n;
 	}
 
+	/**
+	 * Confirm instance creation modal window.
+	 */
 	public void confirmInstanceCreation() {
 		$(".modal").shouldBe(visible);
 		$(".modal-header").shouldHave(text("Confirm: Create Instance"));
 		$(".modal-footer").find(byText("OK")).click();
 	}
 
+	/**
+	 * Cancel instance creation modal window.
+	 */
 	public void cancelInstanceCreation() {
 		$(".modal").shouldBe(visible);
 		$(".modal-header").shouldHave(text("Confirm: Create Instance"));
 		$(".modal-footer").find(byText("Cancel")).click();
 	}
 
-	public static String createIsntance(CreateInstanceObject i) {
+	/**
+	 * Provision a machine from a CreateInstanceObject.
+	 * 
+	 * @param CreateInstanceObject
+	 * @return Image name
+	 */
+	public static String createIsntance(CreateInstanceObject i, String dc) {
 		String instanceName = i.getImageName();
 		String os = i.getImageOs();
 		String version = i.getImageVersion();
 		String packageSize = i.getPackageDisplayedName();
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
+		createInstanceCarousel.selectDataCenter(dc);
 		createInstanceCarousel.waitUntilPageIsActive(0);
-		createInstanceCarousel.selectOsVersion(os, version);
+		createInstanceCarousel.setOsVersion(os, version);
 		createInstanceCarousel.selectOsImage(os);
 		createInstanceCarousel.waitUntilPageIsActive(1);
 		createInstanceCarousel.selectPackage(packageSize);
 		createInstanceCarousel
 				.checkPaymentInfo(i.getPrice(), i.getPriceMonth());
-		instanceName = createInstanceCarousel.setInstanceNameValue(instanceName);
+		instanceName = createInstanceCarousel
+				.setInstanceNameValue(instanceName);
 		$(byText("Create instance")).click();
 		createInstanceCarousel.confirmInstanceCreation();
 		return instanceName;

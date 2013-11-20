@@ -1,16 +1,24 @@
 package pageobjects;
 
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.hasText;
+import static com.codeborne.selenide.Condition.hidden;
+import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byAttribute;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
-import util.Common;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+/**
+ * Instance details page object. Holds methods to interact with given pages.
+ * 
+ */
 public class InstancePage {
 	private static final int BASE_TIMEOUT = Integer.parseInt(System
 			.getProperty("globaltimeout", "15000"));
@@ -50,19 +58,23 @@ public class InstancePage {
 		$("#instanceRename").setValue(name);
 		$(byAttribute("name", "instanceRename")).find(".icon-ok").click();
 		Common.confirmModal();
-		// validateStatus("Renaming");
-		// c.waitUntil(visible, CHANGE_STATUS_TIMEOUT);
-		// c.shouldHave(text(name));
 	}
 
 	public void validateInstanceSpecs(String type, String name, String img,
-			String version, String dc) {
+			String version, String memory, String disk, String ip,
+			String created, String dc, String login) {
 		SelenideElement c = $("fieldset").$(".span11");
-		c.should(matchText("Type\n" + type));
+		c.should(matchText("UUID\n"));
 		c.should(matchText("Instance name\n" + name));
+		c.should(matchText("Type\n" + type));
 		c.should(matchText("Image\n" + img));
 		c.should(matchText("Image version\n" + version));
+		c.should(matchText("Memory\n" + memory));
+		c.should(matchText("Disk\n" + disk));
+		c.should(matchText("IP addresses\n" + ip));
+		c.should(matchText("Created\n" + created));
 		c.should(matchText("Datacenter\n" + dc));
+		c.should(matchText("Login\n" + login));
 	}
 
 	public void resize(String size) {
@@ -71,8 +83,6 @@ public class InstancePage {
 		$(By.name("resize")).selectOptionByValue(size);
 		$(byText("Resize")).click();
 		Common.confirmModal();
-		// $(byAttribute("data-ng-class", "labelForState(machine.state)")).$(
-		// ".loading-small").waitUntil(disappears, CHANGE_STATUS_TIMEOUT);
 	}
 
 	public void validateInstanceSize(String ram, String cpu, String disk) {
