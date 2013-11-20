@@ -104,6 +104,7 @@
 
             service.getMachines = function getMachines() {
                 var d = $q.defer();
+                var machines = [];
                 serverTab.call({
                     name: 'MachineList',
                     progress: function machineProgress(err, job) {
@@ -111,7 +112,10 @@
                             d.reject(err);
                             return;
                         }
-                        d.resolve(job.__read());
+                        machines = machines.concat(job.__read());
+                    },
+                    done: function machineDone(err, job) {
+                        d.resolve(machines);
                     }
                 });
                 return d.promise;

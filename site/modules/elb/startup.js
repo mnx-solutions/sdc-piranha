@@ -2,6 +2,8 @@
 
 var assert = require('assert');
 var config = require('easy-config');
+var ursa = require('ursa');
+var manta = require('manta');
 var ssc = require('./ssc-client');
 var getSscMachine = ssc.getSscMachine;
 var getSscClient = ssc.getSscClient;
@@ -10,11 +12,11 @@ var getSscClient = ssc.getSscClient;
 var elb = function execute(scope) {
     var server = scope.api('Server');
     var machine = scope.api('Machine');
-    var metadata = scope.api('Metadata');
+    var Metadata = scope.api('Metadata');
 
     var hardControllerName = 'elb-ssc';
 
-    ssc.init(metadata);
+    ssc.init(Metadata);
 
     server.onCall('LoadBalancersList', function (call) {
         getSscClient(call, function (err, client) {
@@ -163,36 +165,101 @@ var elb = function execute(scope) {
         });
     });
 
+    function createKeyPairs() {
+        var kp = ursa.generatePrivateKey();
+        return {
+            privateKey: kp.toPrivatePem('utf8'),
+            publicKey: kp.toPublicPem('utf8'),
+            publicSsh: 'ssh-rsa ' + kp.toPublicSsh('base64') + ' piranha@portal',
+            fingerprint: kp.toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1)
+        };
+    }
+
+    function addSscKey(call, key, callback) {
+        call.cloud.deleteKey({name: 'ssc_public_key'}, function () {
+            call.cloud.createKey({name: 'ssc_public_key', key: key}, callback);
+        });
+
+    }
+
+    function removeSscConfig(data, callback) {
+        var fingerprint = ursa.createPrivateKey(data['metadata.ssc_private_key'])
+            .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
+        var client = manta.createClient({
+            sign: manta.privateKeySigner({
+                key: data['metadata.ssc_private_key'],
+                keyId: fingerprint,
+                user: data['metadata.account_name']
+            }),
+            user: data['metadata.account_name'],
+            url: 'https://us-east.manta.joyent.com',
+            rejectUnauthorized: false
+        });
+
+        client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', callback);
+    }
+
     server.onCall('SscMachineCreate', {
         verify: function (data) {
             return data && typeof data.datacenter === 'string';
         },
         handler: function (call) {
+            call.getImmediate(false);
+            var sscKeyPair = createKeyPairs();
+            var portalKeyPair = createKeyPairs();
             var data = {
                 datacenter: call.data.datacenter,
                 dataset: config.elb.ssc_image,
                 name: hardControllerName,
                 package: config.elb.ssc_package,
-                elbController: true
+                'metadata.ssc_private_key': sscKeyPair.privateKey,
+                'metadata.ssc_public_key': sscKeyPair.publicSsh,
+                'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
+                'metadata.account_name': config.elb.account || call.req.session.userName,
+                'metadata.datacenter_name': call.data.datacenter,
+                'metadata.elb_code_url': config.elb.elb_code_url,
+                'metadata.sdc_url': config.elb.sdc_url || "https://us-west-1.api.joyentcloud.com",
+                'tag.lbaas': 'ssc'
             };
+
             if (config.elb.ssc_networks) {
                 data.networks = config.elb.ssc_networks;
             }
-            machine.Create(call, data, function (err, result) {
+
+            if (config.elb.ssc_private_key && config.elb.ssc_public_key) {
+                data['metadata.ssc_private_key'] = config.elb.ssc_private_key;
+                data['metadata.ssc_public_key'] = config.elb.ssc_public_key;
+            }
+
+            Metadata.set(call.req.session.userId, 'portal_private_key', portalKeyPair.privateKey);
+            Metadata.set(call.req.session.userId, 'portal_fingerprint', '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint);
+
+            addSscKey(call, sscKeyPair.publicSsh, function (err) {
                 if (err) {
                     call.done(err);
                     return;
                 }
-                call.done(null, result);
+                removeSscConfig(data, function (error) {
+                    if (error && error.statusCode !== 404) {
+                        call.done(error);
+                        return;
+                    }
+                    machine.Create(call, data, function (err, result) {
+                        if (err) {
+                            call.done(err);
+                            return;
+                        }
+                        call.done(null, result);
+                    });
+                });
             });
         }
-
     });
 
-    server.onCall('SscMachineDelete', function (call) {
+    function deleteSscMachine(call, callback) {
         getSscMachine(call, function (err, sscMachine) {
             if (err) {
-                call.done(err);
+                callback(err);
                 return;
             }
             var data = {
@@ -201,16 +268,33 @@ var elb = function execute(scope) {
             };
             machine.Stop(call, data, function (err) {
                 if (err) {
-                    call.done(err);
+                    callback(err);
                     return;
                 }
                 machine.Delete(call, data, function (err, result) {
                     if (err) {
-                        call.done(err);
+                        callback(err);
                         return;
                     }
-                    call.done(null, result);
+                    callback(null, result);
                 });
+            });
+        });
+    }
+
+    server.onCall('SscMachineDelete', function (call) {
+        getSscClient(call, function (err, client) {
+            if (err) {
+                // Still delete SSC even if ELBAPI is unavailable
+                deleteSscMachine(call, call.done);
+                return;
+            }
+            client.del('/loadbalancers', function (err, creq, cres, obj) {
+                if (err) {
+                    //call.log.error('Cannot disable STMs');
+                }
+                // Still delete SSC even if ELBAPI returned error
+                deleteSscMachine(call, call.done);
             });
         });
     });
