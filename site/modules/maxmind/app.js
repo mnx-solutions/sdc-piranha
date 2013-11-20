@@ -172,7 +172,7 @@ module.exports = function execute(scope, app) {
         req.log.info({
             generatedPin: req.session.maxmindCode,
             enteredPin: req.params.code,
-            attempt: req.session.maxmindServiceFails
+            attempt: req.session.maxmindPinTries
         }, 'User entered wrong pin');
 
         // prompt user to change phone is he is on his last pin attempt
