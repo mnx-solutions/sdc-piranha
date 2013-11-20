@@ -176,22 +176,8 @@ var elb = function execute(scope) {
     }
 
     function addSscKey(call, key, callback) {
-        function waitForKey(callback, startTime) {
-            startTime = startTime || new Date().getTime();
-            if (new Date().getTime() - startTime > 2 * 60 * 1000) {
-                callback(new Error('Time for waiting adding public key timed out'));
-                return;
-            }
-            call.cloud.getKey({name: 'ssc_public_key'}, function (err) {
-                if (err) {
-                    setTimeout(waitForKey.bind(this, callback, startTime), 1000);
-                } else {
-                    callback(null);
-                }
-            });
-        }
         call.cloud.deleteKey({name: 'ssc_public_key'}, function () {
-            call.cloud.createKey({name: 'ssc_public_key', key: key}, waitForKey.bind(this, callback));
+            call.cloud.createKey({name: 'ssc_public_key', key: key}, callback);
         });
 
     }
@@ -210,7 +196,22 @@ var elb = function execute(scope) {
             rejectUnauthorized: false
         });
 
-        client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', callback);
+        function waitForManta(startTime) {
+            startTime = startTime || new Date().getTime();
+            if (new Date().getTime() - startTime > 2 * 60 * 1000) {
+                callback(new Error('Time for removing elb config timed out'));
+                return;
+            }
+            client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', function (err) {
+                if (err && err.statusCode !== 404) {
+                    setTimeout(waitForManta.bind(this, startTime), 1000);
+                } else {
+                    callback();
+                }
+            });
+        }
+
+        waitForManta();
     }
 
     server.onCall('SscMachineCreate', {
@@ -253,9 +254,9 @@ var elb = function execute(scope) {
                     call.done(err);
                     return;
                 }
-                removeSscConfig(data, function (error) {
-                    if (error && error.statusCode !== 404) {
-                        call.done(error);
+                removeSscConfig(data, function (err) {
+                    if (err) {
+                        call.done(err);
                         return;
                     }
                     machine.Create(call, data, function (err, result) {
