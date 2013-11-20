@@ -54,11 +54,11 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.error(err);
             }
-            
+
             if (req.session.blockReason) {
                 Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
             }
-            
+
             res.json({message: lockMessage, success: false, navigate: true});
         });
     }
@@ -165,7 +165,8 @@ module.exports = function execute(scope, app) {
 
         req.log.info({
             generatedPin: req.session.maxmindCode,
-            enteredPin: req.params.code
+            enteredPin: req.params.code,
+            attempt: req.session.maxmindServiceFails
         }, 'User entered wrong pin');
 
         // prompt user to change phone is he is on his last pin attempt

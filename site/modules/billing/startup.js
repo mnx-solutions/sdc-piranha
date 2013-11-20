@@ -10,8 +10,8 @@ module.exports = function execute(scope, callback) {
     var options = config.zuora.rest;
     options.url = options.endpoint;
     options.log = scope.log;
-	options.password = config.zuora.password;
-	options.user = config.zuora.user;
+	  options.password = config.zuora.password;
+	  options.user = config.zuora.user;
 
     var zuora = require('zuora').create(options);
 
@@ -54,24 +54,33 @@ module.exports = function execute(scope, callback) {
     server.onCall('addPaymentMethod', function (call) {
         call.log.debug('Calling addPaymentMethod');
 
+        var serviceAttempts = call.req.session.zuoraServiceAttempt || 0;
+        call.req.session.zuoraServiceAttempt = serviceAttempts + 1;
+
         function error(err, resp, msg) {
             // changing zuoras errorCode from 401's to 500
-            if(err.statusCode === 401) {
+            if (err.statusCode === 401) {
                 err.statusCode = 500;
             }
 
-	        var logObj = {
-		        err: err
-	        };
-	        if(resp && resp.reasons) {
-		        logObj.zuoraErr = resp.reasons;
-	        }
-	        var lvl = 'error';
-	        if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
-		        || !err.statusCode) {
-				lvl = 'info';
-	        }
-	        call.log[lvl](logObj, msg || 'Failed to save to zuora');
+            var logObj = {
+                err: err
+            };
+
+            if (resp && resp.reasons) {
+                logObj.zuoraErr = resp.reasons;
+            }
+
+            var lvl = 'error';
+            logObj.attempt = call.req.session.zuoraServiceAttempt;
+
+            if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
+              || !err.statusCode) {
+                lvl = 'info';
+            }
+
+            call.log[lvl](logObj, msg || 'Failed to save to zuora');
+
             zHelpers.updateErrorList(scope, resp, function () {
                 err.zuora = err.zuora || resp;
                 call.done(err, true);
@@ -103,22 +112,29 @@ module.exports = function execute(scope, callback) {
                     }
                     MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
                         if (fraudErr) {
-                            call.log.warn(fraudErr);
+                            fraudErr.attempt = req.session.zuoraServiceAttempt;
+
+                            call.log.error(fraudErr);
                             call.done(fraudErr);
                             return;
                         }
+
                         if (result.riskScore) {
                             call.log.info('Saving user riskScore in metadata');
                             Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
                         }
+
                         if (result.block) {
                             if (result.blockReason) {
                                 Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
                             }
+
                             SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
                                 if (blockErr) {
                                     call.log.error(blockErr);
                                 }
+
+                                call.req.session.zuoraServiceAttempt = 0;
                                 call.done(null, data);
                             });
                             return;
@@ -133,6 +149,7 @@ module.exports = function execute(scope, callback) {
                                 call.log.error(err);
                             }
 
+                            call.req.session.zuoraServiceAttempt = 0;
                             call.done(null, data);
                         });
 
@@ -173,6 +190,7 @@ module.exports = function execute(scope, callback) {
                     zHelpers.deleteAllButDefaultPaymentMethods(call, function (err) {
                         //Ignoring errors
                         if (--count === 0) {
+                            call.req.session.zuoraServiceAttempt = 0;
                             call.done(null, resp);
                         }
                     });
@@ -181,6 +199,7 @@ module.exports = function execute(scope, callback) {
                     zHelpers.composeBillToContact(call, function (err, billToContact) {
                         if (err) { // Ignore errors here
                             if (--count === 0) {
+                                call.req.session.zuoraServiceAttempt = 0;
                                 call.done(null, resp);
                             }
                             return;
@@ -196,6 +215,7 @@ module.exports = function execute(scope, callback) {
                             zuora.account.update(call.req.session.userId, obj, function (err, res) {
                                 // Ignoring errors here
                                 if (--count === 0) {
+                                    call.req.session.zuoraServiceAttempt = 0;
                                     call.done(null, resp);
                                 }
                             });
@@ -203,6 +223,7 @@ module.exports = function execute(scope, callback) {
                         }
 
                         if (--count === 0) {
+                            call.req.session.zuoraServiceAttempt = 0;
                             call.done(null, resp);
                         }
                     });
