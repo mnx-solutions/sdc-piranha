@@ -68,7 +68,7 @@
             <p><br/><b>Set environment</b></p>
             <div data-ng-show="sshKeys.length>1" class="code">
                 <label for="keySel">You have multiple keys, please select the one you want to use:</label>
-                <select id="keySel" data-ng-model="keyId" ui-select2="{ width: auto}" value="{{keyName}}"
+                <select id="keySel" data-ng-model="keyId" ui-select2="{ width: 200px}" value="{{keyName}}"
                         ng-options="c.fingerprint as c.name for c in sshKeys">
                     <option ng-repeat="c.fingerprint as c.name for c in sshKeys" value="{{keyName}}">{{keyName}}</option>
                 </select>
