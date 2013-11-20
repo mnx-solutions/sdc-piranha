@@ -176,8 +176,22 @@ var elb = function execute(scope) {
     }
 
     function addSscKey(call, key, callback) {
+        function waitForKey(callback, startTime) {
+            startTime = startTime || new Date().getTime();
+            if (new Date().getTime() - startTime > 2 * 60 * 1000) {
+                callback(new Error('Time for waiting adding public key timed out'));
+                return;
+            }
+            call.cloud.getKey({name: 'ssc_public_key'}, function (err) {
+                if (err) {
+                    setTimeout(waitForKey.bind(this, callback, startTime), 1000);
+                } else {
+                    callback(null);
+                }
+            });
+        }
         call.cloud.deleteKey({name: 'ssc_public_key'}, function () {
-            call.cloud.createKey({name: 'ssc_public_key', key: key}, callback);
+            call.cloud.createKey({name: 'ssc_public_key', key: key}, waitForKey.bind(this, callback));
         });
 
     }
