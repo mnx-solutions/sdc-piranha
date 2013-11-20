@@ -26,12 +26,10 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                 localization.bind('dashboard', $scope);
 
                 function updateItems() {
-                    $scope.navigationPath = route.resolveNavigation();
+                    $scope.navigationPath = route.resolveNavigation($routeParams);
+
                     $scope.navigationPath.forEach(function (item) {
                         item.path = $scope.resolveLink(item.path);
-                    });
-                    $scope.navigationPath = $scope.navigationPath.filter(function (item) {
-                        return item.path;
                     });
                 }
 
@@ -42,9 +40,7 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                         var key = keys[i];
                         path = path.replace(':' + key, $routeParams[key]);
                     }
-                    if (path.indexOf(':') !== -1) {
-                        return false;
-                    }
+
                     return path;
                 };
 
