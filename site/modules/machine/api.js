@@ -1,6 +1,5 @@
 'use strict';
 
-var ursa = require('ursa');
 var config = require('easy-config');
 
 module.exports = function execute(scope, register) {
@@ -8,18 +7,6 @@ module.exports = function execute(scope, register) {
     var utils = scope.get('utils');
 
     var api = {};
-
-    var Metadata = scope.api('Metadata');
-
-    function createKeyPairs() {
-        var kp = ursa.generatePrivateKey();
-        return {
-            privateKey: kp.toPrivatePem('utf8'),
-            publicKey: kp.toPublicPem('utf8'),
-            publicSsh: 'ssh-rsa ' + kp.toPublicSsh('base64') + ' piranha@portal',
-            fingerprint: kp.toPublicSshFingerprint('hex').replace(/(.{2})/g, '$1:').slice(0,-1)
-        };
-    }
 
     function filterFields(machine) {
         [ 'user-script', 'ufds_ldap_root_dn', 'ufds_ldap_root_pw' ].forEach(function (f) {
@@ -88,8 +75,8 @@ module.exports = function execute(scope, register) {
      * @param {String} [type=Machine] - type we are polling, defaults to machine
      * @param {Function} callback
      */
-    function pollForObjectStateChange(client, call, prop, expect, timeout, type, callback) {
-        var objectId = typeof call.data === 'object' ? call.data.uuid : call.data;
+    function pollForObjectStateChange(client, call, prop, expect, timeout, type, objectId, callback) {
+        objectId = objectId || (typeof call.data === 'object' ? call.data.uuid : call.data);
 
         timeout = timeout || 5 * 60 * 1000;
         type = type || 'Machine';
@@ -147,60 +134,16 @@ module.exports = function execute(scope, register) {
         });
     }
 
-
-    function updateUserMetadata(call, metadata) {
-        Metadata.set(call.req.session.userId, 'portal_private_key', metadata.portal_private_key);
-        Metadata.set(call.req.session.userId, 'portal_fingerprint', metadata.portal_fingerprint);
-
-        call.cloud.createKey({name: 'ssc_public_key', key: metadata.ssc_public_key}, function (err, resp) {
-            call.log.warn(err);
-        });
-    }
-
     api.Create = function (call, options, callback) {
-        if (options.elbController) {
-            var sscKeyPair = createKeyPairs();
-            var portalKeyPair = createKeyPairs();
-            var metadata = {
-                ssc_private_key: sscKeyPair.privateKey,
-                ssc_public_key: sscKeyPair.publicSsh,
-                portal_public_key: (new Buffer(portalKeyPair.publicSsh).toString('base64')),
-                account_name: config.elb.account || call.req.session.userName,
-                datacenter_name: call.data.datacenter,
-                elb_code_url: config.elb.elb_code_url,
-                sdc_url: config.elb.sdc_url || "https://us-west-1.api.joyentcloud.com"
-            };
-
-            if (config.elb.ssc_private_key) {
-                metadata.ssc_private_key = config.elb.ssc_private_key;
-                metadata.ssc_public_key = config.elb.ssc_public_key;
-            }
-
-            for (var key in metadata) {
-                if (metadata.hasOwnProperty(key)) {
-                    options['metadata.' + key] = metadata[key];
-                }
-            }
-
-            options['tag.lbaas'] = 'ssc';
-        }
-
         call.log.info({options: options}, 'Creating machine %s', options.name);
-        call.getImmediate(false);
 
         var cloud = call.cloud.separate(options.datacenter);
+
         cloud.createMachine(options, function (err, machine) {
             if (!err) {
                 call.immediate(null, {machine: machine});
-                call.data.uuid = machine.id;
-
                 // poll for machine status to get running (provisioning)
-                pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, callback);
-                if (options.elbController) {
-                    metadata.portal_private_key = portalKeyPair.privateKey;
-                    metadata.portal_fingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
-                    updateUserMetadata(call, metadata);
-                }
+                pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
                 call.log.error(err);
                 call.immediate(err);
@@ -210,10 +153,10 @@ module.exports = function execute(scope, register) {
 
     api.Rename = function (call, options, callback) {
         var cloud = call.cloud.separate(options.datacenter);
-        cloud.renameMachine(options.uuid, options, function(err) {
-            if(!err) {
+        cloud.renameMachine(options.uuid, options, function (err) {
+            if (!err) {
                 // poll for machine name change (rename)
-                pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), null, callback);
+                pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), null, options.uuid, callback);
             } else {
                 call.log.error(err);
                 call.done(err);
@@ -227,7 +170,7 @@ module.exports = function execute(scope, register) {
         cloud.resizeMachine(options.uuid, options, function (err) {
             if (!err) {
                 // poll for machine package change (resize)
-                pollForObjectStateChange(cloud, call, 'package', options.package, null, null, callback);
+                pollForObjectStateChange(cloud, call, 'package', options.package, null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
                 call.error(err);
@@ -240,7 +183,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.startMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
                 call.error(err);
@@ -253,7 +196,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.stopMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'stopped', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
                 call.error(err);
@@ -266,7 +209,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.deleteMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'deleted', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
                 call.error(err);
@@ -279,7 +222,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud.separate(options.datacenter);
         cloud.rebootMachine(options.uuid, function (err) {
             if (!err) {
-                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, callback);
+                pollForObjectStateChange(cloud, call, 'state', 'running', null, null, options.uuid, callback);
             } else {
                 call.log.error(err);
                 call.error(err);
@@ -351,10 +294,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud.separate(options.datacenter);
         call.cloud.deleteImage(options.imageId, function (err) {
             if (!err) {
-                call.data.uuid = options.imageId;
-                // TODO: enable poller back
-
-                pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', callback);
+                pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
             } else {
                 call.log.error(err);
                 callback(err);
@@ -369,9 +309,7 @@ module.exports = function execute(scope, register) {
         var cloud = call.cloud.separate(options.datacenter);
         call.cloud.createImageFromMachine(options, function(err, image) {
             if (!err) {
-                call.data.uuid = image.id;
-                // TODO: enable poller back
-                pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', callback);
+                pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
             } else {
                 call.log.error(err);
                 callback(err);
