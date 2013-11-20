@@ -1,16 +1,24 @@
 package pageobjects;
 
+import static com.codeborne.selenide.Condition.empty;
+import static com.codeborne.selenide.Condition.hasText;
+import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byAttribute;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.$;
+
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.By.ByName;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import util.Common;
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.*;
-
+/**
+ * "My Account" and its child pages page object. Holds methods to interact with
+ * given pages.
+ * 
+ */
 public class AccountPage {
 	public void openSummaryTab() {
 		$(".nav-tabs").$(byText("Summary")).click();
@@ -35,6 +43,20 @@ public class AccountPage {
 		Common.checkSubHeadingText("SSH Public Keys");
 	}
 
+	/**
+	 * Validates the info in "Profile Summary" section.
+	 * 
+	 * @param name
+	 *            - name of the user
+	 * @param username
+	 *            - username
+	 * @param email
+	 *            - email of the user
+	 * @param phone
+	 *            - phone of the user
+	 * @param company
+	 *            - company of the user
+	 */
 	public void validateProfileSummary(String name, String username,
 			String email, String phone, String company) {
 		SelenideElement holder = $(".account").$("fieldset", 0);
@@ -46,6 +68,18 @@ public class AccountPage {
 		holder.should(matchText("Company " + company));
 	}
 
+	/**
+	 * Validates the info in "Billing info" section.
+	 * 
+	 * @param name
+	 *            - name of the user
+	 * @param cardType
+	 *            - billing card type
+	 * @param cardNo
+	 *            - card number
+	 * @param exp
+	 *            - expiration date of the card
+	 */
 	public void validateBillingInfo(String name, String cardType,
 			String cardNo, String exp) {
 		SelenideElement holder = $(".account").$("fieldset", 1);
@@ -56,12 +90,23 @@ public class AccountPage {
 		holder.should(matchText("Exp. Date: " + exp));
 	}
 
+	/**
+	 * Basic validation of the SSH keys section.
+	 */
 	public void validateSshSummary() {
 		SelenideElement holder = $(".account").$("fieldset", 2);
 		holder.$(".item-list-container-header").shouldHave(
 				text("Key Name / UUID"));
 	}
 
+	/**
+	 * Method for adding a public key.
+	 * 
+	 * @param keyName
+	 *            - the displayed name of the key
+	 * @param key
+	 *            - key as a string
+	 */
 	public void importSshPublicKey(String keyName, String key) {
 		$(byText("Import Public Key")).click();
 		$(".modal-header h1").shouldHave(text("Import SSH Public Key"));
@@ -70,7 +115,12 @@ public class AccountPage {
 		$(".modal-footer").$(byText("Add")).click();
 	}
 
-	public void deleteSshPublicKey(String keyName, String sshKey) {
+	/**
+	 * Method for deleting a key under "SSH keys" tab.
+	 * 
+	 * @param keyName
+	 */
+	public void deleteSshPublicKey(String keyName) {
 		SelenideElement holder = $(".ssh div.span9 div.row-fluid");
 		SelenideElement el = getSshKeyRow(keyName, holder);
 		el.$("span.title").click();
@@ -78,14 +128,28 @@ public class AccountPage {
 		Common.confirmModal();
 	}
 
+	/**
+	 * Method for validating key and key name info under My Account SSK Public
+	 * Keys section.
+	 * 
+	 * @param keyName
+	 * @param sshKey
+	 */
 	public void validateSshKey(String keyName, String sshKey) {
 		SelenideElement holder = $(".account").$("fieldset", 2);
 		SelenideElement el = getSshKeyRow(keyName, holder);
-		el.$(".item-list-container-header").click();
+		el.$(".item").click();
 		el.$(".row-fluid", 1).$(".value").should(hasText(sshKey));
-		el.$(".item-list-container-header").click();
+		el.$(".item").click();
 	}
 
+	/**
+	 * Method for validating key and key name info under My Account SSK Keys
+	 * sub-page.
+	 * 
+	 * @param keyName
+	 * @param sshKey
+	 */
 	public void validateSshKeyOnSshKeysPage(String keyName, String sshKey) {
 		SelenideElement holder = $(".ssh div.span9 div.row-fluid");
 		SelenideElement el = getSshKeyRow(keyName, holder);
@@ -94,6 +158,14 @@ public class AccountPage {
 		el.$("span.title").click();
 	}
 
+	/**
+	 * Method for getting the desired row of the ssh keys table.
+	 * 
+	 * @param keyName
+	 * @param holder
+	 *            holder of the item-list-container table
+	 * @return SelenideElement of the row in given container
+	 */
 	public SelenideElement getSshKeyRow(String keyName, SelenideElement holder) {
 		holder.waitUntil(matchText("(.*)" + keyName + "(.*)"), 120000);
 		ElementsCollection c = holder.$(".item-list-container").$$(
@@ -105,6 +177,8 @@ public class AccountPage {
 		}
 		throw new NoSuchElementException("Such element doesn't exist");
 	}
+
+	// Getters and Setters of Edit Account subpage.
 
 	public void setAccountEmail(String email) {
 		$("#email").shouldNotBe(empty);
@@ -128,7 +202,6 @@ public class AccountPage {
 
 	public void setAccountPhone(String country, String number) {
 		$("#countryCode").selectOption(country);
-		$("#phone").shouldNotBe(empty);
 		$("#phone").setValue(number);
 	}
 
@@ -161,6 +234,8 @@ public class AccountPage {
 	public void saveAccountChanges() {
 		$(byText("Save changes")).click();
 	}
+
+	// Getters and Setters of Billing subpage.
 
 	public void selectBillingContactInfoCheckbox() {
 		if (!$("#useExisting").isSelected()) {
@@ -200,13 +275,11 @@ public class AccountPage {
 
 	public void setBillingAddressLine1(String adr) {
 		$("#addressLine1").clear();
-		$("#addressLine1").shouldBe(empty);
 		$("#addressLine1").setValue(adr);
 	}
 
 	public void setBillingAddressLine2(String adr) {
 		$("#addressLine2").clear();
-		$("#addressLine2").shouldBe(empty);
 		$("#addressLine2").setValue(adr);
 	}
 
@@ -216,25 +289,21 @@ public class AccountPage {
 
 	public void setBillingAddressCity(String city) {
 		$("#city").clear();
-		$("#city").shouldBe(empty);
 		$("#city").setValue(city);
 	}
 
 	public void setBillingAddressState(String state) {
 		$("#state").clear();
-		$("#state").shouldBe(empty);
 		$("#state").setValue(state);
 	}
 
 	public void setBillingAddressZip(String zip) {
 		$("#zipCode").clear();
-		$("#zipCode").shouldBe(empty);
 		$("#zipCode").setValue(zip);
 	}
 
 	public void setCreditCardNumber(String number) {
 		$("#creditCardNumber").clear();
-		$("#creditCardNumber").shouldBe(empty);
 		$("#creditCardNumber").setValue(number);
 	}
 
@@ -245,19 +314,16 @@ public class AccountPage {
 
 	public void setCreditCardCcV(String ccv) {
 		$("#securityCode").clear();
-		$("#securityCode").shouldBe(empty);
 		$("#securityCode").setValue(ccv);
 	}
 
 	public void setCreditCardFirstName(String name) {
 		$("#firstName").clear();
-		$("#firstName").shouldBe(empty);
 		$("#firstName").setValue(name);
 	}
 
 	public void setCreditCardLastName(String name) {
 		$("#lastName").clear();
-		$("#lastName").shouldBe(empty);
 		$("#lastName").setValue(name);
 	}
 }

@@ -33,7 +33,8 @@ public class PackagePrice {
 	@Override
 	public String toString() {
 		return "PackagePrice [name=" + name + ", price=" + price
-				+ ", priceMonth=" + priceMonth + "]";
+				+ ", priceMonth=" + priceMonth + ", short_name=" + short_name
+				+ "]";
 	}
 
 	public PackagePrice(String name, String price, String priceMonth,

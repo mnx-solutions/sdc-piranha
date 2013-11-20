@@ -1,41 +1,29 @@
 package test;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.disappears;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestName;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
-import com.saucelabs.common.SauceOnDemandSessionIdProvider;
-import com.saucelabs.junit.SauceOnDemandTestWatcher;
-
-import data.CreateInstanceObject;
+import pageobjects.Common;
 import pageobjects.CreateInstanceCarousel;
 import pageobjects.InstanceList;
 import pageobjects.InstancePage;
-import util.Common;
-import util.SauceAuthentication;
+import util.TestWrapper;
+import data.CreateInstanceObject;
 
-public class InstanceManipulationTests implements
-		SauceOnDemandSessionIdProvider {
-	private static final String BASE_URL = System.getProperty("endpoint");
-	private static final int BASE_TIMEOUT = Integer.parseInt(System
-			.getProperty("globaltimeout", "15000"));
-	private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System
-			.getProperty("statustimeout", "240000"));
+public class InstanceManipulationTests extends TestWrapper {
 
 	private static InstanceList instanceList;
 	private InstancePage instancePage;
@@ -46,29 +34,8 @@ public class InstanceManipulationTests implements
 	private static CreateInstanceObject i2 = new CreateInstanceObject(
 			"selenide-created-instance-b", "13.2.0", "base", null, null,
 			"Standard 0.25", null, "0.008", "5.84");
-
-	// Sauce test watcher start
-
-	SauceAuthentication sa = new SauceAuthentication();
-	private static WebDriver driver = getWebDriver();
-	private static String sessionId;
-	public @Rule
-	TestName testName = new TestName();
-	public @Rule
-	SauceOnDemandTestWatcher resultReportingTestWatcher = new SauceOnDemandTestWatcher(
-			this, sa.getAuthentication());
-
-	@Override
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	@Before
-	public void setSessionId() {
-		sessionId = ((RemoteWebDriver) driver).getSessionId().toString();
-	}
-
-	// Sauce test watcher end
+	private static String dc1 = "us-east-1";
+	private static String dc2 = "us-west-1";
 
 	@BeforeClass
 	public static void openDashboard() {
@@ -103,11 +70,22 @@ public class InstanceManipulationTests implements
 			Common.errorNotPresent();
 			instanceList.deleteInstance(i2.getImageName());
 			Common.errorNotPresent();
-			$(byText(i1.getImageName())).shouldNot(exist);
-			$(byText(i2.getImageName())).shouldNot(exist);
+			$(byText(i1.getImageName())).waitUntil(disappears,
+					CHANGE_STATUS_TIMEOUT);
+			$(byText(i2.getImageName())).waitUntil(disappears,
+					CHANGE_STATUS_TIMEOUT);
 		} finally {
 			open("/landing/forgetToken");
 		}
+	}
+
+	@Test
+	public void validateMachinePageInfo() {
+		Common.clickNavigationLink("Compute");
+		$(byText(i1.getImageName())).click();
+		instancePage = page(InstancePage.class);
+		instancePage.validateInstanceSpecs("smartmachine", i1.getImageName(),
+				i1.getImageOs(), i1.getImageVersion(), "", "", "", "", "", "");
 	}
 
 	@Test
@@ -206,6 +184,7 @@ public class InstanceManipulationTests implements
 		Common.clickNavigationLink("Compute");
 		$(byText(i1.getImageName())).shouldBe(visible);
 		$(byText(i2.getImageName())).waitUntil(visible, CHANGE_STATUS_TIMEOUT);
+		instanceList = page(InstanceList.class);
 		instanceList.checkInstanceStatus("Running", i1.getImageName());
 		instanceList.checkInstanceStatus("Stopped", i2.getImageName());
 		instanceList.toggleInstanceControl(i2.getImageName());
@@ -227,9 +206,9 @@ public class InstanceManipulationTests implements
 		String i2Name = i2.getImageName();
 		$(byText("Create Instance")).click();
 		Common.checkHeadingText("Create Instance");
-		i1Name = CreateInstanceCarousel.createIsntance(i1);
+		i1Name = CreateInstanceCarousel.createIsntance(i1, dc1);
 		$(byText("Create Instance")).click();
-		i2Name = CreateInstanceCarousel.createIsntance(i2);
+		i2Name = CreateInstanceCarousel.createIsntance(i2, dc2);
 		i1.setImageName(i1Name);
 		i2.setImageName(i2Name);
 		instanceList = page(InstanceList.class);

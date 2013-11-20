@@ -18,10 +18,10 @@ public class SauceFirefoxDriver implements WebDriverProvider {
 		try {
 			DesiredCapabilities capabillities = DesiredCapabilities.firefox();
 			capabillities.setCapability("platform", "Windows 7");
-			capabillities.setCapability("name", "Sauce Firefox 22 Tests");
-			return new RemoteWebDriver(new URL("http://" + auth.getUsername() + ":"
-					+ auth.getToken()
-					+ "@ondemand.saucelabs.com:80/wd/hub"),capabillities);
+			capabillities.setCapability("name", "Sauce Firefox Tests");
+			return new RemoteWebDriver(new URL("http://" + auth.getUsername()
+					+ ":" + auth.getToken()
+					+ "@ondemand.saucelabs.com:80/wd/hub"), capabillities);
 		} catch (MalformedURLException e) {
 			throw new IllegalArgumentException(
 					"Authentication to Sauce failed: ", e);

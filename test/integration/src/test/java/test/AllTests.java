@@ -5,8 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ SmokeTests.class, InstanceManipulationTests.class,
-		AccountPageTests.class })
+@SuiteClasses({ InstanceManipulationTests.class,
+		AccountPageTests.class, ImageListTests.class })
 public class AllTests {
 
 }

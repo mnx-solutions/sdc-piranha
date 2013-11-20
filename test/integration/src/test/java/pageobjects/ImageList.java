@@ -1,15 +1,17 @@
 package pageobjects;
 
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selenide.$$;
+
 import org.openqa.selenium.NoSuchElementException;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
-import util.Common;
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.*;
-
+/**
+ * ImageList page object. Holds methods to interact with given pages.
+ * 
+ */
 public class ImageList {
 
 	public SelenideElement getImageByName(String name, String version) {

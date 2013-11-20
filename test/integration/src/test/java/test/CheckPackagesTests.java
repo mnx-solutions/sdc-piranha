@@ -6,19 +6,18 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
-import static com.codeborne.selenide.Selenide.sleep;
 
 import org.junit.After;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.experimental.theories.Theory;
 import org.junit.experimental.theories.DataPoints;
 import org.junit.experimental.theories.Theories;
+import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
 
+import pageobjects.Common;
 import pageobjects.CreateInstanceCarousel;
-import util.Common;
-import data.*;
+import data.CreateInstanceObject;
+import data.GenerateInstanceObjects;
 
 @RunWith(Theories.class)
 public class CheckPackagesTests {
@@ -49,12 +48,10 @@ public class CheckPackagesTests {
 
 	@Theory
 	public void openCreateInstanceView(CreateInstanceObject cio) {
-		String dataCenter = "us-west-1";
 		Common.checkHeadingText("Create Instance");
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
 		createInstanceCarousel.waitUntilPageIsActive(0);
-		// createInstanceCarousel.selectZoneFilter(dataCenter);
-		createInstanceCarousel.selectOsVersion(cio.getImageName(),
+		createInstanceCarousel.setOsVersion(cio.getImageName(),
 				cio.getImageVersion());
 		createInstanceCarousel.selectOsImage(cio.getImageName());
 		createInstanceCarousel.waitUntilPageIsActive(1);
@@ -62,6 +59,6 @@ public class CheckPackagesTests {
 		createInstanceCarousel.checkPaymentInfo(cio.getPrice(),
 				cio.getPriceMonth());
 		createInstanceCarousel
-				.checkSelectedImageText(cio.getImageDescription());
+				.checkSelectedImageDescription(cio.getImageDescription());
 	}
 }

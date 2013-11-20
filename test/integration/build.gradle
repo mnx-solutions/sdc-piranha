@@ -13,7 +13,6 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.+'
     testCompile 'com.codeborne:selenide:2.4'
     testCompile 'com.saucelabs:sauce_junit:1.0.13'
-    testCompile 'org.seleniumhq.selenium:selenium-safari-driver:2.35.0'
     testCompile 'com.google.code.gson:gson:2.2.4'
     testCompile 'org.apache.commons:commons-lang3:3.0'
 }
@@ -21,7 +20,7 @@ dependencies {
 tasks.withType(Test) {
 	systemProperties = System.getProperties()
     systemProperties loadConf()
-    def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['staging'])
+    def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['endpoint'])
     systemProperties['endpoint'] = appEndpoint
 	systemProperties['file.encoding'] = 'UTF-8'
 	reports.html.enabled false
