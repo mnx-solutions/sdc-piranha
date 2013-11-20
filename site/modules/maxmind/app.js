@@ -76,12 +76,16 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.warn({error: err}, 'Error occurred while setting phone verification status');
             }
+
+            req.session.maxmindServiceFails = 0;
+
             SignupProgress.setMinProgress(req, 'phone', function(err) {
                 if(err) {
                     req.log.error(err);
                     res.json({message: 'Internal error', success: false});
                     return;
                 }
+
                 res.json({message: 'Phone verification successful', success: true, navigate: true});
             });
         });
@@ -134,8 +138,10 @@ module.exports = function execute(scope, app) {
             if (data.indexOf('refid=') === 0) {
                 req.session.attemptId = data.substr(6);
             }
+
             req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
+          
             res.json({message: serviceMessages.calling, success: true});
         });
     });
