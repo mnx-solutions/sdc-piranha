@@ -114,7 +114,7 @@
                         }
                         var datacenters = job.__read();
                         datacenters.forEach(function (datacenter) {
-                            machines = machines.concat(datacenter.machines);
+                            machines = machines.concat(datacenter.machines || []);
                         });
                     },
                     done: function machineDone(err, job) {
