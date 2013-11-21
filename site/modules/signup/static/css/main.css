@@ -63,7 +63,7 @@
 	/*color:#375775;*/
 /*}*/
 .signup-progress-container {
-    width: 1015px;
+    width: 1005px;
 }
 /*h1 {*/
 	/*font-weight:normal;*/
@@ -217,7 +217,7 @@ body{
     line-height: 24px;
     letter-spacing: 0.03px;
     width: 715px;
-    padding-top: 20px;
+    /*padding-top: 20px;*/
     /*float: left;*/
     clear: both;
 }
@@ -379,33 +379,36 @@ body{
     padding-top: 1px;
 }
 .wizard-steps {
-    width: 730px;
+    width: 1005px;
+    position: relative;
     clear: both;
+    /*margin-top: 11px;*/
     display: inline-block;
-    float: left;
+    overflow: hidden;
 }
 .wizard-steps div {
     position:relative;
+    display: inline-block;
 }
 .wizard-steps p {
-    position:relative;
-    display:block;
-    width:auto;
-    height: 33px;
-    margin-right: 20px;
-    padding:0 3px 0 10px;
+    position: relative;
+    display: block;
+    height: 34px;
+    margin-right: 17px;
+    padding: 0 3px 0 10px;
     float: left;
-    font-size:16px;
-    line-height:33px;
-    color:#333333;
+    font-size: 16px;
+    line-height: 34px;
+    color: #333;
     background: #ededed;
-    text-decoration:none;
+    text-decoration: none;
+    font-weight: 300;
 }
 .wizard-steps p:before {
     width:0;
     height:0;
     border-top: 17px solid #ededed;
-    border-bottom: 16px solid #ededed;
+    border-bottom: 17px solid #ededed;
     border-left:17px solid transparent;
     position: absolute;
     content: "";
@@ -416,7 +419,7 @@ body{
     width: 0;
     height: 0;
     border-top: 17px solid transparent;
-    border-bottom: 16px solid transparent;
+    border-bottom: 17px solid transparent;
     border-left:17px solid #ededed;
     position: absolute;
     content: "";
@@ -424,48 +427,43 @@ body{
     right: -17px;
 }
 .wizard-steps p.laststep{
-    width: 249px;
+    width: 3000%;
 }
 .wizard-steps p.laststep:after{
     background-color: #ededed;
-    background-size: 200px 33px;
+    backgroun-size: 200px 34px;
 }
 
 .wizard-steps .active-step p {
     color:white;
     background: #3d3d3d;
+    font-weight: 300;
     /*padding-left: 10px;*/
 }
 .wizard-steps .active-step p:before {
     border-top: 17px solid #3d3d3d;
-    border-bottom: 16px solid #3d3d3d;
-    /*border-right: 17px;*/
-    /*border-left: 17px;*/
+    border-bottom: 17px solid #3d3d3d;
+
+}
+.wizard-steps .firststep.active-step p:before{
+    border-right: 17px;
+    border-left: 17px;
 }
 .wizard-steps .active-step p:after {
     border-left: 17px solid #3d3d3d;
 }
-.wizard-steps p.firststep:before{
+
+.wizard-steps .firststep p:before{
     width:0;
     height:0;
     position: absolute;
     content: "";
     top: 0;
     left: -17px;
-    border: 0;
+    /*border: 0;*/
+    border-bottom: 0;
+    border-top: 0;
 }
-.line-st1{
-    width: 723px;
-    border-bottom: 1px solid #9e9e9e;
-    padding-top: 20px;
-    margin-bottom: -12px;
-}
-/*.line_billing{*/
-    /*width: 723px;*/
-    /*border-bottom: 1px solid #9e9e9e;*/
-    /*padding-top: 20px;*/
-    /*margin-bottom: 11px;*/
-/*}*/
 .position_ca{
     padding-top: 30px;
 }
@@ -551,7 +549,7 @@ body{
 /*}*/
 .content-container-signup-billing, content-container-ssh{
     margin-top: 11px;
-    margin-left: 9px;
+    /*margin-left: 9px;*/
     line-height: 21px;
 }
 legend {
