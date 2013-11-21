@@ -44,8 +44,7 @@
                     $scope.server = server;
                     $scope.protocolSelect(server.protocol);
 
-                    //TODO: We should list machines from current/all DCs
-                    $scope.machines = machines[0].machines.map(function (machine) {
+                    $scope.machines = machines.map(function (machine) {
                         if (elbMachines.indexOf(machine.primaryIp) !== -1) {
                             machine.selected = true;
                         }

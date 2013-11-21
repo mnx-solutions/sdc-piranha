@@ -112,7 +112,10 @@
                             d.reject(err);
                             return;
                         }
-                        machines = machines.concat(job.__read());
+                        var datacenters = job.__read();
+                        datacenters.forEach(function (datacenter) {
+                            machines = machines.concat(datacenter.machines);
+                        });
                     },
                     done: function machineDone(err, job) {
                         d.resolve(machines);
