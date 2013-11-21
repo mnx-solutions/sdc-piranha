@@ -146,6 +146,14 @@
                         }
                     );
                 };
+
+                $scope.selectCheckboxElb = function (id) {
+                    $scope.machines.forEach(function (el) {
+                        if (el.id == id) {
+                            el.checked = (el.checked) ? false : true;
+                        }
+                    });
+                };
             }]
     );
 }(window.JP.getModule('elb')));

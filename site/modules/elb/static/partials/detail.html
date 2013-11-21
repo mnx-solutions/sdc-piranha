@@ -1,4 +1,4 @@
-<div class="container" data-ng-controller="elb.DetailController">
+<div class="container container-elb" data-ng-controller="elb.DetailController">
     <ul class="breadcrumb">
         <li class="ng-scope">
             <a href="#!/elb" class="ng-binding">
@@ -11,16 +11,16 @@
         </li>
     </ul>
 
-    <div class="page-header">
+    <!--<div class="page-header">-->
         <h3 class="page-title" data-ng-show="detailLoaded" data-translate>Load Balancer: {{server.name}}:
             {{server.host}}</h3>
 
-        <div class="clearfix"></div>
-    </div>
+        <!--<div class="clearfix"></div>-->
+    <!--</div>-->
     <div class="loading-large" data-ng-hide="detailLoaded"></div>
 
     <div class="row-fluid lb-edit" data-ng-show="detailLoaded">
-        <div class="span12">
+        <div class="span12 edit-info-bar">
             <div class="span3">
                 <span class="lb-label" data-translate>Protocol: </span>
                 <span><b class="eula-space">{{server.protocol | uppercase}}</b></span>
