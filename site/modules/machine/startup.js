@@ -55,7 +55,9 @@ module.exports = function execute(scope) {
     info.images.pointer.__startWatch();
 
     server.onCall('MachineList', function (call) {
-        machine.List(call, call.done);
+        machine.List(call, function () {
+            call.done();
+        });
     });
 
     /* listPackages */
