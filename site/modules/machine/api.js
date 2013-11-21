@@ -135,7 +135,9 @@ module.exports = function execute(scope, register) {
     }
 
     api.Create = function (call, options, callback) {
-        call.getImmediate();
+        if (call.getImmediate) {
+            call.getImmediate();
+        }
         call.log.info({options: options}, 'Creating machine %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
