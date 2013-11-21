@@ -352,6 +352,7 @@
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.reloading = true;
+                    $scope.networks = [];
                     var count = 2;
 
                     Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
@@ -397,10 +398,16 @@
                     });
 
                     Network.network(newVal).then(function(networks) {
-                        $scope.networks = networks;
+                        if(newVal === $scope.data.datacenter) {
+                            $scope.networks = networks;
+                        }
                     });
 
                     Package.package({ datacenter: newVal }).then(function (packages) {
+                        if(newVal !== $scope.data.datacenter) {
+                            return;
+                        }
+
                         var packageTypes = [];
                         packages.forEach(function (p) {
                             if (packageTypes.indexOf(p.group) === -1){
