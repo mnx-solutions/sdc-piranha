@@ -572,7 +572,7 @@
                                             </div>
                                         </td>
                                         <td style="vertical-align: top;">
-                                            <form name="provisionForm">
+                                            <form name="provisionForm" id="provision-form">
                                                 <div class="selected-package-box-3">
                                                     <p class="title-box-3">OPTIONAL SETTINGS:</p>
                                                     <span><h2>Name Instance</h2><p> (Optional)</p></span>
@@ -582,13 +582,13 @@
                                                            data-machine-name
                                                            data-machine-unique
                                                            class="instance-name-input"/>
-                                                <div class="error"
+                                                <div class="error alert-icon"
                                                     data-ng-show="provisionForm.machineName.$error.machineName"
                                                     data-translate>
                                                     Invalid machine name
                                                 </div>
 
-                                                <div class="error"
+                                                <div class="error alert-icon"
                                                      data-ng-show="provisionForm.machineName.$error.machineUnique"
                                                      data-translate>
                                                     Machine name is already in use

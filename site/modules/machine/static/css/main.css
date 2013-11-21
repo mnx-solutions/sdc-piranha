@@ -3,6 +3,23 @@
     color: red;
 }
 
+#provision-form .error{
+    color: #FF6600;
+    padding: 5px 0;
+}
+
+.error span {
+    margin-left: 20px;
+    vertical-align: middle;
+}
+
+.alert-icon{
+    background-image: url("../../../account/static/img/alert-icon.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    font-weight: normal;
+}
+
 .machines button.create-instance {
     margin-bottom: 20px;
     width: 100%;
