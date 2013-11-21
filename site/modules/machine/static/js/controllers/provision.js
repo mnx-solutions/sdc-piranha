@@ -184,6 +184,7 @@
 
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
+                ng.element('.carousel').carousel('prev');
             };
 
             function getNr(el) {
@@ -449,8 +450,12 @@
             ng.element('#provisionCarousel').bind({
                 slide: function() {
                     $scope.reConfigurable = !$scope.reConfigurable;
+                },
+                slid: function() {
                     if($scope.reConfigurable) {
-                        $scope.showReConfigure = true;
+                        $scope.$apply(function(){
+                            $scope.showReConfigure = true;
+                        });
                     }
                 }
             });
@@ -458,7 +463,6 @@
 
             $scope.slideCarousel = function() {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
-
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
             };
