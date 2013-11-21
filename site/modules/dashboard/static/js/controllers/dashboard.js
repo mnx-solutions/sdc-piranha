@@ -15,9 +15,8 @@
         'BillingService',
         '$http',
         '$cookies',
-        'notification',
 
-        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, notification) {
+        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -65,7 +64,6 @@
             $scope.$watch('machines', function (machines) {
                 var runningcount = 0;
                 var othercount = 0;
-                var maintenanceFlag = false;
 
                 machines.forEach(function (machine) {
                     if (machine.state === 'running') {
@@ -73,16 +71,8 @@
                     } else {
                         othercount += 1;
                     }
-
-                    if(machine.maintenanceStartTime && !machine.compute_node) {
-                        maintenanceFlag = true;
-                    }
                 });
 
-
-                if(maintenanceFlag) {
-                    notification.push('maintenance', {type: 'warning', group: 'maintenance'}, 'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details.<br>Please contact support if you have any questions or concerns.');
-                }
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
             }, true);
