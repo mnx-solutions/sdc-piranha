@@ -4,6 +4,7 @@
     app.controller('Machine.ProvisionController', ['$scope',
         '$filter',
         'requestContext',
+        '$timeout',
         'Machine',
         'Dataset',
         'Datacenter',
@@ -18,7 +19,7 @@
         '$$track',
         'util',
 
-        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -184,6 +185,7 @@
 
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
+                ng.element('.carousel').carousel('prev');
             };
 
             function getNr(el) {
@@ -457,7 +459,9 @@
                 slide: function() {
                     $scope.reConfigurable = !$scope.reConfigurable;
                     if($scope.reConfigurable) {
-                        $scope.showReConfigure = true;
+                        $timeout(function(){
+                            $scope.showReConfigure = true;
+                        }, 600);
                     }
                 }
             });
@@ -465,7 +469,6 @@
 
             $scope.slideCarousel = function() {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
-
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
             };
