@@ -547,7 +547,9 @@ select option{
         padding: 3px 0 0 10px;
     }
 }
-
+select::-ms-expand {
+    display: none;
+}
 .input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
     width: 50px;
     border-radius: 0;

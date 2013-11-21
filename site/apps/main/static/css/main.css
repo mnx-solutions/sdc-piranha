@@ -1318,3 +1318,6 @@ select option{
         padding: 3px 0 0 10px;
     }
 }
+select::-ms-expand {
+    display: none;
+}
