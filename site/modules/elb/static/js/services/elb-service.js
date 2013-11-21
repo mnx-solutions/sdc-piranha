@@ -104,7 +104,7 @@
 
             service.getMachines = function getMachines() {
                 var d = $q.defer();
-                var machines = [];
+                var machinesMap = {};
                 serverTab.call({
                     name: 'MachineList',
                     progress: function machineProgress(err, job) {
@@ -114,11 +114,17 @@
                         }
                         var datacenters = job.__read();
                         datacenters.forEach(function (datacenter) {
-                            machines = machines.concat(datacenter.machines || []);
+                            (datacenter.machines || []).forEach(function (machine) {
+                                machinesMap[machine.id] = machine;
+                            });
                         });
                     },
                     done: function machineDone(err, job) {
-                        d.resolve(machines);
+                        var machinesArr = [];
+                        for (var id in machinesMap) {
+                            machinesArr.push(machinesMap[id]);
+                        }
+                        d.resolve(machinesArr);
                     }
                 });
                 return d.promise;
