@@ -354,14 +354,7 @@ module.exports = function execute(scope) {
                 data.hasOwnProperty('datacenter');
         },
         handler: function (call) {
-            var options = {
-                name: call.data.name,
-                package: call.data.package,
-                dataset: call.data.dataset, // !TODO: Replace this with image as dataset is deprecated in SDC 7.0
-                networks: call.data.networks,
-                elbController: call.data.elbController
-            };
-            machine.Create(call, options, call.done);
+            machine.Create(call, call.data, call.done);
         }
     });
 
