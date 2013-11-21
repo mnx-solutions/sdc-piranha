@@ -756,7 +756,9 @@ ul.dropdown-menu{
 .details_btn_block{
     padding: 18px;
     background-color: #fef1d2;
-    max-width: 450px;
+    max-width: 449px;
+    min-width: 449px;
+    overflow: hidden;
 }
 
 /*.details_btn_block_margin span{*/
