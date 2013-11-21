@@ -135,6 +135,7 @@ module.exports = function execute(scope, register) {
     }
 
     api.Create = function (call, options, callback) {
+        call.getImmediate();
         call.log.info({options: options}, 'Creating machine %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
@@ -146,7 +147,7 @@ module.exports = function execute(scope, register) {
                 pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
                 call.log.error(err);
-                call.immediate(err);
+                call.done(err);
             }
         });
     };

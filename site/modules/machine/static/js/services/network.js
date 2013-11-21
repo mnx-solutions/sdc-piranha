@@ -11,12 +11,18 @@
         function (serverTab, $q, localization, notification, errorContext) {
 
             var service = {};
-            var networks = { job: null, index: {}, list: []};
+            var networks = { job: {}, index: {}, list: {}};
             var networksInfo = {};
 
             service.updateNetworks = function (datacenter) {
-                if (!networks.job || networks.job.finished) {
-                    networks.job = serverTab.call({
+
+
+                if (!networks.job[datacenter] || networks.job[datacenter].finished) {
+                    networks.job[datacenter] = null;
+                    networks.list[datacenter] = [];
+
+
+                    networks.job[datacenter] = serverTab.call({
                         name:'NetworksList',
                         data: {datacenter: datacenter},
                         done: function(err, job) {
@@ -32,13 +38,13 @@
                             */
                             var result = job.__read();
 
-                            networks.list = result;
-                            networks.list.final = true;
+                            networks.list[datacenter] = result;
+                            networks.list[datacenter].final = true;
                         }
                     });
                 }
 
-                return networks.job;
+                return networks.job[datacenter];
             };
 
             service.getNetwork = function(datacenter, id) {
@@ -67,18 +73,18 @@
             };
 
             service.network = function (datacenter) {
-                if (datacenter === true || (datacenter && !networks.job) || (datacenter && networks.job.finished)) {
+                if (datacenter === true || (datacenter && !networks.job[datacenter]) || (datacenter && networks.job[datacenter].finished)) {
                     var job = service.updateNetworks(datacenter);
                     return job.deferred;
                 }
 
                 var ret = $q.defer();
                 if (!datacenter) {
-                    if (networks.list.final) {
-                        ret.resolve(networks.list);
+                    if (networks.list[datacenter].final) {
+                        ret.resolve(networks.list[datacenter]);
                     } else {
-                        networks.job.deferred.then(function () {
-                            ret.resolve(networks.list);
+                        networks.job[datacenter].deferred.then(function () {
+                            ret.resolve(networks.list[datacenter]);
                         });
                     }
                 }
