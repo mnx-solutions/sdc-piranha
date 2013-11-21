@@ -119,7 +119,7 @@
                                     $scope.form.lastName = account.lastName;
                                 }
 
-				                if (account.country.length === 3) {
+				                if (account.country && account.country.length === 3) {
 					                form.country = account.country;
 				                } else {
 					                form.country = 'USA';
@@ -236,12 +236,12 @@
                         if ($scope.form.cardHolderInfo.state === '') {
                             delete $scope.form.cardHolderInfo.state;
                         }
-						$scope.form.workPhone = $scope.selectedCountryCode + ' ' + $scope.phone.number;
+						$scope.form.workPhone = $scope.account.phone;
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (!errs) {
                                 Account.updateAccount({
                                     country: $scope.form.cardHolderInfo.country,
-                                    phone: account.phone
+                                    phone: $scope.account.phone
                                 }).then(function (account) {
                                     notification.replace('addPaymentMethod', { type: 'success' },
                                         localization.translate(null,
