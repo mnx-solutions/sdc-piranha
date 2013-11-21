@@ -4,6 +4,7 @@
     app.controller('Machine.ProvisionController', ['$scope',
         '$filter',
         'requestContext',
+        '$timeout',
         'Machine',
         'Dataset',
         'Datacenter',
@@ -18,7 +19,7 @@
         '$$track',
         'util',
 
-        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -450,12 +451,10 @@
             ng.element('#provisionCarousel').bind({
                 slide: function() {
                     $scope.reConfigurable = !$scope.reConfigurable;
-                },
-                slid: function() {
                     if($scope.reConfigurable) {
-                        $scope.$apply(function(){
+                        $timeout(function(){
                             $scope.showReConfigure = true;
-                        });
+                        }, 600);
                     }
                 }
             });
