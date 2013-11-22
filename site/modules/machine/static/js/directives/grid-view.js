@@ -261,6 +261,10 @@
                 actionButtons:'=',
                 filterAll: '@',
                 exportFields: '=',
+                columnsButton: '=',
+                actionsButton: '=',
+                instForm: '=',
+                enabledCheckboxes: '=',
                 objectsType: '@',
                 multisort: '@'
             },

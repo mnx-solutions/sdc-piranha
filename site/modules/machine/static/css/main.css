@@ -378,7 +378,7 @@
 #tableBtnAdd {
     float: right;
     margin-bottom: 10px;
-    margin-right: 15px;
+    /*margin-right: 15px;*/
 }
 .inst_page{
     padding-left: 25px;
@@ -605,13 +605,13 @@ ul.dropdown-menu{
 .select_position{
     padding-top: 20px;
     color: #666;
-    margin-left: -15px;
+    /*margin-left: -15px;*/
 }
 .page_row_info{
     /*padding-left: 20px;*/
     /*padding-top: 0;*/
     float: left;
-    margin-left: -16px;
+    /*margin-left: -16px;*/
 }
 .page_row_info form{
     margin: 0;
@@ -1811,7 +1811,7 @@ ul.dropdown-menu{
 }
 .container-grid {
     width: 996px;
-    padding-left: 18px;
+    /*padding-left: 18px;*/
     padding-bottom: 55px;
     float: left;
 }

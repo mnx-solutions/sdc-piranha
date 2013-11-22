@@ -492,7 +492,8 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 1
+			        sequence: 1,
+                    active: true
 		        },
 		        {
 			        id: 'parsed',
@@ -507,7 +508,8 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 2
+			        sequence: 2,
+                    active: true
 		        },
 		        {
 			        id: 'parsed',
@@ -516,7 +518,8 @@
 			        getClass: function () {
 				        return 'span1 padding-5';
 			        },
-			        sequence: 3
+			        sequence: 3,
+                    active: true
 		        },
 		        {
 			        id: 'protocol',
@@ -527,27 +530,32 @@
 			        _getter: function (object) {
 				        return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
 			        },
-			        sequence: 4
+			        sequence: 4,
+                    active: true
 		        },
-		        {
-			        id: 'delete',
-			        name: 'Delete',
-			        type: 'button',
-			        getClass: function () {
-				        return 'pull-right span1 padding-5';
-			        },
-			        btn: {
-				        label: 'Delete',
-				        getClass: function (object) {
-					        return 'btn-mini btn-danger';
-				        },
-				        disabled: function () {
-					        return $scope.loading;
-				        },
-				        action: $scope.deleteRule.bind($scope),
-				        tooltip: 'Delete the rule'
-			        }
-		        },
+                {
+                    id: 'enabled',
+                    name: 'Enabled',
+                    type: 'button',
+                    getClass: function () {
+                        return 'pull-right span1 padding-5';
+                    },
+                    btn: {
+                        getLabel: function (object) {
+                            return object.enabled ? 'Disable' : 'Enable';
+                        },
+                        getClass: function (object) {
+                            return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
+                        },
+                        disabled: function () {
+                            return $scope.loading;
+                        },
+                        action: $scope.changeStatus.bind($scope),
+                        tooltip: 'Enable the rule'
+                    },
+                    sequence: 5,
+                    active: true
+                },
 		        {
 			        id: 'edit',
 			        name: 'Edit',
@@ -567,29 +575,31 @@
 					        $scope.data = rule.cleanRule(object);
 				        },
 				        tooltip: 'Edit the rule'
-			        }
-		        },
-		        {
-			        id: 'enabled',
-			        name: 'Enabled',
-			        type: 'button',
-			        getClass: function () {
-				        return 'pull-right span1 padding-5';
 			        },
-			        btn: {
-				        getLabel: function (object) {
-					        return object.enabled ? 'Disable' : 'Enable';
-				        },
-				        getClass: function (object) {
-					        return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
-				        },
+                    sequence: 6,
+                    active: true
+		        },
+                {
+                    id: 'delete',
+                    name: 'Delete',
+                    type: 'button',
+                    getClass: function () {
+                        return 'pull-right span1 padding-5';
+                    },
+                    btn: {
+                        label: 'Delete',
+                        getClass: function (object) {
+                            return 'btn-mini btn-danger';
+                        },
                         disabled: function () {
                             return $scope.loading;
                         },
-				        action: $scope.changeStatus.bind($scope),
-				        tooltip: 'Enable the rule'
-			        }
-		        }
+                        action: $scope.deleteRule.bind($scope),
+                        tooltip: 'Delete the rule'
+                    },
+                    sequence: 7,
+                    active: true
+                }
 	        ];
 
         }

@@ -382,6 +382,11 @@
                 ignore: ['metadata']
             };
 
+            $scope.columnsButton = true;
+            $scope.actionsButton = true;
+            $scope.instForm = true;
+            $scope.enabledCheckboxes = true;
+
             $scope.deleteInstance = function(el) {
                 $$track.event('machine', 'delete');
                 Machine.deleteMachine(el.id).getJob().done(function () {

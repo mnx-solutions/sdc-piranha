@@ -4,7 +4,7 @@
         <span>
             Showing <span data-ng-hide="pageNumFirst == pageNumLast"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
         </span>
-        <form class="form-search">
+        <form class="form-search" data-ng-show="instForm">
             <input type="search"
                    class="span3"
                    name="search"
@@ -16,7 +16,7 @@
         </form>
     </div>
     <div class="actions" id="tableBtnAdd">
-        <div class="btn-group">
+        <div class="btn-group" data-ng-show="actionsButton">
             <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                 Actions <i class="icon-drop-down"></i>
             </a>
@@ -26,11 +26,11 @@
                 </li>
             </ul>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" data-ng-show="exportFields">
             <button type="button" class="btn" data-ng-click="export('csv')">Export</button>
             <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
         </div>
-        <div class="btn-group">
+        <div class="btn-group" data-ng-show="columnsButton">
             <a class="btn" href="#" data-toggle="dropdown" data-ng-click="noClose()">
                 Columns
                 <i class="icon-drop-down"></i>
@@ -45,10 +45,10 @@
     </div>
 </div>
 
-<div class="item header row machine-list-item item-list-container">
+<div class="item header machine-list-item item-list-container">
         <table class="table table-striped table-bordered table-hover table-full-width" id="insTable">
             <thead>
-                <th class="hidden-480 ">
+                <th class="hidden-480" data-ng-show="enabledCheckboxes">
                     <label class="checkbox" >
                         <div class="checker" data-ng-class="{hover:shows}" data-ng-mouseenter="shows = true" data-ng-mouseleave="shows = false">
                                 <span data-ng-click="selectAllCheckbox()" data-ng-class="{checked: checkedCheckBox}">
@@ -72,7 +72,7 @@
             </thead>
             <tbody>
                 <tr data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" style="font-weight: 400;">
-                    <td width="10">
+                    <td width="10" data-ng-show="enabledCheckboxes">
                         <label class="checkbox">
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                             <span data-ng-click="selectCheckbox(object.id)" data-ng-class="{checked: object.checked}">
@@ -94,7 +94,16 @@
                         <span data-ng-switch-when="ips">
                             <span data-ng-repeat="ip in object.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
                         </span>
-                        <span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>
+                        <span data-ng-switch-default data-ng-switch="prop.type">
+                        <span data-ng-switch-when="button">
+                            <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
+                        </span>
+                        <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                            <span data-ng-switch-default>
+                                {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
+                            </span>
+                        </span>
+                        <!--<span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>-->
                     </td>
                     <td width="1000"></td>
                 </tr>
@@ -123,7 +132,7 @@
                 <!--<li data-ng-click="showPaginated();" data-translate>Show Paginated</li>-->
             <!--</ul>-->
         <!--</div>-->
-        <div class="pagination pagination-right pull-right" style="margin-right: 15px;">
+        <div class="pagination pagination-right pull-right">
             <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
         </div>
         <!--<div class="span3 pull-right pagination">-->
