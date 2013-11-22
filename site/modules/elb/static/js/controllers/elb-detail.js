@@ -37,7 +37,7 @@
                 $q.all([service.getBalancer(balancerId), service.getMachines(),
                         service.getBalancerUsage(balancerId)]).then(function (results) {
                     $scope.server = results[0];
-                    var machines = results[1][0].machines;
+                    var machines = results[1];
                     var usage = results[2];
 
                     prepareTrafficData(usage[0].slice(-1), 'bytesin', traffic.inbound);

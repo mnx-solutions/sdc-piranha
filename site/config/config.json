@@ -101,7 +101,6 @@
     "username": ""
   , "password": ""
   , "url": ""
-  , "noUpdate": true
   }
 , "maxmind": {
     "phoneApiUrl": "https://api.maxmind.com"

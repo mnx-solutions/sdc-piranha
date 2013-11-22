@@ -58,15 +58,15 @@ exports.getSscClient = function (call, callback) {
                     });
                 },
                 function (callback) {
-                    vasync.forEachParallel({
-                        func: function (key, callback) {
-                            metadata.get(call.req.session.userId, key, callback);
-                        },
-                        inputs: ['portal_private_key', 'portal_fingerprint']
-                    }, function (error, response) {
-                        result.privateKey = response.successes[0];
-                        result.fingerprint = response.successes[1];
-                        callback(error);
+                    metadata.get(call.req.session.userId, metadata.PORTAL_PRIVATE_KEY, function (err, value) {
+                        result.privateKey = value;
+                        callback(err);
+                    });
+                },
+                function (callback) {
+                    metadata.get(call.req.session.userId, metadata.PORTAL_FINGERPRINT, function (err, value) {
+                        result.fingerprint = value;
+                        callback(err);
                     });
                 }
             ]
@@ -76,7 +76,7 @@ exports.getSscClient = function (call, callback) {
     }
     function checkSscClient(client, callback, firstStart) {
         firstStart = firstStart || new Date().getTime();
-        if (new Date().getTime() - firstStart > 10 * 60 * 1000) {
+        if (new Date().getTime() - firstStart > 3 * 60 * 1000) {
             callback(new Error('SSC Connection Timeout'));
             return;
         }
@@ -86,7 +86,7 @@ exports.getSscClient = function (call, callback) {
             } else {
                 setTimeout(function () {
                     checkSscClient(client, callback, firstStart);
-                }, 1000);
+                }, 5000);
             }
         });
     }
