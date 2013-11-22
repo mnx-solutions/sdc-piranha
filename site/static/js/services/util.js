@@ -21,13 +21,15 @@ window.JP.main.service('util', [
                     result: 'cancel',
                     label: 'No',
                     cssClass: 'btn grey_new',
-                    datatabindex: "1"
+                    datatabindex: "1",
+                    setFocus: false
                 },
                 {
-                    result:'ok',
+                    result: 'ok',
                     label: 'Yes',
                     cssClass: 'btn orange',
-                    datatabindex: "2"
+                    datatabindex: "2",
+                    setFocus: true
                 }
             ];
 
@@ -45,9 +47,10 @@ window.JP.main.service('util', [
             title = title || 'Error';
             var btns = [
                 {
-                    result:'ok',
+                    result: 'ok',
                     label: 'Ok',
-                    cssClass: 'btn orange'
+                    cssClass: 'btn orange',
+                    setFocus: true
                 }
             ];
 
@@ -64,9 +67,10 @@ window.JP.main.service('util', [
             title = title || 'Message';
             var btns = [
                 {
-                    result:'ok',
+                    result: 'ok',
                     label: 'Ok',
-                    cssClass: 'btn orange'
+                    cssClass: 'btn orange',
+                    setFocus: true
                 }
             ];
 
@@ -105,3 +109,23 @@ window.JP.main.service('util', [
         return service;
     }]
 );
+
+window.JP.main.directive('buttonFocus', [
+    function () {
+        return {
+            restrict: 'A',
+            replace: false,
+            scope: false,
+            link: function (scope, element, attrs) {
+
+                attrs.$observe('buttonFocus', function (value) {
+
+                    if (value === 'true') {
+                        element.focus();
+                    }
+
+                });
+            }
+        };
+    }
+]);
