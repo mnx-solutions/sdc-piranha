@@ -539,6 +539,11 @@
                 $scope.slideCarousel();
                 $scope.setCurrentStep(2);
             };
+
+            $scope.simpleCreateInstance = function(){
+                $scope.reconfigure(0);
+                $scope.basicCreateInstance = true;
+            }
         }
 
     ]);
