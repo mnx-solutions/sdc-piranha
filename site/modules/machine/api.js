@@ -144,7 +144,9 @@ module.exports = function execute(scope, register) {
 
         cloud.createMachine(options, function (err, machine) {
             if (!err) {
-                call.immediate(null, {machine: machine});
+                if (call.immediate) {
+                    call.immediate(null, {machine: machine});
+                }
                 // poll for machine status to get running (provisioning)
                 pollForObjectStateChange(cloud, call, 'state', 'running', (60 * 60 * 1000), null, machine.id, callback);
             } else {
