@@ -58,15 +58,15 @@ exports.getSscClient = function (call, callback) {
                     });
                 },
                 function (callback) {
-                    vasync.forEachParallel({
-                        func: function (key, callback) {
-                            metadata.get(call.req.session.userId, key, callback);
-                        },
-                        inputs: [metadata.PORTAL_PRIVATE_KEY, metadata.PORTAL_FINGERPRINT]
-                    }, function (error, response) {
-                        result.privateKey = response.successes[0];
-                        result.fingerprint = response.successes[1];
-                        callback(error);
+                    metadata.get(call.req.session.userId, metadata.PORTAL_PRIVATE_KEY, function (err, value) {
+                        result.privateKey = value;
+                        callback(err);
+                    });
+                },
+                function (callback) {
+                    metadata.get(call.req.session.userId, metadata.PORTAL_FINGERPRINT, function (err, value) {
+                        result.fingerprint = value;
+                        callback(err);
                     });
                 }
             ]
