@@ -14,13 +14,15 @@
                     result: 'cancel',
                     label: 'No',
                     cssClass: 'btn grey_new',
-                    datatabindex: "1"
+                    datatabindex: "1",
+                    setFocus: false
                 },
                 {
                     result:'ok',
                     label: 'Yes',
                     cssClass: 'btn orange',
-                    datatabindex: "2"
+                    datatabindex: "2",
+                    setFocus: true
                 }
             ];
 
@@ -40,7 +42,8 @@
                 {
                     result:'ok',
                     label: 'Ok',
-                    cssClass: 'btn orange'
+                    cssClass: 'btn orange',
+                    setFocus: true
                 }
             ];
 
@@ -59,7 +62,8 @@
                 {
                     result:'ok',
                     label: 'Ok',
-                    cssClass: 'btn orange'
+                    cssClass: 'btn orange',
+                    setFocus: true
                 }
             ];
 
