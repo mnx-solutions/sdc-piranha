@@ -1,11 +1,13 @@
 'use strict';
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
 var config = require('easy-config');
 var sdcClients = require('sdc-clients');
 var capi = new sdcClients.CAPI(config.capishim);
 var appKey = 'portal';
+
+if (config.capishim && config.capishim.allowSelfSigned) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 var set = function (customerUuid, key, value, callback) {
     if (!customerUuid) {
