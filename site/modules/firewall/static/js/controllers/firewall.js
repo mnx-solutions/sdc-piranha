@@ -538,14 +538,14 @@
                     name: 'Enabled',
                     type: 'button',
                     getClass: function () {
-                        return 'pull-right span1 padding-5';
+                        return 'pull-right';
                     },
                     btn: {
                         getLabel: function (object) {
                             return object.enabled ? 'Disable' : 'Enable';
                         },
                         getClass: function (object) {
-                            return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
+                            return (object.enabled ? 'btn-warning' : 'btn-success');
                         },
                         disabled: function () {
                             return $scope.loading;
@@ -561,12 +561,12 @@
 			        name: 'Edit',
 			        type: 'button',
 			        getClass: function () {
-				        return 'pull-right span1 padding-5';
+				        return 'pull-right';
 			        },
 			        btn: {
 				        label: 'Edit',
 				        getClass: function () {
-					        return 'btn-mini btn-default';
+					        return 'btn-default';
 				        },
 				        disabled: function () {
 					        return $scope.loading;
@@ -584,12 +584,12 @@
                     name: 'Delete',
                     type: 'button',
                     getClass: function () {
-                        return 'pull-right span1 padding-5';
+                        return 'pull-right';
                     },
                     btn: {
                         label: 'Delete',
                         getClass: function (object) {
-                            return 'btn-mini btn-danger';
+                            return 'btn-danger';
                         },
                         disabled: function () {
                             return $scope.loading;
