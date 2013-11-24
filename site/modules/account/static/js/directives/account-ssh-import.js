@@ -26,7 +26,7 @@
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function(question, callback) {
                         var title = 'Add new ssh key';
-                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue'}];
+                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left', setFocus: false}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
                         var templateUrl = 'account/static/template/dialog/message.html';
 
                         $rootScope.loading = true;
