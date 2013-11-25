@@ -78,8 +78,8 @@ exports.getSscClient = function (call, callback) {
     }
     function checkSscClient(client, callback, firstStart) {
         firstStart = firstStart || new Date().getTime();
-        if (new Date().getTime() - firstStart > 3 * 60 * 1000) {
-            callback(new Error('SSC Connection Timeout'));
+        if (new Date().getTime() - firstStart > 5 * 60 * 1000) {
+            callback('Connection Timeout. Try refreshing the page');
             return;
         }
         client.get('/ping', function (err, req, res, body) {

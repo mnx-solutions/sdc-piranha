@@ -324,7 +324,7 @@ var elb = function execute(scope) {
             }
             client.del('/loadbalancers', function (err, creq, cres, obj) {
                 if (err) {
-                    //call.log.error('Cannot disable STMs');
+                    call.log.warn('Cannot disable STMs');
                 }
                 // Still delete SSC even if ELBAPI returned error
                 deleteSscMachine(call, call.done);

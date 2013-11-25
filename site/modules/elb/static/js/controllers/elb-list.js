@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'elb.ListController',
-        ['$scope', 'requestContext', 'localization', 'elb.Service', '$location',
-                function ($scope, requestContext, localization, service, $location) {
+        ['$scope', 'requestContext', 'localization', 'elb.Service', '$location', 'notification',
+                function ($scope, requestContext, localization, service, $location, notification) {
                 $scope.listLoaded = false;
                 localization.bind('elb', $scope);
                 requestContext.setUpRenderContext('elb.list', $scope, {
@@ -26,6 +26,8 @@
                     service.getBalancers().then(function (data) {
                         $scope.servers = data;
                         $scope.listLoaded = true;
+                    }, function (err) {
+                        notification.replace('elb', { type: 'error' }, err);
                     });
                 }, function () {
                     $location.path('/elb');
