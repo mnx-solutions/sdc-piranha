@@ -1,3 +1,5 @@
+"use strict";
+
 var vasync = require('vasync');
 var restify = require('restify');
 var httpSignature = require('http-signature');
