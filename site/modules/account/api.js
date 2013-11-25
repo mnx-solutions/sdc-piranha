@@ -72,10 +72,11 @@ module.exports = function execute(scope, register) {
     }
 
     function searchFromList(list, resp) {
-        return Object.keys(list).some(function(key, data) {
-            if(list[key].fingerprint === resp.fingerprint) {
+        return Object.keys(list).some(function(key) {
+            if (list[key].fingerprint === resp.fingerprint) {
                 return true;
             }
+            return undefined;
         });
     }
 
@@ -88,11 +89,11 @@ module.exports = function execute(scope, register) {
 
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
-                req.cloud.listKeys({login: 'my'}, function(err, data) {
+                req.cloud.listKeys({login: 'my'}, function(listError, data) {
                     if(searchFromList(data, resp)) {
                         cb(null);
                     } else {
-                        setTimeout(checkList, 2000)
+                        setTimeout(checkList, 2000);
                     }
                 }, true);
             })();
@@ -116,9 +117,9 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            var start = Date.now();
+            var now = Date.now();
             getFromBilling('provision', account.id, function (err, state) {
-                req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
+                req.log.debug('Checking with billing server took ' + (Date.now() - now) +'ms');
                 cb(err, state);
             });
         });
@@ -141,16 +142,16 @@ module.exports = function execute(scope, register) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (!err && storedStep) {
                     req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
-                        storedStep, _nextStep(step));
+                        storedStep, _nextStep(storedStep));
 
                     end(storedStep);
                     return;
                 }
 
-                api.getAccountVal(req, function (err, value) {
-                    if (err) {
-                        req.log.error(err, 'Got error from billing-api');
-                        cb(err);
+                api.getAccountVal(req, function (accountError, value) {
+                    if (accountError) {
+                        req.log.error(accountError, 'Got error from billing-api');
+                        cb(accountError);
                         return;
                     }
 
@@ -253,14 +254,14 @@ module.exports = function execute(scope, register) {
         function updateStep(req) {
             function update(userId) {
                 getFromBilling('update', userId, function (err, bStep) {
-                    if(err) { //Ignore errors here (No errors possible currently)
 
-                    }
+                    // No errors possible currently
+
                     step = bStep === 'completed' ? bStep : step;
 
-                    metadata.set(userId, metadata.SIGNUP_STEP, step, function (err) {
+                    metadata.set(userId, metadata.SIGNUP_STEP, step, function (setError) {
                         call.log.info('Set signup step in metadata to %s', bStep);
-                        cb(err);
+                        cb(setError);
                     });
                 });
             }
