@@ -16,5 +16,6 @@ var set = function (uuid, key, value, callback) {
 
 module.exports = {
     get: get,
-    set: set
+    set: set,
+    safeSet: set
 };
