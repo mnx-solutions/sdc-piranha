@@ -147,6 +147,7 @@ module.exports = function execute(scope, register) {
 
                 api.getAccountVal(req, function (err, value) {
                     if (err) {
+                        req.log.error(err, 'Got error from billing-api');
                         cb(err);
                         return;
                     }
@@ -163,7 +164,7 @@ module.exports = function execute(scope, register) {
 
         req.cloud.getAccount(function (accErr, account) {
             if (accErr) {
-                req.log.error('Failed to get info from cloudApi', accErr);
+                req.log.error(accErr, 'Failed to get info from cloudApi');
                 cb(accErr);
                 return;
             }
