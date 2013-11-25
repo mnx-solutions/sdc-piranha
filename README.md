@@ -155,6 +155,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `capishim.password` Capishim password
 - `capishim.url` Capishim url
 - `capishim.noUpdate` Do not talk to capi shim
+- `capishim.allowSelfSigned` Dev option to allow self-signed certificates
 - `cloudapi.version` If defined this is used for Api-version header for CloudAPI calls.
 - `cloudapi.url` CloudAPI endpoint url
 - `cloudapi.urls` If defined (Array) this is used instead of url. Here you can define multiple CloudAPI (datacenter) URL's so if one fails, portal will take the next one

@@ -3,12 +3,15 @@
 var config = require('easy-config');
 var sdcClients = require('sdc-clients');
 var capi = new sdcClients.CAPI(config.capishim);
-
 var appKey = 'portal';
+
+if (config.capishim && config.capishim.allowSelfSigned) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
 
 var set = function (customerUuid, key, value, callback) {
     if (!customerUuid) {
-        if(callback) {
+        if (callback) {
             setImmediate(function () {
                 callback(new Error('Missing UUID'));
             });
@@ -17,7 +20,7 @@ var set = function (customerUuid, key, value, callback) {
     }
 
     if (value) {
-        if(typeof value !== 'object') {
+        if (typeof value !== 'object') {
             value = {value: value};
         }
         capi.putMetadata(customerUuid, appKey, key, value, function(err) {
@@ -36,19 +39,19 @@ var set = function (customerUuid, key, value, callback) {
 };
 
 var get = function (customerUuid, key, val, callback) {
-    if(val instanceof Function) {
+    if (val instanceof Function) {
         callback = val;
         val = 'value';
     }
     capi.getMetadata(customerUuid, appKey, key, function (err, res) {
-        if(res === 'false') {
+        if (res === 'false') {
             callback(null, false);
             return;
         }
         var result = false;
-        if(typeof res === 'string') {
+        if (typeof res === 'string') {
             result = res.indexOf('=') !== -1 ? res.split('=')[1] : result;
-        } else if(typeof res === 'object' && res[val]) {
+        } else if (typeof res === 'object' && res[val]) {
             result = res[val];
         }
         callback(null, result);
