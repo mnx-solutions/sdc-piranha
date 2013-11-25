@@ -1,11 +1,3 @@
-#country {
-    width: 220px;
-}
-
-#phone {
-    width: 100px;
-}
-
 input.error, select.error, textarea.error {
     border-color: #e9322d;
     -webkit-box-shadow: 0 0 6px #f8b9b7;
