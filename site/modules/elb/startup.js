@@ -263,8 +263,12 @@ var elb = function execute(scope) {
                     data['metadata.ssc_public_key'] = config.elb.ssc_public_key;
                 }
 
+                var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
+
+                call.req.log.info({fingerprint: portalFingerprint, privateKey: portalKeyPair.privateKey}, 'Storing key/fingerprint to metadata');
+
                 Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey);
-                Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint);
+                Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint);
 
                 addSscKey(call, sscKeyPair.publicSsh, function (err) {
                     if (err) {
