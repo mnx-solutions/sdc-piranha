@@ -126,34 +126,34 @@ module.exports = function execute(scope, register) {
 
     api.getSignupStep = function (call, cb) {
         var req = (call.done && call.req) || call;
-        req.log.trace('getting signup step');
+        req.log.trace('Getting signup step');
         function end(step) {
-            req.log.trace('signup step is %s', step);
+            req.log.info('User landing in step:', _nextStep(step));
             cb(null, step);
         }
 
         if (req.session.signupStep) {
+            req.log.debug('Got signup step from session: %s', req.session.signupStep);
             setImmediate(end.bind(end, req.session.signupStep));
             return;
         }
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (!err && storedStep) {
-                    call.log.info('Got signupStep from metadata: %s; landing at: %s',
-                        storedStep, _nextStep(storedStep));
-
+                    req.log.debug('Got signupStep from metadata: %s', storedStep);
                     end(storedStep);
-                } else {
-                    api.getAccountVal(req, function (err, value) {
-                        if (err) {
-                            cb(err);
-                            return;
-                        }
-
-                        call.log.info('User landing in step:', _nextStep(value));
-                        end(value);
-                    });
+                    return;
                 }
+
+                api.getAccountVal(req, function (err, value) {
+                    if (err) {
+                        cb(err);
+                        return;
+                    }
+
+                    req.log.debug('Got signup step from billing-api: %s', value);
+                    end(value);
+                });
             });
         }
         if(req.session.userId) {
