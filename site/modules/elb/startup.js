@@ -267,25 +267,32 @@ var elb = function execute(scope) {
 
                 call.req.log.info({fingerprint: portalFingerprint, privateKey: portalKeyPair.privateKey}, 'Storing key/fingerprint to metadata');
 
-                Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey);
-                Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint);
-
-                addSscKey(call, sscKeyPair.publicSsh, function (err) {
+                Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (err) {
                     if (err) {
-                        call.done(err);
-                        return;
+                        call.req.log.warn(err);
                     }
-                    removeSscConfig(data, function (err) {
+                    Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (err) {
                         if (err) {
-                            call.done(err);
-                            return;
+                            call.req.log.warn(err);
                         }
-                        machine.Create(call, data, function (err, result) {
+                        addSscKey(call, sscKeyPair.publicSsh, function (err) {
                             if (err) {
                                 call.done(err);
                                 return;
                             }
-                            call.done(null, result);
+                            removeSscConfig(data, function (err) {
+                                if (err) {
+                                    call.done(err);
+                                    return;
+                                }
+                                machine.Create(call, data, function (err, result) {
+                                    if (err) {
+                                        call.done(err);
+                                        return;
+                                    }
+                                    call.done(null, result);
+                                });
+                            });
                         });
                     });
                 });
