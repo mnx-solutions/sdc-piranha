@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'elb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'elb.Service', 'Datacenter',
-                function ($scope, requestContext, localization, $location, service, Datacenter) {
+        ['$scope', 'requestContext', 'localization', '$location', 'elb.Service', 'Datacenter', 'notification',
+                function ($scope, requestContext, localization, $location, service, Datacenter, notification) {
                 localization.bind('elb', $scope);
                 requestContext.setUpRenderContext('elb.index', $scope, {
                     title: localization.translate(null, 'elb', 'Enable Load Balancing')
@@ -30,6 +30,7 @@
                     service.createController($scope.datacenter.name).then(function () {
                         $location.path('/elb/list');
                     }, function (err) {
+                        notification.replace('elb', { type: 'error' }, err);
                         $scope.allLoading = true;
                     });
                 };

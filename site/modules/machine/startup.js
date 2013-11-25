@@ -62,28 +62,10 @@ module.exports = function execute(scope) {
 
     /* listPackages */
     server.onCall('PackageList', function (call) {
-        call.log.info('Handling list packages event');
-
-        call.cloud.separate(call.data.datacenter).listPackages(function (err, data) {
-            if (err) {
-                call.error(err);
-                return;
-            }
-
-            if (!info.packages.data[call.data.datacenter]) {
-                call.data.datacenter = 'all';
-            }
-
-            var filteredPackages = [];
-            data.forEach(function (p) {
-                if (info.packages.data[call.data.datacenter][p.name]) {
-                    filteredPackages.push(utils.extend(p, info.packages.data[call.data.datacenter][p.name]));
-                } else {
-                    filteredPackages.push(p);
-                }
-            });
-            call.done(null, filteredPackages);
-        });
+        var options = {
+            datacenter: call.data.datacenter
+        };
+        machine.PackageList(call, options, call.done);
     });
 
     /* listDatasets */
