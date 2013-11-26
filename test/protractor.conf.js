@@ -13,11 +13,14 @@ exports.config = {
     allScriptsTimeout: 60000,
 
     capabilities: {
-        'browserName': config.browser || 'chrome'
+        'browserName': config.browser || 'phantomjs',
+        'phantomjs.binary.path':'./node_modules/phantomjs/bin/phantomjs'
     },
 
     specs: [
         '../site/modules/landing/test/landing.scenario.js',
+        '../site/modules/landing/test/landing.scenario.js',
+        '../site/modules/machine/test/machines.scenario.js',
         '../site/modules/**/test/*.scenario.js'
     ],
 
