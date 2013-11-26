@@ -1,8 +1,14 @@
 {
     "baseUrl": "http://127.0.0.1:3000",
-
-    "account": {
+    "sauce": {
         "username": "",
-        "password": ""
+        "key": ""
+    },
+
+    "params": {
+        "account": {
+            "username": "",
+            "password": ""
+        }
     }
 }
