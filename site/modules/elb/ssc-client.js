@@ -103,7 +103,7 @@ exports.getSscClient = function (call, callback) {
             return;
         }
 
-        call.req.log.info(result, 'Creating ELBAPI client');
+        call.req.log.info({fingerprint: result.fingerprint, primaryIp: result.primaryIp}, 'Creating ELBAPI client');
 
         var sscUrl = config.elb.ssc_protocol + '://' + result.primaryIp + ':' + config.elb.ssc_port;
         var sscClient = restify.createJsonClient({
