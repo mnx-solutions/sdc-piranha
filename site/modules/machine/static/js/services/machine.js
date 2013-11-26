@@ -8,11 +8,10 @@
         '$rootScope',
         '$q',
         'localization',
-        'notification',
         'Package',
         'Dataset',
 		'util',
-        function ($resource, serverTab, $rootScope, $q, localization, notification, Package, Dataset, util) {
+        function ($resource, serverTab, $rootScope, $q, localization, Package, Dataset, util) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -90,6 +89,20 @@
             }
         }
 
+        service.getSimpleImgList = function(cb) {
+            serverTab.call({
+                name: 'ImagesSimpleList',
+                done: function (err, job) {
+                    if (err) {
+                        console.error(err);
+                        return;
+                    }
+
+                    cb(null, job.__read()['images']);
+                }
+            });
+        };
+
         service.updateMachines = function () {
             if (!machines.job || machines.job.finished) {
                 machines.list.final = false;
@@ -101,12 +114,19 @@
                         function handleResponse(chunk) {
                             if(chunk.status === 'error') {
 
-                                notification.push(chunk.name, { type: 'error' },
-                                    localization.translate(null,
+                                util.error(
+                                    localization.translate(
+                                        null,
+                                        null,
+                                        'Error'
+                                    ),
+                                    localization.translate(
+                                        null,
                                         'machine',
                                         'Unable to retrieve instances from datacenter {{name}}',
                                         { name: chunk.name }
-                                    )
+                                    ),
+                                    function () {}
                                 );
                                 return;
                             }
@@ -194,15 +214,22 @@
                         if (!opts.done) {
                             opts.done = function (err, job) {
                                 if (err) {
-                                    notification.push(job.machine.id, { type: 'error' },
-                                        localization.translate(null,
+                                    util.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            null,
                                             'machine',
                                             'Unable to execute command "{{command}}" for instance {{uuid}}',
                                             {
                                                 command: job.name,
                                                 uuid: job.machine.id
                                             }
-                                        )
+                                        ),
+                                        function () {}
                                     );
 
                                     return;
@@ -247,15 +274,22 @@
             name: 'MachineDelete',
             done: function(err, job) {
                 if (err) {
-                    notification.push(job.machine.id, { type: 'error' },
-                        localization.translate(null,
+                    util.error(
+                        localization.translate(
+                            null,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            null,
                             'machine',
                             'Unable to execute command "{{command}}" for instance {{uuid}}',
                             {
                                 command: job.name,
                                 uuid: job.machine.id
                             }
-                        )
+                        ),
+                        function () {}
                     );
 
                     return;
@@ -328,15 +362,22 @@
             }
 
             function showError(id, instance, err) {
-                notification.push(id, { type: 'error' },
-                    localization.translate(null,
+                util.error(
+                    localization.translate(
+                        null,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        null,
                         'machine',
                         'Unable to create instance {{name}} ({{uuid}})',
                         {
                             name: (machine.name || ''),
                             uuid: (machine.id || '')
                         }
-                    ) +' '+ ((err.message) ? '<br />'+ err.message : '')
+                    ) +' '+ ((err.message) ? '<br />'+ err.message : ''),
+                    function () {}
                 );
             }
 
@@ -424,11 +465,18 @@
                 job.deferred.then(function (response) {
                     m.tags = response;
                 }, function (err) {
-                    notification.push(m.id + '-tags', { type: 'error' },
-                        localization.translate(null,
+                    util.error(
+                        localization.translate(
+                            null,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            null,
                             'machine',
                             'Unable to save tags'
-                        )
+                        ),
+                        function () {}
                     );
                 });
 

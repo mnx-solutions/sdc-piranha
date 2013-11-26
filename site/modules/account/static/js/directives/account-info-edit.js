@@ -4,13 +4,13 @@
     app.directive('accountInfoEdit', [
         'Account',
         'localization',
-        'notification',
+        'util',
         '$q',
         '$http',
         '$location',
         'TFAService',
         '$$track',
-        function (Account, localization, notification, $q, $http, $location, TFAService, $$track) {
+        function (Account, localization, util, $q, $http, $location, TFAService, $$track) {
 
             return {
                 restrict: 'A',
@@ -65,20 +65,36 @@
                                 $scope.setAccount();
                                 $scope.nextStep();
                             } else {
-                                notification.push(null, { type: 'success' },
-                                    localization.translate(null, 'account',
+                                util.message(
+                                    localization.translate(
+                                        $scope,
+                                        null,
+                                        'Message'
+                                    ),
+                                    localization.translate(
+                                        $scope,
+                                        'account',
                                         'Account updated'
-                                    )
+                                    ),
+                                    function () {}
                                 );
                             }
                         }, function (err) {
                             $scope.error = null;
                             $scope.loading = false;
 
-                            notification.push(null, { type: 'error' },
-                                localization.translate(null, 'account',
+                            util.error(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    'account',
                                     'Account update failed'
-                                )
+                                ),
+                                function () {}
                             );
                         });
                     };

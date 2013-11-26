@@ -32,8 +32,8 @@
     , "ext": "js"
     , "transform": [
         "use-strict-add"
-      , "uglify-js"
-      , "gzip"
+    ,   "uglify-js"
+    ,   "gzip"
       ]
     }
   , "css": {

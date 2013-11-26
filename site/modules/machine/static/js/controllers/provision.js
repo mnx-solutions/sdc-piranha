@@ -39,11 +39,22 @@
             $scope.packageTypes = [];
             $scope.packageType = null;
             $scope.loading = true;
+            $scope.basicCreateInstance = true;
 
             $scope.reConfigurable = false;
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
             $scope.visibilityFilter = 'Public';
+            $scope.currentSlidePageIndex = 0;
+
+            Machine.getSimpleImgList(function (err, data) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+
+                $scope.simpleImages = data;
+            });
 
             $q.all([
                     $q.when($scope.keys),
@@ -96,37 +107,53 @@
                 }
             };
 
-            $scope.clickProvision = function () {
-                function provision() {
-                    util.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: Create Instance'
-                        ),
-                        localization.translate(
-                            $scope,
-                            'machine',
-                            'Billing will start once this instance is created'
-                        ), function () {
-                            // add networks to data
-                            $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                            $scope.retinfo = Machine.provisionMachine($scope.data);
-                            $scope.retinfo.done(function(err, job) {
-                                var newMachine = job.__read();
-                                if(newMachine.id) {
-                                    var listMachines = Machine.machine();
-                                    $q.when(listMachines, function() {
-                                        if(listMachines.length == 1) {
-                                            $$track.marketo_machine_provision($scope.account);
-                                        }
-                                    });
-                                }
-                            });
+            $scope.selectNetworkCheckbox = function(id){
+                $scope.networks.forEach(function (el) {
+                    if(el.id == id){
+                        el.active = (el.active) ? false : true;
+                    }
+                });
+                $scope.selectNetwork(id);
+            };
 
-                            $location.path('/compute');
+            function provision(machine) {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Create Instance'
+                    ),
+                    localization.translate(
+                        $scope,
+                        'machine',
+                        'Billing will start once this instance is created'
+                    ), function () {
+                        if (machine && !machine.dataset) {
+                            util.message('Error', 'Instance not found', function () {});
+                            return;
+                        }
+                        $scope.retinfo = Machine.provisionMachine( machine || $scope.data);
+                        $scope.retinfo.done(function(err, job) {
+                            var newMachine = job.__read();
+                            if(newMachine.id) {
+                                var listMachines = Machine.machine();
+                                $q.when(listMachines, function() {
+                                    if(listMachines.length == 1) {
+                                        $$track.marketo_machine_provision($scope.account);
+                                    }
+                                });
+                            }
                         });
-                }
+
+                        $location.path('/compute');
+                    });
+            }
+
+            $scope.clickProvision = function () {
+
+                // add networks to data
+                $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
+                $scope.data.tags = $scope.tags || {};
 
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
@@ -141,6 +168,11 @@
                 } else {
                     provision();
                 }
+
+            };
+
+            $scope.createSimple = function (data) {
+                provision(data);
             };
 
             $scope.selectDatacenter = function (name) {
@@ -166,10 +198,9 @@
                 return parseInt(pkg.memory);
             };
 
-            $scope.reconfigure = function () {
+            $scope.reconfigure = function (goto) {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
-                $scope.selectedDataset = null;
                 $scope.selectedPackage = null;
                 $scope.selectedPackageInfo = null;
                 $scope.packageType = null;
@@ -182,7 +213,7 @@
                     datacenter: ds,
                     opsys: opsys
                 };
-
+                $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
                 ng.element('.carousel').carousel('prev');
@@ -195,6 +226,15 @@
 
                 return +((el + '').replace(/,/g, ''));
             }
+
+            $scope.setCurrentStep = function(index) {
+                ng.element('.wizard-steps')
+                    .children('div')
+                    .removeClass('active-step')
+                    .eq(index).
+                    addClass('active-step');
+                $scope.currentSlidePageIndex = index;
+            };
 
             $scope.selectDataset = function (id) {
                 Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
@@ -212,6 +252,7 @@
                     $scope.selectedDataset = dataset;
                     ng.element('#pricing').removeClass('alert-muted');
                     ng.element('#pricing').addClass('alert-info');
+                    $scope.setCurrentStep(1);
 
                     $scope.data.dataset = dataset.id;
                     $scope.searchText = '';
@@ -241,7 +282,7 @@
                     $scope.slideCarousel();
                 });
 
-
+                $scope.collapseTrigger2($scope.packageTypes.length-1, $scope.packageTypes.length);
             };
 
             $scope.selectVersion = function (name, version) {
@@ -288,7 +329,7 @@
                 } else if(type === true) {
                     $scope.visibilityFilter = 'Public';
                 } else if(type === false) {
-                    $scope.visibilityFilter = 'Private';
+                    $scope.visibilityFilter = 'Saved';
                 }
 
                 $scope.selectedVisibility = type;
@@ -413,7 +454,18 @@
                         var packageTypes = [];
                         packages.forEach(function (p) {
                             if (packageTypes.indexOf(p.group) === -1){
-                                packageTypes.push(p.group);
+                                if(p.group != 'Standard') packageTypes.push(p.group);
+                            }
+
+                            var price = getNr(p.price);
+                            var priceMonth = getNr(p.price_month);
+                            p.price = price && price.toFixed(3) || undefined;
+                            p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
+                        });
+
+                        packages.forEach(function (p) {
+                            if (packageTypes.indexOf(p.group) === -1){
+                                if(p.group == 'Standard') packageTypes.push(p.group);
                             }
 
                             var price = getNr(p.price);
@@ -472,6 +524,27 @@
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
             };
+
+            $scope.accordionIcon2 = {};
+            $scope.collapseTrigger2 = function(item, items){
+                for(var i = 0; i < items; i++){
+                    $scope.accordionIcon2[i] = false;
+                }
+
+                $scope.accordionIcon2[item] = true;
+
+                return $scope.accordionIcon2[item];
+            };
+
+            $scope.reviewPage = function () {
+                $scope.slideCarousel();
+                $scope.setCurrentStep(2);
+            };
+
+            $scope.simpleCreateInstance = function(){
+                $scope.reconfigure(0);
+                $scope.basicCreateInstance = true;
+            }
         }
 
     ]);

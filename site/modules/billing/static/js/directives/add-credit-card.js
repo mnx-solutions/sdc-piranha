@@ -10,8 +10,9 @@
         'Account',
         'notification',
         'localization',
+        'util',
 
-        function (BillingService, $q, $http, $rootScope, Account, notification, localization) {
+        function (BillingService, $q, $http, $rootScope, Account, notification, localization, util) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -61,7 +62,7 @@
                     });
 
                     $scope.loading = false;
-                    $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+                    $scope.months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
                     $scope.years = [];
                     $scope.prev = $scope.prev || BillingService.getDefaultCreditCard();
                     $scope.useExisting = false;
@@ -69,7 +70,7 @@
 
                     $scope.saveButton = 'Submit';
 
-                    if($scope.nextStep) {
+                    if ($scope.nextStep) {
                         $scope.saveButton = 'Next';
                     }
 
@@ -138,17 +139,18 @@
 			                });
 		                }
 	                }
+
                     $q.when($scope.prev, usePrevious);
 
-	                $scope.$watch('useExisting', function (newVal, oldVal) {
-		                if(newVal === true) {
-			                usePrevious($scope.prev);
-		                }
-	                });
+                    $scope.$watch('useExisting', function (newVal, oldVal) {
+                        if (newVal === true) {
+                            usePrevious($scope.prev);
+                        }
+                    });
 
                     var c = (new Date()).getFullYear();
                     var i = c;
-                    for(i; i < c + 20; i++) {
+                    for (i; i < c + 20; i++) {
                         $scope.years.push(i);
                     }
 
@@ -257,13 +259,20 @@
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
                                 }, function () {
-                                    notification.push('addPaymentMethod', { type: 'error' },
-                                        localization.translate(null,
+                                    util.message(
+                                        localization.translate(
+                                            $scope,
+                                            null,
+                                            'Message'
+                                        ),
+                                        localization.translate(
+                                            null,
                                             'billing',
                                             'Billing information not updated'
-                                        )
+                                        ),
+                                        function () {}
                                     );
-                                    window.scrollTo(0,0);
+                                    window.scrollTo(0, 0);
                                 });
                                 return;
                             }
@@ -274,7 +283,7 @@
                                 $scope.errs = {};
                                 Object.keys(errs)
                                     .filter(function (k) {
-	                                    //Ignore zuora errors and creditCardType (that is calculated by us)
+                                        //Ignore zuora errors and creditCardType (that is calculated by us)
                                         return typeof errs[k] !== 'object' && k !== 'creditCardType';
                                     })
                                     .forEach(function (k) {
@@ -319,7 +328,16 @@
                                 addedMessage = ' ' + localization.translate(null, 'billing', 'We are unable to verify your credit card details.');
                             }
 
-                            notification.replace('addPaymentMethod', { type: 'error' }, message + addedMessage);
+//                            notification.replace('addPaymentMethod', { type: 'error' }, message + addedMessage);
+                            util.message(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                message + addedMessage,
+                                function () {}
+                            );
                             window.scrollTo(0,0);
                         });
                     };

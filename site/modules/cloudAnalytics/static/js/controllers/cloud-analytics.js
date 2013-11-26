@@ -3,16 +3,19 @@
 (function (app, ng) {
     app.controller(
             'cloudController',
-            ['$scope', 'ca', 'notification', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            ['$scope', 'ca', 'util', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            '$location', 'localization',
 
-function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, $timeout) {
+function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout, $location, localization) {
     function tick() {
         $scope.endtime++;
         $timeout(tick, 1000);
     }
 
     $scope.zoneId = $routeParams.machine || null;
+    $scope.zoneName = null;
     $scope.zones = Machine.machine();
+    $scope.location = $location;
 
     $scope.ranges = [ 10, 30, 60, 90, 120, 150, 180 ];
 
@@ -53,6 +56,8 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                                 }
                             }
                         }
+                        $scope.cpuGraphs = $scope.graphs.slice(1, 2);
+                        $scope.memGraphs = $scope.graphs.slice(3, 4);
                     }
 
                     $scope.ca.deletequeue.splice(queueIndex, 1);
@@ -76,7 +81,19 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                 }
 
                 if (listErr) {
-                    notification.push( 'ca', { type: 'error' }, listErr);
+                    util.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            listErr
+                        ),
+                        function () {}
+                    );
                 }
 
                 for (var i in insts) {
@@ -89,10 +106,30 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
 
             });
         } else {
-            notification.push( 'ca', { type: 'error' }, err);
+            util.error(
+                localization.translate(
+                    $scope,
+                    null,
+                    'Error'
+                ),
+                localization.translate(
+                    $scope,
+                    null,
+                    err
+                ),
+                function () {}
+            );
         }
 
     });
+
+    $scope.instanceName = function(){
+      $scope.zones.forEach(function(el){
+          if(el.id == $scope.zoneId){
+              $scope.zoneName = el.name;
+          }
+      })
+    };
 
     $scope.createDefaultInstrumentations = function() {
         var datacenter = null;
@@ -105,8 +142,18 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
         }
 
         if (!datacenter) {
-            notification.push( 'ca', { type: 'error' },
-                'no datacenter specified'
+            util.error(
+                localization.translate(
+                    $scope,
+                    null,
+                    'Error'
+                ),
+                localization.translate(
+                    $scope,
+                    null,
+                    'no datacenter specified'
+                ),
+                function () {}
             );
             return;
         }
@@ -199,8 +246,14 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                             }
                         }
 
-                        notification.push( 'ca', { type: 'error' },
-                            datacenter ? datacenter + ': ' + errors : errors
+                        util.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            datacenter ? datacenter + ': ' + errors : errors,
+                            function () {}
                         );
                     }
                 });
@@ -276,8 +329,14 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
                     }
                 }
 
-                notification.push( 'ca', { type: 'error' },
-                    datacenter ? datacenter + ': ' + errors : errors
+                util.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    datacenter ? datacenter + ': ' + errors : errors,
+                    function () {}
                 );
             }
         });
@@ -347,6 +406,8 @@ function ($scope, ca, notification, $routeParams, Machine, $q, instrumentation, 
             $scope.current.decomposition.secondary = null;
         }
     };
+
+    if($scope.zoneId != null)$scope.instanceName();
 }
 
     ]);

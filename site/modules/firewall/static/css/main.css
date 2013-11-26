@@ -45,3 +45,285 @@ input.ng-invalid, input.ng-pristine {
 .row-height {
     height: 200px;
 }
+.header-btn {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-top: -65px;
+}
+.firewall-container {
+    width: 1000px;
+    padding-left: 20px;
+    overflow: hidden;
+}
+.page_row_info{
+    float: left;
+    padding-bottom: 10px;
+}
+.item {
+    border: 0;
+}
+.select2-drop {
+    width: 100%;
+    margin-top: -1px;
+    position: absolute;
+    z-index: 9992;
+    top: 100%;
+    background: #ffffff;
+    color: #000;
+    border: 1px solid #e5e5e5;
+    border-top: 0;
+}
+.select2-dropdown-open .select2-choice, .select2-dropdown-open .select2-choice a{
+    background-image: none !important;
+    background-color: white !important;
+}
+.select_position{
+    padding-top: 20px;
+    color: #666;
+    /*margin-left: -15px;*/
+}
+.select2-container .select2-choice {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+.select2-container .select2-choice div {
+    display: block;
+    width: 18px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border-left: 1px solid #e5e5e5 !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding-box;
+    background-clip: padding-box;
+    background: #ffffff !important;
+    background-image: none !important;
+}
+.select2-container .select2-choice {
+    display: block;
+    height: 25px;
+    padding: 0 0 0 15px;
+    padding-top: 3px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #e5e5e5;
+    white-space: nowrap;
+    line-height: 20px;
+    color: #444;
+    text-decoration: none;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding-box;
+    background-clip: padding-box;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none !important;
+    background-color: #ffffff  !important;
+}
+/*.select2-container{*/
+    /*height: 21px;*/
+/*}*/
+.pagination ul > li:first-child > a,
+.pagination ul > li:first-child > span {
+    -webkit-border-bottom-left-radius: 0;
+    border-bottom-left-radius: 0;
+    -webkit-border-top-left-radius: 0;
+    border-top-left-radius: 0;
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-topleft: 0;
+}
+.pagination ul > li:last-child > a,
+.pagination ul > li:last-child > span {
+    -webkit-border-top-right-radius: 0;
+    border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    border-bottom-right-radius: 0;
+    -moz-border-radius-topright: 0;
+    -moz-border-radius-bottomright: 0;
+}
+.name-field{
+    font-size: 16px;
+    font-weight: 400;
+    color: rgb(51, 51, 51);
+    vertical-align: middle;
+}
+.value-field select{
+    width: 120px;
+    padding-left: 10px;
+}
+.title-rule{
+    width: 630px;
+}
+/*.one-third{*/
+    /*width: 310px;*/
+    /*display: inline-block;*/
+    /*vertical-align: top;*/
+    /*padding-left: 10px;*/
+    /*padding-right: 10px;*/
+/*}*/
+
+.firewall-table{
+    width: 100%;
+    /*background-color: #f3f3f3;*/
+    background-color: #FAFAFA;
+}
+.firewall-table td.one-third{
+    max-width: 310px;
+    min-width: 310px;
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+.firewall-table td.small-space{
+    max-width: 5px;
+    min-width: 5px;
+    background-color: white;
+}
+.firewall-table tr{
+    min-width: 1000px;
+    max-width: 1000px;
+}
+.form-horizontal{
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+.form-horizontal .control-label {
+    width: 80px;
+    text-align: left;
+}
+
+.form-horizontal .controls {
+    margin-left: 90px;
+    min-height: 200px;
+}
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+.yellow-bg{
+    background-color: #fef1d2;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    border-bottom: 0px solid #ccc;
+    margin-bottom: 5px;
+}
+.f-name{
+    width: 76px;
+    display: inline-block;
+}
+.f-value{
+    display: inline-block;
+}
+.f-btn{
+    margin-right: 10px;
+}
+input.ng-valid {
+    border: 1px solid #00b900;
+    color: #00b900;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+input.ng-invalid, input.ng-pristine {
+    border: 1px solid #970805;
+    color: #970805;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+.control-group{
+    margin: 0;
+    padding: 0;
+}
+.remove-icon {
+    width: 13px;
+    height: 13px;
+    background-image: url(../img/remove-icon.png);
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.f-result{
+    display: block;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.uuid-text{
+    color: rgb(51, 51, 51);
+    font-size: 14px;
+    display: inline-block;
+}
+.item-list-container {
+    width: 1000px;
+    overflow: auto;
+}
+.results-group{
+    padding-top: 40px;
+}
+.create-update-btn{
+    padding-top: 20px;
+    margin-top: 5px;
+    border-top: 1px solid #ccc;
+}
+.result-width{
+    width: 290px;
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.btn-warning, .btn-default, .btn-success, .btn-danger{
+    min-width: 94px;
+    color: white;
+    text-shadow: none;
+    background-image: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    padding: 5px 2px;
+}
+.btn-default{
+    background-color: #999999;
+    color: white;
+}
+.btn-success{
+    color: black;
+    background-color: #afd46c;
+}
+.btn-warning{
+    color: white;
+    background-color: #f60;
+}
+.btn-danger{
+    color: #000000;
+    background-color: red;
+}

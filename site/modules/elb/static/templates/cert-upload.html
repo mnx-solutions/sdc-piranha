@@ -3,11 +3,11 @@
     <input id="certificate_upload_file" name="certificate" type="file" style="display: none">
     <input id="certificate_upload_passphrase" name="passphrase" type="hidden">
     <label for="certificate_upload_file" id="certificate_upload_btn" data-ng-hide="model && model != '00000000-0000-0000-0000-000000000000'"
-            data-ng-click="upload()" class="btn btn-joyent-blue pull-right">
+            data-ng-click="upload()" class="btn orange pull-right">
         <span class="ng-scope" data-translate>Upload Certificate</span>
     </label>
     <button data-ng-show="model && model != '00000000-0000-0000-0000-000000000000'" data-ng-click="remove()"
-            class="btn btn-joyent-blue pull-right">
+            class="btn orange pull-right">
         <span class="ng-scope" data-translate>Remove Certificate</span>
     </button>
 </form>

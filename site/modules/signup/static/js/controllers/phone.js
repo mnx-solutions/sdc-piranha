@@ -32,29 +32,35 @@
                     $scope.callInProgress = false;
                     if (err) {
                         notification.replace('phone', { type: 'error' }, err);
+                        $scope.phoneError = err;
+                        $scope.callInProgress = false;
                         if (data.navigate) {
                             $scope.updateStep();
                         }
                         return;
                     }
                     if (data.navigate) {
-                        notification.dismiss('phone');
+                        $scope.phoneError = null;
                         $scope.updateStep();
                     } else {
-                        notification.replace('phone', { type: 'success' }, data.message);
+                        $scope.phoneError = null;
                     }
                 });
             };
 
             $scope.verifyPin = function () {
-                if (!$scope.pin) {
+                var expr = /^\d{4}$/g; //only 4 digits
+                $scope.pinError = null;
+                $scope.pinIsInvalid = !expr.test($scope.pin);
+
+                if (!$scope.pin || $scope.pinIsInvalid) {
                     return;
                 }
                 $scope.callInProgress = true;
                 Phone.verify($scope.pin, function (err, data) {
                     $scope.callInProgress = false;
                     if (err) {
-                        notification.replace('phone', { type: 'error' }, err);
+                        $scope.pinError = err;
                         if (data.navigate) {
                             $scope.updateStep();
                         }
@@ -63,7 +69,7 @@
                     Account.updateAccount({
                         phone: $scope.phone
                     }).then(function () {
-                        notification.dismiss('phone');
+                        $scope.pinError = null;
                         $scope.updateStep();
                     });
                 });

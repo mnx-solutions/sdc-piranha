@@ -4,10 +4,10 @@
         'serverTab',
         '$q',
         'localization',
-        'notification',
+        'util',
         'errorContext',
 
-        function (serverTab, $q, localization, notification, errorContext) {
+        function (serverTab, $q, localization, util, errorContext) {
 
         var service = {};
         var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};
@@ -28,12 +28,19 @@
                     data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
-                            notification.push(datacenter, { type: 'error' },
-                                localization.translate(null,
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
                                     'machine',
                                     'Unable to retrieve packages from datacenter {{name}}',
                                     { name: datacenter }
-                                )
+                                ),
+                                function () {}
                             );
 
                             //packages.job[datacenter].deferred.reject(err);

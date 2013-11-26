@@ -14,6 +14,7 @@
             $scope.sshKeys.then(function (keys) {
                 if (keys.length > 0) {
                     $scope.keyId = keys[0].fingerprint;
+                    $scope.keyName = keys[0].name;
                 }
             });
 

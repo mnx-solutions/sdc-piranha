@@ -1,12 +1,12 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', function ($scope, $filter, $http) {
         $scope.getLastPage = function (update) {
             if ($scope.objects) {
-                var lastPage =  Math.ceil($filter('filter')($scope.objects, $scope.matchesFilter).length / $scope.perPage);
-
-                if(update && lastPage) {
+                $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
+                var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
+                if (update && lastPage) {
                     $scope.lastPage = lastPage;
                 }
 
@@ -19,9 +19,19 @@
         $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
         $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
 
-        $scope.getLastPage(true);
+        $scope.calcPageLimits = function calcPageLimits() {
+            $scope.pageNumFirst = ($scope.page - 1) * $scope.perPage + 1;
+            $scope.pageNumLast = Math.min($scope.page * $scope.perPage, $scope.pageNumSum);
+        };
 
-        $scope.isOnPage = function(index) {
+        $scope.$watch('page', $scope.calcPageLimits);
+        $scope.$watch('perPage', $scope.calcPageLimits);
+        $scope.$watch('pageNumSum', $scope.calcPageLimits);
+
+        $scope.getLastPage(true);
+        $scope.calcPageLimits();
+
+        $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
 
@@ -49,17 +59,17 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
-            if($scope.multisort !== 'false') {
+            if ($scope.multisort !== 'false') {
                 var existed = null;
-                if($scope.order.indexOf(prop.order) !== -1) {
+                if ($scope.order.indexOf(prop.order) !== -1) {
                     existed = 'order';
                     delete $scope.order[$scope.order.indexOf(prop.order)];
                 }
-                if($scope.order.indexOf(prop.rorder) !== -1) {
+                if ($scope.order.indexOf(prop.rorder) !== -1) {
                     existed = 'rorder';
                     delete $scope.order[$scope.order.indexOf(prop.rorder)];
                 }
-                if(reverse === undefined) {
+                if (reverse === undefined) {
                     if(!existed) {
                         $scope.order.push(prop.order);
                     } else if(existed === 'order'){
@@ -71,19 +81,27 @@
             } else {
                 var order = $scope.order[0];
 
-                if(order === prop.order) {
+                if (order === prop.order) {
                     $scope.order = [prop.rorder];
                 } else {
                     $scope.order = [prop.order];
                 }
             }
+            
+            $scope.props.forEach(function (el) {
+                if (el.name == prop.name){
+                    el.columnActive = true;
+                } else {
+                    el.columnActive = false;
+                }
+            });
         };
 
         $scope.matchesFilter = function (obj) {
             var all = true;
-            if($scope.filterAll) {
+            if ($scope.filterAll) {
                 all = $scope.props.some(function (el) {
-                    if(!el.active) {
+                    if (!el.active) {
                         return false;
                     }
 
@@ -100,7 +118,7 @@
             }
 
             return all && !$scope.props.some(function (el) {
-                if(!el.active || !el.filter) {
+                if (!el.active || !el.filter) {
                     return false;
                 }
 
@@ -138,10 +156,10 @@
             });
 
             var final = [];
-            if($scope.exportFields.ignore) {
+            if ($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
             }
-            if($scope.exportFields.fields) {
+            if ($scope.exportFields.fields) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
             }
 
@@ -170,28 +188,62 @@
         };
 
         $scope.getActionButtons = function (object) {
-            if(!object) {
+            if (!object) {
                 return $scope.actionButtons;
             }
-	        if(!$scope.actionButtons) {
+	        if (!$scope.actionButtons) {
 		        return [];
 	        }
 
             return $scope.actionButtons.filter(function (btn) {
-                if(btn.show === undefined) {
+                if (btn.show === undefined) {
                     return true;
                 }
-                if(typeof btn.show === 'function') {
+                if (typeof btn.show === 'function') {
                     return btn.show(object);
                 }
 
                 return !!btn.show;
             });
         };
-    }])
-    .constant('gridConfig', {
+
+        if($scope.checkedCheckBox == undefined) $scope.checkedCheckBox = false;
+        $scope.selectAllCheckbox = function(){
+            $scope.checkedCheckBox = ($scope.checkedCheckBox) ? false : true;
+            $scope.objects.forEach(function (el) {
+                el.checked = $scope.checkedCheckBox;
+            });
+        };
+
+        $scope.selectCheckbox = function (id) {
+            var checkedFlag = 0;
+            $scope.objects.forEach(function (el) {
+                if (el.id == id) {
+                    if (!el.job || (el.job && el.job.finished)){
+                        el.checked = (el.checked) ? false : true;
+                    }
+                }
+                if (el.checked && el.checked != undefined) {
+                    checkedFlag += 1;
+                }
+            });
+            if (checkedFlag > 0) $scope.checkedCheckBox = false;
+            if (checkedFlag == $scope.objects.length && $scope.objects.length > 0) $scope.checkedCheckBox = true;
+        };
+
+        $scope.selectColumnsCheckbox = function (id) {
+            $scope.props.forEach(function (el) {
+                if(el.id == id){
+                    el.active = (el.active) ? false : true;
+                }
+            });
+        };
+
+        $scope.selectCheckbox();
+
+    }]).constant('gridConfig', {
         paginated: true,
-        perPage: 15,
+        perPage: 5,
         page: 1,
         showPages: 5,
         order: [],
@@ -209,6 +261,10 @@
                 actionButtons:'=',
                 filterAll: '@',
                 exportFields: '=',
+                columnsButton: '=',
+                actionsButton: '=',
+                instForm: '=',
+                enabledCheckboxes: '=',
                 objectsType: '@',
                 multisort: '@'
             },
@@ -225,8 +281,7 @@
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
 
                 $scope.props.forEach(function (el) {
-                    el.active = true;
-	                if(el._getter) {
+	                if (el._getter) {
 		                el.order = el._getter;
 		                el.rorder = function (obj) {
 			                var elem = el._getter(obj) + '';
@@ -236,7 +291,7 @@
 			                }
 			                return next;
 		                };
-	                } else if(!el.id2) {
+	                } else if (!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {
@@ -244,13 +299,12 @@
                         el.rorder = '-' + el.id + '.' + el.id2;
                     }
                 });
-
             }
         };
     }])
     .filter('jsonArray', function () {
         return function (array) {
-            if(ng.isArray(array)) {
+            if (ng.isArray(array)) {
                 return array.join('; ');
             }
             return JSON.parse(array).join('; ');

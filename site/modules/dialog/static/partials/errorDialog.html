@@ -1,0 +1,11 @@
+<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="modal-header error">
+        <h5><i class="icon-warning-sign"></i><b>{{ title }}</b></h5>
+    </div>
+    <div class="modal-body">
+        <p>{{ message }} </p>
+    </div>
+    <div class="modal-footer">
+        <button class="orange" ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">{{ btn.label }}</button>
+    </div>
+</div>

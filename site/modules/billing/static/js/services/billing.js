@@ -6,9 +6,9 @@
         '$http',
         '$q',
         'serverTab',
-        'notification',
         'localization',
-        function ($http, $q, serverTab, notification, localization) {
+        'util',
+        function ($http, $q, serverTab, localization, util) {
         var service = {};
 
         var creditCard = null;
@@ -31,11 +31,18 @@
                     data: {},
                     done: function (err, job) {
                         if(err) {
-                            notification.push('defaultCreditCard', { type: 'error' },
-                                localization.translate(null,
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
                                     'billing',
                                     'Unable to retrieve defaultCreditCard'
-                                )
+                                ),
+                                function(){}
                             );
                         }
                     }
@@ -59,12 +66,19 @@
                 name: 'listInvoices',
                 data: {},
                 done: callback || function (err, job) {
-                    if(err) {
-                        notification.push('invoices', { type: 'error' },
-                            localization.translate(null,
+                    if(err && err !== 'Not Implemented') {
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
                                 'billing',
                                 'Unable to retrieve invoices'
-                            )
+                            ),
+                            function(){}
                         );
                     }
                 }
@@ -77,12 +91,19 @@
                 name: 'getSubscriptions',
                 data: {},
                 done: callback || function (err, job) {
-                    if(err) {
-                        notification.push('subscriptions', { type: 'error' },
-                            localization.translate(null,
+                    if(err && err !== 'Not Implemented') {
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
                                 'billing',
                                 'Unable to retrieve subscriptions'
-                            )
+                            ),
+                            function(){}
                         );
                     }
                 }
@@ -96,11 +117,18 @@
                 data: {},
                 done: callback || function (err, job) {
                     if(err) {
-                        notification.push('lastInvoice', { type: 'error' },
-                            localization.translate(null,
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
                                 'billing',
                                 'Unable to retrieve latest invoice'
-                            )
+                            ),
+                            function(){}
                         );
                     }
                 }

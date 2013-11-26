@@ -1,12 +1,9 @@
-<div class="container-fluid">
-    <div class="container">
-        <div class="row">
-            <div class="span11">
-                <p data-translate>We've encountered a problem and are not able to activate your account at this time. 
-                    Please contact <a href="mailto: support@joyent.com">support@joyent.com</a> for assistance.
-                </p>
-                {{ attemptId && 'Attempt ID: ' + attemptId }}
-            </div>
+    <div style="margin-top: 11px;margin-left: 9px;line-height: 21px;">
+        <div class="page-title">Failed</div>
+        <div style="width: 650px;">
+            <p style="font-size: 16px;line-height: 24px;" data-translate>Sorry, your registration to Joyent Cloud has been blocked because we cannot verify your identity.</p>
+            <p style="font-size: 16px;line-height: 24px;font-weight: 600;">Please contact <a href="mailto:support@joyent.com" style="color: #f60;text-decoration: none;">support@joyent.com</a> for assistance</p>
+            {{ attemptId && 'Attempt ID: ' + attemptId }}
         </div>
     </div>
 </div>

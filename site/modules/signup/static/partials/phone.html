@@ -1,18 +1,14 @@
 <div class="container-fluid" data-ng-controller="Signup.PhoneController">
-    <div class="container">
-        <div class="row">
-            <div class="span11">
-                <h1 data-translate>Identity Verification by Phone</h1>
-                <p data-translate>After you enter a phone number where you can be reached below, you will then be called by an automated system and provided a PIN number over the phone. Once completed, you’ll be able to proceed to finalize your registration process.</p>
-            </div>
+    <div class="content-container-signup signup-progress-container">
+        <div class="page-title">Identity Verification by Phone</div>
+        <div class="wizard-steps">
+            <div><p class="firststep">Account Details</p></div>
+            <div class="active-step"><p>Verification</p></div>
+            <div><p>Payment Information</p></div>
+            <div><p class="laststep"></p></div>
         </div>
-        <div class="row">
-            <hr class="span11">
-        </div>
-        <div class="row">
-            <div class="span11">
-                <p data-translate>Please enter your phone number and click the “Call Me Now” button.</p>
-            </div>
+        <div class="message-box">
+            <p style="color: #7C7C7C;padding-left: 70px;padding-top: 8px;font-size: 16px;">Marketing Info</p>
         </div>
         <form data-ng-submit="makeCall()">
             <div class="row">
@@ -45,11 +41,90 @@
                     <button class="btn btn-joyent-blue span2">Verify</button>
                 </div>
             </div>
-        </form>
-        <div class="row">
-            <div class="span3">
-                <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</a>
+            <div class="line-st1"></div>
+            <div style="padding:42px 0 42px 0">
+                <button class=" grey_btn" data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel Signup Process</button>
             </div>
-        </div>
+
+        </form>
     </div>
+
+
+
+
+
+
+    <!--<div class="container">-->
+        <!--<div class="row">-->
+            <!--<div class="span11">-->
+                <!--<h1 data-translate>Identity Verification by Phone</h1>-->
+                <!--<p data-translate>After you enter a phone number where you can be reached below, you will then be called by an automated system and provided a PIN number over the phone. Once completed, you’ll be able to proceed to finalize your registration process.</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="row">-->
+            <!--<hr class="span11">-->
+        <!--</div>-->
+        <!--<div class="row">-->
+            <!--<div class="span11">-->
+                <!--<p data-translate>Please enter your phone number and click the “Call Me Now” button.</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<form data-ng-submit="makeCall()">-->
+            <!--<div class="row">-->
+                <!--<div class="span3">-->
+                    <!--<div class="control-group">-->
+                        <!--<div class="controls">-->
+                            <!--<select-->
+                                    <!--data-ng-style="countryStyle"-->
+                                    <!--data-ng-model="country"-->
+                                    <!--style="width: 245px"-->
+                                    <!--name="countryCode"-->
+                                    <!--id="countryCode"-->
+                                    <!--data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">-->
+                            <!--</select>-->
+                            <!--<br />-->
+                            <!--<div class="input-prepend">-->
+                                <!--<span class="add-on" style="width:50px">(+{{selectedCountryCode}})</span>-->
+                                <!--<input style="width: 170px" type="text"-->
+                                       <!--id="phone"-->
+                                       <!--name="phone"-->
+                                       <!--data-ng-model="phone"-->
+                                       <!--required/>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="span3">-->
+                    <!--<button class="btn btn-joyent-blue span2" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</form>-->
+        <!--<div class="row">-->
+            <!--<hr class="span11">-->
+        <!--</div>-->
+        <!--<div class="row">-->
+            <!--<div class="span11">-->
+                <!--<p data-translate>A call will be placed to you at this number and a PIN number will be provided to you. Please enter the PIN number here to complete the verification process.</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<form data-ng-submit="verifyPin()">-->
+            <!--<div class="row">-->
+                <!--<div class="span3">-->
+                    <!--<div class="control-group">-->
+                        <!--<div class="controls">-->
+                            <!--<input data-ng-model="pin" style="width: 230px" type="text" required>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="span6">-->
+                    <!--<button class="btn btn-joyent-blue span2">Verify</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</form>-->
+        <!--<div class="row">-->
+            <!--<div class="span3">-->
+                <!--<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</a>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>

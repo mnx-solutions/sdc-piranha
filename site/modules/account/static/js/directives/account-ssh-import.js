@@ -12,7 +12,8 @@
         '$timeout',
         '$http',
         '$rootScope',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope) {
+        'util',
+        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope, util) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -25,7 +26,7 @@
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function(question, callback) {
                         var title = 'Add new ssh key';
-                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue'}];
+                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left', setFocus: false}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
                         var templateUrl = 'account/static/template/dialog/message.html';
 
                         $rootScope.loading = true;
@@ -42,10 +43,18 @@
                                 }
 
                                 if(result === 'add') {
-                                    notification.push(null, { type: 'error' },
-                                        localization.translate($scope, null,
+                                    util.error(
+                                        localization.translate(
+                                            $scope,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            $scope,
+                                            null,
                                             'Please enter a SSH key'
-                                        )
+                                        ),
+                                        function () {}
                                     );
                                 }
                             });
@@ -65,41 +74,72 @@
                                 $scope.key = null;
 
                                 if($scope.nextStep) {
-                                    // show a persistent notification
-                                    notification.push(null, { type: 'success', persistent: true },
-                                        localization.translate($scope, null,
+                                    util.message(
+                                        localization.translate(
+                                            $scope,
+                                            null,
+                                            'Message'
+                                        ),
+                                        localization.translate(
+                                            $scope,
+                                            null,
                                             'SSH Key successfully added to your account'
-                                        )
+                                        ),
+                                        function () {}
                                     );
                                     $scope.nextStep();
                                 } else {
                                     $scope.updateKeys(function() {
-                                        notification.push(null, { type: 'success' },
-                                            localization.translate($scope, null,
+                                        util.message(
+                                            localization.translate(
+                                                $scope,
+                                                null,
+                                                'Message'
+                                            ),
+                                            localization.translate(
+                                                $scope,
+                                                null,
                                                 'New key successfully added'
-                                            )
+                                            ),
+                                            function () {}
                                         );
                                     });
                                 }
                             } else {
-                                notification.push(null, { type: 'error' },
-                                    localization.translate($scope, null,
+                                util.error(
+                                    localization.translate(
+                                        $scope,
+                                        null,
+                                        'Error'
+                                    ),
+                                    localization.translate(
+                                        $scope,
+                                        null,
                                         'Failed to add new key: {{message}}',
                                         {
                                             message: (key.message || '') + ' ' + (key.code || '')
                                         }
-                                    )
+                                    ),
+                                    function () {}
                                 );
                             }
                         }, function(key) {
                             $rootScope.loading = false;
-                            notification.push(null, { type: 'error' },
-                                localization.translate($scope, null,
+                            util.error(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
                                     'Failed to add new key: {{message}}',
                                     {
                                         message: (key.message || '') + ' ' + (key.code || '')
                                     }
-                                )
+                                ),
+                                function () {}
                             );
                         });
                     };

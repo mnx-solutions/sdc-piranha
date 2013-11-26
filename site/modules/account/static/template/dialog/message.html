@@ -1,22 +1,25 @@
 <div>
-    <div class="modal-header">
-        <h1>Import SSH Public Key</h1>
-    </div>
-    <div class="modal-body">	
-		<div class="control-group">
-            <label class="control-label">Key Name</label>
-            <div class="controls">
-                <input type="text" class="span5" data-ng-model="data.keyName" placeholder="optional" />
+    <div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+        <div class="modal-header message">
+            <h5><i class="icon-info-sign"></i><b>Import SSH Public Key</b></h5>
+        </div>
+        <div class="modal-body">
+            <div class="control-group">
+                <label class="control-label">Key Name</label>
+                <div class="controls">
+                    <input type="text" class="span5" data-ng-model="data.keyName" placeholder="optional" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Public Key</label>
+                <div class="controls">
+                    <textarea class="ssharea span5" rows="10" data-ng-model="data.keyData"></textarea><br />
+                </div>
             </div>
         </div>
-		<div class="control-group">
-			<label class="control-label">Public Key</label>
-			<div class="controls">
-        		<textarea class="ssharea span5" rows="10" data-ng-model="data.keyData"></textarea><br />
-			</div>
-		</div>
-    </div>
-    <div class="modal-footer">
-        <button data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
+        <div class="modal-footer">
+            <!--<button data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn orange" data-ng-class="btn.cssClass">{{ btn.label }}</button>-->
+            <button data-ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" data-ng-click="close(btn.result)" class="btn orange" data-ng-class="{grey_new: btn.label == 'Cancel'}">{{ btn.label }}</button>
+        </div>
     </div>
 </div>

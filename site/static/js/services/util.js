@@ -8,13 +8,9 @@ window.JP.main.service('util', [
         service.isPrivateIP = function isPrivateIP(ip) {
             var parts = ip.split('.');
 
-            if (+parts[0] === 10 ||
+            return +parts[0] === 10 ||
                 (+parts[0] === 172 && (+parts[1] >= 16 && +parts[1] <= 31)) ||
-                (+parts[0] === 192 && +parts[1] === 168)) {
-                return true;
-            }
-
-            return false;
+                (+parts[0] === 192 && +parts[1] === 168);
         };
 
         service.confirm = function (title, question, callback) {
@@ -23,13 +19,58 @@ window.JP.main.service('util', [
             var btns = [
                 {
                     result: 'cancel',
-                    label: 'Cancel',
-                    cssClass: 'pull-left'
+                    label: 'No',
+                    cssClass: 'btn grey_new',
+                    datatabindex: "1",
+                    setFocus: false
                 },
                 {
-                    result:'ok',
-                    label: 'OK',
-                    cssClass: 'btn-joyent-blue'
+                    result: 'ok',
+                    label: 'Yes',
+                    cssClass: 'btn orange',
+                    datatabindex: "2",
+                    setFocus: true
+                }
+            ];
+
+            return $dialog.messageBox(title, question, btns, 'dashboard/static/template/dialog/confirmationDialog.html')
+                .open()
+                .then(function (result) {
+                    if (result === 'ok') {
+                        callback();
+                    }
+                });
+        };
+
+        service.error = function (title, question, callback) {
+            // TODO: Translate
+            title = title || 'Error';
+            var btns = [
+                {
+                    result: 'ok',
+                    label: 'Ok',
+                    cssClass: 'btn orange',
+                    setFocus: true
+                }
+            ];
+
+            return $dialog.messageBox(title, question, btns, 'dashboard/static/template/dialog/errorDialog.html')
+                .open()
+                .then(function (result) {
+                    if (result === 'ok') {
+                        callback();
+                    }
+                });
+        };
+        service.message = function (title, question, callback) {
+            // TODO: Translate
+            title = title || 'Message';
+            var btns = [
+                {
+                    result: 'ok',
+                    label: 'Ok',
+                    cssClass: 'btn orange',
+                    setFocus: true
                 }
             ];
 
@@ -68,3 +109,23 @@ window.JP.main.service('util', [
         return service;
     }]
 );
+
+window.JP.main.directive('buttonFocus', [
+    function () {
+        return {
+            restrict: 'A',
+            replace: false,
+            scope: false,
+            link: function (scope, element, attrs) {
+
+                attrs.$observe('buttonFocus', function (value) {
+
+                    if (value === 'true') {
+                        element.focus();
+                    }
+
+                });
+            }
+        };
+    }
+]);

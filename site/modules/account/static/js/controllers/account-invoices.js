@@ -5,15 +5,13 @@
     app.filter('hideNotPosted', function() {
         return function(invoices) {
             if(invoices) {
-                for(var i = 0;i < invoices.length;i++) {
+                for (var i = invoices.length - 1; i > 0; i--) {
                     if(invoices[i].status !== 'Posted') {
                         invoices.splice(i, 1);
                     }
                 }
-                return invoices;
-            } else {
-                return invoices;
             }
+            return invoices;
         };
     });
 
@@ -28,11 +26,15 @@
             requestContext.setUpRenderContext('account.invoices', $scope);
 
             $scope.loading = false;
+            $scope.isInvocesEnabled = true;
             $scope.invoices = BillingService.getInvoices();
             $scope.subscriptions = BillingService.getSubscriptions();
 
             $scope.invoices.then(function () {}, function (err) {
                 $scope.error = err;
+                if(err === "Not Implemented") {
+                    $scope.isInvocesEnabled = false;
+                }
             });
             $scope.subscriptions.then(function () {}, function (err) {
                 $scope.error = err;

@@ -15,14 +15,21 @@
         'BillingService',
         '$http',
         '$cookies',
+        'notification',
+        'elb.Service',
 
-        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies) {
+        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, notification, elbService) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
             // populate all datasources
             $scope.account     = Account.getAccount();
+            $scope.balancers = elbService.getBalancers();
+            elbService.getController().then(function (isEnabled) {
+                $scope.elbEnabled = isEnabled;
+            });
+
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
                 'Getting Started': 'http://wiki.joyent.com/gettingstarted',
@@ -49,15 +56,16 @@
 
             // when all datasources are loaded, disable loader
             $q.all(
-                [$q.when($scope.machines),
-                    $q.when($scope.forums),
-                    $q.when($scope.systemStatusTopics),
-                    $q.when($scope.softwareUpdateTopics),
-                    $q.when($scope.account),
-                    $q.when($scope.rssentries)
-                ]).then( function(){
-                $scope.loading = false;
-            });
+                    [$q.when($scope.machines),
+                        $q.when($scope.forums),
+                        $q.when($scope.systemStatusTopics),
+                        $q.when($scope.softwareUpdateTopics),
+                        $q.when($scope.account),
+                        $q.when($scope.rssentries),
+                        $q.when($scope.balancers)
+                    ]).then( function(){
+                    $scope.loading = false;
+                });
 
 
             // count running/not running machines
@@ -79,6 +87,67 @@
 
             $scope.runningcount = 0;
             $scope.othercount = 0;
+
+            $scope.confirmDialog = function () {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Your laptop will explode now.  Are you sure?'
+                    ), function () {
+                        $scope.jokeDialog();
+                    });
+            };
+            $scope.errorDialog = function () {
+                util.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Failed:  API method not found.'
+                    ),function(){
+                        this.close();
+                    });
+            };
+            $scope.messageDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is not implemented yet.'
+                    ),function(){
+                        this.close();
+                    });
+            };
+            $scope.jokeDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is joke.'
+                    ),function(){
+                        this.close();
+                    });
+            };
         }
 
     ]);

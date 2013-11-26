@@ -31,6 +31,7 @@
             $scope.machine = Machine.machine(machineid);
             $scope.loading = true;
             $scope.changingName = false;
+            $scope.loadingNewName = false;
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
@@ -62,6 +63,8 @@
                     });
                 }
             );
+
+            $scope.machines = Machine.machine();
 
             $scope.$watch('machines', function (machines) {
                 $q.when(Machine.machine(machineid)).then(
@@ -133,6 +136,20 @@
                 });
             });
 
+            $scope.accordionIcon={
+                0:true
+            };
+            $scope.collapseTrigger = function(item){
+                $scope.accordionIcon = {
+                    0:false,
+                    1:false,
+                    2:false,
+                    3:false,
+                    4:false
+                };
+                return $scope.accordionIcon[item] = true;
+            };
+
             $scope.clickStart = function () {
                 util.confirm(
                     localization.translate(
@@ -155,12 +172,12 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Stop instance'
+                        'Confirm: Pause instance'
                     ),
                     localization.translate(
                         $scope,
                         null,
-                        'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
+                        'Pausing an instance does not stop billing, your instance can be restarted after it is paused.'
                     ), function () {
                         Machine.stopMachine(machineid);
                         $$track.event('machine', 'stop');
@@ -172,7 +189,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Restart instance'
+                        'Confirmation'
                     ),
                     localization.translate(
                         $scope,
@@ -222,6 +239,22 @@
                 }
             };
 
+            $scope.messageDialog = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Sorry, this is not implemented yet.'
+                    ), function() {
+                        this.close();
+                    });
+            };
+            
             $scope.enableRename = function(name) {
                 if($scope.features.instanceRename === 'enabled') {
                     $scope.changingName = true;
@@ -249,6 +282,8 @@
                         null,
                         'Rename this instance'
                     ), function () {
+                        $scope.loadingNewName = true;
+                        $scope.changingName = false;
                         $$track.event('machine', 'rename');
 		                $scope.renaming = true;
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
@@ -257,6 +292,7 @@
                             $scope.machine.name = $scope.newInstanceName;
                             $scope.changingName = false;
 	                        $scope.renaming = false;
+                            $scope.loadingNewName = false;
                         });
                     }
                 );
@@ -278,9 +314,28 @@
 
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
-                            if($location.url() === '/compute/instance/'+ machineid) {
+                            util.message(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Your instance "{{name}}" has been successfully deleted.',
+                                    {
+                                        name: $scope.machine['name']
+                                    }
+                                ),
+                                function () {}
+                            );
+                            if ($location.url() === '/compute/instance/'+ machineid) {
                                 $location.url('/compute');
                                 $location.replace();
+                            }
+                            if(!$scope.machines.length) {
+                                $location.path('/compute/create')
                             }
                         });
                     });

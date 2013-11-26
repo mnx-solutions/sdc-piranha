@@ -25,8 +25,8 @@ angular.module('ui.bootstrap.pagination', [])
   boundaryLinks: false,
   directionLinks: true,
   firstText: 'First',
-  previousText: 'Previous',
-  nextText: 'Next',
+  previousText: '← Previous',
+  nextText: 'Next →',
   lastText: 'Last',
   rotate: true
 })
@@ -141,8 +141,8 @@ angular.module('ui.bootstrap.pagination', [])
 }])
 
 .constant('pagerConfig', {
-  previousText: '« Previous',
-  nextText: 'Next »',
+  previousText: '←  Previous',
+  nextText: 'Next  →',
   align: true
 })
 

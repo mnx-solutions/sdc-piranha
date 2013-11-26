@@ -40,6 +40,8 @@
                 });
             }, true);
 
+
+
             $scope.$watch('machines.final', function (final) {
                 if(final) {
                     $q.when($scope.packages, function () {
@@ -48,72 +50,30 @@
                 }
             });
 
-            $scope.startMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Start instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Restart this instance'
-                    ), function () {
-                        $$track.event('machine', 'start');
-                        Machine.startMachine(id);
-                    });
+            $scope.actionButton = function(){
+                var flag = false;
+                $scope.machines.forEach(function (el) {
+                    if(el.checked){
+                        flag = true;
+                    }
+                });
+                return flag;
             };
 
-            $scope.stopMachine = function (id) {
-                util.confirm(
+            $scope.noCheckBoxChecked = function(){
+                util.error(
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Stop instance'
+                        'Error'
                     ),
                     localization.translate(
                         $scope,
                         null,
-                        'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
-                    ), function () {
-                        Machine.stopMachine(id);
-                        $$track.event('machine', 'stop');
-                    });
-            };
-
-            $scope.deleteMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Delete instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Destroy the information on this instance and stop billing for this instance.'
-                    ), function () {
-                        $$track.event('machine', 'delete');
-                        Machine.deleteMachine(id);
-                    });
-            };
-
-            $scope.rebootMachine = function (id) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Restart instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Restart this instance'
-                    ), function() {
-                        $$track.event('machine', 'reboot');
-                        Machine.rebootMachine(id);
-                    });
+                        'No instance selected for the action.'
+                    ),function(){
+                    }
+                );
             };
 
             $scope.gridOrder = ['created'];
@@ -121,50 +81,110 @@
                 {
                     id: 'label',
                     name: 'Name',
-                    sequence: 1
+                    sequence: 1,
+                    active: true
                 },
                 {
                     id: 'datacenter',
                     name: 'Data Center',
-                    sequence: 2
+                    sequence: 2,
+                    active: true
                 },
                 {
                     id: 'created',
                     name: 'Created',
-                    getClass: function (type) {
-                        if(type === 'header') {
-                            return 'span3';
-                        }
-                        return 'span3 machine-list-content';
-                    },
-
-                    sequence: 3
+                    sequence: 3,
+                    active: true
                 },
                 {
-                    id: 'ips',
+                    id: 'primaryIp',
                     name: 'IP',
-                    type: 'html',
-                    _getter: function (machine) {
-                        if (!ng.isArray(machine.ips)) {
-                            return '';
-                        }
-
-                        if (ng.isArray(machine.publicIps)) {
-                            return machine.publicIps
-                                .concat(machine.privateIps)
-                                .slice(0,2)
-                                .join('<br/>');
-                        } else {
-                            return '';
-                        }
-
-                    },
-                    sequence: 4
+                    sequence: 4,
+                    active: true
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 5
+                    sequence: 5,
+                    active: true
+                },
+                {
+                    id: 'updated',
+                    name: 'Updated',
+                    sequence: 6,
+                    active: true
+                },
+                {
+                    id: 'id',
+                    name: 'ID',
+                    sequence: 7,
+                    active: false
+                },
+                {
+                    id: 'image',
+                    name: 'Image',
+                    sequence: 8,
+                    active: false
+                },
+                {
+                    id: 'type',
+                    name: 'Type',
+                    sequence: 9,
+                    active: false
+                },
+                {
+                    id: 'memory',
+                    name: 'Memory',
+                    sequence: 10,
+                    active: false
+                },
+                {
+                    id: 'disk',
+                    name: 'Disk',
+                    sequence: 11,
+                    active: false
+                },
+                {
+                    id: 'tags',
+                    name: 'Tags',
+                    sequence: 12,
+                    active: false
+                },
+                {
+                    id: 'credentials',
+                    name: 'Credentials',
+                    sequence: 13,
+                    active: false
+                },
+                {
+                    id: 'dataset',
+                    name: 'Dataset',
+                    sequence: 14,
+                    active: false
+                },
+                {
+                    id: 'firewall_enabled',
+                    name: 'Firewall Enabled',
+                    sequence: 15,
+                    active: false
+                },
+                {
+                    id: 'package',
+                    name: 'Package',
+                    sequence: 16,
+                    active: false
+                },
+                {
+                    id: '$$hashKey',
+                    name: '$$hashKey',
+                    sequence: 17,
+                    active: false
+                },
+                {
+                    id: 'ips',
+                    name: 'IP-s',
+                    sequence: 18,
+                    active: false
                 }
             ];
             $scope.gridDetailProps = [
@@ -194,46 +214,140 @@
             $scope.gridActionButtons = [
                 {
                     label: 'Start',
-                    disabled: function (object) {
-                        return object.state === 'running' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state === 'running' || (object.job && !object.job.finished);
+//                    },
                     action: function (object) {
-                        $scope.startMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Start instances'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Restart selected instances'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            $$track.event('machine', 'start');
+                                            Machine.startMachine(el.id);
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.',
+//                    tooltip: 'Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.',
                     sequence: 1
                 },
                 {
-                    label: 'Stop',
-                    disabled: function (object) {
-                        return object.state === 'stopped' || (object.job && !object.job.finished);
-                    },
+                    label: 'Pause',
+//                    disabled: function (object) {
+//                        return object.state === 'stopped' || (object.job && !object.job.finished);
+//                    },
                     action: function (object) {
-                        $scope.stopMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Pause instance'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Pausing selected instances does not stop billing, your instance can be restarted after it is paused.'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            $$track.event('machine', 'stop');
+                                            Machine.stopMachine(el.id);
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'Stopping an instance does not stop billing. You can restart your instance after you stop your machine.',
+//                    tooltip: 'Stopping an instance does not stop billing. You can restart your instance after you stop your machine.',
                     sequence: 2
                 },
                 {
                     label: 'Delete',
-                    disabled: function (object) {
-                        return object.state !== 'stopped' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state !== 'stopped' || (object.job && !object.job.finished);
+//                    },
                     action: function (object) {
-                        $scope.deleteMachine(object.id);
+                        if($scope.actionButton()) {
+                            var checkedInstances = [];
+                            var message = '';
+                            $scope.machines.forEach(function (el) {
+                                if (el.checked) {
+                                    checkedInstances.push(el);
+                                }
+                            });
+                            message = checkedInstances.length > 1 ?
+                                'Destroy the information on these instances and stop billing for them.' :
+                                'Destroy the information on this instance and stop billing for selected instances.';
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Delete instance'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    message
+                                ), function () {
+                                    checkedInstances.forEach(function (el) {
+                                        if (el.state === 'running') {
+                                            $$track.event('machine', 'stop');
+                                            Machine.stopMachine(el.id).getJob().done(function () {
+                                                $scope.deleteInstance(el);
+                                            });
+                                        } else {
+                                            $scope.deleteInstance(el);
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.',
+//                    tooltip: 'You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.',
                     sequence: 3
                 },
                 {
                     label: 'Reboot',
-                    disabled: function (object) {
-                        return object.state !== 'running' || (object.job && !object.job.finished);
-                    },
+//                    disabled: function (object) {
+//                        return object.state !== 'running' || (object.job && !object.job.finished);
+//                    },
+
                     action: function (object) {
-                        $scope.rebootMachine(object.id);
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Restart instance'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Restart selected instances'
+                                ), function() {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            Machine.rebootMachine(id);
+                                            $$track.event('machine', 'reboot');
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
                     },
-                    tooltip: 'Click here to reboot your instance.',
+//                    tooltip: 'Click here to reboot your instance.',
                     sequence: 4
                 }
             ];
@@ -242,8 +356,21 @@
                 ignore: ['metadata']
             };
 
-        }
+            $scope.columnsButton = true;
+            $scope.actionsButton = true;
+            $scope.instForm = true;
+            $scope.enabledCheckboxes = true;
 
+            $scope.deleteInstance = function(el) {
+                $$track.event('machine', 'delete');
+                Machine.deleteMachine(el.id).getJob().done(function () {
+                    if (!$scope.machines.length) {
+                        $location.path("compute/create");
+                    }
+                    el.checked = false;
+                });
+            }
+        }
 
     ]);
 }(window.angular, window.JP.getModule('Machine')));
