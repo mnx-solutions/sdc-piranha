@@ -1399,7 +1399,8 @@ ul.dropdown-menu{
     backgroun-size: 200px 34px;
 }
 
-.wizard-steps .active-step p {
+.wizard-steps .active-step p,
+.wizard-steps .breadcrumb{
     color:white;
     background: #3d3d3d;
     font-weight: 300;
@@ -1428,6 +1429,11 @@ ul.dropdown-menu{
     /*border: 0;*/
     border-bottom: 0;
     border-top: 0;
+}
+
+.wizard-steps .breadcrumb {
+    color: #333;
+    text-decoration: none;
 }
 
 .package-select tbody{
