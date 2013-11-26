@@ -7,7 +7,13 @@
     </ul>
 
     <ul class="lb-contr">
-        <li><h4 class="pull-left" data-translate>Load Balancer Controller is Running</h4></li>
+        <li>
+            <h4 class="pull-left">
+                <span data-translate>Load Balancer Controller is</span>
+                <span data-ng-show="listLoaded" data-translate>Running</span>
+                <span data-ng-hide="listLoaded" data-translate>Starting</span>
+            </h4>
+        </li>
         <li>
             <p class="pull-right lb-disabled">
                 <i class="icon icon-minus-sign minus-icon-pos"></i>
