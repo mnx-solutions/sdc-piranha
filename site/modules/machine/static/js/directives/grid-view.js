@@ -87,7 +87,7 @@
                     $scope.order = [prop.order];
                 }
             }
-            
+
             $scope.props.forEach(function (el) {
                 if (el.name == prop.name){
                     el.columnActive = true;
@@ -250,7 +250,7 @@
         propOn: false,
         multisort: true
     })
-    .directive('gridView', ['gridConfig', function(gridConfig) {
+    .directive('gridView', ['gridConfig', '$rootScope', function (gridConfig, $rootScope) {
         return {
             restrict: 'EA',
             scope: {
@@ -281,7 +281,17 @@
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
 
                 $scope.props.forEach(function (el) {
-	                if (el._getter) {
+
+                    if ($rootScope.features.firewall === 'enabled') {
+                        if (el.id === 'firewall_enabled') {
+                            el.active = true;
+                        }
+                        if (el.id === 'updated') {
+                            el.active = false;
+                        }
+                    }
+
+                    if (el._getter) {
 		                el.order = el._getter;
 		                el.rorder = function (obj) {
 			                var elem = el._getter(obj) + '';
