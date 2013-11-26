@@ -1,3 +1,5 @@
+"use strict";
+
 var vasync = require('vasync');
 var restify = require('restify');
 var httpSignature = require('http-signature');
@@ -76,8 +78,8 @@ exports.getSscClient = function (call, callback) {
     }
     function checkSscClient(client, callback, firstStart) {
         firstStart = firstStart || new Date().getTime();
-        if (new Date().getTime() - firstStart > 3 * 60 * 1000) {
-            callback(new Error('SSC Connection Timeout'));
+        if (new Date().getTime() - firstStart > 5 * 60 * 1000) {
+            callback('Connection Timeout. Try refreshing the page');
             return;
         }
         client.get('/ping', function (err, req, res, body) {
@@ -100,6 +102,8 @@ exports.getSscClient = function (call, callback) {
             callback(new Error('Something wrong, re-enabling load balancing required'));
             return;
         }
+
+        call.req.log.info(result, 'Creating ELBAPI client');
 
         var sscUrl = config.elb.ssc_protocol + '://' + result.primaryIp + ':' + config.elb.ssc_port;
         var sscClient = restify.createJsonClient({

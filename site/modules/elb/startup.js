@@ -220,51 +220,80 @@ var elb = function execute(scope) {
         },
         handler: function (call) {
             call.getImmediate(false);
-            var sscKeyPair = createKeyPairs();
-            var portalKeyPair = createKeyPairs();
-            var data = {
-                datacenter: call.data.datacenter,
-                dataset: config.elb.ssc_image,
-                name: hardControllerName,
-                package: config.elb.ssc_package,
-                'metadata.ssc_private_key': sscKeyPair.privateKey,
-                'metadata.ssc_public_key': sscKeyPair.publicSsh,
-                'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
-                'metadata.account_name': config.elb.account || call.req.session.userName,
-                'metadata.datacenter_name': call.data.datacenter,
-                'metadata.elb_code_url': config.elb.elb_code_url,
-                'metadata.sdc_url': config.elb.sdc_url || "https://us-west-1.api.joyentcloud.com",
-                'tag.lbaas': 'ssc'
-            };
-
-            if (config.elb.ssc_networks) {
-                data.networks = config.elb.ssc_networks;
-            }
-
-            if (config.elb.ssc_private_key && config.elb.ssc_public_key) {
-                data['metadata.ssc_private_key'] = config.elb.ssc_private_key;
-                data['metadata.ssc_public_key'] = config.elb.ssc_public_key;
-            }
-
-            Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey);
-            Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint);
-
-            addSscKey(call, sscKeyPair.publicSsh, function (err) {
-                if (err) {
-                    call.done(err);
+            machine.PackageList(call, {datacenter: call.data.datacenter}, function (packagesErr, packagesData) {
+                if (packagesErr) {
+                    call.done(packagesErr);
                     return;
                 }
-                removeSscConfig(data, function (err) {
+
+                var chosenPackages = packagesData.filter(function (pack) {
+                    return pack.name === config.elb.ssc_package;
+                });
+
+                if (chosenPackages.length !== 1) {
+                    call.done('Cannot find only one package for name: ' + config.elb.ssc_package);
+                    return;
+                }
+
+                var ccsPackageId = chosenPackages[0].id;
+
+                var sscKeyPair = createKeyPairs();
+                var portalKeyPair = createKeyPairs();
+                var data = {
+                    datacenter: call.data.datacenter,
+                    dataset: config.elb.ssc_image,
+                    name: hardControllerName,
+                    'package': ccsPackageId,
+                    'metadata.ssc_private_key': sscKeyPair.privateKey,
+                    'metadata.ssc_public_key': sscKeyPair.publicSsh,
+                    'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
+                    'metadata.account_name': config.elb.account || call.req.session.userName,
+                    'metadata.datacenter_name': call.data.datacenter,
+                    'metadata.elb_code_url': config.elb.elb_code_url,
+                    'metadata.sdc_url': config.elb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
+                    'tag.lbaas': 'ssc'
+                };
+
+                if (config.elb.ssc_networks) {
+                    data.networks = config.elb.ssc_networks;
+                }
+
+                if (config.elb.ssc_private_key && config.elb.ssc_public_key) {
+                    data['metadata.ssc_private_key'] = config.elb.ssc_private_key;
+                    data['metadata.ssc_public_key'] = config.elb.ssc_public_key;
+                }
+
+                var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
+
+                call.req.log.info({fingerprint: portalFingerprint, privateKey: portalKeyPair.privateKey}, 'Storing key/fingerprint to metadata');
+
+                Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (err) {
                     if (err) {
-                        call.done(err);
-                        return;
+                        call.req.log.warn(err);
                     }
-                    machine.Create(call, data, function (err, result) {
+                    Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (err) {
                         if (err) {
-                            call.done(err);
-                            return;
+                            call.req.log.warn(err);
                         }
-                        call.done(null, result);
+                        addSscKey(call, sscKeyPair.publicSsh, function (err) {
+                            if (err) {
+                                call.done(err);
+                                return;
+                            }
+                            removeSscConfig(data, function (err) {
+                                if (err) {
+                                    call.done(err);
+                                    return;
+                                }
+                                machine.Create(call, data, function (err, result) {
+                                    if (err) {
+                                        call.done(err);
+                                        return;
+                                    }
+                                    call.done(null, result);
+                                });
+                            });
+                        });
                     });
                 });
             });
@@ -306,7 +335,7 @@ var elb = function execute(scope) {
             }
             client.del('/loadbalancers', function (err, creq, cres, obj) {
                 if (err) {
-                    //call.log.error('Cannot disable STMs');
+                    call.log.warn('Cannot disable STMs');
                 }
                 // Still delete SSC even if ELBAPI returned error
                 deleteSscMachine(call, call.done);

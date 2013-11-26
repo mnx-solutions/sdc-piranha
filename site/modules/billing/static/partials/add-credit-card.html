@@ -360,12 +360,20 @@
                         </div>
                     </td>
                 </tr>
-                <tr data-ng-show="currentStep">
-                    <td><span data-translate>Phone number</span><span class="orange-asterix"> *</span></td>
-                    <td>
-                        <div data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)" data-current-step="{{currentStep}}" data-el-width="220"></div>
-                    </td>
-                </tr>
+                <td>
+                    <span data-ng-switch="!!currentStep">
+                        <span data-ng-switch-when="true">
+                            <span data-translate>Phone number</span><span class="orange-asterix"> *</span>
+                        </span>
+                    </span>
+                </td>
+                <td>
+                    <span data-ng-switch="!!currentStep">
+                        <span data-ng-switch-when="true">
+                            <div data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)" data-current-step="{{currentStep}}" data-el-width="220"></div>
+                        </span>
+                    </span>
+                </td>
             </tbody>
         </table>
         <legend data-ng-show="currentStep && features.promocode != 'disabled'" data-translate>Promotional Code</legend>
