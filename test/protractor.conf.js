@@ -13,7 +13,7 @@ exports.config = {
     allScriptsTimeout: 60000,
 
     capabilities: {
-        'browserName': 'chrome'
+        'browserName': config.browser || 'chrome'
     },
 
     specs: [
