@@ -22,7 +22,7 @@ module.exports = function execute(scope) {
 
         // Store user session information in log entries
         if (req.session.userId && req.session.userName) {
-            req.log = scope.log.child({
+            req.log = req.log.child({
                 userName: req.session.userName,
                 userId: req.session.userId,
                 userIp: req.userIp
