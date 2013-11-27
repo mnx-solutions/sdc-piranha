@@ -219,7 +219,7 @@ var elb = function execute(scope) {
             return data && typeof data.datacenter === 'string';
         },
         handler: function (call) {
-            call.getImmediate(false);
+            call.update(null, 'Getting Load Balancer Controller settings');
             machine.PackageList(call, {datacenter: call.data.datacenter}, function (packagesErr, packagesData) {
                 if (packagesErr) {
                     call.done(packagesErr);
@@ -267,6 +267,8 @@ var elb = function execute(scope) {
 
                 call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
 
+                call.update(null, 'Setting up Load Balancer Controller');
+
                 Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (err) {
                     if (err) {
                         call.req.log.warn(err);
@@ -275,6 +277,7 @@ var elb = function execute(scope) {
                         if (err) {
                             call.req.log.warn(err);
                         }
+                        call.update(null, 'Adding Load Balancer Controller keys');
                         addSscKey(call, sscKeyPair.publicSsh, function (err) {
                             if (err) {
                                 call.done(err);
@@ -285,6 +288,7 @@ var elb = function execute(scope) {
                                     call.done(err);
                                     return;
                                 }
+                                call.update(null, 'Creating Load Balancer Controller');
                                 machine.Create(call, data, function (err, result) {
                                     if (err) {
                                         call.done(err);
@@ -301,6 +305,7 @@ var elb = function execute(scope) {
     });
 
     function deleteSscMachine(call, callback) {
+        call.update(null, 'Getting Load Balancer Controller');
         getSscMachine(call, function (err, sscMachine) {
             if (err) {
                 callback(err);
@@ -310,11 +315,13 @@ var elb = function execute(scope) {
                 uuid: sscMachine.id,
                 datacenter: sscMachine.datacenter
             };
+            call.update(null, 'Stopping Load Balancer Controller');
             machine.Stop(call, data, function (err) {
                 if (err) {
                     callback(err);
                     return;
                 }
+                call.update(null, 'Deleting Load Balancer Controller');
                 machine.Delete(call, data, function (err, result) {
                     if (err) {
                         callback(err);
@@ -327,12 +334,14 @@ var elb = function execute(scope) {
     }
 
     server.onCall('SscMachineDelete', function (call) {
+        call.update(null, 'Getting Load Balancers API');
         getSscClient(call, function (err, client) {
             if (err) {
                 // Still delete SSC even if ELBAPI is unavailable
                 deleteSscMachine(call, call.done);
                 return;
             }
+            call.update(null, 'Deleting Load Balancers');
             client.del('/loadbalancers', function (err, creq, cres, obj) {
                 if (err) {
                     call.log.warn('Cannot disable STMs');
