@@ -67,6 +67,7 @@ describe('Instances page', function () {
 
     it('should contain list of instances', function () {
         ptor.get('#!/compute');
+
         ptor.getCurrentUrl().then(function (url) {
             expect(url).toContain('#!/compute');
         });
