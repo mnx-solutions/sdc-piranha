@@ -55,13 +55,14 @@ exports.getSscClient = function (call, callback) {
             funcs: [
                 function (callback) {
                     getSscMachine(call, function (error, machine) {
-                        result.primaryIp = machine.primaryIp;
+                        if (!error) {
+                            result.primaryIp = machine.primaryIp;
+                        }
                         callback(error);
                     });
                 },
                 function (callback) {
                     metadata.get(call.req.session.userId, metadata.PORTAL_PRIVATE_KEY, function (err, value) {
-                        result.privateKey = value;
                         callback(err);
                     });
                 },
