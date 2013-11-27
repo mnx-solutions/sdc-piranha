@@ -46,7 +46,7 @@ public class AccountPageTests extends TestWrapper {
 		baseUrl = BASE_URL;
 		open("/");
 		Common.login();
-		addSshKey();
+		// addSshKey();
 	}
 
 	@Before
@@ -83,7 +83,7 @@ public class AccountPageTests extends TestWrapper {
 	public void openAccountPageAndValidateProfileSummary() {
 		accountPage.validateSummaryPage();
 		accountPage.validateProfileSummary(fName + " " + lName, username,
-				pemail, pphone, pcompany);
+				pemail, "\\+1" + pphone, pcompany);
 	}
 
 	@Test
@@ -92,6 +92,7 @@ public class AccountPageTests extends TestWrapper {
 	}
 
 	@Test
+	@Ignore
 	public void openAccountPageAndVerifySshKey() {
 		accountPage.validateSshKey(keyName, sshKey);
 	}
@@ -113,7 +114,7 @@ public class AccountPageTests extends TestWrapper {
 		$(".alert-success").shouldHave(text("Account updated"));
 		accountPage.openSummaryTab();
 		accountPage.validateProfileSummary("User Name", username,
-				"new@email.com", "5155496510", "Company");
+				"new@email.com", "\\+3725155496510", "Company");
 
 	}
 
@@ -135,6 +136,7 @@ public class AccountPageTests extends TestWrapper {
 	}
 
 	@Test
+	@Ignore
 	public void storagePageHasAddedSshKey() {
 		Common.clickNavigationLink("Storage");
 		$("#keySel").shouldBe(visible);
@@ -181,7 +183,7 @@ public class AccountPageTests extends TestWrapper {
 	public static void cleanupAndLogout() {
 		try {
 			restoreOldAccountInfo();
-			deleteAddedPublicKey();
+			// deleteAddedPublicKey();
 		} finally {
 			open("/landing/forgetToken");
 		}

@@ -96,9 +96,9 @@ public class InstancePage {
 
 	public void addTag(String key, String value) {
 		taglistVisible();
-		$(".tags", 1).waitUntil(visible, BASE_TIMEOUT);
-		int index = $$(".tags").size() - 2; // get the insert tag row dom index
-		SelenideElement row = $(".tags", index);
+		$(".tag", 1).waitUntil(visible, BASE_TIMEOUT);
+		int index = $$(".tag").size() - 2; // get the insert tag row dom index
+		SelenideElement row = $(".tag", index);
 		row.shouldBe(visible);
 		row.$(byAttribute("placeholder", "Key")).setValue(key);
 		row.$(byAttribute("placeholder", "Value")).setValue(value);
@@ -135,8 +135,7 @@ public class InstancePage {
 	}
 
 	private static void taglistVisible() {
-		Common.checkSubHeadingText("Resize Instance");
-		$(By.name("tagForm")).shouldBe(visible);
+		$(byAttribute("data-ng-form", "tagForm")).shouldBe(visible);
 	}
 
 	public void removeTag(String key) {

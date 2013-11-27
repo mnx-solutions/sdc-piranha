@@ -29,14 +29,14 @@ public class InstanceList {
 	 */
 	public void checkForCreatedInstance(String instance) {
 		waitForInstanceList();
-		int index = Common.getCollectionIndexByText(
+		SelenideElement el = Common.checkTextInCollection(
 				$$(".item-list-container .item"), instance);
-		if ($(".item-list-container .item", index).$(".machine-list-state")
-				.text().equals("Creating")) {
-			$(".loading-small", index).shouldBe(hidden);
+		if (el.$(".machine-list-state").text().equals("Creating")) {
+			el.$(".loading-small").shouldBe(hidden);
 		}
-		$(".item-list-container .item", index).$(".machine-list-state")
-				.shouldHave(text("Provisioning"));
+		el = Common.checkTextInCollection($$(".item-list-container .item"),
+				instance);
+		el.$(".machine-list-state").shouldHave(text("Provisioning"));
 	}
 
 	public void checkInstanceStatus(String status, String instance) {
@@ -46,6 +46,8 @@ public class InstanceList {
 		if (el.find(".loading-small").isDisplayed()) {
 			el.find(".loading-small").waitUntil(hidden, CHANGE_STATUS_TIMEOUT);
 		}
+		el = Common.checkTextInCollection($$(".item-list-container .item"),
+				instance);
 		el.find(".machine-list-state").waitUntil(hasText(status), BASE_TIMEOUT);
 	}
 
@@ -92,5 +94,14 @@ public class InstanceList {
 	public static void waitForInstanceList() {
 		$(byText("Instances")).shouldBe(visible);
 		$(".loading-medium-after-h1").waitUntil(disappear, BASE_TIMEOUT);
+	}
+
+	public boolean isRunning(String instance) {
+		SelenideElement el = Common.checkTextInCollection(
+				$$(".item-list-container .item"), instance);
+		if (el.$(".machine-list-state").text().equals("Running")) {
+			return true;
+		}
+		return false;
 	}
 }
