@@ -1,18 +1,32 @@
 package pageobjects;
 
+import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Condition.hasText;
+import static com.codeborne.selenide.Condition.hidden;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
+
 import com.codeborne.selenide.SelenideElement;
 
-import util.Common;
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.*;
-
+/**
+ * Instance list page object. Holds methods to interact with given pages.
+ * 
+ */
 public class InstanceList {
 	private static final int BASE_TIMEOUT = Integer.parseInt(System
 			.getProperty("globaltimeout", "15000"));
 	private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System
 			.getProperty("statustimeout", "240000"));
 
+	/**
+	 * Checks the state of a freshly created instance.
+	 * 
+	 * @param instance
+	 *            - instance name
+	 */
 	public void checkForCreatedInstance(String instance) {
 		waitForInstanceList();
 		int index = Common.getCollectionIndexByText(
@@ -56,15 +70,12 @@ public class InstanceList {
 				$$(".item-list-container .row-fluid"), instance);
 		e.find(byText(operation)).click();
 		Common.confirmModal();
-		//e.find(".loading-small").waitUntil(visible, CHANGE_STATUS_TIMEOUT);
-		//e.find(".loading-small").waitUntil(hidden, CHANGE_STATUS_TIMEOUT);
 	}
 
 	public void deleteInstance(String instance) {
 		Common.checkTextInCollection($$(".item-list-container .item"), instance)
 				.find(byText("Delete")).click();
 		Common.confirmModal();
-		//$(byText(instance)).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
 	}
 
 	public String getFirtstInstanceName() {

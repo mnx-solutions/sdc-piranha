@@ -13,43 +13,16 @@
         <div class="login-form first-block">
             <p data-translate>After you enter a phone number where you can be reached below, you will then be called by an automated system and provided a PIN number over the phone. Once completed, you’ll be able to proceed to finalize your registration process.</p>
             <form data-ng-submit="makeCall()">
-                <table class="table">
-                    <tr>
-                        <td><label>Country</label></td>
-                        <td>
-                            <select
-                                    data-ng-style="countryStyle"
-                                    data-ng-model="country"
-                                    name="countryCode"
-                                    id="countryCode"
-                                    data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label>Phone Number</label></td>
-                        <td>
-                            <div class="input-prepend" style="border-radius: 0;">
-                                <span class="add-on" style="width: 45px;border-radius: 0;">+{{selectedCountryCode}}</span>
-                                <input style="width: 150px;border-radius: 0;" type="text"
-                                       id="phone"
-                                       name="phone"
-                                       data-ng-model="phone"
-                                       required/>
-                            </div>
-                        </td>
-                        <td class="error-message">
-                            <div data-ng-show="phoneError" class="error alert-icon" style="margin-top: 4px;">
-                                <span>{{phoneError}}</span>
-                            </div>
-                            <div data-ng-show="callInProgress" class="info info-icon" style="margin-top: 4px;">
-                                <span>Calling...</span>
-                            </div>
-                        </td>
+                <span class="edit-name">Phone<span class="orange-asterix"> *</span></span>
+                <div data-phone-number data-number="phone" data-country="country" data-is-error="isError(field, type)"></div>
+                <div class="phone_btn_pos"><button class="si_btn" data-ng-disabled="!phone || callInProgress || !numberChanged">Call Me Now</button></div>
+                <div data-ng-show="phoneError" class="error alert-icon" style="margin-top: 4px;">
+                    <span>{{phoneError}}</span>
+                </div>
+                <div data-ng-show="callInProgress" class="info info-icon" style="margin-top: 4px;">
+                    <span>Calling...</span>
+                </div>
 
-                    </tr>
-                </table>
-                <div class="phone_btn_pos"><button class="si_btn" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button></div>
             </form>
             <div class="line-st1"></div>
             <div style="padding-top: 42px;">
@@ -84,83 +57,4 @@
         </div>
 
     </div>
-
-
-
-
-
-
-    <!--<div class="container">-->
-        <!--<div class="row">-->
-            <!--<div class="span11">-->
-                <!--<h1 data-translate>Identity Verification by Phone</h1>-->
-                <!--<p data-translate>After you enter a phone number where you can be reached below, you will then be called by an automated system and provided a PIN number over the phone. Once completed, you’ll be able to proceed to finalize your registration process.</p>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<div class="row">-->
-            <!--<hr class="span11">-->
-        <!--</div>-->
-        <!--<div class="row">-->
-            <!--<div class="span11">-->
-                <!--<p data-translate>Please enter your phone number and click the “Call Me Now” button.</p>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<form data-ng-submit="makeCall()">-->
-            <!--<div class="row">-->
-                <!--<div class="span3">-->
-                    <!--<div class="control-group">-->
-                        <!--<div class="controls">-->
-                            <!--<select-->
-                                    <!--data-ng-style="countryStyle"-->
-                                    <!--data-ng-model="country"-->
-                                    <!--style="width: 245px"-->
-                                    <!--name="countryCode"-->
-                                    <!--id="countryCode"-->
-                                    <!--data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">-->
-                            <!--</select>-->
-                            <!--<br />-->
-                            <!--<div class="input-prepend">-->
-                                <!--<span class="add-on" style="width:50px">(+{{selectedCountryCode}})</span>-->
-                                <!--<input style="width: 170px" type="text"-->
-                                       <!--id="phone"-->
-                                       <!--name="phone"-->
-                                       <!--data-ng-model="phone"-->
-                                       <!--required/>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="span3">-->
-                    <!--<button class="btn btn-joyent-blue span2" data-ng-disabled="!phone || !country || callInProgress">Call Me Now</button>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</form>-->
-        <!--<div class="row">-->
-            <!--<hr class="span11">-->
-        <!--</div>-->
-        <!--<div class="row">-->
-            <!--<div class="span11">-->
-                <!--<p data-translate>A call will be placed to you at this number and a PIN number will be provided to you. Please enter the PIN number here to complete the verification process.</p>-->
-            <!--</div>-->
-        <!--</div>-->
-        <!--<form data-ng-submit="verifyPin()">-->
-            <!--<div class="row">-->
-                <!--<div class="span3">-->
-                    <!--<div class="control-group">-->
-                        <!--<div class="controls">-->
-                            <!--<input data-ng-model="pin" style="width: 230px" type="text" required>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-                <!--<div class="span6">-->
-                    <!--<button class="btn btn-joyent-blue span2">Verify</button>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</form>-->
-        <!--<div class="row">-->
-            <!--<div class="span3">-->
-                <!--<a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small cancel-signup-link" data-translate>Cancel signup process</a>-->
-            <!--</div>-->
-        <!--</div>-->
-    <!--</div>-->
 </div>

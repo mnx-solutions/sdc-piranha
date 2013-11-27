@@ -21,10 +21,6 @@ module.exports = function execute(scope) {
             var response = {};
             accountFields.forEach(function (field) {
                 response[field] = data[field] || '';
-
-                if (field === 'phone') {
-                    response[field] = response[field].replace(/[^0-9\.]+/g, '');
-                }
             });
 
             TFA.get(data.id, function (err, secret) {
@@ -50,12 +46,21 @@ module.exports = function execute(scope) {
         call.cloud.updateAccount(data, call.done.bind(call));
     });
 
-    server.onCall('listKeys', function(call) {
+    server.onCall('listKeys', function (call) {
+        var serveKeys = function (err, data) {
+            if (!err && data) {
+                data = data.filter(function (key) {
+                    return config.showLBaaSObjects || key.name !== 'ssc_public_key';
+                });
+            }
+            call.done(err, data);
+        };
+
         // get account ssh keys
         if (call.data.noCache) {
-            call.cloud.listKeys({ login: 'my' }, call.done.bind(call), call.data.noCache);
+            call.cloud.listKeys({ login: 'my' }, serveKeys, call.data.noCache);
         } else {
-            call.cloud.listKeys(call.done.bind(call));
+            call.cloud.listKeys(serveKeys);
         }
     });
 

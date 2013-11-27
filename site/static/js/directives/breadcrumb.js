@@ -7,15 +7,15 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
             restrict: 'EA',
             replace: true,
             template: '<ul class="breadcrumb">' +
-                        '<li data-ng-class="{active: navigationPath.length - 1 == $index}" ' +
+                        '<li data-ng-class="{active: $last}" ' +
                              'data-ng-repeat="item in navigationPath">' +
-                          '<span data-ng-show="navigationPath.length - 1 != $index">' +
+                          '<span data-ng-show="!$last">' +
                             '<a href="#!{{item.path}}" data-translate data-translate-expression="true">' +
                               '{{item.title}}' +
                             '</a>' +
                           '</span>' +
-                          '<span data-ng-show="navigationPath.length - 1 != $index" class="divider">/</span>' +
-                          '<span data-ng-show="navigationPath.length - 1 == $index">' +
+                          '<span data-ng-show="!$last" class="divider">/</span>' +
+                          '<span data-ng-show="$last">' +
                               ' {{item.title}}' +
                           '</span>' +
                         '</li>' +
@@ -26,7 +26,8 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                 localization.bind('dashboard', $scope);
 
                 function updateItems() {
-                    $scope.navigationPath = route.resolveNavigation();
+                    $scope.navigationPath = route.resolveNavigation($routeParams);
+
                     $scope.navigationPath.forEach(function (item) {
                         item.path = $scope.resolveLink(item.path);
                     });

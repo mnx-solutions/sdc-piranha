@@ -312,6 +312,14 @@
     padding-top: 5px;
 }
 
+.tag.tag-add .span5 {
+    border-bottom: 0;
+}
+
+.tag.tag-add .btn-link {
+    margin-right: 10px;
+}
+
 .required-asterix {
     color : #ff6600;
 }

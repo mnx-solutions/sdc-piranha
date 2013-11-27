@@ -1,60 +1,36 @@
 package test;
 
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
-import static org.junit.Assert.*;
+import static com.codeborne.selenide.Selectors.byAttribute;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.page;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.*;
-import org.junit.rules.TestName;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import com.saucelabs.common.SauceOnDemandSessionIdProvider;
-import com.saucelabs.junit.SauceOnDemandTestWatcher;
-
+import pageobjects.Common;
 import pageobjects.CreateInstanceCarousel;
 import pageobjects.InstanceList;
 import pageobjects.InstancePage;
-import util.Common;
-import util.SauceAuthentication;
+import util.TestWrapper;
 
-public class NetworkTests /* implements SauceOnDemandSessionIdProvider */{
-	SauceAuthentication sa = new SauceAuthentication();
-	private static String sessionId;
-	private static WebDriver driver = getWebDriver();
+public class NetworkTests extends TestWrapper {
+
 	private CreateInstanceCarousel createInstanceCarousel;
-	private static final String BASE_URL = System.getProperty("endpoint");
-	private static final int BASE_TIMEOUT = Integer.parseInt(System
-			.getProperty("globaltimeout", "15000"));
-
 	private static InstanceList instanceList;
 	private InstancePage instancePage;
-
 	private static List<String> instances;
-
-	// public @Rule
-	// TestName testName = new TestName();
-	// public @Rule
-	// SauceOnDemandTestWatcher resultReportingTestWatcher = new
-	// SauceOnDemandTestWatcher(
-	// this, sa.getAuthentication());
-	//
-	// @Override
-	// public String getSessionId() {
-	// return sessionId;
-	// }
-
-	// @Before
-	// public void setSessionId() {
-	// sessionId = ((RemoteWebDriver) driver).getSessionId().toString();
-	// }
 
 	@BeforeClass
 	public static void openDashboard() {
@@ -101,12 +77,12 @@ public class NetworkTests /* implements SauceOnDemandSessionIdProvider */{
 
 	@Test
 	public void createInPublicUsEast() {
-		assertTrue(createMachine("us-east-1", "165.225", true, false));
+		assertTrue(createMachine("us-east-1", "72.2", true, false));
 	}
 
 	@Test
 	public void createInPublicUsSw() {
-		assertTrue(createMachine("us-sw-1", "199.192", true, false));
+		assertTrue(createMachine("us-sw-1", "165.225", true, false));
 	}
 
 	private boolean createMachine(String dataCenter, String ipRange,
@@ -122,16 +98,16 @@ public class NetworkTests /* implements SauceOnDemandSessionIdProvider */{
 		Common.checkHeadingText("Create Instance");
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
 		createInstanceCarousel.waitUntilPageIsActive(0);
-		createInstanceCarousel.selectZoneFilter(dataCenter);
-		$(byAttribute("data-ng-model", "searchText")).click();
+		createInstanceCarousel.selectDataCenter(dataCenter);
 		createInstanceCarousel.selectOsFilter("smartos");
-		createInstanceCarousel.selectOsVersion(os, version);
+		createInstanceCarousel.setOsVersion(os, version);
 		createInstanceCarousel.selectOsImage(os);
 		createInstanceCarousel.waitUntilPageIsActive(1);
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
 		createInstanceCarousel.selectInstanceType(packageType);
 		createInstanceCarousel.selectPackage(packageSize);
-		createInstanceCarousel.checkSelectedImageText("A 32-bit SmartOS");
+		createInstanceCarousel
+				.checkSelectedImageDescription("A 32-bit SmartOS");
 		createInstanceCarousel.checkPackageInfo(dataCenter, "256 MB", "16 GB",
 				"0.125 and bursting");
 		createInstanceCarousel.checkPaymentInfo("0.008", "5.84");
@@ -151,8 +127,8 @@ public class NetworkTests /* implements SauceOnDemandSessionIdProvider */{
 				+ " Private value: "
 				+ $(byAttribute("name", "Joyent-SDC-Private")).getAttribute(
 						"value"));
-		instanceName = createInstanceCarousel.setInstanceNameValue(instanceName);
-		System.out.println(instanceName);
+		instanceName = createInstanceCarousel
+				.setInstanceNameValue(instanceName);
 		instances.add(instanceName);
 		$(byText("Create instance")).click();
 		Common.confirmModal();

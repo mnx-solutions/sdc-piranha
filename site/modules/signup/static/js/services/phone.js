@@ -14,8 +14,8 @@
                     callback(err || unavailableError);
                 });
             };
-            service.makeCall = function (phone, callback) {
-                return $http.get('maxmind/call/%2B' + phone + '?rnd=' + Math.random().toString(36).substr(2)).success(function (resultObj) {
+            service.makeCall = function(phone, callback) {
+                return $http.get('maxmind/call/%2B' + phone + '?rnd=' + Date.now()).success(function (resultObj) {
                     if (resultObj.success) {
                         callback(null, resultObj);
                     } else {
@@ -26,7 +26,7 @@
                 });
             };
             service.verify = function (pin, callback) {
-                return $http.get('maxmind/verify/' + pin + '?rnd=' + Math.random().toString(36).substr(2)).success(function (resultObj) {
+                return $http.get('maxmind/verify/' + pin + '?rnd=' + Date.now()).success(function (resultObj) {
                     if (resultObj.success) {
                         callback(null, resultObj);
                     } else {

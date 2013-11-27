@@ -32,6 +32,7 @@ describe('Landing page', function () {
 
         it('should redirect to dashboard', function () {
             expect(ptor.getCurrentUrl()).toContain('/dashboard');
+            ptor.ignoreSynchronization = false;
         });
     });
 });

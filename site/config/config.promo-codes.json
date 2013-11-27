@@ -1,6 +1,68 @@
 {
-    "JOYENT2FREE": {
-        "ratePlanName": "Free Trial",
-        "expired": false
+    "FREEJOY12": {
+        "expirationDate": "2013-11-13",
+        "startDate": "2012-11-19",
+        "campaignId": "70180000000aarN"
+    },
+    "NODEVOPS": {
+        "expirationDate": "2013-11-13",
+        "startDate": "2012-12-14",
+        "campaignId": "70180000000afnr"
+    },
+    "HOLIDAYJOY": {
+        "expirationDate": "2013-11-13",
+        "startDate": "2012-12-18",
+        "campaignId": "70180000000ag8G"
+    },
+    "FREEJOY": {
+        "startDate": "2013-11-02",
+        "defaultDate": "2013-11-02",
+        "campaignId": "70180000000ag8G",
+        "ratePlanName": "Free Trial"
+    },
+    "INTELJOY": {
+        "expirationDate": "2013-11-13",
+        "startDate": "2013-04-01",
+        "campaignId": "70180000000atKm"
+    },
+    "NKO2013TEAM1": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yrJ"
+    },
+    "NKO2013SOLO1": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yrO"
+    },
+    "NKO2013INO": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yrY"
+    },
+    "NKO2013DES": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yrd"
+    },
+    "NKO2013UTI": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yre"
+    },
+    "NKO2013COM": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yri"
+    },
+    "NKO2013POP": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yrn"
+    },
+    "NKO2013TOP100": {
+        "expirationDate": "2013-12-31",
+        "startDate": "2013-11-19",
+        "campaignId": "701800000014yrs"
     }
 }

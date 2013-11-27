@@ -1,0 +1,92 @@
+[
+    {
+        "name":"us-east-1",
+        "status":"complete",
+        "machines":[]
+    },
+
+    {
+        "name":"us-sw-1",
+        "status":"complete",
+        "machines":[]
+    },
+
+    {
+        "name":"us-west-1",
+        "status":"complete",
+        "machines":[
+            {
+                "id":"9cd1d817-cc70-6dab-96be-eb3dd3134a1a",
+                "name":"west1",
+                "type":"smartmachine",
+                "state":"running",
+                "image":"b83f8276-1fdd-11e3-989b-4bddb088a8a0",
+                "ips":[
+                    "10.12.26.127"
+                ],
+                "memory":256,
+                "disk":16384,
+                "metadata":{
+                    "root_authorized_keys":"",
+                    "credentials":[
+
+                    ]
+                },
+                "tags":{
+
+                },
+                "credentials":"true",
+                "created":"2013-11-13T11:54:28.836Z",
+                "updated":"2013-11-13T11:54:28.000Z",
+                "networks":[
+                    null
+                ],
+                "dataset":"sdc:sdc:base:13.2.1",
+                "primaryIp":"10.12.26.127",
+                "firewall_enabled":false,
+                "package":"g3-standard-0.25-smartos",
+                "datacenter":"us-west-1"
+            }
+        ]
+    },
+
+    {
+        "name":"eu-ams-1",
+        "status":"complete",
+        "machines":[
+            {
+                "id":"2a4f6f94-f94a-ee65-b486-96705c74aefb",
+                "name":"ams1",
+                "type":"smartmachine",
+                "state":"running",
+                "image":"b83f8276-1fdd-11e3-989b-4bddb088a8a0",
+                "ips":[
+                    "10.224.6.166"
+                ],
+                "memory":256,
+                "disk":16384,
+                "metadata":{
+                    "root_authorized_keys":"",
+                    "credentials":[
+
+                    ]
+                },
+                "tags":{
+
+                },
+                "credentials":"true",
+                "created":"2013-11-13T11:54:07.361Z",
+                "updated":"2013-11-13T11:54:07.000Z",
+                "networks":[
+                    null
+                ],
+                "dataset":"sdc:sdc:base:13.2.1",
+                "primaryIp":"10.224.6.166",
+                "firewall_enabled":false,
+                "package":"g3-standard-0.25-smartos",
+                "datacenter":"eu-ams-1",
+                "maintenanceStartTime": "11/13/2013 @ 2pm PST"
+            }
+        ]
+    }
+]

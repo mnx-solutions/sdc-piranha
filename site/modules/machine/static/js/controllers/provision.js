@@ -4,6 +4,7 @@
     app.controller('Machine.ProvisionController', ['$scope',
         '$filter',
         'requestContext',
+        '$timeout',
         'Machine',
         'Dataset',
         'Datacenter',
@@ -18,7 +19,7 @@
         '$$track',
         'util',
 
-        function ($scope, $filter, requestContext, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -27,9 +28,9 @@
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
-            if($scope.preSelectedImageId)
+            if($scope.preSelectedImageId) {
                 $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
-
+            }
 
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
@@ -215,6 +216,7 @@
                 $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
+                ng.element('.carousel').carousel('prev');
             };
 
             function getNr(el) {
@@ -393,6 +395,7 @@
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.reloading = true;
+                    $scope.networks = [];
                     var count = 2;
 
                     Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
@@ -438,17 +441,16 @@
                     });
 
                     Network.network(newVal).then(function(networks) {
-                        var externalNetworkId = null;
-                        $scope.networks = networks;
-                        $scope.networks.forEach(function(network) {
-                            if(network.name === "JPC-WESTX-External") {
-                                externalNetworkId = network.id;
-                            }
-                        });
-                        $scope.selectNetworkCheckbox(externalNetworkId);
+                        if(newVal === $scope.data.datacenter) {
+                            $scope.networks = networks;
+                        }
                     });
 
                     Package.package({ datacenter: newVal }).then(function (packages) {
+                        if(newVal !== $scope.data.datacenter) {
+                            return;
+                        }
+
                         var packageTypes = [];
                         packages.forEach(function (p) {
                             if (packageTypes.indexOf(p.group) === -1){
@@ -501,25 +503,24 @@
                 $scope.data.opsys = 'All';
             }
 
-            ng.element('.carousel').carousel({
+            ng.element('#provisionCarousel').carousel({
                 interval:false
             });
 
-            ng.element('.carousel').bind({
+            ng.element('#provisionCarousel').bind({
                 slide: function() {
                     $scope.reConfigurable = !$scope.reConfigurable;
-                },
-                slid:function(){
                     if($scope.reConfigurable) {
-                        $scope.$apply(function (){
+                        $timeout(function(){
                             $scope.showReConfigure = true;
-                        })
+                        }, 600);
                     }
                 }
             });
+
+
             $scope.slideCarousel = function() {
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
-
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
             };

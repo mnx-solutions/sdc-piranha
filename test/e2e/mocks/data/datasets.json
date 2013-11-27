@@ -1,0 +1,1227 @@
+[
+    {
+        "id":"3cd9ef64-1fa5-11e3-be45-1fa28ec74f4a",
+        "name":"stm-1000H",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 1000H",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T14:27:08Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.932
+    },
+    {
+        "id":"da144ada-a558-11e2-8762-538b60994628",
+        "name":"ubuntu-12.04",
+        "version":"2.4.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2013-04-15T20:18:53.659Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"71101322-43a5-11e1-8f01-cf2a3031a7f4",
+        "name":"ubuntu-10.04",
+        "version":"1.0.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Ubuntu 10.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-03-29T13:37:11Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"64e1b2ee-52c8-11e2-bedd-7f919cc63ab9",
+        "name":"ubuntu-12.04",
+        "version":"2.3.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2012-12-30T22:13:20Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+        "name":"ubuntu-12.04",
+        "version":"2.4.2",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-05-13T19:38:24.867Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"3162a91e-8b5d-11e2-a78f-9780813f9142",
+        "name":"ubuntu-12.04",
+        "version":"2.4.0",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2013-03-13T23:23:33Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"610e04c4-3cc4-11e3-9867-df64b21b66fe",
+        "name":"standard64",
+        "version":"13.2.3",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Standard+Instance",
+        "published_at":"2013-10-24T15:53:07Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"56a0655c-3cc6-11e3-9c79-5701599fdf05",
+        "name":"standard",
+        "version":"13.2.3",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 32-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Standard+Instance",
+        "published_at":"2013-10-24T16:07:08Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"5f101d16-90ac-11e2-b9c2-877979ff6041",
+        "name":"ws2008std-r2-sp1",
+        "version":"2.0.2",
+        "os":"windows",
+        "requirements":{
+            "max_memory":32768,
+            "max_ram":32768,
+            "min_memory":4096,
+            "min_ram":4096
+        },
+        "type":"virtualmachine",
+        "description":"Windows Server 2008r2 Standard 64-bit image. This version of Windows Server only supports a maximum of 4 vCPUs.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "published_at":"2013-03-19T20:11:08Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.06
+    },
+    {
+        "id":"dc1a8b5e-043c-11e2-9d94-0f3fcb2b0c6d",
+        "name":"percona",
+        "version":"1.6.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"SmartOS image pre-configured and optimized as a Percona 5.5 64-bit MySQL server with Quickbackup, Handlersocket, and Sphinx Plug-in",
+        "tags":{
+            "role":"database"
+        },
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-09-21T22:58:19.207Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"3882b5da-b0e8-11e2-b3a9-dbcf26c3e051",
+        "name":"percona",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image pre-configured and optimized as a Percona 5.5.29 64-bit MySQL server with Quickbackup, Handlersocket, and Sphinx Plug-in",
+        "tags":{
+            "role":"database"
+        },
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-05-01T20:07:28.199Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"ec5defa8-16fe-11e3-948e-8f59b3488902",
+        "name":"mongodb",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image that comes with MongoDB 2.4.6 pre-installed and pre-configured for maximum performance and scalability.",
+        "tags":{
+            "role":"database"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/MongoDB+Instance",
+        "published_at":"2013-09-06T14:16:28Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"d2409672-29f3-11e3-ba86-6f782523cb41",
+        "name":"mongodb",
+        "version":"13.2.1",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image that comes with MongoDB 2.4.6 pre-installed and pre-configured for maximum performance and scalability.",
+        "tags":{
+            "role":"database"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/MongoDB+Instance",
+        "published_at":"2013-09-30T17:14:52Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"efe2c3e8-1fb8-11e3-b4c4-eb64d18f0b71",
+        "name":"stm-1000M",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 1000M",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T16:48:09Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.612
+    },
+    {
+        "id":"6e99eff4-1fb9-11e3-9d00-3b6b25be1e62",
+        "name":"stm-1000M-SAF",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 1000M-SAF",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T16:51:42Z",
+        "public":true,
+        "state":"active",
+        "license_price":1.28
+    },
+    {
+        "id":"ef905526-1fb9-11e3-a095-576400e02b54",
+        "name":"stm-2000L",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 2000L",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T16:55:18Z",
+        "public":true,
+        "state":"active",
+        "license_price":1.374
+    },
+    {
+        "id":"6bf3c40e-1fba-11e3-9847-4f44ccd9abe9",
+        "name":"stm-2000L-SAF",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 2000L-SAF",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T16:58:47Z",
+        "public":true,
+        "state":"active",
+        "license_price":2.362
+    },
+    {
+        "id":"e96103b6-1fba-11e3-8dba-3b2f9d336fa1",
+        "name":"stm-4000L",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 4000L",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T17:02:17Z",
+        "public":true,
+        "state":"active",
+        "license_price":2.586
+    },
+    {
+        "id":"67e5fc46-1fbb-11e3-b1c7-274da29ae2f6",
+        "name":"stm-500L-10",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 500L-10",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T17:05:49Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.108
+    },
+    {
+        "id":"e4093946-1fbb-11e3-8b61-bb9e496e0da4",
+        "name":"stm-500M-200",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 500M-200",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T17:09:18Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.226
+    },
+    {
+        "id":"36f3b80c-2066-11e3-9215-5ffe647b58f0",
+        "name":"stm-2000L-STX",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 2000L-STX",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-18T13:23:49Z",
+        "public":true,
+        "state":"active",
+        "license_price":2.112
+    },
+    {
+        "id":"0bcda78c-2066-11e3-8f62-d7edf9742dbd",
+        "name":"stm-2000L-SAF-STX",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 2000L-SAF-STX",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-18T13:27:19Z",
+        "public":true,
+        "state":"active",
+        "license_price":3.104
+    },
+    {
+        "id":"8b503466-2066-11e3-b5c8-c7e50b85619c",
+        "name":"stm-2000M-STX",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 2000M-STX",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-18T13:30:53Z",
+        "public":true,
+        "state":"active",
+        "license_price":2.88
+    },
+    {
+        "id":"08c63ac6-2067-11e3-abea-a7c7c71e8f15",
+        "name":"stm-2000M-SAF-STX",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 2000M-SAF-STX",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-18T13:34:23Z",
+        "public":true,
+        "state":"active",
+        "license_price":3.864
+    },
+    {
+        "id":"4b4c141e-1fb4-11e3-a10e-6f99cfdf8806",
+        "name":"stm-developer",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1024,
+            "min_ram":1024
+        },
+        "type":"smartmachine",
+        "description":"Stingray Traffic Manager 9.3.0 Developer Edition",
+        "tags":{
+            "role":"loadbalancer"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Load+Balancing+with+Riverbed+Stingray",
+        "published_at":"2013-09-17T16:14:55Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"133263be-3c2c-11e3-8d3a-a30c43ae58fd",
+        "name":"nodejs",
+        "version":"13.2.2",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 32-bit image with Node.js 0.10.21, npm 1.3.11, MongoDB 2.4.6 and other useful packages pre-installed. Ideal for Node.js applications.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Node.JS+Instance",
+        "published_at":"2013-10-23T21:42:53Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"f4bc70ca-5e2c-11e1-8380-fb28785857cb",
+        "name":"smartosplus64",
+        "version":"3.1.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":640,
+            "min_ram":640
+        },
+        "type":"smartmachine",
+        "description":"Generic multi-purpose 64-bit SmartMachine. This image is deprecated and will be replaced by the 64 bit SmartOS Standard image (standard64).",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-02-23T15:03:59.047Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"a963d5d0-5e29-11e1-a4d7-a31977b1e6dd",
+        "name":"smartosplus",
+        "version":"3.1.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":640,
+            "min_ram":640
+        },
+        "type":"smartmachine",
+        "description":"Generic multi-purpose SmartMachine. This image is deprecated and will be replaced by the SmartOS Standard image (standard).",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-02-23T15:00:22Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+        "name":"centos-6",
+        "version":"2.5.0",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"CentOS 6.4 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Centos",
+        "published_at":"2013-10-02T18:26:47Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"ffed3d9e-2c2f-11e3-9a12-bf5267821b0b",
+        "name":"nodejs",
+        "version":"13.2.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 32-bit image with Node.js 0.10.20, npm 1.3.11, MongoDB 2.4.6 and other useful packages pre-installed. Ideal for Node.js applications.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Node.JS+Instance",
+        "published_at":"2013-10-04T14:15:56Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"b779b49a-29e4-11e3-9b1d-0b0b41ccdcad",
+        "name":"standard64",
+        "version":"13.2.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Standard+Instance",
+        "published_at":"2013-09-30T15:26:43Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"dac2ad6e-2aa5-11e3-885f-8fd408fc6a82",
+        "name":"standard",
+        "version":"13.2.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 32-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Standard+Instance",
+        "published_at":"2013-10-01T14:29:15Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"b83f8276-1fdd-11e3-989b-4bddb088a8a0",
+        "name":"base",
+        "version":"13.2.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 32-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/SmartMachine+Base",
+        "published_at":"2013-09-20T15:01:34Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"17c98640-1fdb-11e3-bf51-3708ce78e75a",
+        "name":"base64",
+        "version":"13.2.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 64-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/SmartMachine+Base",
+        "published_at":"2013-09-20T15:02:46Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"274bc2bc-d919-11e2-b797-83245409fbeb",
+        "name":"hadoop",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image with Apache Hadoop components pre-installed. Includes hadoop, hbase, hcatalog, hive, pig, templeton, flume, pig, oozie, sqoop, and mahout.",
+        "tags":{
+            "role":"hadoop"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Joyent+Hadoop+SmartMachine",
+        "published_at":"2013-07-02T19:55:00.000Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"48489174-e351-11e2-88c0-a31eb2b342ee",
+        "name":"java",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image with Java JDK (1.6.0_26), Apache (2.4.4), Apache Tomcat (7.0.35), Apache Ant (1.8.4) and Apache Maven (3.0.5) installed and configured as well as the common Java ENV variables (JAVA_HOME, CATALINA_HOME, ANT_HOME) set for all users.",
+        "tags":{
+            "role":"development"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Java+Instance",
+        "published_at":"2013-07-02T19:55:00.000Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"399775e4-163e-11e3-8d42-7b14b732ae17",
+        "name":"standard64",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Standard+Instance",
+        "published_at":"2013-09-05T15:17:04Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"34509f68-1ae7-11e3-b816-d3edf71c7840",
+        "name":"standard",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 32-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Standard+Instance",
+        "published_at":"2013-09-11T13:36:44Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"8700b668-0da4-11e2-bde4-17221283a2f4",
+        "name":"centos-6",
+        "version":"1.3.0",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"CentOS 6 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2012-10-03T22:53:06Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"e4cd7b9e-4330-11e1-81cf-3bb50a972bda",
+        "name":"centos-6",
+        "version":"1.0.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"CentOS 6 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-04-03T23:26:39Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
+        "name":"centos-6",
+        "version":"2.4.2",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"CentOS 6.4 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-05-13T19:42:33.181Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"2539f6de-0b5a-11e2-b647-fb08c3503fb2",
+        "name":"centos-5.7",
+        "version":"1.3.0",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"CentOS 5.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2012-10-01T00:31:58Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"94384a12-bbeb-11e2-aec2-2bfa9742484b",
+        "name":"debian-6.0.7",
+        "version":"2.4.2",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Debian 6.0.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2013-05-13T19:19:01.415Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"46ecf60e-52c8-11e2-b212-9b51fc749547",
+        "name":"debian-6.0.6",
+        "version":"2.3.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Debian 6.0.6 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2013-01-03T22:58:04Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"87c556ac-ab9d-11e2-914d-07682fcab47d",
+        "name":"centos-6",
+        "version":"2.4.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"CentOS 6.4 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-04-24T15:48:05.857Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"014e2254-a853-11e2-81c9-b318c31fa17a",
+        "name":"debian-6.0.7",
+        "version":"2.4.1",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Debian 6.0.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"a979f956-12cb-4216-bf4c-ae73e6f14dde",
+        "published_at":"2013-04-18T19:04:41.987Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"df8d2ee6-d87f-11e2-b257-2f02c6f6ce80",
+        "name":"freebsd",
+        "version":"1.0.0",
+        "os":"bsd",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"FreeBSD 9.1 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/FreeBSD",
+        "published_at":"2013-06-19T01:30:49Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"e42f8c84-bbea-11e2-b920-078fab2aab1f",
+        "name":"fedora",
+        "version":"2.4.2",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Fedora 18 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-05-17T18:18:36.472Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"0084dad6-05c1-11e3-9476-8f8320925eea",
+        "name":"base64",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 64-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/SmartMachine+Base",
+        "published_at":"2013-08-15T15:30:00Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"e3364212-05c0-11e3-9576-3f3ee9e951a7",
+        "name":"base",
+        "version":"13.2.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 32-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/SmartMachine+Base",
+        "published_at":"2013-08-15T15:30:00Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"2c6b0348-d8f6-11e2-91f4-ef498b553611",
+        "name":"manta-build",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+            "min_memory":1792,
+            "min_ram":1792
+        },
+        "type":"smartmachine",
+        "description":"A 32-bit SmartOS base image with most major languages and packages installed. This a developer version of the Manta Compute Environment which can be used to test scripts or code before running them in the Joyent Manta Service.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "published_at":"2013-06-19T17:37:00Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"95f6c9a6-a2bd-11e2-b753-dbf2651bf890",
+        "name":"ws2012std",
+        "version":"1.0.1",
+        "os":"windows",
+        "requirements":{
+            "min_memory":4096,
+            "min_ram":4096
+        },
+        "type":"virtualmachine",
+        "description":"Windows Server 2012 Standard 64-bit image.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "published_at":"2013-04-11T21:04:37Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.06
+    },
+    {
+        "id":"13328c9a-9173-11e2-a9a5-2ff43d306c21",
+        "name":"ws2008ent-r2-sp1",
+        "version":"2.0.2",
+        "os":"windows",
+        "requirements":{
+            "min_memory":4096,
+            "min_ram":4096
+        },
+        "type":"virtualmachine",
+        "description":"Windows Server 2008r2 Enterprise 64-bit image.",
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "published_at":"2013-03-20T18:59:47Z",
+        "public":true,
+        "state":"active",
+        "license_price":0.2
+    },
+    {
+        "id":"55330ab4-066f-11e2-bd0f-434f2462fada",
+        "name":"base",
+        "version":"1.8.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-09-25T07:28:08.302Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"1fc068b0-13b0-11e2-9f4e-2f3f6a96d9bc",
+        "name":"nodejs",
+        "version":"1.4.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS image with Node.js, npm, MongoDB and other useful packages pre-installed. Ideal for Node.js applications.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-10-11T14:40:57.936Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"3390ca7c-f2e7-11e1-8818-c36e0b12e58b",
+        "name":"standard",
+        "version":"1.0.7",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS image optimized for web development. Everything you need to build a web stack -- such as Ruby, Apache, and MySQL -- is installed and ready to use.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-08-30T21:26:23.419Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"fdea06b0-3f24-11e2-ac50-0b645575ce9d",
+        "name":"base64",
+        "version":"1.8.4",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-12-05T21:59:37.513Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"84cb7edc-3f22-11e2-8a2a-3f2a7b148699",
+        "name":"base",
+        "version":"1.8.4",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-12-05T21:58:50.712Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"a0f8cf30-f2ea-11e1-8a51-5793736be67c",
+        "name":"standard64",
+        "version":"1.0.7",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack -- such as Ruby, Apache, and MySQL -- is installed and ready to use.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-08-30T21:37:30.920Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"f669428c-a939-11e2-a485-b790efc0f0c1",
+        "name":"base",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 32-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-04-26T15:16:02.419Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"cf7e2f40-9276-11e2-af9a-0bad2233fb0b",
+        "name":"base64",
+        "version":"1.9.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-03-22T17:11:29.468Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"beb2dbd4-b26f-11e2-8ad4-935c80092aa6",
+        "name":"nodejs",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 32-bit image with Node.js 0.10.5, npm 1.2.18, MongoDB 2.2.2 and other useful packages pre-installed. Ideal for Node.js applications.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-05-03T14:26:53.865Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"9eac5c0c-a941-11e2-a7dc-57a6b041988f",
+        "name":"base64",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 64-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-04-26T15:17:57.131Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"60ed3a3e-92c7-11e2-ba4a-9b6d5feaa0c4",
+        "name":"base",
+        "version":"1.9.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-03-22T17:10:33.786Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"1567edb0-b33e-11e2-a0d2-bf73e2825ffe",
+        "name":"riak",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A 64-bit SmartOS image pre-configured to run Open Source Riak 1.3.1, a Dynamo-inspired key/value store from Basho.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2013-05-06T15:22:28.449Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"489754f2-5e01-11e1-8ff8-f770c2116b0d",
+        "name":"smartos",
+        "version":"1.5.4",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"Generic multi-purpose SmartMachine. This image is deprecated and will be replaced by the SmartOS Base image (base).",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-02-23T14:56:27Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"31bc4dbe-5e06-11e1-907c-5bed6b255fd1",
+        "name":"smartos64",
+        "version":"1.5.4",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"Generic multi-purpose 64-bit SmartMachine. This image is deprecated and will be replaced by the 64 bit SmartOS Standard image (base64).",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-02-23T14:57:18Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"f953e97e-4991-11e1-9ea4-27c6e7e8afda",
+        "name":"nodejs",
+        "version":"1.3.3",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"Node.js git-deploy PaaS dataset",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-03-07T19:28:43Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"e6ac6784-44b3-11e1-8555-87c3dd87aafe",
+        "name":"debian-6.03",
+        "version":"1.0.0",
+        "os":"linux",
+        "requirements":{
+
+        },
+        "type":"virtualmachine",
+        "description":"Debian 6.03 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-03-29T13:15:31Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"bae3f528-e01f-11e2-b2cb-1360087a7d5f",
+        "name":"cassandra",
+        "version":"13.1.0",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image that comes with Apache Cassandra (1.2.4) and the Java JDK (1.6.0_26) pre-installed and configured.",
+        "tags":{
+            "role":"hadoop"
+        },
+        "owner":"9dce1460-0c4c-4417-ab8b-25ca478c5a78",
+        "homepage":"http://wiki.joyent.com/jpc2/Cassandra+Instance",
+        "published_at":"2013-07-03T22:15:11.673Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"60a3b1fa-0674-11e2-abf5-cb82934a8e24",
+        "name":"base64",
+        "version":"1.8.1",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"A SmartOS 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-09-25T07:14:50.428Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"f9e4be48-9466-11e1-bc41-9f993f5dff36",
+        "name":"smartos64",
+        "version":"1.6.3",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"Generic multi-purpose 64-bit SmartMachine. This image is deprecated and will be replaced by the 64 bit SmartOS Standard image (base64).",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-05-02T15:15:24.139Z",
+        "public":true,
+        "state":"active"
+    },
+    {
+        "id":"01b2c898-945f-11e1-a523-af1afbe22822",
+        "name":"smartos",
+        "version":"1.6.3",
+        "os":"smartos",
+        "requirements":{
+
+        },
+        "type":"smartmachine",
+        "description":"Generic multi-purpose SmartMachine. This image is deprecated and will be replaced by the SmartOS Base image (base).",
+        "owner":"352971aa-31ba-496c-9ade-a379feaecd52",
+        "published_at":"2012-05-02T15:14:45.805Z",
+        "public":true,
+        "state":"active"
+    }
+]

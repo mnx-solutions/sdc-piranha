@@ -10,8 +10,8 @@ module.exports = function execute(scope, callback) {
     var options = config.zuora.rest;
     options.url = options.endpoint;
     options.log = scope.log;
-	options.password = config.zuora.password;
-	options.user = config.zuora.user;
+	  options.password = config.zuora.password;
+	  options.user = config.zuora.user;
 
     var zuora = require('zuora').create(options);
 
@@ -54,24 +54,33 @@ module.exports = function execute(scope, callback) {
     server.onCall('addPaymentMethod', function (call) {
         call.log.debug('Calling addPaymentMethod');
 
+        var serviceAttempts = call.req.session.zuoraServiceAttempt || 0;
+        call.req.session.zuoraServiceAttempt = serviceAttempts + 1;
+
         function error(err, resp, msg) {
             // changing zuoras errorCode from 401's to 500
-            if(err.statusCode === 401) {
+            if (err.statusCode === 401) {
                 err.statusCode = 500;
             }
 
-	        var logObj = {
-		        err: err
-	        };
-	        if(resp && resp.reasons) {
-		        logObj.zuoraErr = resp.reasons;
-	        }
-	        var lvl = 'error';
-	        if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
-		        || !err.statusCode) {
-				lvl = 'info';
-	        }
-	        call.log[lvl](logObj, msg || 'Failed to save to zuora');
+            var logObj = {
+                err: err
+            };
+
+            if (resp && resp.reasons) {
+                logObj.zuoraErr = resp.reasons;
+            }
+
+            var lvl = 'error';
+            logObj.attempt = call.req.session.zuoraServiceAttempt;
+
+            if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
+              || !err.statusCode) {
+                lvl = 'info';
+            }
+
+            call.log[lvl](logObj, msg || 'Failed to save to zuora');
+
             zHelpers.updateErrorList(scope, resp, function () {
                 err.zuora = err.zuora || resp;
                 call.done(err, true);
@@ -101,38 +110,48 @@ module.exports = function execute(scope, callback) {
                         error(err, data, 'Zuora account.create failed');
                         return;
                     }
-                    MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
-                        if (fraudErr) {
-                            call.log.warn(fraudErr);
-                            call.done(fraudErr);
-                            return;
+                    call.session(function (req) {
+                        req.session.zuoraServiceAttempt = 0;
+                    });
+
+                    //Set minimum progress to session and ask billing server to update
+                    call.log.debug('Updating user progress');
+                    call._user = user;
+
+                    SignupProgress.setMinProgress(call, 'billing', function (err) {
+                        if (err) {
+                            call.log.error(err);
                         }
-                        if (result.riskScore) {
-                            call.log.info('Saving user riskScore in metadata');
-                            Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
-                        }
-                        if (result.block) {
-                            if (result.blockReason) {
-                                Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
+
+                        MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
+                            if (fraudErr) {
+                                fraudErr.attempt = call.req.session.zuoraServiceAttempt;
+
+                                call.log.error(fraudErr);
+                                call.done(fraudErr);
+                                return;
                             }
-                            SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
-                                if (blockErr) {
-                                    call.log.error(blockErr);
+
+                            if (result.riskScore) {
+                                call.log.info('Saving user riskScore in metadata');
+                                Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
+                            }
+
+                            if (result.block) {
+                                if (result.blockReason) {
+                                    Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
                                 }
-                                call.done(null, data);
-                            });
-                            return;
-                        }
 
-                        //Set minimum progress to session and ask billing server to update
-                        call.log.debug('Updating user progress');
-                        call._user = user;
+                                SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
+                                    if (blockErr) {
+                                        call.log.error(blockErr);
+                                    }
 
-                        SignupProgress.setMinProgress(call, 'billing', function (err) {
-                            if (err) {
-                                call.log.error(err);
+                                    call.req.session.zuoraServiceAttempt = 0;
+                                    call.done(null, data);
+                                });
+                                return;
                             }
-
                             call.done(null, data);
                         });
 
@@ -166,7 +185,20 @@ module.exports = function execute(scope, callback) {
                     }
 
                     call.log.debug('Zuora payment.create returned with', resp);
-                    var count = 2;
+                    var count = 3;
+
+                    call.session(function (req) {
+                        req.session.zuoraServiceAttempt = 0;
+                    });
+
+                    SignupProgress.safeSetSignupStep(call, 'billing', function (setErr) {
+                        if (setErr) {
+                            call.log.error(setErr, 'Failed to update signupStep');
+                        }
+                        if (--count === 0) {
+                            call.done(null, resp);
+                        }
+                    });
 
                     // Payment method added
                     // Have to remove previous billing methods.

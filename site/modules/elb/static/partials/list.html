@@ -51,7 +51,7 @@
                 <td>{{server.host}}</td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
-                <td>{{server.created | date:'YYYY-MM-DD'}}</td>
+                <td>{{server.created | date:'yyyy-MM-dd'}}</td>
             </tr>
             <tr data-ng-show="servers.length == 0">
                 <td colspan="5" data-translate>No balancers configured</td>

@@ -88,43 +88,9 @@
                     </div>
                 </span>
             </div>
-
             <div class="control-group">
-                <span class="edit-name">Phone</span>
-                <span class="edit-value edit-country">
-                    <select data-ng-style="countryStyle"
-                            data-ng-model="account.country"
-                            name="countryCode"
-                            id="countryCode"
-                            data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-                    </select>
-                    <i class="arrow-select"></i>
-                </span>
-                <span class="edit-value edit-phone">
-                     <div class="input-prepend">
-                         <span class="add-on" style="">(+{{selectedCountryCode}})</span>
-                         <input type="text"
-                                id="phone"
-                                name="phone"
-                                data-ng-model="account.phone"
-                                data-ng-pattern="/^([\d#\*]+)$/"
-                                data-ng-class="{error: isError('phone')}"
-                                required/>
-                     </div>
-                    <span data-ng-show="currentStep" data-html="true" data-translate-attributes="data-original-title" data-toggle="tooltip" data-trigger="hover" data-placement="right" class="tooltip-hover icon-info-sign" data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
-                </span>
-                <span class="edit-error">
-                    <div class="error alert-icon"
-                         data-translate
-                         data-ng-show="isError('phone', 'required')">
-                        Missing phone number
-                    </div>
-                    <div class="error alert-icon"
-                         data-translate
-                         data-ng-show="isError('phone', 'pattern')">
-                        Invalid phone number
-                    </div>
-                </span>
+                <span class="edit-name" data-translate>Phone</span>
+                <div data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)" data-current-step="{{currentStep}}"></div>
             </div>
         </fieldset>
 

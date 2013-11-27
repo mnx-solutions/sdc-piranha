@@ -54,11 +54,11 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.error(err);
             }
-            
+
             if (req.session.blockReason) {
                 Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
             }
-            
+
             res.json({message: lockMessage, success: false, navigate: true});
         });
     }
@@ -76,12 +76,16 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.warn({error: err}, 'Error occurred while setting phone verification status');
             }
+
+            req.session.maxmindServiceFails = 0;
+
             SignupProgress.setMinProgress(req, 'phone', function(err) {
                 if(err) {
                     req.log.error(err);
                     res.json({message: 'Internal error', success: false});
                     return;
                 }
+
                 res.json({message: 'Phone verification successful', success: true, navigate: true});
             });
         });
@@ -134,8 +138,10 @@ module.exports = function execute(scope, app) {
             if (data.indexOf('refid=') === 0) {
                 req.session.attemptId = data.substr(6);
             }
+
             req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
+          
             res.json({message: serviceMessages.calling, success: true});
         });
     });
@@ -165,7 +171,8 @@ module.exports = function execute(scope, app) {
 
         req.log.info({
             generatedPin: req.session.maxmindCode,
-            enteredPin: req.params.code
+            enteredPin: req.params.code,
+            attempt: req.session.maxmindPinTries
         }, 'User entered wrong pin');
 
         // prompt user to change phone is he is on his last pin attempt

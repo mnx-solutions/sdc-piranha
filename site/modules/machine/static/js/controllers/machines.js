@@ -14,10 +14,8 @@
         'Package',
         'localization',
         'util',
-        'notification',
-        '$location',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, notification, $location) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -48,30 +46,6 @@
                 if(final) {
                     $q.when($scope.packages, function () {
                         $scope.loading = false;
-
-                        if (!$scope.machines.length) {
-                            $location.path("compute/create");
-                            return;
-                        }
-
-                        $scope.machines.some(function(machine) {
-                            if(machine.maintenanceStartTime && !machine.compute_node) {
-                                util.message(
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Warning'
-                                    ),
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details. Please contact support if you have any questions or concerns.'
-                                    ), function () {
-
-                                    });
-                                return true;
-                            }
-                        });
                     });
                 }
             });

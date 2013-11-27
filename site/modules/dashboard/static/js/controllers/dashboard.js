@@ -72,7 +72,6 @@
             $scope.$watch('machines', function (machines) {
                 var runningcount = 0;
                 var othercount = 0;
-                var maintenanceFlag = false;
 
                 machines.forEach(function (machine) {
                     if (machine.state === 'running') {
@@ -80,27 +79,8 @@
                     } else {
                         othercount += 1;
                     }
-
-                    if (machine.maintenanceStartTime && !machine.compute_node) {
-                        maintenanceFlag = true;
-                    }
                 });
 
-
-                if (maintenanceFlag) {
-                    util.message(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Warning'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'One or more of your instances are scheduled for maintenance. Review your instance list to confirm the details. Please contact support if you have any questions or concerns.'
-                        ),function(){
-                        });
-                }
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
             }, true);

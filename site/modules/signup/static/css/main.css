@@ -445,6 +445,9 @@ body{
     border-bottom: 17px solid #3d3d3d;
 
 }
+.orange-asterix {
+    color:#ff6600;
+}
 .wizard-steps .firststep.active-step p:before{
     border-right: 17px;
     border-left: 17px;
@@ -589,4 +592,24 @@ legend {
 .first-block{
     width: 725px;
     display: inline-block;
+}
+
+.edit-value-double {
+    width: 457px !important;
+}
+.edit-value-double select{
+    width: 200px !important;
+}
+
+.edit-value-double .input-prepend input {
+    width:155px !important;
+}
+
+.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
+    width: 50px;
+    border-radius: 0;
+    float: left;
+    text-shadow: none;
+    font-size: 16px;
+    color: #555555;
 }

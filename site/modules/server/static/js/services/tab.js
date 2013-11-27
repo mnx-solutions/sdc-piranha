@@ -97,6 +97,7 @@
 
                         data.results.forEach(function (result) {
                             var call = self.call(result.id);
+
                             if (!call) {
                                 return;
                             }

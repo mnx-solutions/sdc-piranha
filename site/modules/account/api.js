@@ -126,34 +126,39 @@ module.exports = function execute(scope, register) {
 
     api.getSignupStep = function (call, cb) {
         var req = (call.done && call.req) || call;
-        req.log.trace('getting signup step');
+        req.log.trace('Getting signup step');
         function end(step) {
-            req.log.trace('signup step is %s', step);
+            req.log.trace('User landing in step:', _nextStep(step));
             cb(null, step);
         }
 
         if (req.session.signupStep) {
+            req.log.trace('Got signup step from session: %s', req.session.signupStep);
             setImmediate(end.bind(end, req.session.signupStep));
             return;
         }
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (!err && storedStep) {
-                    call.log.info('Got signupStep from metadata: %s; landing at: %s',
-                        storedStep, _nextStep(storedStep));
+                    req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
+                        storedStep, _nextStep(step));
 
                     end(storedStep);
-                } else {
-                    api.getAccountVal(req, function (err, value) {
-                        if (err) {
-                            cb(err);
-                            return;
-                        }
-
-                        call.log.info('User landing in step:', _nextStep(value));
-                        end(value);
-                    });
+                    return;
                 }
+
+                api.getAccountVal(req, function (err, value) {
+                    if (err) {
+                        req.log.error(err, 'Got error from billing-api');
+                        cb(err);
+                        return;
+                    }
+
+                    req.log.debug('Got signup step from billing-api: %s; User landing in step: %s',
+                        value, _nextStep(value));
+                    
+                    end(value);
+                });
             });
         }
         if(req.session.userId) {
@@ -163,7 +168,7 @@ module.exports = function execute(scope, register) {
 
         req.cloud.getAccount(function (accErr, account) {
             if (accErr) {
-                req.log.error('Failed to get info from cloudApi', accErr);
+                req.log.error(accErr, 'Failed to get info from cloudApi');
                 cb(accErr);
                 return;
             }
@@ -212,6 +217,51 @@ module.exports = function execute(scope, register) {
                     }
                     //No error handling or nothing here, just let it pass.
                     cb();
+                });
+            }
+
+            if (req.session.userId) {
+                update(req.session.userId);
+                return;
+            }
+
+            req.cloud.getAccount(function (accErr, account) {
+                if (accErr) {
+                    req.log.error('Failed to get info from cloudApi', accErr);
+                    cb(accErr);
+                    return;
+                }
+
+                update(account.id);
+            });
+        }
+
+        if (!call.req && !call.done) { // Not a call, but request
+            call.session.signupStep = step;
+            call.session.save();
+            updateStep(call);
+        } else {
+            call.session(function (req) {
+                req.session.signupStep = step;
+                req.session.save();
+            });
+            updateStep(call.req);
+        }
+    };
+
+    api.safeSetSignupStep = function (call, step, cb) {
+        function updateStep(req) {
+            function update(userId) {
+                getFromBilling('update', userId, function (err, bStep) {
+                    if(err) { //Ignore errors here (No errors possible currently)
+
+                    }
+                    step = bStep === 'completed' ? bStep : step;
+
+                    metadata.set(userId, metadata.SIGNUP_STEP, step, function (err) {
+                        call.log.info('Set signup step in metadata to %s', bStep);
+                        cb(err);
+                    });
                 });
             }
 

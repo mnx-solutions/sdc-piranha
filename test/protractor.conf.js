@@ -4,7 +4,7 @@ var config = require('easy-config').loadConfig({
 
 exports.config = {
     //seleniumAddress: 'http://localhost:4444/wd/hub',
-    seleniumServerJar: './selenium/selenium-server-standalone-2.35.0.jar',
+    seleniumServerJar: './selenium/selenium-server-standalone-2.37.0.jar',
     chromeDriver: './selenium/chromedriver',
     baseUrl: config.baseUrl,
     includeStackTrace: true,

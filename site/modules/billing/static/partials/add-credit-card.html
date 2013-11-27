@@ -283,8 +283,8 @@
                                         data-ng-class="{error: isError('state')}"
                                         data-ng-model="form.cardHolderInfo.state"
                                         data-ng-required="true"
-                                        data-ng-disabled="useExisting">
-                                    <option data-ng-repeat="(k, v) in stateSel" value="{{k}}" data-ng-selected="k == form.cardHolderInfo.state">{{v}}</option>
+                                        data-ng-disabled="useExisting"
+                                        data-ng-options="value as label for (value, label) in stateSel">
                                 </select>
                             </span>
                             <span class="edit-error">
@@ -328,37 +328,7 @@
         </div>
         <div class="control-group" data-ng-show="currentStep">
             <span class="edit-name">Phone Number<span class="orange-asterix"> *</span></span>
-            <span class="edit-value-double">
-                <!--<div class="">-->
-                    <select
-                            data-ng-style="countryStyle"
-                            data-ng-model="phone.country"
-                            name="countryCode"
-                            id="countryCode"
-                            data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-                    </select>
-                <!--</div>-->
-                <div class="input-prepend">
-                    <span class="add-on"><font data-ng-show="selectedCountryCode">(+{{selectedCountryCode}})</font></span>
-                    <input  type="text"
-                            id="phone"
-                            name="phone"
-                            data-ng-model="phone.number"
-                            data-ng-required="true"/>
-                </div>
-            </span>
-            <span class="edit-error">
-                <div class="error alert-icon"
-                     data-translate
-                     data-ng-show="isError('phone') || (formSubmitted && paymentForm.phone.$invalid && !paymentForm.phone.$error.required)">
-                    Invalid phone number
-                </div>
-                <div class="error alert-icon"
-                     data-translate
-                     data-ng-show="isError('phone', 'required') || isError('phone', 'submitRequired')">
-                    Missing phone number
-                </div>
-            </span>
+            <span data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)" data-current-step="{{currentStep}}" data-el-width="220"></span>
         </div>
         <div class="control-group" data-ng-show="useExistingPossible">
             <label>

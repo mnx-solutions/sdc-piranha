@@ -22,12 +22,14 @@
 
                     data.forEach(function (day) {
                         var date = new Date(day.date);
-                        day[key].forEach(function (value, hour) {
-                            collector.push({
-                                x: date.setHours(hour) / 1000,
-                                y: value
+                        if (Array.isArray(day.key)) {
+                            day[key].forEach(function (value, hour) {
+                                collector.push({
+                                    x: date.setHours(hour) / 1000,
+                                    y: value
+                                });
                             });
-                        });
+                        }
                     });
                     return collector;
                 }
@@ -35,7 +37,7 @@
                 $q.all([service.getBalancer(balancerId), service.getMachines(),
                         service.getBalancerUsage(balancerId)]).then(function (results) {
                     $scope.server = results[0];
-                    var machines = results[1][0].machines;
+                    var machines = results[1];
                     var usage = results[2];
 
                     prepareTrafficData(usage[0].slice(-1), 'bytesin', traffic.inbound);

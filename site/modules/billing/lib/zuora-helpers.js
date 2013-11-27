@@ -13,6 +13,8 @@ var zuoraSoap = require('./zuora');
 var moment = require('moment');
 var noCopyFields = ['lastName','firstName', 'workPhone', 'promoCode'];
 
+var errorsFile = path.join(process.cwd(), '/var/errors.json');
+
 var zuoraErrors = {};
 
 function init(zuoraInit, callback) {
@@ -39,12 +41,15 @@ function init(zuoraInit, callback) {
         }
     }
     // Here we init the zuora errors (its a mess)
-    fs.readFile(path.join(process.cwd(), '/var/errors.json'), function (err, data) {
-        if(err) {
-            end(err, 'errors');
-            return;
+    fs.readFile(errorsFile, function (err, data) {
+        // Ignore err and create empty object if file missing or unreadable
+        if (!err) {
+            try {
+                zuoraErrors = JSON.parse(data);
+            } catch (e) {
+                zuoraErrors = {};
+            }
         }
-        zuoraErrors = JSON.parse(data);
         end();
     });
 
@@ -82,7 +87,7 @@ function updateErrorList(scope, resp, callback) {
             }
         });
         if(newErr) {
-            fs.writeFile(path.join(process.cwd(), '/var/errors.json'), JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
+            fs.writeFile(errorsFile, JSON.stringify(zuoraErrors, null, 2), 'utf8', function (err) {
                 if(err) {
                     scope.log.error('Failed to update zuora error file', err);
                 }
@@ -267,20 +272,27 @@ function composeZuoraAccount(call, cb) {
                 if (config.features.promocode !== 'disabled' && call.data.promoCode && config.ns['promo-codes']) {
                     var code = call.data.promoCode.toUpperCase();
                     var promo = config.ns['promo-codes'][code];
+                    var err = null;
                     if (!promo) {
-                        call.done({promoCode: 'Promo code is not valid'});
+                        err = {promoCode: code + ' is not a valid promotional code'};
+                    } else if ((promo.startDate && (new Date()) < (new Date(promo.startDate)))) {
+                        err = {promoCode: code + ' is not yet active - startDate = ' + promo.startDate};
+                    } else if ((promo.expirationDate && (new Date()) > (new Date(promo.expirationDate)))) {
+                        err = {promoCode: code + ' has expired - expirationDate = ' + promo.expirationDate};
+                    }
+                    if (err) {
+                        call.log.warn(err);
+                        call.done({promoCode: 'Promo code is not valid'}, true);
                         return;
                     }
-                    if (promo.expired) {
-                        call.done({promoCode: 'Promo code has expired'});
+
+                    var ratePlanName = promo.ratePlanName || code;
+                    if (!ratePlans[ratePlanName]) {
+                        call.log.error('Unable to find %s ratePlan from zuora', ratePlanName);
+                        call.done({promoCode: 'Promo code is not valid'}, true);
                         return;
                     }
-                    if (!ratePlans[promo.ratePlanName]) {
-                        call.log.error('Unable to find %s ratePlan from zuora', promo.ratePlanName);
-                        call.done({promoCode: 'Promo code is not valid'});
-                        return;
-                    }
-                    createObjects(ratePlans[promo.ratePlanName]);
+                    createObjects(ratePlans[ratePlanName]);
                     return;
                 }
 

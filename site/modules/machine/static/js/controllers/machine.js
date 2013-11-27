@@ -18,9 +18,8 @@
         '$location',
         'util',
         'Image',
-        'notification',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image, notification) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -48,7 +47,6 @@
                 }
             );
 
-            $scope.tagnr = 0;
             $scope.visiblePasswords = {};
 
             $scope.$on(
@@ -89,22 +87,6 @@
                     Machine.listFirewallRules(m.id).then(function (rules) {
                         $scope.firewallRules = rules;
                     });
-                }
-
-                if(m.maintenanceStartTime && !m.compute_node) {
-                    util.message(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Warning'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'This instance is scheduled for maintenance on '+ m.maintenanceStartTime + '. The physical server this instance resides on will be rebooted. This instance will be unavailable approximately 15 minutes.'
-                        ), function () {
-
-                        });
                 }
 
                 $scope.dataset = Dataset.dataset(m.image);
@@ -358,6 +340,7 @@
                         });
                     });
             };
+
             $scope.togglePassword = function (id) {
                 if ($scope.isPasswordVisible(id)) {
                     $scope.visiblePasswords[id] = false;
@@ -390,6 +373,68 @@
                     name.length >= ending.length &&
                     name.indexOf(ending, name.length - ending.length) !== -1;
             };
+
+            $scope.tagsArray = [];
+            $scope.showTagSave = false;
+            // Tags
+            function initTags(tags) {
+                $scope.tagsArray = [];
+                $scope.tagsave = false;
+                Object.keys(tags).forEach(function (key) {
+                    $scope.tagsArray.push({key: key, val: tags[key], conflict: false, edit: false});
+                });
+                $scope.showTagSave = !!$scope.tagsArray.length;
+            }
+
+            // Enable features
+            // Instance tagging
+            if ($scope.features.instanceTagging === 'enabled') {
+                Machine.tags(machineid).then(initTags);
+
+                $scope.$watch('tagsArray', function (newVal, oldVal){
+                    // Search for conflicts
+                    var keyMap = {};
+                    newVal.forEach(function (tag, index) {
+                        if (keyMap[tag.key] && index !== (newVal.length - 1)) {
+                            tag.conflict = true;
+                            keyMap[tag.key].conflict = true;
+                        } else if (!tag.key && index !== (newVal.length - 1)){
+                            tag.conflict = true;
+                        } else {
+                            tag.conflict = false;
+                            keyMap[tag.key] = tag;
+                        }
+                    });
+
+                }, true);
+
+                $scope.addTag = function() {
+                    $scope.tagsArray.push({key:'', val: '', edit: true, conflict:false});
+                    $scope.showTagSave = true;
+                };
+
+                $scope.editTag = function (index) {
+                    $scope.tagsArray[index].edit = true;
+                };
+
+                $scope.removeTag = function (index) {
+                    $scope.tagsArray.splice(index, 1);
+                };
+
+                $scope.saveTags = function () {
+                    $$track.event('machine', 'saveTags');
+
+                    var data = {};
+                    $scope.tagsArray.forEach(function (tag){
+                        if(tag.key && tag.val) {
+                            data[tag.key] = tag.val;
+                        }
+                    });
+
+                    $scope.tagsave = true;
+                    Machine.tags(machineid, data).then(initTags);
+                };
+            }
 
             if ($scope.features.firewall === 'enabled') {
                 $scope.gridOrder = [];

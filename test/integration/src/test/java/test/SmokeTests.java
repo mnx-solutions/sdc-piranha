@@ -1,55 +1,32 @@
 package test;
 
-import static com.codeborne.selenide.Selenide.*;
-import static com.codeborne.selenide.Selectors.*;
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static com.codeborne.selenide.Selectors.byAttribute;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selectors.withText;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.page;
 
-import org.junit.*;
-import org.junit.Assert.*;
-import org.junit.rules.TestName;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import com.saucelabs.common.SauceOnDemandSessionIdProvider;
-import com.saucelabs.junit.SauceOnDemandTestWatcher;
-
+import pageobjects.Common;
 import pageobjects.CreateInstanceCarousel;
 import pageobjects.InstanceList;
-import util.Common;
-import util.SauceAuthentication;
+import util.TestWrapper;
 
-public class SmokeTests implements SauceOnDemandSessionIdProvider {
+public class SmokeTests extends TestWrapper {
 	private InstanceList instanceList;
 	private CreateInstanceCarousel createInstanceCarousel;
-	private static final String BASE_URL = System.getProperty("endpoint");
-	private static final int BASE_TIMEOUT = Integer.parseInt(System
-			.getProperty("globaltimeout", "15000"));
 
-	// SauceUutils
-	 SauceAuthentication sa = new SauceAuthentication();
-	 private static String sessionId;
-	 private static WebDriver driver = getWebDriver();
-	 public @Rule
-	 TestName testName = new TestName();
-	 public @Rule
-	 SauceOnDemandTestWatcher resultReportingTestWatcher = new
-	 SauceOnDemandTestWatcher(
-	 this, sa.getAuthentication());
-	
-	 @Override
-	 public String getSessionId() {
-	 return sessionId;
-	 }
-	
-	 @Before
-	 public void setSessionId() {
-	 sessionId = ((RemoteWebDriver) driver).getSessionId().toString();
-	 }
-
-	// SauceUtils
 	@BeforeClass
 	public static void openDashboard() {
 		timeout = BASE_TIMEOUT;
@@ -72,7 +49,7 @@ public class SmokeTests implements SauceOnDemandSessionIdProvider {
 	@Test
 	public void dashboardIsVisible() {
 		Common.clickNavigationLink("Dashboard");
-		Common.checkHeadingText("Welcome anton");
+		Common.checkHeadingText("Welcome ");
 		Common.checkBreadcrumb("Dashboard", "Create Instance");
 		$(byAttribute("data-ng-show", "runningcount")).shouldBe(visible);
 		$("h4").should(matchText("Instance status"));
@@ -111,7 +88,6 @@ public class SmokeTests implements SauceOnDemandSessionIdProvider {
 				"Dashboard / Instance details / Cloud analytics",
 				"Create Instance");
 		$(byText("Choose your components")).shouldBe(visible);
-//		assert $("select.ng-pristine").getSelectedValue().equals(in);
 		Common.errorNotPresent();
 	}
 
@@ -160,15 +136,15 @@ public class SmokeTests implements SauceOnDemandSessionIdProvider {
 		Common.checkHeadingText("Create Instance");
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
 		createInstanceCarousel.waitUntilPageIsActive(0);
-		createInstanceCarousel.selectZoneFilter(dataCenter);
-		$(byAttribute("data-ng-model", "searchText")).click();
+		createInstanceCarousel.selectDataCenter(dataCenter);
 		createInstanceCarousel.selectOsFilter("smartos");
-		createInstanceCarousel.selectOsVersion(os, version);
+		createInstanceCarousel.setOsVersion(os, version);
 		createInstanceCarousel.selectOsImage(os);
 		createInstanceCarousel.waitUntilPageIsActive(1);
 		createInstanceCarousel.selectInstanceType(packageType);
 		createInstanceCarousel.selectPackage(packageSize);
-		createInstanceCarousel.checkSelectedImageText("A 32-bit SmartOS");
+		createInstanceCarousel
+				.checkSelectedImageDescription("A 32-bit SmartOS");
 		createInstanceCarousel.checkPackageInfo(dataCenter, "256 MB", "16 GB",
 				"0.125 and bursting");
 		createInstanceCarousel.checkPaymentInfo("0.008", "5.84");

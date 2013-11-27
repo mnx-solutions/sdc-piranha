@@ -22,62 +22,16 @@
                 },
 
                 link: function ($scope) {
-                    $scope.countryCodes = null;
-                    $scope.selectedCountryCode = null;
                     $scope.error = null;
                     $scope.loading = false;
 
                     $scope.setAccount = function() {
                         $q.when(Account.getAccount(true), function (account) {
-                            $q.when($http.get('account/countryCodes'), function(data) {
-                                $scope.countryCodes = data.data;
-
-                                account.country = $scope.isoToObj(account.country.iso3  || account.country);
-                                $scope.selectedCountryCode = account.country.areaCode;
-
-                                $scope.account = account;
-                            });
-
+                            $scope.account = account;
                         });
                     };
 
                     $scope.setAccount();
-
-                    $scope.isoToObj = function(iso) {
-                        if (!$scope.countryCodes){
-                            return;
-                        }
-
-                        var selected = null;
-                        var usa = null;
-
-                        $scope.countryCodes.some(function (el) {
-                            if (el.iso3 === 'USA') {
-                                usa = el;
-                            }
-
-                            if(el.iso3 === iso) {
-                                selected = el;
-                                return true;
-                            }
-                        });
-
-                        return selected || usa;
-                    };
-
-                    $scope.countryStyle = {
-                        width: '100%'
-                    };
-
-                    $scope.filterUndefinedAreas = function (country) {
-                        return !!country.areaCode;
-                    };
-
-                    $scope.$watch('account.country', function(newVal, oldVal) {
-                        if (newVal !== oldVal) {
-                            $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
-                        }
-                    }, true);
 
                     $scope.cancelChanges = function () {
                         $location.path('/account/');
@@ -101,9 +55,6 @@
                     $scope.submitForm = function () {
                         // clean the phone number
                         var account = ng.copy($scope.account);
-                        account.country = $scope.account.country.iso3;
-                        account.phone = $scope.account.phone.replace(new RegExp(/[^0-9#\*]/g), '');
-
 
                         $scope.loading = true;
                         Account.updateAccount(account).then(function (acc) {
