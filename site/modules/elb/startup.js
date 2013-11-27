@@ -265,7 +265,7 @@ var elb = function execute(scope) {
 
                 var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
 
-                call.req.log.info({fingerprint: portalFingerprint, privateKey: portalKeyPair.privateKey}, 'Storing key/fingerprint to metadata');
+                call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
 
                 Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (err) {
                     if (err) {

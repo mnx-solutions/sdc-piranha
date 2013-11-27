@@ -1,5 +1,5 @@
 # Naming our phony targets
-.PHONY: install build clean
+.PHONY: install test build clean
 
 install:
 	git pull

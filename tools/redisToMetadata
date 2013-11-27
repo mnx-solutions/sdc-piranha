@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+process.chdir(__dirname + '/..');
+
+var config = require('easy-config');
+var redis = require('redis');
+var redisClient = redis.createClient(config.redis.port, config.redis.host);
+var metadata = require('../site/modules/account/lib/metadata-shim');
+redisClient.auth(config.redis.password);
+
+var copyKey = function (uuid, metaKey, metaValue, callback) {
+    metadata.get(uuid, metaKey, function (err, result) {
+        var fullKey = uuid + ':' + metaKey;
+        if (err) {
+            callback('Cannot get ' + fullKey);
+            return;
+        }
+        if (result) {
+            callback('Value already present for ' + fullKey);
+            return;
+        }
+        metadata.set(uuid, metaKey, metaValue, function (err) {
+            if (err) {
+                callback('Insert for ' + fullKey + ' resulted in error: ' + err);
+                return;
+            }
+            callback(null, metaValue);
+        });
+    });
+};
+
+var keysToCopyCount = 0;
+redisClient.keys('metadata:*', function (err, users) {
+    if (err || users.length === 0) {
+        console.error('No metadata for users in redis');
+        process.exit();
+    }
+    users.forEach(function (userKey) {
+        var uuid = userKey.slice(9);
+        redisClient.hgetall(userKey, function (err, metaEntries) {
+            if (err) {
+                console.error('Cannot read ' + userKey);
+                return;
+            }
+            for (var metaKey in metaEntries) {
+                var metaValue = metaEntries[metaKey];
+                keysToCopyCount += 1;
+                copyKey(uuid, metaKey, metaValue, function (err, result) {
+                    keysToCopyCount -= 1;
+                    if (err) {
+                        console.error(err);
+                    } else {
+                        console.log('Inserted into ' + userKey + ':' + metaKey + ': ' + result);
+                    }
+                    if (keysToCopyCount === 0) {
+                        console.log('Copying complete');
+                        process.exit();
+                    }
+                });
+            }
+        });
+    });
+});
