@@ -23,14 +23,14 @@ var set = function (customerUuid, key, value, callback) {
         if (typeof value !== 'object') {
             value = {value: value};
         }
-        capi.putMetadata(customerUuid, appKey, key, value, function(err) {
+        capi.putMetadata(customerUuid, appKey, key, value, function (err) {
             if (callback) {
                 callback(err, value);
             }
         });
     } else {
-        capi.deleteMetadata(customerUuid, appKey, key, function(err) {
-            if (callback){
+        capi.deleteMetadata(customerUuid, appKey, key, function (err) {
+            if (callback) {
                 callback(err, value);
             }
         });
@@ -58,7 +58,37 @@ var get = function (customerUuid, key, val, callback) {
     });
 };
 
+var safeSet = function (customerUuid, key, val, callback) {
+    var attempts = 5;
+    var trySet = function () {
+        attempts -= 1;
+        if (attempts < 0) {
+            callback('Cannot set key ' + key);
+            return;
+        }
+        set(customerUuid, key, val, function (err) {
+            if (err) {
+                trySet();
+                return;
+            }
+            get(customerUuid, key, function (err, getVal) {
+                if (err) {
+                    trySet();
+                    return;
+                }
+                if (getVal === val) {
+                    callback(null, val);
+                    return;
+                }
+                trySet();
+            });
+        });
+    };
+    trySet();
+};
+
 module.exports = {
     set: set,
-    get: get
+    get: get,
+    safeSet: safeSet
 };

@@ -293,6 +293,31 @@ module.exports = function execute(scope, register) {
         });
     };
 
+    api.PackageList = function (call, options, callback) {
+        call.log.info('Handling list packages event');
+
+        call.cloud.separate(options.datacenter).listPackages(function (err, data) {
+            if (err) {
+                call.error(err);
+                return;
+            }
+
+            if (!info.packages.data[options.datacenter]) {
+                options.datacenter = 'all';
+            }
+
+            var filteredPackages = [];
+            data.forEach(function (p) {
+                if (info.packages.data[options.datacenter][p.name]) {
+                    filteredPackages.push(utils.extend(p, info.packages.data[options.datacenter][p.name]));
+                } else {
+                    filteredPackages.push(p);
+                }
+            });
+            callback(null, filteredPackages);
+        });
+    };
+
     api.ImageDelete = function (call, options, callback) {
         call.log.info('Deleting image %s', options.imageId);
 

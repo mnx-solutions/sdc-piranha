@@ -67,9 +67,10 @@ describe('Instances page', function () {
 
     it('should contain list of instances', function () {
         ptor.get('#!/compute');
-        ptor.waitForAngular();
 
-        expect(ptor.getCurrentUrl()).toContain('#!/compute');
+        ptor.getCurrentUrl().then(function (url) {
+            expect(url).toContain('#!/compute');
+        });
 
         ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
             expect(_instances).not.toBeNull();
@@ -123,54 +124,13 @@ describe('Instances page', function () {
         });
     });
 
-    it('first instance should be scheduled for maintenance', function () {
-        fields[0]
-            .findElement(protractor.By.className('tooltip-hover'))
-            .isDisplayed()
-            .then(function (displayed) {
-            expect(displayed).toBeTruthy();
-        });
-    });
-
-    it('should have general warning message about upcoming maintenance', function () {
-        var element = ptor.findElement(protractor.By.className('alert-warning'));
-
-        element
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
-        element
-            .getText()
-            .then(function (text) {
-                expect(text).toContain('One or more of your instances are scheduled for maintenance.');
-            });
-    });
-
     it('should navigate to instance details', function () {
-        var url = '#!/compute/instance/2a4f6f94-f94a-ee65-b486-96705c74aefb';
+        var computeUrl = '#!/compute/instance/2a4f6f94-f94a-ee65-b486-96705c74aefb';
 
-        ptor.get(url);
-        ptor.waitForAngular();
-
-        expect(ptor.getCurrentUrl()).toContain(url);
-    });
-
-    it('should have a warning message about upcoming maintenance', function () {
-        var element = ptor.findElement(protractor.By.className('alert-warning'));
-
-        element
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
-        element
-            .getText()
-            .then(function (text) {
-                expect(text).toContain('This instance is scheduled for maintenance on');
-            });
+        ptor.get(computeUrl);
+        ptor.getCurrentUrl().then(function (url) {
+            expect(url).toContain(computeUrl);
+        });
     });
 
     it('should able to stop instance', function () {

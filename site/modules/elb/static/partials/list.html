@@ -1,4 +1,5 @@
 <div class="container container-elb" data-ng-controller="elb.ListController">
+    <div data-notification></div>
     <ul class="breadcrumb">
         <li class="ng-scope active">
             <span class="ng-binding" data-translate>Load Balancers</span>
@@ -6,7 +7,10 @@
     </ul>
     <div class="loading-large" data-ng-hide="listLoaded"></div>
     <div data-ng-show="listLoaded" class="table-overflow group-checkable">
-        <h3 class="page-title" data-translate>Load Balancer Controller is Running</h3>
+        <h3 class="page-title" data-translate>Load Balancer Controller is
+            <span data-ng-show="listLoaded" data-translate>Running</span>
+            <span data-ng-hide="listLoaded" data-translate>Starting</span>
+        </h3>
         <div class="header-btn-ci">
             <button class="btn light font16" data-ng-click="disableLb()">
                 Disable Load Balancing

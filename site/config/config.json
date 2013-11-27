@@ -116,7 +116,7 @@
 , "elb": {
     "elb_code_url": "https://us-east.manta.joyent.com/dbqp/public/elbapi-1.tgz"
   , "ssc_image": "5e48eb38-4be6-11e3-a8b8-b3d863d4fee9"
-  , "ssc_package": "5d367f42-867b-4cc3-883c-b329cbaad9d4"
+  , "ssc_package": "g3-standard-1-kvm"
   , "ssc_protocol": "http"
   , "ssc_port": 4000
 }

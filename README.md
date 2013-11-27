@@ -168,7 +168,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `elb.elb_code_url` Download location for ELB API code
 - `elb.sdc_url` Hardcode if on west-x, do not use on west-1
 - `elb.ssc_image` UUID of LBaaS controller image
-- `elb.ssc_package` UUID of LBaaS controller package
+- `elb.ssc_package` Name of LBaaS controller package
 - `elb.ssc_networks` Hardcode if on west-x, do not use on west-1
 - `elb.account` Hardcode if on west-x, do not use on west-1
 - `elb.ssc_protocol` Protocol to communicate with LBaaS controller
