@@ -56,7 +56,8 @@
     "grunt-shell-spawn": "~0.3.0",
     "grunt-contrib-watch": "~0.5.3",
     "protractor": "~0.12.1",
-    "jasmine-reporters": "~0.2.1"
+    "jasmine-reporters": "~0.2.1",
+    "phantomjs": "~1.9.2"
   },
   "optionalDependencies": {},
   "engines": {

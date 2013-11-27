@@ -157,7 +157,16 @@ var backend = module.exports =  {
             if (angular.isArray(handlers.requests)) {
                 for (var i = 0, c = handlers.requests.length; i < c; i++) {
                     var request = handlers.requests[i];
-                    $httpBackend.when(request.method, request.url, request.body, request.headers).respond(request.data);
+
+                    switch (request.method) {
+                        case 'GET':
+                            $httpBackend.when(request.method, request.url).respond(request.data);
+                            break;
+
+                        case 'POST':
+                            $httpBackend.when(request.method, request.url, request.body, request.headers).respond(request.data);
+                            break;
+                    }
                 }
             }
 
