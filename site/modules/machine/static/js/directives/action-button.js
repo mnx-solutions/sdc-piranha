@@ -21,7 +21,7 @@
             link: function ($scope) {
             },
 
-            templateUrl: 'machine/static/partials/button.html'
+            templateUrl: 'machine/static/partials/action-button.html'
         };
     }]);
 }(window.JP.getModule('Machine')));
