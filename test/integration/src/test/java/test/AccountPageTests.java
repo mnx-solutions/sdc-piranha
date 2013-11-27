@@ -1,4 +1,4 @@
-package test;
+package test; 
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Configuration.baseUrl;

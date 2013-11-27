@@ -1,4 +1,4 @@
-package test;
+package test; 
 
 import static com.codeborne.selenide.Condition.disappears;
 import static com.codeborne.selenide.Condition.visible;
