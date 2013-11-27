@@ -45,3 +45,7 @@ input.ng-invalid, input.ng-pristine {
 .row-height {
     height: 200px;
 }
+
+.btn-minier {
+    padding: 0 4px !important;
+}

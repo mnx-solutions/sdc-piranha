@@ -157,7 +157,7 @@ module.exports = function execute(scope, register) {
 
                     req.log.debug('Got signup step from billing-api: %s; User landing in step: %s',
                         value, _nextStep(value));
-                    
+
                     end(value);
                 });
             });
