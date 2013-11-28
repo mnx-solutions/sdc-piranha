@@ -125,7 +125,7 @@
 	                        </div>
 	                    </li>
 	                </ol>
-                    <div data-ng-show="tfaError" data-translate>Failed to enable TFA</div>
+                    <div class="alert alert-danger" data-ng-show="tfaError" data-translate>Failed to enable TFA</div>
 	                <button class="btn btn-joyent-blue pull-right" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
 	                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaTestLoading"></div>
 	            </div>
