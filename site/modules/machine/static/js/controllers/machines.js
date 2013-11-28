@@ -14,8 +14,9 @@
         'Package',
         'localization',
         'util',
+        '$location',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $location) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -46,6 +47,11 @@
                 if(final) {
                     $q.when($scope.packages, function () {
                         $scope.loading = false;
+
+                        if (!$scope.machines.length) {
+                            $location.path("compute/create");
+                            return;
+                        }
                     });
                 }
             });
