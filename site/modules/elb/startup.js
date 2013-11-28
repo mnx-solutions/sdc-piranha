@@ -314,6 +314,7 @@ var elb = function execute(scope) {
                 uuid: sscMachine.id,
                 datacenter: sscMachine.datacenter
             };
+            ssc.clearCache(call);
             call.update(null, 'Stopping Load Balancer Controller');
             machine.Stop(call, data, function (err) {
                 if (err) {
