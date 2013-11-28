@@ -35,21 +35,21 @@ module.exports = function execute(scope, app) {
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
 
-        var cloud = smartCloud.cloud({token: token});
-        cloud.getAccount(function (err, data) {
+        var cloud = smartCloud.cloud({token: token, log: req.log});
+        cloud.getAccount(function (err, user) {
             if (err) {
                 next(err);
                 return;
             }
 
-            TFA.get(data.id, function (err, secret) {
+            TFA.get(user.id, function (err, secret) {
                 if (err) {
                     next(err);
                     return;
                 }
 
-                req.session.userId = data.id;
-                req.session.userName = data.login;
+                req.session.userId = user.id;
+                req.session.userName = user.login;
 
                 if (!secret) {
                     logUserInformation(req, redirectUrl);
@@ -60,6 +60,7 @@ module.exports = function execute(scope, app) {
 
                     res.redirect(redirectUrl);
                 } else {
+                    req.log.info({userId: user.id}, 'User redirected to TFA login');
                     req.session._preToken = token;
                     req.session._tfaSecret = secret;
                     req.session._tfaRedirect = redirectUrl;
@@ -72,23 +73,29 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/remove', function (req, res, next) {
+        req.log.debug('Attempting to remove TFA');
         if (!req.session.token || !req.session.userId) {
+            req.log.warn('User not authorized');
             res.send(401);
             return;
         }
 
         TFA.set(req.session.userId, false, function(err, secretkey) {
             if (err) {
+                req.log.error(err, 'TFA removal failed');
                 res.json(500, {status: 'error', err: err});
                 return;
             }
 
+            req.log.info('TFA removed from user');
             res.json({ status: 'ok' });
         });
     });
 
     app.get('/setup', function (req, res, next) {
+        req.log.debug('Attempting to start TFA setup');
         if (!req.session.userId || !req.session.userName) {
+            req.log.warn('User not authorized');
             res.send(401);
             return;
         }
@@ -96,54 +103,64 @@ module.exports = function execute(scope, app) {
         req.session._tfaSecret = TFAProvider.generateSecret();
         req.session.save();
 
+        req.log.info('Sent QR code for TFA setup');
         var qrCode = TFAProvider.getQRcode(req.session._tfaSecret, req.session.userName);
         res.send(qrCode);
     });
 
     app.post('/setup', function (req, res, next) {
+        req.log.debug('Attempting to complete TFA setup');
         if (!req.session._tfaSecret || !req.session.userId) {
+            req.log.warn('User not authorized');
             res.send(401);
             return;
         }
 
         var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass === onetimepass) {
-            TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
-                if (err) {
-                    req.log.error('Failed to enable TFA', err);
-                    res.json({status:'error', message: 'Internal error'});
-                    return;
-                }
-
-                // tfaEnabled will be enabled for their next login
-                delete req.session._tfaSecret;
-                req.session.save();
-                res.json({status:'ok'});
-            });
-        } else {
+        if (req.body.otpass !== onetimepass) {
+            req.log.warn('User provided password not the same as generated TFA password');
             res.json({status:'error'});
+            return;
         }
+
+        TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
+            if (err) {
+                req.log.error('Failed to enable TFA', err);
+                res.json({status:'error', message: 'Internal error'});
+                return;
+            }
+
+            req.log.info('TFA enabled for user');
+            // tfaEnabled will be enabled for their next login
+            delete req.session._tfaSecret;
+            req.session.save();
+            res.json({status:'ok'});
+        });
     });
 
     app.post('/login', function (req, res, next) {
+        req.log.debug('User attempting to log in via TFA');
         if (!req.session._tfaSecret || !req.session.userId) {
+            req.log.warn('User session information missing');
             res.send(401);
             return;
         }
 
         var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass === onetimepass) {
-            req.session.token = req.session._preToken;
-            delete req.session._preToken;
-
-            var redirect = req.session._tfaRedirect;
-            delete req.session._tfaRedirect;
-            req.session.save();
-
-            logUserInformation(req, redirect);
-            res.send({ status: 'ok', redirect: redirect });
-        } else {
+        if (req.body.otpass !== onetimepass) {
+            req.log.warn('User provided password not the same as generated TFA password');
             res.send({ status: 'error'});
+            return;
         }
+
+        req.session.token = req.session._preToken;
+        delete req.session._preToken;
+
+        var redirect = req.session._tfaRedirect;
+        delete req.session._tfaRedirect;
+        req.session.save();
+
+        logUserInformation(req, redirect);
+        res.send({ status: 'ok', redirect: redirect });
     });
 };

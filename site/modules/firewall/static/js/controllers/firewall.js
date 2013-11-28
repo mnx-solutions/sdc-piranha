@@ -578,16 +578,16 @@
 			        },
 			        btn: {
 				        getLabel: function (object) {
-					        return object.enabled ? 'Disable' : 'Enable';
+					        return object.enabled ? 'Enabled' : 'Disabled';
 				        },
 				        getClass: function (object) {
-					        return 'btn-mini ' + (object.enabled ? 'btn-warning' : 'btn-success');
+					        return 'btn-mini btn-minier ' + (object.enabled ? 'btn-success' : 'btn-danger');
 				        },
                         disabled: function () {
                             return $scope.loading;
                         },
 				        action: $scope.changeStatus.bind($scope),
-				        tooltip: 'Enable the rule'
+				        tooltip: 'Change rule status'
 			        }
 		        }
 	        ];

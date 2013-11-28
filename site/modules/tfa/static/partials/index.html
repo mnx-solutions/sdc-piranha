@@ -4,9 +4,9 @@
 
     <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password">
 
-    <div data-ng-show="success" data-translate>Logging in successful. Redirecting...</div>
+    <div class="alert alert-success" data-ng-show="success" data-translate>Logging in successful. Redirecting...</div>
 
-    <div data-ng-show="error">{{error}}</div>
+    <div class="alert alert-danger" data-ng-show="error">{{error}}</div>
 
     <button class="btn btn-large btn-primary" type="submit" data-ng-click="login()" data-translate>Sign in</button>
 </form>

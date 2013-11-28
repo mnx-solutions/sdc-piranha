@@ -1,4 +1,4 @@
-package test;
+package test; 
 
 import static com.codeborne.selenide.Condition.disappears;
 import static com.codeborne.selenide.Condition.visible;
@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import pageobjects.Common;
@@ -29,11 +30,11 @@ public class InstanceManipulationTests extends TestWrapper {
 	private InstancePage instancePage;
 
 	private static CreateInstanceObject i1 = new CreateInstanceObject(
-			"selenide-created-instance-a", "13.2.0", "base", null, null,
-			"Standard 0.25", null, "0.008", "5.84");
+			"selenide-created-instance-a", "13.2.0", "base", "Standard 0.25",
+			"0.008", "5.84");
 	private static CreateInstanceObject i2 = new CreateInstanceObject(
-			"selenide-created-instance-b", "13.2.0", "base", null, null,
-			"Standard 0.25", null, "0.008", "5.84");
+			"selenide-created-instance-b", "13.2.0", "base", "Standard 0.25",
+			"0.008", "5.84");
 	private static String dc1 = "us-east-1";
 	private static String dc2 = "us-west-1";
 
@@ -58,21 +59,21 @@ public class InstanceManipulationTests extends TestWrapper {
 			open("/main/#!/compute");
 			Common.checkHeadingText("Instances");
 			instanceList = page(InstanceList.class);
-			$(byText(i1.getImageName())).shouldBe(visible);
-			$(byText(i2.getImageName())).shouldBe(visible);
-			instanceList.toggleInstanceControl(i1.getImageName());
-			instanceList.toggleInstanceControl(i2.getImageName());
-			instanceList.changeInstanceStatus("Stop", i1.getImageName());
-			instanceList.changeInstanceStatus("Stop", i2.getImageName());
-			instanceList.checkInstanceStatus("Stopped", i1.getImageName());
-			instanceList.checkInstanceStatus("Stopped", i2.getImageName());
-			instanceList.deleteInstance(i1.getImageName());
+			$(byText(i1.getInstanceName())).shouldBe(visible);
+			$(byText(i2.getInstanceName())).shouldBe(visible);
+			instanceList.toggleInstanceControl(i1.getInstanceName());
+			instanceList.toggleInstanceControl(i2.getInstanceName());
+			instanceList.changeInstanceStatus("Stop", i1.getInstanceName());
+			instanceList.changeInstanceStatus("Stop", i2.getInstanceName());
+			instanceList.checkInstanceStatus("Stopped", i1.getInstanceName());
+			instanceList.checkInstanceStatus("Stopped", i2.getInstanceName());
+			instanceList.deleteInstance(i1.getInstanceName());
 			Common.errorNotPresent();
-			instanceList.deleteInstance(i2.getImageName());
+			instanceList.deleteInstance(i2.getInstanceName());
 			Common.errorNotPresent();
-			$(byText(i1.getImageName())).waitUntil(disappears,
+			$(byText(i1.getInstanceName())).waitUntil(disappears,
 					CHANGE_STATUS_TIMEOUT);
-			$(byText(i2.getImageName())).waitUntil(disappears,
+			$(byText(i2.getInstanceName())).waitUntil(disappears,
 					CHANGE_STATUS_TIMEOUT);
 		} finally {
 			open("/landing/forgetToken");
@@ -82,10 +83,11 @@ public class InstanceManipulationTests extends TestWrapper {
 	@Test
 	public void validateMachinePageInfo() {
 		Common.clickNavigationLink("Compute");
-		$(byText(i1.getImageName())).click();
+		$(byText(i1.getInstanceName())).click();
 		instancePage = page(InstancePage.class);
-		instancePage.validateInstanceSpecs("smartmachine", i1.getImageName(),
-				i1.getImageOs(), i1.getImageVersion(), "", "", "", "", "", "");
+		instancePage.validateInstanceSpecs("smartmachine",
+				i1.getInstanceName(), i1.getImageOs(), i1.getImageVersion(),
+				"", "", "", "", "", "");
 	}
 
 	@Test
@@ -93,13 +95,16 @@ public class InstanceManipulationTests extends TestWrapper {
 		open("/main/#!/compute");
 		Common.checkHeadingText("Instances");
 		InstanceList.waitForInstanceList();
-		String instanceName = i1.getImageName();
+		String instanceName = i1.getInstanceName();
 		$(byText(instanceName)).click();
 		Common.checkHeadingText(instanceName);
 		instancePage = page(InstancePage.class);
+		$(byText("+ Add New Tag")).click();
 		instancePage.addTag("tagName1", "tagValue1");
+		$(byText("+ Add New Tag")).click();
 		instancePage.addTag("tagName2", "tagValue2");
 		instancePage.removeTag("tagName1");
+		$(byText("+ Add New Tag")).click();
 		instancePage.addTag("tagName1", "tagValue1");
 		instancePage.saveInstance();
 		Common.errorNotPresent();
@@ -116,8 +121,8 @@ public class InstanceManipulationTests extends TestWrapper {
 
 	@Test
 	public void restartBothMachines() {
-		String i1Name = i1.getImageName();
-		String i2Name = i2.getImageName();
+		String i1Name = i1.getInstanceName();
+		String i2Name = i2.getInstanceName();
 		open("/main/#!/compute");
 		Common.checkHeadingText("Instances");
 		instanceList = page(InstanceList.class);
@@ -138,8 +143,8 @@ public class InstanceManipulationTests extends TestWrapper {
 
 	@Test
 	public void resizeBothMachines() {
-		String i1Name = i1.getImageName();
-		String i2Name = i2.getImageName();
+		String i1Name = i1.getInstanceName();
+		String i2Name = i2.getInstanceName();
 		open("/main/#!/compute");
 		Common.checkHeadingText("Instances");
 		$(byText(i1Name)).click();
@@ -162,16 +167,16 @@ public class InstanceManipulationTests extends TestWrapper {
 
 	@Test
 	public void renameInstancesAndStartStopThem() {
-		String i1Name = i1.getImageName();
-		String i2Name = i2.getImageName();
-		i1.setImageName(i1Name + "-r");
-		i2.setImageName(i2Name + "-r");
+		String i1Name = i1.getInstanceName();
+		String i2Name = i2.getInstanceName();
+		i1.setInstanceName(i1Name + "-r");
+		i2.setInstanceName(i2Name + "-r");
 		open("/main/#!/compute");
 		Common.checkHeadingText("Instances");
 		$(byText(i1Name)).click();
 		Common.checkHeadingText(i1Name);
 		instancePage = page(InstancePage.class);
-		instancePage.rename(i1.getImageName());
+		instancePage.rename(i1.getInstanceName());
 		Common.errorNotPresent();
 		Common.clickNavigationLink("Compute");
 		$(byText(i2Name)).click();
@@ -179,17 +184,18 @@ public class InstanceManipulationTests extends TestWrapper {
 		instancePage = page(InstancePage.class);
 		instancePage.stop();
 		instancePage.validateStatus("Stopped");
-		instancePage.rename(i2.getImageName());
+		instancePage.rename(i2.getInstanceName());
 		Common.errorNotPresent();
 		Common.clickNavigationLink("Compute");
-		$(byText(i1.getImageName())).shouldBe(visible);
-		$(byText(i2.getImageName())).waitUntil(visible, CHANGE_STATUS_TIMEOUT);
+		$(byText(i1.getInstanceName())).shouldBe(visible);
+		$(byText(i2.getInstanceName())).waitUntil(visible,
+				CHANGE_STATUS_TIMEOUT);
 		instanceList = page(InstanceList.class);
-		instanceList.checkInstanceStatus("Running", i1.getImageName());
-		instanceList.checkInstanceStatus("Stopped", i2.getImageName());
-		instanceList.toggleInstanceControl(i2.getImageName());
-		instanceList.changeInstanceStatus("Start", i2.getImageName());
-		instanceList.checkInstanceStatus("Running", i2.getImageName());
+		instanceList.checkInstanceStatus("Running", i1.getInstanceName());
+		instanceList.checkInstanceStatus("Stopped", i2.getInstanceName());
+		instanceList.toggleInstanceControl(i2.getInstanceName());
+		instanceList.changeInstanceStatus("Start", i2.getInstanceName());
+		instanceList.checkInstanceStatus("Running", i2.getInstanceName());
 		Common.errorNotPresent();
 	}
 
@@ -198,25 +204,25 @@ public class InstanceManipulationTests extends TestWrapper {
 		open("/main/#!/compute");
 		Common.checkHeadingText("Instances");
 		$("#search").setValue("selenide-created-instance-");
-		$(byText(i1.getImageName())).shouldBe(visible);
+		$(byText(i1.getInstanceName())).shouldBe(visible);
 	}
 
 	public static void generateTestInstances() {
-		String i1Name = i1.getImageName();
-		String i2Name = i2.getImageName();
+		String i1Name = i1.getInstanceName();
+		String i2Name = i2.getInstanceName();
 		$(byText("Create Instance")).click();
 		Common.checkHeadingText("Create Instance");
 		i1Name = CreateInstanceCarousel.createIsntance(i1, dc1);
 		$(byText("Create Instance")).click();
 		i2Name = CreateInstanceCarousel.createIsntance(i2, dc2);
-		i1.setImageName(i1Name);
-		i2.setImageName(i2Name);
+		i1.setInstanceName(i1Name);
+		i2.setInstanceName(i2Name);
 		instanceList = page(InstanceList.class);
 		$(byText(i1Name)).shouldBe(visible);
 		$(byText(i2Name)).shouldBe(visible);
-		instanceList.checkForCreatedInstance(i1.getImageName());
-		instanceList.checkForCreatedInstance(i2.getImageName());
-		instanceList.checkInstanceStatus("Running", i1.getImageName());
-		instanceList.checkInstanceStatus("Running", i2.getImageName());
+		instanceList.checkForCreatedInstance(i1.getInstanceName());
+		instanceList.checkForCreatedInstance(i2.getInstanceName());
+		instanceList.checkInstanceStatus("Running", i1.getInstanceName());
+		instanceList.checkInstanceStatus("Running", i2.getInstanceName());
 	}
 }

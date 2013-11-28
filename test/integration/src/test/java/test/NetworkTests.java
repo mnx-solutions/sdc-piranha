@@ -12,6 +12,7 @@ import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
@@ -19,6 +20,9 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.codeborne.selenide.ex.ElementNotFound;
+
+import data.CreateInstanceObject;
 import pageobjects.Common;
 import pageobjects.CreateInstanceCarousel;
 import pageobjects.InstanceList;
@@ -27,90 +31,76 @@ import util.TestWrapper;
 
 public class NetworkTests extends TestWrapper {
 
-	private CreateInstanceCarousel createInstanceCarousel;
+	private static CreateInstanceCarousel createInstanceCarousel;
 	private static InstanceList instanceList;
 	private InstancePage instancePage;
-	private static List<String> instances;
+	private static List<CreateInstanceObject> instances;
+	private static HashMap<String, String> networkIps;
 
 	@BeforeClass
 	public static void openDashboard() {
 		timeout = BASE_TIMEOUT;
 		baseUrl = BASE_URL;
-		instances = new ArrayList<String>();
+		instances = new ArrayList<CreateInstanceObject>();
+		networkIps = new HashMap<String, String>();
 		open("/");
 		Common.login();
+		addInstancesToInstancesList();
+		addNetworkIps();
+		createInstances();
 	}
 
 	@AfterClass
 	public static void logout() {
-		deleteInstances(instances);
+		deleteInstances();
 		open("/landing/forgetToken");
-	}
-
-	private static void deleteInstances(List<String> instances) {
-		$(byText("Compute")).click();
-		instanceList = page(InstanceList.class);
-		for (String instance : instances) {
-			instanceList.toggleInstanceControl(instance);
-			instanceList.changeInstanceStatus("Stop", instance);
-		}
-		instanceList.checkInstanceStatus("Stopped", instances.get(0));
-		for (String instance : instances) {
-			instanceList.deleteInstance(instance);
-		}
 	}
 
 	@After
 	public void goToDashboard() {
-		Common.clickNavigationLink("Dashboard");
+		Common.clickNavigationLink("Compute");
 	}
 
 	@Test
 	public void createInPrivateUsWest() {
-		assertTrue(createMachine("us-west-1", "10.12", false, true));
+		assertTrue(checkInstance(getCreateInstanceObjectByName("private-us-west")));
 	}
 
 	@Test
 	public void createInPrivateEu() {
-		assertTrue(createMachine("eu-ams-1", "10.224", false, true));
+		assertTrue(checkInstance(getCreateInstanceObjectByName("private-eu-ams")));
 	}
 
 	@Test
 	public void createInPublicUsEast() {
-		assertTrue(createMachine("us-east-1", "72.2", true, false));
+		assertTrue(checkInstance(getCreateInstanceObjectByName("public-us-east")));
 	}
 
 	@Test
 	public void createInPublicUsSw() {
-		assertTrue(createMachine("us-sw-1", "165.225", true, false));
+		assertTrue(checkInstance(getCreateInstanceObjectByName("public-us-sw")));
 	}
 
-	private boolean createMachine(String dataCenter, String ipRange,
-			boolean inPublic, boolean inPrivate) {
-		String instanceName = "selenide-created-instance";
-		String os = "base";
-		String version = "13.2.0";
-		String packageType = "Standard";
-		String packageSize = "Standard 0.25";
+	private static void createInstance(CreateInstanceObject cio) {
+		String instanceName = cio.getInstanceName();
+		String os = cio.getImageOs();
+		String version = cio.getImageVersion();
+		String packageSize = cio.getPackageDisplayedName();
+		String dc = cio.getDataCenter();
+		boolean inPublic = cio.isInPublic();
+		boolean inPrivate = cio.isInPrivate();
 		$(byText("Compute")).click();
 		instanceList = page(InstanceList.class);
 		$(byText("Create Instance")).click();
 		Common.checkHeadingText("Create Instance");
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
 		createInstanceCarousel.waitUntilPageIsActive(0);
-		createInstanceCarousel.selectDataCenter(dataCenter);
-		createInstanceCarousel.selectOsFilter("smartos");
+		createInstanceCarousel.selectDataCenter(dc);
 		createInstanceCarousel.setOsVersion(os, version);
 		createInstanceCarousel.selectOsImage(os);
 		createInstanceCarousel.waitUntilPageIsActive(1);
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
-		createInstanceCarousel.selectInstanceType(packageType);
 		createInstanceCarousel.selectPackage(packageSize);
-		createInstanceCarousel
-				.checkSelectedImageDescription("A 32-bit SmartOS");
-		createInstanceCarousel.checkPackageInfo(dataCenter, "256 MB", "16 GB",
-				"0.125 and bursting");
-		createInstanceCarousel.checkPaymentInfo("0.008", "5.84");
 		$(byText("Configure networks +")).shouldBe(visible);
 		$(byText("Configure networks +")).click();
 		$(byAttribute("name", "Joyent-SDC-Private")).shouldBe(visible);
@@ -119,25 +109,33 @@ public class NetworkTests extends TestWrapper {
 			$(byAttribute("name", "Joyent-SDC-Public")).click();
 		if (inPrivate)
 			$(byAttribute("name", "Joyent-SDC-Private")).click();
-		System.out.println(dataCenter
-				+ " Public value: "
-				+ $(byAttribute("name", "Joyent-SDC-Public")).getAttribute(
-						"value"));
-		System.out.println(dataCenter
-				+ " Private value: "
-				+ $(byAttribute("name", "Joyent-SDC-Private")).getAttribute(
-						"value"));
 		instanceName = createInstanceCarousel
 				.setInstanceNameValue(instanceName);
-		instances.add(instanceName);
+		updateInstanceNameInList(cio.getInstanceName(), instanceName);
 		$(byText("Create instance")).click();
 		Common.confirmModal();
+	}
+
+	private static void updateInstanceNameInList(String instanceName,
+			String newInstanceName) {
+		for (CreateInstanceObject cio : instances) {
+			if (cio.getInstanceName().equals(instanceName))
+				cio.setInstanceName(newInstanceName);
+		}
+	}
+
+	private boolean checkInstance(CreateInstanceObject cio) {
+		String instanceName = cio.getInstanceName();
+		String dataCenter = cio.getDataCenter();
+		String prefix = setPrefix(instanceName);
+		String ipRange = networkIps.get(dataCenter + prefix);
 		$(".loading-medium-after-h1").waitUntil(disappear, BASE_TIMEOUT);
 		$(byText("Instances")).shouldBe(visible);
 		instanceList = page(InstanceList.class);
-		Common.errorNotPresent();
 		$(byText(instanceName)).shouldBe(visible);
-		instanceList.checkForCreatedInstance(instanceName);
+		if (!instanceList.isRunning(instanceName)) {
+			instanceList.checkForCreatedInstance(instanceName);
+		}
 		instanceList.checkInstanceStatus("Running", instanceName);
 		$(byText(instanceName)).click();
 		Common.checkHeadingText(instanceName);
@@ -148,6 +146,80 @@ public class NetworkTests extends TestWrapper {
 		else
 			return false;
 
+	}
+
+	private String setPrefix(String instanceName) {
+		String prefix = "";
+		if (instanceName.startsWith("private-")) {
+			prefix = "-private";
+		}
+		if (instanceName.startsWith("public-")) {
+			prefix = "-public";
+		}
+		return prefix;
+	}
+
+	private CreateInstanceObject getCreateInstanceObjectByName(String name) {
+		for (CreateInstanceObject cio : instances) {
+			if (cio.getInstanceName().equals(name))
+				return cio;
+		}
+		return null;
+	}
+
+	private static void deleteInstances() {
+		$(byText("Compute")).click();
+		instanceList = page(InstanceList.class);
+		for (CreateInstanceObject instance : instances) {
+			String instanceName = instance.getInstanceName();
+			try {
+				System.out.println("Stopping: " + instanceName);
+				instanceList.toggleInstanceControl(instanceName);
+				Common.errorNotPresent();
+				instanceList.changeInstanceStatus("Stop", instanceName);
+				Common.errorNotPresent();
+			} catch (ElementNotFound e) {
+			}
+		}
+		for (CreateInstanceObject instance : instances) {
+			String instanceName = instance.getInstanceName();
+			try {
+				instanceList.checkInstanceStatus("Stopped", instanceName);
+				System.out.println("Deleting: " + instanceName);
+				Common.errorNotPresent();
+				instanceList.deleteInstance(instanceName);
+				Common.errorNotPresent();
+			} catch (ElementNotFound e) {
+			}
+		}
+	}
+
+	private static void createInstances() {
+		for (CreateInstanceObject cio : instances) {
+			try {
+				createInstance(cio);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private static void addNetworkIps() {
+		networkIps.put("us-west-1-private", "10.12");
+		networkIps.put("eu-ams-1-private", "10.224");
+		networkIps.put("us-east-1-public", "72.2");
+		networkIps.put("us-sw-1-public", "165.225");
+	}
+
+	private static void addInstancesToInstancesList() {
+		instances.add(new CreateInstanceObject("private-us-west", "13.2.0",
+				"base", "smartos", "Standard 0.25", "us-west-1", false, true));
+		instances.add(new CreateInstanceObject("private-eu-ams", "13.2.0",
+				"base", "smartos", "Standard 0.25", "eu-ams-1", false, true));
+		instances.add(new CreateInstanceObject("public-us-east", "13.2.0",
+				"base", "smartos", "Standard 0.25", "us-east-1", true, false));
+		instances.add(new CreateInstanceObject("public-us-sw", "13.2.0",
+				"base", "smartos", "Standard 0.25", "us-sw-1", true, false));
 	}
 
 }
