@@ -1,7 +1,8 @@
 <div class="container">
     <div data-notification></div>
-    <div class="loading-large" data-ng-hide="allLoading"></div>
-    <div class="span12" data-ng-show="allLoading">
+    <h4 data-ng-show="creating">Go get a coffee or two, might be ready when you come back.</h4>
+    <div class="loading-large" data-ng-show="!loaded || creating"></div>
+    <div class="span12" data-ng-show="loaded && !creating">
         <h3 data-translate>Do you want to enable the Load Balancer feature for your account?</h3>
 
         <div data-ng-include="'elb/static/templates/eula.html'"></div>

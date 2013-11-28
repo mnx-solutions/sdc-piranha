@@ -10,21 +10,22 @@
                     title: localization.translate(null, 'elb', 'Enable Load Balancing')
                 });
 
-                $scope.allLoading = false;
+                $scope.loaded = false;
+                $scope.creating = false;
 
                 service.getController().then(function () {
                     $location.path('/elb/list');
                 }, function () {
-                    $scope.allLoading = true;
+                    $scope.loaded = true;
                 });
 
                 $scope.enableElb = function () {
-                    $scope.allLoading = false;
+                    $scope.creating = true;
                     service.createController().then(function () {
                         $location.path('/elb/list');
                     }, function (err) {
                         notification.replace('elb', { type: 'error' }, err);
-                        $scope.allLoading = true;
+                        $scope.creating = false;
                     });
                 };
 
