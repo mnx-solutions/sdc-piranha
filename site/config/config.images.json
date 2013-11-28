@@ -2,7 +2,6 @@
     "images": [
         {
             "name": "Standard Node.js",
-            "description": "Optimized Node.js on SmartOS for dev & prod",
             "className": "nodejs-logo",
             "imageData": {
                 "datacenter": "us-west-x",
@@ -11,11 +10,17 @@
                 "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
                 "opsys": "All",
                 "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
+            },
+            "description": {
+                "text": "Optimized Node.js on SmartOS for dev & prod",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
             }
         },
         {
             "name": "Standard Ubuntu",
-            "description": "The high-performance cloud OS",
             "className": "ubuntuos-logo",
             "imageData": {
                 "datacenter": "us-west-x",
@@ -23,12 +28,18 @@
                 "name": "",
                 "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
                 "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
+                "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
             }
         },
         {
             "name": "Basic SmartOS",
-            "description": "The high-performance cloud OS",
             "className": "smartos-logo",
             "imageData": {
                 "datacenter": "us-west-x",
@@ -36,12 +47,18 @@
                 "name": "",
                 "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
                 "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
+                "package": "f917d6c7-f719-44b0-9ea0-034da05602e5"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
             }
         },
         {
             "name": "Basic CentOS",
-            "description": "Linux distro with Yum, RPM, Gnome",
             "className": "centos-logo",
             "imageData": {
                 "datacenter": "us-west-x",
@@ -49,12 +66,18 @@
                 "name": "",
                 "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
                 "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
+                "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+            },
+            "description": {
+                "text": "Linux distro with Yum, RPM, Gnome",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
             }
         },
         {
             "name": "Standard Windows",
-            "description": "Windows 2012 installation with support",
             "className": "winos-logo",
             "imageData": {
                 "datacenter": "us-west-x",
@@ -62,7 +85,14 @@
                 "name": "",
                 "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
                 "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
+                "package": "813e5040-04c1-4b25-8e3f-552e08f4969e"
+            },
+            "description": {
+                "text": "Windows 2012 installation with support",
+                "memory": 7.5,
+                "cpu": 2,
+                "disk": 738,
+                "price": 0.300
             }
         }
     ]
