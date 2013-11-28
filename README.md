@@ -170,6 +170,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `elb.ssc_image` UUID of LBaaS controller image
 - `elb.ssc_package` Name of LBaaS controller package
 - `elb.ssc_networks` Hardcode if on west-x, do not use on west-1
+- `elb.ssc_datacenter` Datacenter for SSC machine, defaults to west-1
 - `elb.account` Hardcode if on west-x, do not use on west-1
 - `elb.ssc_protocol` Protocol to communicate with LBaaS controller
 - `elb.ssc_port` Port to communicate with LBaaS controller
