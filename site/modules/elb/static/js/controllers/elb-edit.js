@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'elb.EditController',
-        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'elb.Service',
-            function ($scope, requestContext, localization, $location, util, $q, service) {
+        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'elb.Service', 'Datacenter',
+            function ($scope, requestContext, localization, $location, util, $q, service, Datacenter) {
                 localization.bind('elb', $scope);
                 requestContext.setUpRenderContext('elb.edit', $scope, {
                     title: localization.translate(null, 'elb', 'Create/Edit Load Balancer')
@@ -43,6 +43,10 @@
 
                     $scope.server = server;
                     $scope.protocolSelect(server.protocol);
+                    Datacenter.datacenter().then(function (datacenters) {
+                        $scope.datacenters = datacenters;
+                        $scope.datacenterSelect(server.datacenter);
+                    });
 
                     $scope.machines = machines.map(function (machine) {
                         if (elbMachines.indexOf(machine.primaryIp) !== -1) {
@@ -72,6 +76,17 @@
                     });
                 };
 
+                $scope.datacenterSelect = function (datacenterName) {
+                    $scope.datacenterSelected = $scope.datacenters[0];
+                    $scope.datacenters.some(function (datacenter) {
+                        if (datacenter.name === datacenterName) {
+                            $scope.datacenterSelected = datacenter;
+                            return true;
+                        }
+                        return false;
+                    });
+                };
+
                 $scope.hcDelaySelect = function (name) {
                     $scope.server.health.delay = name;
                 };
@@ -82,6 +97,7 @@
                 $scope.save = function () {
                     $scope.saving = true;
                     $scope.server.protocol = $scope.protocolSelected.value;
+                    $scope.server.datacenter = $scope.datacenterSelected.name;
                     var selectedMachines = $scope.machines.filter(function (machine) {
                         return machine.selected;
                     }).map(function (machine) {

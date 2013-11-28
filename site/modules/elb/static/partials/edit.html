@@ -34,6 +34,23 @@
                     </span>
                 </div>
                 <div>
+                    <span class="span3 lb-label" data-translate>Datacenter</span>
+                    <div class="btn-group tooltip-hover span4 dd-margin protocol-pos"
+                         data-toggle="tooltip"
+                         data-placement="bottom">
+                        <label class="btn">{{datacenterSelected.name}}</label>
+                        <button class="btn dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li data-ng-repeat="datacenter in datacenters">
+                                <a data-ng-click="datacenterSelect(dc.name)">{{datacenter.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="protocol-block">
                     <span class="span3 lb-label" data-translate>Protocol</span>
                     <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
                          data-toggle="tooltip"

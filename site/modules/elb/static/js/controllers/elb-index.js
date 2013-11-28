@@ -10,13 +10,6 @@
                     title: localization.translate(null, 'elb', 'Enable Load Balancing')
                 });
 
-                $scope.datacenters = Datacenter.datacenter();
-                $scope.datacenters.then(function (datacenters) {
-                    if (datacenters.length > 0) {
-                        $scope.datacenter = datacenters[0];
-                    }
-                });
-
                 $scope.allLoading = false;
 
                 service.getController().then(function () {
