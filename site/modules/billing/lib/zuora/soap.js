@@ -22,6 +22,10 @@ var defaultMaxClientAge = 2 * 60 * 60 * 1000; // 2 hour
 var client;
 var config;
 var clientCreatedAt = 0;
+
+function setConfig(newConfig) {
+    config = newConfig;
+}
 /**
  * Connect: Creates a client
  * Overloaded function. It will create a new client, or use an existing one.
@@ -135,5 +139,6 @@ function query (zObject, callback) {
 
 module.exports = {
     connect:   connect,
-    query:     query
+    query:     query,
+    setConfig: setConfig
 };
