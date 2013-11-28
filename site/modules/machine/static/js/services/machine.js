@@ -376,7 +376,7 @@
                             name: (machine.name || ''),
                             uuid: (machine.id || '')
                         }
-                    ) +' '+ ((err.message) ? '<br />'+ err.message : ''),
+                    ) +'. '+ ((err.message) ? err.message : ''),
                     function () {}
                 );
             }
