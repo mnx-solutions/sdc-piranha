@@ -11,7 +11,7 @@ exports.init = function (mdata) {
     metadata = mdata;
 };
 
-var getMachinesList = exports.getMachinesList = function getMachinesList(call, cb) {
+var getMachinesList = exports.getMachinesList = function (call, cb) {
     var cloud = call.cloud || call.req.cloud;
     var datacenterKeys = Object.keys(cloud.listDatacenters());
     var datacentersCount = datacenterKeys.length;
@@ -31,7 +31,7 @@ var getMachinesList = exports.getMachinesList = function getMachinesList(call, c
     });
 };
 
-var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
+var getSscMachine = exports.getSscMachine = function (call, cb) {
     getMachinesList(call, function (err, machines) {
         if (err) {
             cb(err);
@@ -48,13 +48,13 @@ var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
     });
 };
 
-exports.getSscClient = function (call, callback) {
-    function getElbApiKey(call, callback) {
+exports.getSscClient = function (call, sscCallback) {
+    function getElbApiKey(keyCall, keyCallback) {
         var result = {};
         vasync.parallel({
             funcs: [
                 function (callback) {
-                    getSscMachine(call, function (error, machine) {
+                    getSscMachine(keyCall, function (error, machine) {
                         if (!error) {
                             result.primaryIp = machine.primaryIp;
                         }
@@ -62,21 +62,23 @@ exports.getSscClient = function (call, callback) {
                     });
                 },
                 function (callback) {
-                    metadata.get(call.req.session.userId, metadata.PORTAL_PRIVATE_KEY, function (err, value) {
+                    metadata.get(keyCall.req.session.userId, metadata.PORTAL_PRIVATE_KEY, function (err, value) {
+                        result.privateKey = value;
                         callback(err);
                     });
                 },
                 function (callback) {
-                    metadata.get(call.req.session.userId, metadata.PORTAL_FINGERPRINT, function (err, value) {
+                    metadata.get(keyCall.req.session.userId, metadata.PORTAL_FINGERPRINT, function (err, value) {
                         result.fingerprint = value;
                         callback(err);
                     });
                 }
             ]
         }, function (error) {
-            callback(error, result);
+            keyCallback(error, result);
         });
     }
+
     function checkSscClient(client, callback, firstStart) {
         firstStart = firstStart || new Date().getTime();
         if (new Date().getTime() - firstStart > 5 * 60 * 1000) {
@@ -93,14 +95,15 @@ exports.getSscClient = function (call, callback) {
             }
         });
     }
+
     getElbApiKey(call, function (error, result) {
         if (error) {
-            callback(error);
+            sscCallback(error);
             return;
         }
 
         if (!(result.primaryIp && result.privateKey && result.fingerprint)) {
-            callback(new Error('Something wrong, re-enabling load balancing required'));
+            sscCallback(new Error('Something wrong, re-enabling load balancing required'));
             return;
         }
 
@@ -117,6 +120,6 @@ exports.getSscClient = function (call, callback) {
                 });
             }
         });
-        checkSscClient(sscClient, callback);
+        checkSscClient(sscClient, sscCallback);
     });
 };
