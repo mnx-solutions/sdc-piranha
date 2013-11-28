@@ -542,16 +542,16 @@
                     },
                     btn: {
                         getLabel: function (object) {
-                            return object.enabled ? 'Disable' : 'Enable';
+                            return object.enabled ? 'Enabled' : 'Disabled';
                         },
                         getClass: function (object) {
-                            return (object.enabled ? 'btn-warning' : 'btn-success');
+                            return (object.enabled ? 'btn-success' : 'btn-warning');
                         },
                         disabled: function () {
                             return $scope.loading;
                         },
                         action: $scope.changeStatus.bind($scope),
-                        tooltip: 'Enable the rule'
+                        tooltip: 'Change rule status'
                     },
                     sequence: 5,
                     active: true

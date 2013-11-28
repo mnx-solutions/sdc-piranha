@@ -175,7 +175,7 @@ public class CreateInstanceCarousel {
 	 * @return Image name
 	 */
 	public static String createIsntance(CreateInstanceObject i, String dc) {
-		String instanceName = i.getImageName();
+		String instanceName = i.getInstanceName();
 		String os = i.getImageOs();
 		String version = i.getImageVersion();
 		String packageSize = i.getPackageDisplayedName();

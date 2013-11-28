@@ -138,9 +138,10 @@ public class AccountPage {
 	public void validateSshKey(String keyName, String sshKey) {
 		SelenideElement holder = $(".account").$("fieldset", 2);
 		SelenideElement el = getSshKeyRow(keyName, holder);
-		el.$(".item").click();
+		System.out.println(el);
+		el.click();
 		el.$(".row-fluid", 1).$(".value").should(hasText(sshKey));
-		el.$(".item").click();
+		el.click();
 	}
 
 	/**
@@ -201,8 +202,8 @@ public class AccountPage {
 	}
 
 	public void setAccountPhone(String country, String number) {
-		$("#countryCode").selectOption(country);
-		$("#phone").setValue(number);
+		$("select").selectOption(country);
+		$(byAttribute("data-ng-model", "plainNumber")).setValue(number);
 	}
 
 	public String getAccountEmail() {
@@ -222,13 +223,13 @@ public class AccountPage {
 	}
 
 	public String getAccountPhoneCountry() {
-		$("#countryCode").$(byAttribute("selected", "selected")).shouldBe(
-				visible);
-		return $("#countryCode").getSelectedText();
+		$(byAttribute("data-ng-model", "country")).$(
+				byAttribute("selected", "selected")).shouldBe(visible);
+		return $(byAttribute("data-ng-model", "country")).getSelectedText();
 	}
 
 	public String getAccountPhone() {
-		return $("#phone").val();
+		return $(byAttribute("data-ng-model", "plainNumber")).val();
 	}
 
 	public void saveAccountChanges() {

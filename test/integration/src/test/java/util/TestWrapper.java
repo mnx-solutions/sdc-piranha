@@ -27,11 +27,11 @@ public class TestWrapper implements SauceOnDemandSessionIdProvider {
 			this, sa.getAuthentication());
 
 	@Override
-	 public String getSessionId() {
-	  if (System.getProperty("browser") != null
-	    && System.getProperty("browser").startsWith("util.Sauce")) {
-	   return ((RemoteWebDriver) driver).getSessionId().toString();
-	  }
-	  return null;
-	 }
+	public String getSessionId() {
+		if (System.getProperty("browser") != null
+				&& System.getProperty("browser").startsWith("util.Sauce")) {
+			return ((RemoteWebDriver) driver).getSessionId().toString();
+		}
+		return null;
+	}
 }

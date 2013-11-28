@@ -1,0 +1,886 @@
+[
+  {
+    "id": "60ed3a3e-92c7-11e2-ba4a-9b6d5feaa0c4",
+    "name": "base",
+    "version": "1.9.1",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base:1.9.1"
+  },
+  {
+    "id": "64e1b2ee-52c8-11e2-bedd-7f919cc63ab9",
+    "name": "ubuntu-12.04",
+    "version": "2.3.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:jpc:ubuntu-12.04:2.3.1"
+  },
+  {
+    "id": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+    "name": "ubuntu-12.04",
+    "version": "2.4.2",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:jpc:ubuntu-12.04:2.4.2"
+  },
+  {
+    "id": "30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
+    "name": "centos-6",
+    "version": "2.4.2",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "CentOS 6.4 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:centos-6:2.4.2"
+  },
+  {
+    "id": "3162a91e-8b5d-11e2-a78f-9780813f9142",
+    "name": "ubuntu-12.04",
+    "version": "2.4.0",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:jpc:ubuntu-12.04:2.4.0"
+  },
+  {
+    "id": "e4cd7b9e-4330-11e1-81cf-3bb50a972bda",
+    "name": "centos-6",
+    "version": "1.0.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "CentOS 6 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:centos-6:1.0.1"
+  },
+  {
+    "id": "8700b668-0da4-11e2-bde4-17221283a2f4",
+    "name": "centos-6",
+    "version": "1.3.0",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "CentOS 6 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:centos-6:1.3.0"
+  },
+  {
+    "id": "f953e97e-4991-11e1-9ea4-27c6e7e8afda",
+    "name": "nodejs",
+    "version": "1.3.3",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Node.js git-deploy PaaS dataset",
+    "urn": "sdc:sdc:nodejs:1.3.3"
+  },
+  {
+    "id": "a963d5d0-5e29-11e1-a4d7-a31977b1e6dd",
+    "name": "smartosplus",
+    "version": "3.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Generic multi-purpose SmartMachine. This image is deprecated and will be replaced by the SmartOS Standard image (standard).",
+    "urn": "sdc:sdc:smartosplus:3.1.0"
+  },
+  {
+    "id": "31bc4dbe-5e06-11e1-907c-5bed6b255fd1",
+    "name": "smartos64",
+    "version": "1.5.4",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Generic multi-purpose 64-bit SmartMachine. This image is deprecated and will be replaced by the 64 bit SmartOS Standard image (base64).",
+    "urn": "sdc:sdc:smartos64:1.5.4"
+  },
+  {
+    "id": "489754f2-5e01-11e1-8ff8-f770c2116b0d",
+    "name": "smartos",
+    "version": "1.5.4",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Generic multi-purpose SmartMachine. This image is deprecated and will be replaced by the SmartOS Base image (base).",
+    "urn": "sdc:sdc:smartos:1.5.4"
+  },
+  {
+    "id": "e6f10814-a38d-11e2-8138-67b96e228c1e",
+    "name": "chefserver",
+    "version": "1.1.0",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1792,
+      "min_ram": 1792
+    },
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with Opscode Chef Server pre-installed and pre-configured. Includes all Chef Server components (server, expander, solr, and webui).",
+    "urn": "sdc:sdc:chefserver:1.1.0"
+  },
+  {
+    "id": "3f8a3d02-43e4-11e1-9565-7f82a075e289",
+    "name": "fedora-14",
+    "version": "1.0.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Fedora 14 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:fedora-14:1.0.1"
+  },
+  {
+    "id": "e6ac6784-44b3-11e1-8555-87c3dd87aafe",
+    "name": "debian-6.03",
+    "version": "1.0.0",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Debian 6.03 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:debian-6.03:1.0.0"
+  },
+  {
+    "id": "1567edb0-b33e-11e2-a0d2-bf73e2825ffe",
+    "name": "riak",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A 64-bit SmartOS image pre-configured to run Open Source Riak 1.3.1, a Dynamo-inspired key/value store from Basho.",
+    "urn": "sdc:sdc:riak:13.1.0"
+  },
+  {
+    "id": "3882b5da-b0e8-11e2-b3a9-dbcf26c3e051",
+    "name": "percona",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image pre-configured and optimized as a Percona 5.5.29 64-bit MySQL server with Quickbackup, Handlersocket, and Sphinx Plug-in",
+    "urn": "sdc:sdc:percona:13.1.0"
+  },
+  {
+    "id": "9eac5c0c-a941-11e2-a7dc-57a6b041988f",
+    "name": "base64",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A 64-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base64:13.1.0"
+  },
+  {
+    "id": "a9380908-ea0e-11e0-aeee-4ba794c83c33",
+    "name": "percona",
+    "version": "1.0.7",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Percona SmartMachine",
+    "urn": "sdc:sdc:percona:1.0.7"
+  },
+  {
+    "id": "beb2dbd4-b26f-11e2-8ad4-935c80092aa6",
+    "name": "nodejs",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 32-bit image with Node.js 0.10.5, npm 1.2.18, MongoDB 2.2.2 and other useful packages pre-installed. Ideal for Node.js applications.",
+    "urn": "sdc:sdc:nodejs:13.1.0"
+  },
+  {
+    "id": "cf7e2f40-9276-11e2-af9a-0bad2233fb0b",
+    "name": "base64",
+    "version": "1.9.1",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base64:1.9.1"
+  },
+  {
+    "id": "e1896142-a382-11e2-bf8b-0719c824c61e",
+    "name": "riak",
+    "version": "1.8.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A 64-bit SmartOS image preconfigured to run Open Source Riak, a Dynamo-inspired key/value store from Basho.",
+    "urn": "sdc:sdc:riak:1.8.0"
+  },
+  {
+    "id": "f669428c-a939-11e2-a485-b790efc0f0c1",
+    "name": "base",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A 32-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base:13.1.0"
+  },
+  {
+    "id": "fb6ef720-55c1-11e2-b6de-bf6869fd8d41",
+    "name": "riak",
+    "version": "1.7.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "64-bit SmartOS image pre-configured to run Open Source Riak, a Dynamo-inspired key/value store from Basho.",
+    "urn": "sdc:sdc:riak:1.7.0"
+  },
+  {
+    "id": "0e436faa-cefa-11e2-b7d5-9b09052a3a6c",
+    "name": "stm-4000L",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 4000L",
+    "urn": "sdc:sdc:stm-4000L:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "f180e7dc-cef7-11e2-abca-e70c408f5820",
+    "name": "stm-1000H",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 1000H",
+    "urn": "sdc:sdc:stm-1000H:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "56b996a8-cef8-11e2-991f-23b2a545e625",
+    "name": "stm-1000M",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 1000M",
+    "urn": "sdc:sdc:stm-1000M:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "d6e039cc-cef8-11e2-aea3-fb2681f790f9",
+    "name": "stm-1000M-SAF",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 1000M-SAF",
+    "urn": "sdc:sdc:stm-1000M-SAF:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "3e397688-cef9-11e2-b655-6fc76e6d3e02",
+    "name": "stm-2000L",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 2000L",
+    "urn": "sdc:sdc:stm-2000L:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "a3b588c6-cef9-11e2-b0fa-7b20c1850b84",
+    "name": "stm-2000L-SAF",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 2000L-SAF",
+    "urn": "sdc:sdc:stm-2000L-SAF:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "a0f8cf30-f2ea-11e1-8a51-5793736be67c",
+    "name": "standard64",
+    "version": "1.0.7",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack -- such as Ruby, Apache, and MySQL -- is installed and ready to use.",
+    "urn": "sdc:sdc:standard64:1.0.7"
+  },
+  {
+    "id": "f4bc70ca-5e2c-11e1-8380-fb28785857cb",
+    "name": "smartosplus64",
+    "version": "3.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Generic multi-purpose 64-bit SmartMachine. This image is deprecated and will be replaced by the 64 bit SmartOS Standard image (standard64).",
+    "urn": "sdc:sdc:smartosplus64:3.1.0"
+  },
+  {
+    "id": "fdea06b0-3f24-11e2-ac50-0b645575ce9d",
+    "name": "base64",
+    "version": "1.8.4",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base64:1.8.4"
+  },
+  {
+    "id": "399e09fc-c448-11e1-b3c8-a3d517dfbb07",
+    "name": "riak",
+    "version": "1.6.1",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS image preconfigured to run Open Source Riak, a Dynamo-inspired key/value store from Basho.",
+    "urn": "sdc:sdc:riak:1.6.1"
+  },
+  {
+    "id": "e3364212-05c0-11e3-9576-3f3ee9e951a7",
+    "name": "base",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A 32-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base:13.2.0"
+  },
+  {
+    "id": "0084dad6-05c1-11e3-9476-8f8320925eea",
+    "name": "base64",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A 64-bit SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base64:13.2.0"
+  },
+  {
+    "id": "bae3f528-e01f-11e2-b2cb-1360087a7d5f",
+    "name": "cassandra",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image that comes with Apache Cassandra (1.2.4) and the Java JDK (1.6.0_26) pre-installed and configured.",
+    "urn": "sdc:sdc:cassandra:13.1.0",
+    "tags": {
+      "role": "hadoop"
+    }
+  },
+  {
+    "id": "84cb7edc-3f22-11e2-8a2a-3f2a7b148699",
+    "name": "base",
+    "version": "1.8.4",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base:1.8.4"
+  },
+  {
+    "id": "3390ca7c-f2e7-11e1-8818-c36e0b12e58b",
+    "name": "standard",
+    "version": "1.0.7",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS image optimized for web development. Everything you need to build a web stack -- such as Ruby, Apache, and MySQL -- is installed and ready to use.",
+    "urn": "sdc:sdc:standard:1.0.7"
+  },
+  {
+    "id": "1fc068b0-13b0-11e2-9f4e-2f3f6a96d9bc",
+    "name": "nodejs",
+    "version": "1.4.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS image with Node.js, npm, MongoDB and other useful packages pre-installed. Ideal for Node.js applications.",
+    "urn": "sdc:sdc:nodejs:1.4.0"
+  },
+  {
+    "id": "55330ab4-066f-11e2-bd0f-434f2462fada",
+    "name": "base",
+    "version": "1.8.1",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base:1.8.1"
+  },
+  {
+    "id": "01b2c898-945f-11e1-a523-af1afbe22822",
+    "name": "smartos",
+    "version": "1.6.3",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Generic multi-purpose SmartMachine. This image is deprecated and will be replaced by the SmartOS Base image (base).",
+    "urn": "sdc:sdc:smartos:1.6.3"
+  },
+  {
+    "id": "f9e4be48-9466-11e1-bc41-9f993f5dff36",
+    "name": "smartos64",
+    "version": "1.6.3",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Generic multi-purpose 64-bit SmartMachine. This image is deprecated and will be replaced by the 64 bit SmartOS Standard image (base64).",
+    "urn": "sdc:sdc:smartos64:1.6.3"
+  },
+  {
+    "id": "dc1a8b5e-043c-11e2-9d94-0f3fcb2b0c6d",
+    "name": "percona",
+    "version": "1.6.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "SmartOS image pre-configured and optimized as a Percona 5.5 64-bit MySQL server with Quickbackup, Handlersocket, and Sphinx Plug-in",
+    "urn": "sdc:sdc:percona:1.6.0"
+  },
+  {
+    "id": "60a3b1fa-0674-11e2-abf5-cb82934a8e24",
+    "name": "base64",
+    "version": "1.8.1",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:base64:1.8.1"
+  },
+  {
+    "id": "72b09a8a-cefa-11e2-8a1d-0b7cb8c78761",
+    "name": "stm-500L-10",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 500L-10",
+    "urn": "sdc:sdc:stm-500L-10:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "e87c6ce4-cefa-11e2-b908-0fbe6c3a0c6f",
+    "name": "stm-500M-200",
+    "version": "13.1.1",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1024,
+      "min_ram": 1024
+    },
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.2.0 500M-200",
+    "urn": "sdc:sdc:stm-500M-200:13.1.1",
+    "tags": {
+      "role": "loadbalancer"
+    }
+  },
+  {
+    "id": "13328c9a-9173-11e2-a9a5-2ff43d306c21",
+    "name": "ws2008ent-r2-sp1",
+    "version": "2.0.2",
+    "os": "windows",
+    "requirements": {
+      "min_memory": 4096,
+      "min_ram": 4096
+    },
+    "type": "virtualmachine",
+    "description": "Windows Server 2008r2 Enterprise 64-bit image.",
+    "urn": "sdc:admin:ws2008ent-r2-sp1:2.0.2"
+  },
+  {
+    "id": "5f101d16-90ac-11e2-b9c2-877979ff6041",
+    "name": "ws2008std-r2-sp1",
+    "version": "2.0.2",
+    "os": "windows",
+    "requirements": {
+      "max_memory": 32768,
+      "max_ram": 32768,
+      "min_memory": 4096,
+      "min_ram": 4096
+    },
+    "type": "virtualmachine",
+    "description": "Windows Server 2008r2 Standard 64-bit image.",
+    "urn": "sdc:admin:ws2008std-r2-sp1:2.0.2"
+  },
+  {
+    "id": "95f6c9a6-a2bd-11e2-b753-dbf2651bf890",
+    "name": "ws2012std",
+    "version": "1.0.1",
+    "os": "windows",
+    "requirements": {
+      "min_memory": 4096,
+      "min_ram": 4096
+    },
+    "type": "virtualmachine",
+    "description": "Windows Server 2012 Standard 64-bit image.",
+    "urn": "sdc:admin:ws2012std:1.0.1"
+  },
+  {
+    "id": "48489174-e351-11e2-88c0-a31eb2b342ee",
+    "name": "java",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with Java JDK (1.6.0_26), Apache (2.4.4), Apache Tomcat (7.0.35), Apache Ant (1.8.4) and Apache Maven (3.0.5) installed and configured as well as the common Java ENV variables (JAVA_HOME, CATALINA_HOME, ANT_HOME) set for all users.",
+    "urn": "sdc:sdc:java:13.1.0",
+    "tags": {
+      "role": "development"
+    }
+  },
+  {
+    "id": "2c6b0348-d8f6-11e2-91f4-ef498b553611",
+    "name": "manta-build",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {
+      "min_memory": 1792,
+      "min_ram": 1792
+    },
+    "type": "smartmachine",
+    "description": "A 32-bit SmartOS base image with most major languages and packages installed. This a developer version of the Manta Compute Environment which can be used to test scripts or code before running them in the Joyent Manta Service.",
+    "urn": "sdc:jpc:manta-build:13.1.0"
+  },
+  {
+    "id": "6e99eff4-1fb9-11e3-9d00-3b6b25be1e62",
+    "name": "stm-1000M-SAF",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 1000M-SAF",
+    "urn": "sdc:sdc:stm-1000M-SAF:13.2.0"
+  },
+  {
+    "id": "6bf3c40e-1fba-11e3-9847-4f44ccd9abe9",
+    "name": "stm-2000L-SAF",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 2000L-SAF",
+    "urn": "sdc:sdc:stm-2000L-SAF:13.2.0"
+  },
+  {
+    "id": "efe2c3e8-1fb8-11e3-b4c4-eb64d18f0b71",
+    "name": "stm-1000M",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 1000M",
+    "urn": "sdc:sdc:stm-1000M:13.2.0"
+  },
+  {
+    "id": "87c556ac-ab9d-11e2-914d-07682fcab47d",
+    "name": "centos-6",
+    "version": "2.4.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "CentOS 6.4 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:centos-6:2.4.1"
+  },
+  {
+    "id": "4b4c141e-1fb4-11e3-a10e-6f99cfdf8806",
+    "name": "stm-developer",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 Developer Edition",
+    "urn": "sdc:sdc:stm-developer:13.2.0"
+  },
+  {
+    "id": "3cd9ef64-1fa5-11e3-be45-1fa28ec74f4a",
+    "name": "stm-1000H",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 1000H",
+    "urn": "sdc:sdc:stm-1000H:13.2.0"
+  },
+  {
+    "id": "b00acc20-14ab-11e2-85ae-4f03a066e93e",
+    "name": "mongodb",
+    "version": "1.4.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "64-bit SmartOS image with MongoDB 2.2.0 pre-installed and pre-configured for maximum performance and scalability.",
+    "urn": "sdc:sdc:mongodb:1.4.0"
+  },
+  {
+    "id": "1d4fd806-6ef8-11e2-93ab-4f22d6d207c9",
+    "name": "mongodb",
+    "version": "1.4.5",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "64-bit SmartOS image with MongoDB 2.2.2 pre-installed and pre-configured for maximum performance and scalability.",
+    "urn": "sdc:sdc:mongodb:1.4.5"
+  },
+  {
+    "id": "ef905526-1fb9-11e3-a095-576400e02b54",
+    "name": "stm-2000L",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 2000L",
+    "urn": "sdc:sdc:stm-2000L:13.2.0"
+  },
+  {
+    "id": "67e5fc46-1fbb-11e3-b1c7-274da29ae2f6",
+    "name": "stm-500L-10",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 500L-10",
+    "urn": "sdc:sdc:stm-500L-10:13.2.0"
+  },
+  {
+    "id": "e4093946-1fbb-11e3-8b61-bb9e496e0da4",
+    "name": "stm-500M-200",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 500M-200",
+    "urn": "sdc:sdc:stm-500M-200:13.2.0"
+  },
+  {
+    "id": "e96103b6-1fba-11e3-8dba-3b2f9d336fa1",
+    "name": "stm-4000L",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 4000L",
+    "urn": "sdc:sdc:stm-4000L:13.2.0"
+  },
+  {
+    "id": "e42f8c84-bbea-11e2-b920-078fab2aab1f",
+    "name": "fedora",
+    "version": "2.4.2",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Fedora 18 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:fedora:2.4.2"
+  },
+  {
+    "id": "df8d2ee6-d87f-11e2-b257-2f02c6f6ce80",
+    "name": "freebsd",
+    "version": "1.0.0",
+    "os": "bsd",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "FreeBSD 9.1 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:jpc:freebsd:1.0.0"
+  },
+  {
+    "id": "014e2254-a853-11e2-81c9-b318c31fa17a",
+    "name": "debian-6.0.7",
+    "version": "2.4.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Debian 6.0.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:debian-6.0.7:2.4.1"
+  },
+  {
+    "id": "34509f68-1ae7-11e3-b816-d3edf71c7840",
+    "name": "standard",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 32-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+    "urn": "sdc:sdc:standard:13.2.0"
+  },
+  {
+    "id": "988c2f4e-4314-11e1-8dc3-2bc6d58f4be2",
+    "name": "centos-5.7",
+    "version": "1.2.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "CentOS 5.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:centos-5.7:1.2.1"
+  },
+  {
+    "id": "2539f6de-0b5a-11e2-b647-fb08c3503fb2",
+    "name": "centos-5.7",
+    "version": "1.3.0",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "CentOS 5.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:centos-5.7:1.3.0"
+  },
+  {
+    "id": "94384a12-bbeb-11e2-aec2-2bfa9742484b",
+    "name": "debian-6.0.7",
+    "version": "2.4.2",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Debian 6.0.7 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:debian-6.0.7:2.4.2"
+  },
+  {
+    "id": "71101322-43a5-11e1-8f01-cf2a3031a7f4",
+    "name": "ubuntu-10.04",
+    "version": "1.0.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Ubuntu 10.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:ubuntu-10.04:1.0.1"
+  },
+  {
+    "id": "da144ada-a558-11e2-8762-538b60994628",
+    "name": "ubuntu-12.04",
+    "version": "2.4.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Ubuntu 12.04 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:jpc:ubuntu-12.04:2.4.1"
+  },
+  {
+    "id": "46ecf60e-52c8-11e2-b212-9b51fc749547",
+    "name": "debian-6.0.6",
+    "version": "2.3.1",
+    "os": "linux",
+    "requirements": {},
+    "type": "virtualmachine",
+    "description": "Debian 6.0.6 64-bit image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.",
+    "urn": "sdc:sdc:debian-6.0.6:2.3.1"
+  },
+  {
+    "id": "0bcda78c-2066-11e3-8f62-d7edf9742dbd",
+    "name": "stm-2000L-SAF-STX",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 2000L-SAF-STX",
+    "urn": "sdc:sdc:stm-2000L-SAF-STX:13.2.0"
+  },
+  {
+    "id": "08c63ac6-2067-11e3-abea-a7c7c71e8f15",
+    "name": "stm-2000M-SAF-STX",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 2000M-SAF-STX",
+    "urn": "sdc:sdc:stm-2000M-SAF-STX:13.2.0"
+  },
+  {
+    "id": "8b503466-2066-11e3-b5c8-c7e50b85619c",
+    "name": "stm-2000M-STX",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 2000M-STX",
+    "urn": "sdc:sdc:stm-2000M-STX:13.2.0"
+  },
+  {
+    "id": "36f3b80c-2066-11e3-9215-5ffe647b58f0",
+    "name": "stm-2000L-STX",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "Stingray Traffic Manager 9.3.0 2000L-STX",
+    "urn": "sdc:sdc:stm-2000L-STX:13.2.0"
+  },
+  {
+    "id": "399775e4-163e-11e3-8d42-7b14b732ae17",
+    "name": "standard64",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image optimized for web development. Everything you need to build a web stack such as Ruby, Apache, and MySQL is installed and ready to use.",
+    "urn": "sdc:sdc:standard64:13.2.0"
+  },
+  {
+    "id": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+    "name": "mongodb",
+    "version": "13.2.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image that comes with MongoDB 2.4.6 pre-installed and pre-configured for maximum performance and scalability.",
+    "urn": "sdc:sdc:mongodb:13.2.0"
+  },
+  {
+    "id": "6344c3f4-64d9-11e2-af3d-af797e5b19ca",
+    "name": "hadoop",
+    "version": "1.0.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with Apache Hadoop components pre-installed. Includes hadoop, hbase, hcatalog, hive, pig, and templeton.",
+    "urn": "sdc:sdc:hadoop:1.0.0"
+  },
+  {
+    "id": "274bc2bc-d919-11e2-b797-83245409fbeb",
+    "name": "hadoop",
+    "version": "13.1.0",
+    "os": "smartos",
+    "requirements": {},
+    "type": "smartmachine",
+    "description": "A SmartOS 64-bit image with Apache Hadoop components pre-installed. Includes hadoop, hbase, hcatalog, hive, pig, templeton, flume, pig, oozie, sqoop, and mahout.",
+    "urn": "sdc:sdc:hadoop:13.1.0",
+    "tags": {
+      "role": "hadoop"
+    }
+  }
+]
