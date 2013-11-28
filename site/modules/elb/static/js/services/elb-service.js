@@ -220,13 +220,10 @@
                 }
             };
 
-            service.createController = function createController(datacenter) {
+            service.createController = function createController() {
                 var d = $q.defer();
                 serverTab.call({
                     name: 'SscMachineCreate',
-                    data: {
-                        datacenter: datacenter
-                    },
                     done: function (err, job) {
                         if (err) {
                             d.reject(err);

@@ -215,12 +215,10 @@ var elb = function execute(scope) {
     }
 
     server.onCall('SscMachineCreate', {
-        verify: function (data) {
-            return data && typeof data.datacenter === 'string';
-        },
         handler: function (call) {
             call.update(null, 'Getting Load Balancer Controller settings');
-            machine.PackageList(call, {datacenter: call.data.datacenter}, function (packagesErr, packagesData) {
+            var datacenter = config.elb.ssc_datacenter || 'us-west-1';
+            machine.PackageList(call, {datacenter: datacenter}, function (packagesErr, packagesData) {
                 if (packagesErr) {
                     call.done(packagesErr);
                     return;
@@ -235,20 +233,21 @@ var elb = function execute(scope) {
                     return;
                 }
 
-                var ccsPackageId = chosenPackages[0].id;
+                var sscPackageId = chosenPackages[0].id;
 
                 var sscKeyPair = createKeyPairs();
                 var portalKeyPair = createKeyPairs();
+
                 var data = {
-                    datacenter: call.data.datacenter,
+                    datacenter: datacenter,
                     dataset: config.elb.ssc_image,
                     name: hardControllerName,
-                    'package': ccsPackageId,
+                    'package': sscPackageId,
                     'metadata.ssc_private_key': sscKeyPair.privateKey,
                     'metadata.ssc_public_key': sscKeyPair.publicSsh,
                     'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
                     'metadata.account_name': config.elb.account || call.req.session.userName,
-                    'metadata.datacenter_name': call.data.datacenter,
+                    'metadata.datacenter_name': datacenter,
                     'metadata.elb_code_url': config.elb.elb_code_url,
                     'metadata.sdc_url': config.elb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
                     'tag.lbaas': 'ssc'

@@ -27,7 +27,7 @@
 
                 $scope.enableElb = function () {
                     $scope.allLoading = false;
-                    service.createController($scope.datacenter.name).then(function () {
+                    service.createController().then(function () {
                         $location.path('/elb/list');
                     }, function (err) {
                         notification.replace('elb', { type: 'error' }, err);
