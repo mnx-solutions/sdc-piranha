@@ -18,22 +18,66 @@
 
                 $scope.callInProgress = false;
                 $scope.lastCalledNumber = null;
+                $scope.fullPhoneNumber = null;
 
-                Account.getAccount(true).then(function (account) {
-                    $scope.phone = account.phone || '';
+                $scope.isoToObj = function(iso) {
+                    if (!$scope.countryCodes) {
+                        return;
+                    }
+                    var selected = null;
+                    var usa = null;
+                    $scope.countryCodes.some(function (el) {
+                        if (el.iso3 === 'USA') {
+                            usa = el;
+                        }
+                        if (el.iso3 === iso) {
+                            selected = el;
+                            return true;
+                        }
+                    });
+                    return selected || usa;
+                };
+
+                Phone.getCountries(function (err, countries) {
+                    if (err) {
+                        notification.replace('phone', { type: 'error' }, err);
+                        return;
+                    }
+                    $scope.countryCodes = countries;
+                    $scope.country = $scope.isoToObj();
+                    Account.getAccount(true).then(function (account) {
+                        if (!$scope.phone) {
+                            $scope.phone = account.phone || '';
+                        }
+                        if (!$scope.country || $scope.country.iso3 === 'USA') {
+                            $scope.country = $scope.isoToObj(account.country);
+                        }
+                    });
                 });
 
                 $scope.$watch('phone', function (newVal) {
-                    $scope.numberChanged = newVal !== $scope.lastCalledNumber;
+                    $scope.phone = newVal ? newVal.replace(new RegExp(/[^0-9#\*]/g), '') : newVal;
+                    $scope.fullPhoneNumber = $scope.selectedCountryCode + $scope.phone;
+                    if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) {
+                        $scope.callInProgress = false;
+                    }
+                });
+
+                $scope.$watch('country', function(newVal) {
+                    $scope.selectedCountryCode = (newVal && newVal.areaCode) || '';
+                    $scope.fullPhoneNumber = $scope.selectedCountryCode + $scope.phone;
+                    if ($scope.fullPhoneNumber !== $scope.lastCalledNumber) {
+                        $scope.callInProgress = false;
+                    }
                 });
 
                 $scope.makeCall = function() {
-                    if (!$scope.phone || $scope.callInProgress || !$scope.numberChanged) {
+                    if (!$scope.fullPhoneNumber || $scope.callInProgress) {
                         return;
                     }
                     $scope.callInProgress = true;
-                    $scope.lastCalledNumber = $scope.phone;
-                    Phone.makeCall($scope.phone, function (err, data) {
+                    $scope.lastCalledNumber = $scope.fullPhoneNumber;
+                    Phone.makeCall($scope.fullPhoneNumber, function (err, data) {
                         if (err) {
                             $scope.phoneError = err;
                             $scope.callInProgress = false;
@@ -62,7 +106,6 @@
                     $scope.callInProgress = false;
                     Phone.verify($scope.pin, function (err, data) {
                         if (err) {
-                            notification.replace('phone', { type: 'error' }, err);
                             $scope.pinError = err;
                             if (data.navigate) {
                                 $scope.updateStep();
@@ -70,9 +113,9 @@
                             return;
                         }
                         Account.updateAccount({
+                            country: $scope.country.iso3,
                             phone: $scope.phone
                         }).then(function () {
-                                notification.dismiss('phone');
                                 $scope.pinError = null;
                                 $scope.updateStep();
                             });
