@@ -80,7 +80,7 @@ var safeSet = function (customerUuid, key, val, callback) {
                     callback(null, val);
                     return;
                 }
-                trySet();
+                setTimeout(trySet, 300);
             });
         });
     };

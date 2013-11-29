@@ -267,13 +267,15 @@ var elb = function execute(scope) {
 
                 call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
 
-                Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (err) {
-                    if (err) {
-                        call.req.log.warn(err);
+                Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (pKeyError) {
+                    if (pKeyError) {
+                        call.done(pKeyError);
+                        return;
                     }
-                    Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (err) {
-                        if (err) {
-                            call.req.log.warn(err);
+                    Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (fPrintError) {
+                        if (fPrintError) {
+                            call.done(fPrintError);
+                            return;
                         }
                         addSscKey(call, sscKeyPair.publicSsh, function (keyError) {
                             if (keyError) {
