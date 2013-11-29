@@ -2,10 +2,6 @@
 
 var soap = require('./soap');
 
-function connect(config, callback) {
-    soap.connect(config, callback);
-}
-
 function queryPDF (AccountId, id, callback) {
     var fieldList = [
         'Id',
@@ -16,7 +12,6 @@ function queryPDF (AccountId, id, callback) {
     var query = 'SELECT ' + fieldList + ' FROM Invoice WHERE Id = \'' + id + '\' AND AccountId = \'' + AccountId + '\'';
 
     soap.query({queryString: query}, function (err, result) {
-        console.log(arguments);
         if(err) {
             callback(err);
             return;
@@ -30,7 +25,8 @@ function queryPDF (AccountId, id, callback) {
 }
 
 module.exports = {
-    connect: connect,
+    setConfig: soap.setConfig.bind(soap),
+    connect: soap.connect.bind(soap),
     soap: soap,
     queryPDF: queryPDF
 };

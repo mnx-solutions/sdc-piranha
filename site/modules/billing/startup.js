@@ -301,18 +301,6 @@ module.exports = function execute(scope, callback) {
     }
 
     zHelpers.init(zuora, function (err, errType) {
-        if (err) {
-            if(errType === 'errors') {
-                scope.log.fatal('Failed to load zuora errors file', err);
-                process.exit();
-            } else if(isProduction) {
-                scope.log.fatal('Failed to connect soap', err);
-                process.exit();
-            } else {
-                scope.log.error('Failed to connect soap', err);
-            }
-        }
-
         callback();
     });
 };
