@@ -13,14 +13,12 @@ exports.config = {
     allScriptsTimeout: 60000,
 
     capabilities: {
-        'browserName': config.browser || 'phantomjs',
+        browserName: config.browser || 'phantomjs',
         'phantomjs.binary.path':'./node_modules/phantomjs/bin/phantomjs'
     },
 
     specs: [
         '../site/modules/landing/test/landing.scenario.js',
-        '../site/modules/landing/test/landing.scenario.js',
-        '../site/modules/machine/test/machines.scenario.js',
         '../site/modules/**/test/*.scenario.js'
     ],
 
@@ -33,7 +31,7 @@ exports.config = {
     onPrepare: function() {
         jasmine.getEnv().addReporter(
             new jasmine.JUnitXmlReporter('reports/xmloutput', true, true));
-    },
+    }
 };
 
 if (config.sauce) {
