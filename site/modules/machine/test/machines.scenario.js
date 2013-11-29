@@ -67,10 +67,9 @@ describe('Instances page', function () {
 
     it('should contain list of instances', function () {
         ptor.get('#!/compute');
+        expect(ptor.getCurrentUrl()).toContain('#!/compute');
 
-        ptor.getCurrentUrl().then(function (url) {
-            expect(url).toContain('#!/compute');
-        });
+        ptor.sleep(100); // FIXME: Mocked data loading takes some time
 
         ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
             expect(_instances).not.toBeNull();
