@@ -88,7 +88,6 @@ var safeSet = function (customerUuid, key, val, callback) {
 };
 
 module.exports = {
-    set: set,
-    get: get,
-    safeSet: safeSet
+    set: safeSet,
+    get: get
 };
