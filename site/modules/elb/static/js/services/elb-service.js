@@ -214,11 +214,11 @@
                 }
 
                 if (data.length) {
-                    data.forEach(handleMessage);
+                    data.reverse().forEach(handleMessage);
                 } else {
                     handleMessage(data);
                 }
-            };
+            }
 
             service.createController = function createController() {
                 var d = $q.defer();

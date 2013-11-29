@@ -36,7 +36,7 @@ var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
             return machine.name === sscName;
         });
         if (sscMachines.length !== 1) {
-            cb('SSC machine not found or multiple SSC machines');
+            cb('SSC machine not found or multiple SSC machines found');
             return;
         }
         var sscMachine = sscMachines[0];
@@ -75,6 +75,7 @@ exports.getSscClient = function (call, callback) {
             callback(error, result);
         });
     }
+
     function checkSscClient(client, callback, firstStart) {
         firstStart = firstStart || new Date().getTime();
         if (new Date().getTime() - firstStart > 5 * 60 * 1000) {
@@ -91,10 +92,12 @@ exports.getSscClient = function (call, callback) {
             }
         });
     }
+
     if (sscClientsCache[call.req.session.userId]) {
         checkSscClient(sscClientsCache[call.req.session.userId], callback);
         return;
     }
+
     getElbApiKey(call, function (error, result) {
         if (error) {
             callback(error);
