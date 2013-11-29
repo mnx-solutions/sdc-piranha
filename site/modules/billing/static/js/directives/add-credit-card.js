@@ -53,7 +53,7 @@
                     $scope.form = {
                         cardHolderInfo: {
                         },
-                        promoCode: 'JOYENT2FREE'
+                        promoCode: 'FREEJOY'
                     };
 
                     $scope.loading = false;
