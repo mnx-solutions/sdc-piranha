@@ -17,14 +17,14 @@ describe('Phone verification page', function() {
 
     describe('Signup phone step', function() {
         it('should have country select and phone fields plus buttons', function(){
-            driver.wait(function() {
-                return driver.getCurrentUrl().then(function(url) {
+            ptor.wait(function() {
+                return ptor.getCurrentUrl().then(function(url) {
                     return url.match(/\/phone/);
                 });
             });
 
-            driver.findElement(protractor.By.xpath('//option[@value=66]')).click();
-            driver.findElement(protractor.By.xpath('//input[@name="phone"]')).sendKeys(ptor.params.register.phone);
+            ptor.findElement(protractor.By.xpath('//option[@value=66]')).click();
+            ptor.findElement(protractor.By.xpath('//input[@name="phone"]')).sendKeys(ptor.params.register.phone);
         });
     });
 });
