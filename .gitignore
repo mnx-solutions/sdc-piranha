@@ -20,6 +20,7 @@ notes
 results
 node_modules
 nbproject
+selenium
 site/modules/cms/data/old/*
 var/errors.json
 
