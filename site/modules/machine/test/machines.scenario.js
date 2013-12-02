@@ -71,6 +71,19 @@ describe('Instances page', function () {
 
         ptor.sleep(100); // FIXME: Mocked data loading takes some time
 
+        // Wait for MachineList call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
+                return !isPending;
+            });
+        });
+
+        expect(backend.track(ptor).call('MachineList').pending()).toBeFalsy();
+        expect(backend.track(ptor).call('MachineList').calledTwice(true)).toBeTruthy();
+        expect(backend.track(ptor).call('ImagesList').calledOnce()).toBeTruthy();
+        expect(backend.track(ptor).call('PackageList').calledTwice()).toBeTruthy();
+        expect(backend.track(ptor).call('PackageList').calledWithParams({ datacenter: null })).toBeTruthy();
+
         ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
             expect(_instances).not.toBeNull();
             expect(_instances.length).toEqual(2);

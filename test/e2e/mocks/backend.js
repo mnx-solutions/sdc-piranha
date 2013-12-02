@@ -23,10 +23,10 @@ var handlers = {
 
 var backend = module.exports =  {
     clientHandlers: function handlers () {
-        var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E' ]);
+        var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E', 'ngCookies' ]);
 
         module.value('handlers', $$handlers);
-        module.run(function ($httpBackend, handlers) {
+        module.run(function ($httpBackend, handlers, stats) {
             var sessions = {};
 
             // Handle service calls
@@ -65,6 +65,7 @@ var backend = module.exports =  {
                                     state: 0
                                 };
 
+                                stats.track('start', call.name, payload.data);
                                 return [ 202, null, null ];
                             });
                     })(call);
@@ -139,7 +140,10 @@ var backend = module.exports =  {
                             }
 
                             if (status === 'finished') {
+                                stats.track('finish', context.call.name);
                                 delete sessions[sessionId][context.id];
+                            } else {
+                                stats.track('progress', context.call.name);
                             }
                         }
 
@@ -174,6 +178,235 @@ var backend = module.exports =  {
             $httpBackend.whenPOST(/^(.*)$/i).passThrough();
             $httpBackend.whenJSONP(/^(.*)$/i).passThrough();
         });
+
+        module.service('stats', [ '$cookieStore', function stats ($cookieStore) {
+            var stats = {};
+
+            if ($cookieStore.get('stats')) {
+                try {
+                    stats = JSON.parse($cookieStore.get('stats'));
+                } catch (err) {
+
+                }
+            }
+
+            return {
+                _count: function countActions (data) {
+                    var actions = { start: 0, progress: 0, finish: 0 };
+
+                    for (var i = 0, c = data.length; i < c; i++) {
+                        if (actions.hasOwnProperty(data[i].action)) {
+                            actions[data[i].action]++;
+                        }
+                    }
+
+                    return actions;
+                },
+
+                _filter: function filterStats (data, params) {
+                    var result = [];
+
+                    function compare (obj1, obj2) {
+                        var match = false;
+
+                        Object.keys(obj1).forEach(function iterateObject (key) {
+                            if (obj2.hasOwnProperty(key)) {
+                                match = true;
+                            }
+                        });
+
+                        return match;
+                    }
+
+                    for (var i = 0, c = data.length; i < c; i++) {
+                        if (data[i].hasOwnProperty('params')) {
+                            if (compare(params, data[i].params)) {
+                                result.push(data[i]);
+                            }
+                        }
+                    }
+
+                    return result;
+                },
+
+                query: function query (key, opts) {
+                    var data = null;
+
+                    if (!opts.hasOwnProperty('rule')) {
+                        throw new Error('Invalid options for key "' + key + '"');
+                    }
+
+                    if (stats.hasOwnProperty(key)) {
+                        data = stats[key];
+                    } else {
+                        throw new Error('Invalid stats key "' + key + '"');
+                    }
+
+                    switch (opts.rule) {
+                        case 'call-count':
+                            var loose = false;
+                            var times = 1;
+
+                            if (opts.hasOwnProperty('loose')) {
+                                loose = opts.loose;
+                            }
+
+                            if (opts.hasOwnProperty('value')) {
+                                times = parseInt(opts.value) || 1;
+                            }
+
+                            var counts = this._count(data);
+                            if (counts.start >= counts.finish) {
+                                if (loose) {
+                                    return  counts.start >= times;
+                                } else {
+                                    return (counts.start === counts.finish
+                                        && counts.start === times);
+                                }
+                            } else {
+                                return false;
+                            }
+                            break;
+
+                        case 'call-params':
+                            if (!opts.hasOwnProperty('value')) {
+                                throw new Error('Invalid value for key "' + key + '"');
+                            }
+
+                            return this._filter(data, opts.value).length > 0;
+                            break;
+
+                        case 'pending':
+                            var counts = this._count(data);
+                            if (counts.start === counts.finish) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                            break;
+                    }
+
+                    return null;
+                },
+
+                track: function track (action, name, params) {
+                    var key = null;
+
+                    if (typeof(name) !== 'string') {
+                        if (name.url && name.method) {
+                            key = name.method + ':' + name.url;
+                        }
+                    } else {
+                        key = name;
+                    }
+
+                    if (!stats.hasOwnProperty(key)) {
+                        stats[key] = [];
+                    }
+
+                    stats[key].push({
+                        action: action,
+                        params: params
+                    });
+
+                    $cookieStore.put('stats', JSON.stringify(stats));
+                }
+            };
+        }]);
+    },
+
+    track: function track (protractor) {
+        function toKey (opts) {
+            switch (opts.type) {
+                case 'request':
+                    return opts.props.method + ':' + opts.props.url;
+                    break;
+
+                default:
+                case 'call':
+                    return opts.props.name;
+                    break;
+            }
+        }
+
+        function query (key, opts) {
+            var promise = protractor.executeScript(function (key, opts) {
+                var $injector = angular.injector([ 'httpBackendMock' ]);
+                var stats = $injector.get('stats');
+
+                return stats.query(key, opts);
+            }, key, opts);
+
+            /*
+            promise.then(function (value) {
+                console.log(value);
+            });
+            */
+
+            return promise;
+        }
+
+        function wrap (opts) {
+            return {
+                pending: function () {
+                    return query(toKey(opts), {
+                        rule: 'pending'
+                    });
+                },
+
+                calledOnce: function (loose) {
+                    return query(toKey(opts), {
+                        rule: 'call-count',
+                        value: 1,
+                        loose: loose
+                    });
+                },
+
+                calledTwice: function (loose) {
+                    return query(toKey(opts), {
+                        rule: 'call-count',
+                        value: 2,
+                        loose: loose
+                    });
+                },
+
+                calledTimes: function (times, loose) {
+                    return query(toKey(opts), {
+                        rule: 'call-count',
+                        value: times,
+                        loose: loose
+                    });
+                },
+
+                calledWithParams: function (params) {
+                    return query(toKey(opts), {
+                        rule: 'call-params',
+                        value: params
+                    });
+                },
+            }
+        }
+
+        return {
+            request: function request (method, url) {
+                return wrap({
+                    type: 'request',
+                    props: {
+                        method: method,
+                        url: url
+                    }
+                });
+            },
+
+            call: function call (name) {
+                return wrap({
+                    type: 'call',
+                    props: {
+                        name: name
+                    }
+                });
+            }
+        };
     },
 
     stub: function stub (protractor) {
