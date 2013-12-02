@@ -180,17 +180,24 @@ var backend = module.exports =  {
         });
 
         module.service('stats', [ '$cookieStore', function stats ($cookieStore) {
-            var stats = {};
+            var service = {
+                _getStats: function getStats () {
+                    var stats = {};
 
-            if ($cookieStore.get('stats')) {
-                try {
-                    stats = JSON.parse($cookieStore.get('stats'));
-                } catch (err) {
+                    try {
+                        stats = JSON.parse(window.localStorage.stats);
+                    } catch (err) {
 
-                }
-            }
+                    }
 
-            return {
+                    return stats;
+                },
+
+                _setStats: function setStats (stats) {
+                    window.localStorage.stats = JSON.stringify(stats);
+                    return this._getStats();
+                },
+
                 _count: function countActions (data) {
                     var actions = { start: 0, progress: 0, finish: 0 };
 
@@ -229,7 +236,14 @@ var backend = module.exports =  {
                     return result;
                 },
 
+                setup: function setup () {
+                    if (!window.localStorage.stats) {
+                        window.localStorage.stats = {};
+                    }
+                },
+
                 query: function query (key, opts) {
+                    var stats = this._getStats();
                     var data = null;
 
                     if (!opts.hasOwnProperty('rule')) {
@@ -284,12 +298,25 @@ var backend = module.exports =  {
                                 return true;
                             }
                             break;
+
+                        case 'clear':
+                            stats[key] = [];
+                            this._setStats(stats);
+                            break;
+
+                        case 'debug':
+                            return {
+                                counts: this._count(data),
+                                data: data
+                            };
+                            break;
                     }
 
-                    return null;
+                    return true;
                 },
 
                 track: function track (action, name, params) {
+                    var stats = this._getStats();
                     var key = null;
 
                     if (typeof(name) !== 'string') {
@@ -309,9 +336,12 @@ var backend = module.exports =  {
                         params: params
                     });
 
-                    $cookieStore.put('stats', JSON.stringify(stats));
+                    this._setStats(stats);
                 }
             };
+
+            service.setup();
+            return service;
         }]);
     },
 
@@ -339,7 +369,11 @@ var backend = module.exports =  {
 
             /*
             promise.then(function (value) {
-                console.log(value);
+                if (opts.rule === 'debug' || opts.rule === 'clear') {
+                    console.log(value);
+                } else {
+                    console.log(key + ' = ' + value);
+                }
             });
             */
 
@@ -348,6 +382,18 @@ var backend = module.exports =  {
 
         function wrap (opts) {
             return {
+                debug: function () {
+                    return query(toKey(opts), {
+                        rule: 'debug'
+                    });
+                },
+
+                clear: function () {
+                    return query(toKey(opts), {
+                        rule: 'clear'
+                    });
+                },
+
                 pending: function () {
                     return query(toKey(opts), {
                         rule: 'pending'
