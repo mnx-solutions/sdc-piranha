@@ -59,6 +59,7 @@ var get = function (customerUuid, key, val, callback) {
 };
 
 var safeSet = function (customerUuid, key, val, callback) {
+    callback = callback || function () {};
     var attempts = 5;
     var trySet = function () {
         attempts -= 1;
