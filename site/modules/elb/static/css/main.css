@@ -13,13 +13,8 @@
 }
 .load-balancers{
     float: right;
-    margin-top: -65px;
+    /*margin-top: -65px;*/
     margin-right: 18px;
-    /*margin-top: 50px;*/
-    /*margin-left: 40%;*/
-    /*margin-right: 45%;*/
-    /*margin-bottom: 50px;*/
-    /*width: 230px;*/
 }
 
 .load-balancers select {
@@ -115,13 +110,18 @@
 .license-eula p{
     font-size: 12px;
 }
+
 .accept-checkbox input{
-    margin-top: -3px;
+    /*margin-top: -3px;*/
     margin-right: 10px;
+    display: inline-block;
 }
 .accept-checkbox{
     padding-top: 20px;
     padding-bottom: 40px;
+    display: inline-block;
+    padding-left: 0;
+    width: 100%;
 }
 .dd-margin{
     margin-left: -10px;
@@ -339,7 +339,9 @@ div.checker.disabled span.checked, div.checker.disabled.active span.checked {
     background-position: -171px -260px; }
 
 label.checkbox {
-    margin-bottom: 0;
+    padding-left: 0;
+    display: inline-block;
+    vertical-align: middle;
 }
 .edit-info-bar{
     background-color: #fef1d2;
@@ -402,3 +404,4 @@ legend {
 .table > thead th {
     height: 28px;
 }
+
