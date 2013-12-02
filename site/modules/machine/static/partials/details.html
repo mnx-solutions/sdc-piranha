@@ -229,7 +229,7 @@
                                     data-ng-show="showTagSave"
                                     data-ng-click="saveTags()"
                                     data-translate
-                                    data-ng-disabled="machine.state != 'running' || tagForm.$invalid || tagsave">Save</button>
+                                    data-ng-disabled="machine.state != 'running' || !tagSaveOk || tagsave">Save</button>
                             <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
                             <div class="btn btn-link pull-right" data-ng-click="addTag()" data-translate>+ Add New Tag</div>
                         </div>

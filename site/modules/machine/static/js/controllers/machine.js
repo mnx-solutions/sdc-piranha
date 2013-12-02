@@ -333,6 +333,7 @@
                     $scope.tagsArray.push({key: key, val: tags[key], conflict: false, edit: false});
                 });
                 $scope.showTagSave = !!$scope.tagsArray.length;
+                $scope.tagSaveOk = $scope.showTagSave;
             }
 
             // Enable features
@@ -341,19 +342,23 @@
                 Machine.tags(machineid).then(initTags);
 
                 $scope.$watch('tagsArray', function (newVal, oldVal){
+                    var tagSaveOk = true;
                     // Search for conflicts
                     var keyMap = {};
                     newVal.forEach(function (tag, index) {
-                        if (keyMap[tag.key] && index !== (newVal.length - 1)) {
+                        if (keyMap[tag.key]) {
                             tag.conflict = true;
                             keyMap[tag.key].conflict = true;
+                            tagSaveOk = false;
                         } else if (!tag.key && index !== (newVal.length - 1)){
                             tag.conflict = true;
+                            tagSaveOk = false;
                         } else {
                             tag.conflict = false;
                             keyMap[tag.key] = tag;
                         }
                     });
+                    $scope.tagSaveOk = tagSaveOk;
 
                 }, true);
 
