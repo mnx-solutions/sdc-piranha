@@ -23,6 +23,10 @@ describe('Dashboard', function () {
 
     it('should have inline frame', function () {
         ptor.findElement(protractor.By.xpath('//iframe[contains(@class,\'dashboard-splash\')]')).isDisplayed();
+
+        // FIXME: Remove me
+        expect(backend.track(ptor).request('GET', 'cloudAnalytics/ca').calledOnce(true)).toBeTruthy();
+        expect(backend.track(ptor).request('GET', 'cloudAnalytics/ca/help').calledOnce(true)).toBeTruthy();
     });
 
     it('should redirect to instance provisioning page', function () {
@@ -36,7 +40,11 @@ describe('Dashboard', function () {
     });
 
     it('should running machines count', function () {
-        ptor.sleep(100); // FIXME: Mocked data loading takes some time
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
+                return !isPending;
+            });
+        }, 10000);
 
         var runningCount = backend.data('machines').reduce(function (prev, current, index) {
             var count = (typeof(prev) === 'number') ? prev : 0;
@@ -53,6 +61,10 @@ describe('Dashboard', function () {
 
         ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/div[1]')).then(function (elem) {
             expect(elem.getText()).toBe(runningCount + ' Running');
+        });
+
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineList').clear();
         });
     });
 
