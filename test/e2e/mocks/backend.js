@@ -164,11 +164,19 @@ var backend = module.exports =  {
 
                     switch (request.method) {
                         case 'GET':
-                            $httpBackend.when(request.method, request.url).respond(request.data);
+                            $httpBackend.when(request.method, request.url).respond(function respondRequest (method, url, data, headers) {
+                                stats.track('start', method + ':' + url);
+                                stats.track('finish', method + ':' + url);
+                                return [ 200, request.data, headers ];
+                            });
                             break;
 
                         case 'POST':
-                            $httpBackend.when(request.method, request.url, request.body, request.headers).respond(request.data);
+                            $httpBackend.when(request.method, request.url, request.body, request.headers).respond(function respondRequest (method, url, data, headers) {
+                                stats.track('start', method + ':' + url);
+                                stats.track('finish', method + ':' + url);
+                                return [ 200, request.data, headers ];
+                            });
                             break;
                     }
                 }

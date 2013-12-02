@@ -47,6 +47,7 @@ describe('Landing page', function () {
                     return url.indexOf('/main') !== -1;
                 });
             });
+
             driver.getCurrentUrl().then(function (url) {
                 expect(url).toContain('/main');
             });

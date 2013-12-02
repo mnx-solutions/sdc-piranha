@@ -23,6 +23,10 @@ describe('Dashboard', function () {
 
     it('should have inline frame', function () {
         ptor.findElement(protractor.By.xpath('//iframe[contains(@class,\'dashboard-splash\')]')).isDisplayed();
+
+        // FIXME: Remove me
+        expect(backend.track(ptor).request('GET', 'cloudAnalytics/ca').calledOnce(true)).toBeTruthy();
+        expect(backend.track(ptor).request('GET', 'cloudAnalytics/ca/help').calledOnce(true)).toBeTruthy();
     });
 
     it('should redirect to instance provisioning page', function () {
