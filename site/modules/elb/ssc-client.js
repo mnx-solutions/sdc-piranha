@@ -96,7 +96,7 @@ exports.getSscClient = function (call, sscCallback) {
     }
 
     if (sscClientsCache[call.req.session.userId]) {
-        checkSscClient(sscClientsCache[call.req.session.userId], callback);
+        checkSscClient(sscClientsCache[call.req.session.userId], sscCallback);
         return;
     }
 
