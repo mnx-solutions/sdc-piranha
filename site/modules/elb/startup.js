@@ -192,6 +192,7 @@ var elb = function execute(scope) {
                 user: data['metadata.account_name']
             }),
             user: data['metadata.account_name'],
+            // TODO: manta configuration
             url: 'https://us-east.manta.joyent.com',
             rejectUnauthorized: false
         });
@@ -199,7 +200,7 @@ var elb = function execute(scope) {
         function waitForManta(startTime) {
             startTime = startTime || new Date().getTime();
             if (new Date().getTime() - startTime > 2 * 60 * 1000) {
-                callback(new Error('Time for removing elb config timed out'));
+                callback(new Error('Timeout while removing elb config'));
                 return;
             }
             client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', function (err) {
@@ -215,12 +216,10 @@ var elb = function execute(scope) {
     }
 
     server.onCall('SscMachineCreate', {
-        verify: function (data) {
-            return data && typeof data.datacenter === 'string';
-        },
         handler: function (call) {
-            call.getImmediate(false);
-            machine.PackageList(call, {datacenter: call.data.datacenter}, function (packagesErr, packagesData) {
+            call.update(null, 'Provisioning load balancer controller');
+            var datacenter = config.elb.ssc_datacenter || 'us-west-1';
+            machine.PackageList(call, {datacenter: datacenter}, function (packagesErr, packagesData) {
                 if (packagesErr) {
                     call.done(packagesErr);
                     return;
@@ -231,24 +230,25 @@ var elb = function execute(scope) {
                 });
 
                 if (chosenPackages.length !== 1) {
-                    call.done('Cannot find only one package for name: ' + config.elb.ssc_package);
+                    call.done('Found no or more than one package with the name: ' + config.elb.ssc_package);
                     return;
                 }
 
-                var ccsPackageId = chosenPackages[0].id;
+                var sscPackageId = chosenPackages[0].id;
 
                 var sscKeyPair = createKeyPairs();
                 var portalKeyPair = createKeyPairs();
+
                 var data = {
-                    datacenter: call.data.datacenter,
+                    datacenter: datacenter,
                     dataset: config.elb.ssc_image,
                     name: hardControllerName,
-                    'package': ccsPackageId,
+                    'package': sscPackageId,
                     'metadata.ssc_private_key': sscKeyPair.privateKey,
                     'metadata.ssc_public_key': sscKeyPair.publicSsh,
                     'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
                     'metadata.account_name': config.elb.account || call.req.session.userName,
-                    'metadata.datacenter_name': call.data.datacenter,
+                    'metadata.datacenter_name': datacenter,
                     'metadata.elb_code_url': config.elb.elb_code_url,
                     'metadata.sdc_url': config.elb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
                     'tag.lbaas': 'ssc'
@@ -267,27 +267,29 @@ var elb = function execute(scope) {
 
                 call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
 
-                Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (err) {
-                    if (err) {
-                        call.req.log.warn(err);
+                Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (pKeyError) {
+                    if (pKeyError) {
+                        call.done(pKeyError);
+                        return;
                     }
-                    Metadata.safeSet(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (err) {
-                        if (err) {
-                            call.req.log.warn(err);
+                    Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (fPrintError) {
+                        if (fPrintError) {
+                            call.done(fPrintError);
+                            return;
                         }
-                        addSscKey(call, sscKeyPair.publicSsh, function (err) {
-                            if (err) {
-                                call.done(err);
+                        addSscKey(call, sscKeyPair.publicSsh, function (keyError) {
+                            if (keyError) {
+                                call.done(keyError);
                                 return;
                             }
-                            removeSscConfig(data, function (err) {
-                                if (err) {
-                                    call.done(err);
+                            removeSscConfig(data, function (configError) {
+                                if (configError) {
+                                    call.done(configError);
                                     return;
                                 }
-                                machine.Create(call, data, function (err, result) {
-                                    if (err) {
-                                        call.done(err);
+                                machine.Create(call, data, function (createError, result) {
+                                    if (createError) {
+                                        call.done(createError);
                                         return;
                                     }
                                     call.done(null, result);
@@ -310,14 +312,17 @@ var elb = function execute(scope) {
                 uuid: sscMachine.id,
                 datacenter: sscMachine.datacenter
             };
-            machine.Stop(call, data, function (err) {
-                if (err) {
-                    callback(err);
+            ssc.clearCache(call);
+            call.update(null, 'Stopping load balancer controller');
+            machine.Stop(call, data, function (stopError) {
+                if (stopError) {
+                    callback(stopError);
                     return;
                 }
-                machine.Delete(call, data, function (err, result) {
-                    if (err) {
-                        callback(err);
+                call.update(null, 'Destroying load balancer controller');
+                machine.Delete(call, data, function (delError, result) {
+                    if (delError) {
+                        callback(delError);
                         return;
                     }
                     callback(null, result);
@@ -333,8 +338,9 @@ var elb = function execute(scope) {
                 deleteSscMachine(call, call.done);
                 return;
             }
-            client.del('/loadbalancers', function (err, creq, cres, obj) {
-                if (err) {
+            call.update(null, 'Deleting load balancers');
+            client.del('/loadbalancers', function (delError, creq, cres, obj) {
+                if (delError) {
                     call.log.warn('Cannot disable STMs');
                 }
                 // Still delete SSC even if ELBAPI returned error

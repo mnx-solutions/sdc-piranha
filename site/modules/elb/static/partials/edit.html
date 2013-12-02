@@ -33,6 +33,25 @@
                 </div>
 
                 <div class="control-group">
+                    <span class="edit-name">Datacenter</span>
+                    <span class="edit-value">
+                        <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
+                             data-toggle="tooltip"
+                             data-placement="bottom">
+                            <label class="btn dd-btn-long">{{datacenterSelected.name}}</label>
+                            <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li data-ng-repeat="datacenter in datacenters">
+                                    <a data-ng-click="datacenterSelect(datacenter.name)">{{datacenter.name}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </span>
+                </div>
+
+                <div class="control-group">
                     <span class="edit-name">Protocol</span>
                     <span class="edit-value">
                         <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"

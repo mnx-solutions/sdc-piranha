@@ -59,6 +59,7 @@ var get = function (customerUuid, key, val, callback) {
 };
 
 var safeSet = function (customerUuid, key, val, callback) {
+    callback = callback || function () {};
     var attempts = 5;
     var trySet = function () {
         attempts -= 1;
@@ -80,7 +81,7 @@ var safeSet = function (customerUuid, key, val, callback) {
                     callback(null, val);
                     return;
                 }
-                trySet();
+                setTimeout(trySet, 300);
             });
         });
     };
@@ -88,7 +89,6 @@ var safeSet = function (customerUuid, key, val, callback) {
 };
 
 module.exports = {
-    set: set,
-    get: get,
-    safeSet: safeSet
+    set: safeSet,
+    get: get
 };

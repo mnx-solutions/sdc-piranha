@@ -13,25 +13,20 @@ exports.init = function (mdata) {
 
 var getMachinesList = exports.getMachinesList = function (call, cb) {
     var cloud = call.cloud || call.req.cloud;
-    var datacenterKeys = Object.keys(cloud.listDatacenters());
-    var datacentersCount = datacenterKeys.length;
-    var result = [];
-    datacenterKeys.forEach(function (name) {
-        cloud.separate(name).listMachines({ credentials: true }, function (err, machines) {
-            machines = machines || [];
-            machines.forEach(function (machine) {
-                machine.datacenter = name;
-                result.push(machine);
-            });
-            datacentersCount -= 1;
-            if (datacentersCount === 0) {
-                cb(null, result);
-            }
-        });
+    var datacenter = config.elb.ssc_datacenter || 'us-west-1';
+    cloud.separate(datacenter).listMachines({ credentials: true }, function (err, machines) {
+        machines = machines || [];
+        cb(null, machines);
     });
 };
 
-var getSscMachine = exports.getSscMachine = function (call, cb) {
+var sscMachinesCache = {};
+
+var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
+    if (sscMachinesCache[call.req.session.userId]) {
+        cb(null, sscMachinesCache[call.req.session.userId]);
+        return;
+    }
     getMachinesList(call, function (err, machines) {
         if (err) {
             cb(err);
@@ -41,12 +36,16 @@ var getSscMachine = exports.getSscMachine = function (call, cb) {
             return machine.name === sscName;
         });
         if (sscMachines.length !== 1) {
-            cb('SSC machine not found or multiple SSC machines');
+            cb('SSC machine not found or multiple SSC machines found');
             return;
         }
-        cb(null, sscMachines[0]);
+        var sscMachine = sscMachines[0];
+        sscMachinesCache[call.req.session.userId] = sscMachine;
+        cb(null, sscMachine);
     });
 };
+
+var sscClientsCache = {};
 
 exports.getSscClient = function (call, sscCallback) {
     function getElbApiKey(keyCall, keyCallback) {
@@ -96,6 +95,11 @@ exports.getSscClient = function (call, sscCallback) {
         });
     }
 
+    if (sscClientsCache[call.req.session.userId]) {
+        checkSscClient(sscClientsCache[call.req.session.userId], sscCallback);
+        return;
+    }
+
     getElbApiKey(call, function (error, result) {
         if (error) {
             sscCallback(error);
@@ -120,6 +124,12 @@ exports.getSscClient = function (call, sscCallback) {
                 });
             }
         });
+        sscClientsCache[call.req.session.userId] = sscClient;
         checkSscClient(sscClient, sscCallback);
     });
+};
+
+exports.clearCache = function (call) {
+    delete sscClientsCache[call.req.session.userId];
+    delete sscMachinesCache[call.req.session.userId];
 };
