@@ -406,7 +406,7 @@
                         </select>
 
                         <div class="control-group align-right resize-button">
-                            <button class="btn btn-joyent-blue" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
+                            <button class="btn btn-joyent-blue" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
                     </div>
                     <div class="clearfix"></div>

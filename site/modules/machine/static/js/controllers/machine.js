@@ -119,18 +119,18 @@
                 });
 
                 $scope.package.then(function (pkg) {
-                    $scope.selectedPackageName = pkg.name;
-                    $scope.selectedPackage = pkg;
                     $scope.currentPackageName = pkg.name;
                     $scope.currentPackage = pkg;
                 });
             });
 
             $scope.$watch('selectedPackageName', function (pkgName) {
-                Package.package(pkgName).then(function (pkg) {
-                    $scope.selectedPackageName = pkg.name;
-                    $scope.selectedPackage = pkg;
-                });
+                if(pkgName) {
+                    Package.package(pkgName).then(function (pkg) {
+                        $scope.selectedPackageName = pkg.name;
+                        $scope.selectedPackage = pkg;
+                    });
+                }
             });
 
             $scope.clickStart = function () {
@@ -185,6 +185,10 @@
             };
 
             $scope.clickResize = function () {
+                var selected = $scope.selectedPackage;
+                if(!selected) {
+                    return;
+                }
                 util.confirm(
                     localization.translate(
                         $scope,
@@ -199,13 +203,13 @@
                     ), function () {
                         $scope.isResizing = true;
                         $$track.event('machine', 'resize');
-                        $scope.retinfo = Machine.resizeMachine(machineid, $scope.selectedPackage);
+                        $scope.retinfo = Machine.resizeMachine(machineid, selected);
 
                         var job = $scope.retinfo.getJob();
                         job.done(function () {
                             $scope.isResizing = false;
-                            $scope.currentPackageName = $scope.selectedPackageName;
-                            $scope.currentPackage = $scope.selectedPackage;
+                            $scope.currentPackageName = selected.name;
+                            $scope.currentPackage = selected;
                         });
                     });
             };
