@@ -111,9 +111,13 @@
                         subject = subject.toString();
                     }
 
+                    if (ng.isObject(subject)) {
+                        subject = JSON.stringify(subject);
+                    }
+
                     var needle = $scope.filterAll.toLowerCase();
 
-                    return (subject.indexOf(needle) !== -1);
+                    return (subject.toLowerCase().indexOf(needle) !== -1);
                 });
             }
 
