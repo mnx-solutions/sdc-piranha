@@ -26,7 +26,7 @@ module.exports = function execute(scope) {
             }
 
             if (/^\/signup/.test(req.originalUrl)) {
-                if (step === 'completed') {
+                if (step === 'completed' && req.session.allowSignup !== true) {
                     res.redirect('/main/');
                     return;
                 }
