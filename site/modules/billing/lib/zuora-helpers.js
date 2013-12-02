@@ -24,22 +24,14 @@ function init(zuoraInit, callback) {
     } else {
         zuora = zuoraInit;
     }
-    var count = 2;
-    var sent = false;
-    function end(err, type) {
-        if(sent) {
-            return;
-        }
-        if(err) {
-            callback(err, type);
-            sent = true;
-            return;
-        }
-        if(--count === 0) {
-            callback();
-            sent = true;
-        }
-    }
+
+	var options = config.zuora.soap;
+	options.password = config.zuora.password;
+	options.user = config.zuora.user;
+	options.tenantId = config.zuora.tenantId;
+
+    zuoraSoap.setConfig(config.zuora.soap);
+
     // Here we init the zuora errors (its a mess)
     fs.readFile(errorsFile, function (err, data) {
         // Ignore err and create empty object if file missing or unreadable
@@ -50,20 +42,7 @@ function init(zuoraInit, callback) {
                 zuoraErrors = {};
             }
         }
-        end();
-    });
-
-	var options = config.zuora.soap;
-	options.password = config.zuora.password;
-	options.user = config.zuora.user;
-	options.tenantId = config.zuora.tenantId;
-
-    zuoraSoap.connect(config.zuora.soap, function (err) {
-        if(err) {
-            end(err, 'soap');
-            return;
-        }
-        end();
+        callback();
     });
 }
 
