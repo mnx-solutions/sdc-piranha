@@ -53,7 +53,7 @@ describe('Instances page', function () {
         ])
         .call('MachineReboot', [
             utils.extend(utils.clone(instance), {
-                state: 'running',
+                state: 'running'
             })
         ]);
 
@@ -69,19 +69,17 @@ describe('Instances page', function () {
         ptor.get('#!/compute');
         expect(ptor.getCurrentUrl()).toContain('#!/compute');
 
-        ptor.sleep(100); // FIXME: Mocked data loading takes some time
-
         // Wait for MachineList call to complete
         ptor.wait(function () {
             return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
                 return !isPending;
             });
-        });
+        }, 10000);
 
         expect(backend.track(ptor).call('MachineList').pending()).toBeFalsy();
-        expect(backend.track(ptor).call('MachineList').calledTwice(true)).toBeTruthy();
-        expect(backend.track(ptor).call('ImagesList').calledOnce()).toBeTruthy();
-        expect(backend.track(ptor).call('PackageList').calledTwice()).toBeTruthy();
+        expect(backend.track(ptor).call('MachineList').calledOnce()).toBeTruthy();
+        expect(backend.track(ptor).call('ImagesList').calledOnce(true)).toBeTruthy();
+        expect(backend.track(ptor).call('PackageList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('PackageList').calledWithParams({ datacenter: null })).toBeTruthy();
 
         ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
@@ -140,14 +138,18 @@ describe('Instances page', function () {
         var computeUrl = '#!/compute/instance/2a4f6f94-f94a-ee65-b486-96705c74aefb';
 
         ptor.get(computeUrl);
-        ptor.getCurrentUrl().then(function (url) {
-            expect(url).toContain(computeUrl);
-        });
+        expect(ptor.getCurrentUrl()).toContain(computeUrl);
     });
 
     it('should able to stop instance', function () {
         var stopButton = ptor.findElement(
             protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
+
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
+                return !isPending;
+            });
+        }, 10000);
 
         stopButton
             .isEnabled()
