@@ -10,28 +10,22 @@
                     title: localization.translate(null, 'elb', 'Enable Load Balancing')
                 });
 
-                $scope.datacenters = Datacenter.datacenter();
-                $scope.datacenters.then(function (datacenters) {
-                    if (datacenters.length > 0) {
-                        $scope.datacenter = datacenters[0];
-                    }
-                });
-
-                $scope.allLoading = false;
+                $scope.loaded = false;
+                $scope.creating = false;
 
                 service.getController().then(function () {
                     $location.path('/elb/list');
                 }, function () {
-                    $scope.allLoading = true;
+                    $scope.loaded = true;
                 });
 
                 $scope.enableElb = function () {
-                    $scope.allLoading = false;
-                    service.createController($scope.datacenter.name).then(function () {
+                    $scope.creating = true;
+                    service.createController().then(function () {
                         $location.path('/elb/list');
                     }, function (err) {
                         notification.replace('elb', { type: 'error' }, err);
-                        $scope.allLoading = true;
+                        $scope.creating = false;
                     });
                 };
 

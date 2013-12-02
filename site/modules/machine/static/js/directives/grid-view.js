@@ -132,9 +132,13 @@
                     subject = subject.toString();
                 }
 
+                if (ng.isObject(subject)) {
+                    subject = JSON.stringify(subject);
+                }
+
                 var needle = el.filter.toLowerCase();
 
-                return (subject.indexOf(needle) === -1);
+                return (subject.toLowerCase().indexOf(needle) === -1);
             });
         };
 

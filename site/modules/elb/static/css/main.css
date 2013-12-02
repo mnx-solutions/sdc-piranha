@@ -42,6 +42,9 @@
     width: 35px !important;
     margin: 10px;
 }
+.protocol-block {
+    margin-top: 10px;
+}
 .clb-input{
     margin-top: 0 !important;
     margin-bottom: 0 !important;

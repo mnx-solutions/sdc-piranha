@@ -5,7 +5,8 @@
         'serverTab',
         '$http',
         '$q',
-        function (serverTab, $http, $q) {
+        'notification',
+        function (serverTab, $http, $q, notification) {
             var service = {};
 
             function filterBalancer(balancer) {
@@ -201,20 +202,36 @@
                 return d.promise;
             };
 
-            service.createController = function createController(datacenter) {
+            function reportProgress(err, job) {
+                var data = job.__read();
+
+                notification.dismiss();
+
+                function handleMessage(message) {
+                    if (message.status !== 'error') {
+                        notification.push(message.name, {type: 'success'}, message);
+                    }
+                }
+
+                if (data.length) {
+                    data.reverse().forEach(handleMessage);
+                } else {
+                    handleMessage(data);
+                }
+            }
+
+            service.createController = function createController() {
                 var d = $q.defer();
                 serverTab.call({
                     name: 'SscMachineCreate',
-                    data: {
-                        datacenter: datacenter
-                    },
                     done: function (err, job) {
                         if (err) {
                             d.reject(err);
                             return;
                         }
                         d.resolve(job.__read());
-                    }
+                    },
+                    progress: reportProgress
                 });
                 return d.promise;
             };
@@ -229,7 +246,8 @@
                             return;
                         }
                         d.resolve(job.__read());
-                    }
+                    },
+                    progress: reportProgress
                 });
                 return d.promise;
             };
