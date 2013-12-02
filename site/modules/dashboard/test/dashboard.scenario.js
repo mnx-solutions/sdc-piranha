@@ -36,7 +36,11 @@ describe('Dashboard', function () {
     });
 
     it('should running machines count', function () {
-        ptor.sleep(100); // FIXME: Mocked data loading takes some time
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
+                return !isPending;
+            });
+        });
 
         var runningCount = backend.data('machines').reduce(function (prev, current, index) {
             var count = (typeof(prev) === 'number') ? prev : 0;
