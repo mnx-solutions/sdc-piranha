@@ -16,10 +16,44 @@ describe('Dashboard', function () {
             .call('ZendeskPackagesUpdateTopics', {})
             .call('ZendeskSystemTopics', {})
             .flush();
+
+        ptor.get('/#!/dashboard');
+        expect(ptor.getCurrentUrl()).toContain('#!/dashboard');
     });
 
     it('should have inline frame', function () {
-        ptor.get('/');
         ptor.findElement(protractor.By.xpath('//iframe[contains(@class,\'dashboard-splash\')]')).isDisplayed();
     });
+
+    it('should redirect to instance provisioning page', function () {
+        ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/p/a')).click();
+        expect(ptor.getCurrentUrl()).toContain('#!/compute/create/');
+    });
+
+    it('should redirect to instances list page', function () {
+        ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/h4/a')).click();
+        expect(ptor.getCurrentUrl()).toContain('#!/compute');
+    });
+
+    it('should running machines count', function () {
+        ptor.sleep(100); // FIXME: Mocked data loading takes some time
+
+        var runningCount = backend.data('machines').reduce(function (prev, current, index) {
+            var count = (typeof(prev) === 'number') ? prev : 0;
+
+            for (var i = 0, c = current.machines.length; i < c; i++) {
+                var machine = current.machines[i];
+                if (machine.state === 'running') {
+                    count++;
+                }
+            }
+
+            return count;
+        });
+
+        ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/div[1]')).then(function (elem) {
+            expect(elem.getText()).toBe(runningCount + ' Running');
+        });
+    });
+
 });
