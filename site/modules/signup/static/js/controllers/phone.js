@@ -114,7 +114,7 @@
                         }
                         Account.updateAccount({
                             country: $scope.country.iso3,
-                            phone: $scope.phone
+                            phone: '+' + $scope.fullPhoneNumber
                         }).then(function () {
                                 $scope.pinError = null;
                                 $scope.updateStep();
