@@ -17,11 +17,9 @@ exports.config = {
         'phantomjs.binary.path':'./node_modules/phantomjs/bin/phantomjs'
     },
 
-    // '../site/modules/**/test/*.scenario.js'
     specs: [
         '../site/modules/landing/test/landing.scenario.js',
-        '../site/modules/dashboard/test/dashboard.scenario.js',
-        '../site/modules/machine/test/machines.scenario.js'
+        '../site/modules/**/test/*.scenario.js'
     ],
 
     params: config.params,
