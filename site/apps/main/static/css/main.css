@@ -1297,6 +1297,9 @@ table.table {
 .table-hover tbody tr:hover > td, .table-hover tbody tr:hover > th {
     background-color: #f9f9f9;
 }
+.dpl-inline{
+    display: inline-block !important;
+}
 select {
     border-radius: 0;
     -webkit-appearance: none;
