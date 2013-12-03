@@ -20,7 +20,7 @@ describe('Phone verification page', function() {
 
     describe('redirect user to signup phone step', function() {
         it('should send user to signup phone step', function() {
-            ptor.get('/main/account/signup/phone');
+            ptor.get('/main/account/setStep/phone');
         });
     });
 

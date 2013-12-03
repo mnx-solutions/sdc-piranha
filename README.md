@@ -204,6 +204,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
+- `testMode` Enables test mode, can enable additional features only needed for testing
 - `zendesḱ.account` Zendesk account with trailing `/token`
 - `zendesk.token` Zendesk token
 - `zendesk.host` Zendesk host
