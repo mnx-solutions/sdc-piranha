@@ -11,7 +11,7 @@
                     title: localization.translate(null, 'slb', 'Load Balancers List')
                 });
 
-                $scope.disablslb = function () {
+                $scope.disableLb = function () {
                     $scope.listLoaded = false;
                     service.deleteController().then(function () {
                         $location.path('/slb');
