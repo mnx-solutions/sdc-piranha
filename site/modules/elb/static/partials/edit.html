@@ -1,18 +1,18 @@
 <div class="container" data-ng-controller="slb.EditController">
+    <ul class="breadcrumb">
+        <li class="ng-scope">
+            <a href="#!/slb" class="ng-binding">
+                <span class="ng-scope ng-binding" data-translate>Load Balancers</span>
+            </a>
+            <span class="divider">/</span>
+        </li>
+        <li class="ng-scope active">
+            <span class="ng-binding" data-ng-show="balancerId" data-translate>Edit Load Balancer</span>
+            <span class="ng-binding" data-ng-show="!balancerId" data-translate>Create Load Balancer</span>
+        </li>
+    </ul>
     <div data-notification></div>
     <div data-ng-form name="editForm">
-        <ul class="breadcrumb">
-            <li class="ng-scope">
-                <a href="#!/slb" class="ng-binding">
-                    <span class="ng-scope ng-binding" data-translate>Load Balancers</span>
-                </a>
-                <span class="divider">/</span>
-            </li>
-            <li class="ng-scope active">
-                <span class="ng-binding" data-ng-show="balancerId" data-translate>Edit Load Balancer</span>
-                <span class="ng-binding" data-ng-show="!balancerId" data-translate>Create Load Balancer</span>
-            </li>
-        </ul>
         <div class="page-header">
             <h1 class="pull-left" data-ng-show="balancerId" data-translate>Edit Load Balancer</h1>
             <h1 class="pull-left" data-ng-hide="balancerId" data-translate>Create Load Balancer</h1>
