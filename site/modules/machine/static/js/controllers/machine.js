@@ -122,18 +122,18 @@
                 });
 
                 $scope.package.then(function (pkg) {
-                    $scope.selectedPackageName = pkg.name;
-                    $scope.selectedPackage = pkg;
                     $scope.currentPackageName = pkg.name;
                     $scope.currentPackage = pkg;
                 });
             });
 
             $scope.$watch('selectedPackageName', function (pkgName) {
-                Package.package(pkgName).then(function (pkg) {
-                    $scope.selectedPackageName = pkg.name;
-                    $scope.selectedPackage = pkg;
-                });
+                if(pkgName) {
+                    Package.package(pkgName).then(function (pkg) {
+                        $scope.selectedPackageName = pkg.name;
+                        $scope.selectedPackage = pkg;
+                    });
+                }
             });
 
             $scope.accordionIcon={
@@ -202,6 +202,10 @@
             };
 
             $scope.clickResize = function () {
+                var selected = $scope.selectedPackage;
+                if(!selected) {
+                    return;
+                }
                 util.confirm(
                     localization.translate(
                         $scope,
@@ -216,13 +220,13 @@
                     ), function () {
                         $scope.isResizing = true;
                         $$track.event('machine', 'resize');
-                        $scope.retinfo = Machine.resizeMachine(machineid, $scope.selectedPackage);
+                        $scope.retinfo = Machine.resizeMachine(machineid, selected);
 
                         var job = $scope.retinfo.getJob();
                         job.done(function () {
                             $scope.isResizing = false;
-                            $scope.currentPackageName = $scope.selectedPackageName;
-                            $scope.currentPackage = $scope.selectedPackage;
+                            $scope.currentPackageName = selected.name;
+                            $scope.currentPackage = selected;
                         });
                     });
             };
@@ -384,6 +388,7 @@
                     $scope.tagsArray.push({key: key, val: tags[key], conflict: false, edit: false});
                 });
                 $scope.showTagSave = !!$scope.tagsArray.length;
+                $scope.tagSaveOk = $scope.showTagSave;
             }
 
             // Enable features
@@ -392,19 +397,23 @@
                 Machine.tags(machineid).then(initTags);
 
                 $scope.$watch('tagsArray', function (newVal, oldVal){
+                    var tagSaveOk = true;
                     // Search for conflicts
                     var keyMap = {};
                     newVal.forEach(function (tag, index) {
-                        if (keyMap[tag.key] && index !== (newVal.length - 1)) {
+                        if (keyMap[tag.key]) {
                             tag.conflict = true;
                             keyMap[tag.key].conflict = true;
+                            tagSaveOk = false;
                         } else if (!tag.key && index !== (newVal.length - 1)){
                             tag.conflict = true;
+                            tagSaveOk = false;
                         } else {
                             tag.conflict = false;
                             keyMap[tag.key] = tag;
                         }
                     });
+                    $scope.tagSaveOk = tagSaveOk;
 
                 }, true);
 

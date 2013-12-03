@@ -23,10 +23,10 @@ var handlers = {
 
 var backend = module.exports =  {
     clientHandlers: function handlers () {
-        var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E' ]);
+        var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E', 'ngCookies' ]);
 
         module.value('handlers', $$handlers);
-        module.run(function ($httpBackend, handlers) {
+        module.run(function ($httpBackend, handlers, stats) {
             var sessions = {};
 
             // Handle service calls
@@ -65,6 +65,7 @@ var backend = module.exports =  {
                                     state: 0
                                 };
 
+                                stats.track('start', call.name, payload.data);
                                 return [ 202, null, null ];
                             });
                     })(call);
@@ -139,7 +140,10 @@ var backend = module.exports =  {
                             }
 
                             if (status === 'finished') {
+                                stats.track('finish', context.call.name);
                                 delete sessions[sessionId][context.id];
+                            } else {
+                                stats.track('progress', context.call.name);
                             }
                         }
 
@@ -160,11 +164,19 @@ var backend = module.exports =  {
 
                     switch (request.method) {
                         case 'GET':
-                            $httpBackend.when(request.method, request.url).respond(request.data);
+                            $httpBackend.when(request.method, request.url).respond(function respondRequest (method, url, data, headers) {
+                                stats.track('start', method + ':' + url);
+                                stats.track('finish', method + ':' + url);
+                                return [ 200, request.data, headers ];
+                            });
                             break;
 
                         case 'POST':
-                            $httpBackend.when(request.method, request.url, request.body, request.headers).respond(request.data);
+                            $httpBackend.when(request.method, request.url, request.body, request.headers).respond(function respondRequest (method, url, data, headers) {
+                                stats.track('start', method + ':' + url);
+                                stats.track('finish', method + ':' + url);
+                                return [ 200, request.data, headers ];
+                            });
                             break;
                     }
                 }
@@ -174,6 +186,281 @@ var backend = module.exports =  {
             $httpBackend.whenPOST(/^(.*)$/i).passThrough();
             $httpBackend.whenJSONP(/^(.*)$/i).passThrough();
         });
+
+        module.service('stats', [ '$cookieStore', function stats ($cookieStore) {
+            var service = {
+                _getStats: function getStats () {
+                    var stats = {};
+
+                    try {
+                        stats = JSON.parse(window.localStorage.stats);
+                    } catch (err) {
+
+                    }
+
+                    return stats;
+                },
+
+                _setStats: function setStats (stats) {
+                    window.localStorage.stats = JSON.stringify(stats);
+                    return this._getStats();
+                },
+
+                _count: function countActions (data) {
+                    var actions = { start: 0, progress: 0, finish: 0 };
+
+                    for (var i = 0, c = data.length; i < c; i++) {
+                        if (actions.hasOwnProperty(data[i].action)) {
+                            actions[data[i].action]++;
+                        }
+                    }
+
+                    return actions;
+                },
+
+                _filter: function filterStats (data, params) {
+                    var result = [];
+
+                    function compare (obj1, obj2) {
+                        var match = false;
+
+                        Object.keys(obj1).forEach(function iterateObject (key) {
+                            if (obj2.hasOwnProperty(key)) {
+                                match = true;
+                            }
+                        });
+
+                        return match;
+                    }
+
+                    for (var i = 0, c = data.length; i < c; i++) {
+                        if (data[i].hasOwnProperty('params')) {
+                            if (compare(params, data[i].params)) {
+                                result.push(data[i]);
+                            }
+                        }
+                    }
+
+                    return result;
+                },
+
+                setup: function setup () {
+                    if (!window.localStorage.stats) {
+                        window.localStorage.stats = {};
+                    }
+                },
+
+                query: function query (key, opts) {
+                    var stats = this._getStats();
+                    var data = null;
+
+                    if (!opts.hasOwnProperty('rule')) {
+                        throw new Error('Invalid options for key "' + key + '"');
+                    }
+
+                    if (stats.hasOwnProperty(key)) {
+                        data = stats[key];
+                    } else {
+                        throw new Error('Invalid stats key "' + key + '"');
+                    }
+
+                    switch (opts.rule) {
+                        case 'call-count':
+                            var loose = false;
+                            var times = 1;
+
+                            if (opts.hasOwnProperty('loose')) {
+                                loose = opts.loose;
+                            }
+
+                            if (opts.hasOwnProperty('value')) {
+                                times = parseInt(opts.value) || 1;
+                            }
+
+                            var counts = this._count(data);
+                            if (counts.start >= counts.finish) {
+                                if (loose) {
+                                    return  counts.start >= times;
+                                } else {
+                                    return (counts.start === counts.finish
+                                        && counts.start === times);
+                                }
+                            } else {
+                                return false;
+                            }
+                            break;
+
+                        case 'call-params':
+                            if (!opts.hasOwnProperty('value')) {
+                                throw new Error('Invalid value for key "' + key + '"');
+                            }
+
+                            return this._filter(data, opts.value).length > 0;
+                            break;
+
+                        case 'pending':
+                            var counts = this._count(data);
+                            if (counts.start === counts.finish) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                            break;
+
+                        case 'clear':
+                            stats[key] = [];
+                            this._setStats(stats);
+                            break;
+
+                        case 'debug':
+                            return {
+                                counts: this._count(data),
+                                data: data
+                            };
+                            break;
+                    }
+
+                    return true;
+                },
+
+                track: function track (action, name, params) {
+                    var stats = this._getStats();
+                    var key = null;
+
+                    if (typeof(name) !== 'string') {
+                        if (name.url && name.method) {
+                            key = name.method + ':' + name.url;
+                        }
+                    } else {
+                        key = name;
+                    }
+
+                    if (!stats.hasOwnProperty(key)) {
+                        stats[key] = [];
+                    }
+
+                    stats[key].push({
+                        action: action,
+                        params: params
+                    });
+
+                    this._setStats(stats);
+                }
+            };
+
+            service.setup();
+            return service;
+        }]);
+    },
+
+    track: function track (protractor) {
+        function toKey (opts) {
+            switch (opts.type) {
+                case 'request':
+                    return opts.props.method + ':' + opts.props.url;
+                    break;
+
+                default:
+                case 'call':
+                    return opts.props.name;
+                    break;
+            }
+        }
+
+        function query (key, opts) {
+            var promise = protractor.executeScript(function (key, opts) {
+                var $injector = angular.injector([ 'httpBackendMock' ]);
+                var stats = $injector.get('stats');
+
+                return stats.query(key, opts);
+            }, key, opts);
+
+            /*
+            promise.then(function (value) {
+                if (opts.rule === 'debug' || opts.rule === 'clear') {
+                    console.log(value);
+                } else {
+                    console.log(key + ' = ' + value);
+                }
+            });
+            */
+
+            return promise;
+        }
+
+        function wrap (opts) {
+            return {
+                debug: function () {
+                    return query(toKey(opts), {
+                        rule: 'debug'
+                    });
+                },
+
+                clear: function () {
+                    return query(toKey(opts), {
+                        rule: 'clear'
+                    });
+                },
+
+                pending: function () {
+                    return query(toKey(opts), {
+                        rule: 'pending'
+                    });
+                },
+
+                calledOnce: function (loose) {
+                    return query(toKey(opts), {
+                        rule: 'call-count',
+                        value: 1,
+                        loose: loose
+                    });
+                },
+
+                calledTwice: function (loose) {
+                    return query(toKey(opts), {
+                        rule: 'call-count',
+                        value: 2,
+                        loose: loose
+                    });
+                },
+
+                calledTimes: function (times, loose) {
+                    return query(toKey(opts), {
+                        rule: 'call-count',
+                        value: times,
+                        loose: loose
+                    });
+                },
+
+                calledWithParams: function (params) {
+                    return query(toKey(opts), {
+                        rule: 'call-params',
+                        value: params
+                    });
+                },
+            }
+        }
+
+        return {
+            request: function request (method, url) {
+                return wrap({
+                    type: 'request',
+                    props: {
+                        method: method,
+                        url: url
+                    }
+                });
+            },
+
+            call: function call (name) {
+                return wrap({
+                    type: 'call',
+                    props: {
+                        name: name
+                    }
+                });
+            }
+        };
     },
 
     stub: function stub (protractor) {

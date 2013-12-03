@@ -161,7 +161,7 @@
                     </select>
 
                     <div class="control-group resize-button">
-                        <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="isResizing" data-translate>Resize</button>
+                        <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                     </div>
                 </div>
                 <div class="clearfix"></div>
