@@ -2,7 +2,7 @@
 
 (function (app) {
     app.directive('trafficGraph', [
-        'elb.trafficChart',
+        'slb.trafficChart',
         function (trafficChart) {
             return {
                 priority: 500,
@@ -27,4 +27,4 @@
             };
         }
     ]);
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

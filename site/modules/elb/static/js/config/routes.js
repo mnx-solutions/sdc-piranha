@@ -3,18 +3,18 @@
 window.JP.main.config([
     'routeProvider',
     function (routeProvider) {
-        routeProvider.when('/elb', {
+        routeProvider.when('/slb', {
             title: 'Enable Load Balancing',
-            action: 'elb.index'
-        }).when('/elb/list', {
+            action: 'slb.index'
+        }).when('/slb/list', {
             title: 'Load Balancers List',
-            action: 'elb.list'
-        }).when('/elb/edit/:balancerId', {
+            action: 'slb.list'
+        }).when('/slb/edit/:balancerId', {
             title: 'Create/Edit Load Balancer',
-            action: 'elb.edit'
-        }).when('/elb/detail/:balancerId', {
+            action: 'slb.edit'
+        }).when('/slb/detail/:balancerId', {
             title: 'Load Balancer Details',
-            action: 'elb.detail'
+            action: 'slb.detail'
         });
     }]);
 

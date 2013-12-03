@@ -2,12 +2,12 @@
 
 (function (app) {
     app.controller(
-        'elb.EditController',
-        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'elb.Service', 'Datacenter',
+        'slb.EditController',
+        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'slb.Service', 'Datacenter',
             function ($scope, requestContext, localization, $location, util, $q, service, Datacenter) {
-                localization.bind('elb', $scope);
-                requestContext.setUpRenderContext('elb.edit', $scope, {
-                    title: localization.translate(null, 'elb', 'Create/Edit Load Balancer')
+                localization.bind('slb', $scope);
+                requestContext.setUpRenderContext('slb.edit', $scope, {
+                    title: localization.translate(null, 'slb', 'Create/Edit Load Balancer')
                 });
 
                 $scope.balancerId = requestContext.getParam('balancerId');
@@ -30,7 +30,7 @@
                     server.health.failThreshold = server.health.failThreshold || 5;
                     server.machines = server.machines || [];
 
-                    var elbMachines = server.machines.map(function (machine) {
+                    var slbMachines = server.machines.map(function (machine) {
                         return machine.host;
                     });
                     var hosts = {};
@@ -49,7 +49,7 @@
                     });
 
                     $scope.machines = machines.map(function (machine) {
-                        if (elbMachines.indexOf(machine.primaryIp) !== -1) {
+                        if (slbMachines.indexOf(machine.primaryIp) !== -1) {
                             machine.selected = true;
                         }
                         machine.balancers = hosts[machine.primaryIp] || [];
@@ -126,7 +126,7 @@
                         operations.push(service.addBalancer($scope.server));
                     }
                     $q.all(operations).then(function () {
-                        $location.path('/elb/list');
+                        $location.path('/slb/list');
                     }, function () {
                         $scope.saving = false;
                     });
@@ -156,11 +156,11 @@
                         ),
                         function () {
                             service.deleteBalancer($scope.balancerId).then(function () {
-                                $location.path('/elb/list');
+                                $location.path('/slb/list');
                             });
                         }
                     );
                 };
             }]
     );
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

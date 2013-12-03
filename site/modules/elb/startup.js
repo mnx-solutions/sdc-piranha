@@ -9,12 +9,12 @@ var getSscMachine = ssc.getSscMachine;
 var getSscClient = ssc.getSscClient;
 
 //Logging is done by serverTab itself, no need for additional info/error logging in each request
-var elb = function execute(scope) {
+var slb = function execute(scope) {
     var server = scope.api('Server');
     var machine = scope.api('Machine');
     var Metadata = scope.api('Metadata');
 
-    var hardControllerName = 'elb-ssc';
+    var hardControllerName = 'slb-ssc';
 
     ssc.init(Metadata);
 
@@ -200,10 +200,10 @@ var elb = function execute(scope) {
         function waitForManta(startTime) {
             startTime = startTime || new Date().getTime();
             if (new Date().getTime() - startTime > 2 * 60 * 1000) {
-                callback(new Error('Timeout while removing elb config'));
+                callback(new Error('Timeout while removing slb config'));
                 return;
             }
-            client.unlink('/' + data['metadata.account_name'] + '/stor/elb.private/elb.conf', function (err) {
+            client.unlink('/' + data['metadata.account_name'] + '/stor/slb.private/slb.conf', function (err) {
                 if (err && err.statusCode !== 404) {
                     setTimeout(waitForManta.bind(this, startTime), 1000);
                 } else {
@@ -218,7 +218,7 @@ var elb = function execute(scope) {
     server.onCall('SscMachineCreate', {
         handler: function (call) {
             call.update(null, 'Provisioning load balancer controller');
-            var datacenter = config.elb.ssc_datacenter || 'us-west-1';
+            var datacenter = config.slb.ssc_datacenter || 'us-west-1';
             machine.PackageList(call, {datacenter: datacenter}, function (packagesErr, packagesData) {
                 if (packagesErr) {
                     call.done(packagesErr);
@@ -226,11 +226,11 @@ var elb = function execute(scope) {
                 }
 
                 var chosenPackages = packagesData.filter(function (pack) {
-                    return pack.name === config.elb.ssc_package;
+                    return pack.name === config.slb.ssc_package;
                 });
 
                 if (chosenPackages.length !== 1) {
-                    call.done('Found no or more than one package with the name: ' + config.elb.ssc_package);
+                    call.done('Found no or more than one package with the name: ' + config.slb.ssc_package);
                     return;
                 }
 
@@ -241,26 +241,30 @@ var elb = function execute(scope) {
 
                 var data = {
                     datacenter: datacenter,
-                    dataset: config.elb.ssc_image,
+                    dataset: config.slb.ssc_image,
                     name: hardControllerName,
                     'package': sscPackageId,
                     'metadata.ssc_private_key': sscKeyPair.privateKey,
                     'metadata.ssc_public_key': sscKeyPair.publicSsh,
                     'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
-                    'metadata.account_name': config.elb.account || call.req.session.userName,
+                    'metadata.account_name': config.slb.account || call.req.session.userName,
                     'metadata.datacenter_name': datacenter,
-                    'metadata.elb_code_url': config.elb.elb_code_url,
-                    'metadata.sdc_url': config.elb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
+                    'metadata.slb_code_url': config.slb.slb_code_url,
+                    // TODO: remove this line after renaming code in image
+                    'metadata.elb_code_url': config.slb.slb_code_url,
+                    'metadata.sdc_url': config.slb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
+                    'tag.slb': 'ssc',
+                    // TODO: remove this line after renaming code in image
                     'tag.lbaas': 'ssc'
                 };
 
-                if (config.elb.ssc_networks) {
-                    data.networks = config.elb.ssc_networks;
+                if (config.slb.ssc_networks) {
+                    data.networks = config.slb.ssc_networks;
                 }
 
-                if (config.elb.ssc_private_key && config.elb.ssc_public_key) {
-                    data['metadata.ssc_private_key'] = config.elb.ssc_private_key;
-                    data['metadata.ssc_public_key'] = config.elb.ssc_public_key;
+                if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
+                    data['metadata.ssc_private_key'] = config.slb.ssc_private_key;
+                    data['metadata.ssc_public_key'] = config.slb.ssc_public_key;
                 }
 
                 var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
@@ -334,7 +338,7 @@ var elb = function execute(scope) {
     server.onCall('SscMachineDelete', function (call) {
         getSscClient(call, function (err, client) {
             if (err) {
-                // Still delete SSC even if ELBAPI is unavailable
+                // Still delete SSC even if SLBAPI is unavailable
                 deleteSscMachine(call, call.done);
                 return;
             }
@@ -343,7 +347,7 @@ var elb = function execute(scope) {
                 if (delError) {
                     call.log.warn('Cannot disable STMs');
                 }
-                // Still delete SSC even if ELBAPI returned error
+                // Still delete SSC even if SLBAPI returned error
                 deleteSscMachine(call, call.done);
             });
         });
@@ -360,13 +364,13 @@ var elb = function execute(scope) {
     });
 };
 
-if (!config.features || config.features.elb === 'enabled') {
-    assert(config.elb, "elb section is required");
-    assert(config.elb.elb_code_url, "elb.elb_code_url is required");
-    assert(config.elb.ssc_image, "elb.ssc_image is required");
-    assert(config.elb.ssc_package, "elb.ssc_package is required");
-    assert(config.elb.ssc_protocol, "elb.ssc_protocol is required");
-    assert(config.elb.ssc_port, "elb.ssc_port is required");
+if (!config.features || config.features.slb === 'enabled') {
+    assert(config.slb, "slb section is required");
+    assert(config.slb.slb_code_url, "slb.slb_code_url is required");
+    assert(config.slb.ssc_image, "slb.ssc_image is required");
+    assert(config.slb.ssc_package, "slb.ssc_package is required");
+    assert(config.slb.ssc_protocol, "slb.ssc_protocol is required");
+    assert(config.slb.ssc_port, "slb.ssc_port is required");
 
-    module.exports = elb;
+    module.exports = slb;
 }

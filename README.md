@@ -163,17 +163,17 @@ You can also define configuration options using command line. ex: `$ node index.
 - `cloudapi.username` Username from AdminUI
 - `cloudapi.keyId` Your SSH key fingerprint from Admin portal
 - `cloudapi.keyPath` Full local path to your private key file
-- `elb.ssc_private_key` Hardcode if on west-x, do not use on west-1
-- `elb.ssc_public_key` Hardcode if on west-x, do not use on west-1
-- `elb.elb_code_url` Download location for ELB API code
-- `elb.sdc_url` Hardcode if on west-x, do not use on west-1
-- `elb.ssc_image` UUID of LBaaS controller image
-- `elb.ssc_package` Name of LBaaS controller package
-- `elb.ssc_networks` Hardcode if on west-x, do not use on west-1
-- `elb.ssc_datacenter` Datacenter for SSC machine, defaults to west-1
-- `elb.account` Hardcode if on west-x, do not use on west-1
-- `elb.ssc_protocol` Protocol to communicate with LBaaS controller
-- `elb.ssc_port` Port to communicate with LBaaS controller
+- `slb.ssc_private_key` Hardcode if on west-x, do not use on west-1
+- `slb.ssc_public_key` Hardcode if on west-x, do not use on west-1
+- `slb.slb_code_url` Download location for SLB API code
+- `slb.sdc_url` Hardcode if on west-x, do not use on west-1
+- `slb.ssc_image` UUID of SLB controller image
+- `slb.ssc_package` Name of SLB controller package
+- `slb.ssc_networks` Hardcode if on west-x, do not use on west-1
+- `slb.ssc_datacenter` Datacenter for SSC machine, defaults to west-1
+- `slb.account` Hardcode if on west-x, do not use on west-1
+- `slb.ssc_protocol` Protocol to communicate with SLB controller
+- `slb.ssc_port` Port to communicate with SLB controller
 - `googleAnalytics.identifier` Google analytics ID
 - `googleAnalytics.domain` Google analytics domain
 - `localization.defaultLocale` Default language for portal
@@ -200,7 +200,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `redis.password` Redis storage password
 - `server.port` Port on which piranha portal runs on.
 - `server.headerClientIpKey` Client IP address placeholder for load balancer / reverse proxy
-- `showLBaaSObjects` Dev option to see LBaaS keys, images & machines
+- `showSLBObjects` Dev option to see SLB keys, images & machines
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
