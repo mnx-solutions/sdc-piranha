@@ -155,8 +155,11 @@
                             'Are you sure you want to delete this load balancer?'
                         ),
                         function () {
+                            $scope.saving = true;
                             service.deleteBalancer($scope.balancerId).then(function () {
                                 $location.path('/slb/list');
+                            }, function () {
+                                $scope.saving = false;
                             });
                         }
                     );
