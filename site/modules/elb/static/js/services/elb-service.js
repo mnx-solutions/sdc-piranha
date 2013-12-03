@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.factory('elb.Service', [
+    app.factory('slb.Service', [
         'serverTab',
         '$http',
         '$q',
@@ -253,4 +253,4 @@
             };
             return service;
         }]);
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

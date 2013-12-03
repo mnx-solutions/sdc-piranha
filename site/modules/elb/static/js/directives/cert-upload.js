@@ -3,7 +3,7 @@
 (function (app) {
     app.directive('certUpload', ['notification', '$dialog', function (notification, $dialog) {
         return {
-            templateUrl: 'elb/static/templates/cert-upload.html',
+            templateUrl: 'slb/static/templates/cert-upload.html',
             restrict: 'EA',
             scope: {
                 model: '='
@@ -16,7 +16,7 @@
 
                 function passwordPrompt(callback) {
                     var title = 'Specify passphrase';
-                    var templateUrl = 'elb/static/templates/cert-upload-passphrase.html';
+                    var templateUrl = 'slb/static/templates/cert-upload-passphrase.html';
                     $dialog.messageBox(title, '', [], templateUrl)
                         .open()
                         .then(callback);
@@ -25,7 +25,7 @@
                 window.__uploadCallback__ = function (data) {
                     scope.$apply(function () {
                         if (data.success) {
-                            notification.replace('elb', { type: 'success' }, 'Certificate added');
+                            notification.replace('slb', { type: 'success' }, 'Certificate added');
                             scope.model = data.id;
                         } else if (data.passphrase) {
                             passwordPrompt(function (passphrase) {
@@ -37,7 +37,7 @@
                                 uploadForm.submit();
                             });
                         } else {
-                            notification.replace('elb', { type: 'error' }, data.message);
+                            notification.replace('slb', { type: 'error' }, data.message);
                         }
                     });
                 };
@@ -51,12 +51,12 @@
 
                 scope.remove = function () {
                     uploadFile.value = '';
-                    // Can't set null certificate in ELBAPI, using empty GUID as empty/not-set certificate
+                    // Can't set null certificate in SLBAPI, using empty GUID as empty/not-set certificate
                     scope.model = '00000000-0000-0000-0000-000000000000';
                 };
             }
         };
     }]);
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));
 
 

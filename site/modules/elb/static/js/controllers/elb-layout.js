@@ -1,15 +1,15 @@
 'use strict';
 
 (function (app) {
-    app.controller('elb.LayoutController', [
+    app.controller('slb.LayoutController', [
         '$scope',
         'requestContext',
         'localization',
 
         function ($scope, requestContext, localization) {
-            requestContext.setUpRenderContext('elb', $scope, {
-                title: localization.translate(null, 'elb', 'Joyent Cloud Management Portal')
+            requestContext.setUpRenderContext('slb', $scope, {
+                title: localization.translate(null, 'slb', 'Joyent Cloud Management Portal')
             });
         }
     ]);
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

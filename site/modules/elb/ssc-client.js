@@ -4,7 +4,7 @@ var vasync = require('vasync');
 var restify = require('restify');
 var httpSignature = require('http-signature');
 var config = require('easy-config');
-var sscName = (config.elb && config.elb.sscName) || 'elb-ssc';
+var sscName = (config.slb && config.slb.sscName) || 'slb-ssc';
 var metadata = null;
 
 exports.init = function (mdata) {
@@ -13,7 +13,7 @@ exports.init = function (mdata) {
 
 var getMachinesList = exports.getMachinesList = function getMachinesList(call, cb) {
     var cloud = call.cloud || call.req.cloud;
-    var datacenter = config.elb.ssc_datacenter || 'us-west-1';
+    var datacenter = config.slb.ssc_datacenter || 'us-west-1';
     cloud.separate(datacenter).listMachines({ credentials: true }, function (err, machines) {
         machines = machines || [];
         cb(null, machines);
@@ -48,7 +48,7 @@ var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
 var sscClientsCache = {};
 
 exports.getSscClient = function (call, callback) {
-    function getElbApiKey(call, callback) {
+    function getSlbApiKey(call, callback) {
         var result = {};
         vasync.parallel({
             funcs: [
@@ -98,7 +98,7 @@ exports.getSscClient = function (call, callback) {
         return;
     }
 
-    getElbApiKey(call, function (error, result) {
+    getSlbApiKey(call, function (error, result) {
         if (error) {
             callback(error);
             return;
@@ -109,9 +109,9 @@ exports.getSscClient = function (call, callback) {
             return;
         }
 
-        call.req.log.info({fingerprint: result.fingerprint, primaryIp: result.primaryIp}, 'Creating ELBAPI client');
+        call.req.log.info({fingerprint: result.fingerprint, primaryIp: result.primaryIp}, 'Creating SLBAPI client');
 
-        var sscUrl = config.elb.ssc_protocol + '://' + result.primaryIp + ':' + config.elb.ssc_port;
+        var sscUrl = config.slb.ssc_protocol + '://' + result.primaryIp + ':' + config.slb.ssc_port;
         var sscClient = restify.createJsonClient({
             url: sscUrl,
             rejectUnauthorized: false,

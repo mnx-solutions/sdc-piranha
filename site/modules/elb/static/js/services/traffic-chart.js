@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.factory('elb.trafficChart', function () {
+    app.factory('slb.trafficChart', function () {
         return function ($element, title, traffic) {
             function createConfig(config) {
                 return angular.extend({
@@ -112,4 +112,4 @@
             };
         };
     });
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

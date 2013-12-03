@@ -113,8 +113,8 @@
     }
   , "riskScoreFraudLimit": 60
   }
-, "elb": {
-    "elb_code_url": "https://us-east.manta.joyent.com/mriou/public/elbapi-1.tgz"
+, "slb": {
+    "slb_code_url": "https://us-east.manta.joyent.com/dbqp/public/slbapi-1.tgz"
   , "ssc_image": "df65f310-5c3e-11e3-be02-731ee9e7971d"
   , "ssc_package": "g3-standard-1-kvm"
   , "ssc_datacenter": "us-west-1"
@@ -130,7 +130,7 @@
   , "imageUse": "enabled"
   , "imageCreate": "disabled"
   , "firewall": "disabled"
-  , "elb": "disabled"
+  , "slb": "disabled"
   , "promocode": "disabled"
   }
 }

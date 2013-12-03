@@ -1,4 +1,4 @@
-<div class="container" data-ng-controller="elb.ListController">
+<div class="container" data-ng-controller="slb.ListController">
     <div data-notification></div>
     <ul class="breadcrumb">
         <li class="ng-scope active">
@@ -46,7 +46,7 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="server in servers">
-                <td><a href="#!/elb/detail/{{server.id}}">{{server.name}}</a></td>
+                <td><a href="#!/slb/detail/{{server.id}}">{{server.name}}</a></td>
                 <td>{{server.host}}</td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
@@ -59,7 +59,7 @@
         </table>
         <p class="text-fix pull-right">
             <i class="icon icon-plus-sign minus-icon-pos"></i>
-            <a href="#!/elb/edit/" data-translate>Create new load balancer</a>
+            <a href="#!/slb/edit/" data-translate>Create new load balancer</a>
         </p>
     </div>
 

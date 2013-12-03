@@ -1,12 +1,12 @@
 'use strict';
 
 (function (app) {
-    app.controller('elb.DetailController',
-        ['$scope', 'requestContext', 'localization', 'elb.Service', '$location', '$q',
+    app.controller('slb.DetailController',
+        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location', '$q',
             function ($scope, requestContext, localization, service, $location, $q) {
-                localization.bind('elb', $scope);
-                requestContext.setUpRenderContext('elb.detail', $scope, {
-                    title: localization.translate(null, 'elb', 'Load Balancer Details')
+                localization.bind('slb', $scope);
+                requestContext.setUpRenderContext('slb.detail', $scope, {
+                    title: localization.translate(null, 'slb', 'Load Balancer Details')
                 });
 
                 var balancerId = requestContext.getParam('balancerId');
@@ -60,9 +60,9 @@
                 });
 
                 $scope.edit = function () {
-                    $location.path('/elb/edit/' + balancerId);
+                    $location.path('/slb/edit/' + balancerId);
                 };
 
             }]
         );
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

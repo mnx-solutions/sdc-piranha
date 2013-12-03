@@ -2,29 +2,29 @@
 
 (function (app) {
     app.controller(
-        'elb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'elb.Service', 'Datacenter', 'notification',
+        'slb.IndexController',
+        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'notification',
                 function ($scope, requestContext, localization, $location, service, Datacenter, notification) {
-                localization.bind('elb', $scope);
-                requestContext.setUpRenderContext('elb.index', $scope, {
-                    title: localization.translate(null, 'elb', 'Enable Load Balancing')
+                localization.bind('slb', $scope);
+                requestContext.setUpRenderContext('slb.index', $scope, {
+                    title: localization.translate(null, 'slb', 'Enable Load Balancing')
                 });
 
                 $scope.loaded = false;
                 $scope.creating = false;
 
                 service.getController().then(function () {
-                    $location.path('/elb/list');
+                    $location.path('/slb/list');
                 }, function () {
                     $scope.loaded = true;
                 });
 
-                $scope.enableElb = function () {
+                $scope.enableSlb = function () {
                     $scope.creating = true;
                     service.createController().then(function () {
-                        $location.path('/elb/list');
+                        $location.path('/slb/list');
                     }, function (err) {
-                        notification.replace('elb', { type: 'error' }, err);
+                        notification.replace('slb', { type: 'error' }, err);
                         $scope.creating = false;
                     });
                 };
@@ -36,4 +36,4 @@
 
             }]
     );
-}(window.JP.getModule('elb')));
+}(window.JP.getModule('slb')));

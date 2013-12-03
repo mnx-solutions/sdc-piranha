@@ -60,7 +60,7 @@
                         && !(currentStep === 'complete' || currentStep === 'completed')
                         && $route.current.action.indexOf('signup') === -1) {
                         requestContext.setContext('signup.'+currentStep, $routeParams);
-                    } else if ($scope.features.elb !== 'enabled' && $route.current.action.indexOf('elb') === 0) {
+                    } else if ($scope.features.slb !== 'enabled' && $route.current.action.indexOf('slb') === 0) {
                         requestContext.setContext('dashboard.index', $routeParams);
                     } else {
                         // Update the current request action change.
