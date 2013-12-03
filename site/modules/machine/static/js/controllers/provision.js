@@ -216,7 +216,7 @@
                 $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
-                ng.element('.carousel').carousel('prev');
+                ng.element('.carousel').carousel(goto);
             };
 
             function getNr(el) {
