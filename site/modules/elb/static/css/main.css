@@ -168,8 +168,9 @@
 .upload-btn{
     display: inline-block;
     vertical-align: middle;
-    margin-left: 20px;
+    float: right;
 }
+
 input.ng-invalid-port{
     border-color: red;
     box-shadow: 0px 0px 6px -1px red;
@@ -364,7 +365,7 @@ label.checkbox {
     color: #7d7d7d;
 }
 .edit-value{
-    width: 250px;
+    width: 262px;
     display: inline-block;
     font-size: 16px;
     line-height: 30px;
