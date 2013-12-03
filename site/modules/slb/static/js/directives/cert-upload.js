@@ -58,5 +58,3 @@
         };
     }]);
 }(window.JP.getModule('slb')));
-
-
