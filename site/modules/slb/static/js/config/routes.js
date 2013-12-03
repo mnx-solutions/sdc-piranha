@@ -17,4 +17,3 @@ window.JP.main.config([
             action: 'slb.detail'
         });
     }]);
-
