@@ -120,7 +120,8 @@ exports.getSscClient = function (call, callback) {
                     key: result.privateKey,
                     keyId: result.fingerprint
                 });
-            }
+            },
+            timeout: 5 * 60 * 1000
         });
         sscClientsCache[call.req.session.userId] = sscClient;
         checkSscClient(sscClient, callback);

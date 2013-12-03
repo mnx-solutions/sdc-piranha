@@ -1,10 +1,7 @@
 'use strict';
 
 var config = require('easy-config');
-var restify = require('restify');
 var fs = require('fs');
-var httpSignature = require('http-signature');
-var key = config.slb && config.slb.keyPath ? fs.readFileSync(config.slb.keyPath).toString() : null;
 var ursa = require('ursa');
 var express = require('express');
 
