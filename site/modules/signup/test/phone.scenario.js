@@ -2,18 +2,27 @@ var utils = require(process.cwd() + '/lib/utils');
 
 describe('Phone verification page', function() {
     var backend = require(process.cwd() + '/test/e2e/mocks/backend.js');
-    //backend
-    //    .stub(ptor)
-    //    .request('POST', 'https://sso-westx.piranha.ee/signup', {}, {}, {});
-
+    backend
+        .stub(ptor)
+        .request('GET', '/signup/maxmind/call/', backend.data('maxmind'))
+        .request('GET', '/signup/maxmind/verify/', backend.data('maxmind-verify'))
+        .call('getAccount', backend.data('account-empty'));
 
     var ptor = null;
-    var driver = null;
 
     beforeEach(function() {
         ptor = protractor.getInstance();
-        driver = ptor.driver;
-    })
+        backend
+            .stub(ptor)
+            .flush();
+    });
+
+
+    describe('redirect user to signup phone step', function() {
+        it('should send user to signup phone step', function() {
+            ptor.get('/main/account/signup/phone');
+        });
+    });
 
     describe('Signup phone step', function() {
         it('should have country select and phone fields plus buttons', function(){
@@ -23,8 +32,15 @@ describe('Phone verification page', function() {
                 });
             });
 
+            ptor.findElement(protractor.By.xpath('//div[@class="container"]/form/div[@class="row"]/div[@class="span3"][2]/button')).getAttribute('disabled').then(function(value) {
+                expect(value).not.toBeFalsy();
+            });
+
             ptor.findElement(protractor.By.xpath('//option[@value=66]')).click();
             ptor.findElement(protractor.By.xpath('//input[@name="phone"]')).sendKeys(ptor.params.register.phone);
+
+            ptor.findElement(protractor.By.xpath('//input[@data-ng-model="pin"]')).sendKeys('1234');
+            ptor.findElement(protractor.By.xpath('//div[@class="container"]/form[2]/div[@class="row"]/div[@class="span6"]/button'));
         });
     });
 });

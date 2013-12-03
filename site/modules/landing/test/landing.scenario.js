@@ -1,7 +1,7 @@
 describe('Landing page', function () {
     var backend = require(process.cwd() + '/test/e2e/mocks/backend.js');
     backend
-        .stub(ptor)
+        .stub(protractor.getInstance())
         .request('GET', 'cloudAnalytics/ca', {}, {}, new Error())
         .request('GET', 'cloudAnalytics/ca/help', {}, {}, new Error());
 
@@ -47,6 +47,7 @@ describe('Landing page', function () {
                     return url.indexOf('/main') !== -1;
                 });
             });
+
             driver.getCurrentUrl().then(function (url) {
                 expect(url).toContain('/main');
             });

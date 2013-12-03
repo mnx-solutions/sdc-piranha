@@ -34,6 +34,11 @@ module.exports = function execute(scope, app) {
         res.json(data);
     });
 
+    app.get('/signup/:step', function(req, res) {
+        req.session.allowSignup = true;
+        res.redirect('/signup/#!/'+ req.params.step);
+    });
+
     app.get('/signup/skipSsh', function(req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function() {
             scope.log.info('User skipped SSH step');
