@@ -1,0 +1,65 @@
+<div class="container" data-ng-controller="slb.ListController">
+    <ul class="breadcrumb">
+        <li class="ng-scope active">
+            <span class="ng-binding" data-translate>Load Balancers</span>
+        </li>
+    </ul>
+    <div data-notification></div>
+    <ul class="lb-contr">
+        <li>
+            <h4 class="pull-left">
+                <span data-translate>Load balancer controller is</span>
+                <span data-ng-show="listLoaded" data-translate>running</span>
+                <span data-ng-hide="listLoaded" data-translate>configuring</span>
+            </h4>
+        </li>
+        <li>
+            <p class="pull-right lb-disabled">
+                <i class="icon icon-minus-sign minus-icon-pos"></i>
+                <a href data-ng-click="disableLb()" data-translate>Disable Load Balancer</a>
+            </p>
+        </li>
+    </ul>
+    <div class="loading-large" data-ng-hide="listLoaded"></div>
+    <div data-ng-show="listLoaded" class="span12 table-overflow group-checkable">
+        <table class="table table-striped table-bordered table-hover table-full-width">
+            <thead>
+            <tr>
+                <th class="table-title sortable">
+                    <div class="block" data-translate>Load Balancer</div>
+                </th>
+                <th class="table-title sortable">
+                    <div class="block" data-translate>IP</div>
+                </th>
+                <th class="table-title sortable">
+                    <div class="block" data-translate>Status</div>
+                </th>
+                <th class="table-title sortable">
+                    <div class="block" data-translate>Health</div>
+                </th>
+                <th class="table-title sortable">
+                    <div class="block" data-translate>Creation Date</div>
+                </th>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr data-ng-repeat="server in servers">
+                <td><a href="#!/slb/detail/{{server.id}}">{{server.name}}</a></td>
+                <td>{{server.host}}</td>
+                <td>Active</td>
+                <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>
+                <td>{{server.created | date:'yyyy-MM-dd'}}</td>
+            </tr>
+            <tr data-ng-show="servers.length == 0">
+                <td colspan="5" data-translate>No balancers configured</td>
+            </tr>
+            </tbody>
+        </table>
+        <p class="text-fix pull-right">
+            <i class="icon icon-plus-sign minus-icon-pos"></i>
+            <a href="#!/slb/edit/" data-translate>Create new load balancer</a>
+        </p>
+    </div>
+
+</div>

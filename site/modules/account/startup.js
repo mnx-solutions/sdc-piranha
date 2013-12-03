@@ -50,7 +50,7 @@ module.exports = function execute(scope) {
         var serveKeys = function (err, data) {
             if (!err && data) {
                 data = data.filter(function (key) {
-                    return config.showLBaaSObjects || key.name !== 'ssc_public_key';
+                    return config.showSLBObjects || key.name !== 'ssc_public_key';
                 });
             }
             call.done(err, data);
