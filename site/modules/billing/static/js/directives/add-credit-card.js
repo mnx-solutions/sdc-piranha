@@ -119,6 +119,11 @@
                                 form.state = account.state;
                                 form.addressLine1 = account.address;
 
+                                if (!$scope.form.firstName && !$scope.form.lastName) {
+                                    $scope.form.firstName = account.firstName;
+                                    $scope.form.lastName = account.lastName;
+                                }
+
                                 if (account.country.length === 3) {
                                     form.country = account.country;
                                 } else {
