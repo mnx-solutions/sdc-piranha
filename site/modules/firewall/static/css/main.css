@@ -163,18 +163,10 @@ input.ng-invalid, input.ng-pristine {
 .title-rule{
     width: 630px;
 }
-/*.one-third{*/
-    /*width: 310px;*/
-    /*display: inline-block;*/
-    /*vertical-align: top;*/
-    /*padding-left: 10px;*/
-    /*padding-right: 10px;*/
-/*}*/
 
 .firewall-table{
     width: 100%;
-    /*background-color: #f3f3f3;*/
-    background-color: #FAFAFA;
+    background-color: #fef1d2;
 }
 .firewall-table td.one-third{
     max-width: 310px;
@@ -185,9 +177,12 @@ input.ng-invalid, input.ng-pristine {
     padding-right: 10px;
     padding-bottom: 20px;
 }
+.firewall-table td.one-third legend{
+    border-bottom: 1px solid #cbc1a8;
+}
 .firewall-table td.small-space{
-    max-width: 5px;
-    min-width: 5px;
+    max-width: 0;
+    min-width: 0;
     background-color: white;
 }
 .firewall-table tr{
@@ -215,9 +210,9 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .yellow-bg{
     background-color: #fef1d2;
     padding: 10px;
-    border-top: 1px solid #ccc;
-    border-bottom: 0px solid #ccc;
-    margin-bottom: 5px;
+    /*border-top: 1px solid #ccc;*/
+    border-bottom: 0;
+    margin-bottom: 2px;
 }
 .f-name{
     width: 76px;
@@ -258,7 +253,7 @@ input.ng-invalid, input.ng-pristine {
 }
 .f-result{
     display: block;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #cbc1a8;
     padding-bottom: 5px;
     padding-top: 5px;
     overflow: hidden;
@@ -279,8 +274,6 @@ input.ng-invalid, input.ng-pristine {
 }
 .create-update-btn{
     padding-top: 20px;
-    margin-top: 5px;
-    border-top: 1px solid #ccc;
 }
 .result-width{
     width: 290px;
