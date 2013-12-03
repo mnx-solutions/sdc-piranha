@@ -222,13 +222,18 @@ var backend = module.exports =  {
                     var result = [];
 
                     function compare (obj1, obj2) {
-                        var match = false;
+                        var match = true;
 
-                        Object.keys(obj1).forEach(function iterateObject (key) {
-                            if (obj2.hasOwnProperty(key)) {
-                                match = true;
+                        for (var key in obj2) {
+
+                            if (obj1[key]) {
+                                if (obj1[key] === obj2[key]) {
+                                    match = true;
+                                } else {
+                                    match = false;
+                                }
                             }
-                        });
+                        }
 
                         return match;
                     }
@@ -253,6 +258,12 @@ var backend = module.exports =  {
                 query: function query (key, opts) {
                     var stats = this._getStats();
                     var data = null;
+
+                    try {
+                        opts = JSON.parse(opts);
+                    } catch (err) {
+
+                    }
 
                     if (!opts.hasOwnProperty('rule')) {
                         throw new Error('Invalid options for key "' + key + '"');
@@ -373,14 +384,12 @@ var backend = module.exports =  {
                 var stats = $injector.get('stats');
 
                 return stats.query(key, opts);
-            }, key, opts);
+            }, key, JSON.stringify(opts));
 
             /*
             promise.then(function (value) {
-                if (opts.rule === 'debug' || opts.rule === 'clear') {
+                if (opts.rule === 'call-params') {
                     console.log(value);
-                } else {
-                    console.log(key + ' = ' + value);
                 }
             });
             */
