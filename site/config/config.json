@@ -115,7 +115,7 @@
   }
 , "slb": {
     "slb_code_url": "https://us-east.manta.joyent.com/dbqp/public/slbapi-1.tgz"
-  , "ssc_image": "df65f310-5c3e-11e3-be02-731ee9e7971d"
+  , "ssc_image": "7eec9dfc-5c59-11e3-a3e4-0b8030348bec"
   , "ssc_package": "g3-standard-1-kvm"
   , "ssc_datacenter": "us-west-1"
   , "ssc_protocol": "https"
