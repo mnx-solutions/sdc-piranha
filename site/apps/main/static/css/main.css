@@ -1299,7 +1299,6 @@ table.table {
 }
 .dpl-inline{
     display: inline-block !important;
-    width: 100%;
 }
 select {
     border-radius: 0;
