@@ -29,7 +29,11 @@ window.JP.main.provider('route', [
         Provider.prototype._matchParams = function (params, context) {
             var keys = params ? Object.keys(params) : [];
 
-            if (params) {
+            if (keys.length === 0 && /:(\w+)/ig.test(context.path)) {
+                return false;
+            }
+
+            if (keys.length > 0) {
                 var match = true;
 
                 for (var i = 0, c = keys.length; i < c; i++) {
