@@ -253,15 +253,15 @@
             };
 
             $scope.filterDatasets = function (item) {
+                if(!$scope.searchText) {
+                    return true;
+                }
                 var props = [ 'name', 'description' ];
-                for (var i = 0, c = props.length; i < c; i++) {
-                    var val = item[props[i]];
-                    if (val && val.match($scope.searchText)) {
+                return props.some(function (prop) {
+                    if(item[prop] && item[prop].toLowerCase().indexOf($scope.searchText.toLowerCase()) !== -1) {
                         return true;
                     }
-                }
-
-                return false;
+                });
             };
 
             $scope.filterDatasetsByOS = function (item) {
@@ -334,20 +334,27 @@
                     return false;
                 }
 
+                if(!$scope.searchPackages) {
+                    return true;
+                }
+                
                 var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
-                for (var i = 0, c = props.length; i < c; i++) {
-                    var val = item[props[i]];
-
-                    if (val && (typeof val === 'string')) {
-                        if (val.match($scope.searchPackages)) {
-                            return true;
+                return props.some(function (prop) {
+                    if(!item[prop]) {
+                        return false;
+                    }
+                    var val = item[prop];
+                    if(typeof val !== 'string') {
+                        if(typeof val === 'object') {
+                            val = JSON.stringify(val);
+                        } else {
+                            val += '';
                         }
-                    } else if (val === $scope.searchPackages) {
+                    }
+                    if (val.toLowerCase().indexOf($scope.searchPackages.toLowerCase()) !== -1) {
                         return true;
                     }
-                }
-
-                return false;
+                });
             };
 
             // Watch datacenter change
