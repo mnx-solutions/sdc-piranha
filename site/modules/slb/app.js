@@ -16,6 +16,14 @@ var slb = function execute(scope, app) {
             '</script>';
     }
 
+    function sendResponse(req, res, obj) {
+        if (res.headersSent) {
+            req.log.error('Cannot serve certificate upload status. Headers already sent');
+            return;
+        }
+        res.send(getUploadResult(req.query.callback, obj));
+    }
+
     // This is needed as source for upload target iframe
     app.get('/blank', function (req, res) {
         res.send('');
@@ -26,13 +34,13 @@ var slb = function execute(scope, app) {
         var callback = req.query.callback;
         if (!req.files || !req.files.certificate) {
             req.log.info('Certificate not found in request');
-            res.send(getUploadResult(callback, {success: false, message: 'Certificate not found'}));
+            sendResponse(req, res, {success: false, message: 'Certificate not found'});
             return;
         }
         fs.readFile(req.files.certificate.path, 'utf8', function (err, pemSrc) {
             if (err) {
                 req.log.info('Certificate not found in request, cannot read file');
-                res.send(getUploadResult(callback, {success: false, message: 'Certificate not found'}));
+                sendResponse(req, res, {success: false, message: 'Certificate not found'});
                 return;
             }
             try {
@@ -46,21 +54,21 @@ var slb = function execute(scope, app) {
                     client.post('/certificates', data, function (err, creq, cres, obj) {
                         if (err) {
                             req.log.warn({err: err}, 'Error saving certificate into SLB API');
-                            res.send(getUploadResult(callback, {success: false, message: 'Error saving certificate into SLB API'}));
+                            sendResponse(req, res, {success: false, message: 'Error saving certificate into SLB API'});
                             return;
                         }
                         obj.success = true;
-                        res.send(getUploadResult(callback, obj));
+                        sendResponse(req, res, obj);
                     });
                 });
             } catch (ex) {
                 if (ex.message.indexOf('bad password') !== -1 || ex.message.indexOf('bad decrypt') !== -1) {
                     req.log.info('Certificate has passphrase, asking user for it');
-                    res.send(getUploadResult(callback, {success: false, passphrase: true, message: 'Certificate has passphrase'}));
+                    sendResponse(req, res, {success: false, passphrase: true, message: 'Certificate has passphrase'});
                     return;
                 }
                 req.log.info({ex: ex}, 'Private key not found in PEM');
-                res.send(getUploadResult(callback, {success: false, message: 'Private key not found in PEM'}));
+                sendResponse(req, res, {success: false, message: 'Private key not found in PEM'});
             }
         });
     });
