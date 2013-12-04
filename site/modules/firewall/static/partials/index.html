@@ -2,21 +2,8 @@
 <div class="container">
 <data-notification></data-notification>
 <div class="row-fluid">
-    <div class="span9">
-        <h1>Firewall rules for {{datacenter}}<div data-ng-show="loading" class="loading-medium-after-h1"></div></h1>
-    </div>
-    <div class="span3" data-ng-show="!loading">
-        <div class="btn-group pull-right" style="margin-top:18px;">
-            <button class="btn" data-ng-show="datacenter">{{datacenter}}</button>
-            <button class="btn dropdown-toggle" data-toggle="dropdown">
-                <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">
-                <li data-ng-repeat="datacenter in datacenters">
-                    <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
-                </li>
-            </ul>
-        </div>
+    <div class="span12">
+        <h1>Firewall rules<div data-ng-show="loading" class="loading-medium-after-h1"></div></h1>
     </div>
 </div>
 <div class="row">
@@ -56,6 +43,12 @@
         <div class="controls">
             <span class="span10 margin-top-10">
                 <select data-ng-model="data.enabled" data-ng-options="status.value as status.title for (key, status) in states"></select>
+            </span>
+        </div>
+        <label class="control-label margin-top-10">Datacenter</label>
+        <div class="controls">
+            <span class="span10 margin-top-10">
+                <select data-ng-model="datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters"></select>
             </span>
         </div>
     </div>

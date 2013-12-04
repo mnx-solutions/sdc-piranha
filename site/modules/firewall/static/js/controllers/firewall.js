@@ -260,7 +260,14 @@
             }];
 
             $scope.setRules = function (rules) {
-	            $scope.rules = rules[$scope.datacenter];
+                var dcRules = [];
+                Object.keys(rules).forEach(function (datacenter) {
+                    rules[datacenter].forEach(function (rule) {
+                        rule.datacenter = datacenter;
+                        dcRules.push(rule);
+                    });
+                });
+	            $scope.rules = dcRules;
             };
 
             // get lists from services
@@ -272,13 +279,12 @@
                 $q.when($scope.rulesByDatacenter),
                 $q.when($scope.datacenters)
             ]).then(function(lists){
+                $scope.setRules(lists[1]);
+                console.log(lists[2]);
                 $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
 
                     if(dc) {
-
-                        $scope.setRules(lists[1]);
-
                         if(lists[0].length) {
                             extractVmInfo(lists[0]);
                         }
@@ -335,7 +341,7 @@
 
             $scope.useAllPorts = function() {
                 $scope.data.parsed.protocol.targets = ['all'];
-            }
+            };
 
             $scope.isAllPorts = function () {
                 var ports = $scope.data.parsed.protocol.targets;
@@ -343,7 +349,7 @@
                     return true;
                 }
                 return false;
-            }
+            };
 
             $scope.addPort = function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
@@ -475,7 +481,7 @@
                     if(r.id) {
                         $scope.refresh();
                     }
-                })
+                });
             };
 	        $scope.gridOrder = [];
 	        $scope.gridProps = [
@@ -529,6 +535,14 @@
 			        },
 			        sequence: 4
 		        },
+                {
+                    id: 'datacenter',
+                    name: 'Datacenter',
+                    getClass: function () {
+                        return 'span2 padding-5';
+                    },
+                    sequence: 5
+                },
 		        {
 			        id: 'delete',
 			        name: 'Delete',
