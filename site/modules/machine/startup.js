@@ -79,9 +79,11 @@ module.exports = function execute(scope) {
             }
 
             data = data.filter(function (el) {
-                // Don't show ELB images unless in dev mode
-                var lbaasTagged = el.tags && el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm');
-                return config.showLBaaSObjects || !lbaasTagged;
+                // Don't show SLB images unless in dev mode
+                var slbTagged = el.tags && ((el.tags.slb && (el.tags.slb === 'ssc' || el.tags.slb === 'stm'))
+                    // TODO: remove this after lbass be fully renamed
+                    || (el.tags.lbaas && (el.tags.lbaas === 'ssc' || el.tags.lbaas === 'stm')));
+                return config.showSLBObjects || !slbTagged;
             });
 
             data.forEach(function (img, i) {

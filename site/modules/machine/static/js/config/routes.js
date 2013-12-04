@@ -9,10 +9,10 @@ window.JP.main.config([
         }).when('/compute/instance/:machineid', {
             title: 'Instance Details',
             action: 'machine.details'
-        }).when('/compute/create/:imageid', {
+        }).when('/compute/create', {
             title: 'Create Instance',
             action: 'machine.provision'
-        }).when('/compute/create', {
+        }).when('/compute/create/:imageid', {
             title: 'Create Instance',
             action: 'machine.provision'
         }).when('/images', {

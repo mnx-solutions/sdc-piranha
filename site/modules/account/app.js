@@ -34,7 +34,8 @@ module.exports = function execute(scope, app) {
         res.json(data);
     });
 
-    app.get('/signup/:step', function(req, res) {
+    app.get('/setStep/:step', function(req, res) {
+        // This allows to skip signup, so only allowing it in test mode
         req.session.allowSignup = true;
         res.redirect('/signup/#!/'+ req.params.step);
     });
