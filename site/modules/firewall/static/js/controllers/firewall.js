@@ -11,8 +11,9 @@
         'rule',
         '$q',
         'Machine',
+        'util',
 
-        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine) {
+        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine, util) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -453,10 +454,24 @@
 
             };
             $scope.deleteRule = function(r) {
-                $scope.loading = true;
-                rule.deleteRule(r).then(function(){
-                    $scope.refresh();
-                });
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete firewall rule'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Delete current firewall rule'
+                    ), function () {
+
+                        // Redirect if complete
+                        $scope.loading = true;
+                        rule.deleteRule(r).then(function(){
+                            $scope.refresh();
+                        });
+                    });
             };
 
             $scope.changeStatus = function(r) {
