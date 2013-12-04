@@ -177,43 +177,47 @@ var slb = function execute(scope) {
     }
 
     function addSscKey(call, key, callback) {
-        var slbmKey = {name: call.req.session.userName + '_ssc_public_key', key: key};
-        key = {name: 'ssc_public_key', key: key};
+        call.cloud.deleteKey({name: 'ssc_public_key'}, function () {
+            call.cloud.createKey({name: 'ssc_public_key', key: key}, callback);
+        });
 
-        var pool = [
-            function (cb) {
-                call.cloud.getAccount('slb_meterings', function (err, account) {
-                    if (err && err.statusCode === 404) {
-                        call.req.log.error('User "slb_meterings" not found\nCan`t add public key');
-                        return cb(null);
-                    }
-                    call.cloud.listKeys(account.id, function (err, keys) {
-                        if (err) {return cb(err); }
-                        var neededKey = Array.isArray(keys) && keys.filter(function (key) {
-                            return key.name === slbmKey.name;
-                        })[0];
-                        if (!neededKey) {
-                            call.cloud.createKey(account.id, slbmKey, function (err) {
-                                console.log(arguments, slbmKey);
-                                cb(err);
-                            });
-                        } else {
-                            call.cloud.deleteKey(account.id, neededKey.id, function () {
-                                call.cloud.createKey(account.id, slbmKey, function (err) {
-                                    cb(err);
-                                });
-                            });
-                        }
-                    });
-                });
-            },
-            function (cb) {
-                call.cloud.deleteKey(key, function () {
-                    call.cloud.createKey(key, cb);
-                });
-            }
-        ];
-        vasync.parallel({funcs: pool}, callback);
+//        var slbmKey = {name: call.req.session.userName + '_ssc_public_key', key: key};
+//        key = {name: 'ssc_public_key', key: key};
+//
+//        var pool = [
+//            function (cb) {
+//                call.cloud.getAccount('slb_meterings', function (err, account) {
+//                    if (err && err.statusCode === 404) {
+//                        call.req.log.error('User "slb_meterings" not found\nCan`t add public key');
+//                        return cb(null);
+//                    }
+//                    call.cloud.listKeys(account.id, function (err, keys) {
+//                        if (err) {return cb(err); }
+//                        var neededKey = Array.isArray(keys) && keys.filter(function (key) {
+//                            return key.name === slbmKey.name;
+//                        })[0];
+//                        if (!neededKey) {
+//                            call.cloud.createKey(account.id, slbmKey, function (err) {
+//                                console.log(arguments, slbmKey);
+//                                cb(err);
+//                            });
+//                        } else {
+//                            call.cloud.deleteKey(account.id, neededKey.id, function () {
+//                                call.cloud.createKey(account.id, slbmKey, function (err) {
+//                                    cb(err);
+//                                });
+//                            });
+//                        }
+//                    });
+//                });
+//            },
+//            function (cb) {
+//                call.cloud.deleteKey(key, function () {
+//                    call.cloud.createKey(key, cb);
+//                });
+//            }
+//        ];
+//        vasync.parallel({funcs: pool}, callback);
     }
 
     function removeSscConfig(data, callback) {
