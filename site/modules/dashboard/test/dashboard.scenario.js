@@ -31,7 +31,7 @@ describe('Dashboard', function () {
 
     it('should redirect to instance provisioning page', function () {
         ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/p/a')).click();
-        expect(ptor.getCurrentUrl()).toContain('#!/compute/create/');
+        expect(ptor.getCurrentUrl()).toContain('#!/compute/create');
     });
 
     it('should redirect to instances list page', function () {
