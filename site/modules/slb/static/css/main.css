@@ -13,8 +13,8 @@
 }
 .load-balancers{
     float: right;
-    /*margin-top: -65px;*/
-    margin-right: 18px;
+    margin-top: 10px;
+    margin-right: 80px;
 }
 
 .load-balancers select {
@@ -408,4 +408,9 @@ legend {
 .table > thead th {
     height: 28px;
 }
-
+.agreement-pos{
+    display: inline-block;
+    width: 900px;
+    vertical-align: top;
+    margin-top: 6px;
+}

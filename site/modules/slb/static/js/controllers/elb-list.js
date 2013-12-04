@@ -34,7 +34,7 @@
                 });
 
                 $scope.createNew = function createNew() {
-                    $location.path('/elb/edit/');
+                    $location.path('/slb/edit/');
                 };
             }]
     );

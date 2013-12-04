@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container container-elb">
     <ul class="breadcrumb">
         <li class="ng-scope active">
             <span class="ng-binding" data-translate>Load Balancers</span>
@@ -7,7 +7,7 @@
     <div data-notification></div>
     <h4 data-ng-show="creating">Go get a coffee. Joyent Simple Load Balancing will be ready when you return.</h4>
     <div class="loading-large" data-ng-show="!loaded || creating"></div>
-    <div class="span12" data-ng-show="loaded && !creating" style="margin-left: 10px">
+    <div class="" data-ng-show="loaded && !creating">
         <h3 data-translate>Joyent Simple Load Balancer Powered by Riverbed</h3>
 
         <div data-ng-include="'slb/static/templates/eula.html'"></div>
@@ -19,9 +19,13 @@
                                 </span>
                 </div>
             </label>
-            <span data-translate>I accept the terms of the end user license agreement above. I acknowledge I will be charged
+            <div class="agreement-pos">
+                <span data-translate>I accept the terms of the end user license agreement above. I acknowledge I will be charged
                 for Joyent Simple Load Balancer (SLB) while it is enabled. Infrastructure is provisioned until SLB is disabled,
-                even if no load balancers are active.</span>
+                even if no load balancers are active.
+            </span>
+            </div>
+
             <span class="load-balancers">
             <button data-ng-click="enableSlb()" data-ng-disabled="!licenseAcceptCheck"
                     class="btn light btn-medium"><span class="ng-scope" data-translate>Enable Load Balancer</span>

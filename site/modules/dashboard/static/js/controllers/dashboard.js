@@ -15,19 +15,18 @@
         'BillingService',
         '$http',
         '$cookies',
-        'notification',
-        'elb.Service',
+        'slb.Service',
 
-        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, notification, elbService) {
+        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, slbService) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
             // populate all datasources
             $scope.account     = Account.getAccount();
-            $scope.balancers = elbService.getBalancers();
-            elbService.getController().then(function (isEnabled) {
-                $scope.elbEnabled = isEnabled;
+            $scope.balancers = slbService.getBalancers();
+            slbService.getController().then(function (isEnabled) {
+                $scope.slbEnabled = isEnabled;
             });
 
 //                $scope.forums      = Zendesk.getForumsList();
