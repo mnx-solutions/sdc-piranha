@@ -27,10 +27,10 @@
             var MAX_IN_DROPDOWN = 3; // maximum Vms and Tags in default dropdown
 
             function query(options){
-
                 var results = [];
-                if(options.term === '') {
 
+
+                if(options.term === '') {
                     results = ng.copy($scope.dropdown);
 
                     if(results[1].children.length > MAX_IN_DROPDOWN) {
@@ -39,7 +39,6 @@
                     if(results[2].children.length > MAX_IN_DROPDOWN) {
                         results[2].children.splice(MAX_IN_DROPDOWN);
                     }
-
                 } else {
                     var vms = $scope.vms.filter(function(vm){
                         return (vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1);
@@ -66,7 +65,7 @@
             function extractVmInfo(machines) {
                 for(var m in machines) {
                     var machine = machines[m];
-                    if(ng.isObject(machine)) {
+                    if(ng.isObject(machine) && machine.compute_node) {
 
                         if(Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
@@ -92,6 +91,8 @@
                         });
                     }
                 }
+
+                $scope.loading = false;
 
             }
 
@@ -278,22 +279,27 @@
             };
 
             // get lists from services
+            $scope.loading = true;
             $scope.rules = [];
             $scope.machines = Machine.machine();
             $scope.notAffectedMachines = [];
             $scope.rulesByDatacenter = rule.rule();
+
             $q.all([
                 $q.when($scope.machines),
                 $q.when($scope.rulesByDatacenter),
                 $q.when($scope.datacenters)
             ]).then(function(lists){
                 $scope.setRules(lists[1]);
+
                 $scope.$watch('machines.final', function(isFinal) {
-                    if(isFinal) {
+                    if (isFinal) {
+                        extractVmInfo($scope.machines);
+
                         Object.keys($scope.machines).forEach(function(index) {
                             var m = $scope.machines[index];
 
-                            if(m.id && !m.cn_uuid) {
+                            if(m.id && !m.compute_node) {
                                 $scope.notAffectedMachines.push(m);
                             }
                         })
@@ -302,11 +308,7 @@
 
                 $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
-
                     if(dc) {
-                        if(lists[0].length) {
-                            extractVmInfo(lists[0]);
-                        }
                         $scope.resetCurrent();
                         $scope.resetData();
                         $scope.loading = false;
