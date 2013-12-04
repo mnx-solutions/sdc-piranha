@@ -6,7 +6,6 @@ var ursa = require('ursa');
 var manta = require('manta');
 var vasync = require('vasync');
 var ssc = require('./ssc-client');
-var sdcClients = require('sdc-clients');
 var getSscMachine = ssc.getSscMachine;
 var getSscClient = ssc.getSscClient;
 
@@ -15,8 +14,6 @@ var slb = function execute(scope) {
     var server = scope.api('Server');
     var machine = scope.api('Machine');
     var Metadata = scope.api('Metadata');
-
-    var capi = new sdcClients.CAPI(config.capishim);
 
     var hardControllerName = 'slb-ssc';
 
