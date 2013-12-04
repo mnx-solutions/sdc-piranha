@@ -49,3 +49,7 @@ input.ng-invalid, input.ng-pristine {
 .btn-minier {
     padding: 0 4px !important;
 }
+
+.ff-form-actions {
+    margin-bottom: 20px;
+}

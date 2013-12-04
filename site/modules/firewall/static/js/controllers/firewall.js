@@ -18,6 +18,12 @@
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
 
+            $scope.openRuleForm = false;
+
+            $scope.toggleOpenRuleForm = function () {
+                $scope.openRuleForm = !$scope.openRuleForm;
+            };
+
             var MAX_IN_DROPDOWN = 3; // maximum Vms and Tags in default dropdown
 
             function query(options){
@@ -453,6 +459,19 @@
                 });
 
             };
+
+            $scope.createRule = function() {
+                $scope.loading = true;
+                rule.createRule($scope.getData()).then(function(r){
+                    if(r.id) {
+                        $scope.refresh();
+                    }
+                });
+            };
+
+            $scope.saveRule = function () {
+                return ($scope.data.uuid ? $scope.updateRule : $scope.createRule)();
+            };
             $scope.deleteRule = function(r) {
                 util.confirm(
                     localization.translate(
@@ -490,14 +509,7 @@
                     $scope.loading = false;
                 });
             };
-            $scope.createRule = function() {
-                $scope.loading = true;
-                rule.createRule($scope.getData()).then(function(r){
-                    if(r.id) {
-                        $scope.refresh();
-                    }
-                });
-            };
+
 	        $scope.gridOrder = [];
 	        $scope.gridProps = [
 		        {
@@ -594,6 +606,7 @@
 				        },
 				        action: function (object) {
 					        $scope.data = rule.cleanRule(object);
+                            $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
 			        }
