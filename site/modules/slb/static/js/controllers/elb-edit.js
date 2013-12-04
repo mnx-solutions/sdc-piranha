@@ -159,7 +159,8 @@
                             $scope.saving = true;
                             service.deleteBalancer($scope.balancerId).then(function () {
                                 $location.path('/slb/list');
-                            }, function () {
+                            }, function (err) {
+                                notification.replace('slb', { type: 'error' }, err);
                                 $scope.saving = false;
                             });
                         }

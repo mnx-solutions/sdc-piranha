@@ -19,7 +19,7 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                               ' {{item.title}}' +
                           '</span>' +
                         '</li>' +
-						'<li class="pull-right" data-ng-show="!hideCreateInstance"><a class="add-machine" href="#!/compute/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>' +
+                        '<li class="pull-right" data-ng-show="!hideCreateInstance"><i class="icon-plus-sign"></i>&nbsp;<a class="add-machine" href="#!/compute/create">Create Instance</a></li>' +
                       '</ul>',
 
             controller: function ($scope, $routeParams, $attrs, route, localization) {
