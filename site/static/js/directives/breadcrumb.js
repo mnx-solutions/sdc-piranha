@@ -19,11 +19,14 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                               ' {{item.title}}' +
                           '</span>' +
                         '</li>' +
-						'<li class="pull-right"><a class="add-machine" href="#!/compute/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>' +
+						'<li class="pull-right" data-ng-show="!hideCreateInstance"><a class="add-machine" href="#!/compute/create">Create Instance</a>&nbsp;&nbsp;<i class="icon-plus-sign"></i></li>' +
                       '</ul>',
 
-            controller: function ($scope, $routeParams, route, localization) {
+            controller: function ($scope, $routeParams, $attrs, route, localization) {
+                console.log('ATTRIBUTES', $attrs);
                 localization.bind('dashboard', $scope);
+
+                $scope.hideCreateInstance = ($attrs.hideCreateInstance || false);
 
                 function updateItems() {
                     $scope.navigationPath = route.resolveNavigation($routeParams);

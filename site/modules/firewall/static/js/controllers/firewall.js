@@ -280,6 +280,7 @@
             // get lists from services
             $scope.rules = [];
             $scope.machines = Machine.machine();
+            $scope.notAffectedMachines = [];
             $scope.rulesByDatacenter = rule.rule();
             $q.all([
                 $q.when($scope.machines),
@@ -287,7 +288,18 @@
                 $q.when($scope.datacenters)
             ]).then(function(lists){
                 $scope.setRules(lists[1]);
-                console.log(lists[2]);
+                $scope.$watch('machines.final', function(isFinal) {
+                    if(isFinal) {
+                        Object.keys($scope.machines).forEach(function(index) {
+                            var m = $scope.machines[index];
+
+                            if(m.id && !m.cn_uuid) {
+                                $scope.notAffectedMachines.push(m);
+                            }
+                        })
+                    }
+                });
+
                 $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
 
