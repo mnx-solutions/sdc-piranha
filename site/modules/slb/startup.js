@@ -185,25 +185,24 @@ var slb = function execute(scope) {
 
         var pool = [
             function (cb) {
-                capi.getAccountByName('slb_meterings', function (err, account) {
-                    if (err && err.httpCode === 404) {
+                call.cloud.getAccount('slb_meterings', function (err, account) {
+                    if (err && err.statusCode === 404) {
                         call.req.log.error('User "slb_meterings" not found\nCan`t add public key');
                         return cb(null);
                     }
-                    if (err) {return cb(err); }
-                    capi.listKeys(account.customer_uuid, function (err, keys) {
+                    call.cloud.listKeys(account.id, function (err, keys) {
                         if (err) {return cb(err); }
                         var neededKey = Array.isArray(keys) && keys.filter(function (key) {
                             return key.name === slbmKey.name;
                         })[0];
                         if (!neededKey) {
-                            capi.createKey(account.customer_uuid, slbmKey, function (err) {
+                            call.cloud.createKey(account.id, slbmKey, function (err) {
                                 console.log(arguments, slbmKey);
                                 cb(err);
                             });
                         } else {
-                            capi.deleteKey(account.customer_uuid, neededKey.id, function () {
-                                capi.createKey(account.customer_uuid, slbmKey, function (err) {
+                            call.cloud.deleteKey(account.id, neededKey.id, function () {
+                                call.cloud.createKey(account.id, slbmKey, function (err) {
                                     cb(err);
                                 });
                             });
