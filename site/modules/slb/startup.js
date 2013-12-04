@@ -4,7 +4,9 @@ var assert = require('assert');
 var config = require('easy-config');
 var ursa = require('ursa');
 var manta = require('manta');
+var vasync = require('vasync');
 var ssc = require('./ssc-client');
+var sdcClients = require('sdc-clients');
 var getSscMachine = ssc.getSscMachine;
 var getSscClient = ssc.getSscClient;
 
@@ -13,6 +15,8 @@ var slb = function execute(scope) {
     var server = scope.api('Server');
     var machine = scope.api('Machine');
     var Metadata = scope.api('Metadata');
+
+    var capi = new sdcClients.CAPI(config.capishim);
 
     var hardControllerName = 'slb-ssc';
 
@@ -176,10 +180,44 @@ var slb = function execute(scope) {
     }
 
     function addSscKey(call, key, callback) {
-        call.cloud.deleteKey({name: 'ssc_public_key'}, function () {
-            call.cloud.createKey({name: 'ssc_public_key', key: key}, callback);
-        });
+        var slbmKey = {name: call.req.session.userName + '_ssc_public_key', key: key};
+        key = {name: 'ssc_public_key', key: key};
 
+        var pool = [
+            function (cb) {
+                capi.getAccountByName('slb_meterings', function (err, account) {
+                    if (err && err.httpCode === 404) {
+                        call.req.log.error('User "slb_meterings" not found\nCan`t add public key');
+                        return cb(null);
+                    }
+                    if (err) {return cb(err); }
+                    capi.listKeys(account.customer_uuid, function (err, keys) {
+                        if (err) {return cb(err); }
+                        var neededKey = Array.isArray(keys) && keys.filter(function (key) {
+                            return key.name === slbmKey.name;
+                        })[0];
+                        if (!neededKey) {
+                            capi.createKey(account.customer_uuid, slbmKey, function (err) {
+                                console.log(arguments, slbmKey);
+                                cb(err);
+                            });
+                        } else {
+                            capi.deleteKey(account.customer_uuid, neededKey.id, function () {
+                                capi.createKey(account.customer_uuid, slbmKey, function (err) {
+                                    cb(err);
+                                });
+                            });
+                        }
+                    });
+                });
+            },
+            function (cb) {
+                call.cloud.deleteKey(key, function () {
+                    call.cloud.createKey(key, cb);
+                });
+            }
+        ];
+        vasync.parallel({funcs: pool}, callback);
     }
 
     function removeSscConfig(data, callback) {
