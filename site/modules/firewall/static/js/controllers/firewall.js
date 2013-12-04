@@ -11,11 +11,18 @@
         'rule',
         '$q',
         'Machine',
+        'util',
 
-        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine) {
+        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine, util) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
+
+            $scope.openRuleForm = false;
+
+            $scope.toggleOpenRuleForm = function () {
+                $scope.openRuleForm = !$scope.openRuleForm;
+            };
 
             var MAX_IN_DROPDOWN = 3; // maximum Vms and Tags in default dropdown
 
@@ -260,7 +267,14 @@
             }];
 
             $scope.setRules = function (rules) {
-	            $scope.rules = rules[$scope.datacenter];
+                var dcRules = [];
+                Object.keys(rules).forEach(function (datacenter) {
+                    rules[datacenter].forEach(function (rule) {
+                        rule.datacenter = datacenter;
+                        dcRules.push(rule);
+                    });
+                });
+	            $scope.rules = dcRules;
             };
 
             // get lists from services
@@ -273,6 +287,7 @@
                 $q.when($scope.rulesByDatacenter),
                 $q.when($scope.datacenters)
             ]).then(function(lists){
+                $scope.setRules(lists[1]);
                 $scope.$watch('machines.final', function(isFinal) {
                     if(isFinal) {
                         Object.keys($scope.machines).forEach(function(index) {
@@ -289,9 +304,6 @@
                 $scope.$watch('datacenter', function(dc){
 
                     if(dc) {
-
-                        $scope.setRules(lists[1]);
-
                         if(lists[0].length) {
                             extractVmInfo(lists[0]);
                         }
@@ -348,7 +360,7 @@
 
             $scope.useAllPorts = function() {
                 $scope.data.parsed.protocol.targets = ['all'];
-            }
+            };
 
             $scope.isAllPorts = function () {
                 var ports = $scope.data.parsed.protocol.targets;
@@ -356,7 +368,7 @@
                     return true;
                 }
                 return false;
-            }
+            };
 
             $scope.addPort = function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
@@ -459,11 +471,38 @@
                 });
 
             };
-            $scope.deleteRule = function(r) {
+
+            $scope.createRule = function() {
                 $scope.loading = true;
-                rule.deleteRule(r).then(function(){
-                    $scope.refresh();
+                rule.createRule($scope.getData()).then(function(r){
+                    if(r.id) {
+                        $scope.refresh();
+                    }
                 });
+            };
+
+            $scope.saveRule = function () {
+                return ($scope.data.uuid ? $scope.updateRule : $scope.createRule)();
+            };
+            $scope.deleteRule = function(r) {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete firewall rule'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Delete current firewall rule'
+                    ), function () {
+
+                        // Redirect if complete
+                        $scope.loading = true;
+                        rule.deleteRule(r).then(function(){
+                            $scope.refresh();
+                        });
+                    });
             };
 
             $scope.changeStatus = function(r) {
@@ -482,14 +521,7 @@
                     $scope.loading = false;
                 });
             };
-            $scope.createRule = function() {
-                $scope.loading = true;
-                rule.createRule($scope.getData()).then(function(r){
-                    if(r.id) {
-                        $scope.refresh();
-                    }
-                })
-            };
+
 	        $scope.gridOrder = [];
 	        $scope.gridProps = [
 		        {
@@ -542,6 +574,14 @@
 			        },
 			        sequence: 4
 		        },
+                {
+                    id: 'datacenter',
+                    name: 'Datacenter',
+                    getClass: function () {
+                        return 'span2 padding-5';
+                    },
+                    sequence: 5
+                },
 		        {
 			        id: 'delete',
 			        name: 'Delete',
@@ -578,6 +618,7 @@
 				        },
 				        action: function (object) {
 					        $scope.data = rule.cleanRule(object);
+                            $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
 			        }
