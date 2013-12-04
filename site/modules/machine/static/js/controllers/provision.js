@@ -334,6 +334,10 @@
                     return false;
                 }
 
+                if(!$scope.searchPackages) {
+                    return true;
+                }
+                
                 var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
                 return props.some(function (prop) {
                     if(!item[prop]) {
