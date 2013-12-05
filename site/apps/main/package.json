@@ -22,8 +22,12 @@
             "timeout",
             "feature-flags",
 			"maxmind",
+<<<<<<< HEAD
             "slb",
             "dialog"
+=======
+            "slb"
+>>>>>>> 61ebec09b0efea4b11a8165bcb6527d02c2d8b83
         ],
 		"auth": true,
         "error": true,

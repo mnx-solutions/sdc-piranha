@@ -47,8 +47,8 @@ var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
 
 var sscClientsCache = {};
 
-exports.getSscClient = function (call, sscCallback) {
-    function getSlbApiKey(keyCall, keyCallback) {
+exports.getSscClient = function (call, callback) {
+    function getSlbApiKey(call, callback) {
         var result = {};
         vasync.parallel({
             funcs: [
@@ -122,7 +122,8 @@ exports.getSscClient = function (call, sscCallback) {
                     key: result.privateKey,
                     keyId: result.fingerprint
                 });
-            }
+            },
+            timeout: 5 * 60 * 1000
         });
         sscClientsCache[call.req.session.userId] = sscClient;
         checkSscClient(sscClient, sscCallback);

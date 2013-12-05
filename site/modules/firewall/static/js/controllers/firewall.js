@@ -11,19 +11,26 @@
         'rule',
         '$q',
         'Machine',
+        'util',
 
-        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine) {
+        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine, util) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
 
+            $scope.openRuleForm = false;
+
+            $scope.toggleOpenRuleForm = function () {
+                $scope.openRuleForm = !$scope.openRuleForm;
+            };
+
             var MAX_IN_DROPDOWN = 3; // maximum Vms and Tags in default dropdown
 
             function query(options){
-
                 var results = [];
-                if(options.term === '') {
 
+
+                if(options.term === '') {
                     results = ng.copy($scope.dropdown);
 
                     if(results[1].children.length > MAX_IN_DROPDOWN) {
@@ -32,7 +39,6 @@
                     if(results[2].children.length > MAX_IN_DROPDOWN) {
                         results[2].children.splice(MAX_IN_DROPDOWN);
                     }
-
                 } else {
                     var vms = $scope.vms.filter(function(vm){
                         return (vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1);
@@ -59,7 +65,7 @@
             function extractVmInfo(machines) {
                 for(var m in machines) {
                     var machine = machines[m];
-                    if(ng.isObject(machine)) {
+                    if(ng.isObject(machine) && machine.compute_node) {
 
                         if(Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
@@ -85,6 +91,8 @@
                         });
                     }
                 }
+
+                $scope.loading = false;
 
             }
 
@@ -260,28 +268,47 @@
             }];
 
             $scope.setRules = function (rules) {
-	            $scope.rules = rules[$scope.datacenter];
+                var dcRules = [];
+                Object.keys(rules).forEach(function (datacenter) {
+                    rules[datacenter].forEach(function (rule) {
+                        rule.datacenter = datacenter;
+                        dcRules.push(rule);
+                    });
+                });
+	            $scope.rules = dcRules;
             };
 
             // get lists from services
+            $scope.loading = true;
             $scope.rules = [];
             $scope.machines = Machine.machine();
+            $scope.notAffectedMachines = [];
             $scope.rulesByDatacenter = rule.rule();
+
             $q.all([
                 $q.when($scope.machines),
                 $q.when($scope.rulesByDatacenter),
                 $q.when($scope.datacenters)
             ]).then(function(lists){
+                $scope.setRules(lists[1]);
+
+                $scope.$watch('machines.final', function(isFinal) {
+                    if (isFinal) {
+                        extractVmInfo($scope.machines);
+
+                        Object.keys($scope.machines).forEach(function(index) {
+                            var m = $scope.machines[index];
+
+                            if(m.id && !m.compute_node) {
+                                $scope.notAffectedMachines.push(m);
+                            }
+                        })
+                    }
+                });
+
                 $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
-
                     if(dc) {
-
-                        $scope.setRules(lists[1]);
-
-                        if(lists[0].length) {
-                            extractVmInfo(lists[0]);
-                        }
                         $scope.resetCurrent();
                         $scope.resetData();
                         $scope.loading = false;
@@ -335,7 +362,7 @@
 
             $scope.useAllPorts = function() {
                 $scope.data.parsed.protocol.targets = ['all'];
-            }
+            };
 
             $scope.isAllPorts = function () {
                 var ports = $scope.data.parsed.protocol.targets;
@@ -343,7 +370,7 @@
                     return true;
                 }
                 return false;
-            }
+            };
 
             $scope.addPort = function() {
                 $scope.data.parsed.protocol.targets.push($scope.current.port);
@@ -446,11 +473,38 @@
                 });
 
             };
-            $scope.deleteRule = function(r) {
+
+            $scope.createRule = function() {
                 $scope.loading = true;
-                rule.deleteRule(r).then(function(){
-                    $scope.refresh();
+                rule.createRule($scope.getData()).then(function(r){
+                    if(r.id) {
+                        $scope.refresh();
+                    }
                 });
+            };
+
+            $scope.saveRule = function () {
+                return ($scope.data.uuid ? $scope.updateRule : $scope.createRule)();
+            };
+            $scope.deleteRule = function(r) {
+                util.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: Delete firewall rule'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Delete current firewall rule'
+                    ), function () {
+
+                        // Redirect if complete
+                        $scope.loading = true;
+                        rule.deleteRule(r).then(function(){
+                            $scope.refresh();
+                        });
+                    });
             };
 
             $scope.changeStatus = function(r) {
@@ -469,14 +523,7 @@
                     $scope.loading = false;
                 });
             };
-            $scope.createRule = function() {
-                $scope.loading = true;
-                rule.createRule($scope.getData()).then(function(r){
-                    if(r.id) {
-                        $scope.refresh();
-                    }
-                })
-            };
+
 	        $scope.gridOrder = [];
 	        $scope.gridProps = [
 		        {
@@ -530,8 +577,34 @@
 			        _getter: function (object) {
 				        return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
 			        },
-			        sequence: 4,
-                    active: true
+			        sequence: 4
+		        },
+                {
+                    id: 'datacenter',
+                    name: 'Datacenter',
+                    getClass: function () {
+                        return 'span2 padding-5';
+                    },
+                    sequence: 5
+                },
+		        {
+			        id: 'delete',
+			        name: 'Delete',
+			        type: 'button',
+			        getClass: function () {
+				        return 'pull-right span1 padding-5';
+			        },
+			        btn: {
+				        label: 'Delete',
+				        getClass: function (object) {
+					        return 'btn-mini btn-danger';
+				        },
+				        disabled: function () {
+					        return $scope.loading;
+				        },
+				        action: $scope.deleteRule.bind($scope),
+				        tooltip: 'Delete the rule'
+			        }
 		        },
                 {
                     id: 'enabled',
@@ -573,33 +646,13 @@
 				        },
 				        action: function (object) {
 					        $scope.data = rule.cleanRule(object);
+                            $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
 			        },
                     sequence: 6,
                     active: true
-		        },
-                {
-                    id: 'delete',
-                    name: 'Delete',
-                    type: 'button',
-                    getClass: function () {
-                        return 'pull-right';
-                    },
-                    btn: {
-                        label: 'Delete',
-                        getClass: function (object) {
-                            return 'btn-danger';
-                        },
-                        disabled: function () {
-                            return $scope.loading;
-                        },
-                        action: $scope.deleteRule.bind($scope),
-                        tooltip: 'Delete the rule'
-                    },
-                    sequence: 7,
-                    active: true
-                }
+		        }
 	        ];
 
         }

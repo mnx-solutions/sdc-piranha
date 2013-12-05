@@ -14,6 +14,10 @@ input.ng-invalid, input.ng-pristine {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #D59392;
 }
 
+.notice-block {
+    margin-bottom: 15px;
+}
+
 .margin-top-10 {
     margin-top: 10px;
 }
@@ -319,4 +323,11 @@ input.ng-invalid, input.ng-pristine {
 .btn-danger{
     color: #000000;
     background-color: red;
+}
+.btn-minier {
+    padding: 0 4px !important;
+}
+
+.ff-form-actions {
+    margin-bottom: 20px;
 }
