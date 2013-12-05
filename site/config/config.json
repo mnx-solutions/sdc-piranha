@@ -91,6 +91,11 @@
 , "marketo": {
     "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
   , "accountId": ""
+  , "soap": {
+        "endpoint": ""
+      , "clientId": ""
+      , "secret": ""
+    }
   }
 , "polling": {
     "machineTags": 5000
