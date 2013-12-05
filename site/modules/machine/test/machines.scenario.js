@@ -51,10 +51,24 @@ describe('Instances page', function () {
                 }
             })
         ])
+        .call('MachineDelete', [
+            utils.extend(utils.clone(instance), {
+                state: 'deleted'
+            })
+        ])
         .call('MachineReboot', [
             utils.extend(utils.clone(instance), {
                 state: 'running'
             })
+        ])
+        .call('MachineResize', [
+            [
+                {
+                    step: {
+                        state: 'resizing'
+                    }
+                }
+            ]
         ]);
 
     beforeEach(function() {
@@ -141,44 +155,13 @@ describe('Instances page', function () {
         expect(ptor.getCurrentUrl()).toContain(computeUrl);
     });
 
-    it('should able to stop instance', function () {
-        var stopButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
-
+    it('should able to start instance', function () {
         ptor.wait(function () {
             return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
                 return !isPending;
             });
         }, 10000);
 
-        stopButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
-            });
-
-        stopButton.click();
-
-        // Confirmation
-        var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
-
-        confirmationButton
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
-        confirmationButton.click();
-
-        stopButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeFalsy();
-            });
-    });
-
-    it('should able to start instance', function () {
         var startButton = ptor.findElement(
             protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
 
@@ -207,6 +190,8 @@ describe('Instances page', function () {
             .then(function (enabled) {
                 expect(enabled).toBeFalsy();
             });
+
+        expect(backend.track(ptor).call('MachineStart').calledOnce()).toBeTruthy();
     });
 
     it('should able to restart instance', function () {
@@ -238,10 +223,11 @@ describe('Instances page', function () {
             .then(function (enabled) {
                 expect(enabled).toBeTruthy();
             });
+
+        expect(backend.track(ptor).call('MachineReboot').calledOnce()).toBeTruthy();
     });
 
-    // FIXME: Duplicate code
-    it('should able to stop instance (second pass)', function () {
+    it('should able to stop instance', function () {
         var stopButton = ptor.findElement(
             protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
 
@@ -296,5 +282,19 @@ describe('Instances page', function () {
 
         backend.data('machines')[3].machines.splice(0, 1); // Remove data
         confirmationButton.click();
+
+        expect(backend.track(ptor).call('MachineDelete').calledOnce()).toBeTruthy();
+    });
+
+    it('should remove deleted instance from the instances list', function () {
+        ptor.get('#!/compute');
+        expect(ptor.getCurrentUrl()).toContain('#!/compute');
+
+        ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
+            expect(_instances).not.toBeNull();
+            expect(_instances.length).toEqual(1);
+
+            instances = _instances;
+        });
     });
 });
