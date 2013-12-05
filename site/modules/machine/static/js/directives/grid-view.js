@@ -95,7 +95,7 @@
 
                     var needle = $scope.filterAll.toLowerCase();
 
-                    return (subject.indexOf(needle) !== -1);
+                    return (subject.toLowerCase().indexOf(needle) !== -1);
                 });
             }
 
