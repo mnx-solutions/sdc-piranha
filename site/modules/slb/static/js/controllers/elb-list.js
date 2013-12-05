@@ -3,8 +3,11 @@
 (function (app) {
     app.controller(
         'slb.ListController',
-        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location', 'notification',
-                function ($scope, requestContext, localization, service, $location, notification) {
+        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location',
+            'notification', 'util',
+                function ($scope, requestContext, localization, service,
+                    $location, notification, util) {
+
                 $scope.listLoaded = false;
                 localization.bind('slb', $scope);
                 requestContext.setUpRenderContext('slb.list', $scope, {
@@ -12,12 +15,24 @@
                 });
 
                 $scope.disableLb = function () {
-                    $scope.listLoaded = false;
-                    service.deleteController().then(function () {
-                        $location.path('/slb');
-                    }, function (err) {
-                        $scope.listLoaded = true;
-                    });
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Uninstall Load Balancer'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'All load balancers will be deleted. This cannot be undone.'
+                        ), function () {
+                            $scope.listLoaded = false;
+                            service.deleteController().then(function () {
+                                $location.path('/slb');
+                            }, function () {
+                                $scope.listLoaded = true;
+                            });
+                        });
                 };
 
                 $scope.servers = [];
