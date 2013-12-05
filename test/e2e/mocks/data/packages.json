@@ -1,5 +1,21 @@
 [
     {
+        "name":"g3-standard-1.75-kvm",
+        "memory":1792,
+        "disk":57344,
+        "swap":3584,
+        "vcpus":"1",
+        "default":"false",
+        "id":"8e5b81e1-e62f-4b3b-b06e-9a7d473ca1da",
+        "version":"1.0.0",
+        "description":"Standard 1.7 GB RAM 1 vCPUs 56 GB Disk",
+        "group":"Standard",
+        "short_name":"Standard 1.75",
+        "type":"kvm",
+        "price":"0.056",
+        "price_month":"40.88"
+    },
+    {
         "name":"g3-standard-4-kvm",
         "memory":4096,
         "disk":134144,
@@ -46,22 +62,6 @@
         "type":"kvm",
         "price":"0.064",
         "price_month":"46.72"
-    },
-    {
-        "name":"g3-standard-1.75-kvm",
-        "memory":1792,
-        "disk":57344,
-        "swap":3584,
-        "vcpus":"1",
-        "default":"false",
-        "id":"8e5b81e1-e62f-4b3b-b06e-9a7d473ca1da",
-        "version":"1.0.0",
-        "description":"Standard 1.7 GB RAM 1 vCPUs 56 GB Disk",
-        "group":"Standard",
-        "short_name":"Standard 1.75",
-        "type":"kvm",
-        "price":"0.056",
-        "price_month":"40.88"
     },
     {
         "name":"g3-standard-1-kvm",
