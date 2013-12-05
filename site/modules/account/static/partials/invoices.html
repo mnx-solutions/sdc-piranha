@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                     <tr data-ng-repeat="invoice in invoices | hideNotPosted | orderBy:invoice.invoiceDate">
-                        <td>{{invoice.invoiceDate | date:'MMMM, yyyy'}}</td>
+                        <td>{{invoice.invoiceDate | date:'MMMM yyyy'}}</td>
                         <td>{{invoice.invoiceNumber}}</td>
                         <td>{{invoice.amount | number:2}}</td>
                         <td><button class="btn btn-small btn-link" data-ng-click="download(invoice)" data-translate>PDF</button></td>
