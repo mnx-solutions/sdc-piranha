@@ -51,10 +51,24 @@ describe('Instances page', function () {
                 }
             })
         ])
+        .call('MachineDelete', [
+            utils.extend(utils.clone(instance), {
+                state: 'deleted'
+            })
+        ])
         .call('MachineReboot', [
             utils.extend(utils.clone(instance), {
                 state: 'running'
             })
+        ])
+        .call('MachineResize', [
+            [
+                {
+                    step: {
+                        state: 'resizing'
+                    }
+                }
+            ]
         ]);
 
     beforeEach(function() {
@@ -176,6 +190,8 @@ describe('Instances page', function () {
             .then(function (enabled) {
                 expect(enabled).toBeFalsy();
             });
+
+        expect(backend.track(ptor).call('MachineStop').calledOnce()).toBeTruthy();
     });
 
     it('should able to start instance', function () {
@@ -207,6 +223,8 @@ describe('Instances page', function () {
             .then(function (enabled) {
                 expect(enabled).toBeFalsy();
             });
+
+        expect(backend.track(ptor).call('MachineStart').calledOnce()).toBeTruthy();
     });
 
     it('should able to restart instance', function () {
@@ -238,6 +256,8 @@ describe('Instances page', function () {
             .then(function (enabled) {
                 expect(enabled).toBeTruthy();
             });
+
+        expect(backend.track(ptor).call('MachineReboot').calledOnce()).toBeTruthy();
     });
 
     // FIXME: Duplicate code
@@ -296,5 +316,19 @@ describe('Instances page', function () {
 
         backend.data('machines')[3].machines.splice(0, 1); // Remove data
         confirmationButton.click();
+
+        expect(backend.track(ptor).call('MachineDelete').calledOnce()).toBeTruthy();
+    });
+
+    it('should remove deleted instance from the instances list', function () {
+        ptor.get('#!/compute');
+        expect(ptor.getCurrentUrl()).toContain('#!/compute');
+
+        ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
+            expect(_instances).not.toBeNull();
+            expect(_instances.length).toEqual(1);
+
+            instances = _instances;
+        });
     });
 });
