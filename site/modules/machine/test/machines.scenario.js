@@ -155,46 +155,13 @@ describe('Instances page', function () {
         expect(ptor.getCurrentUrl()).toContain(computeUrl);
     });
 
-    it('should able to stop instance', function () {
-        var stopButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
-
+    it('should able to start instance', function () {
         ptor.wait(function () {
             return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
                 return !isPending;
             });
         }, 10000);
 
-        stopButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
-            });
-
-        stopButton.click();
-
-        // Confirmation
-        var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
-
-        confirmationButton
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
-        confirmationButton.click();
-
-        stopButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeFalsy();
-            });
-
-        expect(backend.track(ptor).call('MachineStop').calledOnce()).toBeTruthy();
-    });
-
-    it('should able to start instance', function () {
         var startButton = ptor.findElement(
             protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
 
@@ -260,8 +227,7 @@ describe('Instances page', function () {
         expect(backend.track(ptor).call('MachineReboot').calledOnce()).toBeTruthy();
     });
 
-    // FIXME: Duplicate code
-    it('should able to stop instance (second pass)', function () {
+    it('should able to stop instance', function () {
         var stopButton = ptor.findElement(
             protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
 
