@@ -21,9 +21,9 @@
         <div class="loading-large" data-ng-hide="allLoading"></div>
         <div class="row-fluid lb-edit" data-ng-show="allLoading">
             <div class="span5 table-right-border">
-                <p class="span12 pull-left section-title" data-translate>Balancer configuration</p>
+                <p class="span12 pull-left section-title" data-translate>Load Balancer</p>
                 <div>
-                    <span class="span2 two-line" data-translate>Load Balancer</span>
+                    <span class="span2 two-line" data-translate>Name</span>
                     <span class="span9 name-input">
                         <input type="text" required data-ng-model="server.name"/>
                     </span>
@@ -82,7 +82,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div style="margin-top: 10px;" class="lb-line"></div>
-                <p class="span12 pull-left section-title" data-translate>Health Check configuration</p>
+                <p class="span12 pull-left section-title" data-translate>Health Check</p>
 
                 <div class="clearfix"></div>
                 <div>
@@ -137,9 +137,9 @@
             </div>
 
             <div class="span7 table-overflow">
-                <p class="span11 pull-left section-title" data-translate>Machines configuration</p>
+                <p class="span11 pull-left section-title" data-translate>Instances</p>
                 <div>
-                    <span class="span3 lb-label" data-translate>Instances Port</span>
+                    <span class="span3 lb-label" data-translate>Port</span>
                     <span class="span3">
                         <input class="short-input" name="toPort" type="text" required data-ng-model="server.toPort"
                                data-ng-change="validatePort('toPort', 1, 65535)"/>
