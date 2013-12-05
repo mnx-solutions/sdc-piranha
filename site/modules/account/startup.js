@@ -6,6 +6,7 @@ module.exports = function execute(scope) {
     var server = scope.api('Server');
     var TFA = scope.api('TFA');
     var SignupProgress = scope.api('SignupProgress');
+    var Marketo = scope.api('Marketo');
 
     var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
     var updateable = ['email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
@@ -40,6 +41,13 @@ module.exports = function execute(scope) {
         var data = {};
         updateable.forEach(function (f) {
             data[f] = call.data[f] || null;
+        });
+
+        var marketoData = {Email: data.email, Phone: data.phone};
+        Marketo.update(call.req.session.userId, marketoData, function (err) {
+            if(err) {
+                call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+            }
         });
 
         call.log.debug('Updating account with', data);
