@@ -339,7 +339,13 @@ var slb = function execute(scope) {
                                         call.done(createError);
                                         return;
                                     }
-                                    call.done(null, result);
+                                    getSscClient(call, function (clientErr, client) {
+                                        if (clientErr) {
+                                            call.done(clientErr);
+                                            return;
+                                        }
+                                        call.done(null, client);
+                                    });
                                 });
                             });
                         });

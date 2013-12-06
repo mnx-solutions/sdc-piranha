@@ -5,8 +5,8 @@
         'serverTab',
         '$http',
         '$q',
-        'notification',
-        function (serverTab, $http, $q, notification) {
+        '$rootScope',
+        function (serverTab, $http, $q, $rootScope) {
             var service = {};
 
             function filterBalancer(balancer) {
@@ -205,11 +205,15 @@
             function reportProgress(err, job) {
                 var data = job.__read();
 
-                notification.dismiss();
+                if ($rootScope.operationLog) {
+                    $rootScope.operationLog.clear();
+                }
 
                 function handleMessage(message) {
                     if (message.status !== 'error') {
-                        notification.push(message.name, {type: 'success'}, message);
+                        if ($rootScope.operationLog) {
+                            $rootScope.operationLog.add(message);
+                        }
                     }
                 }
 

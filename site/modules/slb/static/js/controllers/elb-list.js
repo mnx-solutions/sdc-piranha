@@ -27,9 +27,11 @@
                             'All load balancers will be deleted. This cannot be undone.'
                         ), function () {
                             $scope.listLoaded = false;
+                            $scope.deleting = true;
                             service.deleteController().then(function () {
                                 $location.path('/slb');
                             }, function () {
+                                $scope.deleting = false;
                                 $scope.listLoaded = true;
                             });
                         });
@@ -42,7 +44,9 @@
                         $scope.servers = data;
                         $scope.listLoaded = true;
                     }, function (err) {
-                        notification.replace('slb', { type: 'error' }, err);
+                        if (!$scope.deleting) {
+                            notification.replace('slb', { type: 'error' }, err);
+                        }
                     });
                 }, function () {
                     $location.path('/slb');
