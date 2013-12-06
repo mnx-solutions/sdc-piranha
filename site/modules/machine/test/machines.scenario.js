@@ -19,7 +19,7 @@ describe('Instances page', function () {
         .call('DatacenterList', backend.data('datacenters'))
         .call('MachineList', backend.data('machines'))
         .call('PackageList', [ backend.data('packages') ])
-        .call('ImagesList', [ backend.data('datasets') ])
+        .call('DatasetList', [ backend.data('datasets') ])
         .call('MachineStop', [
             [
                 {
@@ -101,6 +101,7 @@ describe('Instances page', function () {
 
         expect(backend.track(ptor).call('MachineList').pending()).toBeFalsy();
         expect(backend.track(ptor).call('MachineList').calledOnce()).toBeTruthy();
+        expect(backend.track(ptor).call('DatasetList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('ImagesList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('PackageList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('PackageList').calledWithParams({ datacenter: null })).toBeTruthy();
