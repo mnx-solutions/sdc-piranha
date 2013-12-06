@@ -15,15 +15,15 @@
             <table class="table" data-ng-show="!loading && !error">
                 <thead>
                     <tr>
-                        <td data-translate>Date</td>
-                        <td data-translate>Invoice Number</td>
-                        <td data-translate>Total (USD)</td>
+                        <td data-translate>Month</td>
+                        <td data-translate>Invoice ID</td>
+                        <td data-translate>US$</td>
                         <td data-translate>Download</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr data-ng-repeat="invoice in invoices | hideNotPosted | orderBy:invoice.invoiceDate">
-                        <td>{{invoice.invoiceDate | date:'MMMM, yyyy'}}</td>
+                        <td>{{invoice.invoiceDate | date:'MMMM yyyy'}}</td>
                         <td>{{invoice.invoiceNumber}}</td>
                         <td>{{invoice.amount | number:2}}</td>
                         <td><button class="btn btn-small btn-link" data-ng-click="download(invoice)" data-translate>PDF</button></td>
