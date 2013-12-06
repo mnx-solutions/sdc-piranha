@@ -26,7 +26,6 @@ describe('Account Billing info', function () {
             .stub(ptor)
             .call('getAccount', backend.data('account'))
             .call('createKey', backend.data('create-key'))
-            .call('defaultCreditCard', [backend.data('default-creditcard')])
             .call('listKeys', [backend.data('list-keys')])
             .call('deleteKey', {})
             .flush();
@@ -39,11 +38,7 @@ describe('Account Billing info', function () {
 
     describe('Summary page', function () {
         it('user should be able to import ssh keys', function () {
-            ptor.wait(function() {
-                return ptor.getCurrentUrl().then(function(url) {
-                    return url.match(/\/account/);
-                });
-            });
+
             ptor.findElement(protractor.By.xpath('//button[@class="btn btn-joyent-blue pull-right ssh-add-button"]/span[@class="ng-scope"]')).click();
 
             ptor.findElement(protractor.By.xpath('//div[@class="modal-body"]/div[1]/div/input')).sendKeys(publicKey.name);
@@ -56,7 +51,7 @@ describe('Account Billing info', function () {
 
         });
         it('user should be able to delete ssh keys', function () {
-
+                                                    //div[@class=\"account span9\"]/fieldset[@class=\"row-fluid\"]/div[@class=\"span12\"]/div[@class=\"row-fluid\"]/div[@class=\"row-fluid\"]/div[@class=\"item-list-container\"]/div[@class=\"item row-fluid ng-scope\"][1]/span[@class=\"pointer text-medium\"]/span[@class=\"span12 title ng-binding\"]"
             ptor.findElement(protractor.By.xpath('//div[@class="item-list-container"]/div[@class="item row-fluid ng-scope"][1]/span[@class="pointer text-medium"]/span[@class="span12 title ng-binding"]')).click();
             ptor.findElement(protractor.By.xpath('//div[@class="item-list-container"]/div[@class="item row-fluid ng-scope"][1]/div[@class="toolbox span10"]/div[@class="pull-right span2"]/button[@class="btn btn-mini button btn-danger"]/span[@class="ng-scope"]')).click();
             ptor.findElement(protractor.By.xpath('//body[@class="modal-open"]/div[@class="modal ng-scope"]/div[@class="modal-footer"]/button[@class="btn ng-scope ng-binding btn-joyent-blue"]')).click();
