@@ -1,0 +1,19 @@
+{
+    "id": "2c92c0fa42bc355f0142bd7d8f9223b7",
+    "defaultPaymentMethod": true,
+    "cardType": "Visa",
+    "cardNumber": "************5363",
+    "expirationMonth": 10,
+    "expirationYear": 2019,
+    "cardHolderInfo": {
+        "cardHolderName": "Firstname Lastname",
+        "addressLine1": "damsfklsdmf",
+        "addressLine2": null,
+        "city": "sdafasdfsadf",
+        "state": null,
+        "zipCode": "234123",
+        "country": "Estonia",
+        "phone": null,
+        "email": null
+    }
+}
