@@ -90,10 +90,10 @@
   }
 , "marketo": {
     "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
-  , "accountId": ""
+  , "accountId": "879-GQM-314"
   , "soap": {
-        "endpoint": ""
-      , "clientId": ""
+        "endpoint": "https://879-GQM-314.mktoapi.com/soap/mktows/2_2"
+      , "clientId": "joyentsandbox21_5362614052A036B1885021"
       , "secret": ""
     }
   }
