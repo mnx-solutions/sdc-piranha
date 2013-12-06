@@ -78,7 +78,8 @@ describe('Instances page', function () {
                     state: 'resizing'
                 }
             })
-        ]);
+        ])
+        .call('MachineTagsSave', backend.data('tags'));
 
     beforeEach(function() {
         ptor = protractor.getInstance();
@@ -173,7 +174,7 @@ describe('Instances page', function () {
         }, 10000);
 
         var startButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
 
         startButton
             .isEnabled()
@@ -185,7 +186,7 @@ describe('Instances page', function () {
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
         confirmationButton
             .isDisplayed()
@@ -206,7 +207,7 @@ describe('Instances page', function () {
 
     it('should able to restart instance', function () {
         var rebootButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[4]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[4]'));
 
         rebootButton
             .isEnabled()
@@ -218,7 +219,7 @@ describe('Instances page', function () {
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
         confirmationButton
             .isDisplayed()
@@ -239,7 +240,7 @@ describe('Instances page', function () {
 
     it('should able to stop instance', function () {
         var stopButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
 
         stopButton
             .isEnabled()
@@ -251,7 +252,7 @@ describe('Instances page', function () {
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
         confirmationButton
             .isDisplayed()
@@ -270,7 +271,7 @@ describe('Instances page', function () {
 
     it('should able to delete instance', function () {
         var deleteButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[3]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[3]'));
 
         deleteButton
             .isEnabled()
@@ -282,7 +283,7 @@ describe('Instances page', function () {
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
         confirmationButton
             .isDisplayed()
@@ -315,19 +316,20 @@ describe('Instances page', function () {
         expect(ptor.getCurrentUrl()).toContain(computeUrl);
     });
 
+
     it('should resize instance successfully', function () {
         // Open dropdown
-        var resizeDropdown = ptor.findElement(protractor.By.xpath('//*[@id="s2id_autogen1"]/a'));
+        var resizeDropdown = ptor.findElement(by.xpath('//*[@id="s2id_autogen1"]/a'));
         resizeDropdown.click();
 
         // Make selection
         var selectOption = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/select/option[5]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/select/option[5]'));
         selectOption.click();
 
         // Push resize button
         var resizeButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/div[2]/button'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/div[2]/button'));
 
         resizeButton
             .isEnabled()
@@ -339,7 +341,7 @@ describe('Instances page', function () {
 
         // Confirm resize
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[8]/div[3]/button[2]'));
+            by.xpath('//html/body/div[8]/div[3]/button[2]'));
 
         confirmationButton
             .isDisplayed()
@@ -360,22 +362,22 @@ describe('Instances page', function () {
         expect(backend.track(ptor).call('MachineResize').calledOnce()).toBeTruthy();
 
         // Check instance attributes
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[1]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[1]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.description);
         });
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[3]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[3]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.group);
         });
 
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[3]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[3]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.memory / 1024);
         });
 
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[5]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[5]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.disk / 1024);
         });
 
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[7]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[7]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.vcpus);
         });
     });
