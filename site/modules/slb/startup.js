@@ -366,13 +366,13 @@ var slb = function execute(scope) {
                 datacenter: sscMachine.datacenter
             };
             ssc.clearCache(call);
-            call.update(null, 'Stopping load balancer controller');
+            call.update(null, 'Removing load balancer infrastructure');
             machine.Stop(call, data, function (stopError) {
                 if (stopError) {
                     callback(stopError);
                     return;
                 }
-                call.update(null, 'Destroying load balancer controller');
+                call.update(null, 'You will not occur any future charges for Joyent Simple Load Balancer');
                 machine.Delete(call, data, function (delError, result) {
                     if (delError) {
                         callback(delError);

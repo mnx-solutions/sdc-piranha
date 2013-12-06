@@ -29,7 +29,7 @@
                             $scope.listLoaded = false;
                             $scope.deleting = true;
                             service.deleteController().then(function () {
-                                $location.path('/slb');
+                                $location.path('/');
                             }, function () {
                                 $scope.deleting = false;
                                 $scope.listLoaded = true;
