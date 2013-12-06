@@ -5,15 +5,16 @@ var config = require('easy-config');
 var ursa = require('ursa');
 var manta = require('manta');
 var vasync = require('vasync');
-var ssc = require('./ssc-client');
-var getSscMachine = ssc.getSscMachine;
-var getSscClient = ssc.getSscClient;
 
 //Logging is done by serverTab itself, no need for additional info/error logging in each request
 var slb = function execute(scope) {
     var server = scope.api('Server');
     var machine = scope.api('Machine');
     var Metadata = scope.api('Metadata');
+    var ssc = scope.api('SLB');
+
+    var getSscMachine = ssc.getSscMachine;
+    var getSscClient = ssc.getSscClient;
 
     var hardControllerName = 'slb-ssc';
 
