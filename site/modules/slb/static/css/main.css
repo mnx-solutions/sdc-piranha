@@ -1,12 +1,7 @@
 .load-balancers{
     float: right;
-    margin-top: -65px;
-    margin-right: 18px;
-    /*margin-top: 50px;*/
-    /*margin-left: 40%;*/
-    /*margin-right: 45%;*/
-    /*margin-bottom: 50px;*/
-    /*width: 230px;*/
+    margin-top: 10px;
+    margin-right: 80px;
 }
 
 .load-balancers select {
@@ -227,4 +222,178 @@ input.ng-invalid-port{
 }
 .port-m{
     margin-left: 3px;
+}
+
+.instance_btn_icon{
+    background-image: url("../img/plus_icon.png");
+    width: 20px;
+    height: 20px;
+    float: left;
+    position: relative;
+    background-repeat: no-repeat;
+    padding-right: 10px;
+}
+
+input {
+    border-radius: 0;
+}
+
+.clear-link {
+    color: #333333;
+    text-decoration: none;
+}
+
+.dropdown-menu {
+    border-radius: 0;
+}
+.font16{
+    font-size: 16px;
+}
+.header-btn-ci {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-top: -60px;
+}
+.table-bordered{
+    border-top: 0;
+    border-bottom: 0;
+}
+table.table {
+    margin-bottom: 25px!important;
+}
+.bg-edit-create{
+    /*background-color: #FEF1D0;*/
+    /*padding: 20px;*/
+    padding: 0;
+    width: 406px;
+    display: inline-block;
+}
+.checkbox input[type="checkbox"] {
+    float: left;
+    margin-right: 3px;
+    margin-left: 0;
+}
+
+div.selector, div.selector span, div.checker span, div.radio span, div.uploader, div.uploader span.action, div.button, div.button span {
+    background-image: url("../img/sprite.png");
+    background-repeat: no-repeat;
+    -webkit-font-smoothing: antialiased; }
+
+div.checker {
+    position: relative; }
+div.checker, div.checker span, div.checker input {
+    width: 19px;
+    height: 19px;
+    display: inline-block;
+    margin-right: 5px;
+    margin-top: 3px;
+}
+div.checker span {
+    display: -moz-inline-box;
+    display: inline-block;
+    *display: inline;
+    zoom: 1;
+    text-align: center;
+    background-position: 0 -260px; }
+div.checker span.checked {
+    background-position: -76px -260px; }
+div.checker input {
+    opacity: 0;
+    filter: alpha(opacity=0);
+    -moz-opacity: 0;
+    border: none;
+    background: none;
+    display: -moz-inline-box;
+    display: inline-block;
+    *display: inline;
+    zoom: 1; }
+div.checker.active span {
+    background-position: -19px -260px; }
+div.checker.active span.checked {
+    background-position: -95px -260px; }
+div.checker.hover span, div.checker.focus span {
+    background-position: -38px -260px; }
+div.checker.hover span.checked, div.checker.focus span.checked {
+    background-position: -114px -260px; }
+div.checker.hover.active span, div.checker.focus.active span {
+    background-position: -57px -260px; }
+div.checker.hover.active span.checked, div.checker.focus.active span.checked {
+    background-position: -133px -260px; }
+div.checker.disabled, div.checker.disabled.active {
+    background-position: -152px -260px; }
+div.checker.disabled span.checked, div.checker.disabled.active span.checked {
+    background-position: -171px -260px; }
+
+label.checkbox {
+    padding-left: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+.edit-info-bar{
+    background-color: #fef1d2;
+    vertical-align: middle;
+    line-height: 35px;
+    padding-left: 15px;
+}
+.edit-name{
+    display: inline-block;
+    width: 125px;
+    text-align: right;
+    padding-right: 15px;
+    vertical-align: top;
+    height: 30px;
+    line-height: 30px;
+    font-size: 16px;
+    color: #7d7d7d;
+}
+.edit-value{
+    width: 262px;
+    display: inline-block;
+    font-size: 16px;
+    line-height: 30px;
+    vertical-align: middle;
+}
+.edit-value input{
+    padding: 0;
+    width: 250px;
+    border-radius: 0;
+    height: 28px;
+    border: 1px solid #ccc;
+    background-color: #fafcfd;
+    font-size: 16px;
+    font-weight: 300;
+    padding-left: 10px;
+}
+.edit-value-two input{
+    display: inline-block;
+    height: 30px;
+    border-radius: 0;
+}
+.control-group{
+    height: 40px;
+    margin-top: 0;
+}
+legend {
+    border-bottom: 0;
+    font-size: 19px;
+    line-height: 18px;
+    color: #333;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    margin-left: -2px;
+    padding-top: 5px;
+}
+.btn-group > .btn + .dropdown-toggle {
+    border: 1px solid #cccccc;
+    height: 32px;
+}
+.table > thead th {
+    height: 28px;
+}
+.agreement-pos{
+    display: inline-block;
+    width: 900px;
+    vertical-align: top;
+    margin-top: 6px;
 }

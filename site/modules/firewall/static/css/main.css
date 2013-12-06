@@ -336,3 +336,12 @@ input.ng-invalid, input.ng-pristine {
 .ff-form-actions {
     margin-bottom: 20px;
 }
+
+.fixed-height165{
+    min-height: 165px;
+    max-height: 165px;
+}
+.fixed-height145{
+    min-height: 145px;
+    max-height: 145px;
+}

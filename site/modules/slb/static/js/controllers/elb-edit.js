@@ -128,7 +128,19 @@
                     $q.all(operations).then(function () {
                         $location.path('/slb/list');
                     }, function (err) {
-                        notification.replace('slb', { type: 'error' }, err);
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'slb',
+                                err
+                            ),
+                            function () {}
+                        );
                         $scope.saving = false;
                     });
                 };

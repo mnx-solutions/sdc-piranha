@@ -863,7 +863,10 @@ div .disabled{
 	max-width:100%;
     min-width: 1000px;
 }
-
+.slb-name {
+    white-space: normal;
+    line-height: 1.5;
+}
 /*
 	from joyent com to dashboard
 */

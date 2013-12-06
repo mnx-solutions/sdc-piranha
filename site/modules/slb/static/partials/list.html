@@ -36,7 +36,7 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="server in servers">
-                <td><a href="#!/slb/detail/{{server.id}}">{{server.name}}</a></td>
+                <td><a href="#!/slb/detail/{{server.id}}" class="slb-name">{{server.name}}</a></td>
                 <td>{{server.host}}</td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>

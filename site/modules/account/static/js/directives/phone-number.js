@@ -12,7 +12,8 @@
                 restrict: 'A',
                 replace: true,
                 scope: {
-                    currentStep: '@',
+                    currentStep: '=',
+                    creditCard: '=',
                     number: '=',
                     country: '@',
                     isError: '&',
@@ -20,6 +21,9 @@
                 },
                 templateUrl: 'account/static/partials/phone-number.html',
                 link: function ($scope) {
+                    if (!$scope.currentStep && $scope.creditCard) {
+                        return;
+                    }
                     $scope.plainNumber = '';
                     $scope.areaCode = '';
 
@@ -43,12 +47,12 @@
                             $scope.areaCode = '';
                         }
                     });
-                    var numberWatcher = $scope.$watch('number', function (number) {
+                    /*var numberWatcher = */$scope.$watch('number', function (number) {
                         if(!number) {
                             return;
                         }
 
-                        numberWatcher();
+//                        numberWatcher();
 
                         var tempNumber = number.replace(/[^0-9\+]/g, '');
                         if(tempNumber !== number) {

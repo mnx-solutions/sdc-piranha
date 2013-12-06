@@ -173,7 +173,7 @@
                         <td title="{{machine.datacenter}}">{{machine.datacenter}}</td>
                         <td title="{{machine.id}}">{{machine.id}}</td>
                         <td>
-                            <span title="{{balancer.name}}" data-ng-repeat="balancer in machine.balancers">{{balancer.name}}<br></span>
+                            <span class="slb-name" title="{{balancer.name}}" data-ng-repeat="balancer in machine.balancers">{{balancer.name}}{{{true: '', false: ', '}[$last]}}</span>
                         </td>
                     </tr>
                     </tbody>

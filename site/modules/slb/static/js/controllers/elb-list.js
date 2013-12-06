@@ -3,10 +3,8 @@
 (function (app) {
     app.controller(
         'slb.ListController',
-        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location',
-            'notification', 'util',
-                function ($scope, requestContext, localization, service,
-                    $location, notification, util) {
+        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location', 'util',
+                function ($scope, requestContext, localization, service, $location, util) {
 
                 $scope.listLoaded = false;
                 localization.bind('slb', $scope);
@@ -42,7 +40,19 @@
                         $scope.servers = data;
                         $scope.listLoaded = true;
                     }, function (err) {
-                        notification.replace('slb', { type: 'error' }, err);
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'slb',
+                                err
+                            ),
+                            function () {}
+                        );
                     });
                 }, function () {
                     $location.path('/slb');

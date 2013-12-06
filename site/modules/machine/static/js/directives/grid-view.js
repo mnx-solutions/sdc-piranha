@@ -235,7 +235,7 @@
                     checkedFlag += 1;
                 }
             });
-            if (checkedFlag > 0) $scope.checkedCheckBox = false;
+            if (checkedFlag == 0 || checkedFlag != $scope.objects.length) $scope.checkedCheckBox = false;
             if (checkedFlag == $scope.objects.length && $scope.objects.length > 0) $scope.checkedCheckBox = true;
         };
 
