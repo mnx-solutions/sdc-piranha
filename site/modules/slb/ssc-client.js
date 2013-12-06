@@ -7,11 +7,15 @@ var config = require('easy-config');
 var sscName = (config.slb && config.slb.sscName) || 'slb-ssc';
 var metadata = null;
 
+var sscInitialPingTimeout = 60 * 1000;
+var sscRegularPingTimeout = 20 * 1000;
+var sscOperationTimeout = 5 * 60 * 1000;
+
 exports.init = function (mdata) {
     metadata = mdata;
 };
 
-var getMachinesList = exports.getMachinesList = function (call, cb) {
+var getMachinesList = exports.getMachinesList = function getMachinesList(call, cb) {
     var cloud = call.cloud || call.req.cloud;
     var datacenter = config.slb.ssc_datacenter || 'us-west-1';
     cloud.separate(datacenter).listMachines({ credentials: true }, function (err, machines) {
@@ -78,25 +82,30 @@ exports.getSscClient = function (call, callback) {
         });
     }
 
-    function checkSscClient(client, callback, firstStart) {
-        firstStart = firstStart || new Date().getTime();
-        if (new Date().getTime() - firstStart > 5 * 60 * 1000) {
-            callback('Connection Timeout. Try refreshing the page');
-            return;
-        }
-        client.get('/ping', function (err, req, res, body) {
+    function pingSscClient(pingClient, pingUntil, pingCallback) {
+        call.log.info('Pinging SLBAPI');
+        var timer;
+        pingClient.ping(function (err, req, res, body) {
             if (!err && body === 'pong') {
-                callback(null, client);
-            } else {
-                setTimeout(function () {
-                    checkSscClient(client, callback, firstStart);
+                call.log.info('Got pong from SLBAPI');
+                pingCallback(null, pingClient);
+            } else if (new Date().getTime() < pingUntil) {
+                timer = setTimeout(function () {
+                    pingSscClient(pingClient, pingUntil, pingCallback);
                 }, 5000);
+            } else {
+                clearTimeout(timer);
+                pingCallback('Connection Timeout. Try refreshing the page');
             }
         });
     }
 
+    function checkSscClient(checkClient, checkTimeout, checkCallback) {
+        pingSscClient(checkClient, new Date().getTime() + checkTimeout, checkCallback);
+    }
+
     if (sscClientsCache[call.req.session.userId]) {
-        checkSscClient(sscClientsCache[call.req.session.userId], sscCallback);
+        checkSscClient(sscClientsCache[call.req.session.userId], sscRegularPingTimeout, sscCallback);
         return;
     }
 
@@ -114,7 +123,7 @@ exports.getSscClient = function (call, callback) {
         call.req.log.info({fingerprint: result.fingerprint, primaryIp: result.primaryIp}, 'Creating SLBAPI client');
 
         var sscUrl = config.slb.ssc_protocol + '://' + result.primaryIp + ':' + config.slb.ssc_port;
-        var sscClient = restify.createJsonClient({
+        var sscClient = new SscJsonClient({
             url: sscUrl,
             rejectUnauthorized: false,
             signRequest: function (req) {
@@ -123,10 +132,10 @@ exports.getSscClient = function (call, callback) {
                     keyId: result.fingerprint
                 });
             },
-            timeout: 5 * 60 * 1000
+            log: call.log
         });
         sscClientsCache[call.req.session.userId] = sscClient;
-        checkSscClient(sscClient, sscCallback);
+        checkSscClient(sscClient, sscInitialPingTimeout, sscCallback);
     });
 };
 

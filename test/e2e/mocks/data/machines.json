@@ -58,7 +58,7 @@
                 "id":"2a4f6f94-f94a-ee65-b486-96705c74aefb",
                 "name":"ams1",
                 "type":"smartmachine",
-                "state":"running",
+                "state":"stopped",
                 "image":"b83f8276-1fdd-11e3-989b-4bddb088a8a0",
                 "ips":[
                     "10.224.6.166"

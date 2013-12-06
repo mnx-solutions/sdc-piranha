@@ -13,7 +13,14 @@ var version = require('./lib/version');
 var RedisStore = require('connect-redis')(express);
 var app = express(); // main app
 
-var features = config.features;
+var features = {};
+
+//Modify features to allow 'yes' and 'no'
+Object.keys(config.features).forEach(function (feature) {
+    var tmp = config.features[feature];
+    features[feature] = (tmp === 'yes' || tmp === 'enabled' ? 'enabled' : 'disabled');
+});
+config.modify({features: features});
 
 app.use(app.router);
 app.use(express.urlencoded());
