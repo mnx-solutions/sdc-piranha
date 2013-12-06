@@ -15,6 +15,38 @@ exports.init = function (mdata) {
     metadata = mdata;
 };
 
+var SscJsonClient = (function () {
+    function SscJsonClient(options) {
+        this.client = restify.createJsonClient(options);
+    }
+    SscJsonClient.prototype.wrap = function (callback, timeout) {
+        timeout = timeout || sscOperationTimeout;
+        var timer = setTimeout(function () {
+            callback('Operation Timeout. Try repeating the operation: ' + timer);
+        }, timeout);
+        return function () {
+            clearTimeout(timer);
+            callback.apply(this, arguments);
+        };
+    };
+    SscJsonClient.prototype.get = function (options, callback) {
+        this.client.get(options, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.post = function (options, body, callback) {
+        this.client.post(options, body, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.put = function (options, body, callback) {
+        this.client.put(options, body, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.del = function (options, callback) {
+        this.client.del(options, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.ping = function (callback) {
+        this.get({path: '/ping', connectTimeout: 2000}, callback);
+    };
+    return SscJsonClient;
+})();
+
 var getMachinesList = exports.getMachinesList = function getMachinesList(call, cb) {
     var cloud = call.cloud || call.req.cloud;
     var datacenter = config.slb.ssc_datacenter || 'us-west-1';
@@ -51,8 +83,8 @@ var getSscMachine = exports.getSscMachine = function getSscMachine(call, cb) {
 
 var sscClientsCache = {};
 
-exports.getSscClient = function (call, callback) {
-    function getSlbApiKey(call, callback) {
+exports.getSscClient = function (call, sscCallback) {
+    function getSlbApiKey(keyCall, keyCallback) {
         var result = {};
         vasync.parallel({
             funcs: [
