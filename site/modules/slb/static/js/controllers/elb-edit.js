@@ -94,6 +94,12 @@
                     $scope.server.health.timeout = name;
                 };
 
+                $scope.validateSelected = function () {
+                    $scope.hasMachineSelected = $scope.machines.some(function (machine) {
+                        return machine.selected;
+                    });
+                };
+
                 $scope.save = function () {
                     $scope.saving = true;
                     $scope.server.protocol = $scope.protocolSelected.value;

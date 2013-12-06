@@ -166,7 +166,8 @@
                     </thead>
                     <tbody>
                     <tr data-ng-repeat="machine in machines">
-                        <td width="10"><input type="checkbox" class="group-checkable" data-ng-model="machine.selected">
+                        <td width="10"><input type="checkbox" class="group-checkable"
+                            data-ng-model="machine.selected" data-ng-change="validateSelected()">
                         </td>
                         <td title="{{machine.name}}"><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a>
                         </td>
@@ -183,7 +184,7 @@
 
     <span class="span12" data-ng-show="allLoading">
         <p class="logo-riverbed pull-left" data-translate>Powered by</p>
-        <button data-ng-disabled="!editForm.$valid || saving" data-ng-click="save()"
+        <button data-ng-disabled="!editForm.$valid || !hasMachineSelected || saving" data-ng-click="save()"
                 class="btn btn-joyent-blue pull-right edit-btn-pos">
             <span data-ng-show="balancerId" class="ng-scope" data-translate>Update</span>
             <span data-ng-hide="balancerId" class="ng-scope" data-translate>Create</span>
