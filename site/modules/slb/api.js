@@ -24,12 +24,19 @@ module.exports = function execute(scope, register) {
         }
         SscJsonClient.prototype.wrap = function (callback, timeout) {
             timeout = timeout || sscOperationTimeout;
+            var called = false;
+            var wrappedCallback = function () {
+                if (!called) {
+                    called = true;
+                    callback.apply(this, arguments);
+                }
+            };
             var timer = setTimeout(function () {
-                callback('Operation Timeout. Try repeating the operation');
+                wrappedCallback('Operation Timeout. Try repeating the operation');
             }, timeout);
             return function () {
                 clearTimeout(timer);
-                callback.apply(this, arguments);
+                wrappedCallback.apply(this, arguments);
             };
         };
         SscJsonClient.prototype.get = function (options, callback) {
