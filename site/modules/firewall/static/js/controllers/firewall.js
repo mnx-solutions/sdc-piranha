@@ -299,7 +299,7 @@
                         Object.keys($scope.machines).forEach(function(index) {
                             var m = $scope.machines[index];
 
-                            if(m.id && !m.compute_node) {
+                            if(m.id && !m.firewall_enabled) {
                                 $scope.notAffectedMachines.push(m);
                             }
                         })

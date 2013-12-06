@@ -16,6 +16,11 @@ input.ng-invalid, input.ng-pristine {
 
 .notice-block {
     margin-bottom: 15px;
+    color:#999 !important;
+}
+
+.notice-block a {
+    color:#999 !important;
 }
 
 .margin-top-10 {
