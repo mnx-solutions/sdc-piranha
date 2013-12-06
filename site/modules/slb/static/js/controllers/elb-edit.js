@@ -22,7 +22,7 @@
                     var machines = results[2];
 
                     // Set defaults
-                    server.fromPort = server.fromPort || 80;
+                    server.fromPort = server.fromPort || 1024;
                     server.toPort = server.toPort || 80;
                     server.health = server.health || {};
                     server.health.timeout = server.health.timeout || 2;
@@ -136,11 +136,12 @@
                 $scope.validatePort = function (name, min, max) {
                     var input = $scope.editForm[name];
                     var value = input.$viewValue;
+                    var reservedPorts = ['9070', '9080', '9090'];
 
-                    min = min || 1;
+                    min = min || 1024;
                     max = max || 65535; // max tcp port value
                     var isInteger = (value % 1) === 0;
-                    input.$setValidity('port', isInteger && value >= min && value <= max);
+                    input.$setValidity('port', isInteger && value >= min && value <= max && (reservedPorts.indexOf(value) === -1));
                 };
 
                 $scope.delete = function () {
