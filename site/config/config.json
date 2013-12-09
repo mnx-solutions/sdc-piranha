@@ -132,7 +132,7 @@
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
   , "invoices": "enabled"
-  , "imageUse": "enabled"
+  , "imageUse": "disabled"
   , "imageCreate": "disabled"
   , "firewall": "disabled"
   , "slb": "disabled"
