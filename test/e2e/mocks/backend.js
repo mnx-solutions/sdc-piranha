@@ -23,7 +23,7 @@ var handlers = {
 
 var backend = module.exports =  {
     clientHandlers: function handlers () {
-        var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E', 'ngCookies' ]);
+        var module = angular.module('httpBackendMock', [ 'JoyentPortal', 'ngMockE2E' ]);
 
         module.value('handlers', $$handlers);
         module.run(function ($httpBackend, handlers, stats) {
@@ -45,6 +45,8 @@ var backend = module.exports =  {
                                 new RegExp('"name"\\:"' + call.name, 'ig')
                             )
                             .respond(function respondCallCreate (method, url, data, headers) {
+                                //stats.track('trace', call.name, arguments);
+
                                 var sessionId = url.match(createPattern)[1];
                                 var payload = {};
 
@@ -500,6 +502,12 @@ var backend = module.exports =  {
                     handlers: handlers
                 }));
                 return context;
+            },
+
+            serialize: function () {
+                return serializeFunction(backend.clientHandlers, {
+                    handlers: handlers
+                });
             }
         };
 
