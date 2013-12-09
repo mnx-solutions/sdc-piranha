@@ -81,30 +81,28 @@ var firewall = function execute (scope) {
                 rule: fwrule.create(call.data).text()
             }, function (err, rule) {
                 if (err) {
-                    call.log.error(err);
                     call.done(err);
-                } else {
-                    // Poll for rule
-                    var timeout = null;
-                    var poll = setInterval(function () {
-                        call.log.info('Polling firewall rule');
-
-                        cloud.getFwRule(rule.id, function (err, rule) {
-                            if (!err) {
-                                call.done(null, rule);
-                                clearInterval(poll);
-                                clearTimeout(timeout);
-                            }
-                        }, undefined, true);
-                    }, 500);
-
-                    // When timeout reached
-                    timeout = setTimeout(function () {
-                        var err = new Error('Rule not created');
-                        call.done(err);
-                        clearInterval(poll);
-                    }, 10000);
+                    return;
                 }
+                // Poll for rule
+                var timeout = null;
+                var poll = setInterval(function () {
+                    call.log.info('Polling firewall rule');
+
+                    cloud.getFwRule(rule.id, function (err, rule) {
+                        if (!err) {
+                            call.done(null, rule);
+                            clearInterval(poll);
+                            clearTimeout(timeout);
+                        }
+                    }, undefined, true);
+                }, 2000);
+
+                // When timeout reached
+                timeout = setTimeout(function () {
+                    call.done(new Error('Rule not created'));
+                    clearInterval(poll);
+                }, 10000);
             });
         }
     });

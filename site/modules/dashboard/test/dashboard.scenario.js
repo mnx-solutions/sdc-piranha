@@ -31,7 +31,7 @@ describe('Dashboard', function () {
 
     it('should redirect to instance provisioning page', function () {
         ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/p/a')).click();
-        expect(ptor.getCurrentUrl()).toContain('#!/compute/create/');
+        expect(ptor.getCurrentUrl()).toContain('#!/compute/create');
     });
 
     it('should redirect to instances list page', function () {
@@ -46,21 +46,28 @@ describe('Dashboard', function () {
             });
         }, 10000);
 
-        var runningCount = backend.data('machines').reduce(function (prev, current, index) {
-            var count = (typeof(prev) === 'number') ? prev : 0;
+        var counts = backend.data('machines').reduce(function (prev, current, index) {
+            var count = prev.name ? prev : {};
 
             for (var i = 0, c = current.machines.length; i < c; i++) {
                 var machine = current.machines[i];
-                if (machine.state === 'running') {
-                    count++;
+
+                if (!count[machine.state]) {
+                    count[machine.state] = 0;
                 }
+
+                count[machine.state]++;
             }
 
             return count;
         });
 
         ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/div[1]')).then(function (elem) {
-            expect(elem.getText()).toBe(runningCount + ' Running');
+            expect(elem.getText()).toBe(counts.running + ' Running');
+        });
+
+        ptor.findElement(protractor.By.xpath('//body/div[2]/div/div/div/div/div/div[3]/div[1]/div/div[1]/div[2]')).then(function (elem) {
+            expect(elem.getText()).toBe(counts.stopped + ' Stopped');
         });
 
         ptor.wait(function () {

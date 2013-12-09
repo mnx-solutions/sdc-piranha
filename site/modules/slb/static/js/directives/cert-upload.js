@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('certUpload', ['notification', '$dialog', function (notification, $dialog) {
+    app.directive('certUpload', ['util', 'localization', '$dialog', function (util, localization, $dialog) {
         return {
             templateUrl: 'slb/static/templates/cert-upload.html',
             restrict: 'EA',
@@ -25,7 +25,19 @@
                 window.__uploadCallback__ = function (data) {
                     scope.$apply(function () {
                         if (data.success) {
-                            notification.replace('slb', { type: 'success' }, 'Certificate added');
+                            util.message(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'slb',
+                                    'Certificate added'
+                                ),
+                                function () {}
+                            );
                             scope.model = data.id;
                         } else if (data.passphrase) {
                             passwordPrompt(function (passphrase) {
@@ -37,7 +49,19 @@
                                 uploadForm.submit();
                             });
                         } else {
-                            notification.replace('slb', { type: 'error' }, data.message);
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'slb',
+                                    data.message
+                                ),
+                                function () {}
+                            );
                         }
                     });
                 };

@@ -37,7 +37,7 @@ describe('Phone verification page', function() {
             });
 
             ptor.findElement(protractor.By.xpath('//option[@value=66]')).click();
-            ptor.findElement(protractor.By.xpath('//input[@name="phone"]')).sendKeys(ptor.params.register.phone);
+            ptor.findElement(protractor.By.xpath('//input[@name="phone"]')).sendKeys('1234567890');
 
             ptor.findElement(protractor.By.xpath('//input[@data-ng-model="pin"]')).sendKeys('1234');
             ptor.findElement(protractor.By.xpath('//div[@class="container"]/form[2]/div[@class="row"]/div[@class="span6"]/button'));

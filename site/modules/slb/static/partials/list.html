@@ -1,4 +1,4 @@
-<div class="container container-elb" data-ng-controller="slb.ListController">
+    <div class="container container-elb" data-ng-controller="slb.ListController">
     <ul class="breadcrumb">
         <li class="ng-scope active">
             <span class="ng-binding" data-translate>Load Balancers</span>
@@ -6,13 +6,10 @@
     </ul>
     <div class="loading-large" data-ng-hide="listLoaded"></div>
     <div data-ng-show="listLoaded" class="table-overflow group-checkable">
-        <h3 class="page-title" data-translate>Load balancer controller is
-            <span data-ng-show="listLoaded" data-translate>running</span>
-            <span data-ng-hide="listLoaded" data-translate>configuring</span>
-        </h3>
+        <h3 class="page-title" data-translate>Load Balancers</h3>
         <div class="header-btn-ci">
             <button class="btn light font16" data-ng-click="disableLb()">
-                Disable load balancer
+                Uninstall Load Balancer
             </button>
         </div>
 
@@ -39,7 +36,7 @@
             </thead>
             <tbody>
             <tr data-ng-repeat="server in servers">
-                <td><a href="#!/slb/detail/{{server.id}}">{{server.name}}</a></td>
+                <td><a href="#!/slb/detail/{{server.id}}" class="slb-name">{{server.name}}</a></td>
                 <td>{{server.host}}</td>
                 <td>Active</td>
                 <td>{{server.machinesUp.length}}/{{server.machines.length}}</td>

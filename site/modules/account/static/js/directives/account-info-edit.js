@@ -28,6 +28,9 @@
                     $scope.setAccount = function() {
                         $q.when(Account.getAccount(true), function (account) {
                             $scope.account = account;
+                            if ($scope.account.phone && $scope.account.phone.indexOf('+') !== 0) {
+                                $scope.account.phone = '+' + $scope.account.phone;
+                            }
                         });
                     };
 

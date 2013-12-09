@@ -5,7 +5,7 @@
         </li>
     </ul>
     <div data-notification></div>
-    <h4 data-ng-show="creating">Go get a coffee. Joyent Simple Load Balancing will be ready when you return.</h4>
+    <h4 data-ng-show="creating">Provisioning load balancer infrastructure. Go get a coffee. Joyent Simple Load Balancer will be ready when you return.</h4>
     <div class="loading-large" data-ng-show="!loaded || creating"></div>
     <div class="" data-ng-show="loaded && !creating">
         <h3 data-translate>Joyent Simple Load Balancer Powered by Riverbed</h3>
@@ -28,10 +28,9 @@
 
             <span class="load-balancers">
             <button data-ng-click="enableSlb()" data-ng-disabled="!licenseAcceptCheck"
-                    class="btn light btn-medium"><span class="ng-scope" data-translate>Enable Load Balancer</span>
+                    class="btn light btn-medium"><span class="ng-scope" data-translate>Install Load Balancer</span>
             </button>
         </span>
         </div>
-
     </div>
 </div>

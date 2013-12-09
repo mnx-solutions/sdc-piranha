@@ -7,11 +7,47 @@ var config = require('easy-config');
 var sscName = (config.slb && config.slb.sscName) || 'slb-ssc';
 var metadata = null;
 
+var sscInitialPingTimeout = 60 * 1000;
+var sscRegularPingTimeout = 20 * 1000;
+var sscOperationTimeout = 5 * 60 * 1000;
+
 exports.init = function (mdata) {
     metadata = mdata;
 };
 
-var getMachinesList = exports.getMachinesList = function (call, cb) {
+var SscJsonClient = (function () {
+    function SscJsonClient(options) {
+        this.client = restify.createJsonClient(options);
+    }
+    SscJsonClient.prototype.wrap = function (callback, timeout) {
+        timeout = timeout || sscOperationTimeout;
+        var timer = setTimeout(function () {
+            callback('Operation Timeout. Try repeating the operation: ' + timer);
+        }, timeout);
+        return function () {
+            clearTimeout(timer);
+            callback.apply(this, arguments);
+        };
+    };
+    SscJsonClient.prototype.get = function (options, callback) {
+        this.client.get(options, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.post = function (options, body, callback) {
+        this.client.post(options, body, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.put = function (options, body, callback) {
+        this.client.put(options, body, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.del = function (options, callback) {
+        this.client.del(options, this.wrap(callback, options.connectTimeout));
+    };
+    SscJsonClient.prototype.ping = function (callback) {
+        this.get({path: '/ping', connectTimeout: 2000}, callback);
+    };
+    return SscJsonClient;
+})();
+
+var getMachinesList = exports.getMachinesList = function getMachinesList(call, cb) {
     var cloud = call.cloud || call.req.cloud;
     var datacenter = config.slb.ssc_datacenter || 'us-west-1';
     cloud.separate(datacenter).listMachines({ credentials: true }, function (err, machines) {
@@ -78,25 +114,30 @@ exports.getSscClient = function (call, sscCallback) {
         });
     }
 
-    function checkSscClient(client, callback, firstStart) {
-        firstStart = firstStart || new Date().getTime();
-        if (new Date().getTime() - firstStart > 5 * 60 * 1000) {
-            callback('Connection Timeout. Try refreshing the page');
-            return;
-        }
-        client.get('/ping', function (err, req, res, body) {
+    function pingSscClient(pingClient, pingUntil, pingCallback) {
+        call.log.info('Pinging SLBAPI');
+        var timer;
+        pingClient.ping(function (err, req, res, body) {
             if (!err && body === 'pong') {
-                callback(null, client);
-            } else {
-                setTimeout(function () {
-                    checkSscClient(client, callback, firstStart);
+                call.log.info('Got pong from SLBAPI');
+                pingCallback(null, pingClient);
+            } else if (new Date().getTime() < pingUntil) {
+                timer = setTimeout(function () {
+                    pingSscClient(pingClient, pingUntil, pingCallback);
                 }, 5000);
+            } else {
+                clearTimeout(timer);
+                pingCallback('Connection Timeout. Try refreshing the page');
             }
         });
     }
 
+    function checkSscClient(checkClient, checkTimeout, checkCallback) {
+        pingSscClient(checkClient, new Date().getTime() + checkTimeout, checkCallback);
+    }
+
     if (sscClientsCache[call.req.session.userId]) {
-        checkSscClient(sscClientsCache[call.req.session.userId], sscCallback);
+        checkSscClient(sscClientsCache[call.req.session.userId], sscRegularPingTimeout, sscCallback);
         return;
     }
 
@@ -114,7 +155,7 @@ exports.getSscClient = function (call, sscCallback) {
         call.req.log.info({fingerprint: result.fingerprint, primaryIp: result.primaryIp}, 'Creating SLBAPI client');
 
         var sscUrl = config.slb.ssc_protocol + '://' + result.primaryIp + ':' + config.slb.ssc_port;
-        var sscClient = restify.createJsonClient({
+        var sscClient = new SscJsonClient({
             url: sscUrl,
             rejectUnauthorized: false,
             signRequest: function (req) {
@@ -122,10 +163,11 @@ exports.getSscClient = function (call, sscCallback) {
                     key: result.privateKey,
                     keyId: result.fingerprint
                 });
-            }
+            },
+            log: call.log
         });
         sscClientsCache[call.req.session.userId] = sscClient;
-        checkSscClient(sscClient, sscCallback);
+        checkSscClient(sscClient, sscInitialPingTimeout, sscCallback);
     });
 };
 

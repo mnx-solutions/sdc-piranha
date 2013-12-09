@@ -128,7 +128,19 @@
                     $q.all(operations).then(function () {
                         $location.path('/slb/list');
                     }, function (err) {
-                        notification.replace('slb', { type: 'error' }, err);
+                        util.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'slb',
+                                err
+                            ),
+                            function () {}
+                        );
                         $scope.saving = false;
                     });
                 };
@@ -153,13 +165,14 @@
                         localization.translate(
                             $scope,
                             null,
-                            'Are you sure you want to delete this load balancer?'
+                            'Are you sure you want to delete this load balancer? You will be charged for Simple Load Balancer until you uninstall the feature.'
                         ),
                         function () {
                             $scope.saving = true;
                             service.deleteBalancer($scope.balancerId).then(function () {
                                 $location.path('/slb/list');
-                            }, function () {
+                            }, function (err) {
+                                notification.replace('slb', { type: 'error' }, err);
                                 $scope.saving = false;
                             });
                         }

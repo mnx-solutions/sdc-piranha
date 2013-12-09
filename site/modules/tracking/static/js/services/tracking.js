@@ -33,6 +33,7 @@
                             Email:             account.email,
                             FirstName:         account.firstName,
                             LastName:          account.lastName,
+                            Username:          account.login,
                             Company:           account.companyName || '--',
                             CAPI_UUID__c_lead: account.id || '',
                             Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'

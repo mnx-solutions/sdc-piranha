@@ -6,7 +6,8 @@
         '$http',
         '$q',
         'notification',
-        function (serverTab, $http, $q, notification) {
+        'localization',
+        function (serverTab, $http, $q, notification, localization) {
             var service = {};
 
             function filterBalancer(balancer) {
@@ -209,7 +210,19 @@
 
                 function handleMessage(message) {
                     if (message.status !== 'error') {
-                        notification.push(message.name, {type: 'success'}, message);
+                        util.message(
+                            localization.translate(
+                                null,
+                                null,
+                                'Message'
+                            ),
+                            localization.translate(
+                                null,
+                                'slb',
+                                message
+                            ),
+                            function () {}
+                        );
                     }
                 }
 

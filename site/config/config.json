@@ -90,7 +90,12 @@
   }
 , "marketo": {
     "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
-  , "accountId": ""
+  , "accountId": "879-GQM-314"
+  , "soap": {
+        "endpoint": "https://879-GQM-314.mktoapi.com/soap/mktows/2_2"
+      , "clientId": "joyentsandbox21_5362614052A036B1885021"
+      , "secret": ""
+    }
   }
 , "polling": {
     "machineTags": 5000
@@ -114,7 +119,7 @@
   , "riskScoreFraudLimit": 60
   }
 , "slb": {
-    "slb_code_url": "https://us-east.manta.joyent.com/mriou/public/elbapi-1.tgz"
+    "slb_code_url": "https://us-east.manta.joyent.com/dbqp/public/slbapi-2.tgz"
   , "ssc_image": "7eec9dfc-5c59-11e3-a3e4-0b8030348bec"
   , "ssc_package": "g3-standard-1-kvm"
   , "ssc_datacenter": "us-west-1"
