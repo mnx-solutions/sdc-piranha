@@ -523,6 +523,7 @@ portlet.box.light-grey > .portlet-title .caption > i {
 .machines{
     width: 1000px;
     padding-left: 20px;
+    min-height: 650px;
 }
 .modulizer-module-storage {
     padding-left: 20px;
