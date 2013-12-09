@@ -6,13 +6,16 @@
     </ul>
     <div class="loading-large" data-ng-hide="listLoaded"></div>
     <div data-ng-show="listLoaded" class="table-overflow group-checkable">
-        <h3 class="page-title" data-translate>Load Balancers</h3>
+        <h3 class="page-title" data-ng-hide="deleting" data-translate>Load Balancers</h3>
+        <h3 class="page-title" data-ng-show="deleting" data-translate>Uninstalling Joyent Simple Load Balancer</h3>
         <div class="header-btn-ci">
             <button class="btn light font16" data-ng-click="disableLb()">
                 Uninstall Load Balancer
             </button>
         </div>
 
+        <div data-operation-log></div>
+        
         <table class="table table-striped table-bordered table-hover table-full-width">
             <thead>
             <tr>

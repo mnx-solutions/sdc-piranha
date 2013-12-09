@@ -32,15 +32,14 @@ describe('Phone verification page', function() {
                 });
             });
 
-            ptor.findElement(protractor.By.xpath('//div[@class="container"]/form/div[@class="row"]/div[@class="span3"][2]/button')).getAttribute('disabled').then(function(value) {
-                expect(value).not.toBeFalsy();
-            });
+            ptor.findElement(by.xpath('//option[@value=66]')).click();
 
-            ptor.findElement(protractor.By.xpath('//option[@value=66]')).click();
-            ptor.findElement(protractor.By.xpath('//input[@name="phone"]')).sendKeys('1234567890');
+            ptor.findElement(by.xpath('//input[@name="phone"]')).clear();
+            ptor.findElement(by.xpath('//input[@name="phone"]')).sendKeys('1234567890');
+            ptor.findElement(by.xpath('//div[@class="container"]/form/div[@class="row"]/div[@class="span3"][2]/button')).isEnabled();
 
-            ptor.findElement(protractor.By.xpath('//input[@data-ng-model="pin"]')).sendKeys('1234');
-            ptor.findElement(protractor.By.xpath('//div[@class="container"]/form[2]/div[@class="row"]/div[@class="span6"]/button'));
+            ptor.findElement(by.xpath('//input[@data-ng-model="pin"]')).sendKeys('1234');
+            ptor.findElement(by.xpath('//div[@class="container"]/form[2]/div[@class="row"]/div[@class="span6"]/button'));
         });
     });
 });

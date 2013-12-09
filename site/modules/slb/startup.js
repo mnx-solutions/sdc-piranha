@@ -5,15 +5,16 @@ var config = require('easy-config');
 var ursa = require('ursa');
 var manta = require('manta');
 var vasync = require('vasync');
-var ssc = require('./ssc-client');
-var getSscMachine = ssc.getSscMachine;
-var getSscClient = ssc.getSscClient;
 
 //Logging is done by serverTab itself, no need for additional info/error logging in each request
 var slb = function execute(scope) {
     var server = scope.api('Server');
     var machine = scope.api('Machine');
     var Metadata = scope.api('Metadata');
+    var ssc = scope.api('SLB');
+
+    var getSscMachine = ssc.getSscMachine;
+    var getSscClient = ssc.getSscClient;
 
     var hardControllerName = 'slb-ssc';
 
@@ -338,7 +339,13 @@ var slb = function execute(scope) {
                                         call.done(createError);
                                         return;
                                     }
-                                    call.done(null, result);
+                                    getSscClient(call, function (clientErr) {
+                                        if (clientErr) {
+                                            call.done(clientErr);
+                                            return;
+                                        }
+                                        call.done(null, result);
+                                    });
                                 });
                             });
                         });
@@ -359,13 +366,13 @@ var slb = function execute(scope) {
                 datacenter: sscMachine.datacenter
             };
             ssc.clearCache(call);
-            call.update(null, 'Stopping load balancer controller');
+            call.update(null, 'Removing load balancer infrastructure');
             machine.Stop(call, data, function (stopError) {
                 if (stopError) {
                     callback(stopError);
                     return;
                 }
-                call.update(null, 'Destroying load balancer controller');
+                call.update(null, 'You will not occur any future charges for Joyent Simple Load Balancer');
                 machine.Delete(call, data, function (delError, result) {
                     if (delError) {
                         callback(delError);
