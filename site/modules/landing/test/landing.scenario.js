@@ -3,7 +3,8 @@ describe('Landing page', function () {
     backend
         .stub(protractor.getInstance())
         .request('GET', 'cloudAnalytics/ca', {}, {}, new Error())
-        .request('GET', 'cloudAnalytics/ca/help', {}, {}, new Error());
+        .request('GET', 'cloudAnalytics/ca/help', {}, {}, new Error())
+        .call('getAccount', backend.data('account'));
 
     var ptor = null;
     var driver = null;

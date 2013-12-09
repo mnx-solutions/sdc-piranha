@@ -7,10 +7,10 @@ var key = config.slb && config.slb.keyPath ? fs.readFileSync(config.slb.keyPath)
 var ursa = require('ursa');
 var express = require('express');
 
-var ssc = require('./ssc-client');
-var getSscClient = ssc.getSscClient;
-
 var slb = function execute(scope, app) {
+
+    var ssc = scope.api('SLB');
+    var getSscClient = ssc.getSscClient;
 
     function getUploadResult(callback, resultObj) {
         return '<script language="javascript" type="text/javascript">' +

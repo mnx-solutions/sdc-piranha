@@ -25,9 +25,11 @@
                             'All load balancers will be deleted. This cannot be undone.'
                         ), function () {
                             $scope.listLoaded = false;
+                            $scope.deleting = true;
                             service.deleteController().then(function () {
-                                $location.path('/slb');
+                                $location.path('/');
                             }, function () {
+                                $scope.deleting = false;
                                 $scope.listLoaded = true;
                             });
                         });
@@ -40,19 +42,21 @@
                         $scope.servers = data;
                         $scope.listLoaded = true;
                     }, function (err) {
-                        util.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'slb',
-                                err
-                            ),
-                            function () {}
-                        );
+                        if (!$scope.deleting) {
+                            util.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'slb',
+                                    err
+                                ),
+                                function () {}
+                            );
+                        }
                     });
                 }, function () {
                     $location.path('/slb');

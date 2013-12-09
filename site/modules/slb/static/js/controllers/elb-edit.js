@@ -94,6 +94,12 @@
                     $scope.server.health.timeout = name;
                 };
 
+                $scope.validateSelected = function () {
+                    $scope.hasMachineSelected = $scope.machines.some(function (machine) {
+                        return machine.selected;
+                    });
+                };
+
                 $scope.save = function () {
                     $scope.saving = true;
                     $scope.server.protocol = $scope.protocolSelected.value;
@@ -148,11 +154,12 @@
                 $scope.validatePort = function (name, min, max) {
                     var input = $scope.editForm[name];
                     var value = input.$viewValue;
+                    var reservedPorts = ['0', '22', '9070', '9080', '9090'];
 
                     min = min || 1;
                     max = max || 65535; // max tcp port value
                     var isInteger = (value % 1) === 0;
-                    input.$setValidity('port', isInteger && value >= min && value <= max);
+                    input.$setValidity('port', isInteger && value >= min && value <= max && (reservedPorts.indexOf(value) === -1));
                 };
 
                 $scope.delete = function () {

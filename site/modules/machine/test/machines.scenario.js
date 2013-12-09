@@ -19,7 +19,7 @@ describe('Instances page', function () {
         .call('DatacenterList', backend.data('datacenters'))
         .call('MachineList', backend.data('machines'))
         .call('PackageList', [ backend.data('packages') ])
-        .call('ImagesList', [ backend.data('datasets') ])
+        .call('DatasetList', [ backend.data('datasets') ])
         .call('MachineStop', [
             [
                 {
@@ -78,7 +78,9 @@ describe('Instances page', function () {
                     state: 'resizing'
                 }
             })
-        ]);
+        ])
+        .call('MachineTagsList', backend.data('tags'))
+        .call('MachineTagsSave', backend.data('tags'));
 
     beforeEach(function() {
         ptor = protractor.getInstance();
@@ -97,15 +99,16 @@ describe('Instances page', function () {
             return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
                 return !isPending;
             });
-        }, 10000);
+        }, 5000);
 
         expect(backend.track(ptor).call('MachineList').pending()).toBeFalsy();
         expect(backend.track(ptor).call('MachineList').calledOnce()).toBeTruthy();
+        expect(backend.track(ptor).call('DatasetList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('ImagesList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('PackageList').calledOnce(true)).toBeTruthy();
         expect(backend.track(ptor).call('PackageList').calledWithParams({ datacenter: null })).toBeTruthy();
 
-        ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
+        ptor.findElements(by.repeater('object in objects')).then(function (_instances) {
             expect(_instances).not.toBeNull();
             expect(_instances.length).toEqual(2);
 
@@ -165,132 +168,112 @@ describe('Instances page', function () {
     });
 
     it('should able to start instance', function () {
+        // Wait for MachineList call to complete
         ptor.wait(function () {
             return backend.track(ptor).call('MachineList').pending().then(function (isPending) {
                 return !isPending;
             });
-        }, 10000);
+        }, 5000);
 
         var startButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[1]'));
 
-        startButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
-            });
-
+        expect(startButton.isEnabled()).toBeTruthy();
         startButton.click();
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
-        confirmationButton
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
+        expect(confirmationButton.isDisplayed()).toBeTruthy();
         confirmationButton.click();
 
-        startButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeFalsy();
+        expect(startButton.isEnabled()).toBeFalsy();
+
+        // Wait for MachineStart call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineStart').pending().then(function (isPending) {
+                return !isPending;
             });
+        }, 5000);
 
         expect(backend.track(ptor).call('MachineStart').calledOnce()).toBeTruthy();
     });
 
     it('should able to restart instance', function () {
         var rebootButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[4]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[4]'));
 
-        rebootButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
-            });
-
+        expect(rebootButton.isEnabled()).toBeTruthy();
         rebootButton.click();
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
-        confirmationButton
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
+        expect(confirmationButton.isDisplayed()).toBeTruthy();
         confirmationButton.click();
 
-        rebootButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
+        expect(rebootButton.isEnabled()).toBeTruthy();
+
+        // Wait for MachineStart call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineReboot').pending().then(function (isPending) {
+                return !isPending;
             });
+        }, 5000);
 
         expect(backend.track(ptor).call('MachineReboot').calledOnce()).toBeTruthy();
     });
 
     it('should able to stop instance', function () {
         var stopButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[2]'));
 
-        stopButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
-            });
-
+        expect(stopButton.isEnabled()).toBeTruthy();
         stopButton.click();
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
-        confirmationButton
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
-
+        expect(confirmationButton.isDisplayed()).toBeTruthy();
         confirmationButton.click();
 
-        stopButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeFalsy();
+        expect(stopButton.isEnabled()).toBeFalsy();
+
+        // Wait for MachineStop call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineStop').pending().then(function (isPending) {
+                return !isPending;
             });
+        }, 5000);
+
+        expect(backend.track(ptor).call('MachineStop').calledOnce()).toBeTruthy();
     });
 
     it('should able to delete instance', function () {
         var deleteButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[3]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/button[3]'));
 
-        deleteButton
-            .isEnabled()
-            .then(function (enabled) {
-                expect(enabled).toBeTruthy();
-            });
-
+        expect(deleteButton.isEnabled()).toBeTruthy();
         deleteButton.click();
 
         // Confirmation
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[6]/div[3]/button[2]'));
+            by.xpath('//html/body/div[6]/div[3]/button[2]'));
 
-        confirmationButton
-            .isDisplayed()
-            .then(function (displayed) {
-                expect(displayed).toBeTruthy();
-            });
+        expect(confirmationButton.isDisplayed()).toBeTruthy();
 
         backend.data('machines')[3].machines.splice(0, 1); // Remove data
         confirmationButton.click();
+
+        // Wait for MachineDelete call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineDelete').pending().then(function (isPending) {
+                return !isPending;
+            });
+        }, 5000);
 
         expect(backend.track(ptor).call('MachineDelete').calledOnce()).toBeTruthy();
     });
@@ -299,7 +282,7 @@ describe('Instances page', function () {
         ptor.get('#!/compute');
         expect(ptor.getCurrentUrl()).toContain('#!/compute');
 
-        ptor.findElements(protractor.By.repeater('object in objects')).then(function (_instances) {
+        ptor.findElements(by.repeater('object in objects')).then(function (_instances) {
             expect(_instances).not.toBeNull();
             expect(_instances.length).toEqual(1);
 
@@ -314,19 +297,114 @@ describe('Instances page', function () {
         expect(ptor.getCurrentUrl()).toContain(computeUrl);
     });
 
+    it('should save tags successfully', function () {
+        function addTag(index, key, val) {
+            ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div/div[2]/div[2]'))
+                .click();
+
+            ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[' + index +
+                ']/div[2]/div/span[1]/span[2]/input')).sendKeys(key);
+
+            ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[' + index +
+                ']/div[2]/div/span[2]/span[2]/input')).sendKeys(val);
+        }
+
+        // Add tags
+        var tags = backend.data('tags');
+        Object.keys(tags).forEach(function iterateTag (key, index) {
+            addTag(index + 1, key, backend.data('tags')[key]);
+        });
+
+        // Submit
+        var submitButton = ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[3]/div[2]/button'));
+
+        expect(submitButton.isEnabled()).toBeTruthy();
+        submitButton.click();
+
+        // Wait for MachineTagsSave call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineTagsSave').pending().then(function (isPending) {
+                return !isPending;
+            });
+        }, 5000);
+
+        expect(backend.track(ptor).call('MachineTagsSave').calledOnce()).toBeTruthy();
+    });
+
+    it('should display saved tags', function () {
+        function checkTag(index, key, val) {
+            ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[' + index +
+                ']/div[1]/span[1]')).then(function (value) {
+                    expect(value.getText()).toBe(key);
+                });
+
+            ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[' + index +
+                    ']/div[1]/span[2]')).then(function (value) {
+                    expect(value.getText()).toBe(val);
+                });
+        }
+
+        // Match tags count
+        ptor.findElements(by.repeater('(key, o) in tagsArray')).then(function (tags) {
+            expect(tags).not.toBeNull();
+            expect(tags.length).toEqual(2);
+        });
+
+        // Check tags
+        var tags = backend.data('tags');
+        Object.keys(tags).forEach(function iterateTag (key, index) {
+            checkTag(index + 1, key, backend.data('tags')[key]);
+        });
+    });
+
+    it('should be able to delete tags', function () {
+        // Click on first tag delete button
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[1]/div[1]/span[3]'))
+            .click();
+
+        // Click on submit button
+        ptor.findElement(by.xpath('/html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[2]/div[2]/button'))
+            .click();
+
+        // Wait for MachineTagsSave call to complete
+        ptor.wait(function () {
+            return backend.track(ptor).call('MachineTagsSave').pending().then(function (isPending) {
+                return !isPending;
+            });
+        }, 5000);
+
+        // Match tags count
+        ptor.findElements(by.repeater('(key, o) in tagsArray')).then(function (tags) {
+            expect(tags).not.toBeNull();
+            expect(tags.length).toEqual(1);
+        });
+    });
+
+    it('should be able to edit tags', function () {
+        // Click first tag delete button
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[1]/div[1]/span[2]'))
+            .click();
+
+        // Click submit
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[3]/div[1]/fieldset[4]/div[1]/div[1]/div[2]/div/span[2]/span[2]/input'))
+            .then(function (elem) {
+                expect(elem.getAttribute('value')).toBe(backend.data('tags').key2);
+            });
+    });
+
     it('should resize instance successfully', function () {
         // Open dropdown
-        var resizeDropdown = ptor.findElement(protractor.By.xpath('//*[@id="s2id_autogen1"]/a'));
+        var resizeDropdown = ptor.findElement(by.xpath('//*[@id="s2id_autogen1"]/a'));
         resizeDropdown.click();
 
         // Make selection
         var selectOption = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/select/option[5]'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/select/option[5]'));
         selectOption.click();
 
         // Push resize button
         var resizeButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/div[2]/button'));
+            by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[2]/div[2]/button'));
 
         resizeButton
             .isEnabled()
@@ -338,7 +416,7 @@ describe('Instances page', function () {
 
         // Confirm resize
         var confirmationButton = ptor.findElement(
-            protractor.By.xpath('//html/body/div[8]/div[3]/button[2]'));
+            by.xpath('//html/body/div[8]/div[3]/button[2]'));
 
         confirmationButton
             .isDisplayed()
@@ -359,22 +437,22 @@ describe('Instances page', function () {
         expect(backend.track(ptor).call('MachineResize').calledOnce()).toBeTruthy();
 
         // Check instance attributes
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[1]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[1]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.description);
         });
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[3]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[1]/span[3]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.group);
         });
 
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[3]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[3]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.memory / 1024);
         });
 
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[5]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[5]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.disk / 1024);
         });
 
-        ptor.findElement(protractor.By.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[7]')).then(function (elem) {
+        ptor.findElement(by.xpath('//html/body/div[2]/div/div/div/div/div[4]/div/fieldset/div/div[1]/div/span[7]')).then(function (elem) {
             expect(elem.getText()).toContain(pkg.vcpus);
         });
     });

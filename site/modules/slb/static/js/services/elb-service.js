@@ -5,9 +5,9 @@
         'serverTab',
         '$http',
         '$q',
-        'notification',
+        '$rootScope',
         'localization',
-        function (serverTab, $http, $q, notification, localization) {
+        function (serverTab, $http, $q, $rootScope, localization) {
             var service = {};
 
             function filterBalancer(balancer) {
@@ -206,23 +206,27 @@
             function reportProgress(err, job) {
                 var data = job.__read();
 
-                notification.dismiss();
+                if ($rootScope.operationLog) {
+                    $rootScope.operationLog.clear();
+                }
 
                 function handleMessage(message) {
                     if (message.status !== 'error') {
-                        util.message(
-                            localization.translate(
-                                null,
-                                null,
-                                'Message'
-                            ),
-                            localization.translate(
-                                null,
-                                'slb',
-                                message
-                            ),
-                            function () {}
-                        );
+                        if ($rootScope.operationLog) {
+                            util.message(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'slb',
+                                    message
+                                ),
+                                function () {}
+                            );
+                        }
                     }
                 }
 

@@ -1,0 +1,12 @@
+[
+    {
+        "name": "test1",
+        "fingerprint": "98:68:f1:5d:85:78:ce:7c:be:5c:60:3d:eb:42:a3:fa",
+        "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYA4sXEQiF3IaMgx92OtnxLrKUWfCU1//5Gnc7QRYFI9yl4YWGYzNwUcmFuUZlwf75yjxfcbE2DMgRcy/TcHX/fw9wPZBC5T7FARfeFbFxWaOn95GL1UWWhpti0Bbl8dO2qedGZ6TckkEhjxJVJ+/wQd5Yc5nFMFM5zcyNb/iiz3w14qpNGHEtf0VkSXZXc5GLDvXxE4jkoEk3LGqhbkqX4XMEefgM31T+mkXeygA83G67Vppa9ki0J4s1psyzLbBo88ygfgm1AfIriaIyg4ZXPXERjcWBhBrQDCIkFVW+gZ9JImQbU4h8z6lgxj8W6y41Lasy4iJ7qrEILTe8CGTn your_email@example.com"
+    },
+    {
+        "name": "test2",
+        "fingerprint": "e1:9d:2a:78:32:42:a3:ec:f3:88:b7:d9:d2:bd:70:08",
+        "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEIyG/jniDf2rL2dZsooak/WJmaIzWtqre4y+j5z+DXo6NF5w93A67AZ6tHzNQH+LdDVlmf1VxhZiwQa140tPc8a6/uqWJ+6EPz/57rmpnd8jqDyfZVGatqz3ikDcMcnN1QFUyAIZ5fGr6KZgMTLX86XkyrjobXFh5af+p4Ono/MRy7YRGLlnlLGhPpP8zrrZDcB//AEinWEUMPLm3oW7lsvbL5ihXtYLTVC6g8L5dhcmbTr0EZHPagzDIBiMcAMYAtdDDJsJEZX2bQnM1E2BhF3icm/T9b0kNlhYE8k5aq3kbxCW5Eej/+7Nhzs6H3y0Fo969QdKSWD2/bAi98q7F endrik1\n"
+    }
+]
