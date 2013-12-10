@@ -20,6 +20,14 @@ body {
     padding-left:15px;
     float:left;
 }
+
+.loading-30 {
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+}
+
 .tabbable {
 /*	border:none;*/
 /*	margin-top:-31px;*/

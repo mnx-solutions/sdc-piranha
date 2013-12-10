@@ -230,7 +230,7 @@
                                     data-ng-click="saveTags()"
                                     data-translate
                                     data-ng-disabled="machine.state != 'running' || !tagSaveOk || tagsave">Save</button>
-                            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tagsave"></div>
+                            <div class="pull-right loading-medium loading-30" data-ng-show="tagsave"></div>
                             <div class="btn btn-link pull-right" data-ng-click="addTag()" data-translate>+ Add New Tag</div>
                         </div>
                     </div>
@@ -290,7 +290,7 @@
                                 data-ng-disabled="fireWallActionRunning"
                                 data-ng-click="toggleFirewallEnabled()"
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
-                        <div class="pull-right loading-medium margin-top-10" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="fireWallActionRunning"></div>
+                        <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
                     </div>
                 </fieldset>
             </span>
