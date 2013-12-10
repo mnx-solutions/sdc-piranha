@@ -169,7 +169,7 @@
                             return object.fireWallActionRunning;
                         },
                         show: function(object) {
-                            return object.type !== 'virtualmachine';
+                            return (object.type !== 'virtualmachine' || !object.hasOwnProperty('firewall_enabled'));
                         },
                         action: $scope.toggleFirewallEnabled.bind($scope),
                         tooltip: 'Change machine firewall status'
