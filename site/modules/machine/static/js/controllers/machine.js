@@ -444,6 +444,18 @@
                         sequence: 4
                     }
                 ];
+                $scope.toggleFirewallEnabled = function () {
+                    $scope.fireWallActionRunning = true;
+                    var fn = $scope.machine.firewall_enabled ? 'disable' : 'enable';
+                    var expected = !$scope.machine.firewall_enabled;
+                    firewall[fn]($scope.machineid, function (err) {
+                        if(!err) {
+                            $scope.machine.firewall_enabled = expected;
+                        }
+                        $scope.fireWallActionRunning = false;
+                    });
+                };
+
             }
         }
 

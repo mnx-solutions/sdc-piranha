@@ -284,6 +284,13 @@
                                  data-objects-type="firewall"></div>
                         </div>
                     </div>
+                    <div class="row text-right">
+                        <button class="btn margin-top-10"
+                                data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
+                                data-ng-disabled="fireWallActionRunning"
+                                data-ng-click="toggleFirewallEnabled()"
+                                data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
+                    </div>
                 </fieldset>
             </span>
 
