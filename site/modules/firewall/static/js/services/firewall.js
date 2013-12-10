@@ -13,19 +13,32 @@
         function (serverTab, $rootScope, $q, Machine, localization, notification) {
 
             var service = {};
-            var firewall = { job: null };
+            var jobs = {};
 
             service.enable = function (id, cb) {
-                if (!firewall.job || firewall.job.finished) {
+                if (!jobs[id] || jobs[id].finished) {
 	                cb = cb || ng.noop;
                     $q.when(Machine.machine(id)).then(function (machine) {
-                        firewall.job = serverTab.call({
+                        jobs[id] = serverTab.call({
                             name: 'MachineFirewallEnable',
-                            data: { machineId: machine.id },
+                            data: {
+                                machineId: machine.id,
+                                datacenter: machine.datacenter
+                            },
                             done: function(err, job) {
                                 var data = job.__read();
 
-	                            cb(err || data.err);
+                                var error = err || data.err;
+                                if(error) {
+                                    notification.push(chunk.name, { type: 'error' },
+                                        localization.translate(null,
+                                            'firewall',
+                                            'Failed to enable firewall for instance {{id}}',
+                                            { id: id }
+                                        )
+                                    );
+                                }
+	                            cb(error);
                             }
                         });
                     });
@@ -35,16 +48,28 @@
             };
 
             service.disable = function (id, cb) {
-                if (!firewall.job || firewall.job.finished) {
+                if (!jobs[id] || jobs[id].finished) {
 	                cb = cb || ng.noop;
                     $q.when(Machine.machine(id)).then(function (machine) {
-                        firewall.job = serverTab.call({
+                        jobs[id] = serverTab.call({
                             name: 'MachineFirewallDisable',
-                            data: { machineId: machine.id },
+                            data: {
+                                machineId: machine.id,
+                                datacenter: machine.datacenter
+                            },
                             done: function(err, job) {
                                 var data = job.__read();
 
-	                            cb(err || data.err);
+                                var error = err || data.err;if(error) {
+                                    notification.push(chunk.name, { type: 'error' },
+                                        localization.translate(null,
+                                            'firewall',
+                                            'Failed to disable firewall for instance {{id}}',
+                                            { id: id }
+                                        )
+                                    );
+                                }
+                                cb(error);
                             }
                         });
                     });

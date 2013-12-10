@@ -389,5 +389,31 @@ module.exports = function execute(scope, register) {
         });
     };
 
+    api.enableFirewall = function (call, callback) {
+        call.log.info('Enabling firewall for machine %s', call.data.machineId);
+        var cloud = call.cloud.separate(call.data.datacenter);
+        cloud.enableFirewall(call.data.machineId, function (err) {
+            if (!err) {
+                pollForObjectStateChange(cloud, call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
+            } else {
+                call.log.error(err);
+                call.error(err);
+            }
+        });
+    };
+
+    api.disableFirewall = function (call, callback) {
+        call.log.info('Disabling firewall for machine %s', call.data.machineId);
+        var cloud = call.cloud.separate(call.data.datacenter);
+        cloud.enableFirewall(call.data.machineId, function (err) {
+            if (!err) {
+                pollForObjectStateChange(cloud, call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
+            } else {
+                call.log.error(err);
+                call.error(err);
+            }
+        });
+    };
+
     register('Machine', api);
 };
