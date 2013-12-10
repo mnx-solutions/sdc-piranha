@@ -282,6 +282,7 @@
             $scope.loading = true;
             $scope.rules = [];
             $scope.machines = Machine.machine();
+            $scope.machinesLoading = true;
             $scope.notAffectedMachines = [];
             $scope.rulesByDatacenter = rule.rule();
 
@@ -302,7 +303,8 @@
                             if(m.id && !m.firewall_enabled) {
                                 $scope.notAffectedMachines.push(m);
                             }
-                        })
+                        });
+                        $scope.machinesLoading = false;
                     }
                 });
 
