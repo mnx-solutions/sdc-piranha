@@ -14,8 +14,9 @@
         'Package',
         'localization',
         'util',
+        'firewall',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, firewall) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -116,6 +117,18 @@
                     });
             };
 
+            $scope.toggleFirewallEnabled = function (m) {
+                m.fireWallActionRunning = true;
+                var fn = m.firewall_enabled ? 'disable' : 'enable';
+                var expected = !m.firewall_enabled;
+                firewall[fn](m.id, function (err) {
+                    if(!err) {
+                        m.firewall_enabled = expected;
+                    }
+                    m.fireWallActionRunning = false;
+                });
+            };
+
             $scope.gridOrder = ['created'];
             $scope.gridProps = [
                 {
@@ -128,17 +141,39 @@
                     name: 'Data Center',
                     sequence: 2
                 },
+//                {
+//                    id: 'created',
+//                    name: 'Created',
+//                    getClass: function (type) {
+//                        if(type === 'header') {
+//                            return 'span3';
+//                        }
+//                        return 'span3 machine-list-content';
+//                    },
+//
+//                    sequence: 3
+//                },
                 {
-                    id: 'created',
-                    name: 'Created',
-                    getClass: function (type) {
-                        if(type === 'header') {
-                            return 'span3';
-                        }
-                        return 'span3 machine-list-content';
-                    },
-
-                    sequence: 3
+                    id: 'firewall',
+                    name: 'Firewall',
+                    type: 'button',
+                    sequence: 3,
+                    btn: {
+                        getLabel: function (object) {
+                            return !object.firewall_enabled ? 'Enable' : 'Disable';
+                        },
+                        getClass: function (object) {
+                            return 'btn-mini btn-minier btn-default';
+                        },
+                        disabled: function (object) {
+                            return object.fireWallActionRunning;
+                        },
+                        show: function(object) {
+                            return (object.type !== 'virtualmachine' || !object.hasOwnProperty('firewall_enabled'));
+                        },
+                        action: $scope.toggleFirewallEnabled.bind($scope),
+                        tooltip: 'Change machine firewall status'
+                    }
                 },
                 {
                     id: 'ips',
@@ -159,12 +194,12 @@
                         }
 
                     },
-                    sequence: 4
+                    sequence: 5
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 5
+                    sequence: 6
                 }
             ];
             $scope.gridDetailProps = [

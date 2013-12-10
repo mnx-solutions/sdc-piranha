@@ -9,6 +9,7 @@
                 doAction: '=actionFn',
                 isDisabled: '=disabledFn',
 	            getClass: '=classFn',
+                show: '=showFn',
 	            getLabel: '=labelFn',
                 label: '=',
                 tooltip: '=tooltipText',

@@ -23,7 +23,6 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                       '</ul>',
 
             controller: function ($scope, $routeParams, $attrs, route, localization) {
-                console.log('ATTRIBUTES', $attrs);
                 localization.bind('dashboard', $scope);
 
                 $scope.hideCreateInstance = ($attrs.hideCreateInstance || false);

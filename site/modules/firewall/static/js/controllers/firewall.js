@@ -284,6 +284,8 @@
             $scope.machines = Machine.machine();
             $scope.machinesLoading = true;
             $scope.notAffectedMachines = [];
+            $scope.kvmList = [];
+            $scope.firewallDisabledMachines = [];
             $scope.rulesByDatacenter = rule.rule();
 
             $q.all([
@@ -300,8 +302,18 @@
                         Object.keys($scope.machines).forEach(function(index) {
                             var m = $scope.machines[index];
 
-                            if(m.id && !m.firewall_enabled) {
+                            if(m.id && m.type == 'virtualmachine') {
+                                $scope.kvmList.push(m);
+                                return;
+                            }
+
+                            if(m.id && !m.hasOwnProperty('firewall_enabled')) {
                                 $scope.notAffectedMachines.push(m);
+                                return;
+                            }
+
+                            if(m.id && m.firewall_enabled === false) {
+                                $scope.firewallDisabledMachines.push(m);
                             }
                         });
                         $scope.machinesLoading = false;
