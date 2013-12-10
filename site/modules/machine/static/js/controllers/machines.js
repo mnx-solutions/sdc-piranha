@@ -160,7 +160,6 @@
                     sequence: 3,
                     btn: {
                         getLabel: function (object) {
-                            console.log(object);
                             return !object.firewall_enabled ? 'Enable' : 'Disable';
                         },
                         getClass: function (object) {
@@ -168,6 +167,9 @@
                         },
                         disabled: function (object) {
                             return object.fireWallActionRunning;
+                        },
+                        show: function(object) {
+                            return object.type !== 'virtualmachine';
                         },
                         action: $scope.toggleFirewallEnabled.bind($scope),
                         tooltip: 'Change machine firewall status'
