@@ -117,41 +117,42 @@ describe('Instances page', function () {
     });
 
     it('should have correct structure for instances list', function () {
-        instances[0].findElements(protractor.By.repeater('prop in props')).then(function (properties) {
+        instances[0].findElements(by.repeater('prop in props')).then(function (properties) {
             expect(properties.length).toEqual(5);
 
             properties[0]
-                .findElement(protractor.By.tagName('a'))
+                .findElement(by.tagName('a'))
                 .getAttribute('data-ng-switch-when').then(function (value) {
                     expect(value).toEqual('label');
                  });
 
             properties[0]
-                .findElement(protractor.By.tagName('a'))
+                .findElement(by.tagName('a'))
                 .getAttribute('href').then(function (value) {
                     expect(value).toContain('#!/compute/instance/2a4f6f94-f94a-ee65-b486-96705c74aefb');
                 });
 
             properties[1]
-                .findElement(protractor.By.tagName('span'))
+                .findElement(by.tagName('span'))
                 .getAttribute('data-ng-switch').then(function (value) {
                     expect(value).toEqual('prop.type');
                 });
 
+
             properties[2]
-                .findElement(protractor.By.tagName('span'))
+                .findElement(by.xpath('span/span'))
                 .getAttribute('data-ng-switch-when').then(function (value) {
-                    expect(value).toEqual('created');
+                    expect(value).toEqual('button');
                 });
 
             properties[3]
-                .findElement(protractor.By.tagName('span'))
+                .findElement(by.tagName('span'))
                 .getAttribute('data-ng-switch').then(function (value) {
                     expect(value).toEqual('prop.type');
                 });
 
             properties[4]
-                .findElement(protractor.By.tagName('span'))
+                .findElement(by.tagName('span'))
                 .getAttribute('data-ng-switch-when').then(function (value) {
                     expect(value).toEqual('state');
                 });
