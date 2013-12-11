@@ -1,6 +1,7 @@
 'use strict';
 
 var config = require('easy-config');
+var metadata = require('./lib/metadata');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
@@ -47,7 +48,33 @@ module.exports = function execute(scope) {
         Marketo.update(call.req.session.userId, marketoData, function (err) {
             if(err) {
                 call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                return;
             }
+
+            // get metadata
+            metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, data) {
+                if(err) {
+                    call.log.error({error: err}, 'Failed to get account history from metadata');
+                }
+
+                var obj = {};
+                try {
+                    obj = JSON.parse(data);
+                } catch(e) {
+                    obj = {};
+                    // json parsing failed
+                }
+                if(!obj || obj === null || Object.keys(obj).length === 0 || !(obj.marketo_data instanceof Array))  {
+                    obj = {};
+                    obj['marketo_data'] = [];
+                }
+
+
+                obj['marketo_data'].push({ 'previousValue': marketoData, 'time': Date.now()})
+                metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {
+
+                });
+            });
         });
 
         call.log.debug('Updating account with', data);
