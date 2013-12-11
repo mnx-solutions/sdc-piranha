@@ -468,24 +468,26 @@
                         var packageTypes = [];
                         packages.forEach(function (p) {
                             if (packageTypes.indexOf(p.group) === -1){
-                                if(p.group != 'Standard') packageTypes.push(p.group);
+                                if (p.group && p.group !== 'Standard') {
+                                    packageTypes.push(p.group);
+                                }
+                                var price = getNr(p.price);
+                                var priceMonth = getNr(p.price_month);
+                                p.price = price && price.toFixed(3) || undefined;
+                                p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
                             }
-
-                            var price = getNr(p.price);
-                            var priceMonth = getNr(p.price_month);
-                            p.price = price && price.toFixed(3) || undefined;
-                            p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
                         });
 
                         packages.forEach(function (p) {
                             if (packageTypes.indexOf(p.group) === -1){
-                                if(p.group == 'Standard') packageTypes.push(p.group);
+                                if (p.group === 'Standard') {
+                                    packageTypes.push(p.group);
+                                }
+                                var price = getNr(p.price);
+                                var priceMonth = getNr(p.price_month);
+                                p.price = price && price.toFixed(3) || undefined;
+                                p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
                             }
-
-                            var price = getNr(p.price);
-                            var priceMonth = getNr(p.price_month);
-                            p.price = price && price.toFixed(3) || undefined;
-                            p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
                         });
 
                         $scope.packageTypes = packageTypes;
