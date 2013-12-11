@@ -182,7 +182,7 @@ var backend = module.exports =  {
                                 });
                                 break;
                         }
-                    }(request))
+                    })(request);
                 }
             }
 
@@ -506,10 +506,16 @@ var backend = module.exports =  {
                 return context;
             },
 
-            serialize: function () {
+            serialize: function serialize () {
                 return serializeFunction(backend.clientHandlers, {
                     handlers: handlers
                 });
+            },
+
+            debug: function debug () {
+                return {
+                    handlers: handlers
+                };
             }
         };
 
