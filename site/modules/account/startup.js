@@ -66,14 +66,15 @@ module.exports = function execute(scope) {
                 }
                 if(!obj || obj === null || Object.keys(obj).length === 0 || !(obj.marketo_data instanceof Array))  {
                     obj = {};
-                    obj['marketo_data'] = [];
+                    obj['email'] = [];
+                    obj['phone'] = [];
                 }
 
 
-                obj['marketo_data'].push({ 'previousValue': marketoData, 'time': Date.now()})
-                metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {
+                obj['email'].push({ 'previousValue': data.email, 'time': Date.now()});
+                obj['phone'].push({ 'previousValue': data.phone, 'time': Date.now()});
 
-                });
+                metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {});
             });
         });
 
