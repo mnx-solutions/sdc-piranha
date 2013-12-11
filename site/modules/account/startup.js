@@ -52,14 +52,14 @@ module.exports = function execute(scope) {
             }
 
             // get metadata
-            metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, data) {
+            metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, accountHistory) {
                 if(err) {
                     call.log.error({error: err}, 'Failed to get account history from metadata');
                 }
 
                 var obj = {};
                 try {
-                    obj = JSON.parse(data);
+                    obj = JSON.parse(accountHistory);
                 } catch(e) {
                     obj = {};
                     // json parsing failed
