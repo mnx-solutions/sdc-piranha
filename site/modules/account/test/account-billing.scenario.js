@@ -24,16 +24,11 @@ describe('Account Billing info', function () {
     beforeEach(function() {
         ptor = protractor.getInstance();
         driver = ptor.driver;
+
         backend
             .stub(ptor)
-            .request('POST', 'account/ssh/create/', {}, {}, backend.data('ssh-create'))
-            .request('GET', 'account/ssh/job/56527cd9-b9fd-4d2e-8edc-50cce0a9d8c9/', {}, {}, backend.data('ssh-create-job'))
-            .call('getAccount', backend.data('account'))
-            .call('addPaymentMethod', {})
             .call('defaultCreditCard', {})
             .call('updateAccount', {})
-            .call('createKey', backend.data('create-key'))
-            .call('listKeys', [backend.data('list-keys')])
             .flush();
 
         ptor.get('/#!/account/payment');
@@ -43,6 +38,7 @@ describe('Account Billing info', function () {
         it('should not have phone input', function () {
             expect(ptor.isElementPresent(protractor.By.id('phone'))).toBeFalsy();
         });
+
         it('should work without validation errors', function () {
 
             ptor.findElement(protractor.By.xpath('//form[@id="paymentForm"]/table[1]/tbody/tr[1]/td[2]/div[@class="controls"]/input[@id="creditCardNumber"]')).sendKeys(billing.creditCardNumber);
