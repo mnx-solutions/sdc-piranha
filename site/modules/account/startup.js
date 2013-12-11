@@ -64,15 +64,15 @@ module.exports = function execute(scope) {
                     obj = {};
                     // json parsing failed
                 }
-                if(!obj || obj === null || Object.keys(obj).length === 0 || !(obj.marketo_data instanceof Array))  {
+                if(!obj || obj === null || Object.keys(obj).length === 0 || !(obj.email instanceof Array) || !(obj.phone instanceof Array))  {
                     obj = {};
-                    obj['email'] = [];
-                    obj['phone'] = [];
+                    obj.email = [];
+                    obj.phone = [];
                 }
 
 
-                obj['email'].push({ 'previousValue': data.email, 'time': Date.now()});
-                obj['phone'].push({ 'previousValue': data.phone, 'time': Date.now()});
+                obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
+                obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
 
                 metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {});
             });
