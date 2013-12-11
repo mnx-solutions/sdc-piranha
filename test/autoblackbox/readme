@@ -1,0 +1,35 @@
+Requirements:
+Gradle 1.8
+jdk1.7
+Firefox
+
+minimal build.properties configuration:
+endpoint = portalendpoint
+loginusr = portaluser
+loginpw = portalpw
+
+full conf:
+globaltimeout = timeout for ajax wait requests
+statustimeout = timeout for machine ostatus changes (provision/start/stop/restart/rename)
+endpoint = portalendpoint
+loginusr = portaluser
+loginpw = portalpw
+sauceusr = saucelabs user
+saucetoken = saucelabs token
+images - CloudAPI ListImages output *only for CheckPackagesTests*
+packages - CloudAPI ListPackages output *only for CheckPackagesTests*
+packagePrices - apppackages.json from the angular app *only for CheckPackagesTests*
+# endpoint name and url mappings for command line endpoint selection. usage: -Dapp=name1, default url is the url specified in endpoint parameter
+name1 = http://url
+name2 = http://url2
+
+
+without endpoint mapping
+gradle clean smokeTests -Dbrowser=firefox
+
+with endpoint mappign
+gradle clean smokeTests -Dbrowser=firefox -Dapp=name1
+
+test results are located at
+
+project_dir/build/test-results/#browser_name#
