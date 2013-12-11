@@ -44,43 +44,43 @@ module.exports = function execute(scope) {
             data[f] = call.data[f] || null;
         });
 
+
+        // get metadata
+        metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, accountHistory) {
+            if(err) {
+                call.log.error({error: err}, 'Failed to get account history from metadata');
+            }
+
+            var obj = {};
+            try {
+                obj = JSON.parse(accountHistory);
+            } catch(e) {
+                obj = {};
+                // json parsing failed
+            }
+            if(!obj || obj === null || Object.keys(obj).length === 0)  {
+                obj = {};
+            }
+
+            if(!obj.email) {
+                obj.email = [];
+            }
+
+            if(!obj.phone) {
+                obj.phone = [];
+            }
+
+            obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
+            obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
+
+            metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {});
+        });
+
         var marketoData = {Email: data.email, Phone: data.phone};
         Marketo.update(call.req.session.userId, marketoData, function (err) {
             if(err) {
                 call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
-                return;
             }
-
-            // get metadata
-            metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, accountHistory) {
-                if(err) {
-                    call.log.error({error: err}, 'Failed to get account history from metadata');
-                }
-
-                var obj = {};
-                try {
-                    obj = JSON.parse(accountHistory);
-                } catch(e) {
-                    obj = {};
-                    // json parsing failed
-                }
-                if(!obj || obj === null || Object.keys(obj).length === 0)  {
-                    obj = {};
-                }
-
-                if(!obj.email) {
-                    obj.email = [];
-                }
-
-                if(!obj.phone) {
-                    obj.phone = [];
-                }
-
-                obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
-                obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
-
-                metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {});
-            });
         });
 
         call.log.debug('Updating account with', data);
