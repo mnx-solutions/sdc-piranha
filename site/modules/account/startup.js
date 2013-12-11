@@ -64,12 +64,17 @@ module.exports = function execute(scope) {
                     obj = {};
                     // json parsing failed
                 }
-                if(!obj || obj === null || Object.keys(obj).length === 0 || !(obj.email instanceof Array) || !(obj.phone instanceof Array))  {
+                if(!obj || obj === null || Object.keys(obj).length === 0)  {
                     obj = {};
-                    obj.email = [];
-                    obj.phone = [];
                 }
 
+                if(!obj.email) {
+                    obj.email = [];
+                }
+
+                if(!obj.phone) {
+                    obj.phone = [];
+                }
 
                 obj.email.push({ 'previousValue': data.email, 'time': Date.now()});
                 obj.phone.push({ 'previousValue': data.phone, 'time': Date.now()});
