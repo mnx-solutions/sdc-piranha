@@ -93,6 +93,10 @@
                         subject = subject.toString();
                     }
 
+                    if (ng.isObject(subject) || ng.isArray(subject)){
+                        subject = JSON.stringify(subject)
+                    }
+
                     var needle = $scope.filterAll.toLowerCase();
 
                     return (subject.toLowerCase().indexOf(needle) !== -1);
@@ -110,8 +114,8 @@
                     subject = subject.toString();
                 }
 
-                if (ng.isObject(subject)) {
-                    subject = JSON.stringify(subject);
+                if (ng.isObject(subject) || ng.isArray(subject)){
+                    subject = JSON.stringify(subject)
                 }
 
                 var needle = el.filter.toLowerCase();
