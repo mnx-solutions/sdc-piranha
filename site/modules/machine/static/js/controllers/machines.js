@@ -41,8 +41,6 @@
                 });
             }, true);
 
-
-
             $scope.$watch('machines.final', function (final) {
                 if(final) {
                     $q.when($scope.packages, function () {
@@ -281,6 +279,58 @@
                     sequence: 2
                 },
                 {
+                    label: 'Enable FW',
+                    action: function (object) {
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Enable Firewall'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Enable Firewall'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            if(!el.firewall_enabled) el.firewall_enabled = true;
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
+                    },
+                    sequence: 3
+                },
+                {
+                    label: 'Disable FW',
+                    action: function (object) {
+                        if($scope.actionButton()) {
+                            util.confirm(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Confirm: Disable Firewall'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Disable Firewall'
+                                ), function () {
+                                    $scope.machines.forEach(function (el) {
+                                        if(el.checked){
+                                            if(el.firewall_enabled) el.firewall_enabled = false;
+                                            el.checked = false;
+                                        }
+                                    });
+                                });
+                        }else $scope.noCheckBoxChecked();
+                    },
+                    sequence: 4
+                },
+                {
                     label: 'Delete',
 //                    disabled: function (object) {
 //                        return object.state !== 'stopped' || (object.job && !object.job.finished);
@@ -322,7 +372,7 @@
                         }else $scope.noCheckBoxChecked();
                     },
 //                    tooltip: 'You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing.',
-                    sequence: 3
+                    sequence: 5
                 },
                 {
                     label: 'Reboot',
@@ -354,7 +404,7 @@
                         }else $scope.noCheckBoxChecked();
                     },
 //                    tooltip: 'Click here to reboot your instance.',
-                    sequence: 4
+                    sequence: 6
                 }
             ];
 

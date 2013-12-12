@@ -102,6 +102,10 @@
                                 {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
                             </span>
                         </span>
+                        <span data-ng-switch-when="firewall_enabled">
+                            <span data-ng-show="object.firewall_enabled">yes</span>
+                            <span data-ng-show="!object.firewall_enabled">no</span>
+                        </span>
                         <!--<span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>-->
                     </td>
                     <td width="1000"></td>
