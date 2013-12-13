@@ -281,7 +281,7 @@
                 {
                     label: 'Enable FW',
                     action: function (object) {
-                        if($scope.actionButton()) {
+                        if ($scope.actionButton()) {
                             util.confirm(
                                 localization.translate(
                                     $scope,
@@ -294,20 +294,24 @@
                                     'Enable Firewall'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
-                                        if(el.checked){
-                                            if(!el.firewall_enabled) el.firewall_enabled = true;
+                                        if (el.checked) {
+                                            if (!el.firewall_enabled) {
+                                                el.firewall_enabled = true;
+                                            }
                                             el.checked = false;
                                         }
                                     });
                                 });
-                        }else $scope.noCheckBoxChecked();
+                        } else {
+                            $scope.noCheckBoxChecked();
+                        }
                     },
                     sequence: 3
                 },
                 {
                     label: 'Disable FW',
                     action: function (object) {
-                        if($scope.actionButton()) {
+                        if ($scope.actionButton()) {
                             util.confirm(
                                 localization.translate(
                                     $scope,
@@ -320,13 +324,17 @@
                                     'Disable Firewall'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
-                                        if(el.checked){
-                                            if(el.firewall_enabled) el.firewall_enabled = false;
+                                        if (el.checked) {
+                                            if (el.firewall_enabled) {
+                                                el.firewall_enabled = false;
+                                            }
                                             el.checked = false;
                                         }
                                     });
                                 });
-                        }else $scope.noCheckBoxChecked();
+                        } else {
+                            $scope.noCheckBoxChecked();
+                        }
                     },
                     sequence: 4
                 },

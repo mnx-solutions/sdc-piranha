@@ -19,7 +19,7 @@
                 $scope.callInProgress = false;
                 $scope.lastCalledNumber = null;
                 $scope.fullPhoneNumber = null;
-                $scope.verifying = false;
+                $scope.navigating = false;
 
                 $scope.isoToObj = function(iso) {
                     if (!$scope.countryCodes) {
@@ -113,13 +113,13 @@
                             }
                             return;
                         }
-                        $scope.verifying = true;
+                        $scope.navigаting = true;
                         Account.updateAccount({
                             country: $scope.country.iso3,
                             phone: '+' + $scope.fullPhoneNumber
                         }).then(function () {
                             $scope.pinError = null;
-                            $scope.verifying = false;
+                            $scope.navigаting = false;
                             $scope.updateStep();
                         });
                     });
