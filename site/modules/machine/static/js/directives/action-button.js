@@ -20,6 +20,11 @@
             },
 
             link: function ($scope) {
+                if(!$scope.show) {
+                    $scope.show = function() {
+                        return true;
+                    }
+                }
             },
 
             templateUrl: 'machine/static/partials/action-button.html'
