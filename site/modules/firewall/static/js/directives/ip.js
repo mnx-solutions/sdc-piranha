@@ -12,6 +12,8 @@
                             ctrl.$setValidity((elm[0].form || elm[0]).name, false);
                         } else if (/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/i.test(viewValue)) {
                             ctrl.$setValidity((elm[0].form || elm[0]).name, true);
+                        } else {
+                            ctrl.$setValidity((elm[0].form || elm[0]).name, false);
                         }
 
                         return viewValue;
