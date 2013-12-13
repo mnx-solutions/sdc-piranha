@@ -23,11 +23,11 @@ input.ng-pristine {
 
 .notice-block {
     margin-bottom: 15px;
-    color:#999 !important;
+    color:#000 !important;
 }
 
 .notice-block a {
-    color:#999 !important;
+    color:#000 !important;
 }
 
 .margin-top-10 {
