@@ -35,7 +35,9 @@
     "soap": "~0.3.0",
     "http-signature": "~0.10.0",
     "ursa": "git+ssh://git@github.com:13W/ursa.git",
-    "manta": "~1.2.2"
+    "manta": "~1.2.2",
+    "multiparty": "~3.1.0",
+    "memorystream": "~0.2.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

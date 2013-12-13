@@ -1,0 +1,21 @@
+#address ul li {
+    list-style: none;
+    display: inline-block;
+}
+
+#address ul a {
+    white-space: nowrap;
+}
+
+#address ul li:before {
+    content: ' / ';
+    padding-left: 3px;
+}
+
+#address ul li:first-child:before {
+    content: '' !important;
+}
+
+#address ul li:first-child a:after {
+    content: 'root' !important;
+}

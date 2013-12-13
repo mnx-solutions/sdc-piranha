@@ -23,7 +23,8 @@
             "feature-flags",
 			"maxmind",
             "slb",
-            "dialog"
+            "dialog",
+            "fileman"
         ],
 		"auth": true,
         "error": true,
