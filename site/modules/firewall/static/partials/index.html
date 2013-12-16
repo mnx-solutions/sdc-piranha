@@ -101,7 +101,7 @@
                                                     Tag name:
                                                 </span>
                                                 <span class="span6">
-                                                    <input type="text" data-ng-model="current.from.text"/>
+                                                    <input type="text" data-ng-model="current.from.text" required/>
                                                 </span>
                                             </span>
                                             <span data-ng-show="current.from.text" class="row-fluid">
@@ -124,7 +124,7 @@
                                                 <span data-ng-switch-when="subnet">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip/>
+                                                            <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
                                                         </span>
                                                     </span>
                                                     <span data-ng-show="current.from.text" class="row-fluid">
@@ -139,14 +139,14 @@
                                                 <span data-ng-switch-when="ip">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip required />
                                                         </span>
                                                     </span>
                                                 </span>
                                                 <span data-ng-switch-default>
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" />
+                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" required />
                                                         </span>
                                                     </span>
 
@@ -211,7 +211,7 @@
                                                     Tag name:
                                                 </span>
                                                 <span class="span6">
-                                                    <input type="text" data-ng-model="current.to.text"/>
+                                                    <input type="text" data-ng-model="current.to.text" required />
                                                 </span>
                                             </span>
                                             <span data-ng-show="current.to.text" class="row-fluid">
@@ -234,7 +234,7 @@
                                                 <span data-ng-switch-when="subnet">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip/>
+                                                            <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
                                                         </span>
                                                     </span>
                                                     <span data-ng-show="current.to.text" class="row-fluid">
@@ -249,7 +249,7 @@
                                                 <span data-ng-switch-when="ip">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="toValue" data-ng-model="current.to.text" data-ip/>
+                                                            <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
                                                         </span>
                                                     </span>
                                                 </span>
@@ -326,7 +326,7 @@
                                             <span class="span10">
                                                 <input type="text"
                                                        name="type"
-                                                       data-ng-required="true"
+                                                       required="true"
                                                        data-range="0-255"
                                                        data-ng-model="current.type" />
                                             </span>
@@ -338,7 +338,7 @@
                                             <span class="span6 margin-top-10">
                                                 <input type="text"
                                                        name="code"
-                                                       data-ng-required="false"
+                                                       required="false"
                                                        data-range="0-255"
                                                        data-ng-model="current.code" />
                                             </span>
