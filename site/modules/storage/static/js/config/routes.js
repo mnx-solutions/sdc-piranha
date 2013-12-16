@@ -6,4 +6,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Storage',
             action: 'storage.index'
         })
+        .when('/storage/history', {
+            title: 'Storage',
+            action: 'storage.history'
+        });
 }]);

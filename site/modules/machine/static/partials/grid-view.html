@@ -77,8 +77,8 @@
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                             <span data-ng-click="selectCheckbox(object)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished)">
                                 <input type="checkbox" class="group-checkable" data-set=".checkboxes" value="">
-        </span>
-    </div>
+                            </span>
+                            </div>
                         </label>
                     </td>
                     <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id">
@@ -86,9 +86,13 @@
                             <a href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                         </div>
-            <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
-                <div data-object-state data-object="object" data-type="{{objectsType}}" class="grid-small-font"></div>
-            </span>
+                        <div data-ng-switch-when="name"  style="min-width: 140px;">
+                            <a href="#!/storage/job/{{object.name}}" data-ng-show="location.path().search('storage.history')==1">{{object.name}}</a>
+                            <a href="" data-ng-show="location.path().search('images')==1">{{object.name}}</a>
+                        </div>
+                        <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
+                            <div data-object-state data-object="object" data-type="{{objectsType}}" class="grid-small-font"></div>
+                        </span>
                         <span data-ng-switch-when="actionButtons">
                             <div data-ng-show="getActionButtons(object).length && imageButtonShow">
                                 <div class="grid-small-font" data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
@@ -99,22 +103,23 @@
                         <span data-ng-switch-when="created">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
                         <span data-ng-switch-when="updated">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
                         <span data-ng-switch-when="published_at">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
+                        <span data-ng-switch-when="mtime">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
                         <span data-ng-switch-when="ips">
                             <span data-ng-repeat="ip in object.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
                         </span>
-            <span data-ng-switch-default data-ng-switch="prop.type">
-                <span data-ng-switch-when="button">
-                    <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
-                </span>
-                <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
-                    <span data-ng-switch-when="firewall_state">
-                        <span data-ng-show="object.fireWallActionRunning" class="loading-small loading-small-firewall pull-left"></span>
-                        <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
-                    </span>
-                <span data-ng-switch-default>
-                    {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
-                </span>
-            </span>
+                        <span data-ng-switch-default data-ng-switch="prop.type">
+                            <span data-ng-switch-when="button">
+                                <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
+                            </span>
+                            <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                                <span data-ng-switch-when="firewall_state">
+                                    <span data-ng-show="object.fireWallActionRunning" class="loading-small loading-small-firewall pull-left"></span>
+                                    <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                                </span>
+                            <span data-ng-switch-default>
+                                {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
+                            </span>
+                        </span>
                     </td>
                 </tr>
             </tbody>

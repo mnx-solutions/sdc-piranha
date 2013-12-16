@@ -1,7 +1,8 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', function ($scope, $filter, $http, $location) {
+        $scope.location = $location;
         $scope.getLastPage = function (update) {
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
