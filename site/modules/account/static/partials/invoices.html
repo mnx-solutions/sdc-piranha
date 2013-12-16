@@ -11,8 +11,8 @@
 
         <div class="pull-left container span9">
             <div data-notification></div>
-			<div class="loading-medium" data-ng-show="loading" style="height:60px;100%"></div>
-            <table class="table" data-ng-show="!loading && !error">
+			<div class="loading-medium" data-ng-show="loading" style="height:60px;"></div>
+            <table class="table" data-ng-show="!loading && !error && invoices.length">
                 <thead>
                     <tr>
                         <td data-translate>Month</td>
@@ -30,6 +30,9 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="alert alert-info" data-ng-show="!loading && !invoices.length" data-translate>
+                You have no invoices as of yet
+            </div>
         </div>
 		<div class="span3 pull-right">
         	<div data-account-right-menu></div>
