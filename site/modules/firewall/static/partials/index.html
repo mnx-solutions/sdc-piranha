@@ -135,7 +135,7 @@
                                 <span class="span6 text-medium" data-ng-form="fromForm">
                                     <span data-ng-switch="current.from.type">
                                         <span data-ng-switch-when="wildcard">
-                                            <span data-ng-show="current.from.text == 'all vms'">
+                                            <span data-ng-show="current.from.text == 'all vms' || current.from.text == 'any'">
                                                 <span class="row-fluid">
                                                     <span class="span6 margin-top-10">
                                                         <button class="btn" data-ng-click="addFrom()">ADD</button>
@@ -245,7 +245,7 @@
                                 <span class="span6 text-medium" data-ng-form="toForm">
                                     <span data-ng-switch="current.to.type">
                                         <span data-ng-switch-when="wildcard">
-                                            <span data-ng-show="current.to.text == 'all vms'">
+                                            <span data-ng-show="current.to.text == 'all vms' || current.to.text == 'any'">
                                                 <span class="row-fluid">
                                                     <span class="span6 margin-top-10">
                                                         <button class="btn" data-ng-click="addTo()">ADD</button>

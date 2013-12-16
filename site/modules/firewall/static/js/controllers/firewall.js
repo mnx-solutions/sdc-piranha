@@ -267,6 +267,12 @@
                 children:[{
                     id: ng.toJson({
                         type: 'wildcard',
+                        text: 'any'
+                    }),
+                    text: 'Any'
+                },{
+                    id: ng.toJson({
+                        type: 'wildcard',
                         text: 'all vms'
                     }),
                     text: 'Any Vm'
@@ -541,7 +547,7 @@
                 var target = [];
                 var data = $scope.current[direction];
 
-                if (data.type === 'wildcard', data.text === 'any') {
+                if (data.type === 'wildcard' && data.text === 'any') {
                     clearTarget(direction);
                     data = {
                         type: 'wildcard',
