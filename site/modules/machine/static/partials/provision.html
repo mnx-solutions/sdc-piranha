@@ -17,12 +17,8 @@
             <!--</div>-->
             <div class="ci_desc">Get started with Joyent by selecting an instance below and start computing.</div>
             <div style="padding-bottom: 30px;">
-                <span>DataCenter:</span>
-                <div class="provisioning-header-left-button btn-group tooltip-hover"
-                     data-html="true"
-                     data-toggle="tooltip"
-                     data-placement="right"
-                     data-original-title="Filter by zone">
+                <span>Data Center:</span>
+                <div class="provisioning-header-left-button btn-group">
                     <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
                     <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                         <span class="caret"></span>
@@ -42,7 +38,7 @@
             </div>
 
             <div class="row-fluid basic-instance-box-padding">
-                <div class="basic-instance-box" ng-repeat="image in simpleImages" ng-class="image.className">
+                <div class="basic-instance-box" ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" ng-class="image.className">
                     <div class="basic-instance-title">
                         <p>{{image.name}}</p>
                     </div>
@@ -132,11 +128,7 @@
                                     </div>
 
 
-                                    <div class="btn-group tooltip-hover"
-                                         data-html="true"
-                                         data-toggle="tooltip"
-                                         data-placement="right"
-                                         data-original-title="Filter by zone">
+                                    <div class="btn-group">
                                         <span class="btn-control-pos">
                                             Data Center:
                                         </span>

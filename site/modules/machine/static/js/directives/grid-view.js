@@ -223,6 +223,8 @@
             });
         };
 
+        $scope.$watch('objects', function(){$scope.selectCheckbox();}, true);
+
         $scope.selectCheckbox = function (id) {
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
@@ -246,7 +248,6 @@
                 }
             });
         };
-
         $scope.selectCheckbox();
 
     }]).constant('gridConfig', {

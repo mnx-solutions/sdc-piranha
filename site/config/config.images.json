@@ -94,6 +94,158 @@
                 "disk": 738,
                 "price": 0.300
             }
+        },
+        {
+            "name": "Basic SmartOS",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-west-1",
+                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "name": "",
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
+                "opsys": "All",
+                "package": "f917d6c7-f719-44b0-9ea0-034da05602e5"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS 64",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-west-1",
+                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "name": "",
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
+                "opsys": "All",
+                "package": "f917d6c7-f719-44b0-9ea0-034da05602e5"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "d71da280-92da-489f-9c4c-c91891fa202f"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS 64",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "d71da280-92da-489f-9c4c-c91891fa202f"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-sw-1",
+                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "name": "",
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
+                "opsys": "All",
+                "package": "8c556858-8137-4b97-9970-d741a96e4e75"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS 64",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-sw-1",
+                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "name": "",
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
+                "opsys": "All",
+                "package": "8c556858-8137-4b97-9970-d741a96e4e75"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "eu-ams-1",
+                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "7fc87f43-2def-4e6f-9f8c-980b0385b36e"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
+        },
+        {
+            "name": "Basic SmartOS 64",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "eu-ams-1",
+                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "7fc87f43-2def-4e6f-9f8c-980b0385b36e"
+            },
+            "description": {
+                "text": "The high-performance cloud OS",
+                "memory": 0.25,
+                "cpu": 0.125,
+                "disk": 16,
+                "price": 0.008
+            }
         }
     ]
 }
