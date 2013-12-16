@@ -737,7 +737,7 @@
 		        },
                 {
                     id: 'datacenter',
-                    name: 'Datacenter',
+                    name: 'Data Center',
                     getClass: function () {
                         return 'span2 padding-5';
                     },
@@ -786,7 +786,7 @@
 		        },
 		        {
 			        id: 'enabled',
-			        name: 'Enabled',
+			        name: 'Status',
 			        type: 'button',
 			        getClass: function () {
 				        return 'pull-right span1 padding-5';
