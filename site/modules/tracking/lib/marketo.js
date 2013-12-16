@@ -11,12 +11,19 @@ var defaultMaxClientAge = 2 * 60 * 60 * 1000; // 2 hour
 
 // client is cached and shared here
 var marketoConfig = config.marketo.soap;
-
-if(!marketoConfig || !marketoConfig.secret || !marketoConfig.clientId || !marketoConfig.endpoint) {
-    throw new Error('config.marketo.soap[endpoint, clientId, secret] required');
-}
 var client;
 var clientCreatedAt = 0;
+var configError;
+
+var errArr = [];
+['secret', 'clientId','endpoint'].forEach(function (key) {
+    if(!marketoConfig || !marketoConfig[key]) {
+        errArr.push(key);
+    }
+});
+if (errArr.length) {
+    configError = 'config.marketo.soap[' + errArr.join(', ') + '] missing';
+}
 
 /**
  * Connect: Creates a client
@@ -31,6 +38,11 @@ function connect (callback) {
     var clientExpired = (maxClientAge < Date.now() - clientCreatedAt);
     if (client && !clientExpired) {
         setImmediate(callback, null, client);
+        return;
+    }
+
+    if (configError) {
+        setImmediate(callback, new Error(configError));
         return;
     }
 
