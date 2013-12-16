@@ -451,8 +451,8 @@
                 $scope.data.uuid = null;
                 $scope.data.datacenter = $scope.datacenter;
                 $scope.data.parsed = {};
-                $scope.data.parsed.from = [['wildcard', 'any']];
-                $scope.data.parsed.to = [['wildcard', 'any']];
+                $scope.data.parsed.from = [];
+                $scope.data.parsed.to = [];
                 $scope.data.parsed.action = 'allow';
                 $scope.data.parsed.protocol = {
                     name:'tcp',
@@ -543,9 +543,13 @@
                 $scope.protocolForm.code.$setValidity('range', false);
             };
 
-            function addTarget (direction) {
+            function addTarget (direction, other) {
                 var target = [];
                 var data = $scope.current[direction];
+
+                if (!$scope.data.parsed[other].length) {
+                    $scope.data.parsed[other].push(['wildcard','any']);
+                }
 
                 if (data.type === 'wildcard' && data.text === 'any') {
                     clearTarget(direction);
@@ -580,8 +584,8 @@
                 $scope.data.parsed.protocol.targets = [];
             };
 
-            $scope.addFrom = addTarget.bind(addTarget, 'from');
-            $scope.addTo = addTarget.bind(addTarget, 'to');
+            $scope.addFrom = addTarget.bind(addTarget, 'from', 'to');
+            $scope.addTo = addTarget.bind(addTarget, 'to', 'from');
 
             $scope.removeFrom = function(i) {
                 $scope.data.parsed.from.splice(i, 1);
