@@ -973,3 +973,13 @@ iframe {
 .asterix-info {
     color: #b3b3b3;
 }
+
+/* promo iframe */
+.dashboard-splash {
+    width:620px;
+    height:340px;
+}
+
+.dashboard-splash-iframe {
+    overflow: hidden;
+}

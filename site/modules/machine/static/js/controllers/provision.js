@@ -18,18 +18,32 @@
         '$q',
         '$$track',
         'util',
+        '$cookies',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network,
+                  Image, $dialog, $location, localization, $q, $$track, util, $cookies) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
 
+            $scope.campaignId = ($cookies.campaignId || 'default');
+
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
+            $scope.preSelectedDatacenterName = requestContext.getParam('datacenter');
+            $scope.preSelectedPackageId = requestContext.getParam('packageid');
+            $scope.preSelectedNetworks = requestContext.getParam('networks');
 
-            if($scope.preSelectedImageId) {
-                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+            if ($scope.preSelectedImageId) {
+                if ($scope.preSelectedDatacenterName) {
+                    $scope.preSelectedImage = {
+                        id: $scope.preSelectedImageId,
+                        datacenter: $scope.preSelectedDatacenterName
+                    };
+                } else {
+                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                }
             }
 
             $scope.account = Account.getAccount();
@@ -97,35 +111,41 @@
             };
 
             $scope.clickProvision = function () {
-                function provision() {
-                    util.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: Create Instance'
-                        ),
-                        localization.translate(
-                            $scope,
-                            'machine',
-                            'Billing will start once this instance is created'
-                        ), function () {
-                            // add networks to data
-                            $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                            $scope.retinfo = Machine.provisionMachine($scope.data);
-                            $scope.retinfo.done(function(err, job) {
-                                var newMachine = job.__read();
-                                if(newMachine.id) {
-                                    var listMachines = Machine.machine();
-                                    $q.when(listMachines, function() {
-                                        if(listMachines.length == 1) {
-                                            $$track.marketo_machine_provision($scope.account);
-                                        }
-                                    });
+                function provisionMachine() {
+                    // add networks to data
+                    $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
+                    $scope.retinfo = Machine.provisionMachine($scope.data);
+                    $scope.retinfo.done(function(err, job) {
+                        var newMachine = job.__read();
+                        if(newMachine.id) {
+                            var listMachines = Machine.machine();
+                            $q.when(listMachines, function() {
+                                if(listMachines.length == 1) {
+                                    $$track.marketo_machine_provision($scope.account);
                                 }
                             });
+                        }
+                    });
 
-                            $location.path('/compute');
-                        });
+                    $location.path('/compute');
+                }
+
+                function provision() {
+                    if ($scope.preSelectedPackageId) {
+                        provisionMachine();
+                    } else {
+                        util.confirm(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Confirm: Create Instance'
+                            ),
+                            localization.translate(
+                                $scope,
+                                'machine',
+                                'Billing will start once this instance is created'
+                            ), provisionMachine);
+                    }
                 }
 
                 if (!$scope.data.datacenter) {
@@ -167,6 +187,9 @@
             };
 
             $scope.reconfigure = function () {
+                if ($scope.preSelectedPackageId) {
+                    $location.path('/').search({});
+                }
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
                 $scope.selectedDataset = null;
@@ -239,6 +262,10 @@
                     }
 
                     $scope.slideCarousel();
+
+                    if ($scope.preSelectedPackageId) {
+                        $scope.selectPackage($scope.preSelectedPackageId);
+                    }
                 });
 
 
@@ -302,7 +329,11 @@
                     $scope.selectedPackageInfo = pkg;
 
                     $scope.data.package = pkg.id;
-                    ng.element('#network-configuration').fadeIn('fast');
+                    if (!$scope.preSelectedPackageId) {
+                        ng.element('#network-configuration').fadeIn('fast');
+                    } else if ($scope.preSelectedNetworks) {
+                        $scope.selectedNetworks = $scope.preSelectedNetworks;
+                    }
                 });
             };
 
@@ -337,7 +368,7 @@
                 if(!$scope.searchPackages) {
                     return true;
                 }
-                
+
                 var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
                 return props.some(function (prop) {
                     if(!item[prop]) {
