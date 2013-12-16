@@ -96,26 +96,21 @@
 
             }
 
-            // Create target comboboxes
-            var from = $('#fromSelect').select2({
-                width: 220,
-                query: query,
-                initSelection : function () {}
-            }).change(function(e){
-                $scope.$apply(function(){
-                    $scope.current.from = ng.fromJson(e.val);
+            function createCombobox(id, objId, propId) {
+                return $(id).select2({
+                    width: 220,
+                    query: query,
+                    initSelection : function () {}
+                }).change(function(e){
+                    $scope.$apply(function(){
+                        $scope[objId][propId] = ng.fromJson(e.val);
+                    });
                 });
-            });
+            }
 
-            var to = $('#toSelect').select2({
-                width: 220,
-                query: query,
-                initSelection : function () {}
-            }).change(function(e){
-                $scope.$apply(function(){
-                    $scope.current.to = ng.fromJson(e.val);
-                });
-            });
+            // Create target comboboxes
+            var from = createCombobox('#fromSelect', 'current', 'from');
+            var to = createCombobox('#toSelect', 'current', 'to');
 
             $scope.CIDRs = [];
             for(var i=0; i<=32; i++) {
@@ -241,20 +236,72 @@
 	        };
 
             $scope.actions = [{
-                value:'allow',
-                title:'Allow'
+                id:'allow',
+                text:'Allow'
             },{
-                value:'block',
-                title:'Block'
+                id:'block',
+                text:'Block'
             }];
 
             $scope.states = [{
-                value: true,
-                title:'Enabled'
+                id: 'true',
+                text:'Enabled'
             },{
-                value: false,
-                title:'Disabled'
+                id: 'false',
+                text:'Disabled'
             }];
+
+            $scope.selected = {
+                action: $scope.actions[0].text,
+                status: $scope.states[0].text
+            };
+            $('#actionSelect').select2({
+                data: $scope.actions,
+                width: 220
+            }).change(function (e) {
+                $scope.$apply(function(){
+                    $scope.data.parsed.action = e.val;
+                    $scope.actions.some(function (action) {
+                        if(action.id === e.val) {
+                            $scope.selected.action = action.text;
+                            return true;
+                        }
+                    });
+                });
+            }).select2('val', $scope.actions[0].id);
+
+            $('#stateSelect').select2({
+                data: $scope.states,
+                width: 220
+            }).change(function (e) {
+                $scope.$apply(function(){
+                    $scope.data.enabled = e.val === 'true' ? true : false;
+                    $scope.states.some(function (action) {
+                        if(action.id === e.val) {
+                            $scope.selected.status = action.text;
+                            return true;
+                        }
+                    });
+                });
+            }).select2('val', $scope.states[0].id);
+
+            $scope.$watch('datacenters', function (newVal) {
+                if(newVal && ng.isArray(newVal) && newVal.length > 0) {
+                    $scope.selected.datacenter = $scope.selected.datacenter || newVal[0].name;
+                    $('#dcSelect').select2('destroy');
+                    $('#dcSelect').select2({
+                        data: newVal.map(function (dc) { return {id: dc.name, text: dc.name}; }),
+                        width: 220
+                    }).change(function (e) {
+                        $scope.$apply(function () {
+                            $scope.datacenter = e.val;
+                            $scope.selected.datacenter = e.val;
+                        });
+                    }).select2('val', $scope.selected.datacenter);
+
+                }
+            });
+
 
             $scope.protocols = [{
                 value:'tcp',

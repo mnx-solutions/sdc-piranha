@@ -50,28 +50,76 @@
                 </legend>
 
                 <div data-ng-show="openRuleForm">
-                    <!-- row1 -->
+                    <legend data-translate>Action</legend>
                     <div class="row">
                         <!-- left -->
                         <div class="span6 control-group">
-                            <label class="control-label">Action</label>
+                            <label class="control-label">Action:</label>
                             <div class="controls">
-                                <span class="span10">
-                                    <select data-ng-model="data.parsed.action" data-ng-options="action.value as action.title for (key, action) in actions"></select>
+                                <span class="span6">
+                                    <input type="hidden" id="actionSelect"><br/><br/>
                                 </span>
                             </div>
-                            <label class="control-label margin-top-10">Status</label>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.action}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+                    <legend data-translate>Status</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Status:</label>
                             <div class="controls">
-                                <span class="span10 margin-top-10">
-                                    <select data-ng-model="data.enabled" data-ng-options="status.value as status.title for (key, status) in states"></select>
+                                <span class="span6">
+                                    <input type="hidden" id="stateSelect"><br/><br/>
                                 </span>
                             </div>
-                            <label class="control-label margin-top-10">Data Center</label>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.status}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+                    <legend data-translate>Data Center</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Data Center:</label>
                             <div class="controls">
-                                <span class="span10 margin-top-10">
-                                    <select data-ng-model="datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters"></select>
+                                <span class="span6">
+                                    <input type="hidden" id="dcSelect"><br/><br/>
                                 </span>
                             </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.datacenter}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
                         </div>
                     </div>
                     <legend data-translate>From</legend>
