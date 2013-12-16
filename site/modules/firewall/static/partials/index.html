@@ -50,28 +50,76 @@
                 </legend>
 
                 <div data-ng-show="openRuleForm">
-                    <!-- row1 -->
+                    <legend data-translate>Action</legend>
                     <div class="row">
                         <!-- left -->
                         <div class="span6 control-group">
-                            <label class="control-label">Action</label>
+                            <label class="control-label">Action:</label>
                             <div class="controls">
-                                <span class="span10">
-                                    <select data-ng-model="data.parsed.action" data-ng-options="action.value as action.title for (key, action) in actions"></select>
+                                <span class="span6">
+                                    <input type="hidden" id="actionSelect"><br/><br/>
                                 </span>
                             </div>
-                            <label class="control-label margin-top-10">Status</label>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.action}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+                    <legend data-translate>Status</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Status:</label>
                             <div class="controls">
-                                <span class="span10 margin-top-10">
-                                    <select data-ng-model="data.enabled" data-ng-options="status.value as status.title for (key, status) in states"></select>
+                                <span class="span6">
+                                    <input type="hidden" id="stateSelect"><br/><br/>
                                 </span>
                             </div>
-                            <label class="control-label margin-top-10">Data Center</label>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.status}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+                    <legend data-translate>Data Center</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Data Center:</label>
                             <div class="controls">
-                                <span class="span10 margin-top-10">
-                                    <select data-ng-model="datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters"></select>
+                                <span class="span6">
+                                    <input type="hidden" id="dcSelect"><br/><br/>
                                 </span>
                             </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.datacenter}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
                         </div>
                     </div>
                     <legend data-translate>From</legend>
@@ -101,7 +149,7 @@
                                                     Tag name:
                                                 </span>
                                                 <span class="span6">
-                                                    <input type="text" data-ng-model="current.from.text"/>
+                                                    <input type="text" data-ng-model="current.from.text" required/>
                                                 </span>
                                             </span>
                                             <span data-ng-show="current.from.text" class="row-fluid">
@@ -124,7 +172,7 @@
                                                 <span data-ng-switch-when="subnet">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip/>
+                                                            <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
                                                         </span>
                                                     </span>
                                                     <span data-ng-show="current.from.text" class="row-fluid">
@@ -139,14 +187,14 @@
                                                 <span data-ng-switch-when="ip">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip/>
+                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip required />
                                                         </span>
                                                     </span>
                                                 </span>
                                                 <span data-ng-switch-default>
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" />
+                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" required />
                                                         </span>
                                                     </span>
 
@@ -211,7 +259,7 @@
                                                     Tag name:
                                                 </span>
                                                 <span class="span6">
-                                                    <input type="text" data-ng-model="current.to.text"/>
+                                                    <input type="text" data-ng-model="current.to.text" required />
                                                 </span>
                                             </span>
                                             <span data-ng-show="current.to.text" class="row-fluid">
@@ -234,7 +282,7 @@
                                                 <span data-ng-switch-when="subnet">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip/>
+                                                            <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
                                                         </span>
                                                     </span>
                                                     <span data-ng-show="current.to.text" class="row-fluid">
@@ -249,7 +297,7 @@
                                                 <span data-ng-switch-when="ip">
                                                     <span class="row-fluid">
                                                         <span class="span6">
-                                                            <input type="text" name="toValue" data-ng-model="current.to.text" data-ip/>
+                                                            <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
                                                         </span>
                                                     </span>
                                                 </span>
@@ -326,7 +374,7 @@
                                             <span class="span10">
                                                 <input type="text"
                                                        name="type"
-                                                       data-ng-required="true"
+                                                       required="true"
                                                        data-range="0-255"
                                                        data-ng-model="current.type" />
                                             </span>
@@ -338,7 +386,7 @@
                                             <span class="span6 margin-top-10">
                                                 <input type="text"
                                                        name="code"
-                                                       data-ng-required="false"
+                                                       required="false"
                                                        data-range="0-255"
                                                        data-ng-model="current.code" />
                                             </span>
