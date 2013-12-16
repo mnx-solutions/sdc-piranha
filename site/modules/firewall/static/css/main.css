@@ -66,6 +66,10 @@ input.ng-pristine {
     padding: 0 4px !important;
 }
 
+.btn-minier.btn-danger {
+    padding: 0 3px !important;
+}
+
 .ff-form-actions {
     margin-bottom: 20px;
 }
