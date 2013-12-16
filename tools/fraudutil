@@ -3,56 +3,121 @@
 var unblockUser = false;
 var argumentsError = false;
 var uuid = null;
+var riskScore = null;
+var blockReason = null;
+process.argv = process.argv.slice(2); //cutting off node and path to file
 process.argv.forEach(function (argument, index) {
     if (argument.indexOf('-') === 0) {
         if (argument === '-u' || argument === '--unblock') {
             unblockUser = true;
+        } else if (argument === '--risk-score') {
+            riskScore = parseInt(process.argv[index + 1], 10);
+            if (isNaN(riskScore) || riskScore <= 0 || riskScore >= 100) {
+                argumentsError = true;
+            }
+        } else if (argument === '--block-reason') {
+            blockReason = process.argv[index + 1];
         } else {
             argumentsError = true;
         }
-    } else if (/^[0-9a-f\-]+$/.test(argument)) {
+    } else if (/^[0-9a-f\-]+$/.test(argument) && argument.length === 36 /*uuid length*/) {
         if (!uuid) {
             uuid = argument;
         } else {
             argumentsError = true;
         }
-    } else if (index >= 2) {
+    } else if (index >= 5) {
         argumentsError = true;
     }
 });
+
 if (!uuid || argumentsError) {
     console.log('Fraud Utility');
     console.log('');
-    console.log('fraudutil <UUID> [-u | --unblock]');
+    console.log('fraudutil <UUID> [-u | --unblock] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
     process.exit();
 }
 
 process.chdir(__dirname + '/..');
 var config = require('easy-config');
+var vasync = require('vasync');
 var metadata = require('../site/modules/account/lib/metadata');
-if (unblockUser) {
-    metadata.set(uuid, metadata.SIGNUP_STEP, '', function (err) {
+if (process.argv.length === 1 && uuid) {
+    vasync.pipeline({
+        'funcs': [
+            function(_, callback) {
+                get(metadata.SIGNUP_STEP, callback);
+            },
+            function(_, callback) {
+                get(metadata.RISK_SCORE, callback);
+            },
+            function(_, callback) {
+                get(metadata.BLOCK_REASON, callback);
+            }
+        ]
+    }, function(err, results) {
         if (err) {
-            console.error(err);
+            console.log(err);
             process.exit(1);
         }
-        console.log('User unblocked');
         process.exit();
     });
 } else {
-    metadata.get(uuid, metadata.SIGNUP_STEP, function (err, val) {
+    vasync.pipeline({
+        'funcs': [
+            function(_, callback) {
+                if (unblockUser) {
+                    set(metadata.SIGNUP_STEP, '', callback);
+                } else {
+                    setTimeout(function() {
+                        callback();
+                    }, 500);
+                }
+            },
+            function(_, callback) {
+                if (riskScore) {
+                    set(metadata.RISK_SCORE, (riskScore).toString(), callback);
+                } else {
+                    setTimeout(function() {
+                        callback();
+                    }, 500);
+                }
+            },
+            function(_, callback) {
+                if (blockReason) {
+                    set(metadata.BLOCK_REASON, blockReason, callback);
+                } else {
+                    setTimeout(function() {
+                        callback();
+                    }, 500);
+                }
+            }
+        ]
+    }, function(err, results) {
         if (err) {
-            console.error(err);
+            console.log(err);
             process.exit(1);
         }
-        console.log('User passed step: ' + val);
-        metadata.get(uuid, metadata.RISK_SCORE, function (scoreError, scoreValue) {
-            if (scoreError) {
-                console.error(scoreError);
-                process.exit(1);
-            }
-            console.log('User risk score: ' + scoreValue);
-            process.exit();
-        });
+        process.exit();
+    });
+}
+
+function set(key, val, callback) {
+    metadata.set(uuid, key, val, function (err) {
+        if (err) {
+            callback(err);
+        }
+        console.log(key + ' set to ' + val);
+        callback();
+    });
+}
+
+function get(key, callback) {
+    metadata.get(uuid, key, function (scoreError, scoreValue) {
+        if (scoreError) {
+            callback(scoreError);
+        }
+        console.log('User ' + key + ':' + scoreValue);
+        callback();
     });
 }
