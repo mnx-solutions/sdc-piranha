@@ -291,7 +291,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Enable Firewall'
+                                    'Enable firewall for selected instance?'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
@@ -321,7 +321,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Disable Firewall'
+                                    'Disable firewall for selected instance?'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {

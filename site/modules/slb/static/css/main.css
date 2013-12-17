@@ -1,3 +1,6 @@
+.container-elb{
+    padding-left: 48px;
+}
 .load-balancers{
     float: right;
     margin-top: 10px;
@@ -111,7 +114,8 @@
 .accept-checkbox{
     padding-top: 20px;
     padding-bottom: 40px;
-    width: 740px;
+    /*width: 740px;*/
+    /*display: inline;*/
 }
 .dd-margin{
     margin-left: -10px;
@@ -393,7 +397,7 @@ legend {
 }
 .agreement-pos{
     display: inline-block;
-    width: 900px;
+    width: 700px;
     vertical-align: top;
     margin-top: 6px;
 }

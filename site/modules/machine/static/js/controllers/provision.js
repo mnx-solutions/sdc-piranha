@@ -467,7 +467,7 @@
 
                         var packageTypes = [];
                         packages.forEach(function (p) {
-                            if (p.group && packageTypes.indexOf(p.group) === -1) {
+                            if (p.group && packageTypes.indexOf(p.group) === -1 && p.price) {
                                 packageTypes.push(p.group);
                             }
                             var price = getNr(p.price);
