@@ -49,4 +49,8 @@ module.exports = function execute(scope) {
     server.onCall('ZendeskPackagesUpdateTopics', function (call) {
         zendDeskCall(call, config.zendesk.packageUpdatePath, 'topics');
     });
+
+    server.onCall('ListFreeTierOptions', function (call) {
+        call.done(null, config.ns['free-tier']);
+    });
 };

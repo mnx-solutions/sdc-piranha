@@ -109,8 +109,10 @@
                     </div>
                 </div>
             </div>
-
-                <div class="span8 provisioning-carousel-span">
+                <div class="dashboard-height span8 pointer dashboard-splash hidden-phone" data-ng-show="preSelectedPackageId">
+                    <iframe data-ng-src="//www.joyent.com/portal/{{campaignId}}-dashboard.html" scrolling="no" horizontalscrolling="no" verticalscrolling="no" seamless class="dashboard-splash dashboard-splash-iframe iframe-no-border"></iframe>
+                </div>
+                <div class="span8 provisioning-carousel-span" data-ng-hide="preSelectedPackageId">
                     <div id="provisionCarousel" class="carousel slide">
                         <div class="carousel-inner item-list-container provisioning-carousel-inner-box" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">

@@ -136,5 +136,6 @@
   , "imageUse": "no"
   , "imageCreate": "no"
   , "slb": "no"
+  , "freetier": "no"
   }
 }
