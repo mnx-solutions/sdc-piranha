@@ -21,7 +21,7 @@ describe('Account Billing info', function () {
         driver = ptor.driver;
         backend
             .stub(ptor)
-
+            .call('updateAccount', backend.data('account-update'))
             .flush();
 
         ptor.get('/#!/account/edit');

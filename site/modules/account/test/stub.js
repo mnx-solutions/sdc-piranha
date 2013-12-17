@@ -11,6 +11,6 @@ backend
     .call('getAccount', backend.data('account'))
     .call('addPaymentMethod', {})
     .call('defaultCreditCard', {})
-    .call('updateAccount', backend.data('account-update'))
+    .call('updateAccount', {})
     .call('createKey', backend.data('create-key'))
     .call('listKeys', [backend.data('list-keys')]);
