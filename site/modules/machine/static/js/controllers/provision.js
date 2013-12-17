@@ -29,11 +29,24 @@
 
             $scope.campaignId = ($cookies.campaignId || 'default');
 
-            $scope.preSelectedImageId = requestContext.getParam('imageid');
-            $scope.preSelectedImage = null;
-            $scope.preSelectedDatacenterName = requestContext.getParam('datacenter');
-            $scope.preSelectedPackageId = requestContext.getParam('packageid');
-            $scope.preSelectedNetworks = requestContext.getParam('networks');
+            var reloadSearchParams = function () {
+                $scope.preSelectedImageId = requestContext.getParam('imageid');
+                $scope.preSelectedImage = null;
+                $scope.preSelectedDatacenterName = requestContext.getParam('datacenter');
+                $scope.preSelectedPackageId = requestContext.getParam('packageid');
+                $scope.preSelectedNetworks = requestContext.getParam('networks');
+            };
+
+            reloadSearchParams();
+
+            $scope.$on('$routeChangeSuccess', function (route, next, prev) {
+                // Additional click on 'Create Instance should start creation from the beginning
+                if (prev.$$route.action === next.$$route.action) {
+                    reloadSearchParams();
+                    $scope.reconfigure();
+                    ng.element('.carousel').carousel('pause');
+                }
+            });
 
             if ($scope.preSelectedImageId) {
                 if ($scope.preSelectedDatacenterName) {
@@ -208,7 +221,7 @@
 
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
-                ng.element('.carousel').carousel('prev');
+                ng.element('.carousel').carousel(0);
             };
 
             function getNr(el) {
@@ -490,7 +503,8 @@
             }
 
             ng.element('#provisionCarousel').carousel({
-                interval:false
+                interval: false,
+                pause: false
             });
 
             ng.element('#provisionCarousel').bind({
