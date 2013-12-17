@@ -85,10 +85,11 @@ module.exports = function execute(scope, register) {
             }
 
             var block = checkBlackList(query);
+            
             if (block.length) {
+                result.block = true;
+                result.blockReason = 'Blacklisted. ' + block.join('\n');
                 call.log.warn('User matched against black list and was blocked: %s', block);
-                callback(null, {block: true, blockReason: 'Blacklisted. ' + block.join('\n')});
-                return;
             }
 
             callback(null, result);
