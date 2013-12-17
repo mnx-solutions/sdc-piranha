@@ -20,7 +20,7 @@ process.argv.forEach(function (argument, index) {
         } else {
             argumentsError = true;
         }
-    } else if (/^[0-9a-f\-]+$/.test(argument) && argument.length === 36 /*uuid length*/) {
+    } else if (/^[0-9a-f\-]{36}$/.test(argument)) {
         if (!uuid) {
             uuid = argument;
         } else {
@@ -69,27 +69,27 @@ if (process.argv.length === 1 && uuid) {
                 if (unblockUser) {
                     set(metadata.SIGNUP_STEP, '', callback);
                 } else {
-                    setTimeout(function() {
+                    setImmediate(function() {
                         callback();
-                    }, 500);
+                    });
                 }
             },
             function(_, callback) {
                 if (riskScore) {
                     set(metadata.RISK_SCORE, (riskScore).toString(), callback);
                 } else {
-                    setTimeout(function() {
+                    setImmediate(function() {
                         callback();
-                    }, 500);
+                    });
                 }
             },
             function(_, callback) {
                 if (blockReason) {
                     set(metadata.BLOCK_REASON, blockReason, callback);
                 } else {
-                    setTimeout(function() {
+                    setImmediate(function() {
                         callback();
-                    }, 500);
+                    });
                 }
             }
         ]
