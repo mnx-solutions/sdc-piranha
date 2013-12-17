@@ -469,8 +469,8 @@
 
                             var price = getNr(p.price);
                             var priceMonth = getNr(p.price_month);
-                            p.price = price && price.toFixed(3) || undefined;
-                            p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
+                            p.price = (price || price === 0) && price.toFixed(3) || undefined;
+                            p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
                         });
 
                         $scope.packageTypes = packageTypes;
