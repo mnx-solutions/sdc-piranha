@@ -140,7 +140,7 @@
                         }
                     });
 
-                    $location.path('/compute');
+                    $location.path('/compute').search({});
                 }
 
                 function provision() {
