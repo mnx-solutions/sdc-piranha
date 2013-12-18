@@ -14,8 +14,11 @@ window.fn = [];
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
 
-        service.updateDatasets = function (datacenter) {
+        service.updateDatasets = function (datacenter, force) {
             datacenter = datacenter || 'all';
+            if (force && datacenter === 'all') {
+                datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
+            }
             if (!datasets.index[datacenter]) {
                 datasets.index[datacenter] = {};
                 datasets.list[datacenter] = [];
