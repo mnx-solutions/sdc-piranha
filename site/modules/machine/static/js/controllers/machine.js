@@ -315,14 +315,6 @@
                 return false;
             };
 
-            var ending = '-image-creation';
-            $scope.canCreateImage = function (name) {
-                return name &&
-                    typeof name === 'string' &&
-                    name.length >= ending.length &&
-                    name.indexOf(ending, name.length - ending.length) !== -1;
-            };
-
             $scope.tagsArray = [];
             $scope.showTagSave = false;
             // Tags
