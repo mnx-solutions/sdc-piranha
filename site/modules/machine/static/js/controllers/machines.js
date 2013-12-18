@@ -141,40 +141,6 @@
                     name: 'Data Center',
                     sequence: 2
                 },
-//                {
-//                    id: 'created',
-//                    name: 'Created',
-//                    getClass: function (type) {
-//                        if(type === 'header') {
-//                            return 'span3';
-//                        }
-//                        return 'span3 machine-list-content';
-//                    },
-//
-//                    sequence: 3
-//                },
-                {
-                    id: 'firewall',
-                    name: 'Firewall',
-                    type: 'button',
-                    sequence: 3,
-                    btn: {
-                        getLabel: function (object) {
-                            return !object.firewall_enabled ? 'Enable' : 'Disable';
-                        },
-                        getClass: function (object) {
-                            return 'btn-mini btn-minier btn-default';
-                        },
-                        disabled: function (object) {
-                            return object.fireWallActionRunning;
-                        },
-                        show: function(object) {
-                            return (object.type !== 'virtualmachine' || !object.hasOwnProperty('firewall_enabled'));
-                        },
-                        action: $scope.toggleFirewallEnabled.bind($scope),
-                        tooltip: 'Change machine firewall status'
-                    }
-                },
                 {
                     id: 'ips',
                     name: 'IP',
@@ -202,6 +168,47 @@
                     sequence: 6
                 }
             ];
+
+            var thirdColumn = {
+                id: 'created',
+                name: 'Created',
+                getClass: function (type) {
+                    if(type === 'header') {
+                        return 'span3';
+                    }
+                    return 'span3 machine-list-content';
+                },
+
+                sequence: 3
+            };
+
+            if ($scope.features.firewall === 'enabled') {
+                thirdColumn = {
+                    id: 'firewall',
+                    name: 'Firewall',
+                    type: 'button',
+                    sequence: 3,
+                    btn: {
+                        getLabel: function (object) {
+                            return !object.firewall_enabled ? 'Enable' : 'Disable';
+                        },
+                        getClass: function (object) {
+                            return 'btn-mini btn-minier btn-default';
+                        },
+                        disabled: function (object) {
+                            return object.fireWallActionRunning;
+                        },
+                        show: function(object) {
+                            return (object.type !== 'virtualmachine' || !object.hasOwnProperty('firewall_enabled'));
+                        },
+                        action: $scope.toggleFirewallEnabled.bind($scope),
+                        tooltip: 'Change machine firewall status'
+                    }
+                };
+            }
+
+            $scope.gridProps.splice(2, 0, thirdColumn);
+
             $scope.gridDetailProps = [
                 {
                     id: 'memory',
