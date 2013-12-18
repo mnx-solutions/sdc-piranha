@@ -120,6 +120,7 @@
                                     { name: image.data.name }
                                 )
                             );
+                            service.updateImages(true);
                         } else {
                             notification.push(image.name, { type: 'error' },
                                 localization.translate(null,
@@ -150,7 +151,8 @@
                                 )
                             );
 
-                            $rootScope.$emit('forceUpdate');
+                            images.list.splice(images.list.indexOf(image), 1);
+                            delete images.index[image.id];
                         } else {
                             notification.push(image, { type: 'error' },
                                 localization.translate(null,

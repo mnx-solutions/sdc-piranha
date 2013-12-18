@@ -163,6 +163,8 @@ You can also define configuration options using command line. ex: `$ node index.
 - `cloudapi.username` Username from AdminUI
 - `cloudapi.keyId` Your SSH key fingerprint from Admin portal
 - `cloudapi.keyPath` Full local path to your private key file
+- `images.types` List of machine types supported for image creation
+- `images.earliest_date` Only allow images from machines created after this date
 - `slb.ssc_private_key` Hardcode if on west-x, do not use on west-1
 - `slb.ssc_public_key` Hardcode if on west-x, do not use on west-1
 - `slb.slb_code_url` Download location for SLB API code

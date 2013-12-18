@@ -33,7 +33,6 @@
                 'event:forceUpdate',
                 function () {
                     $scope.images = Image.image(true);
-                    $scope.search();
                 }
             );
 

@@ -22,6 +22,11 @@ module.exports = function execute(scope, register) {
             });
         }
 
+        var allowedTypes = config.images ? config.images.types : [];
+        var earliestDate = config.images ? new Date(config.images.earliest_date) : new Date();
+        machine.allowImageCreate = allowedTypes.indexOf(machine.type) !== -1 &&
+            new Date(machine.created) >= earliestDate;
+
         return machine;
     }
 
@@ -93,7 +98,15 @@ module.exports = function execute(scope, register) {
             // acknowledge what are we doing to logs
             call.log.debug('Polling for %s %s %s to become %s', type.toLowerCase(), objectId, prop, expect);
 
-            client['get' + type](objectId, true, function (err, object) {
+            var getEntity = function (entityType, poller) {
+                if (entityType === 'Image') {
+                    return client.getImage(objectId, poller, true);
+                } else {
+                    return client['get' + entityType](objectId, true, poller, null, true);
+                }
+            };
+
+            getEntity(type, function (err, object) {
                 if (err) {
                     // in case we're waiting for deletion a http 410(Gone) or 404 is good enough
                     if ((err.statusCode === 410 || err.statusCode === 404) && prop === 'state' && expect === 'deleted') {
@@ -130,7 +143,7 @@ module.exports = function execute(scope, register) {
                     };
                 }
 
-            }, null, true);
+            });
         });
     }
 
