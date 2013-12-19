@@ -99,7 +99,7 @@
                             </span>
                         </div>
                     </div>
-                    
+
                     <legend data-translate>Protocol</legend>
                     <!-- row4 -->
                     <div class="row row-height">
@@ -182,6 +182,7 @@
                             </span>
                         </div>
                     </div>
+
                     <legend data-translate>From</legend>
                     <!-- row2 -->
                     <div class="row row-height">
@@ -292,6 +293,7 @@
                             </span>
                         </div>
                     </div>
+
                     <legend data-translate>To</legend>
                     <!-- row3 -->
                     <div class="row row-height">
@@ -381,31 +383,6 @@
                             </div>
                         </div>
 
-                        <legend data-translate>Status</legend>
-                        <div class="row">
-                            <!-- left -->
-                            <div class="span6 control-group">
-                                <label class="control-label">Status:</label>
-                                <div class="controls">
-                                <span class="span6">
-                                    <input type="hidden" id="stateSelect"><br/><br/>
-                                </span>
-                                </div>
-                            </div>
-                            <!-- right -->
-                            <div class="span6 control-group">
-                            <span class="span6">
-                                <table class="table table-bordered width-100">
-                                    <tr>
-                                        <td class="width-90">
-                                            {{selected.status}}
-                                        </td>
-                                    </tr>
-                                </table>
-                            </span>
-                            </div>
-                        </div>
-
                         <!-- right -->
                         <div class="span6">
                             <span data-ng-show="data.parsed.to.length" class="span6">
@@ -418,6 +395,31 @@
                                             <div class="text-center">
                                                 <button type="button" data-ng-hide="isAny(to)" class="btn btn-default" data-ng-click="removeTo($index)">Clear</button>
                                             </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>Status</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Status:</label>
+                            <div class="controls">
+                                <span class="span6">
+                                    <input type="hidden" id="stateSelect"><br/><br/>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.status}}
                                         </td>
                                     </tr>
                                 </table>
