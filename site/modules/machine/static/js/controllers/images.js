@@ -118,7 +118,7 @@
                 {
                     label: 'Create instance',
                     disabled: function (object) {
-                        return false;
+                        return object.job;
                     },
                     action: function (object) {
                         $scope.provisionInstance(object);
@@ -132,7 +132,7 @@
                 {
                     label: 'Delete',
                     disabled: function (object) {
-                        return false;
+                        return object.job;
                     },
                     action: function (object) {
                         $scope.clickDelete(object);
