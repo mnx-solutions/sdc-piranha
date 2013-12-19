@@ -136,10 +136,10 @@
   , "instanceTagging": "enabled"
   , "promocode": "enabled"
   , "invoices": "enabled"
+  , "imageUse": "yes"
+  , "imageCreate": "yes"
   , "firewall": "no"
-  , "imageUse": "no"
-  , "imageCreate": "no"
-  , "slb": "no"
   , "freetier": "no"
+  , "slb": "no"
   }
 }
