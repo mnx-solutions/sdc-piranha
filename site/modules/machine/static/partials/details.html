@@ -268,7 +268,9 @@
 
             <span data-ng-switch="features.firewall">
                 <fieldset data-ng-switch-when="enabled">
-                    <legend data-translate>Firewall rules</legend>
+                    <legend>
+                        <span data-translate>Firewall rules</span>
+                    </legend>
                     <div data-ng-show="firewallRules.length >= 1">
                         <div class="span12">
                             <div data-grid-view
