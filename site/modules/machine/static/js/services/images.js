@@ -118,7 +118,7 @@
                                 localization.translate(null,
                                     'machine',
                                     'Image "{{name}}" successfully created',
-                                    { name: image.data.name }
+                                    { name: image.data.name || 'My Image' }
                                 )
                             );
                             service.updateImages(true);
