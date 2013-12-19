@@ -138,10 +138,17 @@
 
                 <div>
                     <form name="imageForm">
-                        <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
-                        <input type="text" placeholder="Image description (optional)"
+                        <input type="text"
+                               placeholder="Image name"
+                               name="imageName"
+                               data-ng-model="imageName"
+                               data-ng-disabled="imageJob && !imageJob.finished"
+                               value="" />
+                        <input type="text"
+                               placeholder="Image description (optional)"
                                name="imageDescription"
                                data-ng-model="imageDescription"
+                               data-ng-disabled="imageJob && !imageJob.finished"
                                value="" />
                         <br />
                         <button class="btn btn-joyent-blue pull-right"

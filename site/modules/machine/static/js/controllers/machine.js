@@ -243,6 +243,10 @@
                         });
                 } else {
                     $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
+                    $scope.imageJob.done(function () {
+                        $scope.imageName = $scope.imageDescription = '';
+                        $scope.imageForm.$setPristine();
+                    });
                 }
             };
 
