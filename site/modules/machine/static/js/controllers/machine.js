@@ -96,6 +96,8 @@
                 }
 
                 $scope.dataset.then(function(ds){
+                    $scope.machine.allowImageCreate = $scope.machine.allowImageCreate && ds.public;
+
                     if(ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
                     }
@@ -214,8 +216,34 @@
                     });
             };
 
-            $scope.clickCreateImage = function() {
-                $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
+            $scope.clickCreateImage = function () {
+                if ($scope.machine.state !== 'stopped') {
+                    var title = 'Message';
+                    var message = 'Please stop the instance before trying to create an image';
+                    var btns = [
+                        {
+                            result: 'stop',
+                            label: 'Stop instance now',
+                            cssClass: 'pull-left'
+                        },
+                        {
+                            result: 'ok',
+                            label: 'OK',
+                            cssClass: 'btn-joyent-blue'
+                        }
+                    ];
+
+                    return $dialog.messageBox(title, message, btns)
+                        .open()
+                        .then(function (result) {
+                            if (result === 'stop') {
+                                Machine.stopMachine(machineid);
+                                $$track.event('machine', 'stop');
+                            }
+                        });
+                } else {
+                    $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
+                }
             };
 
             $scope.renameClass = function() {

@@ -126,6 +126,8 @@
             <fieldset data-ng-show="machine.allowImageCreate && (features.imageCreate == 'enabled' || features.imageCreate == 'yes')">
                 <legend>
                     <span data-translate>Create Image</span>
+                    <div class="beta-sticker pull-right beta"></div>
+
                 </legend>
 
                 <p class="text-small muted" data-translate>
@@ -145,7 +147,7 @@
                         <button class="btn btn-joyent-blue pull-right"
                                 data-ng-click="clickCreateImage()"
                                 data-translate
-                                data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished) || machine.state != 'stopped'">
+                                data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished)">
                             Create Image
                         </button>
                         <div class="loading-medium span1 pull-right"
