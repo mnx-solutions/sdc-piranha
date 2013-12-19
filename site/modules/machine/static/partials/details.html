@@ -123,7 +123,7 @@
                 </table>
             </fieldset>
 
-            <fieldset data-ng-show="canCreateImage(currentPackageName) && features.imageCreate != 'disabled'">
+            <fieldset data-ng-show="machine.allowImageCreate && (features.imageCreate == 'enabled' || features.imageCreate == 'yes')">
                 <legend>
                     <span data-translate>Create Image</span>
                 </legend>
@@ -135,8 +135,6 @@
                 <div class="clearfix"></div>
 
                 <div>
-                    <div class="loading-medium span1 pull-right"
-                         data-ng-show="imageJob && !imageJob.finished"></div>
                     <form name="imageForm">
                         <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
                         <input type="text" placeholder="Image description (optional)"
@@ -289,6 +287,7 @@
                         <button class="pull-right btn margin-top-10"
                                 data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
                                 data-ng-disabled="fireWallActionRunning"
+                                data-ng-show="firewallChangeable()"
                                 data-ng-click="toggleFirewallEnabled()"
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                         <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>

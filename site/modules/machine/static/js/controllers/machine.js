@@ -315,14 +315,6 @@
                 return false;
             };
 
-            var ending = '-image-creation';
-            $scope.canCreateImage = function (name) {
-                return name &&
-                    typeof name === 'string' &&
-                    name.length >= ending.length &&
-                    name.indexOf(ending, name.length - ending.length) !== -1;
-            };
-
             $scope.tagsArray = [];
             $scope.showTagSave = false;
             // Tags
@@ -444,6 +436,11 @@
                         sequence: 4
                     }
                 ];
+
+                $scope.firewallChangeable = function() {
+                    return $scope.machine.type !== 'virtualmachine' && $scope.machine.hasOwnProperty('firewall_enabled');
+                };
+
                 $scope.toggleFirewallEnabled = function () {
                     $scope.fireWallActionRunning = true;
                     var fn = $scope.machine.firewall_enabled ? 'disable' : 'enable';

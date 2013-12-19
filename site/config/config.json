@@ -126,13 +126,17 @@
   , "ssc_protocol": "https"
   , "ssc_port": 443
 }
+, "images": {
+    "types": ["smartmachine"]
+  , "earliest_date": "2013-12-18"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
   , "promocode": "enabled"
-  , "invoices": "yes"
-  , "firewall": "yes"
+  , "invoices": "enabled"
+  , "firewall": "no"
   , "imageUse": "no"
   , "imageCreate": "no"
   , "slb": "no"

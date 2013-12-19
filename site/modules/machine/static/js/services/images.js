@@ -7,8 +7,9 @@
         'localization',
         'notification',
         'errorContext',
-        '$rootScope',
-        function (serverTab, $q, localization, notification, errorContext, $rootScope) {
+        'Dataset',
+        function (serverTab, $q, localization, notification, errorContext,
+            Dataset) {
 
             var service = {};
             var images = {index: {}, job: {}, list: [], search: {}};
@@ -120,6 +121,8 @@
                                     { name: image.data.name }
                                 )
                             );
+                            service.updateImages(true);
+                            Dataset.updateDatasets('all', true);
                         } else {
                             notification.push(image.name, { type: 'error' },
                                 localization.translate(null,
@@ -150,7 +153,9 @@
                                 )
                             );
 
-                            $rootScope.$emit('forceUpdate');
+                            images.list.splice(images.list.indexOf(image), 1);
+                            delete images.index[image.id];
+                            Dataset.updateDatasets('all', true);
                         } else {
                             notification.push(image, { type: 'error' },
                                 localization.translate(null,

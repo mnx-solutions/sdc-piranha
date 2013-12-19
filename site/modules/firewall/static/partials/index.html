@@ -41,63 +41,15 @@
                 <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
             </div>
         </div>
-        
+
         <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
             <fieldset>
                 <legend class="text-right">
                     <span data-ng-show="data.uuid">Edit rule {{data.uuid}} <a class="pointer" data-ng-click="resetData()">(create new instead)</a></span>
-                    <button class="btn btn-link btn-large" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Create New Rule</button>
+                    <button class="btn btn-link btn-large" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
                 </legend>
 
                 <div data-ng-show="openRuleForm">
-                    <legend data-translate>Action</legend>
-                    <div class="row">
-                        <!-- left -->
-                        <div class="span6 control-group">
-                            <label class="control-label">Action:</label>
-                            <div class="controls">
-                                <span class="span6">
-                                    <input type="hidden" id="actionSelect"><br/><br/>
-                                </span>
-                            </div>
-                        </div>
-                        <!-- right -->
-                        <div class="span6 control-group">
-                            <span class="span6">
-                                <table class="table table-bordered width-100">
-                                    <tr>
-                                        <td class="width-90">
-                                            {{selected.action}}
-                                        </td>
-                                    </tr>
-                                </table>
-                            </span>
-                        </div>
-                    </div>
-                    <legend data-translate>Status</legend>
-                    <div class="row">
-                        <!-- left -->
-                        <div class="span6 control-group">
-                            <label class="control-label">Status:</label>
-                            <div class="controls">
-                                <span class="span6">
-                                    <input type="hidden" id="stateSelect"><br/><br/>
-                                </span>
-                            </div>
-                        </div>
-                        <!-- right -->
-                        <div class="span6 control-group">
-                            <span class="span6">
-                                <table class="table table-bordered width-100">
-                                    <tr>
-                                        <td class="width-90">
-                                            {{selected.status}}
-                                        </td>
-                                    </tr>
-                                </table>
-                            </span>
-                        </div>
-                    </div>
                     <legend data-translate>Data Center</legend>
                     <div class="row">
                         <!-- left -->
@@ -122,6 +74,115 @@
                             </span>
                         </div>
                     </div>
+
+                    <legend data-translate>Action</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Action:</label>
+                            <div class="controls">
+                                <span class="span6">
+                                    <input type="hidden" id="actionSelect"><br/><br/>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.action}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>Protocol</legend>
+                    <!-- row4 -->
+                    <div class="row row-height">
+                        <!-- left -->
+                        <div class="span6">
+                            <label class="control-label">Protocol</label>
+                            <div class="controls warning" data-ng-form="protocolForm">
+                                <span class="span6 text-medium">
+                                    <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
+                                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp' && !isAllPorts()">
+                                        <div class="row-fluid">
+                                            <span class="span6">
+                                                <input name="port"
+                                                       type="text"
+                                                       data-ng-model="current.port"
+                                                       data-range="1-65535"/>
+                                            </span>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <span class="span6 margin-top-10">
+                                                <button class="btn"
+                                                        data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
+                                                        data-ng-click="addPort()">ADD</button>
+                                                <button class="btn" data-ng-click="useAllPorts()">Use All</button>
+                                            </span>
+                                        </div>
+                                    </span>
+                                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                                        <span class="row-fluid">
+                                            <span class="span1">
+                                                Type:
+                                            </span>
+                                            <span class="span10">
+                                                <input type="text"
+                                                       name="type"
+                                                       required="true"
+                                                       data-range="0-255"
+                                                       data-ng-model="current.type" />
+                                            </span>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span1 margin-top-10">
+                                                Code:
+                                            </span>
+                                            <span class="span6 margin-top-10">
+                                                <input type="text"
+                                                       name="code"
+                                                       required="false"
+                                                       data-range="0-255"
+                                                       data-ng-model="current.code" />
+                                            </span>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span6 margin-top-10">
+                                                <button class="btn"
+                                                        data-ng-disabled="!protocolForm.$valid"
+                                                        data-ng-click="addType()">ADD</button>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6">
+                            <span data-ng-show="data.parsed.protocol.targets.length" class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr data-ng-repeat="target in data.parsed.protocol.targets">
+                                        <td class="width-90">
+                                            {{target}}
+                                        </td>
+                                        <td class="width-10">
+                                            <div class="text-center">
+                                                <button type="button" class="btn btn-default" data-ng-click="removeProtocolTarget($index)">Clear</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
                     <legend data-translate>From</legend>
                     <!-- row2 -->
                     <div class="row row-height">
@@ -232,6 +293,7 @@
                             </span>
                         </div>
                     </div>
+
                     <legend data-translate>To</legend>
                     <!-- row3 -->
                     <div class="row row-height">
@@ -339,82 +401,25 @@
                             </span>
                         </div>
                     </div>
-                    <legend data-translate>Ports</legend>
-                    <!-- row4 -->
-                    <div class="row row-height">
-                        <!-- left -->
-                        <div class="span6">
-                            <label class="control-label">Protocol</label>
-                            <div class="controls warning" data-ng-form="protocolForm">
-                                <span class="span6 text-medium">
-                                    <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
-                                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp' && !isAllPorts()">
-                                        <div class="row-fluid">
-                                            <span class="span6">
-                                                <input name="port"
-                                                       type="text"
-                                                       data-ng-model="current.port"
-                                                       data-range="1-65535"/>
-                                            </span>
-                                        </div>
-                                        <div class="row-fluid">
-                                            <span class="span6 margin-top-10">
-                                                <button class="btn"
-                                                        data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
-                                                        data-ng-click="addPort()">ADD</button>
-                                                <button class="btn" data-ng-click="useAllPorts()">Use All</button>
-                                            </span>
-                                        </div>
-                                    </span>
-                                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                                        <span class="row-fluid">
-                                            <span class="span1">
-                                                Type:
-                                            </span>
-                                            <span class="span10">
-                                                <input type="text"
-                                                       name="type"
-                                                       required="true"
-                                                       data-range="0-255"
-                                                       data-ng-model="current.type" />
-                                            </span>
-                                        </span>
-                                        <span class="row-fluid">
-                                            <span class="span1 margin-top-10">
-                                                Code:
-                                            </span>
-                                            <span class="span6 margin-top-10">
-                                                <input type="text"
-                                                       name="code"
-                                                       required="false"
-                                                       data-range="0-255"
-                                                       data-ng-model="current.code" />
-                                            </span>
-                                        </span>
-                                        <span class="row-fluid">
-                                            <span class="span6 margin-top-10">
-                                                <button class="btn"
-                                                        data-ng-disabled="!protocolForm.$valid"
-                                                        data-ng-click="addType()">ADD</button>
-                                            </span>
-                                        </span>
-                                    </span>
-                                </span>
 
+                    <legend data-translate>Status</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Status:</label>
+                            <div class="controls">
+                                <span class="span6">
+                                    <input type="hidden" id="stateSelect"><br/><br/>
+                                </span>
                             </div>
                         </div>
                         <!-- right -->
-                        <div class="span6">
-                            <span data-ng-show="data.parsed.to.length" class="span6">
+                        <div class="span6 control-group">
+                            <span class="span6">
                                 <table class="table table-bordered width-100">
-                                    <tr data-ng-repeat="target in data.parsed.protocol.targets">
+                                    <tr>
                                         <td class="width-90">
-                                            {{target}}
-                                        </td>
-                                        <td class="width-10">
-                                            <div class="text-center">
-                                                <button type="button" class="btn btn-default" data-ng-click="removeProtocolTarget($index)">Clear</button>
-                                            </div>
+                                            {{selected.status}}
                                         </td>
                                     </tr>
                                 </table>

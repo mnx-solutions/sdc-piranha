@@ -48,7 +48,7 @@
                     });
 
                     results = [{
-                        text: "Vms",
+                        text: "Instances",
                         children: vms
                     },{
                         text: "Tags",
@@ -275,7 +275,7 @@
                         type: 'wildcard',
                         text: 'all vms'
                     }),
-                    text: 'Any Vm'
+                    text: 'Any VMs in DC'
                 },{
                     id: ng.toJson({type: 'ip'}),
                     text: 'IP'
@@ -287,10 +287,10 @@
                     text:'Tag'
                 }, {
                     id: ng.toJson({type: 'vm'}),
-                    text:'Vm'
+                    text:'Instances'
                 }]
             },{
-                text: "Vms",
+                text: "Instances",
                 children: $scope.vms
             },{
                 text: "Tags",
@@ -737,7 +737,7 @@
 		        },
                 {
                     id: 'datacenter',
-                    name: 'Datacenter',
+                    name: 'Data Center',
                     getClass: function () {
                         return 'span2 padding-5';
                     },
