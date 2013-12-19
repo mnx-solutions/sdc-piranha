@@ -698,7 +698,7 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 1
+			        sequence: 5
 		        },
 		        {
 			        id: 'parsed',
@@ -713,7 +713,7 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 2
+			        sequence: 6
 		        },
 		        {
 			        id: 'parsed',
@@ -741,7 +741,7 @@
                     getClass: function () {
                         return 'span2 padding-5';
                     },
-                    sequence: 5
+                    sequence: 2
                 },
 		        {
 			        id: 'delete',
@@ -784,27 +784,28 @@
 				        tooltip: 'Edit the rule'
 			        }
 		        },
-		        {
-			        id: 'enabled',
-			        name: 'Status',
-			        type: 'button',
-			        getClass: function () {
-				        return 'pull-right span1 padding-5';
-			        },
-			        btn: {
-				        getLabel: function (object) {
-					        return object.enabled ? 'Enabled' : 'Disabled';
-				        },
-				        getClass: function (object) {
-					        return 'btn-mini btn-minier ' + (object.enabled ? 'btn-success' : 'btn-danger');
-				        },
+                {
+                    id: 'enabled',
+                    name: 'Enabled',
+                    type: 'button',
+                    getClass: function () {
+                        return 'span1 padding-5';
+                    },
+                    btn: {
+                        getLabel: function (object) {
+                            return object.enabled ? 'Enabled' : 'Disabled';
+                        },
+                        getClass: function (object) {
+                            return 'btn-mini btn-minier ' + (object.enabled ? 'btn-success' : 'btn-danger');
+                        },
                         disabled: function () {
                             return $scope.loading;
                         },
-				        action: $scope.changeStatus.bind($scope),
-				        tooltip: 'Change rule status'
-			        }
-		        }
+                        action: $scope.changeStatus.bind($scope),
+                        tooltip: 'Change rule status'
+                    },
+                    sequence: 1
+                }
 	        ];
 
         }

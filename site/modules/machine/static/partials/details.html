@@ -265,13 +265,11 @@
             </fieldset>
 
             <span data-ng-switch="features.firewall">
-                <fieldset data-ng-switch-when="enabled" data-ng-show="firewallRules.length >= 1">
+                <fieldset data-ng-switch-when="enabled">
                     <legend>
                         <span data-translate>Firewall rules</span>
-                        <small data-translate></small>
                     </legend>
-
-                    <div>
+                    <div data-ng-show="firewallRules.length >= 1">
                         <div class="span12">
                             <div data-grid-view
                                  data-props="gridProps"
@@ -281,6 +279,9 @@
                                  data-filter-all="{{query}}"
                                  data-objects-type="firewall"></div>
                         </div>
+                    </div>
+                    <div data-ng-show="firewallRules.length < 1">
+                        <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
                     </div>
                     <div class="row text-right">
                         <button class="pull-right btn margin-top-10"
