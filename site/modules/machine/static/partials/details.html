@@ -138,14 +138,19 @@
 
                 <div>
                     <form name="imageForm">
+                        <div class="error"
+                             data-ng-show="imageForm.$invalid"
+                             data-translate>
+                            Invalid image name
+                        </div>
                         <input type="text"
                                placeholder="Image name"
                                name="imageName"
                                data-ng-model="imageName"
                                data-ng-disabled="imageJob && !imageJob.finished"
-                               value="" />
-                        <input type="text"
-                               placeholder="Image description (optional)"
+                               data-machine-name
+                               value=""/>
+                        <input type="text" placeholder="Image description (optional)"
                                name="imageDescription"
                                data-ng-model="imageDescription"
                                data-ng-disabled="imageJob && !imageJob.finished"
@@ -154,7 +159,7 @@
                         <button class="btn btn-joyent-blue pull-right"
                                 data-ng-click="clickCreateImage()"
                                 data-translate
-                                data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished)">
+                                data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
                             Create Image
                         </button>
                         <div class="loading-medium span1 pull-right"
