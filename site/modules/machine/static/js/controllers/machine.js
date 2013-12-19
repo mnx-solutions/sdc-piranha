@@ -436,6 +436,11 @@
                         sequence: 4
                     }
                 ];
+
+                $scope.firewallChangeable = function() {
+                    return $scope.machine.type !== 'virtualmachine' && $scope.machine.hasOwnProperty('firewall_enabled');
+                };
+
                 $scope.toggleFirewallEnabled = function () {
                     $scope.fireWallActionRunning = true;
                     var fn = $scope.machine.firewall_enabled ? 'disable' : 'enable';

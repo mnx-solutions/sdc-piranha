@@ -288,6 +288,7 @@
                         <button class="pull-right btn margin-top-10"
                                 data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
                                 data-ng-disabled="fireWallActionRunning"
+                                data-ng-show="firewallChangeable()"
                                 data-ng-click="toggleFirewallEnabled()"
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                         <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
