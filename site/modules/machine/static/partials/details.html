@@ -139,7 +139,12 @@
                 <div>
                     <form name="imageForm">
                         <div class="error"
-                             data-ng-show="imageForm.$invalid"
+                             data-ng-show="imageForm.imageName.$error.imageUnique"
+                             data-translate>
+                            Image name is already in use
+                        </div>
+                        <div class="error"
+                             data-ng-show="imageForm.imageName.$error.machineName"
                              data-translate>
                             Invalid image name
                         </div>
@@ -149,6 +154,7 @@
                                data-ng-model="imageName"
                                data-ng-disabled="imageJob && !imageJob.finished"
                                data-machine-name
+                               data-image-unique
                                value=""/>
                         <input type="text" placeholder="Image description (optional)"
                                name="imageDescription"
