@@ -96,6 +96,8 @@
                 }
 
                 $scope.dataset.then(function(ds){
+                    $scope.machine.allowImageCreate = $scope.machine.allowImageCreate && ds.public;
+
                     if(ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
                     }
