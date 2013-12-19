@@ -123,7 +123,7 @@
                 </table>
             </fieldset>
 
-            <fieldset data-ng-show="machine.allowImageCreate && (features.imageCreate == 'enabled' || features.imageCreate == 'yes')">
+            <div data-ng-show="machine.allowImageCreate && (features.imageCreate == 'enabled' || features.imageCreate == 'yes')">
                 <legend>
                     <span data-translate>Create Image</span>
                     <div class="beta-sticker pull-right beta"></div>
@@ -138,16 +138,35 @@
 
                 <div>
                     <form name="imageForm">
-                        <input type="text" placeholder="Image name" name="imageName" data-ng-model="imageName" value="" />
-                        <input type="text" placeholder="Image description (optional)"
-                               name="imageDescription"
-                               data-ng-model="imageDescription"
-                               value="" />
-                        <br />
+                        <div class="error"
+                             data-ng-show="imageForm.imageName.$error.imageUnique"
+                             data-translate>
+                            Image name is already in use
+                        </div>
+                        <div class="error"
+                             data-ng-show="imageForm.imageName.$error.machineName"
+                             data-translate>
+                            Invalid image name
+                        </div>
+                        <div>
+                            <input type="text"
+                                placeholder="Image name"
+                                name="imageName"
+                                data-ng-model="imageName"
+                                data-ng-disabled="imageJob && !imageJob.finished"
+                                data-machine-name
+                                data-image-unique
+                                value=""/>
+                            <input type="text" placeholder="Image description (optional)"
+                                name="imageDescription"
+                                data-ng-model="imageDescription"
+                                data-ng-disabled="imageJob && !imageJob.finished"
+                                value="" />
+                        </div>
                         <button class="btn btn-joyent-blue pull-right"
                                 data-ng-click="clickCreateImage()"
                                 data-translate
-                                data-ng-disabled="(imageJob && !imageJob.finished) || (machine.job && !machine.job.finished)">
+                                data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
                             Create Image
                         </button>
                         <div class="loading-medium span1 pull-right"
@@ -156,7 +175,7 @@
                     <br />
                     <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
                 </div>
-            </fieldset>
+            </div>
             <fieldset data-ng-show="machine && features.instanceTagging != 'disabled'">
                 <legend>
                     <span data-translate>Tags</span>
