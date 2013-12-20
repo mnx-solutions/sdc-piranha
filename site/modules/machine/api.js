@@ -352,7 +352,7 @@ module.exports = function execute(scope, register) {
         call.log.info({ options: options }, 'Creating image %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
-        call.cloud.createImageFromMachine(options, function(err, image) {
+        cloud.createImageFromMachine(options, function(err, image) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
             } else {
