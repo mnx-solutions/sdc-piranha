@@ -108,10 +108,15 @@
             };
 
 
-            service.createImage = function(machineId, name, description) {
+            service.createImage = function(machineId, datacenter, name, description) {
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
-                    data: { machineId: machineId, name: name, description: description },
+                    data: {
+                        machineId: machineId,
+                        name: name,
+                        description: description,
+                        datacenter: datacenter
+                    },
                     done: function(err, image) {
                         if (!err) {
                             notification.push(image.name, { type: 'success' },
@@ -142,7 +147,7 @@
                 image.state = 'deleting'; // Override state manually
                 image.job = serverTab.call({
                     name: 'ImageDelete',
-                    data: { imageId: image.id },
+                    data: { imageId: image.id, datacenter: image.datacenter},
                     done: function(err, job) {
                         if (!err) {
                             notification.push(image, { type: 'success' },
