@@ -337,7 +337,7 @@ module.exports = function execute(scope, register) {
         call.log.info('Deleting image %s', options.imageId);
 
         var cloud = call.cloud.separate(options.datacenter);
-        call.cloud.deleteImage(options.imageId, function (err) {
+        cloud.deleteImage(options.imageId, function (err) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
             } else {
