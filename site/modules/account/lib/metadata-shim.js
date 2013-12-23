@@ -44,10 +44,11 @@ var get = function (customerUuid, key, val, callback) {
         val = 'value';
     }
     capi.getMetadata(customerUuid, appKey, key, function (err, res) {
-        if (err) {
-            callback(err);
-            return;
-        }
+        // TODO: handle 404 properly!
+//        if (err) {
+//            callback(err);
+//            return;
+//        }
         if (res === 'false') {
             callback(null, false);
             return;
