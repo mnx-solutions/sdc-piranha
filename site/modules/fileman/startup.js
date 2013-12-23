@@ -27,6 +27,10 @@ var fileman = function execute (scope) {
         createClient(call, function (client) {
             console.log(call.data);
             client.ls(call.data.path, function (err, res) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
                 var files = [];
                 function onEntry(e) {
                     files.push(e);

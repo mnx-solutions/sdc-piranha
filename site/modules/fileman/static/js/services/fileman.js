@@ -1,6 +1,6 @@
 (function(app) {
     "use strict";
-    var username = 'dbqp';
+    var username = 'rysenko_joyent';
     
     app.factory('fileman', [
         'serverTab',
