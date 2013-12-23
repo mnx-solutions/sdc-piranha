@@ -7,14 +7,54 @@
  *
  * stores the toggle in capi metadata
  */
-var metadata = require('../../account/lib/metadata');
+var config = require('easy-config');
+var sdcClients = require('sdc-clients');
+var capi = new sdcClients.CAPI(config.capishim);
+
+var appKey = 'portal';
+var key = 'useMoreSecurity';
 
 var set = function (customerUuid, secretkey, callback) {
-    metadata.set(customerUuid, metadata.TFA_TOGGLE, {secretkey: secretkey}, callback);
+    if (!customerUuid) {
+        if(callback) {
+            setImmediate(function () {
+                callback(new Error('Missing UUID'));
+            });
+        }
+        return false;
+    }
+
+    if (secretkey) {
+        var value = {secretkey: secretkey};
+        capi.putMetadata(customerUuid, appKey, key, value, function(err) {
+            if (callback) {
+                callback(err, secretkey);
+            }
+        });
+    } else {
+        capi.deleteMetadata(customerUuid, appKey, key, function(err) {
+            if (callback){
+                callback(err, secretkey);
+            }
+        });
+    }
 };
 
 var get = function (customerUuid, callback) {
-    metadata.get(customerUuid, metadata.TFA_TOGGLE, 'secretkey', callback);
+    capi.getMetadata(customerUuid, appKey, key, function (err, res, headers) {
+        if(res === 'false') {
+            callback(null, false);
+            return;
+        }
+
+        var result = false;
+        if(typeof res === 'string') {
+            result = res.indexOf('=') !== -1 ? res.split('=')[1] : result;
+        } else if(typeof res === 'object' && res.secretkey) {
+            result = res.secretkey;
+        }
+        callback(null, result);
+    });
 };
 
 module.exports = {
