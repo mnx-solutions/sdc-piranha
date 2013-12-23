@@ -5,13 +5,14 @@ var argumentsError = false;
 var uuid = null;
 var riskScore = null;
 var blockReason = null;
+var badUuid = false;
 process.argv = process.argv.slice(2); //cutting off node and path to file
 process.argv.forEach(function (argument, index) {
     if (argument.indexOf('-') === 0) {
         if (argument === '-u' || argument === '--unblock') {
             unblockUser = true;
         } else if (argument === '--risk-score') {
-            riskScore = parseInt(process.argv[index + 1], 10);
+            riskScore = parseFloat(process.argv[index + 1]);
             if (isNaN(riskScore) || riskScore <= 0 || riskScore >= 100) {
                 argumentsError = true;
             }
@@ -20,11 +21,19 @@ process.argv.forEach(function (argument, index) {
         } else {
             argumentsError = true;
         }
-    } else if (/^[0-9a-f\-]{36}$/.test(argument)) {
-        if (!uuid) {
-            uuid = argument;
+    } else if (/^[0-9a-f\-]+$/.test(argument)) {
+        if (argument.length === 36) {
+            if (!uuid) {
+                uuid = argument;
+            } else {
+                argumentsError = true;
+            }
         } else {
-            argumentsError = true;
+            var prevArg = process.argv[index - 1];
+            if (prevArg !== '--risk-score' && prevArg !== '--block-reason') {
+                argumentsError = true;
+                badUuid = true
+            }
         }
     } else if (index >= 5) {
         argumentsError = true;
@@ -34,7 +43,11 @@ process.argv.forEach(function (argument, index) {
 if (!uuid || argumentsError) {
     console.log('Fraud Utility');
     console.log('');
-    console.log('fraudutil <UUID> [-u | --unblock] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
+    if (badUuid) {
+        console.log('Bad user uuid');
+    } else {
+        console.log('fraudutil <UUID> [-u | --unblock] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
+    }
     process.exit();
 }
 
