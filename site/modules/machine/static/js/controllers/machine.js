@@ -86,6 +86,21 @@
                                 $scope.firewallRules = rules;
                             });
                         }
+                    }, function () {
+                        $location.url('/compute');
+                        $location.replace();
+                    });
+                }
+            );
+
+            $scope.$on(
+                'event:pollComplete',
+                function (){
+                    $q.when(Machine.machine(machineid)).then(function (machine) {
+                        $scope.machine = machine;
+                    }, function () {
+                        $location.url('/compute');
+                        $location.replace();
                     });
                 }
             );

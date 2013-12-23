@@ -3,16 +3,17 @@
 
 (function (ng, app) {
     app.factory('Machine', [
-        '$resource',
         'serverTab',
         '$rootScope',
         '$q',
+        '$timeout',
         'localization',
         'notification',
         'Package',
         'Dataset',
-		'util',
-        function ($resource, serverTab, $rootScope, $q, localization, notification, Package, Dataset, util) {
+        'util',
+
+        function (serverTab, $rootScope, $q, $timeout, localization, notification, Package, Dataset, util) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -126,8 +127,10 @@
                     done: function(err, job) {
 
                         Object.keys(machines.search).forEach(function (id) {
-                            if (!machines.index[id]) {
-                                machines.search[id].reject();
+                            if (!machines.index[id] && machines.search[id]) {
+                                machines.search[id].forEach(function (r) {
+                                    r.reject();
+                                });
                             }
                         });
 
@@ -137,6 +140,53 @@
             }
 
             return machines.job;
+        };
+
+        service.pollMachines = function pollMachines (timeout) {
+            function mapStates () {
+                var states = {};
+
+                machines.list.forEach(function iterateState (machine) {
+                    states[machine.id] = machine.state;
+                });
+
+                return states;
+            }
+
+            $timeout(function poll () {
+                serverTab.call({
+                    name: 'MachineState',
+                    data: { states: mapStates() },
+
+                    done: function pollDone (err, job) {
+                        var data = job.__read();
+
+                        if (data) {
+                            data.forEach(function iterateChunk (chunk) {
+                                if (chunk.state.indexOf('delete') !== -1) {
+                                    var index = -1;
+                                    for (var i = 0, c = machines.list.length; i < c; i++) {
+                                        if (machines.list[i].id === chunk.id) {
+                                            index = i;
+                                            break;
+                                        }
+                                    }
+
+                                    if (index !== -1) {
+                                        machines.list.splice(index, 1);
+                                        delete machines.index[chunk.id];
+                                    }
+                                } else {
+                                    handleChunk(chunk);
+                                }
+                            });
+                        }
+
+                        $rootScope.$broadcast('event:pollComplete');
+                        service.pollMachines(timeout);
+                    }
+                });
+            }, timeout);
         };
 
         service.machine = function (id) {
@@ -168,7 +218,11 @@
 
         if (!machines.job) {
             // run updateMachines
-            service.updateMachines();
+            service.updateMachines().done(function (err, job) {
+                if (!err) {
+                    service.pollMachines(5000);
+                }
+            });
         }
 
         function changeState(opts) {

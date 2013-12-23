@@ -54,6 +54,12 @@ module.exports = function execute(scope) {
     info.images.pointer.__listen('change', mapImageInfo);
     info.images.pointer.__startWatch();
 
+    server.onCall('MachineState', function (call) {
+        machine.State(call, function () {
+            call.done();
+        });
+    });
+
     server.onCall('MachineList', function (call) {
         machine.List(call, function () {
             call.done();
