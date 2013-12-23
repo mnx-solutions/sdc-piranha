@@ -128,7 +128,7 @@
                     },
                     tooltip: 'Provision instance using this image.',
                     sequence: 1
-                },
+                }/*,
                 {
                     label: 'Delete',
                     disabled: function (object) {
@@ -142,7 +142,7 @@
                     },
                     tooltip: 'You will not be able to create any instances with this image after this.',
                     sequence: 2
-                }
+                }*/
             ];
 
             $scope.exportFields = {
