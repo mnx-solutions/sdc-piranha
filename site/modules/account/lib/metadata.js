@@ -10,5 +10,6 @@ metadataObj.BLOCK_REASON = 'blockingReason';
 metadataObj.PORTAL_PRIVATE_KEY = 'portal_private_key';
 metadataObj.PORTAL_FINGERPRINT = 'portal_fingerprint';
 metadataObj.ACCOUNT_HISTORY = 'accountHistory';
+metadataObj.TFA_TOGGLE = 'useMoreSecurity';
 
 module.exports = metadataObj;
