@@ -248,7 +248,52 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    api.List = function (call, callback) {
+    api.State = function (call, callback) {
+        var machines = [];
+        var mapped = {};
+        var states = call.data.states ? call.data.states : {};
+
+        api.List(call, false, function listCallback (err, list) {
+            if (err) {
+                return call.error(err);
+            }
+
+            // Machine state change
+            list.forEach(function iterateMachine (machine) {
+                if (states.hasOwnProperty(machine.id)) {
+                    var state = states[machine.id];
+
+                    // State change
+                    if (machine.state !== state) {
+                        machines.push(machine);
+                    }
+                } else { // New machine
+                    machines.push(machine);
+                }
+
+                mapped[machine.id] = machine;
+            });
+
+            // Machine removal
+            Object.keys(states).forEach(function iterateState (id, index) {
+                if (!mapped.hasOwnProperty(id)) {
+                    machines.push({
+                        id: id,
+                        state: 'deleted'
+                    });
+                }
+            });
+
+            call.done(null, machines);
+        });
+    };
+
+    api.List = function (call, progress, callback) {
+        if (typeof(progress) === 'function') {
+            callback = progress;
+            progress = true;
+        }
+
         call.log.info('Handling machine list event');
 
         var datacenters = call.cloud.listDatacenters();
@@ -299,7 +344,9 @@ module.exports = function execute(scope, register) {
                     call.log.debug('List machines succeeded for datacenter %s', name);
                 }
 
-                call.update(null, response);
+                if (progress) {
+                    call.update(null, response);
+                }
 
                 if (--count === 0) {
                     callback(null, allMachines);

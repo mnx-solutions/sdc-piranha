@@ -29,11 +29,24 @@
 
             $scope.campaignId = ($cookies.campaignId || 'default');
 
-            $scope.preSelectedImageId = requestContext.getParam('imageid');
-            $scope.preSelectedImage = null;
-            $scope.preSelectedDatacenterName = requestContext.getParam('datacenter');
-            $scope.preSelectedPackageId = requestContext.getParam('packageid');
-            $scope.preSelectedNetworks = requestContext.getParam('networks');
+            var reloadSearchParams = function () {
+                $scope.preSelectedImageId = requestContext.getParam('imageid');
+                $scope.preSelectedImage = null;
+                $scope.preSelectedDatacenterName = requestContext.getParam('datacenter');
+                $scope.preSelectedPackageId = requestContext.getParam('packageid');
+                $scope.preSelectedNetworks = requestContext.getParam('networks');
+            };
+
+            reloadSearchParams();
+
+            $scope.$on('$routeChangeSuccess', function (route, next, prev) {
+                // Additional click on 'Create Instance should start creation from the beginning
+                if (prev.$$route.action === next.$$route.action) {
+                    reloadSearchParams();
+                    $scope.reconfigure();
+                    ng.element('.carousel').carousel('pause');
+                }
+            });
 
             if ($scope.preSelectedImageId) {
                 if ($scope.preSelectedDatacenterName) {
@@ -127,7 +140,7 @@
                         }
                     });
 
-                    $location.path('/compute');
+                    $location.path('/compute').search({});
                 }
 
                 function provision() {
@@ -208,7 +221,7 @@
 
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
-                ng.element('.carousel').carousel('prev');
+                ng.element('.carousel').carousel(0);
             };
 
             function getNr(el) {
@@ -456,8 +469,8 @@
 
                             var price = getNr(p.price);
                             var priceMonth = getNr(p.price_month);
-                            p.price = price && price.toFixed(3) || undefined;
-                            p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
+                            p.price = (price || price === 0) && price.toFixed(3) || undefined;
+                            p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
                         });
 
                         $scope.packageTypes = packageTypes;
@@ -490,7 +503,8 @@
             }
 
             ng.element('#provisionCarousel').carousel({
-                interval:false
+                interval: false,
+                pause: false
             });
 
             ng.element('#provisionCarousel').bind({

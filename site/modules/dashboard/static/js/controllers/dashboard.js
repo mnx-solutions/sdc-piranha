@@ -49,14 +49,13 @@
 
             $scope.chooseFreeTierOption = function (option) {
                 var searchParams = {
-                    imageid: option.dataset,
                     packageid: option.package,
                     datacenter: option.datacenter
                 };
                 if (option.networks) {
                     searchParams.networks = option.networks;
                 }
-                $location.path('/compute/create').search(searchParams);
+                $location.path('/compute/create/' + option.dataset).search(searchParams);
             };
 
             // get campaign id from the cookie

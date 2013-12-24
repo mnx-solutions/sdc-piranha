@@ -147,7 +147,7 @@
                 image.state = 'deleting'; // Override state manually
                 image.job = serverTab.call({
                     name: 'ImageDelete',
-                    data: { imageId: image.id, datacenter: image.datacenter},
+                    data: { imageId: image.id, datacenter: image.datacenter },
                     done: function(err, job) {
                         if (!err) {
                             notification.push(image, { type: 'success' },
