@@ -73,3 +73,12 @@ input.ng-pristine {
 .ff-form-actions {
     margin-bottom: 20px;
 }
+.add-rule-btn:hover, .add-rule-btn:focus{
+    color: #fff;
+    text-decoration: none;
+    background-position: 50% 50%;
+    -webkit-transition: background-position 0.1s linear;
+    -moz-transition: background-position 0.1s linear;
+    -o-transition: background-position 0.1s linear;
+    transition: background-position 0.1s linear;
+}
