@@ -136,6 +136,8 @@
                 }
 
                 $scope.dataset.then(function(ds){
+                    $scope.imageCreateNotSupported = m.imageCreateNotSupported || ds.imageCreateNotSupported;
+
                     if(ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
                     }
@@ -255,21 +257,23 @@
             };
 
             $scope.clickCreateImage = function () {
-                if ($scope.machine.state !== 'stopped') {
+                if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
                     var title = 'Message';
-                    var message = 'Please stop the instance before trying to create an image';
-                    var btns = [
-                        {
+                    var message = $scope.imageCreateNotSupported ||
+                        'Please stop the instance before trying to create an image';
+                    var btns = [];
+                    if (!$scope.imageCreateNotSupported) {
+                        btns.push({
                             result: 'stop',
                             label: 'Stop instance now',
                             cssClass: 'pull-left'
-                        },
-                        {
-                            result: 'ok',
-                            label: 'OK',
-                            cssClass: 'btn-joyent-blue'
-                        }
-                    ];
+                        });
+                    }
+                    btns.push({
+                        result: 'ok',
+                        label: 'OK',
+                        cssClass: 'btn-joyent-blue'
+                    });
 
                     return $dialog.messageBox(title, message, btns)
                         .open()
