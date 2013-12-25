@@ -662,6 +662,7 @@
                         rule.deleteRule(r).then(function(){
                             $scope.refresh();
                         });
+                        $scope.openRuleForm = false;
                     });
             };
 

@@ -1,4 +1,6 @@
 <div class="container-fluid" data-ng-controller="Firewall.IndexController">
+
+
     <div class="container">
         <div data-breadcrumb></div>
         <div data-notification></div>
@@ -7,7 +9,17 @@
                 <h1>Firewall Rules<div data-ng-show="loading" class="loading-medium-after-h1"></div></h1>
             </div>
         </div>
-        <div class="row">
+        <div data-ng-hide="(rules.length || loading)">
+            <div class="alert alert-joyent-blue alert-global">
+                <div class="pull-left">
+                    <h4>Hello there!</h4>
+                    <div data-translate>No firewall rules created.</div>
+                </div>
+                <button class="btn btn-joyent-blue pull-right alert-global add-rule-btn" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="row" data-ng-show="rules.length">
             <div class="span12">
                 <div data-grid-view
                      data-props="gridProps"
@@ -46,7 +58,7 @@
             <fieldset>
                 <legend class="text-right">
                     <span data-ng-show="data.uuid">Edit rule {{data.uuid}} <a class="pointer" data-ng-click="resetData()">(create new instead)</a></span>
-                    <button class="btn btn-link btn-large" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
+                    <button class="btn btn-link btn-large" data-ng-hide="data.uuid || !rules.length" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
                 </legend>
 
                 <div data-ng-show="openRuleForm">
