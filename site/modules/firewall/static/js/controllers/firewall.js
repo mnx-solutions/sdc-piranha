@@ -640,12 +640,9 @@
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-                rule.deleteRule($scope.data).then(function(){
-                    rule.createRule($scope.data).then(function(){
-                        $scope.refresh();
-                    })
-                });
-
+                rule.updateRule($scope.data).then(function () {
+                    $scope.refresh();
+                })
             };
 
             $scope.createRule = function() {

@@ -85,8 +85,7 @@ var firewall = function execute (scope) {
                 var timeout = null;
                 var poll = setInterval(function () {
                     call.log.info('Polling firewall rule');
-
-                    cloud.getFwRule(rule.id, function (err, rule) {
+                    cloud.getFwRule(rule.rule.uuid, function (err, rule) {
                         if (!err) {
                             call.done(null, rule);
                             clearInterval(poll);
