@@ -98,7 +98,7 @@ var firewall = function execute (scope) {
                 timeout = setTimeout(function () {
                     call.done(new Error('Rule not created'));
                     clearInterval(poll);
-                }, 10000);
+                }, 20000);
             });
         }
     });
@@ -115,11 +115,36 @@ var firewall = function execute (scope) {
         handler: function (call) {
             call.log.info('Update firewall rule ' + call.data.uuid);
             var cloud = call.cloud.separate(call.data.datacenter);
+            var uuid = call.data.uuid;
+            var newRule = fwrule.create(call.data).text();
 
-            cloud.updateFwRule(call.data.uuid, {
+            cloud.updateFwRule(uuid, {
                 enabled: call.data.enabled,
-                rule: fwrule.create(call.data).text()
-            }, call.done.bind(call));
+                rule: newRule
+            }, function (err, rule) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
+                // Poll for rule
+                var timeout = null;
+                var poll = setInterval(function () {
+                    call.log.info('Polling firewall rule');
+                    cloud.getFwRule(uuid, function (err, rule) {
+                        if (rule && rule.rule === newRule) {
+                            call.done(null, rule);
+                            clearInterval(poll);
+                            clearTimeout(timeout);
+                        }
+                    }, undefined, true);
+                }, 2000);
+
+                // When timeout reached
+                timeout = setTimeout(function () {
+                    call.done(new Error('Rule not updated'));
+                    clearInterval(poll);
+                }, 90000);
+            });
         }
     });
 
@@ -134,8 +159,31 @@ var firewall = function execute (scope) {
             var uuid = call.data.uuid;
             var cloud = call.cloud.separate(call.data.datacenter);
 
-            call.log.info('Disable firewall rule ' + uuid);
-            cloud.deleteFwRule(uuid, call.done.bind(call));
+            call.log.info('Delete firewall rule ' + uuid);
+            cloud.deleteFwRule(uuid, function (err, rule) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
+                // Poll for rule
+                var timeout = null;
+                var poll = setInterval(function () {
+                    call.log.info('Polling firewall rule');
+                    cloud.getFwRule(uuid, function (err, rule) {
+                        if (err && err.statusCode === 404) {
+                            call.done(null, rule);
+                            clearInterval(poll);
+                            clearTimeout(timeout);
+                        }
+                    }, undefined, true);
+                }, 2000);
+
+                // When timeout reached
+                timeout = setTimeout(function () {
+                    call.done(new Error('Rule not deleted'));
+                    clearInterval(poll);
+                }, 90000);
+            });
         }
     });
 
