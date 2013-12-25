@@ -92,9 +92,21 @@ module.exports = function execute(scope) {
                 return config.showSLBObjects || !slbTagged;
             });
 
+            var imageCreateConfig = config.images || {types: {}};
+
             data.forEach(function (img, i) {
                 if (info.images.data[img.id]) {
                     data[i] = utils.extend(img, info.images.data[img.id]);
+                }
+
+                var leastSupportedVersion = imageCreateConfig.types[img.name];
+                if (!img['public']) {
+                    img.imageCreateNotSupported = 'Instances from custom images are not yet supported for creating additional images.';
+                } else if (!leastSupportedVersion) {
+                    img.imageCreateNotSupported = img.name + ' is not yet supported for image creation.';
+                } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
+                    img.imageCreateNotSupported = 'The origin ' + img.name + ' image needs to be at least ' +
+                        leastSupportedVersion + ' for image creation.';
                 }
 
                 if (data[i].name) {
@@ -372,6 +384,10 @@ module.exports = function execute(scope) {
 
                 machine.ImageCreate(call, options, call.done);
             }
+        });
+
+        server.onCall('ImageCreateConfig', function (call) {
+            call.done(null, config.images);
         });
     }
 

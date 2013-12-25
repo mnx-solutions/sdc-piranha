@@ -22,10 +22,10 @@ module.exports = function execute(scope, register) {
             });
         }
 
-        var allowedTypes = config.images ? config.images.types : [];
-        var earliestDate = config.images ? new Date(config.images.earliest_date) : new Date();
-        machine.allowImageCreate = allowedTypes.indexOf(machine.type) !== -1 &&
-            new Date(machine.created) >= earliestDate;
+        if (new Date(machine.created) < new Date(config.images.earliest_date)) {
+            machine.imageCreateNotSupported = 'Instances created before ' + config.images.earliest_date +
+                ' are not supported for image creation.';
+        }
 
         return machine;
     }

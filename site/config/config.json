@@ -127,7 +127,12 @@
   , "ssc_port": 443
 }
 , "images": {
-    "types": ["smartmachine"]
+    "types": {
+      "base": "13.3.0"
+    , "base64": "13.3.0"
+    , "centos-6": "2.5.0"
+    , "ubuntu-12.04": "2.4.2"
+    }
   , "earliest_date": "2013-12-18"
 }
 , "features": {
