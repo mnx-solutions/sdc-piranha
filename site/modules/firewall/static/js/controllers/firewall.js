@@ -546,9 +546,25 @@
             function addTarget (direction, other) {
                 var target = [];
                 var data = $scope.current[direction];
+                var otherDir = $scope.data.parsed[other];
 
-                if (!$scope.data.parsed[other].length) {
-                    $scope.data.parsed[other].push(['wildcard','any']);
+                if (otherDir[0] && ($scope.isAny(otherDir[0]) && $scope.isAny(data))) {
+                    util.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'FROM and TO both cannot be set to ANY. Please choose one.'
+                        ),
+                        function () {
+                        }
+                    );
+                    clearTarget(direction);
+                    return;
                 }
 
                 if (data.type === 'wildcard' && data.text === 'any') {
