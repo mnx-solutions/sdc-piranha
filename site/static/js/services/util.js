@@ -65,27 +65,6 @@ window.JP.main.service('util', [
             return ret;
         };
 
-        service.error = function (title, question, callback) {
-            // TODO: Translate
-            title = title || 'Error';
-            var btns = [
-                {
-                    result: 'ok',
-                    label: 'Ok',
-                    cssClass: 'btn orange',
-                    setFocus: true
-                }
-            ];
-
-            return $dialog.messageBox(title, question, btns)
-                .open()
-                .then(function (result) {
-                    if (result === 'ok') {
-                        callback();
-                    }
-                });
-        };
-
         return service;
     }]
 );

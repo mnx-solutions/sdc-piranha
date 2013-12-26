@@ -12,8 +12,9 @@
         'Datacenter',
         'Machine',
         'util',
+        '$dialog',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util, $dialog) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -549,20 +550,21 @@
                 var otherDir = $scope.data.parsed[other];
 
                 if (otherDir[0] && ($scope.isAny(otherDir[0]) && $scope.isAny(data))) {
-                    util.error(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'FROM and TO both cannot be set to ANY. Please choose one.'
-                        ),
-                        function () {
+                    var title = 'Error';
+                    var message = 'FROM and TO both cannot be set to ANY. Please choose one.';
+                    var btns = [
+                        {
+                            result: 'ok',
+                            label: 'OK',
+                            cssClass: 'btn-joyent-blue'
                         }
-                    );
+                    ];
+
+                    return $dialog.messageBox(title, message, btns)
+                        .open()
+                        .then(function (result) {
+                        });
+
                     clearTarget(direction);
                     return;
                 }
@@ -605,7 +607,7 @@
 
             $scope.removeFrom = function(i) {
                 $scope.data.parsed.from.splice(i, 1);
-                if(!$scope.data.parsed.from.length) {
+                if(!$scope.data.parsed.from.length && !$scope.isAny($scope.data.parsed.to[0])) {
                     $scope.data.parsed.from = [['wildcard', 'any']];
                 }
             };
@@ -616,7 +618,7 @@
 
             $scope.removeTo = function(i) {
                 $scope.data.parsed.to.splice(i, 1);
-                if(!$scope.data.parsed.to.length) {
+                if(!$scope.data.parsed.to.length && !$scope.isAny($scope.data.parsed.from[0])) {
                     $scope.data.parsed.to = [['wildcard', 'any']];
                 }
             };
