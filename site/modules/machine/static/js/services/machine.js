@@ -218,11 +218,15 @@
 
         if (!machines.job) {
             // run updateMachines
+            service.updateMachines();
+            
+            /*
             service.updateMachines().done(function (err, job) {
                 if (!err) {
                     service.pollMachines(5000);
                 }
             });
+            */
         }
 
         function changeState(opts) {
