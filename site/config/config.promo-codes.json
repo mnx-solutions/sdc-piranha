@@ -64,5 +64,24 @@
         "expirationDate": "2013-12-31",
         "startDate": "2013-11-19",
         "campaignId": "701800000014yrs"
+    },
+    "NS13OW6K": {
+        "expirationDate": "2014-01-31",
+        "startDate": "2013-12-10",
+        "campaignId": "7018000000153Ja"
+    },
+    "NS13W12K": {
+        "expirationDate": "2014-01-31",
+        "startDate": "2013-12-10",
+        "campaignId": "7018000000153Jf"
+    },
+    "NS13P61K": {
+        "expirationDate": "2014-01-31",
+        "startDate": "2013-12-10",
+        "campaignId": "7018000000153Jk"
+    },
+    "Node.js Core Support": {
+        "startDate": "2014-01-01",
+        "campaignId": "701800000015696"
     }
 }
