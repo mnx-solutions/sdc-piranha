@@ -78,7 +78,10 @@
                 {
                     id: 'published_at',
                     name: 'Published at',
-                    sequence: 4
+                    sequence: 4,
+                    _getter: function (image) {
+                        return $filter('date')(new Date(image.published_at), 'yyyy-MM-ddTHH:mm:ss') + 'Z';
+                    }
                 },
                 {
                     id: 'state',
