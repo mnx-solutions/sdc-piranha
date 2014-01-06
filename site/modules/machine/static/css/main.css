@@ -335,3 +335,6 @@
 .beta-sticker.beta{
     margin-top: 47px;
 }
+.carousel-inner .item:hover {
+    background:none !important;
+}
