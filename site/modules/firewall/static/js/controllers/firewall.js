@@ -479,7 +479,7 @@
                     name:'tcp',
                     targets:[]
                 };
-                $scope.data.enabled = false;
+                $scope.data.enabled = true;
             };
 
             $scope.getData = function() {
@@ -678,6 +678,7 @@
 
             $scope.createRule = function() {
                 $scope.loading = true;
+
                 rule.createRule($scope.getData()).then(function(r){
                     if(r.id) {
                         $scope.refresh();

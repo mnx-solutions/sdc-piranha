@@ -56,12 +56,20 @@
                 rules.map[rule.datacenter].push(rule);
 
                 function showError (err) {
+                    // add messages from errors to make it move convenient
+                    var errMsg = (err.message) ? '<br />' + err.message : '';
+                    if(err.body.errors && err.body.errors.length > 0) {
+                        err.body.errors.forEach(function(error) {
+                            errMsg += (error.message) ? '<br />' + error.message : '';
+                        });
+                    }
+
                     notification.push(rule.uuid, { type: 'error' },
                         localization.translate(null,
                             'firewall',
                             'Unable to a create rule: {{error}}',
                             {
-                                error: (err.message) ? '<br />' + err.message : ''
+                                error: errMsg
                             }
                         )
                     );
