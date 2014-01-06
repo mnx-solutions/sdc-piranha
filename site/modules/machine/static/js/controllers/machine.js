@@ -257,33 +257,7 @@
             };
 
             $scope.clickCreateImage = function () {
-                if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
-                    var title = 'Message';
-                    var message = $scope.imageCreateNotSupported ||
-                        'Please stop the instance before trying to create an image';
-                    var btns = [];
-                    if (!$scope.imageCreateNotSupported) {
-                        btns.push({
-                            result: 'stop',
-                            label: 'Stop instance now',
-                            cssClass: 'pull-left'
-                        });
-                    }
-                    btns.push({
-                        result: 'ok',
-                        label: 'OK',
-                        cssClass: 'btn-joyent-blue'
-                    });
-
-                    return $dialog.messageBox(title, message, btns)
-                        .open()
-                        .then(function (result) {
-                            if (result === 'stop') {
-                                Machine.stopMachine(machineid);
-                                $$track.event('machine', 'stop');
-                            }
-                        });
-                } else {
+                function createImage() {
                     $scope.imageName = $scope.imageName || (Math.random() + 1).toString(36).substr(2, 7);
                     $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription);
                     $scope.imageJob.done(function () {
@@ -292,6 +266,38 @@
                         $scope.imageForm.$dirty = false;
                     });
                 }
+
+                if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
+                    var message = $scope.imageCreateNotSupported ||
+                        'The instance will be stopped as the first step of creating an image from it';
+                    var btns = [];
+                    if (!$scope.imageCreateNotSupported) {
+                        btns = [{
+                            result: 'cancel',
+                            label: 'Cancel',
+                            cssClass: 'pull-left'
+                        }, {
+                            result: 'create',
+                            label: 'Create Image',
+                            cssClass: 'btn-joyent-blue'
+                        }];
+                    } else {
+                        btns = [{
+                            result: 'ok',
+                            label: 'OK',
+                            cssClass: 'btn-joyent-blue'
+                        }];
+                    }
+
+                    return $dialog.messageBox('', message, btns)
+                        .open()
+                        .then(function (result) {
+                            if (result === 'create') {
+                                createImage();
+                            }
+                        });
+                }
+                createImage();
             };
 
             $scope.renameClass = function() {
