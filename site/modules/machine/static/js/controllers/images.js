@@ -66,8 +66,8 @@
                     sequence: 1
                 },
                 {
-                    id: 'description',
-                    name: 'Description',
+                    id: 'datacenter',
+                    name: 'Data Center',
                     sequence: 2
                 },
                 {
@@ -103,14 +103,9 @@
                     sequence: 3
                 },
                 {
-                    id: 'datacenter',
-                    name: 'Datacenter',
-                    sequence: 4
-                },
-                {
                     id: 'public',
                     name: "Public",
-                    sequence: 5
+                    sequence: 4
                 }
             ];
 
