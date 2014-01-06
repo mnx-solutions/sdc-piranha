@@ -18,17 +18,21 @@
         '$q',
         '$$track',
         'util',
+        '$cookies',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $dialog, $location, localization, $q, $$track, util) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network,
+                  Image, $dialog, $location, localization, $q, $$track, util, $cookies) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
 
+            $scope.campaignId = ($cookies.campaignId || 'default');
+
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
-            if($scope.preSelectedImageId) {
+            if ($scope.preSelectedImageId) {
                 $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
             }
 
@@ -117,37 +121,37 @@
             };
 
             function provision(machine) {
-                util.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Create Instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        'machine',
-                        'Billing will start once this instance is created'
-                    ), function () {
+                    util.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: Create Instance'
+                        ),
+                        localization.translate(
+                            $scope,
+                            'machine',
+                            'Billing will start once this instance is created'
+                        ), function () {
                         if (machine && !machine.dataset) {
                             util.message('Error', 'Instance not found', function () {});
                             return;
                         }
                         $scope.retinfo = Machine.provisionMachine( machine || $scope.data);
-                        $scope.retinfo.done(function(err, job) {
-                            var newMachine = job.__read();
-                            if(newMachine.id) {
-                                var listMachines = Machine.machine();
-                                $q.when(listMachines, function() {
-                                    if(listMachines.length == 1) {
-                                        $$track.marketo_machine_provision($scope.account);
-                                    }
-                                });
-                            }
-                        });
+                            $scope.retinfo.done(function(err, job) {
+                                var newMachine = job.__read();
+                                if(newMachine.id) {
+                                    var listMachines = Machine.machine();
+                                    $q.when(listMachines, function() {
+                                        if(listMachines.length == 1) {
+                                            $$track.marketo_machine_provision($scope.account);
+                                        }
+                                    });
+                                }
+                            });
 
                         $location.path('/compute');
                     });
-            }
+                }
 
             $scope.clickProvision = function () {
 
@@ -472,8 +476,8 @@
                             }
                             var price = getNr(p.price);
                             var priceMonth = getNr(p.price_month);
-                            p.price = price && price.toFixed(3) || undefined;
-                            p.price_month = priceMonth && priceMonth.toFixed(2) || undefined;
+                            p.price = (price || price === 0) && price.toFixed(3) || undefined;
+                            p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
                         });
 
 

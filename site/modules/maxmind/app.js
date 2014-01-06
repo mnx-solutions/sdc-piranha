@@ -56,7 +56,11 @@ module.exports = function execute(scope, app) {
             }
 
             if (req.session.blockReason) {
-                Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason);
+                Metadata.set(req.session.userId, Metadata.BLOCK_REASON, req.session.blockReason, function (setErr) {
+                    if (setErr) {
+                        req.log.error({error: setErr}, 'Saving block reason in metadata failed');
+                    }
+                });
             }
 
             res.json({message: lockMessage, success: false, navigate: true});

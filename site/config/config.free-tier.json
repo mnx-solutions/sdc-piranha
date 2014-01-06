@@ -1,0 +1,30 @@
+[
+    {
+        "name": "SmartOS with Node.js & MongoDB",
+        "datacenter": "us-west-x",
+        "dataset": "f669428c-a939-11e2-a485-b790efc0f0c1",
+        "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
+        "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+    },
+    {
+        "name": "CentOS",
+        "datacenter": "us-west-x",
+        "dataset": "30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
+        "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
+        "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+    },
+    {
+        "name": "SmartOS",
+        "datacenter": "us-west-x",
+        "dataset": "f669428c-a939-11e2-a485-b790efc0f0c1",
+        "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
+        "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+    },
+    {
+        "name": "Ubuntu",
+        "datacenter": "us-west-x",
+        "dataset": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+        "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
+        "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+    }
+]

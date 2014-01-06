@@ -1,264 +1,450 @@
 <div class="container-fluid" data-ng-controller="Firewall.IndexController">
-    <div class="container firewall-container">
+
+
+    <div class="container">
+        <div data-breadcrumb></div>
+        <div data-notification></div>
         <div class="row-fluid">
-            <div class="span12 page-header">
-                <h3 class="page-title">Firewall Rules</h3>
+            <div class="span12">
+                <h1>Firewall Rules<div data-ng-show="loading" class="loading-medium-after-h1"></div></h1>
             </div>
         </div>
-        <data-notification></data-notification>
-        <div data-grid-view
-             data-props="gridProps"
-             data-objects="rules"
-             data-per-page="15"
-             data-order="gridOrder"
-             data-objects-type="firewall">
-        </div>
-
-    <div data-ng-show="loading" class="loading-large"></div>
-
-    <div class="row-fluid notice-block" data-ng-show="notAffectedMachines.length > 0">
-    Firewall Rules is a SmartDataCenter 7.0 platform feature. The following instances will not benefit from this feature until their global zone is upgraded by Joyent staff as part of the Q4 2013 through Q1 2014 maintenance:
-        <div data-ng-repeat="machine in notAffectedMachines">
-            <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
-        </div>
-    </div>
-
-    <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
-        <fieldset>
-            <legend class="yellow-bg">
-                <div class="pull-left title-rule">
-                    <span data-ng-show="data.uuid">Edit rule <p class="uuid-text">{{data.uuid}}</p> </span>
-                    <span data-ng-hide="data.uuid">Create New Rule</span>
+        <div data-ng-hide="(rules.length || loading)">
+            <div class="alert alert-joyent-blue alert-global">
+                <div class="pull-left">
+                    <h4>Hello there!</h4>
+                    <div data-translate>No firewall rules created.</div>
                 </div>
-                <div class="">
-                    <span class="name-field">Action</span>
-                    <span class="value-field"><select data-ng-model="data.parsed.action" data-ng-options="action.value as action.title for (key, action) in actions"></select></span>
-                    <span class="name-field">Status</span>
-                    <span class="value-field"><select data-ng-model="data.enabled" data-ng-options="status.value as status.title for (key, status) in states"></select></span>
-                    <span class="name-field">Data Center</span>
-                    <span class="value-field"><select data-ng-model="datacenter" data-ng-options="datacenter.name as datacenter.name for datacenter in datacenters"></select></span>
-                </div>
-            </legend>
-            <table class="firewall-table">
-                <tbody>
-                    <tr>
-                        <td class="one-third">
-                            <legend>
-                                <span>From</span>
-                            </legend>
-                            <div class="control-group fixed-height165">
-                                <span class="control-label">Add:</span>
-                    <span class=" text-medium">
-                        <input type="hidden" id="fromSelect" /><br /><br />
-                    </span>
-                                <form name="fromForm">
-                        <span data-ng-switch="current.from.type">
-                            <span data-ng-switch-when="wildcard">
-                                <span data-ng-show="current.from.text == 'all vms'">
-                                    <span class="pull-right f-btn">
-                                        <button class="btn light" data-ng-click="addFrom()">ADD</button>
-                                    </span>
-                                </span>
-                            </span>
-                            <span data-ng-switch-when="tag">
-                                <span class="f-name">Name:</span>
-                                <span class="f-value"><input type="text" data-ng-model="current.from.text"/></span>
-                                <span data-ng-show="current.from.text">
-                                    <span class="f-name margin-top-10">Value:</span>
-                                    <span class="f-value margin-top-10"><input type="text" data-ng-model="current.from.value" /></span>
-                                </span>
-                                <span class="pull-right margin-top-10 f-btn">
-                                    <button class="btn light" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
-                                </span>
-                            </span>
-                            <span data-ng-switch-default>
-                                <!-- due to the nature of directives, we need another switch here -->
-                                <span data-ng-switch="current.from.type">
-                                    <span data-ng-switch-when="subnet">
-                                        <span class="f-name"></span>
-                                        <span class="f-value"><input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip/></span>
-                                        <span data-ng-show="current.from.text" class="row-fluid">
-                                            <span class="f-name margin-top-10">CIDR:</span>
-                                            <span class="f-value margin-top-10"><select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"></select></span>
-                                        </span>
-                                    </span>
-                                    <span data-ng-switch-when="ip">
-                                        <span class="f-name"></span>
-                                        <span class="f-value"><input type="text" name="fromValue" data-ng-model="current.from.text" data-ip/></span>
-                                    </span>
-                                    <span data-ng-switch-default>
-                                        <span class="f-name"></span>
-                                        <span class="f-value"><input type="text" name="fromValue" data-ng-model="current.from.text" /></span>
-                                    </span>
-                                </span>
-                                <span class="pull-right margin-top-10 f-btn">
-                                    <button class="btn light" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
-                                </span>
-                                <!-- directives switch end -->
-                            </span>
-                        </span>
-                                </form>
-                            </div>
-                            <div class="results-group">
-                    <span data-ng-show="data.parsed.from.length" class="">
-                        <span class="f-result" data-ng-repeat="from in data.parsed.from">
-                            <div class="result-width">{{from|targetInfo}}</div>
-                            <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeFrom($index)" data-ng-hide="isAny(from)"></div>
-                        </span>
-                    </span>
-                            </div>
-
-                        </td>
-                        <td class="small-space"></td>
-                        <td class="one-third">
-                            <legend>
-                                <span>To</span>
-                            </legend>
-                            <div class="control-group fixed-height165">
-                                <span class="control-label">Add:</span>
-                    <span class=" text-medium">
-                        <input type="hidden" id="toSelect" /><br /><br />
-                    </span>
-                                <form name="toForm">
-                        <span data-ng-switch="current.to.type">
-                            <span data-ng-switch-when="wildcard">
-                                <span data-ng-show="current.to.text == 'all vms'">
-                                    <span class="pull-right f-btn">
-                                        <button class="btn light" data-ng-click="addTo()">ADD</button>
-                                    </span>
-                                </span>
-                            </span>
-                            <span data-ng-switch-when="tag">
-                                <span class="f-name">Name:</span>
-                                <span class="f-value"><input type="text" data-ng-model="current.to.text"/></span>
-                                <span data-ng-show="current.to.text">
-                                    <span class="f-name margin-top-10">Value:</span>
-                                    <span class="f-value margin-top-10"><input type="text" data-ng-model="current.to.value" /></span>
-                                </span>
-                                <span class="pull-right margin-top-10 f-btn">
-                                    <button class="btn light" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
-                                </span>
-                            </span>
-                            <span data-ng-switch-default>
-                                <!-- due to the nature of directives, we need another switch here -->
-                                <span data-ng-switch="current.to.type">
-                                    <span data-ng-switch-when="subnet">
-                                        <span class="f-name"></span>
-                                        <span class="f-value"><input  type="text" name="toValue" data-ng-model="toSubnet.address" data-ip/></span>
-                                        <span data-ng-show="current.to.text" class="row-fluid">
-                                            <span class="f-name margin-top-10">CIDR:</span>
-                                            <span class="f-value margin-top-10"><select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"></select></span>
-                                        </span>
-                                    </span>
-                                    <span data-ng-switch-when="ip">
-                                        <span class="f-name"></span>
-                                        <span class="f-value"><input type="text" name="toValue" data-ng-model="current.to.text" data-ip/></span>
-                                    </span>
-                                    <span data-ng-switch-default>
-                                        <span class="f-name"></span>
-                                        <span class="f-value"><input type="text" name="toValue" data-ng-model="current.to.text" /></span>
-                                    </span>
-                                </span>
-                                <span class="pull-right margin-top-10 f-btn">
-                                    <button class="btn light" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
-                                </span>
-                                <!-- directives switch end -->
-                            </span>
-                        </span>
-                                </form>
-                            </div>
-
-                            <div class="results-group">
-                    <span data-ng-show="data.parsed.to.length" class="">
-                        <span class="f-result" data-ng-repeat="to in data.parsed.to">
-                            <div class="result-width">{{to|targetInfo}}</div>
-                            <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeTo($index)" data-ng-hide="isAny(to)"></div>
-                        </span>
-                    </span>
-                            </div>
-                        </td>
-                        <td class="small-space"></td>
-                        <td class="one-third">
-                            <legend>
-                                <span>Ports</span>
-                            </legend>
-                            <div class="fixed-height145">
-                                <label class="control-label">Protocol:</label>
-                                <form name="protocolForm">
-                                    <!--<div class="controls warning">-->
-                            <span class="">
-                                <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
-                                <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp' && !isAllPorts()">
-                                    <!--<span class="row-fluid">-->
-                                    <span class="f-name"></span>
-                                    <span class="f-value"><input name="port"
-                                                                 type="text"
-                                                                 data-ng-model="current.port"
-                                                                 data-range="1-65535"/>
-                                    </span>
-                                    <!--</span>-->
-                                    <!--<span class="row-fluid">-->
-                                        <span class="pull-right margin-top-10 f-btn">
-                                            <button class="btn light"
-                                                    data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
-                                                    data-ng-click="addPort()">ADD</button>
-                                            <button class="btn orange" data-ng-click="useAllPorts()">Use All</button>
-                                        </span>
-                                    <!--</span>-->
-                                </span>
-                                <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
-                                    <!--<span class="row-fluid">-->
-                                        <span class="f-name">Type:</span>
-                                        <span class="f-value"><input type="text"
-                                                                     name="type"
-                                                                     data-ng-required="true"
-                                                                     data-range="0-255"
-                                                                     data-ng-model="current.type" />
-                                        </span>
-                                    <!--</span>-->
-                                    <!--<span class="row-fluid">-->
-                                        <span class="f-name margin-top-10">Code:</span>
-                                        <span class="f-value margin-top-10"><input type="text"
-                                                                                   name="code"
-                                                                                   data-ng-required="false"
-                                                                                   data-range="0-255"
-                                                                                   data-ng-model="current.code" />
-                                        </span>
-                                    <!--</span>-->
-                                    <!--<span class="row-fluid">-->
-                                        <span class="pull-right margin-top-10 f-btn">
-                                            <button class="btn light"
-                                                    data-ng-disabled="!protocolForm.$valid"
-                                                    data-ng-click="addType()">ADD</button>
-                                        </span>
-                                    <!--</span>-->
-                                </span>
-                            </span>
-
-                                    <!--</div>-->
-                                </form>
-                            </div>
-                            <div class="results-group">
-                    <span data-ng-show="data.parsed.to.length" class="">
-                        <span class="f-result" data-ng-repeat="target in data.parsed.protocol.targets">
-                            <div class="result-width">{{target}}</div>
-                            <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeProtocolTarget($index)" ></div>
-                        </span>
-                    </span>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="create-update-btn">
-                <span class="value-field" data-ng-show="data.uuid"><a class="btn orange" data-ng-click="resetData()">Create New Instead</a></span>
-                <button class="btn light" data-ng-hide="data.uuid" data-ng-disabled="!validData" data-ng-click="createRule()">Create Rule</button>
-                <button class="btn light" data-ng-show="data.uuid" data-ng-disabled="!validData" data-ng-click="updateRule()">Update Rule</button>
+                <button class="btn btn-joyent-blue pull-right alert-global add-rule-btn" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
+                <div class="clearfix"></div>
             </div>
-        </fieldset>
+        </div>
+        <div class="row" data-ng-show="rules.length">
+            <div class="span12">
+                <div data-grid-view
+                     data-props="gridProps"
+                     data-objects="rules"
+                     data-per-page="15"
+                     data-order="gridOrder"
+                     data-objects-type="firewall"></div>
+            </div>
+        </div>
 
+        <div data-ng-show="loading" class="loading-large"></div>
+        <div class="row-fluid notice-block" data-ng-show="notAffectedMachines.length > 0 || firewallDisabledMachines.length > 0 || kvmList.length > 0">
+            Firewall Rules is a SmartDataCenter 7.0 platform feature. It currently supports SmartOS instances. <a href="http://wiki.joyent.com/wiki/display/jpc2/Working+With+Firewall+Rules">Click here to learn more about working with Firewall Rules</a>.
+            <br />
+        </div>
+        <div class="row-fluid notice-block" data-ng-show="notAffectedMachines.length > 0">
+            The following instances will not benefit from this feature until their global zone is upgraded by Joyent staff as part of the Q4 2013 through Q1 2014 maintenance:
+            <div data-ng-repeat="machine in notAffectedMachines">
+                <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
+            </div>
+        </div>
+        <div class="row-fluid notice-block" data-ng-show="firewallDisabledMachines.length > 0">
+            The following instances do not have Firewall Rules enabled. You can enable Firewall Rules from the <a href="#!/compute">Instances page</a> or using <a href="http://apidocs.joyent.com/cloudapi/">CloudAPI</a>.
+            <div data-ng-repeat="machine in firewallDisabledMachines">
+                <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
+            </div>
+        </div>
+        <div class="row-fluid notice-block" data-ng-show="kvmList.length > 0">
+            Linux, BSD, and Windows instances are not yet supported:
+            <div data-ng-repeat="machine in kvmList">
+                <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
+            </div>
+        </div>
+
+        <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
+            <fieldset>
+                <legend class="text-right">
+                    <span data-ng-show="data.uuid">Edit rule {{data.uuid}} <a class="pointer" data-ng-click="resetData()">(create new instead)</a></span>
+                    <button class="btn btn-link btn-large" data-ng-hide="data.uuid || !rules.length" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
+                </legend>
+
+                <div data-ng-show="openRuleForm">
+                    <legend data-translate>Data Center</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Data Center:</label>
+                            <div class="controls">
+                                <span class="span6">
+                                    <input type="hidden" id="dcSelect"><br/><br/>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.datacenter}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>Action</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Action:</label>
+                            <div class="controls">
+                                <span class="span6">
+                                    <input type="hidden" id="actionSelect"><br/><br/>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.action}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>Protocol</legend>
+                    <!-- row4 -->
+                    <div class="row row-height">
+                        <!-- left -->
+                        <div class="span6">
+                            <label class="control-label">Protocol</label>
+                            <div class="controls warning" data-ng-form="protocolForm">
+                                <span class="span6 text-medium">
+                                    <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
+                                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp' && !isAllPorts()">
+                                        <div class="row-fluid">
+                                            <span class="span6">
+                                                <input name="port"
+                                                       type="text"
+                                                       data-ng-model="current.port"
+                                                       data-range="1-65535"/>
+                                            </span>
+                                        </div>
+                                        <div class="row-fluid">
+                                            <span class="span6 margin-top-10">
+                                                <button class="btn"
+                                                        data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
+                                                        data-ng-click="addPort()">ADD</button>
+                                                <button class="btn" data-ng-click="useAllPorts()">Use All</button>
+                                            </span>
+                                        </div>
+                                    </span>
+                                    <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
+                                        <span class="row-fluid">
+                                            <span class="span1">
+                                                Type:
+                                            </span>
+                                            <span class="span10">
+                                                <input type="text"
+                                                       name="type"
+                                                       required="true"
+                                                       data-range="0-255"
+                                                       data-ng-model="current.type" />
+                                            </span>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span1 margin-top-10">
+                                                Code:
+                                            </span>
+                                            <span class="span6 margin-top-10">
+                                                <input type="text"
+                                                       name="code"
+                                                       required="false"
+                                                       data-range="0-255"
+                                                       data-ng-model="current.code" />
+                                            </span>
+                                        </span>
+                                        <span class="row-fluid">
+                                            <span class="span6 margin-top-10">
+                                                <button class="btn"
+                                                        data-ng-disabled="!protocolForm.$valid"
+                                                        data-ng-click="addType()">ADD</button>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6">
+                            <span data-ng-show="data.parsed.protocol.targets.length" class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr data-ng-repeat="target in data.parsed.protocol.targets">
+                                        <td class="width-90">
+                                            {{target}}
+                                        </td>
+                                        <td class="width-10">
+                                            <div class="text-center">
+                                                <button type="button" class="btn btn-default" data-ng-click="removeProtocolTarget($index)">Clear</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>From</legend>
+                    <!-- row2 -->
+                    <div class="row row-height">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Add:</label>
+                            <div class="controls">
+                                <span class="span6 text-medium">
+                                    <input type="hidden" id="fromSelect" /><br /><br />
+                                </span>
+                                <span class="span6 text-medium" data-ng-form="fromForm">
+                                    <span data-ng-switch="current.from.type">
+                                        <span data-ng-switch-when="wildcard">
+                                            <span data-ng-show="current.from.text == 'all vms' || current.from.text == 'any'">
+                                                <span class="row-fluid">
+                                                    <span class="span6 margin-top-10">
+                                                        <button class="btn" data-ng-click="addFrom()">ADD</button>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span data-ng-switch-when="tag">
+                                            <span class="row-fluid">
+                                                <span class="span2">
+                                                    Tag name:
+                                                </span>
+                                                <span class="span6">
+                                                    <input type="text" data-ng-model="current.from.text" required/>
+                                                </span>
+                                            </span>
+                                            <span data-ng-show="current.from.text" class="row-fluid">
+                                                <span class="span2 margin-top-10">
+                                                    Tag value (optional):
+                                                </span>
+                                                <span class="span6 margin-top-10">
+                                                    <input type="text" data-ng-model="current.from.value" />
+                                                </span>
+                                            </span>
+                                            <span class="row-fluid">
+                                                <span class="span6 margin-top-10">
+                                                    <button class="btn" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span data-ng-switch-default>
+                                            <!-- due to the nature of directives, we need another switch here -->
+                                            <span data-ng-switch="current.from.type">
+                                                <span data-ng-switch-when="subnet">
+                                                    <span class="row-fluid">
+                                                        <span class="span6">
+                                                            <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
+                                                        </span>
+                                                    </span>
+                                                    <span data-ng-show="current.from.text" class="row-fluid">
+                                                        <span class="span2 margin-top-10">
+                                                            CIDR:
+                                                        </span>
+                                                        <span class="span6 margin-top-10">
+                                                            <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <span data-ng-switch-when="ip">
+                                                    <span class="row-fluid">
+                                                        <span class="span6">
+                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip required />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <span data-ng-switch-default>
+                                                    <span class="row-fluid">
+                                                        <span class="span6">
+                                                            <input type="text" name="fromValue" data-ng-model="current.from.text" required />
+                                                        </span>
+                                                    </span>
+
+                                                </span>
+                                            </span>
+                                            <span class="row-fluid">
+                                                <span class="span6 margin-top-10">
+                                                    <button class="btn" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">ADD</button>
+                                                </span>
+                                            </span>
+                                            <!-- directives switch end -->
+
+                                        </span>
+                                    </span>
+                                </span>
+
+                            </div>
+                        </div>
+
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span data-ng-show="data.parsed.from.length" class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr data-ng-repeat="from in data.parsed.from">
+                                        <td class="width-90">
+                                            {{from|targetInfo}}
+                                        </td>
+                                        <td class="width-10">
+                                            <div class="text-center">
+                                                <button type="button" data-ng-hide="isAny(from)" class="btn btn-default" data-ng-click="removeFrom($index)">Clear</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>To</legend>
+                    <!-- row3 -->
+                    <div class="row row-height">
+                        <!-- left -->
+                        <div class="span6">
+                            <label class="control-label">Add:</label>
+                            <div class="controls">
+                                <span class="span6 text-medium">
+                                    <input type="hidden" id="toSelect" />  <br /><br />
+                                </span>
+                                <span class="span6 text-medium" data-ng-form="toForm">
+                                    <span data-ng-switch="current.to.type">
+                                        <span data-ng-switch-when="wildcard">
+                                            <span data-ng-show="current.to.text == 'all vms' || current.to.text == 'any'">
+                                                <span class="row-fluid">
+                                                    <span class="span6 margin-top-10">
+                                                        <button class="btn" data-ng-click="addTo()">ADD</button>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span data-ng-switch-when="tag">
+                                            <span class="row-fluid">
+                                                <span class="span2">
+                                                    Tag name:
+                                                </span>
+                                                <span class="span6">
+                                                    <input type="text" data-ng-model="current.to.text" required />
+                                                </span>
+                                            </span>
+                                            <span data-ng-show="current.to.text" class="row-fluid">
+                                                <span class="span2 margin-top-10">
+                                                    Tag value (optional):
+                                                </span>
+                                                <span class="span6 margin-top-10">
+                                                    <input type="text" data-ng-model="current.to.value" />
+                                                </span>
+                                            </span>
+                                            <span class="row-fluid">
+                                                <span class="span6 margin-top-10">
+                                                    <button class="btn" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                                </span>
+                                            </span>
+                                        </span>
+                                        <span data-ng-switch-default>
+                                            <!-- due to the nature of directives, we need another switch here -->
+                                            <span data-ng-switch="current.to.type">
+                                                <span data-ng-switch-when="subnet">
+                                                    <span class="row-fluid">
+                                                        <span class="span6">
+                                                            <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
+                                                        </span>
+                                                    </span>
+                                                    <span data-ng-show="current.to.text" class="row-fluid">
+                                                        <span class="span2 margin-top-10">
+                                                            CIDR:
+                                                        </span>
+                                                        <span class="span6 margin-top-10">
+                                                            <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <span data-ng-switch-when="ip">
+                                                    <span class="row-fluid">
+                                                        <span class="span6">
+                                                            <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                                <span data-ng-switch-default>
+                                                    <span class="row-fluid">
+                                                        <span class="span6">
+                                                            <input type="text" name="toValue" data-ng-model="current.to.text" /><br/>
+                                                        </span>
+                                                    </span>
+                                                </span>
+                                            </span>
+                                            <!-- directives switch end -->
+                                            <span class="row-fluid">
+                                                <span class="span6 margin-top-10">
+                                                    <button class="btn" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">ADD</button>
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- right -->
+                        <div class="span6">
+                            <span data-ng-show="data.parsed.to.length" class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr data-ng-repeat="to in data.parsed.to">
+                                        <td class="width-90">
+                                            {{to|targetInfo}}
+                                        </td>
+                                        <td class="width-10">
+                                            <div class="text-center">
+                                                <button type="button" data-ng-hide="isAny(to)" class="btn btn-default" data-ng-click="removeTo($index)">Clear</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <legend data-translate>Status</legend>
+                    <div class="row">
+                        <!-- left -->
+                        <div class="span6 control-group">
+                            <label class="control-label">Status:</label>
+                            <div class="controls">
+                                <span class="span6">
+                                    <input type="hidden" id="stateSelect"><br/><br/>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- right -->
+                        <div class="span6 control-group">
+                            <span class="span6">
+                                <table class="table table-bordered width-100">
+                                    <tr>
+                                        <td class="width-90">
+                                            {{selected.status}}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ff-form-actions text-right">
+                        <button class="btn btn-primary" data-ng-disabled="!validData" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
     </div>
+</div>
 
-</div>
-</div>

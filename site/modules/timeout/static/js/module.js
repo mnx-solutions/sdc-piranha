@@ -87,9 +87,9 @@ window.JP.createModule('timeout', [ 'notification' ])
 
         function checkTimeout() {
             var cInteraction = uInteraction > sInteraction ? uInteraction : sInteraction; //Use the latest interaction
-            if(Date.now() - sInteraction > 15 * 60 * 1000) {
+            if(Date.now() - sInteraction > 120 * 60 * 1000) {
                 logout();
-            } else if(!messageBox && (Date.now() - cInteraction) > (12 * 60 * 1000)) {
+            } else if(!messageBox && (Date.now() - cInteraction) > (105 * 60 * 1000)) {
                 if(uInteraction > sInteraction) {
                     updateTimeout();
                 } else {

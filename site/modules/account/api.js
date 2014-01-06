@@ -140,7 +140,9 @@ module.exports = function execute(scope, register) {
         }
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
-                if (!err && storedStep) {
+                if (err) {
+                    req.log.error({error: err}, 'Cannot get signup step from metadata');
+                } else if (storedStep) {
                     req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
                         storedStep, _nextStep(storedStep));
 
@@ -181,8 +183,12 @@ module.exports = function execute(scope, register) {
     api.setSignupStep = function (call, step, cb) {
         function updateStep(req) {
             if (req.session) {
-                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function () {
-                    call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
+                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function (metaErr) {
+                    if (metaErr) {
+                        call.log.error(metaErr);
+                    } else {
+                        call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
+                    }
                 });
             }
             // Billing server is updated on billing step and forward
@@ -260,7 +266,9 @@ module.exports = function execute(scope, register) {
                     step = bStep === 'completed' ? bStep : step;
 
                     metadata.set(userId, metadata.SIGNUP_STEP, step, function (setError) {
-                        call.log.info('Set signup step in metadata to %s', bStep);
+                        if (!setError) {
+                            call.log.info('Set signup step in metadata to %s', bStep);
+                        }
                         cb(setError);
                     });
                 });

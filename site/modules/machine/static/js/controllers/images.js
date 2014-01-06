@@ -33,7 +33,6 @@
                 'event:forceUpdate',
                 function () {
                     $scope.images = Image.image(true);
-                    $scope.search();
                 }
             );
 
@@ -119,7 +118,7 @@
                 {
                     label: 'Create instance',
                     disabled: function (object) {
-                        return false;
+                        return object.job;
                     },
                     action: function (object) {
                         $scope.provisionInstance(object);
@@ -129,11 +128,11 @@
                     },
                     tooltip: 'Provision instance using this image.',
                     sequence: 1
-                },
+                }/*,
                 {
                     label: 'Delete',
                     disabled: function (object) {
-                        return false;
+                        return object.job;
                     },
                     action: function (object) {
                         $scope.clickDelete(object);
@@ -143,7 +142,7 @@
                     },
                     tooltip: 'You will not be able to create any instances with this image after this.',
                     sequence: 2
-                }
+                }*/
             ];
 
             $scope.exportFields = {

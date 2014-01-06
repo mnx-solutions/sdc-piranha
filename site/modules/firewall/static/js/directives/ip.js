@@ -8,11 +8,14 @@
                 link: function (scope, elm, attrs, ctrl) {
 
                     ctrl.$parsers.unshift(function (viewValue) {
-                        if ((viewValue.length > 0 && !/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/i.test(viewValue)) || viewValue.length < 1) {
-                            ctrl.$setValidity(elm[0].form.name, false);
-                            return viewValue;
+                        if (!viewValue || viewValue.length < 1) {
+                            ctrl.$setValidity((elm[0].form || elm[0]).name, false);
+                        } else if (/^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})$/i.test(viewValue)) {
+                            ctrl.$setValidity((elm[0].form || elm[0]).name, true);
+                        } else {
+                            ctrl.$setValidity((elm[0].form || elm[0]).name, false);
                         }
-                        ctrl.$setValidity(elm[0].form.name, true);
+
                         return viewValue;
                     });
                 }

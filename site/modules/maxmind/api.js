@@ -52,14 +52,6 @@ module.exports = function execute(scope, register) {
         };
 
         var result = {};
-        var block = checkBlackList(query);
-        if (block.length) {
-            call.log.warn('User matched against black list and was blocked: %s', block);
-            setImmediate(function () {
-                callback(null, {block: true, blockReason: 'Blacklisted. ' + block.join('\n')});
-            });
-            return;
-        }
 
         call.log.info(query, 'Calling minFraud verification');
 
@@ -91,6 +83,15 @@ module.exports = function execute(scope, register) {
                 result.blockReason = 'High fraud risk score. MAXMIND ID: ' + result.maxmindID;
                 call.log.info({userId: call.req.session.userId}, 'User was blocked due to high risk score');
             }
+
+            var block = checkBlackList(query);
+
+            if (block.length) {
+                result.block = true;
+                result.blockReason = 'Blacklisted. ' + block.join('\n');
+                call.log.warn('User matched against black list and was blocked: %s', block);
+            }
+
             callback(null, result);
         });
     };

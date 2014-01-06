@@ -18,8 +18,10 @@
         '$location',
         'util',
         'Image',
+        'FreeTier',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track, localization, $q, $location, util, Image) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track,
+                  localization, $q, $location, util, Image, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -29,23 +31,48 @@
 
             $scope.machineid = machineid;
             $scope.machine = Machine.machine(machineid);
+            $scope.freeTierOptions = $scope.features.freetier === 'yes' || $scope.features.freetier === 'enabled' ?
+                FreeTier.listFreeTierOptions() : [];
+            $scope.packages = Package.package();
             $scope.loading = true;
             $scope.changingName = false;
             $scope.loadingNewName = false;
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
+            $scope.allowResize = true;
 
 
             // Handle case when machine loading fails or machine uuid is invalid
-            $q.when($scope.machine).then(function () {
-                    $scope.loading = false;
-                    $scope.newInstanceName = $scope.machine.name;
-                }, function () {
-                    $location.url('/compute');
-                    $location.replace();
-                }
-            );
+            $q.all([
+                $q.when($scope.machine),
+                $q.when($scope.freeTierOptions),
+                $q.when($scope.packages)
+            ]).then(function (results) {
+                $scope.loading = false;
+                $scope.newInstanceName = $scope.machine.name;
+                var machine = results[0];
+                var freeTierOptions = results[1];
+                var packages = results[2];
+                var getPackageIdByName = function (name) {
+                    var result = null;
+                    packages.forEach(function (machinePackage) {
+                        if (machinePackage.name === name) {
+                            result = machinePackage.id;
+                        }
+                    });
+                    return result;
+                };
+                var machinePackageId = getPackageIdByName(machine.package);
+                freeTierOptions.forEach(function (option) {
+                    if (option.dataset === machine.image && option.package === machinePackageId) {
+                        $scope.allowResize = false;
+                    }
+                });
+            }, function () {
+                $location.url('/compute');
+                $location.replace();
+            });
 
             $scope.visiblePasswords = {};
 
@@ -60,6 +87,21 @@
                                 $scope.firewallRules = rules;
                             });
                         }
+                    }, function () {
+                        $location.url('/compute');
+                        $location.replace();
+                    });
+                }
+            );
+
+            $scope.$on(
+                'event:pollComplete',
+                function (){
+                    $q.when(Machine.machine(machineid)).then(function (machine) {
+                        $scope.machine = machine;
+                    }, function () {
+                        $location.url('/compute');
+                        $location.replace();
                     });
                 }
             );
@@ -80,8 +122,6 @@
                 );
             }, true);
 
-            $scope.packages = Package.package();
-
             $q.when($scope.machine, function (m) {
                 if ($scope.features.firewall === 'enabled') {
                     Machine.listFirewallRules(m.id).then(function (rules) {
@@ -99,6 +139,8 @@
                 }
 
                 $scope.dataset.then(function(ds){
+                    $scope.imageCreateNotSupported = m.imageCreateNotSupported || ds.imageCreateNotSupported;
+
                     if(ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
                     }
@@ -231,8 +273,42 @@
                     });
             };
 
-            $scope.clickCreateImage = function() {
-                $scope.imageJob = Image.createImage($scope.machineid, $scope.imageName, $scope.imageDescription);
+            $scope.clickCreateImage = function () {
+                if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
+                    var title = 'Message';
+                    var message = $scope.imageCreateNotSupported ||
+                        'Please stop the instance before trying to create an image';
+                    var btns = [];
+                    if (!$scope.imageCreateNotSupported) {
+                        btns.push({
+                            result: 'stop',
+                            label: 'Stop instance now',
+                            cssClass: 'pull-left'
+                        });
+                    }
+                    btns.push({
+                        result: 'ok',
+                        label: 'OK',
+                        cssClass: 'btn-joyent-blue'
+                    });
+
+                    return $dialog.messageBox(title, message, btns)
+                        .open()
+                        .then(function (result) {
+                            if (result === 'stop') {
+                                Machine.stopMachine(machineid);
+                                $$track.event('machine', 'stop');
+                            }
+                        });
+                } else {
+                    $scope.imageName = $scope.imageName || (Math.random() + 1).toString(36).substr(2, 7);
+                    $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription);
+                    $scope.imageJob.done(function () {
+                        $scope.imageName = $scope.imageDescription = '';
+                        $scope.imageForm.$pristine = true;
+                        $scope.imageForm.$dirty = false;
+                    });
+                }
             };
 
             $scope.renameClass = function() {
@@ -370,14 +446,6 @@
                 return false;
             };
 
-            var ending = '-image-creation';
-            $scope.canCreateImage = function (name) {
-                return name &&
-                    typeof name === 'string' &&
-                    name.length >= ending.length &&
-                    name.indexOf(ending, name.length - ending.length) !== -1;
-            };
-
             $scope.tagsArray = [];
             $scope.showTagSave = false;
             // Tags
@@ -499,6 +567,23 @@
                         sequence: 4
                     }
                 ];
+
+                $scope.firewallChangeable = function() {
+                    return $scope.machine.type !== 'virtualmachine' && $scope.machine.hasOwnProperty('firewall_enabled');
+                };
+
+                $scope.toggleFirewallEnabled = function () {
+                    $scope.fireWallActionRunning = true;
+                    var fn = $scope.machine.firewall_enabled ? 'disable' : 'enable';
+                    var expected = !$scope.machine.firewall_enabled;
+                    firewall[fn]($scope.machineid, function (err) {
+                        if(!err) {
+                            $scope.machine.firewall_enabled = expected;
+                        }
+                        $scope.fireWallActionRunning = false;
+                    });
+                };
+
             }
         }
 

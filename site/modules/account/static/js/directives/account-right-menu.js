@@ -27,7 +27,7 @@
                             url: '/account'
                         },
                         {
-                            sequence: 4,
+                            sequence: 5,
                             name: 'SSH Keys',
                             url: '/account/ssh'
                         },

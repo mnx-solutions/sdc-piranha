@@ -3,6 +3,7 @@
 
     <div class="images container" data-ng-show="images.length">
         <div  data-breadcrumb></div>
+        <div class="beta-sticker"></div>
         <div data-notification></div>
 
         <form class="form-search pull-right">
@@ -25,6 +26,7 @@
                      data-objects="images"
                      data-per-page="15"
                      data-order="gridOrder"
+                     data-multisort="false"
                      data-filter-all="{{query}}"
                      data-export-fields="exportFields"
                      data-objects-type="image"></div>

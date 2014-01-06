@@ -6,7 +6,7 @@ input.ng-valid {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #a2d573;
 }
 
-input.ng-invalid, input.ng-pristine {
+input.ng-invalid {
     border: 1px solid #970805;
     color: #970805;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #D59392;
@@ -14,13 +14,20 @@ input.ng-invalid, input.ng-pristine {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #D59392;
 }
 
+input.ng-pristine {
+    border-color: #9ecaed;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #9ecaed;
+    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #9ecaed;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #9ecaed;
+}
+
 .notice-block {
     margin-bottom: 15px;
-    color:#999 !important;
+    color:#000 !important;
 }
 
 .notice-block a {
-    color:#999 !important;
+    color:#000 !important;
 }
 
 .margin-top-10 {
@@ -333,8 +340,8 @@ input.ng-invalid, input.ng-pristine {
     padding: 0 4px !important;
 }
 
-.ff-form-actions {
-    margin-bottom: 20px;
+.btn-minier.btn-danger {
+    padding: 0 3px !important;
 }
 
 .fixed-height165{
@@ -344,4 +351,14 @@ input.ng-invalid, input.ng-pristine {
 .fixed-height145{
     min-height: 145px;
     max-height: 145px;
+}
+
+.add-rule-btn:hover, .add-rule-btn:focus{
+    color: #fff;
+    text-decoration: none;
+    background-position: 50% 50%;
+    -webkit-transition: background-position 0.1s linear;
+    -moz-transition: background-position 0.1s linear;
+    -o-transition: background-position 0.1s linear;
+    transition: background-position 0.1s linear;
 }

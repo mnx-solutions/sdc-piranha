@@ -7,8 +7,9 @@
         'localization',
         'util',
         'errorContext',
-        '$rootScope',
-        function (serverTab, $q, localization, util, errorContext, $rootScope) {
+        'Dataset',
+        function (serverTab, $q, localization, util, errorContext,
+            Dataset) {
 
             var service = {};
             var images = {index: {}, job: {}, list: [], search: {}};
@@ -114,10 +115,15 @@
             };
 
 
-            service.createImage = function(machineId, name, description) {
+            service.createImage = function(machineId, datacenter, name, description) {
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
-                    data: { machineId: machineId, name: name, description: description },
+                    data: {
+                        machineId: machineId,
+                        name: name,
+                        description: description,
+                        datacenter: datacenter
+                    },
                     done: function(err, image) {
                         if (!err) {
                             util.message(
@@ -134,6 +140,8 @@
                                 ),
                                 function () {}
                             );
+                            service.updateImages(true);
+                            Dataset.updateDatasets('all', true);
                         } else {
                             util.error(
                                 localization.translate(
@@ -160,7 +168,7 @@
                 image.state = 'deleting'; // Override state manually
                 image.job = serverTab.call({
                     name: 'ImageDelete',
-                    data: { imageId: image.id },
+                    data: { imageId: image.id, datacenter: image.datacenter },
                     done: function(err, job) {
                         if (!err) {
                             util.message(
@@ -178,7 +186,9 @@
                                 function () {}
                             );
 
-                            $rootScope.$emit('forceUpdate');
+                            images.list.splice(images.list.indexOf(image), 1);
+                            delete images.index[image.id];
+                            Dataset.updateDatasets('all', true);
                         } else {
                             util.error(
                                 localization.translate(

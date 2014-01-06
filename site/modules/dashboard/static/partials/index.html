@@ -43,42 +43,42 @@
                     <div class="dashboard-stat-btn">
                         <a class="more" href="#!/compute/create"><button type="button" class="btn btn_stat orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create
                             Compute Instance</button></a>
-                    </div>
                 </div>
-                <div class="pull-left padding_left10">
-                    <div class="dashboard-stat grey links2 balancer_icon">
-                        <h4>Load Balancers</h4>
+            </div>
+            <div class="pull-left padding_left10">
+              <div class="dashboard-stat grey links2 balancer_icon">
+                  <h4>Load Balancers</h4>
 
-                        <div class="details">
-                            <div ng-show="slbEnabled">
-                                <p class="number">{{balancers.length || 0}}</p>
+                  <div class="details">
+                      <div ng-show="slbEnabled">
+                          <p class="number">{{balancers.length || 0}}</p>
 
-                                <p class="desc"> configured</p>
-                            </div>
-                            <div ng-hide="slbEnabled">
-                                <p class="desc">not available</p>
-                            </div>
-                        </div>
-                        <a class="more" href="#!/slb/list">
-                            <span>
-                                VIEW LOAD BALANCER DETAILS <i class="m-icon-white-arrow"></i>
-                            </span>
+                          <p class="desc"> configured</p>
+                      </div>
+                      <div ng-hide="slbEnabled">
+                          <p class="desc">not available</p>
+                      </div>
+                  </div>
+                  <a class="more" href="#!/slb/list">
+                      <span>
+                          VIEW LOAD BALANCER DETAILS <i class="m-icon-white-arrow"></i>
+                      </span>
 
-                        </a>
-                    </div>
-                    <div class="dashboard-stat-btn">
-                        <a class="more" ng-href="{{(slbEnabled && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
-                    </div>
-                </div>
-                <div class="pull-left padding_left10">
-                    <div class="dashboard-stat grey links2 manta_icon">
-                        <h4>Manta Storage</h4>
+                  </a>
+              </div>
+              <div class="dashboard-stat-btn">
+                  <a class="more" ng-href="{{(slbEnabled && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
+              </div>
+          </div>
+          <div class="pull-left padding_left10">
+              <div class="dashboard-stat grey links2 manta_icon">
+                  <h4>Manta Storage</h4>
 
-                        <div class="details">
-                            <div>
-                                <!--<p class="number_big">38<span style="font-size: 30px;color: white;font-weight: 400;"> GB</span></p>-->
-                            </div>
-                        </div>
+                  <div class="details">
+                      <div>
+                          <!--<p class="number_big">38<span style="font-size: 30px;color: white;font-weight: 400;"> GB</span></p>-->
+                      </div>
+                   </div>
                         <a class="more" href="#!/storage">
                             <span>
                                manage storage <i class="m-icon-white-arrow"></i>
@@ -99,7 +99,7 @@
                             <h5>Securely back-up data, file</h5>
                             <h5>and configurations on</h5>
                             <h5>Joyent Cloud. <a href="http://www.joyent.com/developers/back-up" target="_blank"><b>See how</b></a></h5>
-                        </div>
+                    </div>
 
                     </div>
                 </div>
@@ -166,14 +166,13 @@
                             <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank" style="margin-top: 10px;">
                                 Visit DevCenter</a>
                             </div>
-                            <div>
-                            </div>
+                        <div>
                         </div>
+                    </div>
                 </div>
             </div>
             <div class="clearfix"></div>
         </div>
     </div>
 </div>
-
 

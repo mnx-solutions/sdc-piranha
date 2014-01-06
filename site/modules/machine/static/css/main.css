@@ -210,7 +210,7 @@
 }
 
 .machine-name-edit {
-    margin: 2px;
+    margin:2px;
     margin-top: -5px;
     font-family: inherit;
     font-weight: 200;
@@ -1932,4 +1932,22 @@ ul.dropdown-menu{
 
 .btn.show-hide{
     min-width: 48px;
+}
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.images .action-container {
+    width: 110px;
+}
+
+.beta-sticker{
+    background-image: url("../img/sticker.png");
+    width: 66px;
+    height: 33px;
+    background-repeat: no-repeat;
+    margin-top: 7px;
+}
+.beta-sticker.beta{
+    margin-top: 47px;
 }

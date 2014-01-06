@@ -220,6 +220,10 @@
                 return deferred.promise;
             };
 
+            service.clearRules = function () {
+                rules = { job: null, index: {}, map: {}, list: [], search: {} };
+            };
+
             service.updateRules = function () {
                 if (!rules.job || rules.job.finished) {
                     rules.list.final = false;

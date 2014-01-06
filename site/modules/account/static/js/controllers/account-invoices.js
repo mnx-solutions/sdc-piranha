@@ -25,7 +25,7 @@
             function ($scope, requestContext, $http, BillingService, $q) {
             requestContext.setUpRenderContext('account.invoices', $scope);
 
-            $scope.loading = false;
+            $scope.loading = true;
             $scope.isInvocesEnabled = true;
             $scope.invoices = BillingService.getInvoices();
             $scope.subscriptions = BillingService.getSubscriptions();

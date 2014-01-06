@@ -20,6 +20,14 @@ body {
     padding-left:15px;
     float:left;
 }
+
+.loading-30 {
+    width:30px !important;
+    height:30px !important;
+    min-width:30px !important;
+    min-height:30px !important;
+}
+
 .tabbable {
 /*	border:none;*/
 /*	margin-top:-31px;*/
@@ -78,7 +86,7 @@ h4 {
 
 .footer {
     position: fixed;
-    padding-top: 10px;
+	padding-top:10px;
     padding-left: 185px;
     background-color: #ededed;
     height: 60px;
@@ -1187,7 +1195,6 @@ iframe {
 .asterix-info {
     color: #b3b3b3;
 }
-
 .modal-header.message, .modal-header.confirm {
     background-color: #ff6600;
 }
@@ -1328,4 +1335,14 @@ select option{
 }
 select::-ms-expand {
     display: none;
+}
+
+/* promo iframe */
+.dashboard-splash {
+    width:620px;
+    height:340px;
+}
+
+.dashboard-splash-iframe {
+    overflow: hidden;
 }

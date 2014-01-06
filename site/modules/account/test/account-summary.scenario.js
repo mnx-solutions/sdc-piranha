@@ -32,10 +32,10 @@ describe('Account Billing info', function () {
             .call('deleteKey', {})
             .flush();
 
-        ptor.get('/#!/account/ssh');
+        ptor.get('/#!/account');
     });
 
-    describe('SSH page', function () {
+    describe('Summary page', function () {
         it('should be able to import ssh keys', function () {
 
             ptor.findElement(protractor.By.xpath('//button[@class="btn btn-joyent-blue pull-right ssh-add-button"]/span[@class="ng-scope"]')).click();
@@ -44,7 +44,7 @@ describe('Account Billing info', function () {
             ptor.findElement(protractor.By.xpath('//div[@class="modal-body"]/div[2]/div/textarea')).sendKeys(publicKey.key);
 
             ptor.findElement(protractor.By.xpath('//div[@class="modal-footer"]/button[@class="btn ng-scope ng-binding btn-joyent-blue"]')).click();
-            var notification = ptor.findElement(protractor.By.xpath('//div[@class="notification-wrapper"]/div[@class="ng-scope"]/div[@class="alert ng-scope alert-success"]/div/div[@class="ng-scope ng-binding"]'));
+            var notification = ptor.findElement(protractor.By.xpath('//div[@class="container"]/div[@class="notification-wrapper"]/div[@class="ng-scope"]/div[@class="alert ng-scope alert-success"]/div/div[@class="ng-scope ng-binding"][1]'));
 
             expect(notification.getText()).toContain('New key successfully added');
 
@@ -52,10 +52,10 @@ describe('Account Billing info', function () {
         it('should be able to delete ssh keys', function () {
 
             ptor.findElement(protractor.By.xpath('//div[@class="item-list-container"]/div[@class="item row-fluid ng-scope"][1]/span[@class="pointer text-medium"]/span[@class="span12 title ng-binding"]')).click();
-            ptor.findElement(protractor.By.xpath('//div[@class="item-list-container"]/div[@class="item row-fluid ng-scope"][1]/div[@class="toolbox span11"]/div[@class="pull-right span2"]/button[@class="btn btn-mini button btn-danger"]/span[@class="ng-scope"]')).click();
+            ptor.findElement(protractor.By.xpath('//div[@class="item-list-container"]/div[@class="item row-fluid ng-scope"][1]/div[@class="toolbox span10"]/div[@class="pull-right span2"]/button[@class="btn btn-mini button btn-danger"]/span[@class="ng-scope"]')).click();
             ptor.findElement(protractor.By.xpath('//body[@class="modal-open"]/div[@class="modal ng-scope"]/div[@class="modal-footer"]/button[@class="btn ng-scope ng-binding btn-joyent-blue"]')).click();
 
-            var notification = ptor.findElement(protractor.By.xpath('//div[@class="notification-wrapper"]/div[@class="ng-scope"]/div[@class="alert ng-scope alert-success"]/div/div[@class="ng-scope ng-binding"]'));
+            var notification = ptor.findElement(protractor.By.xpath('//div[@class="container"]/div[@class="notification-wrapper"]/div[@class="ng-scope"]/div[@class="alert ng-scope alert-success"]/div/div[@class="ng-scope ng-binding"][1]'));
 
             expect(notification.getText()).toContain('Key successfully deleted');
         });
@@ -65,7 +65,7 @@ describe('Account Billing info', function () {
             ptor.findElement(protractor.By.xpath('//div[@class="modal-body"]/div[@class="control-group"]/div[@class="controls"]/form[@class="ng-pristine ng-valid"]/input[@class="span5 ng-pristine ng-valid ng-valid-pattern"]')).sendKeys('testkey');
             ptor.findElement(protractor.By.xpath('//div[@class="modal ng-scope"]/div/div[@class="modal-footer"]/button[@class="btn btn-joyent-blue"]')).click();
 
-            var notification = ptor.findElement(protractor.By.xpath('//div[@class="notification-wrapper"]/div[@class="ng-scope"]/div[@class="alert ng-scope alert-success"]/div/div[@class="ng-scope ng-binding"]'));
+            var notification = ptor.findElement(protractor.By.xpath('//div[@class="container"]/div[@class="notification-wrapper"]/div[@class="ng-scope"]/div[@class="alert ng-scope alert-success"]/div/div[@class="ng-scope ng-binding"][1]'));
 
             expect(notification.getText()).toContain('SSH key successfully added to your account');
         });
