@@ -378,7 +378,7 @@ module.exports = function execute(scope) {
                     machine: call.data.machineId,
                     name: (call.data.name || 'My Image'),
                     version: '1.0.0', // We default to version 1.0.0
-                    description: (call.data.description || 'Default image description'),
+                    description: (call.data.description || ''),
                     datacenter: call.data.datacenter
                 };
 
