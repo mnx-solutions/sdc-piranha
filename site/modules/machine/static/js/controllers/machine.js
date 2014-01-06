@@ -126,7 +126,9 @@
                     });
                 }
 
-                $scope.dataset = Dataset.dataset(m.image);
+                $scope.dataset = Dataset.dataset({datacenter: m.datacenter}).then(function () {
+                    return Dataset.dataset(m.image);
+                });
                 $scope.package = Package.package(m.package);
 
                 if(m.networks) {
