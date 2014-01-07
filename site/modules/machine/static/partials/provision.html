@@ -183,6 +183,9 @@
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
+                                    <label class="item row-fluid" data-ng-show="features.imageUse != 'disabled' && images.length == 0 && visibilityFilter == 'Private'">
+                                        <p class="name provisioning-header-left-button">No private images in this data center.</p>
+                                    </label>
                                     <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
                                             <div class="span1 provisioning-carousel-padding-left">
                                                 <input class="pull-left"
