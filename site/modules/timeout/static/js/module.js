@@ -1,11 +1,13 @@
 'use strict';
 
 window.JP.createModule('timeout', [ 'notification' ])
-    .run(function($dialog, $http, localization) {
+    .run(function($dialog, $http, localization, Account) {
         var sInteraction = Date.now();
         var uInteraction = Date.now();
         var listening = false;
         var messageBox = null;
+        var warningTimeout = 105;
+        var overallTimeout = 120;
 
         function userTimeout() {
             uInteraction = Date.now();
@@ -83,11 +85,18 @@ window.JP.createModule('timeout', [ 'notification' ])
 
         window.JP.set('timeoutRefresh', serverTimeout);
 
+        Account.getAccount(true).then(function (account) {
+            if (account.tfaEnabled) {
+                warningTimeout = 12;
+                overallTimeout = 15;
+            }
+        });
+
         function checkTimeout() {
             var cInteraction = uInteraction > sInteraction ? uInteraction : sInteraction; //Use the latest interaction
-            if(Date.now() - sInteraction > 120 * 60 * 1000) {
+            if(Date.now() - sInteraction > overallTimeout * 60 * 1000) {
                 logout();
-            } else if(!messageBox && (Date.now() - cInteraction) > (105 * 60 * 1000)) {
+            } else if(!messageBox && (Date.now() - cInteraction) > (warningTimeout * 60 * 1000)) {
                 if(uInteraction > sInteraction) {
                     updateTimeout();
                 } else {
