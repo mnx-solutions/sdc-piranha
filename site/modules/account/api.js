@@ -41,8 +41,8 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            if (!obj) {
-                scope.log.warn('zuora didnt respond, allowing through');
+            if (!obj || !obj.errors) {
+                scope.log.warn({err: err}, 'zuora didnt respond, allowing through');
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
