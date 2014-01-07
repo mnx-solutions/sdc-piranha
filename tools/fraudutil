@@ -65,10 +65,13 @@ if (process.argv.length === 1 && uuid) {
                 get(metadata.RISK_SCORE, callback);
             },
             function(_, callback) {
+                get(metadata.RISK_SCORE_EXPLANATION, callback);
+            },
+            function(_, callback) {
                 get(metadata.BLOCK_REASON, callback);
             }
         ]
-    }, function(err, results) {
+    }, function(err) {
         if (err) {
             console.log(err);
             process.exit(1);
@@ -106,7 +109,7 @@ if (process.argv.length === 1 && uuid) {
                 }
             }
         ]
-    }, function(err, results) {
+    }, function(err) {
         if (err) {
             console.log(err);
             process.exit(1);
