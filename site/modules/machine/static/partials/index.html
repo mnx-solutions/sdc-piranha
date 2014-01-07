@@ -14,144 +14,15 @@
             </div>
 
             <!--<data-notification></data-notification>-->
-
-            <!--<div class="page-header">-->
-                <!--<h1 class="pull-left" data-translate>Instances</h1>-->
-                <!--<div data-ng-show="!machines.final && !packages.final" class="loading-medium-after-h1"></div>-->
-
-                <!--<form class="form-search pull-right">-->
-                    <!--<input type="search"-->
-                           <!--class="span3"-->
-                           <!--name="search"-->
-                           <!--id="search"-->
-                           <!--placeholder="Search instances"-->
-                           <!--data-ng-model="query"-->
-                           <!--data-translate="placeholder" />-->
-                <!--</form>-->
-
-                <!--<div class="clearfix"></div>-->
-            <!--</div>-->
-            <!--<div class="row" data-ng-show="(pagedMachines.length || query)">-->
-            <!--<div class="row">-->
-                <!--<div class="page_row_info">-->
-                    <!--<span>-->
-                        <!--Showing <span data-ng-hide="pageNumFirst == pageNumLast"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries-->
-                    <!--</span>-->
-                    <!--<form class="form-search">-->
-                        <!--<input type="search"-->
-                               <!--class="span3"-->
-                               <!--name="search"-->
-                               <!--id="search"-->
-                               <!--placeholder="filter instances"-->
-                               <!--data-ng-model="query"-->
-                               <!--data-translate="placeholder" />-->
-                        <!--<input value="" class="btn_submit_seach" type="submit">-->
-                    <!--</form>-->
-                <!--</div>-->
-                <!--<div class="actions" id="tableBtnAdd">-->
-                    <!--<div class="btn-group">-->
-                        <!--<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">-->
-                            <!--Actions <i class="icon-drop-down"></i>-->
-                        <!--</a>-->
-                        <!--<ul class="dropdown-menu">-->
-                            <!--<li><a href="" data-ng-click="actionButton('start')" role="button" class="btn btn-warning">Start</a></li>-->
-                            <!--<li><a href="" data-ng-click="actionButton('stop')"  role="button" class="btn btn-warning">Stop</a></li>-->
-                            <!--<li><a href="" data-ng-click="actionButton('reboot')"  role="button" class="btn btn-warning">Reboot</a></li>-->
-                            <!--<li><a href="" data-ng-click="actionButton('delete')"  role="button" class="btn btn-warning">Delete</a></li>-->
-                        <!--</ul>-->
-                    <!--</div>-->
-                    <!--<div class="btn-group">-->
-                        <!--<button type="button" class="btn" data-ng-click="export('csv')">Export</button>-->
-                        <!--<div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>-->
-                    <!--</div>-->
-                    <!--<div class="btn-group">-->
-                        <!--<a class="btn" href="#" data-toggle="dropdown" data-ng-click="noClose()">-->
-                            <!--Columns-->
-                            <!--<i class="icon-drop-down"></i>-->
-                        <!--</a>-->
-                        <!--<div class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show0}" data-ng-mouseenter="show0 = true" data-ng-mouseleave="show0 = false">-->
-                                <!--<span data-ng-class="{checked:columnsCheckBoxCur[0]}">-->
-                                    <!--<input data-ng-click="selectColumnsCheckbox(0)" type="checkbox" checked="" data-column="0"></span>-->
-                            <!--</div>Name</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show1}" data-ng-mouseenter="show1 = true" data-ng-mouseleave="show1 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[1]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(1)" type="checkbox" checked="" data-column="1"></span>-->
-                            <!--</div>Datacenter</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show2}" data-ng-mouseenter="show2 = true" data-ng-mouseleave="show2 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[2]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(2)" type="checkbox" checked="" data-column="2"></span>-->
-                            <!--</div>Created</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show3}" data-ng-mouseenter="show3 = true" data-ng-mouseleave="show3 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[3]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(3)" type="checkbox" checked="" data-column="3"></span>-->
-                            <!--</div>Updated</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show4}" data-ng-mouseenter="show4 = true" data-ng-mouseleave="show4 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[4]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(4)" type="checkbox" checked="" data-column="4"></span>-->
-                            <!--</div>PrimaryIp</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show5}" data-ng-mouseenter="show5 = true" data-ng-mouseleave="show5 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[5]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(5)" type="checkbox" checked="" data-column="5"></span>-->
-                            <!--</div>State</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show6}" data-ng-mouseenter="show6 = true" data-ng-mouseleave="show6 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[6]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(6)" type="checkbox" checked="" data-column="6"></span>-->
-                            <!--</div>Type</label>-->
-
-                            <!--<label><div class="checker" data-ng-class="{hover:show7}" data-ng-mouseenter="show7 = true" data-ng-mouseleave="show7 = false">-->
-                                <!--<span data-ng-class="{checked:columnsCheckBoxCur[7]}">-->
-                                    <!--<input data-ng-click="selectColumnsCheckbox(7)" type="checkbox" checked="" data-column="7"></span>-->
-                            <!--</div>ID</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show8}" data-ng-mouseenter="show8 = true" data-ng-mouseleave="show8 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[8]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(8)" type="checkbox" checked="" data-column="8"></span>-->
-                            <!--</div>Image</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show9}" data-ng-mouseenter="show9 = true" data-ng-mouseleave="show9 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[9]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(9)" type="checkbox" checked="" data-column="9"></span>-->
-                            <!--</div>IPs</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show10}" data-ng-mouseenter="show10 = true" data-ng-mouseleave="show10 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[10]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(10)" type="checkbox" checked="" data-column="10"></span>-->
-                            <!--</div>Memory</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show11}" data-ng-mouseenter="show11 = true" data-ng-mouseleave="show11 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[11]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(11)" type="checkbox" checked="" data-column="11"></span>-->
-                            <!--</div>Disk</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show12}" data-ng-mouseenter="show12 = true" data-ng-mouseleave="show12 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[12]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(12)" type="checkbox" checked="" data-column="12"></span>-->
-                            <!--</div>Tags</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show13}" data-ng-mouseenter="show13 = true" data-ng-mouseleave="show13 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[13]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(13)" type="checkbox" checked="" data-column="13"></span>-->
-                            <!--</div>Credentials</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show14}" data-ng-mouseenter="show14 = true" data-ng-mouseleave="show14 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[14]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(14)" type="checkbox" checked="" data-column="14"></span>-->
-                            <!--</div>Dataset</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show15}" data-ng-mouseenter="show15 = true" data-ng-mouseleave="show15 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[15]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(15)" type="checkbox" checked="" data-column="15"></span>-->
-                            <!--</div>Firewall enabled</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show16}" data-ng-mouseenter="show16 = true" data-ng-mouseleave="show16 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[16]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(16)" type="checkbox" checked="" data-column="16"></span>-->
-                            <!--</div>Label</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show17}" data-ng-mouseenter="show17 = true" data-ng-mouseleave="show17 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[17]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(17)" type="checkbox" checked="" data-column="17"></span>-->
-                            <!--</div>Package</label>-->
-                            <!--<label><div class="checker" data-ng-class="{hover:show18}" data-ng-mouseenter="show18 = true" data-ng-mouseleave="show18 = false">-->
-                            <!--<span data-ng-class="{checked:columnsCheckBoxCur[18]}">-->
-                                <!--<input data-ng-click="selectColumnsCheckbox(18)" type="checkbox" checked="" data-column="18"></span>-->
-                            <!--</div>$$HashKey</label>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
+            <!--<form class="form-search pull-right">-->
+                <!--<input type="search"-->
+                       <!--class="span3"-->
+                       <!--name="search"-->
+                       <!--id="search"-->
+                       <!--placeholder="Search instances"-->
+                       <!--data-ng-model="query"-->
+                       <!--data-translate="placeholder" />-->
+            <!--</form>-->
 
             <div class="">
 				<div class="">
@@ -166,10 +37,13 @@
                          data-export-fields="exportFields"
                          data-columns-button="columnsButton"
                          data-actions-button="actionsButton"
+                         data-place-Holder-Text="placeHolderText"
                          data-inst-form="instForm"
+                         data-filter-all="{{query}}"
                          data-enabled-checkboxes="enabledCheckboxes"
                          data-objects-type="machine"></div>
 				</div>
+
                 <button data-ng-show="features.imageUse != 'disabled' && images.length" data-ng-click="changeLocation('/images')"
                         class="list-my-images btn btn-joyent-blue btn-large"
                         data-translate>List My Images</button>

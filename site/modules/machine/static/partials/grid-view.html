@@ -8,7 +8,7 @@
             <input type="search"
                    name="search"
                    id="search"
-                   placeholder="filter instances"
+                   placeholder="{{placeHolderText}}"
                    data-ng-model="filterAll"
                    data-translate="placeholder" />
             <input value="" class="btn_submit_seach" type="submit">
@@ -85,27 +85,32 @@
                             <a href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                         </div>
-            <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
-                <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
-            </span>
+                        <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
+                            <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
+                            <div class="action-container" data-ng-show="getActionButtons(object).length && imageButtonShow">
+                                <div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
+                                    <div data-action-button data-action-fn="btn.action" data-class-fn="btn.getClass" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
+                                </div>
+                            </div>
+                        </span>
                         <span data-ng-switch-when="created">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
                         <span data-ng-switch-when="updated">{{object[prop.id] | date:'yyyy-MM-dd HH:mm:ss'}}</span>
                         <span data-ng-switch-when="ips">
                             <span data-ng-repeat="ip in object.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
                         </span>
-            <span data-ng-switch-default data-ng-switch="prop.type">
-                <span data-ng-switch-when="button">
-                    <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
-                </span>
-                <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
-                <span data-ng-switch-default>
-                    {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
-                </span>
-            </span>
+                        <span data-ng-switch-default data-ng-switch="prop.type">
+                            <span data-ng-switch-when="button">
+                                <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
+                            </span>
+                            <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                            <span data-ng-switch-default>
+                                {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
+                            </span>
+                        </span>
                         <span data-ng-switch-when="firewall_enabled">
                             <span data-ng-show="object.firewall_enabled">yes</span>
                             <span data-ng-show="!object.firewall_enabled">no</span>
-        </span>
+                        </span>
                         <!--<span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>-->
                     </td>
                     <td width="1000"></td>

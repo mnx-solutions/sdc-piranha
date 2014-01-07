@@ -63,27 +63,41 @@
                 {
                     id: 'name',
                     name: 'Name',
-                    sequence: 1
+                    sequence: 1,
+                    active: true
                 },
                 {
-                    id: 'description',
-                    name: 'Description',
-                    sequence: 2
+                    id: 'datacenter',
+                    name: 'Data Center',
+                    sequence: 2,
+                    active: true
                 },
                 {
                     id: 'version',
                     name: 'Version',
-                    sequence: 3
+                    sequence: 3,
+                    active: true
                 },
                 {
                     id: 'published_at',
                     name: 'Published at',
-                    sequence: 4
+                    sequence: 4,
+                    active: true
                 },
                 {
                     id: 'state',
                     name: 'State',
-                    sequence: 5
+                    sequence: 5,
+                    active: true,
+                    btn: {
+                        label: 'Create instance',
+                        disabled: function (object) {
+                            return object.job;
+                        },
+                        action: function (object) {
+                            $scope.provisionInstance(object);
+                        }
+                    }
                 }
             ];
             $scope.gridDetailProps = [
@@ -123,11 +137,15 @@
                     action: function (object) {
                         $scope.provisionInstance(object);
                     },
+
                     show: function (object) {
                         return true;
                     },
-                    tooltip: 'Provision instance using this image.',
+                    getClass: function () {
+                        return 'btn orange';
+                    },
                     sequence: 1
+
                 }/*,
                 {
                     label: 'Delete',
@@ -148,6 +166,42 @@
             $scope.exportFields = {
                 ignore: []
             };
+            $scope.columnsButton = true;
+            $scope.imageButtonShow = true;
+            $scope.imgForm = true;
+            $scope.instForm = true;
+            $scope.placeHolderText = 'filter images';
+
+
+
+//            $scope.actionsButton = true;
+//            $scope.enabledCheckboxes = true;
+
+//            $scope.actionButton = function(){
+//                var flag = false;
+//                $scope.images.forEach(function (el) {
+//                    if(el.checked){
+//                        flag = true;
+//                    }
+//                });
+//                return flag;
+//            };
+//
+//            $scope.noCheckBoxChecked = function(){
+//                util.error(
+//                    localization.translate(
+//                        $scope,
+//                        null,
+//                        'Error'
+//                    ),
+//                    localization.translate(
+//                        $scope,
+//                        null,
+//                        'No image selected for the action.'
+//                    ), function () {
+//                    }
+//                );
+//            };
 
         }
     ]);

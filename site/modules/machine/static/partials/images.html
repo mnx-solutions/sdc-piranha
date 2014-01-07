@@ -2,19 +2,24 @@
     <div class="loading-large" data-ng-show="loading"></div>
 
     <div class="images container" data-ng-show="images.length">
-        <div  data-breadcrumb></div>
+        <!--<div data-breadcrumb></div>-->
+        <ul class="breadcrumb">
+            <li><a href="#!/compute"> Compute</a> /</li>
+            <li> Images</li>
+        </ul>
+        <h3 class="page-title">Images</h3>
         <div class="beta-sticker"></div>
         <div data-notification></div>
 
-        <form class="form-search pull-right">
-            <input type="search"
-                   class="span3"
-                   name="search"
-                   id="search"
-                   placeholder="Search images"
-                   data-ng-model="query"
-                   data-translate="placeholder" />
-        </form>
+        <!--<form class="form-search pull-right">-->
+            <!--<input type="search"-->
+                   <!--class="span3"-->
+                   <!--name="search"-->
+                   <!--id="search"-->
+                   <!--placeholder="Search images"-->
+                   <!--data-ng-model="query"-->
+                   <!--data-translate="placeholder"/>-->
+        <!--</form>-->
 
         <div class="clearfix"></div>
         <div class="row">
@@ -23,11 +28,15 @@
                      data-props="gridProps"
                      data-detail-props="gridDetailProps"
                      data-action-buttons="gridActionButtons"
+                     data-columns-button="columnsButton"
+                     data-image-button-show="imageButtonShow"
+                     data-inst-form="instForm"
                      data-objects="images"
                      data-per-page="15"
                      data-order="gridOrder"
                      data-multisort="false"
                      data-filter-all="{{query}}"
+                     data-place-Holder-Text="placeHolderText"
                      data-export-fields="exportFields"
                      data-objects-type="image"></div>
             </div>

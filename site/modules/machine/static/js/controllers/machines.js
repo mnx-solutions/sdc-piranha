@@ -424,6 +424,7 @@
             $scope.actionsButton = true;
             $scope.instForm = true;
             $scope.enabledCheckboxes = true;
+            $scope.placeHolderText = 'filter instances';
 
             $scope.deleteInstance = function(el) {
                 $$track.event('machine', 'delete');
