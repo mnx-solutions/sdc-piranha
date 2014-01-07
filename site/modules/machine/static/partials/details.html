@@ -128,7 +128,7 @@
                 </table>
             </fieldset>
 
-            <div data-ng-show="features.imageCreate == 'enabled' || features.imageCreate == 'yes'">
+            <div data-ng-show="machine && features.imageCreate == 'enabled'">
                 <legend>
                     <span data-translate>Create Image</span>
                     <div class="beta-sticker pull-right beta"></div>
@@ -295,7 +295,7 @@
             </fieldset>
 
             <span data-ng-switch="features.firewall">
-                <fieldset data-ng-switch-when="enabled">
+                <fieldset data-ng-show="machine" data-ng-switch-when="enabled">
                     <legend>
                         <span data-translate>Firewall rules</span>
                     </legend>
