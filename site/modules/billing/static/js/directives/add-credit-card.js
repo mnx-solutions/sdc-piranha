@@ -10,8 +10,9 @@
         'Account',
         'notification',
         'localization',
+        '$dialog',
 
-        function (BillingService, $q, $http, $rootScope, Account, notification, localization) {
+        function (BillingService, $q, $http, $rootScope, Account, notification, localization, $dialog) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -59,6 +60,31 @@
                             $scope.form.promoCode = code.data;
                         }
                     });
+
+                    if (window.location.href.indexOf('/signup/') !== -1) {
+                        $http.get('billing/promoamount').then(function (amount) {
+                            if (amount && amount.data && amount.data > 0) {
+                                var fAmount = parseFloat(amount.data);
+                                amount = parseInt(amount.data, 10);
+                                var btns = [{
+                                    result: 'cancel',
+                                    label: 'Take me out',
+                                    cssClass: 'pull-left'
+                                }, {
+                                    result: 'ok',
+                                    label: 'I\'m ready',
+                                    cssClass: 'btn-joyent-blue'
+                                }];
+                                $dialog.messageBox('Billing confirmation', 'Your credit card is about to be billed for $' + fAmount.toFixed(2), btns)
+                                    .open()
+                                    .then(function (result) {
+                                        if (result === 'cancel') {
+                                            window.location = '/landing/forgetToken';
+                                        }
+                                    });
+                            }
+                        });
+                    }
 
                     $scope.loading = false;
                     $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
