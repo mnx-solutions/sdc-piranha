@@ -121,10 +121,17 @@
                             <div class="controls warning" data-ng-form="protocolForm">
                                 <span class="span6 text-medium">
                                     <select data-ng-model="data.parsed.protocol.name" data-ng-options="protocol.value as protocol.title for (key, protocol) in protocols"></select><br/><br/>
+                                </span>
+                            </div>
+                            <br />
+                            <label class="control-label">Port</label>
+                            <div class="controls warning" data-ng-form="protocolForm">
+                                <span class="span6 text-medium">
                                     <span data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp' && !isAllPorts()">
                                         <div class="row-fluid">
                                             <span class="span6">
-                                                <input name="port"
+                                                <input id="port"
+                                                       name="port"
                                                        type="text"
                                                        data-ng-model="current.port"
                                                        data-range="1-65535"/>
@@ -173,7 +180,6 @@
                                         </span>
                                     </span>
                                 </span>
-
                             </div>
                         </div>
                         <!-- right -->
