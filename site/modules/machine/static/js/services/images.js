@@ -129,10 +129,14 @@
                             service.updateImages(true);
                             Dataset.updateDatasets('all', true);
                         } else {
+                            var detailMessage = err.body && err.body.message || err.message || String(err);
+                            if (err.code === 'PrepareImageDidNotRun') {
+                                detailMessage += '. You likely need to <a href="http://wiki.joyent.com/wiki/display/jpc2/Upgrading+Linux+Guest+Tools">upgrade Joyent Linux Guest Tools</a>.';
+                            }
                             notification.push(image.name, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
-                                    'Unable to create image "{{name}}"',
+                                    'Unable to create image "{{name}}": ' + detailMessage,
                                     { name: image.data.name }
                                 )
                             );
