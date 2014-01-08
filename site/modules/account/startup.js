@@ -25,6 +25,21 @@ module.exports = function execute(scope) {
                 response[field] = data[field] || '';
             });
 
+            var marketoData = {
+                Email: data.email,
+                FirstName: data.firstName,
+                LastName: data.lastName,
+                Username: data.login,
+                Company: data.companyName,
+                Phone: data.phone
+            };
+
+            Marketo.update(call.req.session.userId, marketoData, function (err) {
+                if (err) {
+                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                }
+            });
+
             TFA.get(data.id, function (err, secret) {
                 if (err) {
                     call.done(err);
