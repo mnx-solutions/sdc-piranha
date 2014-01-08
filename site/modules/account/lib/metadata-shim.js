@@ -69,7 +69,7 @@ var safeSet = function (customerUuid, key, val, callback) {
     var trySet = function () {
         attempts -= 1;
         if (attempts < 0) {
-            callback('Cannot set metadata key ' + key + ' to value ' + val);
+            callback('Cannot set metadata key \'' + key + '\' to value \'' + val + '\'');
             return;
         }
         set(customerUuid, key, val, function (err) {

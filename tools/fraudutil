@@ -83,7 +83,7 @@ if (process.argv.length === 1 && uuid) {
         'funcs': [
             function(_, callback) {
                 if (unblockUser) {
-                    set(metadata.SIGNUP_STEP, '', callback);
+                    set(metadata.SIGNUP_STEP, 'completed', callback);
                 } else {
                     setImmediate(function() {
                         callback();
