@@ -529,7 +529,8 @@
                             });
                             return arr.join('; ');
                         },
-                        sequence: 1
+                        sequence: 1,
+                        active: true
                     },
                     {
                         id: 'parsed',
@@ -544,7 +545,8 @@
                             });
                             return arr.join('; ');
                         },
-                        sequence: 2
+                        sequence: 2,
+                        active: true
                     },
                     {
                         id: 'parsed',
@@ -553,7 +555,8 @@
                         getClass: function () {
                             return 'span2 padding-5';
                         },
-                        sequence: 3
+                        sequence: 3,
+                        active: true
                     },
                     {
                         id: 'protocol',
@@ -564,7 +567,8 @@
                         _getter: function (object) {
                             return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
                         },
-                        sequence: 4
+                        sequence: 4,
+                        active: true
                     }
                 ];
 

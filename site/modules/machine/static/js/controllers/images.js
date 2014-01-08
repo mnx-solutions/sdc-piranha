@@ -171,38 +171,6 @@
             $scope.imgForm = true;
             $scope.instForm = true;
             $scope.placeHolderText = 'filter images';
-
-
-
-//            $scope.actionsButton = true;
-//            $scope.enabledCheckboxes = true;
-
-//            $scope.actionButton = function(){
-//                var flag = false;
-//                $scope.images.forEach(function (el) {
-//                    if(el.checked){
-//                        flag = true;
-//                    }
-//                });
-//                return flag;
-//            };
-//
-//            $scope.noCheckBoxChecked = function(){
-//                util.error(
-//                    localization.translate(
-//                        $scope,
-//                        null,
-//                        'Error'
-//                    ),
-//                    localization.translate(
-//                        $scope,
-//                        null,
-//                        'No image selected for the action.'
-//                    ), function () {
-//                    }
-//                );
-//            };
-
         }
     ]);
 }(window.angular, window.JP.getModule('Machine')));

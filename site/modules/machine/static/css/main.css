@@ -1949,5 +1949,18 @@ ul.dropdown-menu{
     margin-top: 7px;
 }
 .beta-sticker.beta{
-    margin-top: 47px;
+    margin-top: 7px;
+}
+.img-name{
+    max-width: 175px !important;
+}
+.img-desk{
+    max-width: 206px !important;
+}
+.spiner-height{
+    min-height: 23px !important;
+}
+.font-size16{
+    font-size: 16px;
+    font-weight: 500;
 }
