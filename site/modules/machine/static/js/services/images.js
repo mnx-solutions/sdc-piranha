@@ -129,10 +129,11 @@
                             service.updateImages(true);
                             Dataset.updateDatasets('all', true);
                         } else {
+                            var detailMessage = err.body && err.body.message || err.message || String(err);
                             notification.push(image.name, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
-                                    'Unable to create image "{{name}}": ' + err,
+                                    'Unable to create image "{{name}}": ' + detailMessage,
                                     { name: image.data.name }
                                 )
                             );
