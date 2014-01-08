@@ -138,7 +138,7 @@
                 }
 
                 $scope.dataset.then(function(ds){
-                    $scope.imageCreateNotSupported = m.imageCreateNotSupported || ds.imageCreateNotSupported;
+                    $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
 
                     if(ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
