@@ -132,7 +132,7 @@
                             notification.push(image.name, { type: 'error' },
                                 localization.translate(null,
                                     'machine',
-                                    'Unable to create image "{{name}}"',
+                                    'Unable to create image "{{name}}": ' + err,
                                     { name: image.data.name }
                                 )
                             );
