@@ -36,7 +36,7 @@ app.use(express.session({
         retry_max_delay: 1000,
         connect_timeout: 1000,
         debug_mode: true,
-        ttl: (15 * 60) // 15 minutes
+        ttl: (2 * 60 * 60) // 2 hours
     }),
     secret: 'secret'
 }));
