@@ -101,12 +101,12 @@ module.exports = function execute(scope) {
 
                 var leastSupportedVersion = imageCreateConfig.types[img.name];
                 if (!img['public']) {
-                    img.imageCreateNotSupported = 'Instances from custom images are not yet supported for creating additional images.';
+                    img.imageCreateNotSupported = 'Instances from custom images are not yet by the image API.';
                 } else if (!leastSupportedVersion) {
-                    img.imageCreateNotSupported = img.name + ' is not yet supported for image creation.';
+                    img.imageCreateNotSupported = img.name + ' is not yet supported by the image API.';
                 } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
-                    img.imageCreateNotSupported = 'The origin ' + img.name + ' image needs to be at least ' +
-                        leastSupportedVersion + ' for image creation.';
+                    img.imageCreateNotSupported = 'The ' + img.name + ' image needs to be at least image version ' +
+                        leastSupportedVersion + ' to create an image.';
                 }
 
                 if (data[i].name) {

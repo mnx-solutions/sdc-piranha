@@ -271,7 +271,7 @@
 
                 if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
                     var message = $scope.imageCreateNotSupported ||
-                        'The instance will be stopped as the first step of creating an image from it';
+                        'This instance will be stopped as the first step in creating an image from it.';
                     var btns = [];
                     if (!$scope.imageCreateNotSupported) {
                         btns = [{
