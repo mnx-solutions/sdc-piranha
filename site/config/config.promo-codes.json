@@ -84,6 +84,7 @@
         "expirationDate": "2014-12-31",
         "startDate": "2014-01-01",
         "campaignId": "701800000015696",
-        "amount": 990
+        "amount": 990,
+        "ratePlanName": "Free Trial"
     }
 }
