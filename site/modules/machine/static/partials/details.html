@@ -184,7 +184,7 @@
                     <br />
                     <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
                 </div>
-            </div>
+            </div><br/>
             <fieldset data-ng-show="machine && features.instanceTagging != 'disabled'">
                 <legend>
                     <span data-translate>Tags</span>
@@ -199,18 +199,18 @@
                 <div data-ng-form="tagForm">
                     <div class="tags" data-ng-repeat="(key, o) in tagsArray">
                         <div class="tag row-fluid" data-ng-show="!o.edit">
-                        <span class="key span5"
-                              data-ng-click="editTag(key)"
-                              data-ng-class="{error: o.conflict}">{{o.key}}</span>
+                            <span class="key span5"
+                                  data-ng-click="editTag(key)"
+                                  data-ng-class="{error: o.conflict}">{{o.key}}</span>
 
-                        <span class="value span5"
-                              data-ng-click="editTag(key)"
-                              data-ng-class="{error: o.conflict}">{{o.val}}</span>
+                            <span class="value span5"
+                                  data-ng-click="editTag(key)"
+                                  data-ng-class="{error: o.conflict}">{{o.val}}</span>
 
-                        <span class="icon-trash pull-right delete"
-                              data-ng-click="removeTag(key)"
-                              data-ng-show="!tagsave">
-                        </span>
+                            <span class="icon-trash pull-left delete"
+                                  data-ng-click="removeTag(key)"
+                                  data-ng-show="!tagsave">
+                            </span>
                         </div>
 
                         <div class="tag editable" data-ng-show="o.edit">
@@ -243,7 +243,7 @@
                                 </span>
                             </span>
 
-                            <span class="icon-trash pull-right delete"
+                            <span class="icon-trash pull-left delete"
                                   data-ng-click="removeTag(key)"
                                   data-ng-show="!tagsave">
                             </span>
