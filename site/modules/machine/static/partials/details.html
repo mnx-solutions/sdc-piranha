@@ -257,7 +257,7 @@
                                     data-ng-show="showTagSave"
                                     data-ng-click="saveTags()"
                                     data-translate
-                                    data-ng-disabled="machine.state != 'running' || !tagSaveOk || tagsave">Save</button>
+                                    data-ng-disabled="!(machine.state == 'running' || machine.state == 'stopped') || !tagSaveOk || tagsave">Save</button>
                             <div class="pull-right loading-medium loading-30" data-ng-show="tagsave"></div>
                             <div class="btn btn-link pull-right" data-ng-click="addTag()" data-translate>+ Add New Tag</div>
                         </div>
