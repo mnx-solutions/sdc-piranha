@@ -183,9 +183,12 @@
                                     </div>
                                 </div>
                                 <div class="item-scrolling">
-                                    <label class="item row-fluid" data-ng-show="features.imageUse != 'disabled' && images.length == 0 && visibilityFilter == 'Private'">
-                                        <p class="name provisioning-header-left-button">No private images in this data center.</p>
-                                    </label>
+                                    <div class="alert alert-info margin10"
+                                         data-translate=""
+                                         data-ng-show="features.imageUse != 'disabled' && visibilityFilter == 'Private' && (datasets | filter:filterDatasetsByVisibility).length == 0">
+                                        No private images in this data center.
+                                    </div>
+
                                     <div class="item provisioning-item row-fluid" data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
                                             <div class="span1 provisioning-carousel-padding-left">
                                                 <input class="pull-left"
@@ -242,7 +245,6 @@
                                             <span class="span1 provisioning-carousel-padding-left item-select pointer provisioning-arrows hidden-phone" data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
                                                 &raquo;
                                             </span>
-
                                     </div>
                                 </div>
                             </div>
