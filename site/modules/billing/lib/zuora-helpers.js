@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
+var vasync = require('vasync');
 var options = config.zuora.rest;
 options.url = options.endpoint;
 options.password = config.zuora.password;
@@ -232,22 +233,59 @@ function composeZuoraAccount(call, cb) {
                     cb(null, obj, data);
                 });
             }
+            // for unique SKU's, sku SKU-00000014 is pre-entered for 'Free Trial'
+            var zuoraSkus = ['SKU-00000014'];
+
+            // get unique SKU's
+            Object.keys(config.ns['promo-codes']).forEach(function(code) {
+                var codeSku = config.ns['promo-codes'][code].sku;
+                if(codeSku && zuoraSkus.indexOf(codeSku) === -1) {
+                    zuoraSkus.push(codeSku);
+                }
+            });
+
+            // make all the queries and build up ratePlans object
+            var ratePlans = {};
+            call.log.debug('Starting zuora queries on %s skus', zuoraSkus.length, zuoraSkus);
+            vasync.forEachParallel({
+                'func': function(sku, callback) {
+                    // make zuora query for each sku
+                    zuora.catalog.query({sku: sku}, function (err2, arr) {
+                            if(err2) {
+                                // this sku resulted in error, not killing the process
+                                // we'll get error from findZuoraProductId()
+                                call.log.warn('Sku %s resulted in error', sku, err2);
+                                callback(null, []);
+                                return;
+                            }
+                            if(arr.length < 1) {
+                                // do not finish function here, we might have other skus with products
+                                call.log.warn('Sku %s returned zero results', sku);
+                                callback(null, []);
+                                return;
+                            }
+
+                            arr[0].productRatePlans.forEach(function (ratePlan) {
+                                ratePlans[ratePlan.name] = ratePlan.id;
+                            });
+
+                            callback(null, arr[0].productRatePlans);
+                    });
+
+                },
+                'inputs': zuoraSkus
+            }, function(err, results) {
+                if(err) {
+                    call.log.error('SKU querying resulted in error', err, results);
+                    cb(err);
+                    return;
+                }
+
+                findZuoraProductId();
+            });
+
             // Find the trial product
-            zuora.catalog.query({sku:'SKU-00000014'}, function (err2, arr) {
-                if(err2) {
-                    cb(err2);
-                    return;
-                }
-                if(arr.length < 1) {
-                    cb(new Error('Unable to find necessary product'));
-                    return;
-                }
-
-                var ratePlans = {};
-                arr[0].productRatePlans.forEach(function (ratePlan) {
-                    ratePlans[ratePlan.name] = ratePlan.id;
-                });
-
+            function findZuoraProductId() {
                 if (config.features.promocode !== 'disabled' && call.data.promoCode && config.ns['promo-codes']) {
                     var code = call.data.promoCode.toUpperCase();
                     var promo = config.ns['promo-codes'][code];
@@ -276,7 +314,7 @@ function composeZuoraAccount(call, cb) {
                 }
 
                 createObjects(ratePlans['Free Trial']);
-            });
+            }
         });
     });
 }
