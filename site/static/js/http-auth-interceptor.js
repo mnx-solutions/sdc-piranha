@@ -34,7 +34,8 @@
 
             var interceptor = ['$rootScope', '$q', 'httpBuffer', function($rootScope, $q, httpBuffer) {
                 function success(response) {
-                    if(response.headers('Content-Type')) {
+                    var contentType = response.headers('Content-Type');
+                    if (contentType && contentType.indexOf('text/html') === -1) {
                         (window.JP.get('timeoutRefresh') || angular.noop)();
                     }
                     return response;

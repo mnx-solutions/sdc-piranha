@@ -164,23 +164,25 @@ var backend = module.exports =  {
                 for (var i = 0, c = handlers.requests.length; i < c; i++) {
                     var request = handlers.requests[i];
 
-                    switch (request.method) {
-                        case 'GET':
-                            $httpBackend.when(request.method, request.url).respond(function respondRequest (method, url, data, headers) {
-                                stats.track('start', method + ':' + url);
-                                stats.track('finish', method + ':' + url);
-                                return [ 200, request.data, headers ];
-                            });
-                            break;
+                    (function wrapRequest (request) {
+                        switch (request.method) {
+                            case 'GET':
+                                $httpBackend.when(request.method, request.url).respond(function respondRequest (method, url, data, headers) {
+                                    stats.track('start', method + ':' + url);
+                                    stats.track('finish', method + ':' + url);
+                                    return [ 200, request.data, headers ];
+                                });
+                                break;
 
-                        case 'POST':
-                            $httpBackend.when(request.method, request.url, request.body, request.headers).respond(function respondRequest (method, url, data, headers) {
-                                stats.track('start', method + ':' + url);
-                                stats.track('finish', method + ':' + url);
-                                return [ 200, request.data, headers ];
-                            });
-                            break;
-                    }
+                            case 'POST':
+                                $httpBackend.when(request.method, request.url).respond(function respondRequest (method, url, data, headers) {
+                                    stats.track('start', method + ':' + url);
+                                    stats.track('finish', method + ':' + url);
+                                    return [ 200, request.data, headers ];
+                                });
+                                break;
+                        }
+                    })(request);
                 }
             }
 
@@ -504,10 +506,16 @@ var backend = module.exports =  {
                 return context;
             },
 
-            serialize: function () {
+            serialize: function serialize () {
                 return serializeFunction(backend.clientHandlers, {
                     handlers: handlers
                 });
+            },
+
+            debug: function debug () {
+                return {
+                    handlers: handlers
+                };
             }
         };
 

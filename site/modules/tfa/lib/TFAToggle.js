@@ -38,7 +38,6 @@ var set = function (customerUuid, secretkey, callback) {
             }
         });
     }
-
 };
 
 var get = function (customerUuid, callback) {

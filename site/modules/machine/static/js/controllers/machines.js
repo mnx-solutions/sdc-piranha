@@ -75,7 +75,7 @@
                         $scope,
                         null,
                         'No instance selected for the action.'
-                    ),function(){
+                    ), function () {
                     }
                 );
             };
@@ -165,31 +165,31 @@
                     name: 'Dataset',
                     sequence: 14,
                     active: false
-                },
+                        },
                 {
                     id: 'firewall_enabled',
                     name: 'Firewall Enabled',
                     sequence: 15,
                     active: false
-                },
+                        },
                 {
                     id: 'package',
                     name: 'Package',
                     sequence: 16,
                     active: false
-                },
+                        },
                 {
                     id: '$$hashKey',
                     name: '$$hashKey',
                     sequence: 17,
                     active: false
-                },
+                        },
                 {
                     id: 'ips',
                     name: 'IP-s',
                     sequence: 18,
                     active: false
-                }
+                    }
             ];
             $scope.gridDetailProps = [
                 {
@@ -291,7 +291,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Enable Firewall'
+                                    'Enable firewall for selected instance?'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
@@ -307,7 +307,7 @@
                         }
                     },
                     sequence: 3
-                },
+                    },
                 {
                     label: 'Disable FW',
                     action: function (object) {
@@ -321,7 +321,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Disable Firewall'
+                                    'Disable firewall for selected instance?'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
@@ -424,6 +424,7 @@
             $scope.actionsButton = true;
             $scope.instForm = true;
             $scope.enabledCheckboxes = true;
+            $scope.placeHolderText = 'filter instances';
 
             $scope.deleteInstance = function(el) {
                 $$track.event('machine', 'delete');

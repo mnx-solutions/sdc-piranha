@@ -6,7 +6,10 @@ var redisClient = redis.createClient(config.redis.port, config.redis.host);
 // This command is magical.  Client stashes the password and will issue on every connect.
 redisClient.auth(config.redis.password);
 
-var get = function (uuid, key, callback) {
+var get = function (uuid, key, val, callback) {
+    if (val instanceof Function) {
+        callback = val;
+    }
     redisClient.hget('metadata:' + uuid, key, callback);
 };
 

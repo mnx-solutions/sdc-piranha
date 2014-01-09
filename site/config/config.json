@@ -32,8 +32,8 @@
     , "ext": "js"
     , "transform": [
         "use-strict-add"
-    ,   "uglify-js"
-    ,   "gzip"
+      , "uglify-js"
+      , "gzip"
       ]
     }
   , "css": {
@@ -126,16 +126,25 @@
   , "ssc_protocol": "https"
   , "ssc_port": 443
 }
+, "images": {
+    "types": {
+      "base": "13.3.0"
+    , "base64": "13.3.0"
+    , "centos-6": "2.5.0"
+    , "ubuntu-12.04": "2.4.2"
+    }
+  , "earliest_date": "2013-12-18"
+}
 , "features": {
     "fullVersion": "enabled"
-  , "scheduledCNMaintenance": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
+  , "promocode": "enabled"
   , "invoices": "enabled"
-  , "imageUse": "disabled"
-  , "imageCreate": "disabled"
-  , "firewall": "disabled"
-  , "slb": "disabled"
-  , "promocode": "disabled"
+  , "imageUse": "yes"
+  , "imageCreate": "yes"
+  , "firewall": "no"
+  , "freetier": "no"
+  , "slb": "no"
   }
 }

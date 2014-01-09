@@ -22,6 +22,11 @@ module.exports = function execute(scope, register) {
             });
         }
 
+        if (new Date(machine.created) < new Date(config.images.earliest_date)) {
+            machine.imageCreateNotSupported = 'Instances created before ' + config.images.earliest_date +
+                ' are not supported for image creation.';
+        }
+
         return machine;
     }
 
@@ -93,7 +98,15 @@ module.exports = function execute(scope, register) {
             // acknowledge what are we doing to logs
             call.log.debug('Polling for %s %s %s to become %s', type.toLowerCase(), objectId, prop, expect);
 
-            client['get' + type](objectId, true, function (err, object) {
+            var getEntity = function (entityType, poller) {
+                if (entityType === 'Image') {
+                    return client.getImage(objectId, poller, true);
+                } else {
+                    return client['get' + entityType](objectId, true, poller, null, true);
+                }
+            };
+
+            getEntity(type, function (err, object) {
                 if (err) {
                     // in case we're waiting for deletion a http 410(Gone) or 404 is good enough
                     if ((err.statusCode === 410 || err.statusCode === 404) && prop === 'state' && expect === 'deleted') {
@@ -108,7 +121,8 @@ module.exports = function execute(scope, register) {
                 }
                 if (object.state === 'failed') {
                     call.log.error('%s %s fell into failed state', type, objectId);
-                    clearPoller(new Error('Machine fell into failed state'));
+                    var defaultMessage = type + ' fell into failed state';
+                    clearPoller(object.error || defaultMessage);
                     return;
                 }
                 if (object[prop] === expect) {
@@ -130,7 +144,7 @@ module.exports = function execute(scope, register) {
                     };
                 }
 
-            }, null, true);
+            });
         });
     }
 
@@ -235,7 +249,52 @@ module.exports = function execute(scope, register) {
         });
     };
 
-    api.List = function (call, callback) {
+    api.State = function (call, callback) {
+        var machines = [];
+        var mapped = {};
+        var states = call.data.states ? call.data.states : {};
+
+        api.List(call, false, function listCallback (err, list) {
+            if (err) {
+                return call.error(err);
+            }
+
+            // Machine state change
+            list.forEach(function iterateMachine (machine) {
+                if (states.hasOwnProperty(machine.id)) {
+                    var state = states[machine.id];
+
+                    // State change
+                    if (machine.state !== state) {
+                        machines.push(machine);
+                    }
+                } else { // New machine
+                    machines.push(machine);
+                }
+
+                mapped[machine.id] = machine;
+            });
+
+            // Machine removal
+            Object.keys(states).forEach(function iterateState (id, index) {
+                if (!mapped.hasOwnProperty(id)) {
+                    machines.push({
+                        id: id,
+                        state: 'deleted'
+                    });
+                }
+            });
+
+            call.done(null, machines);
+        });
+    };
+
+    api.List = function (call, progress, callback) {
+        if (typeof(progress) === 'function') {
+            callback = progress;
+            progress = true;
+        }
+
         call.log.info('Handling machine list event');
 
         var datacenters = call.cloud.listDatacenters();
@@ -286,7 +345,9 @@ module.exports = function execute(scope, register) {
                     call.log.debug('List machines succeeded for datacenter %s', name);
                 }
 
-                call.update(null, response);
+                if (progress) {
+                    call.update(null, response);
+                }
 
                 if (--count === 0) {
                     callback(null, allMachines);
@@ -324,7 +385,7 @@ module.exports = function execute(scope, register) {
         call.log.info('Deleting image %s', options.imageId);
 
         var cloud = call.cloud.separate(options.datacenter);
-        call.cloud.deleteImage(options.imageId, function (err) {
+        cloud.deleteImage(options.imageId, function (err) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'deleted', (60 * 60 * 1000), 'Image', options.imageId, callback);
             } else {
@@ -339,7 +400,7 @@ module.exports = function execute(scope, register) {
         call.log.info({ options: options }, 'Creating image %s', options.name);
 
         var cloud = call.cloud.separate(options.datacenter);
-        call.cloud.createImageFromMachine(options, function(err, image) {
+        cloud.createImageFromMachine(options, function(err, image) {
             if (!err) {
                 pollForObjectStateChange(cloud, call, 'state', 'active', (60 * 60 * 1000), 'Image', image.id, callback);
             } else {
@@ -386,6 +447,32 @@ module.exports = function execute(scope, register) {
                     callback();
                 }
             });
+        });
+    };
+
+    api.enableFirewall = function (call, callback) {
+        call.log.info('Enabling firewall for machine %s', call.data.machineId);
+        var cloud = call.cloud.separate(call.data.datacenter);
+        cloud.enableFirewall(call.data.machineId, function (err) {
+            if (!err) {
+                pollForObjectStateChange(cloud, call, 'firewall_enabled', true, null, null, call.data.machineId, callback);
+            } else {
+                call.log.error(err);
+                call.error(err);
+            }
+        });
+    };
+
+    api.disableFirewall = function (call, callback) {
+        call.log.info('Disabling firewall for machine %s', call.data.machineId);
+        var cloud = call.cloud.separate(call.data.datacenter);
+        cloud.disableFirewall(call.data.machineId, function (err) {
+            if (!err) {
+                pollForObjectStateChange(cloud, call, 'firewall_enabled', false, null, null, call.data.machineId, callback);
+            } else {
+                call.log.error(err);
+                call.error(err);
+            }
         });
     };
 

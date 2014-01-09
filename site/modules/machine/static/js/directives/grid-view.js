@@ -1,12 +1,12 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', function ($scope, $filter, $http) {
+    app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
         $scope.getLastPage = function (update) {
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
                 var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
-                if (update && lastPage) {
+                if(update && lastPage) {
                     $scope.lastPage = lastPage;
                 }
 
@@ -31,7 +31,7 @@
         $scope.getLastPage(true);
         $scope.calcPageLimits();
 
-        $scope.isOnPage = function (index) {
+        $scope.isOnPage = function(index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
 
@@ -59,17 +59,17 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
-            if ($scope.multisort !== 'false') {
+            if($scope.multisort !== 'false') {
                 var existed = null;
-                if ($scope.order.indexOf(prop.order) !== -1) {
+                if($scope.order.indexOf(prop.order) !== -1) {
                     existed = 'order';
                     delete $scope.order[$scope.order.indexOf(prop.order)];
                 }
-                if ($scope.order.indexOf(prop.rorder) !== -1) {
+                if($scope.order.indexOf(prop.rorder) !== -1) {
                     existed = 'rorder';
                     delete $scope.order[$scope.order.indexOf(prop.rorder)];
                 }
-                if (reverse === undefined) {
+                if(reverse === undefined) {
                     if(!existed) {
                         $scope.order.push(prop.order);
                     } else if(existed === 'order'){
@@ -81,7 +81,7 @@
             } else {
                 var order = $scope.order[0];
 
-                if (order === prop.order) {
+                if(order === prop.order) {
                     $scope.order = [prop.rorder];
                 } else {
                     $scope.order = [prop.order];
@@ -99,9 +99,9 @@
 
         $scope.matchesFilter = function (obj) {
             var all = true;
-            if ($scope.filterAll) {
+            if($scope.filterAll) {
                 all = $scope.props.some(function (el) {
-                    if (!el.active) {
+                    if(!el.active) {
                         return false;
                     }
 
@@ -111,8 +111,8 @@
                         subject = subject.toString();
                     }
 
-                    if (ng.isObject(subject)) {
-                        subject = JSON.stringify(subject);
+                    if (ng.isObject(subject) || ng.isArray(subject)){
+                        subject = JSON.stringify(subject)
                     }
 
                     var needle = $scope.filterAll.toLowerCase();
@@ -122,7 +122,7 @@
             }
 
             return all && !$scope.props.some(function (el) {
-                if (!el.active || !el.filter) {
+                if(!el.active || !el.filter) {
                     return false;
                 }
 
@@ -132,8 +132,8 @@
                     subject = subject.toString();
                 }
 
-                if (ng.isObject(subject)) {
-                    subject = JSON.stringify(subject);
+                if (ng.isObject(subject) || ng.isArray(subject)){
+                    subject = JSON.stringify(subject)
                 }
 
                 var needle = el.filter.toLowerCase();
@@ -164,10 +164,10 @@
             });
 
             var final = [];
-            if ($scope.exportFields.ignore) {
+            if($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
             }
-            if ($scope.exportFields.fields) {
+            if($scope.exportFields.fields) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
             }
 
@@ -196,18 +196,18 @@
         };
 
         $scope.getActionButtons = function (object) {
-            if (!object) {
+            if(!object) {
                 return $scope.actionButtons;
             }
-	        if (!$scope.actionButtons) {
+	        if(!$scope.actionButtons) {
 		        return [];
 	        }
 
             return $scope.actionButtons.filter(function (btn) {
-                if (btn.show === undefined) {
+                if(btn.show === undefined) {
                     return true;
                 }
-                if (typeof btn.show === 'function') {
+                if(typeof btn.show === 'function') {
                     return btn.show(object);
                 }
 
@@ -268,13 +268,16 @@
                 detailProps: '=',
                 objects: '=',
                 actionButtons:'=',
+                imageButtonShow:"=",
                 filterAll: '@',
                 exportFields: '=',
                 columnsButton: '=',
                 actionsButton: '=',
                 instForm: '=',
+                imgForm: '=',
                 enabledCheckboxes: '=',
                 objectsType: '@',
+                placeHolderText: '=',
                 multisort: '@'
             },
             controller: 'GridViewController',
@@ -293,14 +296,14 @@
 
                     if ($rootScope.features.firewall === 'enabled') {
                         if (el.id === 'firewall_enabled') {
-                            el.active = true;
+                    el.active = true;
                         }
                         if (el.id === 'updated') {
                             el.active = false;
                         }
                     }
 
-                    if (el._getter) {
+	                if(el._getter) {
 		                el.order = el._getter;
 		                el.rorder = function (obj) {
 			                var elem = el._getter(obj) + '';
@@ -310,7 +313,7 @@
 			                }
 			                return next;
 		                };
-	                } else if (!el.id2) {
+	                } else if(!el.id2) {
                         el.order = el.id;
                         el.rorder = '-' + el.id;
                     } else {
@@ -323,7 +326,7 @@
     }])
     .filter('jsonArray', function () {
         return function (array) {
-            if (ng.isArray(array)) {
+            if(ng.isArray(array)) {
                 return array.join('; ');
             }
             return JSON.parse(array).join('; ');

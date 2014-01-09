@@ -1,21 +1,29 @@
 .dashboard-height {
     min-height:340px;
-    max-height:340px;
-    height:340px;
-}
-.dashboard-splash {
-    width:620px;
-    height:340px;
+    /*max-height:340px;*/
+    /*height:340px;*/
 }
 
 .loading-medium {
     float:left;
 }
 
-.dashboard-splash-iframe {
-    overflow: hidden;
+.os-btn{
+    min-width: 90px;
+    max-width: 90px;
+    min-height: 60px;
+    max-height: 60px;
+    padding: 10px;
+    font-size: 12px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    vertical-align: middle;
+    margin: 3px 5px;
 }
-
+.one-line-text{
+    margin-top: 20px;
+}
 /*my adds*/
 .dashboard-stat:before, .dashboard-stat:after {
     display: table;

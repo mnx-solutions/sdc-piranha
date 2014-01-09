@@ -134,13 +134,30 @@ module.exports = function execute(scope, callback) {
                             }
 
                             if (result.riskScore) {
-                                call.log.info('Saving user riskScore in metadata');
-                                Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore);
+                                call.log.info('Saving user risk score in metadata');
+                                Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore, function (setErr) {
+                                    if (setErr) {
+                                        call.log.error({error: setErr}, 'Saving user risk score in metadata failed');
+                                    }
+                                });
                             }
 
+                            if (result.explanation) {
+                                call.log.info('Saving user risk explanation in metadata');
+                                Metadata.set(call.req.session.userId, Metadata.RISK_SCORE_EXPLANATION, result.explanation, function (setErr) {
+                                    if (setErr) {
+                                        call.log.error({error: setErr}, 'Saving user risk explanation in metadata failed');
+                                    }
+                                });
+                            }
+                            
                             if (result.block) {
                                 if (result.blockReason) {
-                                    Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason);
+                                    Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason, function (setErr) {
+                                        if (setErr) {
+                                            call.log.error({error: setErr}, 'Saving user block reason in metadata failed');
+                                        }
+                                    });
                                 }
 
                                 SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {

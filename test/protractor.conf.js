@@ -19,7 +19,8 @@ exports.config = {
 
     specs: [
         '../site/modules/landing/test/landing.scenario.js',
-        '../site/modules/**/test/*.scenario.js'
+        '../site/modules/**/test/stub.js', // Default stubs
+        '../site/modules/**/test/*.scenario.js' // Scenarios
     ],
 
     params: config.params,

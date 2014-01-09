@@ -1,19 +1,40 @@
 'use strict';
 
 (function (ng, app) {
+
+    function equalArrays(array1, array2) {
+        if (!array2)
+            return false;
+
+        if (array1.length != array2.length)
+            return false;
+
+        for (var i = 0, l=array1.length; i < l; i++) {
+            if (array1[i] instanceof Array && array2[i] instanceof Array) {
+                if (!equalArrays(array1[i], array2[i]))
+                    return false;
+            }
+            else if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     app.controller('Firewall.IndexController', [
         '$scope',
-        'Datacenter',
         '$cookieStore',
         '$filter',
+        '$q',
         'requestContext',
         'localization',
         'rule',
-        '$q',
+        'Datacenter',
         'Machine',
         'util',
+        '$dialog',
 
-        function ($scope, Datacenter, $cookieStore, $filter, requestContext, localization, rule, $q, Machine, util) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util, $dialog) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -48,7 +69,7 @@
                     });
 
                     results = [{
-                        text: "Vms",
+                        text: "Instances",
                         children: vms
                     },{
                         text: "Tags",
@@ -65,7 +86,9 @@
             function extractVmInfo(machines) {
                 for(var m in machines) {
                     var machine = machines[m];
-                    if(ng.isObject(machine) && machine.compute_node) {
+                    // FIXME:
+                    //if(ng.isObject(machine) && machine.compute_node) {
+                    if(ng.isObject(machine)) {
 
                         if(Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
@@ -96,26 +119,21 @@
 
             }
 
-            // Create target comboboxes
-            var from = $('#fromSelect').select2({
+            function createCombobox(id, objId, propId) {
+                return $(id).select2({
                 width: 220,
                 query: query,
                 initSelection : function () {}
             }).change(function(e){
                 $scope.$apply(function(){
-                    $scope.current.from = ng.fromJson(e.val);
+                        $scope[objId][propId] = ng.fromJson(e.val);
                 });
             });
+            }
 
-            var to = $('#toSelect').select2({
-                width: 220,
-                query: query,
-                initSelection : function () {}
-            }).change(function(e){
-                $scope.$apply(function(){
-                    $scope.current.to = ng.fromJson(e.val);
-                });
-            });
+            // Create target comboboxes
+            var from = createCombobox('#fromSelect', 'current', 'from');
+            var to = createCombobox('#toSelect', 'current', 'to');
 
             $scope.CIDRs = [];
             for(var i=0; i<=32; i++) {
@@ -178,21 +196,81 @@
                 }
             });
 
-            $scope.$watch('current.from.type', function() {
-                $scope.fromSubnet = {
-                    address:null,
-                    CIDR:32
-                };
-            });
+            $scope.$watch('current.from', function (obj) {
+                if (obj) {
+                    switch (obj.type) {
+                        case 'vm':
+                            if (obj.text) {
+                                var vm = null;
 
-            $scope.$watch('current.to.type', function() {
-                $scope.toSubnet = {
-                    address:null,
-                    CIDR:32
-                };
-            });
+                                // Autocomplete?
+                                if (obj.text.length >= 3) {
+                                    for (var i = 0, c = $scope.vms.length; i < c; i++) {
+                                        if ($scope.vms[i].text.indexOf(obj.text) !== -1) {
+                                            vm = $scope.vms[i];
+                                            break;
+                                        }
+                                    }
+                                }
 
+                                if (vm) {
+                                    try {
+                                        $scope.current.from.text = JSON.parse(vm.id).text;
+                                    } catch (err) {
 
+                                    }
+
+                                    if ($scope.fromForm.fromValue) {
+                                        $scope.fromForm.fromValue.$setValidity('fromValue', true);
+                                    }
+                                } else {
+                                    $scope.fromForm.fromValue.$setValidity('fromValue', false);
+                                }
+
+                                $scope.fromForm.$pristine = false;
+                            }
+                            break;
+                    }
+                }
+            }, true);
+
+            $scope.$watch('current.to', function (obj) {
+                if (obj) {
+                    switch (obj.type) {
+                        case 'vm':
+                            if (obj.text) {
+                                var vm = null;
+
+                                // Autocomplete?
+                                if (obj.text.length >= 3) {
+                                    for (var i = 0, c = $scope.vms.length; i < c; i++) {
+                                        if ($scope.vms[i].text.indexOf(obj.text) !== -1) {
+                                            vm = $scope.vms[i];
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (vm) {
+                                    try {
+                                        $scope.current.to.text = JSON.parse(vm.id).text;
+                                    } catch (err) {
+
+                                    }
+
+                                    if ($scope.toForm.toValue) {
+                                        $scope.toForm.toValue.$setValidity('toValue', true);
+                                    }
+                                } else {
+                                    $scope.toForm.toValue.$setValidity('toValue', false);
+                                }
+
+                                $scope.toForm.$pristine = false;
+                            }
+                            break;
+                    }
+                }
+            }, true);
 
             $scope.loading = true;
             $scope.tags = [];
@@ -210,9 +288,15 @@
                 children:[{
                     id: ng.toJson({
                         type: 'wildcard',
+                        text: 'any'
+                    }),
+                    text: 'Any'
+                },{
+                    id: ng.toJson({
+                        type: 'wildcard',
                         text: 'all vms'
                     }),
-                    text: 'Any Vm'
+                    text: 'Any VMs in DC'
                 },{
                     id: ng.toJson({type: 'ip'}),
                     text: 'IP'
@@ -224,10 +308,10 @@
                     text:'Tag'
                 }, {
                     id: ng.toJson({type: 'vm'}),
-                    text:'Vm'
+                    text:'Instances'
                 }]
             },{
-                text: "Vms",
+                text: "Instances",
                 children: $scope.vms
             },{
                 text: "Tags",
@@ -241,20 +325,72 @@
 	        };
 
             $scope.actions = [{
-                value:'allow',
-                title:'Allow'
+                id:'allow',
+                text:'Allow'
             },{
-                value:'block',
-                title:'Block'
+                id:'block',
+                text:'Block'
             }];
 
             $scope.states = [{
-                value: true,
-                title:'Enabled'
+                id: 'true',
+                text:'Enabled'
             },{
-                value: false,
-                title:'Disabled'
+                id: 'false',
+                text:'Disabled'
             }];
+
+            $scope.selected = {
+                action: $scope.actions[0].text,
+                status: $scope.states[0].text
+            };
+            $('#actionSelect').select2({
+                data: $scope.actions,
+                width: 220
+            }).change(function (e) {
+                $scope.$apply(function(){
+                    $scope.data.parsed.action = e.val;
+                    $scope.actions.some(function (action) {
+                        if(action.id === e.val) {
+                            $scope.selected.action = action.text;
+                            return true;
+                        }
+                    });
+                });
+            }).select2('val', $scope.actions[0].id);
+
+            $('#stateSelect').select2({
+                data: $scope.states,
+                width: 220
+            }).change(function (e) {
+                $scope.$apply(function(){
+                    $scope.data.enabled = e.val === 'true' ? true : false;
+                    $scope.states.some(function (action) {
+                        if(action.id === e.val) {
+                            $scope.selected.status = action.text;
+                            return true;
+                        }
+                    });
+                });
+            }).select2('val', $scope.states[0].id);
+
+            $scope.$watch('datacenters', function (newVal) {
+                if(newVal && ng.isArray(newVal) && newVal.length > 0) {
+                    $scope.selected.datacenter = $scope.selected.datacenter || newVal[0].name;
+                    $('#dcSelect').select2('destroy');
+                    $('#dcSelect').select2({
+                        data: newVal.map(function (dc) { return {id: dc.name, text: dc.name}; }),
+                        width: 220
+                    }).change(function (e) {
+                        $scope.$apply(function () {
+                            $scope.datacenter = e.val;
+                            $scope.selected.datacenter = e.val;
+                        });
+                    }).select2('val', $scope.selected.datacenter);
+
+                }
+            });
+
 
             $scope.protocols = [{
                 value:'tcp',
@@ -282,7 +418,10 @@
             $scope.loading = true;
             $scope.rules = [];
             $scope.machines = Machine.machine();
+            $scope.machinesLoading = true;
             $scope.notAffectedMachines = [];
+            $scope.kvmList = [];
+            $scope.firewallDisabledMachines = [];
             $scope.rulesByDatacenter = rule.rule();
 
             $q.all([
@@ -299,10 +438,21 @@
                         Object.keys($scope.machines).forEach(function(index) {
                             var m = $scope.machines[index];
 
-                            if(m.id && !m.firewall_enabled) {
-                                $scope.notAffectedMachines.push(m);
+                            if(m.id && m.type == 'virtualmachine') {
+                                $scope.kvmList.push(m);
+                                return;
                             }
-                        })
+
+                            if(m.id && !m.hasOwnProperty('firewall_enabled')) {
+                                $scope.notAffectedMachines.push(m);
+                                return;
+                            }
+
+                            if(m.id && m.firewall_enabled === false) {
+                                $scope.firewallDisabledMachines.push(m);
+                            }
+                        });
+                        $scope.machinesLoading = false;
                     }
                 });
 
@@ -322,14 +472,14 @@
                 $scope.data.uuid = null;
                 $scope.data.datacenter = $scope.datacenter;
                 $scope.data.parsed = {};
-                $scope.data.parsed.from = [['wildcard', 'any']];
-                $scope.data.parsed.to = [['wildcard', 'any']];
+                $scope.data.parsed.from = [];
+                $scope.data.parsed.to = [];
                 $scope.data.parsed.action = 'allow';
                 $scope.data.parsed.protocol = {
                     name:'tcp',
                     targets:[]
                 };
-                $scope.data.enabled = false;
+                $scope.data.enabled = true;
             };
 
             $scope.getData = function() {
@@ -340,24 +490,48 @@
 	            return data;
             };
 
-            $scope.resetCurrent = function() {
-                if(from && $scope.current.from) {
-                    from.select2("val", '');
+            $scope.resetCurrent = function (direction) {
+                if (from && direction === 'from') {
+                    from.select2('val', '');
                 }
-                if(to && $scope.current.to) {
-                    to.select2("val", '');
+
+                if (to && direction === 'to') {
+                    to.select2('val', '');
                 }
+
+                if (!direction || direction === 'from') {
                 $scope.current.from = {
                     type: 'wildcard',
                     text: 'any',
                     value: null
                 };
+
+                    $scope.fromSubnet = {
+                        address: null,
+                        CIDR: 32
+                    };
+
+                    // No $setPristine
+                    $scope.fromForm.$pristine = true;
+                    $scope.fromForm.$dirty = false;
+                }
+
+                if (!direction || direction === 'to') {
                 $scope.current.to = {
                     type: 'wildcard',
                     text: 'any',
                     value: null
                 };
 
+                    $scope.toSubnet = {
+                        address: null,
+                        CIDR: 32
+                    };
+
+                    // No $setPristine
+                    $scope.toForm.$pristine = true;
+                    $scope.toForm.$dirty = false;
+                }
             };
 
             $scope.useAllPorts = function() {
@@ -390,10 +564,32 @@
                 $scope.protocolForm.code.$setValidity('range', false);
             };
 
-            function addTarget(direction) {
+            function addTarget (direction, other) {
                 var target = [];
                 var data = $scope.current[direction];
-                if(data.type === 'wildcard', data.text === 'any') {
+                var otherDir = $scope.data.parsed[other];
+
+                if (otherDir[0] && ($scope.isAny(otherDir[0]) && $scope.isAny(data))) {
+                    var title = 'Error';
+                    var message = 'FROM and TO both cannot be set to ANY. Please choose one.';
+                    var btns = [
+                        {
+                            result: 'ok',
+                            label: 'OK',
+                            cssClass: 'btn-joyent-blue'
+                        }
+                    ];
+
+                    return $dialog.messageBox(title, message, btns)
+                        .open()
+                        .then(function (result) {
+                        });
+
+                    clearTarget(direction);
+                    return;
+                }
+
+                if (data.type === 'wildcard' && data.text === 'any') {
                     clearTarget(direction);
                     data = {
                         type: 'wildcard',
@@ -401,21 +597,29 @@
                     };
                 }
 
-                if($scope.data.parsed[direction].length === 1 && $scope.data.parsed[direction][0][0] === 'wildcard') {
+                if ($scope.data.parsed[direction].length === 1 &&
+                    $scope.data.parsed[direction][0][0] === 'wildcard') {
                     $scope.data.parsed[direction] = [];
                 }
 
                 target[0] = data.type;
 
-                if(data.value) {
+                if (data.value) {
                     target[1] = [data.text, data.value];
                 } else {
                     target[1] = data.text;
                 }
 
-                $scope.data.parsed[direction].push(target);
+                // if target already present, don't add
+                for (var tar in $scope.data.parsed[direction]) {
+                    if (equalArrays($scope.data.parsed[direction][tar], target)) {
+                        $scope.resetCurrent(direction);
+                        return false;
+                    }
+                }
 
-                $scope.resetCurrent();
+                $scope.data.parsed[direction].push(target);
+                $scope.resetCurrent(direction);
             }
 
             function clearTarget(direction) {
@@ -426,12 +630,12 @@
                 $scope.data.parsed.protocol.targets = [];
             };
 
-            $scope.addFrom = addTarget.bind(addTarget, 'from');
-            $scope.addTo = addTarget.bind(addTarget, 'to');
+            $scope.addFrom = addTarget.bind(addTarget, 'from', 'to');
+            $scope.addTo = addTarget.bind(addTarget, 'to', 'from');
 
             $scope.removeFrom = function(i) {
                 $scope.data.parsed.from.splice(i, 1);
-                if(!$scope.data.parsed.from.length) {
+                if(!$scope.data.parsed.from.length && !$scope.isAny($scope.data.parsed.to[0])) {
                     $scope.data.parsed.from = [['wildcard', 'any']];
                 }
             };
@@ -442,7 +646,7 @@
 
             $scope.removeTo = function(i) {
                 $scope.data.parsed.to.splice(i, 1);
-                if(!$scope.data.parsed.to.length) {
+                if(!$scope.data.parsed.to.length && !$scope.isAny($scope.data.parsed.from[0])) {
                     $scope.data.parsed.to = [['wildcard', 'any']];
                 }
             };
@@ -466,16 +670,15 @@
             // deletes old rule and creates new modified rule
             $scope.updateRule = function() {
                 $scope.loading = true;
-                rule.deleteRule($scope.data).then(function(){
-                    rule.createRule($scope.data).then(function(){
+                rule.updateRule($scope.data).then(function () {
+                    rule.clearRules();
                         $scope.refresh();
-                    })
                 });
-
             };
 
             $scope.createRule = function() {
                 $scope.loading = true;
+
                 rule.createRule($scope.getData()).then(function(r){
                     if(r.id) {
                         $scope.refresh();
@@ -504,6 +707,7 @@
                         rule.deleteRule(r).then(function(){
                             $scope.refresh();
                         });
+                        $scope.openRuleForm = false;
                     });
             };
 
@@ -514,6 +718,7 @@
 		            $scope.refresh();
 	            });
             };
+
             $scope.refresh = function() {
                 $scope.loading = true;
                 rule.rule().then(function(r){
@@ -539,8 +744,7 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 1,
-                    active: true
+			        sequence: 5
 		        },
 		        {
 			        id: 'parsed',
@@ -555,8 +759,7 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 2,
-                    active: true
+			        sequence: 6
 		        },
 		        {
 			        id: 'parsed',
@@ -565,8 +768,7 @@
 			        getClass: function () {
 				        return 'span1 padding-5';
 			        },
-			        sequence: 3,
-                    active: true
+			        sequence: 3
 		        },
 		        {
 			        id: 'protocol',
@@ -581,11 +783,11 @@
 		        },
                 {
                     id: 'datacenter',
-                    name: 'Datacenter',
+                    name: 'Data Center',
                     getClass: function () {
                         return 'span2 padding-5';
                     },
-                    sequence: 5
+                    sequence: 2
                 },
 		        {
 			        id: 'delete',
@@ -606,40 +808,17 @@
 				        tooltip: 'Delete the rule'
 			        }
 		        },
-                {
-                    id: 'enabled',
-                    name: 'Enabled',
-                    type: 'button',
-                    getClass: function () {
-                        return 'pull-right';
-                    },
-                    btn: {
-                        getLabel: function (object) {
-                            return object.enabled ? 'Enabled' : 'Disabled';
-                        },
-                        getClass: function (object) {
-                            return (object.enabled ? 'btn-success' : 'btn-warning');
-                        },
-                        disabled: function () {
-                            return $scope.loading;
-                        },
-                        action: $scope.changeStatus.bind($scope),
-                        tooltip: 'Change rule status'
-                    },
-                    sequence: 5,
-                    active: true
-                },
 		        {
 			        id: 'edit',
 			        name: 'Edit',
 			        type: 'button',
 			        getClass: function () {
-				        return 'pull-right';
+				        return 'pull-right span1 padding-5';
 			        },
 			        btn: {
 				        label: 'Edit',
 				        getClass: function () {
-					        return 'btn-default';
+					        return 'btn-mini btn-default';
 				        },
 				        disabled: function () {
 					        return $scope.loading;
@@ -649,9 +828,29 @@
                             $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
+			        }
+		        },
+		        {
+                    id: 'enabled',
+                    name: 'Enabled',
+			        type: 'button',
+			        getClass: function () {
+                        return 'span1 padding-5';
 			        },
-                    sequence: 6,
-                    active: true
+			        btn: {
+                        getLabel: function (object) {
+                            return object.enabled ? 'Enabled' : 'Disabled';
+                        },
+                        getClass: function (object) {
+                            return 'btn-mini btn-minier ' + (object.enabled ? 'btn-success' : 'btn-danger');
+				        },
+                        disabled: function () {
+                            return $scope.loading;
+                        },
+				        action: $scope.changeStatus.bind($scope),
+				        tooltip: 'Change rule status'
+                    },
+                    sequence: 1
 		        }
 	        ];
 

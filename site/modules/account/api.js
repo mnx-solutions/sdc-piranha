@@ -41,8 +41,8 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            if (!obj) {
-                scope.log.warn('zuora didnt respond, allowing through');
+            if (!obj || !obj.errors) {
+                scope.log.warn({err: err}, 'zuora didnt respond, allowing through');
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
@@ -140,7 +140,9 @@ module.exports = function execute(scope, register) {
         }
         function getMetadata(userId) {
             metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
-                if (!err && storedStep) {
+                if (err) {
+                    req.log.error({error: err}, 'Cannot get signup step from metadata');
+                } else if (storedStep) {
                     req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
                         storedStep, _nextStep(storedStep));
 
@@ -181,14 +183,21 @@ module.exports = function execute(scope, register) {
     api.setSignupStep = function (call, step, cb) {
         function updateStep(req) {
             if (req.session) {
-                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function () {
-                    call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
+                metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function (metaErr) {
+                    if (metaErr) {
+                        call.log.error(metaErr);
+                    } else {
+                        call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
+                    }
+                    if (step === 'blocked') {
+                        updateBilling(req);
+                    }
                 });
             }
             // Billing server is updated on billing step and forward
             if (steps.indexOf(step) >= steps.indexOf('billing')) {
                 updateBilling(req);
-            } else {
+            } else if (!req.session || step !== 'blocked') {
                 setImmediate(cb);
             }
         }
@@ -199,7 +208,7 @@ module.exports = function execute(scope, register) {
                     if (err) {
 
                         // error 402 is one of the expected results, don't log it.
-                        if (err.code !== 402) {
+                        if (err.statusCode !== 402) {
 
                             // build more clear error object so we wouldn't have errors: [object], [object] in the logs
                             var zuoraErr = {
@@ -260,7 +269,9 @@ module.exports = function execute(scope, register) {
                     step = bStep === 'completed' ? bStep : step;
 
                     metadata.set(userId, metadata.SIGNUP_STEP, step, function (setError) {
-                        call.log.info('Set signup step in metadata to %s', bStep);
+                        if (!setError) {
+                            call.log.info('Set signup step in metadata to %s', bStep);
+                        }
                         cb(setError);
                     });
                 });

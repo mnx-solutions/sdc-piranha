@@ -54,6 +54,12 @@ module.exports = function execute(scope) {
     info.images.pointer.__listen('change', mapImageInfo);
     info.images.pointer.__startWatch();
 
+    server.onCall('MachineState', function (call) {
+        machine.State(call, function () {
+            call.done();
+        });
+    });
+
     server.onCall('MachineList', function (call) {
         machine.List(call, function () {
             call.done();
@@ -86,9 +92,21 @@ module.exports = function execute(scope) {
                 return config.showSLBObjects || !slbTagged;
             });
 
+            var imageCreateConfig = config.images || {types: {}};
+
             data.forEach(function (img, i) {
                 if (info.images.data[img.id]) {
                     data[i] = utils.extend(img, info.images.data[img.id]);
+                }
+
+                var leastSupportedVersion = imageCreateConfig.types[img.name];
+                if (!img['public']) {
+                    img.imageCreateNotSupported = 'Instances from custom images are not yet by the image API.';
+                } else if (!leastSupportedVersion) {
+                    img.imageCreateNotSupported = img.name + ' is not yet supported by the image API.';
+                } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
+                    img.imageCreateNotSupported = 'The ' + img.name + ' image needs to be at least image version ' +
+                        leastSupportedVersion + ' to create an image.';
                 }
 
                 if (data[i].name) {
@@ -365,12 +383,16 @@ module.exports = function execute(scope) {
                     machine: call.data.machineId,
                     name: (call.data.name || 'My Image'),
                     version: '1.0.0', // We default to version 1.0.0
-                    description: (call.data.description || 'Default image description'),
+                    description: (call.data.description || ''),
                     datacenter: call.data.datacenter
                 };
 
                 machine.ImageCreate(call, options, call.done);
             }
+        });
+
+        server.onCall('ImageCreateConfig', function (call) {
+            call.done(null, config.images);
         });
     }
 
