@@ -25,8 +25,6 @@
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
-            $scope.getStatus();
-
             // populate all datasources
             $scope.account     = Account.getAccount();
 //                $scope.forums      = Zendesk.getForumsList();
