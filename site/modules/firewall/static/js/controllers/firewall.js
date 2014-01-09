@@ -1,6 +1,26 @@
 'use strict';
 
 (function (ng, app) {
+
+    function equalArrays(array1, array2) {
+        if (!array2)
+            return false;
+
+        if (array1.length != array2.length)
+            return false;
+
+        for (var i = 0, l=array1.length; i < l; i++) {
+            if (array1[i] instanceof Array && array2[i] instanceof Array) {
+                if (!equalArrays(array1[i], array2[i]))
+                    return false;
+            }
+            else if (array1[i] != array2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     app.controller('Firewall.IndexController', [
         '$scope',
         '$cookieStore',
@@ -12,8 +32,9 @@
         'Datacenter',
         'Machine',
         'util',
+        '$dialog',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util, $dialog) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -458,7 +479,7 @@
                     name:'tcp',
                     targets:[]
                 };
-                $scope.data.enabled = false;
+                $scope.data.enabled = true;
             };
 
             $scope.getData = function() {
@@ -549,20 +570,21 @@
                 var otherDir = $scope.data.parsed[other];
 
                 if (otherDir[0] && ($scope.isAny(otherDir[0]) && $scope.isAny(data))) {
-                    util.error(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'FROM and TO both cannot be set to ANY. Please choose one.'
-                        ),
-                        function () {
+                    var title = 'Error';
+                    var message = 'FROM and TO both cannot be set to ANY. Please choose one.';
+                    var btns = [
+                        {
+                            result: 'ok',
+                            label: 'OK',
+                            cssClass: 'btn-joyent-blue'
                         }
-                    );
+                    ];
+
+                    return $dialog.messageBox(title, message, btns)
+                        .open()
+                        .then(function (result) {
+                        });
+
                     clearTarget(direction);
                     return;
                 }
@@ -582,10 +604,18 @@
 
                 target[0] = data.type;
 
-                if(data.value) {
+                if (data.value) {
                     target[1] = [data.text, data.value];
                 } else {
                     target[1] = data.text;
+                }
+
+                // if target already present, don't add
+                for (var tar in $scope.data.parsed[direction]) {
+                    if (equalArrays($scope.data.parsed[direction][tar], target)) {
+                        $scope.resetCurrent(direction);
+                        return false;
+                    }
                 }
 
                 $scope.data.parsed[direction].push(target);
@@ -605,7 +635,7 @@
 
             $scope.removeFrom = function(i) {
                 $scope.data.parsed.from.splice(i, 1);
-                if(!$scope.data.parsed.from.length) {
+                if(!$scope.data.parsed.from.length && !$scope.isAny($scope.data.parsed.to[0])) {
                     $scope.data.parsed.from = [['wildcard', 'any']];
                 }
             };
@@ -616,7 +646,7 @@
 
             $scope.removeTo = function(i) {
                 $scope.data.parsed.to.splice(i, 1);
-                if(!$scope.data.parsed.to.length) {
+                if(!$scope.data.parsed.to.length && !$scope.isAny($scope.data.parsed.from[0])) {
                     $scope.data.parsed.to = [['wildcard', 'any']];
                 }
             };
@@ -648,6 +678,7 @@
 
             $scope.createRule = function() {
                 $scope.loading = true;
+
                 rule.createRule($scope.getData()).then(function(r){
                     if(r.id) {
                         $scope.refresh();

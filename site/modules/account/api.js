@@ -41,8 +41,8 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            if (!obj) {
-                scope.log.warn('zuora didnt respond, allowing through');
+            if (!obj || !obj.errors) {
+                scope.log.warn({err: err}, 'zuora didnt respond, allowing through');
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
@@ -189,12 +189,15 @@ module.exports = function execute(scope, register) {
                     } else {
                         call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
                     }
+                    if (step === 'blocked') {
+                        updateBilling(req);
+                    }
                 });
             }
             // Billing server is updated on billing step and forward
             if (steps.indexOf(step) >= steps.indexOf('billing')) {
                 updateBilling(req);
-            } else {
+            } else if (!req.session || step !== 'blocked') {
                 setImmediate(cb);
             }
         }
@@ -205,7 +208,7 @@ module.exports = function execute(scope, register) {
                     if (err) {
 
                         // error 402 is one of the expected results, don't log it.
-                        if (err.code !== 402) {
+                        if (err.statusCode !== 402) {
 
                             // build more clear error object so we wouldn't have errors: [object], [object] in the logs
                             var zuoraErr = {

@@ -121,7 +121,8 @@ module.exports = function execute(scope, register) {
                 }
                 if (object.state === 'failed') {
                     call.log.error('%s %s fell into failed state', type, objectId);
-                    clearPoller(new Error('Machine fell into failed state'));
+                    var defaultMessage = type + ' fell into failed state';
+                    clearPoller(object.error || defaultMessage);
                     return;
                 }
                 if (object[prop] === expect) {

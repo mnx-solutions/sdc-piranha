@@ -1963,4 +1963,6 @@ ul.dropdown-menu{
 .font-size16{
     font-size: 16px;
     font-weight: 500;
+}.carousel-inner .item:hover {
+    background:none !important;
 }

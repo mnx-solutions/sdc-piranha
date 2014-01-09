@@ -42,7 +42,7 @@
                 <i class=""></i>
                 Meta Data
             </a>
-        </div>
+            </div>
         <div id="collapse_1" class="accordion-body collapse in">
             <div class="accordion-inner">
                 <table>
@@ -57,6 +57,10 @@
                     <tr>
                         <td>Type</td>
                         <td>{{machine.type}}</td>
+                    </tr>
+                    <tr>
+                        <td>Image UUID</td>
+                        <td>{{machine.image}}</td>
                     </tr>
                     <tr>
                         <td>Images<i class="details-images-icon"></i></td>
@@ -127,8 +131,8 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+                        </div>
+                        </div>
 
     <div class="accordion-group">
         <div class="accordion-heading">
@@ -148,7 +152,7 @@
                 <div data-tags machineid="machineid"></div>
             </div>
         </div>
-    </div>
+                        </div>
 
     <div class="accordion-group" data-ng-show="machine  && allowResize">
         <div class="accordion-heading">
@@ -157,7 +161,7 @@
                 <i class=""></i>
                 Resize Instance
             </a>
-        </div>
+                        </div>
         <div id="collapse_4" class="accordion-body collapse">
             <div class="accordion-inner">
                 <p class="text-small muted" data-translate>
@@ -184,7 +188,7 @@
                             <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
                             <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
                         </div>
-                    </div>
+                        </div>
 
                     <div class="pull-left resize_block">
                         <p class="control-label" data-translate><b>Resize Instance type</b></p>
@@ -201,12 +205,12 @@
                         <div class="control-group resize-button">
                             <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
-                    </div>
+                        </div>
                     <div class="clearfix"></div>
-                </div>
-            </div>
-        </div>
-    </div>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
     <div class="accordion-group">
         <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[4] }" data-ng-click="collapseTrigger(4)" data-toggle="collapse" data-parent="#accordion1"
@@ -214,8 +218,8 @@
                 <i class=""></i>
                 Images
             </a>
-        </div>
-        <div id="collapse_5" class="accordion-body collapse" data-ng-show="features.imageCreate == 'enabled' || features.imageCreate == 'yes'">
+                </div>
+        <div id="collapse_5" class="accordion-body collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
             <div class="accordion-inner">
                 <legend>
                     <span class="font-size16" data-translate>Create Image</span>
@@ -243,21 +247,21 @@
                         </div>
                         <div>
                             <div class="dpl-inline">
-                                <input type="text"
-                                       placeholder="Image name"
-                                       name="imageName"
-                                       data-ng-model="imageName"
-                                       data-ng-disabled="imageJob && !imageJob.finished"
-                                       data-machine-name
-                                       data-image-unique
+                            <input type="text"
+                                placeholder="Image name"
+                                name="imageName"
+                                data-ng-model="imageName"
+                                data-ng-disabled="imageJob && !imageJob.finished"
+                                data-machine-name
+                                data-image-unique
                                        value=""
                                        class="key-width img-name"/>
                             </div>
                             <div class="dpl-inline">
-                                <input type="text" placeholder="Image description (optional)"
-                                       name="imageDescription"
-                                       data-ng-model="imageDescription"
-                                       data-ng-disabled="imageJob && !imageJob.finished"
+                            <input type="text" placeholder="Image description (optional)"
+                                name="imageDescription"
+                                data-ng-model="imageDescription"
+                                data-ng-disabled="imageJob && !imageJob.finished"
                                        value=""
                                        class="value-width img-desk"/>
                             </div>
@@ -276,11 +280,11 @@
                     </form>
                     <br />
 
-                </div>
+                        </div>
 
-            </div>
-        </div>
-    </div>
+                            </div>
+                        </div>
+                    </div>
     <div class="accordion-group" data-ng-show="machine.metadata.credentials">
         <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[5]}" data-ng-click="collapseTrigger(5)" data-toggle="collapse" data-parent="#accordion1"
@@ -288,7 +292,7 @@
                 <i class=""></i>
                 Credentials
             </a>
-        </div>
+                        </div>
         <div id="collapse_6" class="accordion-body collapse">
             <div class="accordion-inner" data-ng-show="machine.metadata.credentials">
                 <div class="accordiaon-line">
@@ -297,10 +301,10 @@
                             <td style="width:140px">System</td>
                             <td >{{credential.system}}</td>
                         </tr>
-                            <tr>
+                        <tr>
                             <td>Username</td>
                             <td>{{credential.username}}</td>
-                            </tr>
+                        </tr>
                         <tr>
                             <td>Password</td>
                             <td style="min-width: 260px;"><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span></td>
@@ -308,9 +312,9 @@
                                 <a class="btn light show-hide" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
                                 <a class="btn light show-hide" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
                             </td>
-                            </tr>
-                        </table>
-                    </div>
+                        </tr>
+                    </table>
+                </div>
             </div>
             <div class="accordion-inner" data-ng-hide="machine.metadata.credentials">
                 <p>There is no credentials for this instance.</p>
@@ -331,7 +335,7 @@
                 <!--<div class="accordiaon-line">-->
                     <!---->
                 <!--</div>-->
-                <span data-ng-switch="features.firewall">
+            <span data-ng-switch="features.firewall">
                 <fieldset data-ng-switch-when="enabled">
                     <div data-ng-show="firewallRules.length >= 1">
                         <div class="span12">
@@ -359,7 +363,7 @@
                 </fieldset>
             </span>
 
-            </div>
+        </div>
 
         </div>
     </div>
@@ -438,18 +442,18 @@
             <i class="reboot_icon"></i>
             <p data-translate>Reboot</p>
         </button>
-                        </div>
+        </div>
     <div data-ng-controller="cloudController">
         <div class="detail_chart" >
             <div class="loading-small" data-ng-hide="cpuGraphs && memGraphs"></div>
             <graph data-ng-repeat="i in cpuGraphs" options="i" style="max-width: 480px;"></graph>
-                    </div>
+    </div>
 
         <div class="detail_chart">
             <graph data-ng-repeat="i in memGraphs" options="i" style="max-width: 480px;"></graph>
                         </div>
         <a href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right"><i class="chart-icon"></i>View Detailed Analytics</a>
-                </div>
+                    </div>
 
         </div>
     </div>

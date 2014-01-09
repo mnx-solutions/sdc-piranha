@@ -3,10 +3,10 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track','PopupDialog',
-            function ($scope, requestContext, $location, $cookies, Process, $http, $$track,popupDialog) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track','PopupDialog', 'Account',
+            function ($scope, requestContext, $location, $cookies, Process, $http, $$track, popupDialog, Account) {
                 requestContext.setUpRenderContext('signup', $scope);
-                
+                Account.getAccount(true);
                 $scope.stepNames = {
                     phone: 'Phone confirmation',
                     billing: 'Payment Method',
@@ -85,7 +85,7 @@
                         $$track.event('Signup', 'Cancel Signup');
                         window.location = '/landing/forgetToken';
                     });
-                   return false;
+                    return false;
                 };
             }
         ]);

@@ -82,6 +82,9 @@
                     id: 'published_at',
                     name: 'Published at',
                     sequence: 4,
+                    _getter: function (image) {
+                        return $filter('date')(new Date(image.published_at), 'yyyy-MM-ddTHH:mm:ss') + 'Z';
+                    },
                     active: true
                 },
                 {
@@ -117,14 +120,9 @@
                     sequence: 3
                 },
                 {
-                    id: 'datacenter',
-                    name: 'Datacenter',
-                    sequence: 4
-                },
-                {
                     id: 'public',
                     name: "Public",
-                    sequence: 5
+                    sequence: 4
                 }
             ];
 

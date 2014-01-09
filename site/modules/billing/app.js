@@ -45,31 +45,38 @@ module.exports = function execute(scope, app) {
         res.json(zuora.states);
     });
 
-    app.get('/promocode', function (req, res, next) {
-        function end(code) {
-            req.log.debug({campaignId: req.cookies.campaignId, promocode: code}, 'Requested default promocode');
-            res.send(code);
-        }
-        if(req.cookies.campaignId) {
-            var promo = campaignPromoMap[req.cookies.campaignId];
-            if (promo
-                && (promo.startDate && (new Date()) > (new Date(promo.startDate)))
-                && (promo.expirationDate && (new Date()) < (new Date(promo.expirationDate)))) {
-                end(promo.code);
-                return;
+    function getPromoDetail(campaignId) {
+        if (campaignId) {
+            var promo = campaignPromoMap[campaignId];
+            if (promo && (promo.startDate && (new Date()) > (new Date(promo.startDate))) &&
+                    (promo.expirationDate && (new Date()) < (new Date(promo.expirationDate)))) {
+                return promo;
             }
         }
         if (defaultPromos.length < 1) {
-            end('');
-            return;
+            return null;
         }
         var i = 0;
-        var promo = defaultPromos[i];
-        while (promo && ((new Date()) < (new Date(promo.defaultDate))) && i < 10) {
-            i++;
-            promo = defaultPromos[i];
+        var defPromo = defaultPromos[i];
+        while (defPromo && ((new Date()) < (new Date(defPromo.defaultDate))) && i < 10) {
+            i += 1;
+            defPromo = defaultPromos[i];
         }
-        end(promo && promo.code || '');
+        return defPromo;
+    }
+
+    app.get('/promocode', function (req, res, next) {
+        var promo = getPromoDetail(req.cookies.campaignId);
+        var code = promo && promo.code ? promo.code : '';
+        req.log.debug({campaignId: req.cookies.campaignId, promocode: code}, 'Requested default promocode');
+        res.send(code);
+    });
+
+    app.get('/promoamount', function (req, res) {
+        var promo = getPromoDetail(req.cookies.campaignId);
+        var amount = promo && promo.amount ? promo.amount : 0;
+        req.log.debug({campaignId: req.cookies.campaignId, amount: amount}, 'Requested default promocode amount');
+        res.send(200, String(amount));
     });
 
     app.get('/invoice/:account/:id', zuoraHelpers.getInvoicePDF);
