@@ -166,4 +166,23 @@ module.exports = function execute(scope, app) {
             };
         });
     });
+
+    app.post('/log/error', function(req, res) {
+        // note that client-side is not able to log "FATAL" level errors
+        var supportedLevels = [
+            'error',
+            'warn',
+            'info',
+            'debug',
+            'trace'
+        ];
+
+        var logLevel = req.body.level;
+        if(!logLevel || supportedLevels.indexOf(logLevel.toLowerCase()) === -1) {
+            logLevel = 'debug';
+        }
+
+        req.log[logLevel]({userInfo: req.body.userInfo, args: req.body.args}, req.body.message);
+        res.send(200);
+    });
 };
