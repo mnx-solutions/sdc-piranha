@@ -25,7 +25,7 @@ module.exports = function execute(scope, app) {
     app.get('/countryCodes',function(req, res) {
         var data = countryCodes.getArray(config.zuora.rest.validation.countries);
         data.forEach(function (el) {
-            if(['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
+            if (['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
                 el.group = 'Default';
             } else {
                 el.group = 'All countries';
@@ -91,9 +91,9 @@ module.exports = function execute(scope, app) {
                 // if file hasn't been deleted within 2 minutes, it will get deleted here
                 setTimeout(function() {
                     fs.exists(filePath, function(exists) {
-                        if(exists) {
+                        if (exists) {
                             fs.unlink(filePath, function(err) {
-                                if(err) {
+                                if (err) {
                                     req.log.error(err);
                                 }
                             });
@@ -112,7 +112,7 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/ssh/job/:jobId', function(req, res, next) {
-        if(jobs[req.params.jobId]) {
+        if (jobs[req.params.jobId]) {
             res.json(jobs[req.params.jobId]);
         } else {
             res.send(404);
@@ -123,7 +123,7 @@ module.exports = function execute(scope, app) {
     app.get('/ssh/download/:jobId', function(req, res, next) {
         var jobId = req.params.jobId;
 
-        if(!jobs[jobId]) {
+        if (!jobs[jobId]) {
             jobs[jobId] = {
                 error: 'Invalid SSH key requested',
                 success: false,
@@ -139,7 +139,7 @@ module.exports = function execute(scope, app) {
         var fileName = (jobs[jobId].name || jobs[jobId].fileName) +'_id_rsa';
 
         fs.readFile(filePath, {encoding: 'UTF8'}, function(err, data) {
-            if(err) {
+            if (err) {
                 jobs[jobId] = {
                     error: 'Internal error',
                     success: false,
@@ -154,7 +154,7 @@ module.exports = function execute(scope, app) {
             res.send(data);
 
             fs.unlink(filePath, function(err) {
-                if(err) {
+                if (err) {
                     req.log.error(err);
                 }
             });
@@ -172,13 +172,13 @@ module.exports = function execute(scope, app) {
         var supportedLevels = [
             'error',
             'warn',
-            'info',
             'debug',
+            'info',
             'trace'
         ];
 
         var logLevel = req.body.level;
-        if(!logLevel || supportedLevels.indexOf(logLevel.toLowerCase()) === -1) {
+        if (!logLevel || supportedLevels.indexOf(logLevel.toLowerCase()) === -1) {
             logLevel = 'debug';
         }
 

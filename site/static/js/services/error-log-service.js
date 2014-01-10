@@ -15,7 +15,7 @@ window.JP.main.factory(
          */
         loggingService.log = function log(level, msg) {
             // allow usage of log('foo');
-            if(!msg) {
+            if (!msg) {
                 msg = level;
 
                 // default logging level is debug, level is checked again on server-side
@@ -37,7 +37,7 @@ window.JP.main.factory(
             };
 
             // if our function has any other args passed in, pass them to the server too
-            if(arguments.length > 2) {
+            if (arguments.length > 2) {
                 for(var i = 2;i < arguments.length;i++) {
                     postData.args.push(arguments[i]);
                 }
@@ -53,7 +53,7 @@ window.JP.main.factory(
                 data: JSON.stringify(postData),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
-                success: function(data) {}
+                success: function (data) {}
             });
         };
 
@@ -63,7 +63,7 @@ window.JP.main.factory(
          * @param exception
          */
         loggingService.logUncaught = function logUncaught(exception) {
-            loggingService.log('debug', exception.message);
+            loggingService.log('debug', exception.message, exception.stack);
         };
 
         return loggingService;
