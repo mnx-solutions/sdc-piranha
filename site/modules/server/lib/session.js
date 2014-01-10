@@ -69,10 +69,12 @@ Session.get = function (req, res, next) {
     if (sessions[req.session.id]) {
         req._session = sessions[req.session.id];
     } else {
+        var lifespan = req.scope.config.session && req.scope.config.session.lifespan ?
+                req.scope.config.session.lifespan * 60 * 1000 : 2 * 60 * 60 * 1000;
         req._session = new Session({
             id: req.session.id,
             log: req.log,
-            lifespan: (req.scope.config.session && req.scope.config.session.lifespan) || 2 * 60 * 60 * 1000 // Default is 2 hours
+            lifespan: lifespan
         });
 
         // Proper user ip taking reverse proxy / load balancer into account
