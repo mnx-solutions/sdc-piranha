@@ -87,7 +87,9 @@
                         </div>
                         <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                             <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
-                            <div class="action-container" data-ng-show="getActionButtons(object).length && imageButtonShow">
+                        </span>
+                        <span data-ng-switch-when="actionButtons">
+                            <div data-ng-show="getActionButtons(object).length && imageButtonShow">
                                 <div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
                                     <div data-action-button data-action-fn="btn.action" data-class-fn="btn.getClass" data-show-fn="btn.show" data-disabled-fn="btn.disabled" data-label="btn.label" data-tooltip-text="btn.tooltip" data-object="object"></div>
                                 </div>

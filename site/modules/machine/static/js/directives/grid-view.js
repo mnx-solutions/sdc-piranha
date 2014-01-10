@@ -296,7 +296,7 @@
 
                     if ($rootScope.features.firewall === 'enabled') {
                         if (el.id === 'firewall_enabled') {
-                    el.active = true;
+                            el.active = true;
                         }
                         if (el.id === 'updated') {
                             el.active = false;
