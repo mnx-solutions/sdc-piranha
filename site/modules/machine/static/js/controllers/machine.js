@@ -108,6 +108,8 @@
 
             $scope.machines = Machine.machine();
 
+            $scope.firewallRules = [];
+
             $scope.$watch('machines', function (machines) {
                 $q.when(Machine.machine(machineid)).then(
                     function (machine) {
