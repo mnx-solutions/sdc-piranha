@@ -101,7 +101,7 @@ module.exports = function execute(scope) {
 
                 var leastSupportedVersion = imageCreateConfig.types[img.name];
                 if (!img['public']) {
-                    img.imageCreateNotSupported = 'Instances from custom images are not yet by the image API.';
+                    img.imageCreateNotSupported = 'Instances from custom images are not supported yet by the image API.';
                 } else if (!leastSupportedVersion) {
                     img.imageCreateNotSupported = img.name + ' is not yet supported by the image API.';
                 } else if (utils.cmpVersion(img.version, leastSupportedVersion) < 0) {
