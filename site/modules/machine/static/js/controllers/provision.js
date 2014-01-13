@@ -43,7 +43,7 @@
             $scope.packageTypes = [];
             $scope.packageType = null;
             $scope.loading = true;
-            $scope.basicCreateInstance = true;
+            $scope.basicCreateInstance = !$scope.preSelectedImageId;
 
             $scope.reConfigurable = false;
             $scope.showReConfigure = false;
