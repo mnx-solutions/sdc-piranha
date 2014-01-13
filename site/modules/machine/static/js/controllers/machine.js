@@ -291,34 +291,39 @@
                 if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
                     var message = $scope.imageCreateNotSupported ||
                         'This instance will be stopped as the first step in creating an image from it.';
-                    var btns = [];
                     if (!$scope.imageCreateNotSupported) {
-                        btns = [{
-                            result: 'cancel',
-                            label: 'Cancel',
-                            cssClass: 'pull-left'
-                        }, {
-                            result: 'create',
-                            label: 'Create Image',
-                            cssClass: 'btn-joyent-blue'
-                        }];
-                    } else {
-                        btns = [{
-                            result: 'ok',
-                            label: 'OK',
-                            cssClass: 'btn-joyent-blue'
-                        }];
-                    }
-
-                    return $dialog.messageBox('', message, btns)
-                        .open()
-                        .then(function (result) {
-                            if (result === 'create') {
+                        util.confirm(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Confirm: Create Image'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                message
+                            ), function () {
                                 createImage();
                             }
+                        );
+                    } else {
+                        util.message(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Message'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                message
+                            ), function() {
+                                this.close();
                         });
+                    }
+
+
                 }
-                createImage();
             };
 
             $scope.renameClass = function() {
