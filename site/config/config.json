@@ -155,5 +155,6 @@
   , "skinChange": "no"
   , "promoBillingConfirmation": "no"
   , "useBrandingOrange": "no"
+  , "manta": "no"
   }
 }

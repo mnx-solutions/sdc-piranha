@@ -40,7 +40,7 @@
                 <span class="title" data-ng-show="!sideBarMin || t_three" >Storage</span>
                 <span class="selected"></span>
             </a>
-            <ul class="sub-menu">
+            <ul class="sub-menu" data-ng-show="features.manta == 'enabled'">
                 <li class="sub0" data-ng-class="{active: location.path().search('storage') == 1 && location.path() != '/storage/history'}">
                     <a href="#!/storage/">
                         <span class="titles" data-ng-show="!sideBarMin || t_three">Manta</span>
