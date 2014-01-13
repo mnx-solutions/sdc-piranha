@@ -32,7 +32,10 @@
                                     return;
                                 }
 
-                                if(!images.index[image.id]) {
+                                if (!images.index[image.id]) {
+                                    if(!image.actionButtons){
+                                        image.actionButtons = true;
+                                    }
                                     images.index[image.id] = image;
                                     images.list.push(image);
                                 }

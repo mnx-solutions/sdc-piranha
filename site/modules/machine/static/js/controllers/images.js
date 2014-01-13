@@ -88,8 +88,8 @@
                     active: true
                 },
                 {
-                    id: 'state',
-                    name: 'State',
+                    id: 'actionButtons',
+                    name: 'Action',
                     sequence: 5,
                     active: true,
                     btn: {
@@ -101,7 +101,41 @@
                             $scope.provisionInstance(object);
                         }
                     }
+                },
+                {
+                    id: 'id',
+                    name: 'UUID',
+                    sequence: 6,
+                    active: false
+                },
+                {
+                    id: 'os',
+                    name: 'OS',
+                    sequence: 7,
+                    active: false
+                },
+                {
+                    id: 'description',
+                    name: 'Description',
+                    sequence: 8,
+                    active: true
+                },
+                {
+                    id: 'state',
+                    name: 'State',
+                    sequence: 9,
+                    active: false,
+                    btn: {
+                        label: 'Create instance',
+                        disabled: function (object) {
+                            return object.job;
+                        },
+                        action: function (object) {
+                            $scope.provisionInstance(object);
+                        }
+                    }
                 }
+
             ];
             $scope.gridDetailProps = [
                 {
