@@ -341,3 +341,6 @@
 .carousel-inner .item:hover {
     background:none !important;
 }
+.margin10{
+    margin: 10px;
+}
