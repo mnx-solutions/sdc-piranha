@@ -132,7 +132,7 @@
                 }
 
                 $scope.dataset = Dataset.dataset({datacenter: m.datacenter}).then(function () {
-                    return Dataset.dataset(m.image);
+                    return Dataset.dataset({datacenter: m.datacenter, id: m.image});
                 });
                 $scope.package = Package.package(m.package);
 
