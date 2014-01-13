@@ -1966,3 +1966,6 @@ ul.dropdown-menu{
 }.carousel-inner .item:hover {
     background:none !important;
 }
+.loading-medium{
+    max-width: 1020px;
+}
