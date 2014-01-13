@@ -16,15 +16,18 @@
         '$http',
         '$cookies',
         'slb.Service',
+        '$rootScope',
 
-        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, slbService) {
+        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, slbService, $rootScope) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
 
             // populate all datasources
             $scope.account     = Account.getAccount();
-            $scope.balancers = slbService.getBalancers();
+            if ($rootScope.features.slb === 'enabled') {
+                $scope.balancers = slbService.getBalancers();
+            }
             slbService.getController().then(function (isEnabled) {
                 $scope.slbEnabled = isEnabled;
             });
