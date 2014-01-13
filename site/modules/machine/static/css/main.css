@@ -1963,7 +1963,9 @@ ul.dropdown-menu{
     font-weight: 500;
 }.carousel-inner .item:hover {
     background:none !important;
-}
-.loading-medium{
+}.loading-medium{
     max-width: 1020px;
+}
+.margin10{
+    margin: 10px;
 }

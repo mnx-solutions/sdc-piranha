@@ -180,21 +180,21 @@
                                               data-toggle="tooltip" data-tooltip-text="{{selectedVersions[dataset.name].description || dataset.description}}">
                                                 <div class="advanced-instance-title">
                                                     <p>{{selectedVersions[dataset.name].name || dataset.name}}</p>
-                                                </div>
+                                </div>
                                                 <div class="advanced-instance-description">
                                                     <p>{{selectedVersions[dataset.name].description || dataset.description}}</p>
                                                 </div>
 
                                                 <div class="advanced-instance-btn-block">
                                                     <button type="button"
-                                                           id="dataset-{{dataset.id}}"
-                                                           name="dataset"
-                                                           value="{{selectedVersions[dataset.name].id || dataset.id}}"
-                                                           data-ng-checked="selectedDataset.id == dataset.id"
+                                                       id="dataset-{{dataset.id}}"
+                                                       name="dataset"
+                                                       value="{{selectedVersions[dataset.name].id || dataset.id}}"
+                                                       data-ng-checked="selectedDataset.id == dataset.id"
                                                             data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))"
                                                             class="btn advaced-instance-btn pull-right"><b>Select</b>
                                                     </button>
-                                                </div>
+                                            </div>
 
                                             <!--<div class="text-small image-container" data-ng-show="manyVersions[dataset.name]">-->
                                                         <!--<span class="span3 label-margin-fix">-->

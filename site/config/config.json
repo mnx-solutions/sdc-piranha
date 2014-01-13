@@ -3,6 +3,9 @@
     "port": 3000
   , "headerClientIpKey": "x-forwarded-for"
   }
+, "session": {
+    "lifespan": 120
+  }
 , "log": {
     "name": "piranha"
   , "level": "debug"
@@ -135,6 +138,9 @@
     }
   , "earliest_date": "2013-12-18"
 }
+, "skinChange": {
+    "url": "https://betaportal.joyent.com"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
@@ -146,5 +152,6 @@
   , "firewall": "no"
   , "freetier": "no"
   , "slb": "no"
+  , "skinChange": "no"
   }
 }
