@@ -1850,7 +1850,7 @@ ul.dropdown-menu{
 .small-icon.hadoop, .small-icon.java, .small-icon.manta,
 .small-icon.node,.small-icon.percona, .small-icon.riak,
 .small-icon.smart,.small-icon.smartmachine,.small-icon.stingray,
-.small-icon.ubuntu,.small-icon.windows {
+.small-icon.ubuntu,.small-icon.windows,.small-icon.mongodb,.small-icon.arch {
     background-repeat: no-repeat;
     background-position: 160px 15px;
     background-size: 24px;
@@ -1872,6 +1872,8 @@ ul.dropdown-menu{
 .small-icon.stingray {background-image: url(../img/icons/stingray.png);}
 .small-icon.ubuntu {background-image: url(../img/icons/ubuntu.png);}
 .small-icon.windows {background-image: url(../img/icons/windows.png);}
+.small-icon.mongodb {background-image: url(../img/icons/mongodb.png);}
+.small-icon.arch {background-image: url(../img/icons/arch.png);}
 
 .btn.light {
     color: #f60;
