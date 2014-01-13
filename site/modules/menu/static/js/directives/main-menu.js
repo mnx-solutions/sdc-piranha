@@ -1,10 +1,8 @@
 'use strict';
 
 (function (app) {
-// app.directive('mainMenu', ['$timeout', 'Menu', function ($timeout, Menu) {
-    app.directive('mainMenu', ['Menu', 'localization', function (Menu, localization) {
+    app.directive('mainMenu', ['Menu', function (Menu) {
         return {
-//			link: function (scope, element, attrs) {
             link: function (scope) {
                 scope.mainMenu = Menu.getMenu();
             },
@@ -13,6 +11,10 @@
                 localization.bind('menu', $scope);
 
                 $scope.account = Account.getAccount();
+
+                $scope.skinChange = function () {
+                    window.location.href = 'menu/skinChange';
+                };
 
                 $scope.$on('requestContextChanged', function () {
                     $scope.mainMenu.forEach(function (item) {

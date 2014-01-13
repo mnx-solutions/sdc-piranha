@@ -204,6 +204,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `server.headerClientIpKey` Client IP address placeholder for load balancer / reverse proxy
 - `session.lifespan` Session timeout (in minutes)
 - `showSLBObjects` Dev option to see SLB keys, images & machines
+- `skinChange.url` Url for alternative beta/legacy skin, should be in format 'https://betaportal.joyent.com'
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
