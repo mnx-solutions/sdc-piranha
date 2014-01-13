@@ -138,6 +138,9 @@
     }
   , "earliest_date": "2013-12-18"
 }
+, "skinChange": {
+    "url": "https://betaportal.joyent.com"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
@@ -149,5 +152,6 @@
   , "firewall": "no"
   , "freetier": "no"
   , "slb": "no"
+  , "skinChange": "no"
   }
 }

@@ -77,3 +77,12 @@
 .tiny-link-text:hover {
     text-decoration: underline;
 }
+
+.new-portal{
+    color: white !important;
+    text-shadow: none !important;
+    text-decoration: none !important;
+    background-color: #f60;
+    min-width: 100px;
+    padding: 5px 7px;
+}

@@ -8,6 +8,8 @@
                 <div class="row-fluid">
                     <div class="span12">
                         <div class="pull-right top-menu">
+                            <span data-ng-show="features.skinChange == 'enabled'"><a href="#"
+                               data-ng-click="skinChange()" class="new-portal">Try our new beta portal</a></span>
                             <span><a href="//help.joyent.com" target="_blank">Support</a></span>
                             <span><a href="http://wiki.joyent.com/wiki/display/jpc2/JoyentCloud+Home" target="_blank">Docs</a></span>
                             <span class="last"><a href="/landing/forgetToken">Sign Out</a> ({{account.login}})</span>
