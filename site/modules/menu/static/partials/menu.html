@@ -7,17 +7,16 @@
             <!--<img src="assets/img/menu-toggler.png" alt=""/>-->
         </a>
         <ul class="nav pull-right">
-            <li class="dropdown" id="header_notification_bar"
-                style="outline: 0; box-shadow: rgba(102, 188, 230, 0) 0 0 13px; outline-offset: 20px;">
+            <li class="dropdown" data-ng-show="features.skinChange == 'enabled'">
+                <button data-ng-click="skinChange()" class="btn-joyent-blue old-portal">Return to the old portal</button>
             </li>
-            <li class="dropdown" id="header_inbox_bar"
-                style="outline: 0; box-shadow: rgba(221, 81, 49, 0) 0 0 13px; outline-offset: 20px;">
+            <li class="dropdown">
                 <a href="https://help.joyent.com/home" target="_blank" class="dropdown-toggle">
                     <i class="header_icon support_icon"></i>
                     <span class="username">Support</span>
                 </a>
             </li>
-            <li class="dropdown" id="header_task_bar">
+            <li class="dropdown">
                 <a href="http://www.joyent.com/developers" target="_blank" class="dropdown-toggle">
                     <i class="header_icon info_icon"></i>
                     <span class="username">DevCenter</span>
