@@ -232,7 +232,6 @@
                             return true;
                         }
 
-                        //console.log($scope.paymentForm['creditCardNumber']);
                         if ($scope.paymentForm[field] && $scope.paymentForm[field].$dirty) {
                             Object.keys($scope.paymentForm[field].$error).some(function (key) {
                                 if ($scope.paymentForm[field].$error[key] && key === errorType) {
