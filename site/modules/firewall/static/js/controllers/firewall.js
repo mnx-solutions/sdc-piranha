@@ -342,7 +342,7 @@
 
             $scope.selected = {
                 action: $scope.actions[0].text,
-                status: $scope.states[0].text
+                status: $scope.states[1].text
             };
             $('#actionSelect').select2({
                 data: $scope.actions,
@@ -372,7 +372,7 @@
                         }
                     });
                 });
-            }).select2('val', $scope.states[0].id);
+            }).select2('val', $scope.states[1].id);
 
             $scope.$watch('datacenters', function (newVal) {
                 if(newVal && ng.isArray(newVal) && newVal.length > 0) {
@@ -479,7 +479,7 @@
                     name:'tcp',
                     targets:[]
                 };
-                $scope.data.enabled = true;
+                $scope.data.enabled = false;
             };
 
             $scope.getData = function() {
