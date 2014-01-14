@@ -27,7 +27,7 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.use(express.cookieParser());
 
-var lifespan = config.session && config.session.lifespan ? config.session.lifespan * 60 : 2 * 60 * 60;
+var lifespan = config.session && config.session.lifespan ? config.session.lifespan : 120; // minutes
 app.use(express.session({
     store: new RedisStore({
         host: config.redis.host,
@@ -37,7 +37,7 @@ app.use(express.session({
         retry_max_delay: 1000,
         connect_timeout: 1000,
         debug_mode: true,
-        ttl: lifespan
+        ttl: lifespan * 60
     }),
     secret: 'secret'
 }));
