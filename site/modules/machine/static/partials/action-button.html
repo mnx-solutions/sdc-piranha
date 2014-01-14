@@ -1,6 +1,6 @@
 <button role="button"
         class="btn button tooltip-hover"
-        data-ng-disabled="isDisabled(object)"
+        data-ng-disabled="isDisabled(object) || object.state == 'provisioning' || object.state == 'creating'"
         data-ng-click="doAction(object)"
         data-ng-class="getClass(object) || 'btn-mini'"
         data-ng-show="show(object)"
