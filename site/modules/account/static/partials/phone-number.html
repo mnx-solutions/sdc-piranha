@@ -24,7 +24,7 @@
           data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
     <div class="error"
          data-translate
-         data-ng-show="isError({field:'phone', type:'required'})">
+         data-ng-show="isError({field:'phone', type:'required'}) || isError({field:'phone', type:'submitRequired'})">
         Missing phone number
     </div>
     <div class="error"
