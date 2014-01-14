@@ -13,8 +13,14 @@
                                size="40"
                                data-ng-pattern="/^(\d+)$/"
                                data-ng-model="form.creditCardNumber"
+                               data-ng-maxlength="19"
                                data-ng-class="{error: isError('creditCard.creditCardNumber')}"
                                data-ng-required="true">
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('creditCard.creditCardNumber', 'maxlength')">
+                             Credit card number too long
+                        </div>
                         <div class="error"
                              data-translate
                              data-ng-show="isError('creditCard.creditCardNumber') || isError('creditCard.cardNumber') || isError('creditCard.cardType')">
@@ -118,6 +124,7 @@
                                size="50"
                                data-ng-class="{error: isError('billToContact.firstName')}"
                                data-ng-model="form.firstName"
+                               data-ng-maxlength="25"
                                data-ng-required="true">
                         <span data-html="true"
                               data-translate-attributes="data-original-title"
@@ -126,6 +133,11 @@
                               data-placement="right"
                               class="tooltip-hover icon-info-sign"
                               data-original-title="First name of the card holder"></span>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('billToContact.firstName', 'maxlength')">
+                            First name too long
+                        </div>
                         <div class="error"
                              data-translate
                              data-ng-show="isError('billToContact.firstName')">
@@ -148,6 +160,7 @@
                                    size="50"
                                    data-ng-class="{error: isError('billToContact.lastName')}"
                                    data-ng-model="form.lastName"
+                                   data-ng-maxlength="25"
                                    data-ng-required="true" />
                             <span data-html="true"
                                   data-translate-attributes="data-original-title"
@@ -156,6 +169,11 @@
                                   data-placement="right"
                                   class="tooltip-hover icon-info-sign"
                                   data-original-title="Last name of the card holder"></span>
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('billToContact.lastName', 'maxlength')">
+                                Last name too long
+                            </div>
                             <div class="error"
                                  data-translate
                                  data-ng-show="isError('billToContact.lastName')">
@@ -276,7 +294,13 @@
                                    data-ng-class="{error: isError('city')}"
                                    data-ng-model="form.cardHolderInfo.city"
                                    data-ng-required="true"
+                                   data-ng-maxlength="40"
                                    data-ng-disabled="useExisting">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('city', 'maxlength')">
+                                City too long
+                            </div>
                             <div class="error"
                                  data-translate
                                  data-ng-show="isError('city') || (formSubmitted && paymentForm.city.$invalid && !paymentForm.city.$error.required)">
@@ -346,7 +370,13 @@
                                    data-ng-class="{error: isError('zipCode')}"
                                    data-ng-model="form.cardHolderInfo.zipCode"
                                    data-ng-required="true"
+                                   data-ng-maxlength="20"
                                    data-ng-disabled="useExisting">
+                            <div class="error"
+                                 data-translate
+                                 data-ng-show="isError('zipCode', 'maxlength')">
+                                Zip code length
+                            </div>
                             <div class="error"
                                  data-translate
                                  data-ng-show="isError('zipCode') || (formSubmitted && paymentForm.zipCode.$invalid && !paymentForm.zipCode.$error.required)">
