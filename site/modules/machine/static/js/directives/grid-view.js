@@ -216,20 +216,40 @@
         };
 
         if($scope.checkedCheckBox == undefined) $scope.checkedCheckBox = false;
+
         $scope.selectAllCheckbox = function(){
+            if($scope.checkedCheckBoxDisable){return;}
             $scope.checkedCheckBox = ($scope.checkedCheckBox) ? false : true;
             $scope.objects.forEach(function (el) {
                 el.checked = $scope.checkedCheckBox;
             });
         };
 
-        $scope.$watch('objects', function(){$scope.selectCheckbox();}, true);
+        $scope.disableSelectAllCheckbox = function(){
+            var checkedFlag = 0;
+            $scope.objects.forEach(function (el) {
+                if ((el.fireWallActionRunning) || (el.job && !el.job.finished)){
+                    checkedFlag += 1;
+                }
+
+                if ( checkedFlag > 0 ){
+                    $scope.checkedCheckBoxDisable = true;
+                } else {
+                    $scope.checkedCheckBoxDisable = false;
+                }
+            });
+        };
+
+        $scope.$watch('objects', function(){
+            $scope.selectCheckbox();
+            $scope.disableSelectAllCheckbox();
+        }, true);
 
         $scope.selectCheckbox = function (id) {
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
                 if (el.id == id) {
-                    if (!el.job || (el.job && el.job.finished)){
+                    if ((!el.job && !el.fireWallActionRunning) || (el.job && el.job.finished && !el.fireWallActionRunning)){
                         el.checked = (el.checked) ? false : true;
                     }
                 }
