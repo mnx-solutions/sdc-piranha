@@ -177,7 +177,7 @@ input.ng-pristine {
     padding-left: 10px;
 }
 .title-rule{
-    width: 630px;
+    width: 100%;
 }
 
 .firewall-table{
@@ -191,9 +191,9 @@ input.ng-pristine {
     vertical-align: top;
     padding-left: 10px;
     padding-right: 10px;
-    padding-bottom: 20px;
+    /*padding-bottom: 20px;*/
 }
-.firewall-table td.one-third legend{
+.firewall-table td.one-third legend, .legend-line{
     border-bottom: 1px solid #cbc1a8;
 }
 .firewall-table td.small-space{
@@ -348,10 +348,10 @@ input.ng-invalid, input.ng-pristine {
     min-height: 165px;
     max-height: 165px;
 }
-.fixed-height145{
-    min-height: 145px;
-    max-height: 145px;
-}
+/*.fixed-height145{*/
+    /*min-height: 145px;*/
+    /*max-height: 145px;*/
+/*}*/
 
 .add-rule-btn:hover, .add-rule-btn:focus{
     color: #fff;
@@ -361,4 +361,24 @@ input.ng-invalid, input.ng-pristine {
     -moz-transition: background-position 0.1s linear;
     -o-transition: background-position 0.1s linear;
     transition: background-position 0.1s linear;
+}
+.padding-left-0{
+    padding-left: 0 !important;
+}
+.margin-top-35{
+    margin-top: 35px;
+}
+.min-height-table{
+    min-height: 300px;
+}
+.margin-botton-20{
+    margin-bottom: 20px;
+}
+.add-rule-title{
+    font-size: 21px;
+    line-height: 55px;
+    color: #333;
+}
+.span12 {
+    width: 1000px;
 }

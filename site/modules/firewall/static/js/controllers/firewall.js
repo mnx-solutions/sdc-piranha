@@ -346,7 +346,7 @@
             };
             $('#actionSelect').select2({
                 data: $scope.actions,
-                width: 220
+                width: 150
             }).change(function (e) {
                 $scope.$apply(function(){
                     $scope.data.parsed.action = e.val;
@@ -361,7 +361,7 @@
 
             $('#stateSelect').select2({
                 data: $scope.states,
-                width: 220
+                width: 150
             }).change(function (e) {
                 $scope.$apply(function(){
                     $scope.data.enabled = e.val === 'true' ? true : false;
@@ -380,7 +380,7 @@
                     $('#dcSelect').select2('destroy');
                     $('#dcSelect').select2({
                         data: newVal.map(function (dc) { return {id: dc.name, text: dc.name}; }),
-                        width: 220
+                        width: 150
                     }).change(function (e) {
                         $scope.$apply(function () {
                             $scope.datacenter = e.val;
@@ -744,7 +744,8 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 5
+			        sequence: 5,
+                    active: true
 		        },
 		        {
 			        id: 'parsed',
@@ -759,7 +760,8 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 6
+			        sequence: 6,
+                    active: true
 		        },
 		        {
 			        id: 'parsed',
@@ -768,7 +770,8 @@
 			        getClass: function () {
 				        return 'span1 padding-5';
 			        },
-			        sequence: 3
+			        sequence: 3,
+                    active: true
 		        },
 		        {
 			        id: 'protocol',
@@ -779,7 +782,8 @@
 			        _getter: function (object) {
 				        return object.parsed.protocol.name + ' ' + object.parsed.protocol.targets.join('; ');
 			        },
-			        sequence: 4
+			        sequence: 4,
+                    active: true
 		        },
                 {
                     id: 'datacenter',
@@ -787,7 +791,8 @@
                     getClass: function () {
                         return 'span2 padding-5';
                     },
-                    sequence: 2
+                    sequence: 2,
+                    active: true
                 },
 		        {
 			        id: 'delete',
@@ -799,14 +804,15 @@
 			        btn: {
 				        label: 'Delete',
 				        getClass: function (object) {
-					        return 'btn-mini btn-danger';
+					        return 'btn-danger';
 				        },
 				        disabled: function () {
 					        return $scope.loading;
 				        },
 				        action: $scope.deleteRule.bind($scope),
 				        tooltip: 'Delete the rule'
-			        }
+			        },
+                    active: true
 		        },
 		        {
 			        id: 'edit',
@@ -818,7 +824,7 @@
 			        btn: {
 				        label: 'Edit',
 				        getClass: function () {
-					        return 'btn-mini btn-default';
+					        return 'btn-default';
 				        },
 				        disabled: function () {
 					        return $scope.loading;
@@ -828,7 +834,8 @@
                             $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
-			        }
+			        },
+                    active: true
 		        },
 		        {
                     id: 'enabled',
@@ -842,7 +849,7 @@
                             return object.enabled ? 'Enabled' : 'Disabled';
                         },
                         getClass: function (object) {
-                            return 'btn-mini btn-minier ' + (object.enabled ? 'btn-success' : 'btn-danger');
+                            return (object.enabled ? 'btn-success' : 'btn-danger');
 				        },
                         disabled: function () {
                             return $scope.loading;
@@ -850,7 +857,8 @@
 				        action: $scope.changeStatus.bind($scope),
 				        tooltip: 'Change rule status'
                     },
-                    sequence: 1
+                    sequence: 1,
+                    active: true
 		        }
 	        ];
 
