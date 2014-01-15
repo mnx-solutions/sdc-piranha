@@ -149,7 +149,7 @@
   , "invoices": "enabled"
   , "imageUse": "enabled"
   , "imageCreate": "enabled"
-  , "firewall": "no"
+  , "firewall": "yes"
   , "freetier": "no"
   , "slb": "no"
   , "skinChange": "no"
