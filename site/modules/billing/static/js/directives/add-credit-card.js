@@ -61,7 +61,7 @@
                         }
                     });
 
-                    if (window.location.href.indexOf('/signup/') !== -1) {
+                    if ($scope.features.promoBillingConfirmation === 'enabled' && window.location.href.indexOf('/signup/') !== -1) {
                         $http.get('billing/promoamount').then(function (amount) {
                             if (amount && amount.data && amount.data > 0) {
                                 var fAmount = parseFloat(amount.data);
