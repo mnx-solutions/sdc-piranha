@@ -49,7 +49,7 @@
                     <span class="text-medium key span4" data-ng-class="{last: $last }" data-translate-value>{{prop.name}}</span>
                     <span class="text-medium value span6" data-ng-class="{last: $last }" data-ng-switch="prop.id">
                         <span data-ng-switch-when="memory">{{object.memory | sizeFormat}}&nbsp;</span>
-                        <span data-ng-switch-when="disk">{{object.memory | sizeFormat}}&nbsp;</span>
+                        <span data-ng-switch-when="disk">{{object.disk | sizeFormat}}&nbsp;</span>
                         <span data-ng-switch-when="ips">
                             <span data-ng-repeat="ip in object.ips">
                                 <div>{{ip}}</div>
