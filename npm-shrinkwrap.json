@@ -1441,6 +1441,35 @@
           }
         }
       }
+    },
+    "multiparty": {
+      "version": "3.1.2",
+      "from": "multiparty@",
+      "resolved": "https://registry.npmjs.org/multiparty/-/multiparty-3.1.2.tgz",
+      "dependencies": {
+        "readable-stream": {
+          "version": "1.1.10",
+          "from": "readable-stream@~1.1.9",
+          "dependencies": {
+            "core-util-is": {
+              "version": "1.0.1",
+              "from": "core-util-is@~1.0.0"
+            },
+            "debuglog": {
+              "version": "0.0.2",
+              "from": "debuglog@0.0.2"
+            }
+          }
+        },
+        "stream-counter": {
+          "version": "0.2.0",
+          "from": "stream-counter@~0.2.0"
+        }
+      }
+    },
+    "memorystream": {
+      "version": "0.2.0",
+      "from": "memorystream@"
     }
   }
 }
