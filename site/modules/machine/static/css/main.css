@@ -503,11 +503,19 @@ div.selector, div.selector span, div.checker span, div.radio span, div.uploader,
 div.checker {
     position: relative; }
 div.checker, div.checker span, div.checker input {
-    width: 19px;
-    height: 19px;
-    display: inline-block;
-    margin-right: 5px;
-    margin-top: 3px;
+     width: 19px;
+     height: 19px;
+     display: inline-block;
+     margin-right: 5px;
+     margin-top: 3px;
+ }
+div.checker span[disabled]{
+    cursor: default!important;
+    opacity: 0.35;
+    filter: alpha(opacity=35);
+}
+div.checker span[disabled] input, div.checker[disabled]{
+    cursor: default!important;
 }
 div.checker span {
     display: -moz-inline-box;
@@ -925,7 +933,7 @@ ul.dropdown-menu{
     background-position: -264px -72px;
 }
 .loading-small{
-    width: 14px !important;
+    /*width: 16px !important;*/
     height: 14px !important;
 }
 /*.tags-width{*/
@@ -1968,4 +1976,8 @@ ul.dropdown-menu{
 }
 .margin10{
     margin: 10px;
+}
+.table .checkbox {
+    padding-left: 0;
+    cursor: default!important
 }

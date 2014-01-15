@@ -15,8 +15,9 @@
         'localization',
         'util',
         '$location',
+        'firewall',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $location) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $location, firewall) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -291,14 +292,16 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Enable firewall for selected instance?'
+                                    'Enable firewall for selected instances?'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
                                             if (!el.firewall_enabled) {
-                                                el.firewall_enabled = true;
+                                                $scope.toggleFirewallEnabled(el);
+//                                                el.firewall_enabled = true;
                                             }
                                             el.checked = false;
+                                            console.log('Enable FW ready');
                                         }
                                     });
                                 });
@@ -321,14 +324,16 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Disable firewall for selected instance?'
+                                    'Disable firewall for selected instances?'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
                                             if (el.firewall_enabled) {
-                                                el.firewall_enabled = false;
+                                                $scope.toggleFirewallEnabled(el);
+//                                                el.firewall_enabled = false;
                                             }
                                             el.checked = false;
+                                            console.log('Disable FW ready');
                                         }
                                     });
                                 });
@@ -433,6 +438,18 @@
                         $location.path("compute/create");
                     }
                     el.checked = false;
+                });
+            };
+
+            $scope.toggleFirewallEnabled = function (m) {
+                m.fireWallActionRunning = true;
+                var fn = m.firewall_enabled ? 'disable' : 'enable';
+                var expected = !m.firewall_enabled;
+                firewall[fn](m.id, function (err) {
+                    if(!err) {
+                        m.firewall_enabled = expected;
+                    }
+                    m.fireWallActionRunning = false;
                 });
             };
         }
