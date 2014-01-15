@@ -291,6 +291,7 @@
 
             $scope.selectVersion = function (name, version) {
                 $scope.selectedVersions[name] = version;
+                $scope.selectDataset($scope.selectedVersions[name].id);
             };
 
             $scope.selectPackageType = function (packageType) {
