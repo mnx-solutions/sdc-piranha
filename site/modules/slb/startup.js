@@ -232,9 +232,9 @@ var slb = function execute(scope) {
             sign: manta.privateKeySigner({
                 key: data['metadata.ssc_private_key'],
                 keyId: fingerprint,
-                user: data['metadata.account_name']
+                user: data['metadata.manta_account']
             }),
-            user: data['metadata.account_name'],
+            user: data['metadata.manta_account'],
             // TODO: manta configuration
             url: 'https://us-east.manta.joyent.com',
             rejectUnauthorized: false
@@ -246,7 +246,7 @@ var slb = function execute(scope) {
                 callback(new Error('Timeout while removing slb config'));
                 return;
             }
-            client.unlink('/' + data['metadata.account_name'] + '/stor/slb.private/slb.conf', function (err) {
+            client.unlink('/' + data['metadata.manta_account'] + '/stor/slb.private/slb.conf', function (err) {
                 if (err && err.statusCode !== 404) {
                     setTimeout(waitForManta.bind(this, startTime), 1000);
                 } else {
@@ -290,15 +290,14 @@ var slb = function execute(scope) {
                     'metadata.ssc_private_key': sscKeyPair.privateKey,
                     'metadata.ssc_public_key': sscKeyPair.publicSsh,
                     'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
-                    'metadata.account_name': config.slb.account || call.req.session.userName,
+                    'metadata.account_name': call.req.session.userName,
+                    'metadata.manta_account': config.slb.account || call.req.session.userName,
                     'metadata.datacenter_name': datacenter,
                     'metadata.slb_code_url': config.slb.slb_code_url,
                     // TODO: remove this line after renaming code in image
                     'metadata.elb_code_url': config.slb.slb_code_url,
                     'metadata.sdc_url': config.slb.sdc_url || 'https://us-west-1.api.joyentcloud.com',
-                    'tag.slb': 'ssc',
-                    // TODO: remove this line after renaming code in image
-                    'tag.lbaas': 'ssc'
+                    'tag.slb': 'ssc'
                 };
 
                 if (config.slb.ssc_networks) {
