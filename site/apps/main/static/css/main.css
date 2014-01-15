@@ -835,6 +835,14 @@ div .disabled{
 	max-width:100%;
 	min-width:50px;
 }
+.loading-medium-tr {
+	background-image:url('../img/icon-loading-medium-tr.gif');
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	min-height:60px;
+	max-width:100%;
+	min-width:50px;
+}
 .loading-large {
 	background-image:url('../img/icon-loading-large.gif');
 	background-position:50% 50%;
