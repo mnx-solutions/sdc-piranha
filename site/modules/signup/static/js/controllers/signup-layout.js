@@ -3,10 +3,10 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track', 'Account',
-            function ($scope, requestContext, $location, $cookies, Process, $http, $$track, Account) {
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track',
+            function ($scope, requestContext, $location, $cookies, Process, $http, $$track) {
                 requestContext.setUpRenderContext('signup', $scope);
-                Account.getAccount(true);
+                
                 $scope.stepNames = {
                     phone: 'Phone confirmation',
                     billing: 'Payment Method',
