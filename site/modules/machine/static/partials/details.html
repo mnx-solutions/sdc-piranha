@@ -314,6 +314,7 @@
                         <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
                     </div>
                     <div class="row text-right">
+                        <a class="editLink" href="#!/firewall">Edit</a>
                         <button class="pull-right btn margin-top-10"
                                 data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
                                 data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"

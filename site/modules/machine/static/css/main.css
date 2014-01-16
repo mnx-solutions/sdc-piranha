@@ -344,3 +344,8 @@
 .margin10{
     margin: 10px;
 }
+.editLink {
+    display: inline-block;
+    margin-top: 15px;
+    margin-right: 5px;
+}
