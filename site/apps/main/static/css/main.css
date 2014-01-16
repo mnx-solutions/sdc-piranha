@@ -991,3 +991,13 @@ iframe {
 .dashboard-splash-iframe {
     overflow: hidden;
 }
+.beta-sticker{
+    background-image: url("../img/sticker.png");
+    width: 66px;
+    height: 33px;
+    background-repeat: no-repeat;
+    margin-top: 7px;
+}
+.beta-sticker.beta{
+    margin-top: 47px;
+}
