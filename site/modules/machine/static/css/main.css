@@ -1981,3 +1981,6 @@ ul.dropdown-menu{
     padding-left: 0;
     cursor: default!important
 }
+.overflow-accordion{
+    overflow: scroll;
+}
