@@ -461,7 +461,9 @@
                                     externalNetworkId = network.id;
                                 }
                             });
-                            $scope.selectNetworkCheckbox(externalNetworkId);
+                            if (externalNetworkId) {
+                                $scope.selectNetworkCheckbox(externalNetworkId);
+                            }
                         }
                     });
 
