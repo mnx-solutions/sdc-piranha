@@ -23,6 +23,9 @@ import pageobjects.CreateInstanceCarousel;
 import pageobjects.InstanceList;
 import util.TestWrapper;
 
+import java.lang.String;
+import java.lang.System;
+
 public class SmokeTests extends TestWrapper {
 	private InstanceList instanceList;
 	private CreateInstanceCarousel createInstanceCarousel;
@@ -102,7 +105,6 @@ public class SmokeTests extends TestWrapper {
 	public void accountSummaryIsVisible() {
 		Common.clickNavigationLink("My Account");
 		Common.checkHeadingText("Account Summary");
-		Common.checkBreadcrumb("Account", "Create Instance");
 		Common.checkSubHeadingText("Profile summary");
 		Common.checkSubHeadingText("Billing info");
 		Common.checkSubHeadingText("SSH Public Keys");
@@ -127,27 +129,22 @@ public class SmokeTests extends TestWrapper {
 	@Test
 	public void createInstanceCarouselIsVisible() {
 		String instanceName = "selenide-created-instance";
-		String os = "base";
-		String version = "13.2.0";
-		String dataCenter = "us-west-1";
-		String packageType = "Standard";
-		String packageSize = "Standard 0.25";
-		$(byText("Create Instance")).click();
+        String[] inst = Common.instanceProperties();
+        $(byText("Create Instance")).click();
 		Common.checkHeadingText("Create Instance");
 		createInstanceCarousel = page(CreateInstanceCarousel.class);
 		createInstanceCarousel.waitUntilPageIsActive(0);
-		createInstanceCarousel.selectDataCenter(dataCenter);
+		createInstanceCarousel.selectDataCenter(System.getProperty("datacenter"));
 		createInstanceCarousel.selectOsFilter("smartos");
-		createInstanceCarousel.setOsVersion(os, version);
-		createInstanceCarousel.selectOsImage(os);
+		createInstanceCarousel.setOsVersion(inst[0], inst[1]);
+		createInstanceCarousel.selectOsImage(inst[0]);
 		createInstanceCarousel.waitUntilPageIsActive(1);
-		createInstanceCarousel.selectInstanceType(packageType);
-		createInstanceCarousel.selectPackage(packageSize);
+		createInstanceCarousel.selectInstanceType(inst[2]);
+		createInstanceCarousel.selectPackage(inst[3]);
 		createInstanceCarousel
-				.checkSelectedImageDescription("A 32-bit SmartOS");
-		createInstanceCarousel.checkPackageInfo(dataCenter, "256 MB", "16 GB",
-				"0.125 and bursting");
-		createInstanceCarousel.checkPaymentInfo("0.008", "5.84");
+				.checkSelectedImageDescription(inst[4]);
+		createInstanceCarousel.checkPackageInfo(System.getProperty("datacenter"), inst[5], inst[6], inst[7]);
+		createInstanceCarousel.checkPaymentInfo(inst[8], inst[9]);
 		createInstanceCarousel.setInstanceNameValue(instanceName);
 		$(byText("Create instance")).click();
 		createInstanceCarousel.cancelInstanceCreation();
@@ -174,5 +171,4 @@ public class SmokeTests extends TestWrapper {
 		$("#login-submit").click();
 		Common.checkBreadcrumb("Dashboard", "Create Instance");
 	}
-
 }
