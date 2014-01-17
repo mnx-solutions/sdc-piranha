@@ -186,23 +186,18 @@
                 thirdColumn = {
                     id: 'firewall',
                     name: 'Firewall',
-                    type: 'button',
                     sequence: 3,
-                    btn: {
-                        getLabel: function (object) {
-                            return !object.firewall_enabled ? 'Enable' : 'Disable';
-                        },
-                        getClass: function (object) {
-                            return 'btn-mini btn-minier btn-default';
-                        },
-                        disabled: function (object) {
-                            return object.fireWallActionRunning;
-                        },
-                        show: function(object) {
-                            return (object.type !== 'virtualmachine' || !object.hasOwnProperty('firewall_enabled'));
-                        },
-                        action: $scope.toggleFirewallEnabled.bind($scope),
-                        tooltip: 'Change machine firewall status'
+                    _getter: function (object) {
+                        var state = '';
+
+                        if (object.firewall_enabled) {
+                            state = 'FWAPI';
+                        } else if ("virtualmachine" === object.type || !object.hasOwnProperty("firewall_enabled")) {
+                            state = 'N/A';
+                        } else {
+                            state = 'Off';
+                        }
+                        return state;
                     }
                 };
             }
