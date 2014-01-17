@@ -348,7 +348,9 @@
                 var conf = ca.description.configuration;
 
                 for(var f in fieldsArr) {
-                    labeledFields[fieldsArr[f]] = conf.fields[fieldsArr[f]].label;
+                    if (conf.fields[fieldsArr[f]]) {
+                        labeledFields[fieldsArr[f]] = conf.fields[fieldsArr[f]].label;
+                    }
                 }
 
                 metric.fields = labeledFields;

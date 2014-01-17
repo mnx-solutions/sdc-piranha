@@ -12,7 +12,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
         $timeout(tick, 1000);
     }
 
-    $scope.zoneId = $routeParams.machine || null;
+    $scope.zoneId = $routeParams.machine || $routeParams.machineid || null;
     $scope.zoneName = null;
     $scope.zones = Machine.machine();
     $scope.location = $location;
@@ -103,6 +103,9 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                         title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
                     });
                 }
+
+                $scope.cpuGraphs = $scope.graphs.slice(1, 2);
+                $scope.memGraphs = $scope.graphs.slice(3, 4);
 
             });
         } else {
