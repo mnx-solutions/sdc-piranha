@@ -27,10 +27,11 @@
             $scope.account     = Account.getAccount();
             if ($rootScope.features.slb === 'enabled') {
                 $scope.balancers = slbService.getBalancers();
+
+                slbService.getController().then(function (isEnabled) {
+                    $scope.slbEnabled = isEnabled;
+                });
             }
-            slbService.getController().then(function (isEnabled) {
-                $scope.slbEnabled = isEnabled;
-            });
 
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {
