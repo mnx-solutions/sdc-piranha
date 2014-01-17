@@ -83,7 +83,7 @@
                     name: 'Published at',
                     sequence: 4,
                     _getter: function (image) {
-                        return $filter('date')(new Date(image.published_at), 'yyyy-MM-ddTHH:mm:ss') + 'Z';
+                        return $filter('date')(new Date(image.published_at), 'yyyy-MM-dd HH:mm');
                     },
                     active: true
                 },
