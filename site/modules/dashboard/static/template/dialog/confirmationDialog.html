@@ -3,7 +3,7 @@
         <h5><i class="icon-question-sign"></i>  <b>{{ title }}</b></h5>
     </div>
     <div class="modal-body">
-        <p>{{ message }} </p>
+        <p data-ng-bind-html-unsafe="message"></p>
     </div>
     <div class="modal-footer">
         <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" ng-repeat="btn in buttons" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">{{ btn.label }}</button>
