@@ -559,7 +559,7 @@
 
             $scope.isAllPorts = function () {
                 var ports = $scope.data.parsed.protocol.targets;
-                if (ports && (ports.length && ports[0] == 'all')) {
+                if (ports && ports.length && ports[0] == 'all') {
                     return true;
                 }
                 return false;
@@ -699,10 +699,10 @@
 
             $scope.openPopovers = [];
             $('body').on('click', function(e) {
-                if(!$(e.target).hasClass('popover') && !$(e.target).parent().hasClass('popover')) {
+                if(!ng.element(e.target).hasClass('popover') && !ng.element(e.target).parent().hasClass('popover')) {
                     // close all the popovers
                     $scope.openPopovers.forEach(function(el) {
-                        $(el).popover('destroy');
+                        ng.element(el).popover('destroy');
                     });
                 }
             });
@@ -714,7 +714,7 @@
 
                 $http.post('./firewall/stringify', rule).then(function(response) {
                     var stringifiedRule = response.data.rule;
-                    ng.element(el).popover('destroy')
+                    ng.element(el).popover('destroy');
                     ng.element(el).popover(
                         {
                             container: 'body',
@@ -723,7 +723,7 @@
                             title: 'FWRULE string for CLI'
                         }
                     );
-                    ng.element(el).popover('show')
+                    ng.element(el).popover('show');
                     $scope.openPopovers.push(el);
                 });
             };

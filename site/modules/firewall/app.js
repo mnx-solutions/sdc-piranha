@@ -10,7 +10,9 @@ module.exports = function(scope, app) {
         var rule = '';
         try {
             rule = fwrule.create(req.body).text();
-        } catch(e) {}
+        } catch(e) {
+            req.log.debug(e, 'Error while stringifing fw rule');
+        }
         res.json({rule: rule});
     });
 };
