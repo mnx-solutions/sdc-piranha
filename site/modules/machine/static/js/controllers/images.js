@@ -67,14 +67,14 @@
                     active: true
                 },
                 {
-                    id: 'datacenter',
-                    name: 'Data Center',
+                    id: 'description',
+                    name: 'Description',
                     sequence: 2,
                     active: true
                 },
                 {
-                    id: 'version',
-                    name: 'Version',
+                    id: 'os',
+                    name: 'OS',
                     sequence: 3,
                     active: true
                 },
@@ -103,39 +103,23 @@
                     }
                 },
                 {
-                    id: 'id',
-                    name: 'UUID',
+                    id: 'datacenter',
+                    name: 'Data Center',
                     sequence: 6,
                     active: false
                 },
                 {
-                    id: 'os',
-                    name: 'OS',
+                    id: 'version',
+                    name: 'Version',
                     sequence: 7,
                     active: false
                 },
                 {
-                    id: 'description',
-                    name: 'Description',
+                    id: 'id',
+                    name: 'UUID',
                     sequence: 8,
-                    active: true
+                    active: false
                 },
-                {
-                    id: 'state',
-                    name: 'State',
-                    sequence: 9,
-                    active: false,
-                    btn: {
-                        label: 'Create instance',
-                        disabled: function (object) {
-                            return object.job;
-                        },
-                        action: function (object) {
-                            $scope.provisionInstance(object);
-                        }
-                    }
-                }
-
             ];
             $scope.gridDetailProps = [
                 {
