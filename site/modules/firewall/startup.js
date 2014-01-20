@@ -231,12 +231,7 @@ var firewall = function execute (scope) {
             call.log.debug('List rules for datacenter %s', name);
 
             cloud.listFwRules(function (err, rules) {
-                if (err) {
-                    call.log.debug('Unable to list firewall rules for datacenter %s', name);
-                    call.log.error(err);
-                    return;
-                }
-
+             
                 var response = {
                     name: name,
                     rules: []
