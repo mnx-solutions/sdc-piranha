@@ -298,6 +298,7 @@
                 <fieldset data-ng-show="machine" data-ng-switch-when="enabled">
                     <legend>
                         <span data-translate>Firewall rules</span>
+                        <div class="beta-sticker pull-right beta"></div>
                     </legend>
                     <div class="text-small muted">
                         Default firewall rules that apply to this instance are:
@@ -317,7 +318,7 @@
                                  data-objects-type="firewall"></div>
                         </div>
                     </div>
-                    <div data-ng-show="firewallRules.length < 1">
+                    <div data-ng-show="firewallRules.length < 1"><br/><br/>
                         <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
                     </div>
                     <div class="row text-right">
