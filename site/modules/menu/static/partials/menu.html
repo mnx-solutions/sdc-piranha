@@ -28,9 +28,11 @@
                     <span class="username">{{account.firstName}}</span>
                     <i class="icon-arrow-down-user"></i>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu dd-account">
                     <li><a href="#!/account">
                         <i class="icon-user"></i> Account</a></li>
+                    <li><a class="cursor-point" data-ng-click="changePassword()"><i class="icon-lock"></i> Change Password</a></li>
+                    <li><a class="cursor-point" data-ng-click="changeTfa()"><i class="two-keys"></i> Two Factor Authentication</a></li>
                     <li><a href="/landing/forgetToken"><i class="icon-signout"></i> Log Out</a></li>
                 </ul>
             </li>

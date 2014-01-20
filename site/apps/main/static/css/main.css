@@ -862,6 +862,14 @@ div .disabled{
 	max-width:100%;
 	min-width:50px;
 }
+.loading-medium-tr {
+    background-image:url('../img/icon-loading-medium-tr.gif');
+    background-position:50% 50%;
+    background-repeat:no-repeat;
+    min-height:60px;
+    max-width:100%;
+    min-width:50px;
+}
 .loading-large {
 	background-image:url('../img/icon-loading-large.gif');
 	background-position:50% 50%;
@@ -1345,4 +1353,46 @@ select::-ms-expand {
 
 .dashboard-splash-iframe {
     overflow: hidden;
+}
+
+.tfa-dialog {
+    margin: 20px;
+}
+
+.two-keys{
+    background: url('../img/icon-keys.png') no-repeat 50% 50%;
+    width: 14px;
+    height: 14px;
+    display: inline-block;
+    margin-top: 1px;
+    line-height: 14px;
+    vertical-align: text-top;
+}
+
+.cursor-point {
+    cursor: pointer;
+}
+.edit-value-tfa{
+    width: 150px;
+    display: inline-block;
+}
+.edit-value-tfa input{
+    padding: 0;
+    width: 150px;
+    border-radius: 0;
+    height: 28px;
+    border: 1px solid #ccc;
+    background-color: #fafcfd;
+    font-size: 16px;
+    font-weight: 300;
+    padding-left: 10px;
+}
+.edit-error-tfa{
+    width: 160px;
+    display: inline-block;
+    margin-left: 20px;
+    position: absolute;
+    line-height: 27px;
+    color: #F60;
+    margin-top: 3px;
 }

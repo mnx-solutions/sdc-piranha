@@ -102,51 +102,6 @@
                         });
                     };
 
-                    $scope.changePassword = function() {
-                        $$track.event('Window Open', 'Change Password');
-                        window.open('account/changepassword/' + $scope.account.id ,'1369071355773','width=980,height=580,toolbar=0,menubar=0,location=1,status=1,scrollbars=1,resizable=1,left=100,top=100');
-                    };
-
-                    $scope.enableTwoFactorAuth = function () {
-                        $scope.tfaLoading = true;
-                        TFAService.setup().then(function (qr) {
-                            $scope.qrImage = qr;
-                            $scope.otpass = '';
-                            $scope.tfaLoading = false;
-                        }, function () {
-                            //Unauthorized
-                            //It should redirect automatically
-                        });
-                    };
-
-                    $scope.testTwoFactorAuth = function () {
-                        $scope.tfaTestLoading = true;
-                        TFAService.setupTest($scope.otpass).then(function (data){
-                            if(data.status === 'ok') {
-                                $scope.qrImage = false;
-                                $scope.account.tfaEnabled = true;
-                            } else {
-                                $scope.tfaError = true;
-                            }
-                            $scope.tfaTestLoading = false;
-                        }, function () {
-                            //Unauthorized
-                            //It should redirect automatically
-                        });
-                    };
-
-                    $scope.disableTwoFactorAuth = function () {
-                        $scope.tfaLoading = true;
-                        TFAService.remove().then(function () {
-                            $scope.account.tfaEnabled = false;
-                            $scope.tfaLoading = false;
-                        }, function (data) {
-                            //Unauthorized should already redirect
-                            $scope.tfaDisableError = data.err;
-                            $scope.tfaLoading = false;
-                        });
-                    };
-
                     window.jQuery('.icon-info-sign').tooltip();
                 },
                 templateUrl: 'account/static/partials/account-info-edit.html'

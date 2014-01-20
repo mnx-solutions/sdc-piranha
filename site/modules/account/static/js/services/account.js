@@ -26,6 +26,21 @@
 
             /**
              * @ngdoc
+             * @name account.service:account#setTfaCache
+             * @methodOf account.service:account
+             * @description
+             * Set tfaEnabled flag in account cache
+             *
+             * @returns undefined
+             */
+            service.setTfaCache = function (tfaFlag) {
+                if (account) {
+                    account.tfaEnabled = tfaFlag;
+                }
+            };
+
+            /**
+             * @ngdoc
              * @name account.service:account#getAccount
              * @methodOf account.service:account
              * @description
