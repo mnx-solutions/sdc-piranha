@@ -295,7 +295,7 @@
             </fieldset>
 
             <span data-ng-switch="features.firewall">
-                <fieldset data-ng-show="machine" data-ng-switch-when="enabled">
+                <div data-ng-show="machine" data-ng-switch-when="enabled">
                     <legend>
                         <span data-translate>Firewall rules</span>
                         <div class="beta-sticker pull-right beta"></div>
@@ -331,7 +331,7 @@
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                         <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
                     </div>
-                </fieldset>
+                </div>
             </span>
 
             <div class="clearfix"></div>
