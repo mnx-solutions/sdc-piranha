@@ -49,13 +49,22 @@ var firewall = function execute (scope) {
                     call.done(err);
                 } else {
                     // Serialize rules
+                    var parsedRules = [];
                     rules.forEach(function (rule) {
-                        rule.parsed = fwrule.parse(rule.rule);
                         rule.uuid = rule.id;
+
+                        try {
+                            rule.parsed = fwrule.parse(rule.rule);
+                        } catch(e) {
+                            call.log.error(rule.rule, 'Failed to parse fwrule in machine fw list');
+                            return;
+                        }
+
+                        parsedRules.push(rule);
                     });
 
                     call.log.debug('List rules succeeded for machine %s', machineId);
-                    call.done(null, rules);
+                    call.done(null, parsedRules);
                 }
             });
         }
@@ -242,13 +251,21 @@ var firewall = function execute (scope) {
                     response.status = 'error';
                     response.error = err;
                 } else {
-                    response.rules = rules;
+                    response.rules = [];
 
                     // Serialize rules
                     rules.forEach(function (rule) {
                         rule.datacenter = name;
-                        rule.parsed = fwrule.parse(rule.rule);
                         rule.uuid = rule.id;
+
+                        try {
+                            rule.parsed = fwrule.parse(rule.rule);
+                        } catch(e) {
+                            call.log.error(rule.rule, 'Failed to parse fwrule');
+                            return;
+                        }
+
+                        response.rules.push(rule);
                     });
 
                     call.log.debug('List rules succeeded for datacenter %s', name);
