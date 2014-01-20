@@ -309,7 +309,7 @@
                     text:'Tag'
                 }, {
                     id: ng.toJson({type: 'vm'}),
-                    text:'Instances'
+                    text:'Instance'
                 }]
             },{
                 text: "Instances",
