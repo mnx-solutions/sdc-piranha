@@ -22,14 +22,15 @@ module.exports = function execute(scope, app, callback) {
         }
 
         var baseUrl = new Buffer(protocol + '://' + req.headers.host + (req.body.method === 'signup' ? '/signup/' : redirectUrl)).toString('base64');
-        var returnUrl = protocol +'://'+ req.headers.host +'/tfa/saveToken/'+ baseUrl +'/';
-        var ssoUrl = config.url +'/'+ method;
+        var returnUrl = protocol + '://' + req.headers.host + '/tfa/saveToken/' + baseUrl + '/';
+        var ssoUrl = config.url + '/' + method;
 
         var date = new Date().toUTCString();
         var nonce = Math.random().toString(36).substring(7);
 
         // build the query string
-        var querystring = 'keyid=' + encodeURIComponent(config.keyId) + '&' +
+        var querystring = 'branding=orange&' +
+            'keyid=' + encodeURIComponent(config.keyId) + '&' +
             'nonce=' + encodeURIComponent(nonce) + '&' +
             'now=' + encodeURIComponent(date) + '&' +
             'permissions=' + encodeURIComponent(JSON.stringify({'cloudapi': ['/my/*']})) + '&' +
@@ -48,7 +49,7 @@ module.exports = function execute(scope, app, callback) {
 
         var url = '';
         // with signup mehtod, the url looks somewhat different
-        if( req.body.method === 'signup') {
+        if (req.body.method === 'signup') {
             var queryObj = {
                 'keyid': config.keyId,
                 'nonce': nonce,
@@ -57,9 +58,9 @@ module.exports = function execute(scope, app, callback) {
                 'returnto': returnUrl,
                 'sig': signature
             };
-            url = ssoUrl +'?verifystring='+ encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
+            url = ssoUrl + '?branding=orange&verifystring=' + encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
         } else {
-            url = ssoUrl +'?'+ querystring;
+            url = ssoUrl + '?' + querystring;
         }
 
         if (redirect) {
