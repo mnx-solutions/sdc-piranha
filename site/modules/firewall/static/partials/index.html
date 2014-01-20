@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="row-fluid notice-block" data-ng-show="firewallDisabledMachines.length > 0">
-            The following instances do not have Firewall Rules enabled. You can enable Firewall Rules from the <a href="#!/compute">Instances page</a> or using <a href="http://apidocs.joyent.com/cloudapi/">CloudAPI</a>.
+            The following instances do not have Firewall Rules enabled. You can enable Firewall Rules from the <a href="#!/compute">Instances page</a> or using <a href="http://apidocs.joyent.com/cloudapi/#firewallrules">CloudAPI</a>.
             <div data-ng-repeat="machine in firewallDisabledMachines">
                 <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
             </div>
