@@ -33,8 +33,9 @@
         'Machine',
         'util',
         '$dialog',
+        '$http',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util, $dialog) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util, $dialog, $http) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -121,7 +122,7 @@
 
             function createCombobox(id, objId, propId) {
                 return $(id).select2({
-                    width: 220,
+                    width: '100%',
                     query: query,
                     initSelection : function () {}
                 }).change(function(e){
@@ -340,13 +341,35 @@
                 text:'Disabled'
             }];
 
+            $scope.protocols = [{
+                id:'tcp',
+                text:'TCP'
+            },{
+                id:'udp',
+                text:'UDP'
+            },{
+                id:'icmp',
+                text:'ICMP'
+            }];
+
             $scope.selected = {
                 action: $scope.actions[0].text,
-                status: $scope.states[1].text
+                status: $scope.states[1].text,
+                protocol: $scope.protocols[0].text
             };
+
+            $scope.refreshSelects = function () {
+                // update select2's
+                $('#actionSelect').select2('val', $scope.data.parsed.action);
+                $('#stateSelect').select2('val', $scope.data.enabled.toString());
+                $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
+                $('#dcSelect').select2('val', $scope.data.datacenter);
+            }
+
             $('#actionSelect').select2({
                 data: $scope.actions,
-                width: 220
+                minimumResultsForSearch: -1,
+                width: "100%"
             }).change(function (e) {
                 $scope.$apply(function(){
                     $scope.data.parsed.action = e.val;
@@ -359,9 +382,26 @@
                 });
             }).select2('val', $scope.actions[0].id);
 
+            $('#protocolSelect').select2({
+                data: $scope.protocols,
+                minimumResultsForSearch: -1,
+                width: "100%"
+            }).change(function (e) {
+                $scope.$apply(function(){
+                    $scope.data.parsed.protocol.name = e.val;
+                    $scope.protocols.some(function (action) {
+                        if(action.id === e.val) {
+                            $scope.selected.protocol = action.text;
+                            return true;
+                        }
+                    });
+                });
+            }).select2('val', $scope.protocols[0].id);
+
             $('#stateSelect').select2({
                 data: $scope.states,
-                width: 220
+                minimumResultsForSearch: -1,
+                width: "100%"
             }).change(function (e) {
                 $scope.$apply(function(){
                     $scope.data.enabled = e.val === 'true' ? true : false;
@@ -380,7 +420,8 @@
                     $('#dcSelect').select2('destroy');
                     $('#dcSelect').select2({
                         data: newVal.map(function (dc) { return {id: dc.name, text: dc.name}; }),
-                        width: 220
+                        minimumResultsForSearch: -1,
+                        width: "100%"
                     }).change(function (e) {
                         $scope.$apply(function () {
                             $scope.datacenter = e.val;
@@ -390,18 +431,6 @@
 
                 }
             });
-
-
-            $scope.protocols = [{
-                value:'tcp',
-                title:'TCP'
-            },{
-                value:'udp',
-                title:'UDP'
-            },{
-                value:'icmp',
-                title:'ICMP'
-            }];
 
             $scope.setRules = function (rules) {
                 var dcRules = [];
@@ -480,6 +509,8 @@
                     targets:[]
                 };
                 $scope.data.enabled = false;
+
+                $scope.refreshSelects();
             };
 
             $scope.getData = function() {
@@ -502,7 +533,6 @@
                 if (!direction || direction === 'from') {
                     $scope.current.from = {
                         type: 'wildcard',
-                        text: 'any',
                         value: null
                     };
 
@@ -519,7 +549,6 @@
                 if (!direction || direction === 'to') {
                     $scope.current.to = {
                         type: 'wildcard',
-                        text: 'any',
                         value: null
                     };
 
@@ -529,8 +558,8 @@
                     };
 
                     // No $setPristine
-                    $scope.toForm.$pristine = true;
-                    $scope.toForm.$dirty = false;
+                    //$scope.toForm.$pristine = true;
+                    //$scope.toForm.$dirty = false;
                 }
             };
 
@@ -540,14 +569,16 @@
 
             $scope.isAllPorts = function () {
                 var ports = $scope.data.parsed.protocol.targets;
-                if (ports.length && ports[0] == 'all') {
+                if (ports && ports.length && ports[0] == 'all') {
                     return true;
                 }
                 return false;
             };
 
             $scope.addPort = function() {
-                $scope.data.parsed.protocol.targets.push($scope.current.port);
+                if($scope.data.parsed.protocol.targets.indexOf($scope.current.port) === -1) {
+                    $scope.data.parsed.protocol.targets.push($scope.current.port);
+                }
                 $scope.current.port = '';
                 $scope.current.allPorts = false;
                 $scope.protocolForm.port.$setValidity('range', false);
@@ -636,7 +667,7 @@
             $scope.removeFrom = function(i) {
                 $scope.data.parsed.from.splice(i, 1);
                 if(!$scope.data.parsed.from.length && !$scope.isAny($scope.data.parsed.to[0])) {
-                    $scope.data.parsed.from = [['wildcard', 'any']];
+                    $scope.data.parsed.from = [];
                 }
             };
 
@@ -647,7 +678,7 @@
             $scope.removeTo = function(i) {
                 $scope.data.parsed.to.splice(i, 1);
                 if(!$scope.data.parsed.to.length && !$scope.isAny($scope.data.parsed.from[0])) {
-                    $scope.data.parsed.to = [['wildcard', 'any']];
+                    $scope.data.parsed.to = [];
                 }
             };
 
@@ -673,6 +704,37 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
+                });
+            };
+
+            $scope.openPopovers = [];
+            $('body').on('click', function(e) {
+                if(!ng.element(e.target).hasClass('popover') && !ng.element(e.target).parent().hasClass('popover')) {
+                    // close all the popovers
+                    $scope.openPopovers.forEach(function(el) {
+                        ng.element(el).popover('destroy');
+                    });
+                }
+            });
+
+            $scope.stringifyRule = function (el, rule) {
+                if(typeof $scope[rule] === 'function') {
+                    rule = $scope[rule]();
+                }
+
+                $http.post('./firewall/stringify', rule).then(function(response) {
+                    var stringifiedRule = response.data.rule;
+                    ng.element(el).popover('destroy');
+                    ng.element(el).popover(
+                        {
+                            container: 'body',
+                            content: stringifiedRule,
+                            placement: 'top',
+                            title: 'FWRULE string for CLI'
+                        }
+                    );
+                    ng.element(el).popover('show');
+                    $scope.openPopovers.push(el);
                 });
             };
 
@@ -825,6 +887,8 @@
 				        },
 				        action: function (object) {
 					        $scope.data = rule.cleanRule(object);
+
+                            $scope.refreshSelects();
                             $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'

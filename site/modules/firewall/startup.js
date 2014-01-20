@@ -71,7 +71,6 @@ var firewall = function execute (scope) {
 
         handler: function (call) {
             call.log.info('Create firewall rule');
-
             var cloud = call.cloud.separate(call.data.datacenter);
             cloud.createFwRule({
                 enabled: call.data.enabled,
