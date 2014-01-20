@@ -358,6 +358,14 @@
                 protocol: $scope.protocols[0].text
             };
 
+            $scope.refreshSelects = function () {
+                // update select2's
+                $('#actionSelect').select2('val', $scope.data.parsed.action);
+                $('#stateSelect').select2('val', $scope.data.enabled.toString());
+                $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
+                $('#dcSelect').select2('val', $scope.data.datacenter);
+            }
+
             $('#actionSelect').select2({
                 data: $scope.actions,
                 minimumResultsForSearch: -1,
@@ -501,6 +509,8 @@
                     targets:[]
                 };
                 $scope.data.enabled = false;
+
+                $scope.refreshSelects();
             };
 
             $scope.getData = function() {
@@ -877,6 +887,8 @@
 				        },
 				        action: function (object) {
 					        $scope.data = rule.cleanRule(object);
+
+                            $scope.refreshSelects();
                             $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
