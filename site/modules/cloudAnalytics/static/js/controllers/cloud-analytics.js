@@ -1,5 +1,5 @@
 'use strict';
-
+var instsCache = {};
 (function (app, ng) {
     app.controller(
             'cloudController',
@@ -38,6 +38,24 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
     $scope.croppedModule = true;
     $scope.croppedMetric = true;
 
+    function createNamedGraphs() {
+        $scope.cpuGraphs = $scope.graphs.filter(function (e) {
+            return e.instrumentations.filter(function (i) {
+                return i.stat === 'usage';
+            }).length;
+        }).slice(0, 1);
+        $scope.memGraphs = $scope.graphs.filter(function (e) {
+            return e.instrumentations.filter(function (i) {
+                return i.stat === 'rss';
+            }).length;
+        }).slice(0, 1);
+        $scope.nicGraphs = $scope.graphs.filter(function (e) {
+            return e.instrumentations.filter(function (i) {
+                return i.stat === 'vnic_bytes';
+            }).length;
+        }).slice(0, 1);
+    }
+
     $scope.$watch('ca.deletequeue.length', function(newvalue){
         if (newvalue) {
             var queueIndex = $scope.ca.deletequeue.length;
@@ -56,8 +74,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                                 }
                             }
                         }
-                        $scope.cpuGraphs = $scope.graphs.slice(1, 2);
-                        $scope.memGraphs = $scope.graphs.slice(3, 4);
+                        createNamedGraphs();
                     }
 
                     $scope.ca.deletequeue.splice(queueIndex, 1);
@@ -67,64 +84,68 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
         }
     });
 
-    $scope.ca.describeCa(function (err, conf){
-        if (!err) {
-            $scope.conf = conf;
-            $scope.help = $scope.conf.help;
-            $scope.metrics = $scope.conf.metrics;
-            $scope.fields = $scope.conf.fields;
+    $scope.describeCa = function () {
+        $scope.ca.describeCa(function (err, conf){
+            if (!err) {
+                $scope.conf = conf;
+                $scope.help = $scope.conf.help;
+                $scope.metrics = $scope.conf.metrics;
+                $scope.fields = $scope.conf.fields;
 
-            $scope.ca.listAllInstrumentations(function (listErr, time, insts) {
-                if (!$scope.endtime && time) {
-                    $scope.endtime = time;
-                    tick();
-                }
+                $scope.ca.listAllInstrumentations($scope.zoneId, function (listErr, time, insts) {
+                    if (!$scope.endtime && time) {
+                        $scope.endtime = time;
+                        tick();
+                    }
 
-                if (listErr) {
-                    util.error(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Error'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            listErr
-                        ),
-                        function () {}
-                    );
-                }
+                    if (listErr) {
+                        util.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                listErr
+                            ),
+                            function () {}
+                        );
+                    }
 
-                for (var i in insts) {
-                    var inst = insts[i];
-                    $scope.graphs.push({
-                        instrumentations: [inst],
-                        title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
-                    });
-                }
+                    for (var i in insts) {
+                        var inst = insts[i];
+                        instsCache[inst._datacenter] = instsCache[inst._datacenter] || {};
+                        instsCache[inst._datacenter][$scope.zoneId] = instsCache[inst._datacenter][$scope.zoneId] || {};
+                        var z = instsCache[inst._datacenter][$scope.zoneId][-1 + ':' + inst.module + ':' + inst.stat] = {
+                            instrumentations: [inst],
+                            title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
+                        };
+                        $scope.graphs.push(z);
+                    }
+                    createNamedGraphs();
+                });
+            } else {
+                util.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        err
+                    ),
+                    function () {}
+                );
+            }
 
-                $scope.cpuGraphs = $scope.graphs.slice(1, 2);
-                $scope.memGraphs = $scope.graphs.slice(3, 4);
+        });
+    };
 
-            });
-        } else {
-            util.error(
-                localization.translate(
-                    $scope,
-                    null,
-                    'Error'
-                ),
-                localization.translate(
-                    $scope,
-                    null,
-                    err
-                ),
-                function () {}
-            );
-        }
-
-    });
+    $scope.describeCa();
 
     $scope.instanceName = function(){
       $scope.zones.forEach(function(el){
@@ -135,6 +156,22 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
     };
 
     $scope.createDefaultInstrumentations = function() {
+        $scope.deleteAllInstrumentations(function () {
+            $timeout(function () {
+                if (!$scope.zones.final) {
+                    $scope.$watch('zones.final', function (final) {
+                        if (final) {
+                            $scope._createDefaultInstrumentations();
+                        }
+                    });
+                } else {
+                    $scope._createDefaultInstrumentations();
+                }
+            }, 1000);
+        });
+    };
+
+    $scope._createDefaultInstrumentations = function() {
         var datacenter = null;
 
         for (var i in $scope.zones) {
@@ -222,23 +259,27 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
             'ZFS: used space vs unused quota',
             'Network: utilization'
         ];
-
+        var len = dOptions.length;
         for (var opt in dOptions) {
-            (function (index) {
-                $scope.ca.createInstrumentations(dOptions[index], function (errs, inst) {
+            (function (index, datacenter) {
+                $scope.ca.createInstrumentations($scope.zoneId, dOptions[index], function (errs, inst) {
+                    if (--len === 0) {
+                        $scope.describeCa();
+                    }
+/*
                     if (!errs.length) {
                         if (!$scope.endtime) {
                             $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
                             tick();
                         }
-
-                        $scope.graphs.push({
+                        var i = instsCache[datacenter][$scope.zoneId][index + ':' + dOptions[index].module + ':' + dOptions[index].stats] = {
                             instrumentations: inst,
                             title: dTitles[index]
-                        });
+                        };
+                        $scope.graphs.push(i);
                     } else {
                         var errors = '';
-                        var datacenter = null;
+                        datacenter = null;
 
                         for (var e in errs) {
                             var err = errs[e];
@@ -259,8 +300,9 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                             function () {}
                         );
                     }
+*/
                 });
-            })(opt);
+            })(opt, datacenter);
         }
     };
 
@@ -307,16 +349,16 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
             datacenter: datacenter
         };
 
-        $scope.ca.createInstrumentations([ options ], function (errs, instrumentations) {
+        $scope.ca.createInstrumentations($scope.zoneId, [ options ], function (errs, insts) {
             if (!errs.length) {
                 if (!$scope.endtime) {
-                    $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
+                    $scope.endtime = Math.floor(insts[0].crtime / 1000) - 1;
                     tick();
                 }
 
-                var title = $scope.ca.instrumentations[instrumentations[0]._datacenter][instrumentations[0].id].graphtitle;
+                var title = $scope.ca.instrumentations[insts[0]._datacenter][insts[0].id].graphtitle;
                 $scope.graphs.push({
-                    instrumentations: instrumentations,
+                    instrumentations: insts,
                     title: title
                 });
             } else {
@@ -346,10 +388,10 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
 
     };
 
-    $scope.deleteAllInstrumentations = function() {
+    $scope.deleteAllInstrumentations = function(cb) {
         $scope.graphs = [];
 
-        $scope.ca.deleteAllInstrumentations();
+        $scope.ca.deleteAllInstrumentations(cb);
     };
 
     $scope.changeMetric = function(){
