@@ -300,36 +300,42 @@
                         <span data-translate>Firewall rules</span>
                         <div class="beta-sticker pull-right beta"></div>
                     </legend>
-                    <div class="text-small muted">
-                        Default firewall rules that apply to this instance are:
-                        <ul>
-                            <li>Block all inbound traffic</li>
-                            <li>Allow all outbound traffic</li>
-                        </ul>
+
+                    <div data-ng-show="machine.type == 'virtualmachine'">
+                        {{machine.type}} instances are not yet supported by the FWAPI.
                     </div>
-                    <div data-ng-show="firewallRules.length >= 1">
-                        <div class="span12">
-                            <div data-grid-view
-                                 data-props="gridProps"
-                                 data-objects="firewallRules"
-                                 data-paginated="false"
-                                 data-order="gridOrder"
-                                 data-filter-all="{{query}}"
-                                 data-objects-type="firewall"></div>
+                    <div data-ng-show="machine.type != 'virtualmachine'">
+                        <div class="text-small muted">
+                            Default firewall rules that apply to this instance are:
+                            <ul>
+                                <li>Block all inbound traffic</li>
+                                <li>Allow all outbound traffic</li>
+                            </ul>
                         </div>
-                    </div>
-                    <div data-ng-show="firewallRules.length < 1"><br/><br/>
-                        <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
-                    </div>
-                    <div class="row text-right">
-                        <a class="editLink" href="#!/firewall">Edit</a>
-                        <button class="pull-right btn margin-top-10"
-                                data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
-                                data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
-                                data-ng-show="firewallChangeable()"
-                                data-ng-click="toggleFirewallEnabled()"
-                                data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
-                        <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
+                        <div data-ng-show="firewallRules.length >= 1">
+                            <div class="span12">
+                                <div data-grid-view
+                                     data-props="gridProps"
+                                     data-objects="firewallRules"
+                                     data-paginated="false"
+                                     data-order="gridOrder"
+                                     data-filter-all="{{query}}"
+                                     data-objects-type="firewall"></div>
+                            </div>
+                        </div>
+                        <div data-ng-show="firewallRules.length < 1"><br/><br/>
+                            <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
+                        </div>
+                        <div class="row text-right">
+                            <a class="editLink" href="#!/firewall">Edit</a>
+                            <button class="pull-right btn margin-top-10"
+                                    data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
+                                    data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
+                                    data-ng-show="firewallChangeable()"
+                                    data-ng-click="toggleFirewallEnabled()"
+                                    data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
+                            <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
+                        </div>
                     </div>
                 </div>
             </span>
