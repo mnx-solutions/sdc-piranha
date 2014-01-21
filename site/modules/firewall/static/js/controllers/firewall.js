@@ -89,7 +89,7 @@
                     var machine = machines[m];
                     // FIXME:
                     //if(ng.isObject(machine) && machine.compute_node) {
-                    if(ng.isObject(machine)) {
+                    if(ng.isObject(machine) && machine.type !== 'virtualmachine') {
 
                         if(Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
