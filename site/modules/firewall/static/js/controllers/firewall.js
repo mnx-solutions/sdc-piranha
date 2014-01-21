@@ -89,7 +89,7 @@
                     var machine = machines[m];
                     // FIXME:
                     //if(ng.isObject(machine) && machine.compute_node) {
-                    if(ng.isObject(machine)) {
+                    if(ng.isObject(machine) && machine.type !== 'virtualmachine') {
 
                         if(Object.keys(machine.tags).length) {
                             for(var tag in machine.tags) {
@@ -111,6 +111,7 @@
                                 text: machine.id,
                                 value: null
                             }),
+                            datacenter: machine.datacenter,
                             text:machine.name ? machine.name + ' (' + machine.id + ')' : machine.id
                         });
                     }
@@ -323,7 +324,8 @@
 
 	        $scope.selectDatacenter = function (name) {
 		        $scope.datacenter = name;
-	        };
+                $scope.filterInstances();
+            };
 
             $scope.actions = [{
                 id:'allow',
@@ -364,7 +366,18 @@
                 $('#stateSelect').select2('val', $scope.data.enabled.toString());
                 $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
                 $('#dcSelect').select2('val', $scope.data.datacenter);
-            }
+            };
+
+            $scope.filterInstances = function() {
+                // filter vms using selected dc
+
+                $scope.dropdown[1].children = $scope.vms.filter(function(m) {
+                    return m.datacenter === $scope.datacenter;
+                });
+                $scope.dropdown[2].children = $scope.vms.filter(function(m) {
+                    return m.datacenter === $scope.datacenter;
+                });
+            };
 
             $('#actionSelect').select2({
                 data: $scope.actions,
@@ -481,6 +494,8 @@
                                 $scope.firewallDisabledMachines.push(m);
                             }
                         });
+
+                        $scope.filterInstances();
                         $scope.machinesLoading = false;
                     }
                 });
