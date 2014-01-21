@@ -96,99 +96,105 @@
                     active: true
                 },
                 {
+                    id: 'dataset',
+                    name: 'Dataset',
+                    sequence: 3,
+                    active: true
+                },
+                {
                     id: 'created',
                     name: 'Created',
-                    sequence: 3,
+                    sequence: 4,
                     active: true
                 },
                 {
                     id: 'primaryIp',
                     name: 'IP',
-                    sequence: 4,
+                    sequence: 5,
                     active: true
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 5,
+                    sequence: 6,
                     active: true
                 },
                 {
                     id: 'updated',
                     name: 'Updated',
-                    sequence: 6,
+                    sequence: 7,
                     active: true
                 },
                 {
                     id: 'id',
                     name: 'ID',
-                    sequence: 7,
+                    sequence: 8,
                     active: false
                 },
                 {
                     id: 'image',
                     name: 'Image',
-                    sequence: 8,
+                    sequence: 9,
                     active: false
                 },
                 {
                     id: 'type',
                     name: 'Type',
-                    sequence: 9,
+                    sequence: 10,
                     active: false
                 },
                 {
                     id: 'memory',
                     name: 'Memory',
-                    sequence: 10,
+                    sequence: 11,
                     active: false
                 },
                 {
                     id: 'disk',
                     name: 'Disk',
-                    sequence: 11,
+                    sequence: 12,
                     active: false
                 },
                 {
                     id: 'tags',
                     name: 'Tags',
-                    sequence: 12,
+                    sequence: 13,
                     active: false
                 },
                 {
                     id: 'credentials',
                     name: 'Credentials',
-                    sequence: 13,
+                    sequence: 14,
                     active: false
                 },
                 {
                     id: 'dataset',
                     name: 'Dataset',
-                    sequence: 14,
+                    sequence: 15,
                     active: false
                         },
                 {
                     id: 'firewall_enabled',
                     name: 'Firewall Enabled',
-                    sequence: 15,
+                    sequence: 16,
                     active: false
                         },
                 {
                     id: 'package',
                     name: 'Package',
-                    sequence: 16,
+                    sequence: 17,
                     active: false
                         },
                 {
                     id: '$$hashKey',
                     name: '$$hashKey',
-                    sequence: 17,
+                    sequence: 18,
                     active: false
                         },
                 {
                     id: 'ips',
                     name: 'IP-s',
-                    sequence: 18,
+                    sequence: 19,
                     active: false
                     }
             ];
