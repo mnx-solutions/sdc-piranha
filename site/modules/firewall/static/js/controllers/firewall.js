@@ -576,7 +576,8 @@
             };
 
             $scope.addPort = function() {
-                if($scope.data.parsed.protocol.targets.indexOf($scope.current.port) === -1) {
+                if($scope.data.parsed.protocol.targets.indexOf($scope.current.port) === -1
+                    && $scope.data.parsed.protocol.targets.indexOf(parseInt($scope.current.port)) === -1) {
                     $scope.data.parsed.protocol.targets.push($scope.current.port);
                 }
                 $scope.current.port = '';
