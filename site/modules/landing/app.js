@@ -29,7 +29,7 @@ module.exports = function execute(scope, app, callback) {
         var nonce = Math.random().toString(36).substring(7);
 
         // build the query string
-        var querystring = 'branding=orange&' +
+        var querystring = (scope.config.features.useBrandingOrange === 'enabled' ? 'branding=orange&' : '') +
             'keyid=' + encodeURIComponent(config.keyId) + '&' +
             'nonce=' + encodeURIComponent(nonce) + '&' +
             'now=' + encodeURIComponent(date) + '&' +
@@ -47,7 +47,7 @@ module.exports = function execute(scope, app, callback) {
            campaignUrl = '&cid='+ (campaignId || req.cookies.campaignId);
         }
 
-        var url = '';
+        var url = ssoUrl + '?';
         // with signup mehtod, the url looks somewhat different
         if (req.body.method === 'signup') {
             var queryObj = {
@@ -58,9 +58,12 @@ module.exports = function execute(scope, app, callback) {
                 'returnto': returnUrl,
                 'sig': signature
             };
-            url = ssoUrl + '?branding=orange&verifystring=' + encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
+            if (scope.config.features.useBrandingOrange === 'enabled') {
+                url = url + 'branding=orange&';
+            }
+            url = url + 'verifystring=' + encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
         } else {
-            url = ssoUrl + '?' + querystring;
+            url = url + querystring;
         }
 
         if (redirect) {
