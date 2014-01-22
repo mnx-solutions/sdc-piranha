@@ -97,7 +97,6 @@ input.ng-pristine {
 .select_position{
     padding-top: 20px;
     color: #666;
-    /*margin-left: -15px;*/
 }
 .select2-container .select2-choice {
     -webkit-border-radius: 0;
@@ -145,9 +144,7 @@ input.ng-pristine {
     background-image: none !important;
     background-color: #ffffff  !important;
 }
-/*.select2-container{*/
-    /*height: 21px;*/
-/*}*/
+
 .pagination ul > li:first-child > a,
 .pagination ul > li:first-child > span {
     -webkit-border-bottom-left-radius: 0;
@@ -185,26 +182,16 @@ input.ng-pristine {
     background-color: #fef1d2;
 }
 .firewall-table td.one-third{
-    max-width: 310px;
-    min-width: 310px;
     display: inline-block;
     vertical-align: top;
     padding-left: 10px;
     padding-right: 10px;
-    /*padding-bottom: 20px;*/
+    width: 31%;
 }
 .firewall-table td.one-third legend, .legend-line{
     border-bottom: 1px solid #cbc1a8;
 }
-.firewall-table td.small-space{
-    max-width: 0;
-    min-width: 0;
-    background-color: white;
-}
-.firewall-table tr{
-    min-width: 1000px;
-    max-width: 1000px;
-}
+
 .form-horizontal{
     padding-top: 30px;
     padding-bottom: 30px;
@@ -226,7 +213,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .yellow-bg{
     background-color: #fef1d2;
     padding: 10px;
-    /*border-top: 1px solid #ccc;*/
     border-bottom: 0;
     margin-bottom: 2px;
 }
@@ -238,7 +224,10 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     display: inline-block;
 }
 .f-btn{
-    margin-right: 10px;
+    margin-left: 240px;
+}
+.f-btn-two{
+    margin-left: 135px;
 }
 input.ng-valid {
     border: 1px solid #00b900;
@@ -282,7 +271,6 @@ input.ng-invalid, input.ng-pristine {
     display: inline-block;
 }
 .item-list-container {
-    width: 1000px;
     overflow: auto;
 }
 .results-group{
@@ -348,10 +336,6 @@ input.ng-invalid, input.ng-pristine {
     min-height: 165px;
     max-height: 165px;
 }
-/*.fixed-height145{*/
-    /*min-height: 145px;*/
-    /*max-height: 145px;*/
-/*}*/
 
 .add-rule-btn:hover, .add-rule-btn:focus{
     color: #fff;
@@ -364,6 +348,9 @@ input.ng-invalid, input.ng-pristine {
 }
 .padding-left-0{
     padding-left: 0 !important;
+}
+.margin-left-0{
+    margin-left: 0 !important;
 }
 .margin-top-35{
     margin-top: 35px;
@@ -378,7 +365,4 @@ input.ng-invalid, input.ng-pristine {
     font-size: 21px;
     line-height: 55px;
     color: #333;
-}
-.span12 {
-    width: 1000px;
 }

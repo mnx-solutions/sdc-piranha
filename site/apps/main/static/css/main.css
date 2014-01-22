@@ -28,11 +28,6 @@ body {
     min-height:30px !important;
 }
 
-.tabbable {
-/*	border:none;*/
-/*	margin-top:-31px;*/
-}
-
 .nav-tabs > li {
 }
 .nav-tabs > li:hover,.nav-tabs > li a:hover {
@@ -63,7 +58,6 @@ h4 {
 }
 .content-container {
     padding-bottom:50px;
-    /*	border:1px solid;*/
     padding:0;
 }
 
@@ -87,7 +81,7 @@ h4 {
 .footer {
     position: fixed;
 	padding-top:10px;
-    padding-left: 185px;
+    margin-left: 175px;
     background-color: #ededed;
     height: 60px;
     box-sizing: border-box;
@@ -102,6 +96,7 @@ h4 {
 	padding-top:8px;
     font-size:12px;
     margin-left: 28px;
+    margin-right: 175px;
 
 }
 .footer .nav li {
@@ -112,6 +107,9 @@ h4 {
     background-color:transparent !important;
 	padding-right:20px;
     text-decoration: none;
+}
+.footer.leftpanel-small .nav{
+    margin-right: 55px;
 }
 
 .settings {
@@ -175,7 +173,6 @@ h4 {
     left:50%;
     margin-left:-225px;
     margin-top:-250px;
-    /*	padding-top:100px;*/
 }
 .signin-container .alert {
     background: -webkit-linear-gradient(top,#fff 0,#ddd 100%);
@@ -194,7 +191,6 @@ h4 {
     background: linear-gradient(top,#fff 0,#ddd 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff',endColorstr='#dddddd',GradientType=0);
     border: solid 1px #ddd;
-    /*	border-right: solid 1px #eee;*/
     border-bottom: solid 1px #ccc;
     -webkit-box-shadow: 0 1px 0 rgba(0,0,0,.1);
     -moz-box-shadow: 0 1px 0 rgba(0,0,0,.1);
@@ -330,7 +326,6 @@ th {
 
 
 .item-list-container {
-	/*border:3px solid rgba(135,135,135,0.1);*/
 	padding-right:2px;
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -400,17 +395,10 @@ th {
 .carousel-inner .item.header:hover {
 	background-color:#fcfcfc;
 }
-.carousel-inner > .item{
-/*	border:none;*/
-/*	border:1px solid red !important;*/
-}
+
 .carousel-inner .item.header {
 	min-height:40px;
 	padding-top:10px;
-}
-
-.fixed-position-fix {
-/*	height:30px;*/
 }
 
 .toolbox .button {
@@ -418,16 +406,11 @@ th {
     margin-bottom:3px;
     margin-top:2px;
 }
-.toolbox{
-/*	display:block;*/
-}
-
 /*
 	thumbnail begin
 */
 
 .view-type-container {
-/*	border:1px solid red;*/
 	margin-top:-26px;
 	padding:0;
 	
@@ -441,7 +424,6 @@ th {
 	border:1px solid #ddd;
 	padding:5px;
     font-size:12px;
-/*	float:left;*/
 	margin-bottom:5px;
 	margin-right:2.127659574468085%;
 	height:150px;
@@ -455,14 +437,10 @@ th {
   *width: 31.861702127659576%;
 }
 
-/*
-*/
-
 .item-list-container.thumbnail .item .action-container{
 	margin:-5px;
 	margin-top:5px;
 	padding:10px;
-/*	border:1px solid red;*/
 }
 
 
@@ -718,7 +696,6 @@ p.margin-mini {
 .selector-container {
     background-color:#fff;
     border:none;
-    /*	border:1px solid red;*/
 }
 
 
@@ -770,16 +747,11 @@ div .disabled{
 	margin-top:3px;
 }
 
-.state {
-/*	margin-right:5px !important;*/
-}
 .btn-mini {
-/*	width:50px !important;*/
 	padding: 0 6px !important;
 }
 .page-header {
     padding-bottom: 6px !important;
-    margin: 40px 0 -15px !important;
     border-bottom: none !important;
 }
 .page-header form {
@@ -876,8 +848,6 @@ div .disabled{
 	background-repeat:no-repeat;
 	height:100px;
 	min-height:100px;
-	max-width:100%;
-    min-width: 1000px;
 }
 .slb-name {
     white-space: normal;
@@ -888,8 +858,6 @@ div .disabled{
 */
 
 .separation-container {
-	/*padding:10px 5px 10px 5px;*/
-	/*margin-left:-1px;*/
 	border-top:1px solid rgba(0,0,0,0.1);
 	border-left:1px solid rgba(0,0,0,0.1);
 }
@@ -927,7 +895,6 @@ a .feature1 {
     filter: none;
     border: 0;
     padding: 7px 14px;
-    /*font-family: "Segoe UI", Helvetica, Arial, sans-serif;*/
     font-size: 14px;
     color: #333333;
     cursor: pointer;
@@ -1027,7 +994,6 @@ a .feature1 {
 {
     color: white;
     text-shadow: none;
-    /*background-color: #d84a38;*/
     background-color: #ff6600;
 }
 .btn.red:hover,
@@ -1041,7 +1007,6 @@ a .feature1 {
 .page-content .breadcrumb a.red:active, .page-content .breadcrumb a.red:active i
 
 {
-    /*background-color: #bb2413 !important;*/
     background-color: #ff6600 !important;
     color: #fff !important;
 }

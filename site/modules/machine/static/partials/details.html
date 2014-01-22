@@ -1,4 +1,4 @@
-<div class="container_details " data-ng-controller="Machine.DetailsController">
+<div class="container-fluid container-position" data-ng-controller="Machine.DetailsController">
 
 <ul class="breadcrumb">
     <li><a href="#!/compute"> Instances</a> /</li>
@@ -193,7 +193,6 @@
                     <div class="pull-left resize_block">
                         <p class="control-label" data-translate><b>Resize Instance type</b></p>
                         <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName">
-                            <!--<option value=""></option>-->
                             <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
                                     value="{{package.name}}" class="text-medium">
                                 Mem: {{package.memory | sizeFormat}}
@@ -332,10 +331,7 @@
         </div>
         <div id="collapse_7" class="accordion-body collapse">
             <div class="accordion-inner">
-                <!--<div class="accordiaon-line">-->
-                    <!---->
-                <!--</div>-->
-            <span data-ng-switch="features.firewall">
+               <span data-ng-switch="features.firewall">
                 <fieldset data-ng-switch-when="enabled">
                     <div data-ng-show="firewallRules.length >= 1">
                         <div class="span12">
@@ -438,7 +434,6 @@
                         data-original-title="Click here to reboot your instance."
                         data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                 class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-            <!--<span class="loading-small pull-left" data-ng-show="machine.job && !machine.job.finished"></span>-->
             <i class="reboot_icon"></i>
             <p data-translate>Reboot</p>
         </button>

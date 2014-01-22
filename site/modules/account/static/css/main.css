@@ -143,7 +143,6 @@ select.date-month, select.date-year {
     padding-top: 5px;
 }
 .account fieldset{
-    /*margin-top: -15px;*/
     padding-left: 5px;
 }
 .account .line, .account.line{
@@ -249,11 +248,6 @@ select.date-month, select.date-year {
     line-height: 50px;
     font-weight: 500;
 }
-
-/*#accordion3 .key-info:hover{*/
-    /*background-color: #f6f7f8 !important;*/
-/*}*/
-
 #accordion3 .key-info{
     margin-left: 3px;
 }
