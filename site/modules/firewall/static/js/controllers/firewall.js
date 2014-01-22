@@ -299,7 +299,7 @@
                         type: 'wildcard',
                         text: 'all vms'
                     }),
-                    text: 'Any VMs in DC'
+                    text: 'All my VMs in DC'
                 },{
                     id: ng.toJson({type: 'ip'}),
                     text: 'IP'
