@@ -6,7 +6,7 @@ window.JP.main.config([
         var features = window.JP.get('features');
         if (features && features.firewall !== 'disabled') {
             routeProvider.when('/firewall', {
-                title: 'Firewall rules',
+                title: 'Firewall Rules',
                 action: 'firewall.index'
             });
         }
