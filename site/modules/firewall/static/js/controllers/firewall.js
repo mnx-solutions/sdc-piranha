@@ -644,6 +644,14 @@
                     };
                 }
 
+                if (data.type === 'wildcard' && data.text === 'all vms') {
+                    clearTarget(direction);
+                    data = {
+                        type: 'wildcard',
+                        text: 'all vms'
+                    };
+                }
+
                 if ($scope.data.parsed[direction].length === 1 &&
                     $scope.data.parsed[direction][0][0] === 'wildcard') {
                     $scope.data.parsed[direction] = [];
