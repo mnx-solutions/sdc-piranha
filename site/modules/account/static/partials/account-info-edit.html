@@ -94,57 +94,6 @@
             </div>
         </fieldset>
 
-        <!--<div class="fieldset-spacer"></div>-->
-
-		<!--<div class="" data-ng-hide="currentStep">-->
-			<fieldset  data-ng-hide="currentStep" class="line">
-	            <legend data-translate>Your Password</legend>
-					<p class="content-p">Pop-up window will direct you to SSO pages. No sensitive data is exchanged between two sites.
-					Change password will open a pop-up window. Please ensure you don't have popup blocker active.</p>
-
-					<a data-ng-click="changePassword()" class="btn light" data-translate>Change Password</a>
-                <div class="fieldset-spacer"></div>
-			</fieldset>
-            <!--<div class="fieldset-spacer"></div>-->
-			<fieldset  data-ng-hide="currentStep" class="line">
-	           	<legend data-translate>Two Factor Authentication</legend>
-                <p class="content-p">You have enabled two-factor authentication. You will be asked to provide an extra verification code the next time that you login.</p>
-                <button data-ng-show="!account.tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn light" data-translate>Enable</button>
-                <button data-ng-show="account.tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn light" data-translate>Disable</button>
-                <div class="fieldset-spacer"></div>
-	            <div data-ng-show="qrImage">
-	                <ol>
-	                    <li class="content-li">Please download 'Google Authenticator' from your phone's App Store.</li>
-	                    <li class="content-li">
-	                        Scan the QR code below using the application
-	                        <div style="margin: 15px; padding-left: 20px" data-ng-bind-html-unsafe="qrImage">
-	                        </div>
-	                    </li>
-	                    <li class="content-li">
-	                        Type the code from your new application below to verify your configuration.<hr />
-	                        <div class="control-group">
-                                <span class="edit-name">Enter your code</span>
-                                <span class="edit-value"><input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" /></span>
-                                <span class="edit-error" data-ng-show="tfaError" data-translate>Failed to enable TFA</span>
-	                            <!--<label class="control-label b" for="otpass">Enter your code</label>-->
-	                            <!--<div class="controls">-->
-	                                <!--<input id="otpass" type="text" class="span4" value="" data-ng-model="otpass" />-->
-	                            <!--</div>-->
-	                        </div>
-	                    </li>
-	                </ol>
-                    <!--<div class="alert alert-danger" data-ng-show="tfaError" data-translate>Failed to enable TFA</div>-->
-	                <button class="btn light" data-ng-click="testTwoFactorAuth()" style="margin-left: 38px;" data-translate>Verify</button>
-                    <div class="fieldset-spacer"></div>
-	                <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaTestLoading"></div>
-	            </div>
-
-
-
-	            <div class="pull-right loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="tfaLoading"></div>
-			</fieldset>
-		<!--</div>-->
-
         <hr data-ng-show="currentStep" />
         <a data-ng-show="currentStep" data-ng-click="signOut()" class="pull-left note text-small" data-translate>Click here to return to homepage</a>
 		<button class="btn orange"  data-ng-show="currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
