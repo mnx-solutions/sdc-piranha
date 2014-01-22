@@ -239,7 +239,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Restart selected instances'
+                                    'Start selected instances'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if(el.checked){
@@ -270,7 +270,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Stopping selected instances does not stop billing, your instance can be restarted after it is stopped.'
+                                    'Stopping selected instances does not stop billing, your instance can be started after it is stopped.'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if(el.checked){
