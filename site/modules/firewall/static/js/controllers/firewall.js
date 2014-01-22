@@ -366,7 +366,7 @@
                 $('#actionSelect').select2('val', $scope.data.parsed.action);
                 $('#stateSelect').select2('val', $scope.data.enabled.toString());
                 $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
-                $('#dcSelect').select2('val', $scope.data.datacenter);
+                $('#dcSelect').select2('enable').select2('val', $scope.data.datacenter);
             };
 
             $scope.filterInstances = function() {
@@ -378,6 +378,7 @@
                     return t.datacenter === $scope.datacenter;
                 });
             };
+
 
             $('#actionSelect').select2({
                 data: $scope.actions,
@@ -903,6 +904,7 @@
 					        $scope.data = rule.cleanRule(object);
 
                             $scope.refreshSelects();
+                            $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
 				        },
 				        tooltip: 'Edit the rule'
