@@ -100,6 +100,7 @@
                                             text: tag,
                                             value: null
                                         }),
+                                        datacenter: machine.datacenter,
                                         text:tag
                                     });
                                 }
@@ -370,12 +371,11 @@
 
             $scope.filterInstances = function() {
                 // filter vms using selected dc
-
                 $scope.dropdown[1].children = $scope.vms.filter(function(m) {
                     return m.datacenter === $scope.datacenter;
                 });
-                $scope.dropdown[2].children = $scope.vms.filter(function(m) {
-                    return m.datacenter === $scope.datacenter;
+                $scope.dropdown[2].children = $scope.tags.filter(function(t) {
+                    return t.datacenter === $scope.datacenter;
                 });
             };
 
@@ -439,6 +439,7 @@
                         $scope.$apply(function () {
                             $scope.datacenter = e.val;
                             $scope.selected.datacenter = e.val;
+                            $scope.filterInstances();
                         });
                     }).select2('val', $scope.selected.datacenter);
 
