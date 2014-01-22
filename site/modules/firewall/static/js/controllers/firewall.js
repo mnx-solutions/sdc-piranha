@@ -576,9 +576,10 @@
             };
 
             $scope.addPort = function() {
-                if($scope.data.parsed.protocol.targets.indexOf($scope.current.port) === -1
-                    && $scope.data.parsed.protocol.targets.indexOf(parseInt($scope.current.port)) === -1) {
-                    $scope.data.parsed.protocol.targets.push($scope.current.port);
+                var targets = $scope.data.parsed.protocol.targets;
+                if(targets.indexOf($scope.current.port) === -1
+                    && targets.indexOf(parseInt($scope.current.port)) === -1) {
+                    targets.push($scope.current.port);
                 }
                 $scope.current.port = '';
                 $scope.current.allPorts = false;
