@@ -677,6 +677,8 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
+                }, function() {
+                    $scope.loading = false;
                 });
             };
 
@@ -718,6 +720,8 @@
                     if(r.id) {
                         $scope.refresh();
                     }
+                }, function() {
+                    $scope.loading = false;
                 });
             };
 
@@ -745,6 +749,8 @@
                         $scope.loading = true;
                         rule.deleteRule(r).then(function(){
                             $scope.refresh();
+                        }, function() {
+                            $scope.loading = false;
                         });
                         $scope.openRuleForm = false;
                     });
@@ -764,6 +770,8 @@
                     $scope.resetData();
                     $scope.resetCurrent();
                     $scope.setRules(r);
+                    $scope.loading = false;
+                }, function(err) {
                     $scope.loading = false;
                 });
             };
