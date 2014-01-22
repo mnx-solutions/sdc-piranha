@@ -206,7 +206,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Restart this instance'
+                        'Start this instance'
                     ), function () {
                         $$track.event('machine', 'start');
                         var job = Machine.startMachine(machineid);
@@ -223,7 +223,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Stopping an instance does not stop billing, your instance can be restarted after it is stopped.'
+                        'Stopping an instance does not stop billing, your instance can be started after it is stopped.'
                     ), function () {
                         Machine.stopMachine(machineid);
                         $$track.event('machine', 'stop');
