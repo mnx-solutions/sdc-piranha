@@ -186,17 +186,18 @@ var instrumentations = {};
 
         Instrumentation.prototype.clone = function (opts) {
             var self = this;
-
         };
 
-        function _getUUID(opts) {
-            return MD5(ng.toJson(opts.createOpts));
+        function _getUUID(zoneId, opts) {
+            var options = opts.createOpts.datacenter ? opts.createOpts : opts.createOpts.init;
+
+            return [zoneId, options.datacenter, options.module, options.stat].join(':');
         }
 
         var service = {};
 
-        service.create = function(opts, callback) {
-            var uuid = _getUUID(opts);
+        service.create = function(zoneId, opts, callback) {
+            var uuid = _getUUID(zoneId, opts);
             if(!instrumentations[uuid]) {
                 var inst = new Instrumentation(uuid, opts);
 

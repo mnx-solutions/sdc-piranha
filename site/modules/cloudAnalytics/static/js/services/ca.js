@@ -221,11 +221,19 @@
                 }
             };
 
-            _instrumentations.removeAll = function () {
+            _instrumentations.removeAll = function (cb) {
+                var len = 0;
+                if (!Object.keys(this.public).length) {
+                    cb();
+                }
                 for (var datacenter in this.public) {
+                    len += Object.keys(this.public[datacenter]).length;
                     for (var id in this.public[datacenter]) {
                         this.public[datacenter][id].remove(function(){
-
+                            len -= 1;
+                            if (len === 0 && cb) {
+                                cb();
+                            }
                         })
                     }
                 }
@@ -471,13 +479,13 @@
                 });
             };
 
-            service.prototype.createInstrumentation  = function(createOpts, cb) {
+            service.prototype.createInstrumentation  = function(zoneId, createOpts, cb) {
                 if (!createOpts.init) {
                     createOpts.init = null;
                 }
 
                 var self = this;
-                instrumentation.create({
+                instrumentation.create(zoneId, {
                     createOpts: createOpts,
                     init: createOpts.init,
                     parent:ca
@@ -536,13 +544,13 @@
                 ca.instrumentations.getHeatmapDetails(opts, cb);
             };
 
-            service.prototype.createInstrumentations = function (createOpts, cb) {
+            service.prototype.createInstrumentations = function (zoneId, createOpts, cb) {
                 var insts = [];
                 var errors = [];
                 var self = this;
 
                 for (var opt in createOpts) {
-                    self.createInstrumentation(createOpts[opt], function(err, inst){
+                    self.createInstrumentation(zoneId, createOpts[opt], function(err, inst){
                         if (!err){
                             insts.push(inst);
                         } else {
@@ -582,13 +590,13 @@
                 return ca.options.last_poll_time;
             };
 
-            service.prototype.deleteAllInstrumentations = function () {
+            service.prototype.deleteAllInstrumentations = function (cb) {
                 this.instrumentations = {};
                 ca.options.removeAll();
-                ca.instrumentations.removeAll();
+                ca.instrumentations.removeAll(cb);
             };
 
-            service.prototype.listAllInstrumentations = function (cb) {
+            service.prototype.listAllInstrumentations = function (zoneId, cb) {
                 var self = this;
                 ca.instrumentations.listInstrumentations(function(err, time, rawInstrs) {
                     var count = 0;
@@ -619,7 +627,7 @@
                                 ca.options.last_poll_time = time;
                             }
 
-                            self.createInstrumentation({
+                            self.createInstrumentation(zoneId, {
                                 init: rawInst,
                                 pollinstart: time
                             }, function (err2, inst) {
