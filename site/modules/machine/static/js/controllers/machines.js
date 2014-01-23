@@ -16,8 +16,9 @@
         'util',
         '$location',
         'firewall',
+        '$rootScope',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $location, firewall) {
+        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $location, firewall, $rootScope) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -281,6 +282,9 @@
                 },
                 {
                     label: 'Enable FW',
+                    show: function () {
+                        return $rootScope.features.firewall !== 'disabled';
+                    },
                     action: function (object) {
                         if ($scope.actionButton()) {
                             util.confirm(
@@ -313,6 +317,9 @@
                     },
                 {
                     label: 'Disable FW',
+                    show: function () {
+                        return $rootScope.features.firewall !== 'disabled';
+                    },
                     action: function (object) {
                         if ($scope.actionButton()) {
                             util.confirm(
