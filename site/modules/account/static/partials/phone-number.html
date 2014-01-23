@@ -14,7 +14,8 @@
                data-ng-style="inputStyle"
                data-ng-model="plainNumber"
                data-ng-class="{error: isError({field:'phone'})}"
-               required/>
+               data-ng-required="currentStep"
+               />
     </div>
     </span>
     <span class="edit-error">
