@@ -340,6 +340,13 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
         $scope.ca.deleteAllInstrumentations(cb);
     };
 
+    $scope.$on('requestContextChanged', function (event, context) {
+        var onAnalytics = context.startsWith('machine.details') || context.startsWith('cloudAnalytics.index');
+        if (!onAnalytics && $scope.graphs.length > 0) {
+            $scope.deleteAllInstrumentations();
+        }
+    });
+
     $scope.changeMetric = function(){
         $scope.croppedMetric = true;
         $scope.croppedModule = true;
