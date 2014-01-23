@@ -306,11 +306,12 @@
                     </div>
                     <div data-ng-show="machine.type != 'virtualmachine'">
                         <div class="text-small muted">
-                            Default firewall rules that apply to this instance are:
+                            ICMP 8:0 is always open. Default firewall rules that apply to this instance are:
                             <ul>
                                 <li>Block all inbound traffic</li>
                                 <li>Allow all outbound traffic</li>
                             </ul>
+                            The default rules are overridden by your own rules. There is no ordering to your own rules and if there are contradictory rules the least restrictive rule is used.
                         </div>
                         <div data-ng-show="firewallRules.length >= 1">
                             <div class="span12">
