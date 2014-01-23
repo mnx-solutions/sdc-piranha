@@ -593,6 +593,11 @@
 
             $scope.addPort = function() {
                 var targets = $scope.data.parsed.protocol.targets;
+
+                if($scope.isAllPorts()) {
+                    targets.length = 0;
+                }
+
                 if(targets.indexOf($scope.current.port) === -1
                     && targets.indexOf(parseInt($scope.current.port)) === -1) {
                     targets.push($scope.current.port);
