@@ -8,7 +8,7 @@
 				    return 'ANY';
                 }
 
-                if (target[1] === 'all vms'){
+                if (target[1] === 'all vms' || target[1] === 'vmall') {
                     return 'ANY VMs in DC';
                 }
 			}
