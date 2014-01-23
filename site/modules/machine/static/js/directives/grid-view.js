@@ -27,6 +27,18 @@
         $scope.$watch('page', $scope.calcPageLimits);
         $scope.$watch('perPage', $scope.calcPageLimits);
         $scope.$watch('pageNumSum', $scope.calcPageLimits);
+        var rightSpacer = 100;
+
+        function calcWidth() {
+            var gridWidth = ng.element('body').width() - ng.element('.page-sidebar').width() - rightSpacer;
+            ng.element('.item-list-container').width('');
+            if(gridWidth < 1000){gridWidth = 1000;}
+            ng.element('.item-list-container').width(gridWidth);
+        }
+
+        ng.element('.sidebar-toggler').on('click', calcWidth);
+        window.onresize = calcWidth;
+        calcWidth();
 
         $scope.getLastPage(true);
         $scope.calcPageLimits();

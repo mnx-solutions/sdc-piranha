@@ -78,19 +78,9 @@
 .tag.editable {
     margin-top: 10px;
 }
-.delete {
-/*    margin-top: 5px;
-    margin-left: 30px
-*/
-}
 
 .tag input.tag-key {
 
-}
-
-.tag input.tag-value {
-/*    margin-left: 10px;
-    width: 240px;*/
 }
 
 .label-margin-fix {
@@ -144,10 +134,7 @@
 .provisioning-carousel-inner-box {
 
 }
-.provisioning-item {
-    /*padding: 5px;*/
-    /*max-width: 750px;*/
-}
+
 .reconfigure-btn {
     margin-top:10px;
 }
@@ -277,7 +264,6 @@
     margin:0;
 }
 .key {
-    /*border-bottom:1px solid #ddd;*/
     color:#888;
     margin-left:0px;
     text-align: left;
@@ -285,8 +271,6 @@
 
 .value {
     text-align: left !important;
-    /*border-bottom: 1px solid #ddd;*/
-    /*min-width: 300px;*/
 }
 
 .key.error, .value.error {
@@ -296,7 +280,6 @@
 
 .key, .value {
     padding: 0;
-    /*float: left;*/
 }
 
 .tag.editable input {
@@ -330,9 +313,7 @@
     float: right;
     margin-top: -73px;
 }
-.page-title{
-    /*margin: -4px 0 10px 0 !important;*/
-}
+
 .btn {
     background-color: #e5e5e5;
     background-image: none;
@@ -386,7 +367,6 @@
 #tableBtnAdd {
     float: right;
     margin-bottom: 10px;
-    /*margin-right: 15px;*/
 }
 .inst_page{
     padding-left: 25px;
@@ -472,7 +452,6 @@
     background-color: #afd46c;
     background-image: none;
     border: none;
-    /*padding: 6px 14px;*/
     font-size: 16px;
     cursor: default;
     outline: none;
@@ -600,9 +579,7 @@ label.checkbox {
     background-color: #d8d8d8;
     color: #333333;
 }
-ul.dropdown-menu{
-    /*min-width: 100px !important;*/
-}
+
 .select2-drop {
     width: 100%;
     margin-top: -1px;
@@ -621,13 +598,9 @@ ul.dropdown-menu{
 .select_position{
     padding-top: 20px;
     color: #666;
-    /*margin-left: -15px;*/
 }
 .page_row_info{
-    /*padding-left: 20px;*/
-    /*padding-top: 0;*/
     float: left;
-    /*margin-left: -16px;*/
 }
 .page_row_info form{
     margin: 0;
@@ -729,7 +702,6 @@ ul.dropdown-menu{
     line-height: 28px;
 }
 .accordion-inner table td:first-child {
-    /*color: #375675;*/
     color: #5D80A7;
 }
 .accordion-inner table td:last-child {
@@ -777,12 +749,6 @@ ul.dropdown-menu{
     overflow: hidden;
 }
 
-/*.details_btn_block_margin span{*/
-    /*margin-right: 4px;*/
-/*}*/
-/*.details_btn_block .icon-ok{*/
-    /*margin-top: 4px;*/
-/*}*/
 .font_size {
     font-size: 16px;
     text-align: left;
@@ -822,11 +788,7 @@ ul.dropdown-menu{
     -moz-border-radius-topright: 0;
     -moz-border-radius-bottomright: 0;
 }
-/*.custom_select{*/
-    /*-webkit-border-radius: 0;*/
-    /*-moz-border-radius: 0;*/
-    /*border-radius: 0;*/
-/*}*/
+
 .select2-container .select2-choice {
     display: block;
     height: 25px;
@@ -900,7 +862,6 @@ ul.dropdown-menu{
 }
 .details_btn_block p{
     display: inline-block;
-    /*width: 65px;*/
     height: 8px !important;
     vertical-align: top;
 }
@@ -933,16 +894,8 @@ ul.dropdown-menu{
     background-position: -264px -72px;
 }
 .loading-small{
-    /*width: 16px !important;*/
     height: 14px !important;
 }
-/*.tags-width{*/
-    /*width: 150px;*/
-    /*min-width: 300px;*/
-    /*padding-right: 10px;*/
-    /*padding-left: 10px;*/
-    /*overflow: hidden;*/
-/*}*/
 .key-width{
     min-width: 160px;
     max-width: 160px;
@@ -988,12 +941,8 @@ ul.dropdown-menu{
     padding-top: 5px;
     line-height: 20px;
 }
-.tags-delete-pos{
-    /*margin-top: 12px;*/
-    /*margin-bottom: 20px;*/
-}
+
 .item-list-container{
-    width: 996px;
     overflow: auto;
 }
 .basic-instance-box:hover{
@@ -1072,7 +1021,6 @@ ul.dropdown-menu{
     line-height: 18px;
     padding-left: 20px;
     padding-top: 20px;
-    /*padding: 20px 20px 0 20px;*/
 }
 .basic-instance-browse span p{
     font-size: 12px;
@@ -1095,7 +1043,6 @@ ul.dropdown-menu{
     padding: 0 50px 0 20px;
 }
 .basic-instance-line{
-    /*border-bottom: 1px solid #d6d8d9;*/
     margin: 18px 20px 0 20px;
 }
 .basic-instance-btn.btn_s{
@@ -1230,8 +1177,7 @@ ul.dropdown-menu{
     padding-bottom: 20px;
 }
 .dd-btn{
-    /*width: 75px !important;*/
-    min-width: 0px !important;
+    min-width: 0 !important;
     text-align: left;
 }
 .dd-btn button:hover{
@@ -1267,9 +1213,6 @@ ul.dropdown-menu{
     margin-right: 4px;
     margin-top: 4px;
     background-color: #eef0f2;
-    /*background-image: url("../img/bg-dot-by-dot.png");*/
-    /*background-repeat: no-repeat;*/
-    /*background-position: 0 0;*/
 }
 .advanced-instance-box:hover{
     background-color: #e2e8ec !important;
@@ -1307,13 +1250,7 @@ ul.dropdown-menu{
     max-height: 65px;
     min-height: 65px;
 }
-.advanced-instance-btn-block{
-    /*position: absolute;*/
-    /*text-transform: uppercase;*/
-    /*font-weight: bold;*/
-    /*float: right;*/
-    /*margin: 0 0 0 105px;*/
-}
+
 .advaced-instance-btn{
     width: 56px!important;
     height: 24px;
@@ -1333,9 +1270,7 @@ ul.dropdown-menu{
     padding-bottom: 30px;
     padding-top: 5px;
 }
-/*.advanced-ci-step1{
-    padding-top: 60px;
-}*/
+
 .row-fluid.carousel-container {
     margin-top: 75px;
 }
@@ -1420,7 +1355,6 @@ ul.dropdown-menu{
     color:white;
     background: #3d3d3d;
     font-weight: 300;
-    /*padding-left: 10px;*/
 }
 .wizard-steps .active-step p:before {
     border-top: 17px solid #3d3d3d;
@@ -1442,7 +1376,6 @@ ul.dropdown-menu{
     content: "";
     top: 0;
     left: -17px;
-    /*border: 0;*/
     border-bottom: 0;
     border-top: 0;
 }
@@ -1490,7 +1423,6 @@ ul.dropdown-menu{
     height: 50px;
     width: 100px;
     display: inline-block;
-    /*padding-left: 10px;*/
     padding-right: 10px;
     text-align: left;
     vertical-align: middle;
@@ -1541,7 +1473,6 @@ ul.dropdown-menu{
     background-color: #eef0f2;
     border: 1px solid #dadcdd;
     margin-left: 9px;
-    /*margin-top: 11px;*/
 }
 #accordion2 .accordion-heading .accordion-toggle {
     padding: 0;
@@ -1621,8 +1552,6 @@ ul.dropdown-menu{
 .selected-package-box{
     width: 253px;
     height: 420px;
-    /*min-height: 360px;*/
-    /*max-height: 600px;*/
     background-color: #fef1d2;
 }
 .selected-package-box .selected-package-box-content{
@@ -1649,7 +1578,6 @@ ul.dropdown-menu{
     margin-top: -5px;
     padding-top: 7px;
     padding-right: 10px;
-    /*display: inline-block;*/
     word-wrap: break-word;
 }
 .selected-package-box-3 h2{
@@ -1665,7 +1593,6 @@ ul.dropdown-menu{
     background-color: #fffbf2;
     padding: 0;
     font-size: 12px;
-    /*margin-top: -6px;*/
     font-weight: 400;
 }
 .dataset-desc{
@@ -1706,12 +1633,6 @@ ul.dropdown-menu{
     min-height: 490px;
 }
 
-/*.vertical-line{*/
-    /*border-right: 1px solid #cbc1a8;*/
-    /*height: 100%;*/
-    /*padding-top: 25px;*/
-    /*padding-bottom: 25px;*/
-/*}*/
 .selected-package-box-1{
     min-width: 200px;
     max-width: 200px;
@@ -1728,8 +1649,6 @@ ul.dropdown-menu{
     padding: 0 0 0 25px;
 }
 .selected-package-box-3{
-    /*min-width: 200px;*/
-    /*max-width: 200px;*/
     padding: 25px;
     display: inline-block;
 }
@@ -1748,9 +1667,6 @@ ul.dropdown-menu{
     width: 100px;
     float: left;
 }
-/*.table-review table td{*/
-    /*vertical-align: top;*/
-/*}*/
 
 .small-text-info{
     text-align: left;
@@ -1779,7 +1695,6 @@ ul.dropdown-menu{
 .networks-box-3 span{
     font-size: 14px;
     font-weight: 300;
-    /*padding-left: 5px;*/
 }
 .networks-box-3 input[type=checkbox]{
     margin-right: 5px;
@@ -1791,9 +1706,7 @@ ul.dropdown-menu{
     width: 137px;
     border-radius: 0;
 }
-.tags-input-box input[type=text]{
-    /*z-index: 0;*/
-}
+
 .tags-text-p{
     line-height: 20px;
 }
@@ -1824,18 +1737,15 @@ ul.dropdown-menu{
     height: 16px;
     float: left;
     margin-top: 0;
-    /*position: relative;*/
-    /*left: 3px;*/
     background-image: url("../img/icon-chart.png");
     background-repeat: no-repeat;
     vertical-align: middle;
     padding-right: 10px;
 }
 .container-grid {
-    width: 996px;
-    /*padding-left: 18px;*/
     padding-bottom: 55px;
     float: left;
+    width: 100%;
 }
 
 .remove-icon {
@@ -1911,7 +1821,6 @@ ul.dropdown-menu{
     text-decoration:none;
     background-color:#ff6600;
     padding: 10px 20px;
-    /*padding: 20px;*/
     border: 0;
     border-radius: 0;
 }
@@ -1983,4 +1892,7 @@ ul.dropdown-menu{
 }
 .overflow-accordion{
     overflow: scroll;
+}
+.one-k-width{
+    width: 1000px !important;
 }

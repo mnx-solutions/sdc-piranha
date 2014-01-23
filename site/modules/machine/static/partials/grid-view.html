@@ -114,9 +114,7 @@
                             <span data-ng-show="!object.firewall_enabled && !object.fireWallActionRunning">no</span>
                             <span data-ng-show="object.fireWallActionRunning" class="loading-small"></span>
                         </span>
-                        <!--<span data-ng-switch-default>{{prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}</span>-->
                     </td>
-                    <td width="1000"></td>
                 </tr>
             </tbody>
         </table>
@@ -135,29 +133,9 @@
             </select>
             <span>&nbsp;records per page</span>
     </div>
-        <!--<div class="span3 pagination pagination-small pagination-centered">-->
-            <!--<ul class="pagination grid-view-pagination pull-left" data-ng-show="perPage < 9000" >-->
-                <!--<li data-ng-click="showAll();" data-translate>Show All</li>-->
-            <!--</ul>-->
-            <!--<ul class="pagination grid-view-pagination pull-left" data-ng-show="perPage > 9000" >-->
-                <!--<li data-ng-click="showPaginated();" data-translate>Show Paginated</li>-->
-            <!--</ul>-->
-        <!--</div>-->
         <div class="pagination pagination-right">
             <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
         </div>
-        <!--<div class="span3 pull-right pagination">-->
-            <!--<div class="btn-group pull-right">-->
-                <!--<button class="btn btn-mini"-->
-                        <!--data-translate-attributes="data-original-title"-->
-                        <!--data-toggle="tooltip"-->
-                        <!--data-placement="right"-->
-                        <!--data-html="true"-->
-                        <!--data-original-title="Export machine list in .csv"-->
-                        <!--data-ng-click="export('csv')"-->
-                        <!--data-translate>Export .csv</button>-->
-            <!--</div>-->
-        <!--</div>-->
     </div>
     <div style="display:none;" data-ng-bind-html-unsafe="iframe"></div>
 </div>
