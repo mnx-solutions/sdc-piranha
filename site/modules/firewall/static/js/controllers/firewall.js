@@ -904,6 +904,7 @@
 					        $scope.data = rule.cleanRule(object);
 
                             $scope.refreshSelects();
+                            $scope.filterInstances();
                             $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
 				        },
