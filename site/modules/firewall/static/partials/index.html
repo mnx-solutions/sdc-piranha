@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="row-fluid notice-block" data-ng-show="firewallDisabledMachines.length > 0">
-            The following instances do not have Firewall Rules enabled. You can enable Firewall Rules from the <a href="#!/compute">Instances page</a> or using <a href="http://apidocs.joyent.com/cloudapi/#firewallrules">CloudAPI</a>.
+            The following instances do not have Firewall Rules enabled. You can view all of the rules that apply to each instance on their own instance details page. There you can also enable the Firewall Rules or by using <a href="http://apidocs.joyent.com/cloudapi/#firewallrules">CloudAPI</a>:
             <div data-ng-repeat="machine in firewallDisabledMachines">
                 <a href="#!/compute/instance/{{machine.id}}">{{$index+1}}. {{machine.name}} <span class="muted">({{machine.id}})</span></a>
             </div>
@@ -67,7 +67,8 @@
                     <div class="span12 fw-left-part fw-input-container">
                         <div class="row">
                             <div class="span8">
-                                By default all machines that have Firewall enabled have all incoming connections denied and all outgoing connection allowed. There is no order of firewall rules and least restrictive rule will be applied.
+<p>Adding or modifying a Firewall Rule will affect all instances in the DC where Firewall Rules is enabled and that match the TO condition.</p>
+<p>There is no ordering to your own rules and if there are contradictory rules the least restrictive rule is used. ICMP 8:0 is always open to support echo requests using <code>ping</code>.</p>
                             </div>
 
                             <div class="span4">
