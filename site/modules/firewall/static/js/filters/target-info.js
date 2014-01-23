@@ -9,7 +9,7 @@
                 }
 
                 if (target[1] === 'all vms' || target[1] === 'vmall') {
-                    return 'ANY VMs in DC';
+                    return 'All my VMs in DC';
                 }
 			}
 			if(target[0] === 'tag' && ng.isArray(target[1])) {
