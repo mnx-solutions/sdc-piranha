@@ -168,33 +168,27 @@
                     active: false
                 },
                 {
-                    id: 'dataset',
-                    name: 'Dataset',
-                    sequence: 15,
-                    active: false
-                        },
-                {
                     id: 'firewall_enabled',
                     name: 'Firewall Enabled',
-                    sequence: 16,
+                    sequence: 15,
                     active: false
                         },
                 {
                     id: 'package',
                     name: 'Package',
-                    sequence: 17,
+                    sequence: 16,
                     active: false
                         },
                 {
                     id: '$$hashKey',
                     name: '$$hashKey',
-                    sequence: 18,
+                    sequence: 17,
                     active: false
                         },
                 {
                     id: 'ips',
                     name: 'IP-s',
-                    sequence: 19,
+                    sequence: 18,
                     active: false
                     }
             ];
