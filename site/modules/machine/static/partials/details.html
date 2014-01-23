@@ -443,16 +443,16 @@
             <p data-translate>Reboot</p>
         </button>
         </div>
-    <div data-ng-controller="cloudController" ng-init="short=true;createDefaultInstrumentations()">
+    <div data-ng-controller="cloudController" ng-init="createDefaultInstrumentations()">
         <div class="detail_chart" >
             <div class="loading-small" data-ng-hide="cpuGraphs && memGraphs"></div>
-            <graph data-ng-repeat="i in cpuGraphs" options="i" style="max-width: 480px;"></graph>
+            <graph data-ng-repeat="graph in cpuGraphs" options="graph" style="max-width: 480px;"></graph>
 
         <div class="detail_chart">
-            <graph data-ng-repeat="i in memGraphs" options="i" style="max-width: 480px;"></graph>
+            <graph data-ng-repeat="graph in memGraphs" options="graph" style="max-width: 480px;"></graph>
         </div>
         <div class="detail_chart">
-            <graph data-ng-repeat="i in nicGraphs" options="i" style="max-width: 480px;"></graph>
+            <graph data-ng-repeat="graph in nicGraphs" options="graph" style="max-width: 480px;"></graph>
         </div>
     </div>
         <a href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right"><i class="chart-icon"></i>View Detailed Analytics</a>

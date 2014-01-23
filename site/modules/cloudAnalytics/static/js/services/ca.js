@@ -230,7 +230,8 @@
                     len += Object.keys(this.public[datacenter]).length;
                     for (var id in this.public[datacenter]) {
                         this.public[datacenter][id].remove(function(){
-                            if (--len === 0 && cb) {
+                            len -= 1;
+                            if (len === 0 && cb) {
                                 cb();
                             }
                         })

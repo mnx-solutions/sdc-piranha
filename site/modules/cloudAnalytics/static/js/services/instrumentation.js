@@ -189,9 +189,9 @@ var instrumentations = {};
         };
 
         function _getUUID(zoneId, opts) {
-            var o = opts.createOpts.datacenter ? opts.createOpts : opts.createOpts.init;
+            var options = opts.createOpts.datacenter ? opts.createOpts : opts.createOpts.init;
 
-            return [zoneId, o.datacenter, o.module, o.stat].join(':');
+            return [zoneId, options.datacenter, options.module, options.stat].join(':');
         }
 
         var service = {};

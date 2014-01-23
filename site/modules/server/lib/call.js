@@ -61,6 +61,7 @@ function Call(opts) {
     var _bind = false;
     var _session = [];
     var _done = false;
+    var _stack = null;
 
     function wrapEnum(obj) {
         Object.keys(obj).forEach(function (k) {
@@ -206,10 +207,12 @@ function Call(opts) {
                 if (_done) {
                     var stack = new Error().stack;
                     self.log.error('Tried to call done on already done call', err, result, stack);
+                    self.log.error('Previous stack trace', _stack);
                     return;
                 }
 
                 _done = true;
+                _stack = new Error().stack;
                 self.update(err, result, true);
             }
         },

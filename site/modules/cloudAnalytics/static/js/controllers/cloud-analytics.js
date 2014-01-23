@@ -1,5 +1,4 @@
 'use strict';
-var instsCache = {};
 (function (app, ng) {
     app.controller(
             'cloudController',
@@ -39,21 +38,17 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
     $scope.croppedMetric = true;
 
     function createNamedGraphs() {
-        $scope.cpuGraphs = $scope.graphs.filter(function (e) {
-            return e.instrumentations.filter(function (i) {
-                return i.stat === 'usage';
-            }).length;
-        }).slice(0, 1);
-        $scope.memGraphs = $scope.graphs.filter(function (e) {
-            return e.instrumentations.filter(function (i) {
-                return i.stat === 'rss';
-            }).length;
-        }).slice(0, 1);
-        $scope.nicGraphs = $scope.graphs.filter(function (e) {
-            return e.instrumentations.filter(function (i) {
-                return i.stat === 'vnic_bytes';
-            }).length;
-        }).slice(0, 1);
+        function getGraph(stat) {
+            return $scope.graphs.filter(function (e) {
+                return e.instrumentations.filter(function (i) {
+                    return i.stat === stat;
+                }).length;
+            }).slice(0, 1);
+        }
+        
+        $scope.cpuGraphs = getGraph('usage');
+        $scope.memGraphs = getGraph('rss');
+        $scope.nicGraphs = getGraph('vnic_bytes');
     }
 
     $scope.$watch('ca.deletequeue.length', function(newvalue){
@@ -92,7 +87,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                 $scope.metrics = $scope.conf.metrics;
                 $scope.fields = $scope.conf.fields;
 
-                $scope.ca.listAllInstrumentations($scope.zoneId, function (listErr, time, insts) {
+                $scope.ca.listAllInstrumentations($scope.zoneId, function (listErr, time, instrumentations) {
                     if (!$scope.endtime && time) {
                         $scope.endtime = time;
                         tick();
@@ -114,15 +109,12 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                         );
                     }
 
-                    for (var i in insts) {
-                        var inst = insts[i];
-                        instsCache[inst._datacenter] = instsCache[inst._datacenter] || {};
-                        instsCache[inst._datacenter][$scope.zoneId] = instsCache[inst._datacenter][$scope.zoneId] || {};
-                        var z = instsCache[inst._datacenter][$scope.zoneId][-1 + ':' + inst.module + ':' + inst.stat] = {
-                            instrumentations: [inst],
-                            title: $scope.ca.instrumentations[inst._datacenter][inst.id].graphtitle
-                        };
-                        $scope.graphs.push(z);
+                    for (var i in instrumentations) {
+                        var instrumentation = instrumentations[i];
+                        $scope.graphs.push({
+                            instrumentations: [instrumentation],
+                            title: $scope.ca.instrumentations[instrumentation._datacenter][instrumentation.id].graphtitle
+                        });
                     }
                     createNamedGraphs();
                 });
@@ -157,17 +149,15 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
 
     $scope.createDefaultInstrumentations = function() {
         $scope.deleteAllInstrumentations(function () {
-            $timeout(function () {
-                if (!$scope.zones.final) {
-                    $scope.$watch('zones.final', function (final) {
-                        if (final) {
-                            $scope._createDefaultInstrumentations();
-                        }
-                    });
-                } else {
-                    $scope._createDefaultInstrumentations();
-                }
-            }, 1000);
+            if (!$scope.zones.final) {
+                $scope.$watch('zones.final', function (final) {
+                    if (final) {
+                        $scope._createDefaultInstrumentations();
+                    }
+                });
+            } else {
+                $scope._createDefaultInstrumentations();
+            }
         });
     };
 
@@ -251,58 +241,14 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
             }]
         ];
 
-        var dTitles = [
-            'CPU: usage',
-            'CPU: wait time',
-            'Memory: resident set size vs max resident size',
-            'Memory: excess memory reclaimed',
-            'ZFS: used space vs unused quota',
-            'Network: utilization'
-        ];
         var len = dOptions.length;
         for (var opt in dOptions) {
-            (function (index, datacenter) {
-                $scope.ca.createInstrumentations($scope.zoneId, dOptions[index], function (errs, inst) {
-                    if (--len === 0) {
-                        $scope.describeCa();
-                    }
-/*
-                    if (!errs.length) {
-                        if (!$scope.endtime) {
-                            $scope.endtime = Math.floor(inst[0].crtime / 1000) - 1;
-                            tick();
-                        }
-                        var i = instsCache[datacenter][$scope.zoneId][index + ':' + dOptions[index].module + ':' + dOptions[index].stats] = {
-                            instrumentations: inst,
-                            title: dTitles[index]
-                        };
-                        $scope.graphs.push(i);
-                    } else {
-                        var errors = '';
-                        datacenter = null;
-
-                        for (var e in errs) {
-                            var err = errs[e];
-                            errors += err.message ? (err.message + ' ') : ' unable to create instrumentation';
-
-                            if (err.datacenter) {
-                                datacenter = err.datacenter;
-                            }
-                        }
-
-                        util.error(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Error'
-                            ),
-                            datacenter ? datacenter + ': ' + errors : errors,
-                            function () {}
-                        );
-                    }
-*/
-                });
-            })(opt, datacenter);
+            $scope.ca.createInstrumentations($scope.zoneId, dOptions[opt], function () {
+                len -= 1;
+                if (len === 0) {
+                    $scope.describeCa();
+                }
+            });
         }
     };
 
@@ -349,16 +295,16 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
             datacenter: datacenter
         };
 
-        $scope.ca.createInstrumentations($scope.zoneId, [ options ], function (errs, insts) {
+        $scope.ca.createInstrumentations($scope.zoneId, [ options ], function (errs, instrumentations) {
             if (!errs.length) {
                 if (!$scope.endtime) {
-                    $scope.endtime = Math.floor(insts[0].crtime / 1000) - 1;
+                    $scope.endtime = Math.floor(instrumentations[0].crtime / 1000) - 1;
                     tick();
                 }
 
-                var title = $scope.ca.instrumentations[insts[0]._datacenter][insts[0].id].graphtitle;
+                var title = $scope.ca.instrumentations[instrumentations[0]._datacenter][instrumentations[0].id].graphtitle;
                 $scope.graphs.push({
-                    instrumentations: insts,
+                    instrumentations: instrumentations,
                     title: title
                 });
             } else {
