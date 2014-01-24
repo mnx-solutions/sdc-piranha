@@ -55,7 +55,11 @@ module.exports = function execute(scope, app) {
     });
 
     app.get('/changepassword/:uuid', function (req, res, next) {
-        res.redirect(config.sso.url + '/changepassword/' + req.params.uuid);
+        var url = config.sso.url + '/changepassword/' + req.params.uuid;
+        if (config.features.useBrandingOrange === 'enabled') {
+            url += '?branding=orange';
+        }
+        res.redirect(url);
     });
 
     /* SSH keys logic */
