@@ -302,7 +302,9 @@
                     </legend>
 
                     <div data-ng-show="machine.type == 'virtualmachine'">
+                        <div class="text-small muted">
                         {{machine.type}} instances are not yet supported by the FWAPI.
+                        </div>
                     </div>
                     <div data-ng-show="machine.type != 'virtualmachine'">
                         <div class="text-small muted">
