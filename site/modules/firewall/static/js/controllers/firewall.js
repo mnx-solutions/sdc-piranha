@@ -46,27 +46,21 @@
                 $scope.openRuleForm = !$scope.openRuleForm;
             };
 
-            var MAX_IN_DROPDOWN = 3; // maximum Vms and Tags in default dropdown
+            function query(options, type){
+                if(!type) {
+                    type = false;
+                }
 
-            function query(options){
                 var results = [];
 
-
-                if(options.term === '') {
+                if(options.term === '' && !type) {
                     results = ng.copy($scope.dropdown);
-
-                    if(results[1].children.length > MAX_IN_DROPDOWN) {
-                        results[1].children.splice(MAX_IN_DROPDOWN);
-                    }
-                    if(results[2].children.length > MAX_IN_DROPDOWN) {
-                        results[2].children.splice(MAX_IN_DROPDOWN);
-                    }
                 } else {
                     var vms = $scope.vms.filter(function(vm){
-                        return (vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1);
+                        return ((vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1)) && vm.datacenter === $scope.datacenter;
                     });
                     var tags = $scope.tags.filter(function(tag){
-                        return (tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1);
+                        return ((tag.id.indexOf(options.term) !== -1) || (tag.text.indexOf(options.term) !== -1)) && tag.datacenter === $scope.datacenter;
                     });
 
                     results = [{
@@ -76,12 +70,29 @@
                         text: "Tags",
                         children: tags
                     }];
+
+                    if(type == 'Instances') {
+                        results = [results[0]];
+                    }
+
+                    if(type == 'Tags') {
+                        results = [results[1]];
+                    }
                 }
 
                 options.callback({
                     more: false,
                     results: results
                 });
+            }
+
+
+            function instancesQuery(o) {
+                return query(o, 'Instances');
+            }
+
+            function tagsQuery(o) {
+                return query(o, 'Tags');
             }
 
             function extractVmInfo(machines) {
@@ -122,7 +133,7 @@
 
             }
 
-            function createCombobox(id, objId, propId) {
+            function createCombobox(id, objId, propId, query, addOnSelect) {
                 return $(id).select2({
                     width: '100%',
                     query: query,
@@ -130,13 +141,16 @@
                 }).change(function(e){
                     $scope.$apply(function(){
                         $scope[objId][propId] = ng.fromJson(e.val);
+                        if(addOnSelect) {
+                            addOnSelect(ng.fromJson(e.val));
+                        }
                     });
                 });
             }
 
             // Create target comboboxes
-            var from = createCombobox('#fromSelect', 'current', 'from');
-            var to = createCombobox('#toSelect', 'current', 'to');
+            var from = createCombobox('#fromSelect', 'current', 'from', query, false);
+            var to = createCombobox('#toSelect', 'current', 'to', query, false);
 
             $scope.CIDRs = [];
             for(var i=0; i<=32; i++) {
@@ -199,77 +213,31 @@
                 }
             });
 
-            $scope.$watch('current.from', function (obj) {
-                if (obj) {
+            $scope.$watch('current.from', function (obj, oldObj) {
+                if (obj && (!oldObj || (obj.type != oldObj.type))) {
                     switch (obj.type) {
                         case 'vm':
-                            if (obj.text) {
-                                var vm = null;
-
-                                // Autocomplete?
-                                if (obj.text.length >= 3) {
-                                    for (var i = 0, c = $scope.vms.length; i < c; i++) {
-                                        if ($scope.vms[i].text.indexOf(obj.text) !== -1) {
-                                            vm = $scope.vms[i];
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (vm) {
-                                    try {
-                                        $scope.current.from.text = JSON.parse(vm.id).text;
-                                    } catch (err) {
-
-                                    }
-
-                                    if ($scope.fromForm.fromValue) {
-                                        $scope.fromForm.fromValue.$setValidity('fromValue', true);
-                                    }
-                                } else {
-                                    $scope.fromForm.fromValue.$setValidity('fromValue', false);
-                                }
-
-                                $scope.fromForm.$pristine = false;
-                            }
+                            setTimeout(function(){
+                                createCombobox('#fromInstanceSelect', 'current', 'from', instancesQuery, function(m) {
+                                    $('#fromInstanceSelect').select2('val', m.text);
+                                    $scope.fromForm.$pristine = false;
+                                });
+                            }, 1);
                             break;
                     }
                 }
             }, true);
 
-            $scope.$watch('current.to', function (obj) {
-                if (obj) {
+            $scope.$watch('current.to', function (obj, oldObj) {
+                if (obj && (!oldObj || (obj.type != oldObj.type))) {
                     switch (obj.type) {
                         case 'vm':
-                            if (obj.text) {
-                                var vm = null;
-
-                                // Autocomplete?
-                                if (obj.text.length >= 3) {
-                                    for (var i = 0, c = $scope.vms.length; i < c; i++) {
-                                        if ($scope.vms[i].text.indexOf(obj.text) !== -1) {
-                                            vm = $scope.vms[i];
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (vm) {
-                                    try {
-                                        $scope.current.to.text = JSON.parse(vm.id).text;
-                                    } catch (err) {
-
-                                    }
-
-                                    if ($scope.toForm.toValue) {
-                                        $scope.toForm.toValue.$setValidity('toValue', true);
-                                    }
-                                } else {
-                                    $scope.toForm.toValue.$setValidity('toValue', false);
-                                }
-
-                                $scope.toForm.$pristine = false;
-                            }
+                            setTimeout(function(){
+                                createCombobox('#toInstanceSelect', 'current', 'to', instancesQuery, function(m) {
+                                    $('#toInstanceSelect').select2('val', m.text);
+                                    $scope.toForm.$pristine = false;
+                                });
+                            }, 1);
                             break;
                     }
                 }
@@ -313,19 +281,12 @@
                     id: ng.toJson({type: 'vm'}),
                     text:'Instance'
                 }]
-            },{
-                text: "Instances",
-                children: $scope.vms
-            },{
-                text: "Tags",
-                children: $scope.tags
             }];
             $scope.datacenters = Datacenter.datacenter();
             $scope.datacenter = null;
 
 	        $scope.selectDatacenter = function (name) {
 		        $scope.datacenter = name;
-                $scope.filterInstances();
             };
 
             $scope.actions = [{
@@ -368,17 +329,6 @@
                 $('#protocolSelect').select2('val', $scope.data.parsed.protocol.name);
                 $('#dcSelect').select2('enable').select2('val', $scope.data.datacenter);
             };
-
-            $scope.filterInstances = function() {
-                // filter vms using selected dc
-                $scope.dropdown[1].children = $scope.vms.filter(function(m) {
-                    return m.datacenter === $scope.datacenter;
-                });
-                $scope.dropdown[2].children = $scope.tags.filter(function(t) {
-                    return t.datacenter === $scope.datacenter;
-                });
-            };
-
 
             $('#actionSelect').select2({
                 data: $scope.actions,
@@ -440,7 +390,6 @@
                         $scope.$apply(function () {
                             $scope.datacenter = e.val;
                             $scope.selected.datacenter = e.val;
-                            $scope.filterInstances();
                         });
                     }).select2('val', $scope.selected.datacenter);
 
@@ -497,7 +446,6 @@
                             }
                         });
 
-                        $scope.filterInstances();
                         $scope.machinesLoading = false;
                     }
                 });
@@ -647,7 +595,7 @@
                 if (data.type === 'wildcard') {
                     clearTarget(direction);
                 }
-                
+
                 if ($scope.data.parsed[direction].length === 1 &&
                     $scope.data.parsed[direction][0][0] === 'wildcard') {
                     $scope.data.parsed[direction] = [];
@@ -909,7 +857,6 @@
 					        $scope.data = rule.cleanRule(object);
 
                             $scope.refreshSelects();
-                            $scope.filterInstances();
                             $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
 				        },
