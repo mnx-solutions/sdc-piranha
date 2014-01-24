@@ -48,7 +48,7 @@
 
             $scope.disableLoading = function() {
                 $scope.loading = false;
-            }
+            };
 
             function query(options, type){
                 if(!type) {
