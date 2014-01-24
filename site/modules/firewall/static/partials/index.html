@@ -37,7 +37,7 @@
             <fieldset>
                 <legend class="text-right">
                     <span data-ng-show="data.uuid">Edit rule {{data.uuid}} <a class="pointer" data-ng-click="resetData()">(create new instead)</a></span>
-                    <button class="btn btn-link btn-large" data-ng-hide="data.uuid || !rules.length" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
+                    <button class="btn btn-joyent-blue" style="margin-top:-100px;" data-ng-hide="data.uuid || !rules.length" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
                 </legend>
 
                 <div data-ng-show="openRuleForm">
