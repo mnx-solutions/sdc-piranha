@@ -110,16 +110,15 @@
         };
 
         $scope.matchesFilter = function (obj) {
-            var all = true;
             if($scope.filterAll) {
-                all = $scope.props.some(function (el) {
+                return $scope.props.some(function (el) {
                     if(!el.active) {
                         return false;
                     }
 
                     var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
-                    if (ng.isNumber(subject)) {
+                    if (ng.isNumber(subject) || typeof subject === "boolean") {
                         subject = subject.toString();
                     }
 
@@ -133,25 +132,7 @@
                 });
             }
 
-            return all && !$scope.props.some(function (el) {
-                if(!el.active || !el.filter) {
-                    return false;
-                }
-
-                var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
-
-                if (ng.isNumber(subject)) {
-                    subject = subject.toString();
-                }
-
-                if (ng.isObject(subject) || ng.isArray(subject)){
-                    subject = JSON.stringify(subject)
-                }
-
-                var needle = el.filter.toLowerCase();
-
-                return (subject.toLowerCase().indexOf(needle) === -1);
-            });
+            return true;
         };
 
         $scope.changePage = function (t) {
