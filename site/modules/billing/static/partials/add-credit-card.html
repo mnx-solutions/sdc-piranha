@@ -12,7 +12,6 @@
                                id="creditCardNumber"
                                name="creditCardNumber"
                                size="40"
-                               data-ng-pattern="/^([\*\d]+)$/"
                                data-ng-model="form.creditCardNumber"
                                data-ng-class="{error: isError('creditCard.creditCardNumber')}"
                                data-ng-required="true">
@@ -20,18 +19,13 @@
                     <span class="edit-error">
                         <div class="error alert-icon"
                              data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber') || isError('creditCard.cardNumber') || isError('creditCard.cardType')">
+                             data-ng-show="invalidCCNumber">
                             Invalid credit card number
                         </div>
                         <div class="error alert-icon"
                              data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber', 'required') || isError('creditCardNumber', 'submitRequired')">
+                             data-ng-show="missingCCNumber">
                             Missing credit card number
-                        </div>
-                        <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber', 'pattern')">
-                            Invalid symbols (numbers only)
                         </div>
                     </span>
         </div>
@@ -383,8 +377,8 @@
         <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
         <p class="content-p inline-pos or">or</p>
         <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
-        <div data-ng-hide="loading" class="required-txt">
-            <span class="pull-right">required fields</span><span class="orange-asterix pull-right">*</span>
+        <div data-ng-hide="loading" class="required-txt pull-right">
+            <span class="orange-asterix">*</span>&nbsp;required fields
         </div>
         <div class="loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>

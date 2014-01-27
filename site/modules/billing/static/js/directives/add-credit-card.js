@@ -302,10 +302,13 @@
                         $scope.loading = true;
                         $scope.formSubmitted = true;
 
-                        if ($scope.paymentForm.$invalid) {
+                        if ($scope.paymentForm.$invalid || !isCCNumberValid()) {
+                            validateCCNumber();
                             $scope.loading = false;
                             return;
                         }
+
+                        $scope.invalidCCNumber = $scope.missingCCNumber = $scope.invalidCymbolsCCNumber = false;
 
                         // remove state from submittable form fields to avoid Zuora error on empty state
                         if ($scope.form.cardHolderInfo.state === '') {
@@ -414,6 +417,21 @@
                             window.scrollTo(0,0);
                         });
                     };
+
+                    function isCCNumberValid() {
+                        return (/^[\d][0-9]{15}$/gi).test($scope.form.creditCardNumber);
+                    }
+
+                    function validateCCNumber() {
+                        $scope.missingCCNumber = $scope.isError('creditCard.creditCardNumber', 'required') ||
+                            $scope.isError('creditCardNumber', 'submitRequired');
+
+                        $scope.invalidCCNumber = !isCCNumberValid() && !$scope.missingCCNumber;
+
+                        if (!$scope.invalidCCNumber || !$scope.missingCCNumber) {
+                            window.scrollTo(0,0);
+                        }
+                    }
                 },
                 templateUrl: 'billing/static/partials/add-credit-card.html'
             };
