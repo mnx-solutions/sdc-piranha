@@ -15,7 +15,7 @@
                 ndatapoints: 1
             };
 
-            _pollOptions.update = function(serverResponse) {
+            _pollOptions.update = function (serverResponse) {
                 var datapoints = serverResponse.datapoints;
                 this.last_poll_time = serverResponse.end_time;
 
@@ -222,13 +222,12 @@
             };
 
             _instrumentations.removeAll = function (cb) {
-                var len = 0;
-                if (!Object.keys(this.public).length) {
-                    cb();
-                }
+                var len = 0; 
+                var empty = true;
                 for (var datacenter in this.public) {
                     len += Object.keys(this.public[datacenter]).length;
                     for (var id in this.public[datacenter]) {
+                        empty = false;
                         this.public[datacenter][id].remove(function(){
                             len -= 1;
                             if (len === 0 && cb) {
@@ -236,6 +235,9 @@
                             }
                         })
                     }
+                }
+                if (empty) {
+                    cb();
                 }
                 this.public = {};
             };

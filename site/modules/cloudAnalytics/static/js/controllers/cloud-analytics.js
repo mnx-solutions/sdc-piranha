@@ -36,6 +36,8 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
     $scope.help = null;
     $scope.croppedModule = true;
     $scope.croppedMetric = true;
+    
+    $scope.describe = false;
 
     function createNamedGraphs() {
         function getGraph(stat) {
@@ -80,6 +82,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
     });
 
     $scope.describeCa = function () {
+        $scope.describe = true;
         $scope.ca.describeCa(function (err, conf){
             if (!err) {
                 $scope.conf = conf;
@@ -92,7 +95,6 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                         $scope.endtime = time;
                         tick();
                     }
-
                     if (listErr) {
                         util.error(
                             localization.translate(
@@ -108,8 +110,9 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                             function () {}
                         );
                     }
-
+                    var empty = true;
                     for (var i in instrumentations) {
+                        empty = false;
                         var instrumentation = instrumentations[i];
                         $scope.graphs.push({
                             instrumentations: [instrumentation],
@@ -117,6 +120,8 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                         });
                     }
                     createNamedGraphs();
+                    $scope.$emit('described', !empty);
+                    $scope.describe = false;
                 });
             } else {
                 util.error(
@@ -132,6 +137,8 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                     ),
                     function () {}
                 );
+                $scope.$emit('described', false);
+                $scope.describe = false;
             }
 
         });
@@ -148,17 +155,29 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
     };
 
     $scope.createDefaultInstrumentations = function() {
-        $scope.deleteAllInstrumentations(function () {
-            if (!$scope.zones.final) {
-                $scope.$watch('zones.final', function (final) {
-                    if (final) {
-                        $scope._createDefaultInstrumentations();
-                    }
-                });
-            } else {
-                $scope._createDefaultInstrumentations();
-            }
-        });
+        function startCreating() {
+            $scope.deleteAllInstrumentations(function () {
+                if (!$scope.zones.final) {
+                    $scope.$watch('zones.final', function (final) {
+                        if (final) {
+                            $scope._createDefaultInstrumentations();
+                        }
+                    });
+                } else {
+                    $scope._createDefaultInstrumentations();
+                }
+            });
+        }
+        
+        if ($scope.describe) {
+            $scope.$on('described', function (event, ok) {
+                if (!ok) {
+                    startCreating();
+                }
+            });
+        } else {
+            startCreating();
+        }
     };
 
     $scope._createDefaultInstrumentations = function() {
@@ -405,7 +424,9 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
         }
     };
 
-    if($scope.zoneId != null)$scope.instanceName();
+    if($scope.zoneId != null) {
+        $scope.instanceName();
+    }
 }
 
     ]);
