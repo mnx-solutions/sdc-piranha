@@ -133,3 +133,9 @@ th.protocol{
 
 .fw-data-table {
 }
+
+code.plain {
+    color: #000;
+    border: none;
+    background-color: transparent;
+}
