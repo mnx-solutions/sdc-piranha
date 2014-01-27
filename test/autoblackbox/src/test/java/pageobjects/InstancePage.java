@@ -1,15 +1,15 @@
 package pageobjects;
 
-import static com.codeborne.selenide.Condition.hasText;
-import static com.codeborne.selenide.Condition.hidden;
-import static com.codeborne.selenide.Condition.matchText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
+import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 
 import com.codeborne.selenide.ElementsCollection;
@@ -20,8 +20,6 @@ import com.codeborne.selenide.SelenideElement;
  * 
  */
 public class InstancePage {
-	private static final int BASE_TIMEOUT = Integer.parseInt(System
-			.getProperty("globaltimeout", "15000"));
 	private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System
 			.getProperty("statustimeout", "240000"));
 
@@ -32,33 +30,32 @@ public class InstancePage {
 
 	public void start() {
 		$(byText("Start")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	public void stop() {
 		$(byText("Stop")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	public void reboot() {
 		$(byText("Reboot")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	public void delete() {
 		$(byText("Delete")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
-	public void rename(String name) {
-		SelenideElement c = $("h1.machine-name");
-		c.click();
-		c.shouldNotBe(visible);
-		$(byAttribute("name", "instanceRename")).shouldBe(visible);
-		$("#instanceRename").setValue(name);
-		$(byAttribute("name", "instanceRename")).find(".icon-ok").click();
-		Common.confirmModal();
-	}
+	public static void rename(String name) {
+		clickRenameInstanceIcon();
+        instanceNameField().clear();
+		instanceNameField().setValue(name);
+        $("[data-ng-click=\"clickRename()\"]").click();
+		Common.clickYesInModal();
+        $(".loading-medium.wait-rename").waitWhile(visible, timeout);
+    }
 
 	public void validateInstanceSpecs(String type, String name, String img,
 			String version, String memory, String disk, String ip,
@@ -82,7 +79,7 @@ public class InstancePage {
 		$(byText("Resize Instance type")).shouldBe(visible);
 		$(By.name("resize")).selectOptionByValue(size);
 		$(byText("Resize")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	public void validateInstanceSize(String ram, String cpu, String disk) {
@@ -94,18 +91,21 @@ public class InstancePage {
 				matchText("Disk: " + disk));
 	}
 
-	public void addTag(String key, String value) {
-		taglistVisible();
-		$(".tag", 1).waitUntil(visible, BASE_TIMEOUT);
-		int index = $$(".tag").size() - 2; // get the insert tag row dom index
-		SelenideElement row = $(".tag", index);
-		row.shouldBe(visible);
-		row.$(byAttribute("placeholder", "Key")).setValue(key);
-		row.$(byAttribute("placeholder", "Value")).setValue(value);
-	}
+	public static void addTag(String key, String value) {
+        int lines = $$("[data-ng-repeat=\"tag in internalTags\"]").size();
+        $("[data-ng-click=\"addTag()\"]", lines-1).shouldBe(disabled);
+        $("[placeholder=\"Key\"]", lines - 1).setValue(key);
+        $("[placeholder=\"Value\"]", lines - 1).setValue(value);
+        $("[data-ng-click=\"addTag()\"]", lines-1).click();
+        WaitWhileLoadingsmall();
+    }
 
-	public static SelenideElement getTagContainerByKey(String key) {
-		taglistVisible();
+    private static void WaitWhileLoadingsmall() {
+        $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    }
+
+    public static SelenideElement getTagContainerByKey(String key) {
+        taglistVisible();
 		for (SelenideElement el : $$(".tags")) {
 			ElementsCollection ec = el.$$("input");
 			for (SelenideElement e : ec) {
@@ -138,37 +138,18 @@ public class InstancePage {
 		$(byAttribute("data-ng-form", "tagForm")).shouldBe(visible);
 	}
 
-	public void removeTag(String key) {
-		int i = getTagContainerIndexByKey(key);
-		if ($(".tags", i).$("div.editable span.delete").isDisplayed()) {
-			$(".tags", i).$(" div.editable span.delete").click();
-		} else if ($(".tags", i).$("div.row-fluid span.delete").isDisplayed()) {
-			$(".tags", i).$("div.row-fluid span.delete").click();
-		} else {
-			throw new NoSuchElementException("No tag with key:" + key
-					+ " found!");
-		}
-	}
+    public static void removeTag(String key) {
+        $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeTag(tag)\"]").click();
+        WaitWhileLoadingsmall();
+    }
 
-	public void saveInstance() {
-		$(byText("Save")).click();
-		$(byAttribute("data-ng-show", "tagsave")).waitUntil(hidden,
-				CHANGE_STATUS_TIMEOUT);
-	}
+    public static void openTagsSection() {
+        $("[data-ng-class=\"{active: accordionIcon[2] }\"]").click();
+    }
 
-	public boolean hasTag(String key, String value) {
-		try {
-			int i = getTagContainerIndexByKey(key);
-			if ($(".tags", i).$("div.row-fluid span.key").text().equals(key)
-					&& $(".tags", i).$("div.row-fluid span.value").text()
-							.equals(value)) {
-				return true;
-			}
-			return false;
-		} catch (NoSuchElementException e) {
-			return false;
-		}
-	}
+    public static boolean hasTag(String key, String value) {
+        return $(By.xpath("//span[contains(.,'\"" + key + "\":\"" + value + "\')]")).isDisplayed();
+    }
 
 	public boolean validateIP(String dataCenter, String ipRange) {
 		SelenideElement div = $(byAttribute("data-ng-show", "machine.ips"));
@@ -179,4 +160,20 @@ public class InstancePage {
 		}
 		return false;
 	}
+
+    public static void viewInstanceDetails(String instanceName) {
+        $(byText(instanceName)).click();
+    }
+
+    public static SelenideElement instanceNameField(){
+        if (!$("#instanceRename").isDisplayed()) {
+            return $(".page-title");
+        }
+        return $("#instanceRename");
+    }
+
+    public static void clickRenameInstanceIcon() {
+        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        executor.executeScript("$('.edit-text-icon').click()");
+    }
 }

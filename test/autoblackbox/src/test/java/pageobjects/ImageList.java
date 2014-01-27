@@ -2,6 +2,7 @@ package pageobjects;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.$;
 
 import org.openqa.selenium.NoSuchElementException;
 
@@ -38,11 +39,11 @@ public class ImageList {
 	}
 
 	public void checkImageDatacenter(SelenideElement row, String value) {
-		getImageDetailRow(row, 3).$(".value").shouldHave(text(value));
+        row.$(".item.row-fluid.ng-scope :nth-child(2) span span").shouldHave(text(value));
 	}
 
 	public void checkImagePublicStatus(SelenideElement row, String value) {
-		getImageDetailRow(row, 4).$(".value").shouldHave(text(value));
+		getImageDetailRow(row, 3).$(".value").shouldHave(text(value));
 	}
 
 	private SelenideElement getImageDetailRow(SelenideElement row, int i) {

@@ -113,7 +113,7 @@ public class NetworkTests extends TestWrapper {
 				.setInstanceNameValue(instanceName);
 		updateInstanceNameInList(cio.getInstanceName(), instanceName);
 		$(byText("Create instance")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	private static void updateInstanceNameInList(String instanceName,

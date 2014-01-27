@@ -125,7 +125,7 @@ public class AccountPage {
 		SelenideElement el = getSshKeyRow(keyName, holder);
 		el.$("span.title").click();
 		el.$(byText("Delete")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	/**

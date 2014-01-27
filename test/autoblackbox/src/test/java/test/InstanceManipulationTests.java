@@ -8,13 +8,10 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pageobjects.Common;
@@ -88,35 +85,6 @@ public class InstanceManipulationTests extends TestWrapper {
 		instancePage.validateInstanceSpecs("smartmachine",
 				i1.getInstanceName(), i1.getImageOs(), i1.getImageVersion(),
 				"", "", "", "", "", "");
-	}
-
-	@Test
-	public void tagOpetationTests() {
-		open("/main/#!/compute");
-		Common.checkHeadingText("Instances");
-		InstanceList.waitForInstanceList();
-		String instanceName = i1.getInstanceName();
-		$(byText(instanceName)).click();
-		Common.checkHeadingText(instanceName);
-		instancePage = page(InstancePage.class);
-		$(byText("+ Add New Tag")).click();
-		instancePage.addTag("tagName1", "tagValue1");
-		$(byText("+ Add New Tag")).click();
-		instancePage.addTag("tagName2", "tagValue2");
-		instancePage.removeTag("tagName1");
-		$(byText("+ Add New Tag")).click();
-		instancePage.addTag("tagName1", "tagValue1");
-		instancePage.saveInstance();
-		Common.errorNotPresent();
-		assertTrue(instancePage.hasTag("tagName1", "tagValue1"));
-		assertFalse(instancePage.hasTag("tagName", "tagValue1"));
-		assertFalse(instancePage.hasTag("tagName1", "tagValue"));
-		instancePage.removeTag("tagName1");
-		instancePage.removeTag("tagName2");
-		assertFalse(instancePage.hasTag("tagName1", "tagValue1"));
-		assertFalse(instancePage.hasTag("tagName2", "tagValue2"));
-		instancePage.saveInstance();
-		Common.errorNotPresent();
 	}
 
 	@Test

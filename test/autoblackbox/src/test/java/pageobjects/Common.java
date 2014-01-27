@@ -7,12 +7,20 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.Assert.assertTrue;
 
+import com.codeborne.selenide.WebDriverRunner;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.String;
+import java.util.Scanner;
 
 /**
  * Common interaction methods for UI elements
@@ -56,6 +64,11 @@ public class Common {
         $(byText(text)).click();
     }
 
+    public static void openFirewallPage(){
+        $(byText("Compute")).click();
+        $(byText("Firewall")).click();
+    }
+
     public static void openMyAccount() {
         $(byText(System.getProperty("loginusr"))).click();
         $("#link-account").click();
@@ -73,16 +86,22 @@ public class Common {
         throw new NoSuchElementException("Such element doesn't exist");
     }
 
-    public static void confirmModal() {
+    public static void clickYesInModal() {
         $(".modal").shouldBe(visible);
         $(".modal-header").exists();
-        $(".modal-footer").find(byText("OK")).click();
+        $(".modal-footer").find(byText("Yes")).click();
     }
 
-    public static void cancelModal() {
+    public static void clickNoInModal() {
         $(".modal").shouldBe(visible);
         $(".modal-header").exists();
-        $(".modal-footer").find(byText("Cancel")).click();
+        $(".modal-footer").find(byText("No")).click();
+    }
+
+    public static void clickOkInModal() {
+        $(".modal").shouldBe(visible);
+        $(".modal-header").exists();
+        $(".modal-footer").find(byText("Ok")).click();
     }
 
     public static void checkBreadcrumb(String active, String right) {
@@ -123,5 +142,55 @@ public class Common {
                     "5.84"};
         }
         return new String[]{};
+    }
+
+    public static String testInstanceName() {
+        if (System.getProperty("datacenter").equals("us-west-x")) {
+            return "selenide-created-instance-a";
+        } else if (System.getProperty("datacenter").equals("local-x")) {
+            return "forImageAutoTests";
+        }
+        return " ";
+    }
+    //looks for a value in server log by key e.g. "generatedPin" or "userId"
+    public static String getSmthingFromLog(String key) {
+        File log = new File(System.getProperty("serverLogPath"));
+        String result = null;
+        try {
+            Scanner scanner = new Scanner(log);
+            while (scanner.hasNext()) {
+                String line = scanner.nextLine();
+                if (line.contains(key)){
+                    JSONObject newJson = new JSONObject(line);
+                    result = newJson.get(key).toString();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public static void AddGridColumn(String columnName) {
+        Common.clickColumnsBtn();
+        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
+        $(By.xpath("//th[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains(.,'" + columnName + "')]")).waitUntil(visible, BASE_TIMEOUT);
+    }
+
+    public static void clickColumnsBtn() {
+        $("#button-columns").click();
+    }
+
+    public static void clickActionsBtn() {
+        $("#button-actions").click();
+    }
+
+    public static void performAction(String action) {
+        clickActionsBtn();
+        $("#option-list-actions").waitUntil(visible, BASE_TIMEOUT);
+        $("#option-list-actions").$(byText(action)).click();
     }
 }

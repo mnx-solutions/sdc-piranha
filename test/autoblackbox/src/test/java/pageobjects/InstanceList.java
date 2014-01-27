@@ -71,13 +71,13 @@ public class InstanceList {
 		SelenideElement e = Common.checkTextInCollection(
 				$$(".item-list-container .row-fluid"), instance);
 		e.find(byText(operation)).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	public void deleteInstance(String instance) {
 		Common.checkTextInCollection($$(".item-list-container .item"), instance)
 				.find(byText("Delete")).click();
-		Common.confirmModal();
+		Common.clickYesInModal();
 	}
 
 	public String getFirtstInstanceName() {
