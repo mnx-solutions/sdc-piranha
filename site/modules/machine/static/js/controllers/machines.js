@@ -194,6 +194,8 @@
                             state = 'FWAPI';
                         } else if ("virtualmachine" === object.type || !object.hasOwnProperty("firewall_enabled")) {
                             state = 'N/A';
+                        } else if ("virtualmachine" !== object.type && !object.compute_node) {
+                            state = 'N/A';
                         } else {
                             state = 'Off';
                         }

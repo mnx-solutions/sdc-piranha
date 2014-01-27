@@ -306,7 +306,12 @@
                         {{machine.type}} instances are not yet supported by the FWAPI.
                         </div>
                     </div>
-                    <div data-ng-show="machine.type != 'virtualmachine'">
+                    <div data-ng-show="machine.type != 'virtualmachine' && !machine.compute_node">
+                        <div class="text-small muted">
+                            FWAPI requires a new platform on the server.
+                        </div>
+                    </div>
+                    <div data-ng-show="machine.type != 'virtualmachine' && machine.compute_node">
                         <div class="text-small muted">
                             ICMP 8:0 is always open. With Firewall Rules enabled:
                             <ul>
