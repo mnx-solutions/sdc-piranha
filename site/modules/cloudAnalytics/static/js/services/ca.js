@@ -1,5 +1,6 @@
 'use strict';
 
+var descriptionConfig = null;
 
 (function (app, ng) {
     app.factory('ca', [
@@ -347,7 +348,7 @@
             var _description = {
                 helpPromise: $http.get('cloudAnalytics/ca/help'),
                 descriptionPromise: $http.get('cloudAnalytics/ca'),
-                configuration: null
+                configuration: descriptionConfig
             };
 
             _description._labelMetrics = function (metric) {
@@ -383,6 +384,14 @@
 
             _description.describe = function(callback) {
                 var self = this;
+                if (descriptionConfig) {
+                    if (!self.configuration) {
+                        self.configuration = descriptionConfig;
+                    }
+                    callback(null, self.configuration);
+                    return;
+                }
+                
                 var configuration = $q.all([ self.descriptionPromise, self.helpPromise ]);
 
                 configuration.then(function(response){
@@ -395,7 +404,7 @@
                         return;
                     }
 
-                    self.configuration = description.res;
+                    self.configuration = descriptionConfig = description.res;
                     self.configuration.help = help;
                     self.configuration.metrics.forEach(self._labelMetrics);
 
