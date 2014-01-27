@@ -172,25 +172,27 @@
                         $scope.clearProtocolTargets();
                     }
                     if (!data.parsed) {
+                        $scope.invalidReason = 'No rule specified';
                         $scope.validData = false;
                         return;
                     }
-                    if (!data.parsed.from || data.parsed.from.length === 0 || ($scope.isAny(data.parsed.from[0]) && $scope.isAny(data.parsed.to[0]))) {
+                    if (!data.parsed.protocol || !data.parsed.protocol.name
+                        || !data.parsed.protocol.targets || data.parsed.protocol.targets.length === 0) {
+                        $scope.invalidReason = 'A Protocol condition is needed in the firewall rule';
                         $scope.validData = false;
                         return;
                     }
-                    if (!data.parsed.to || data.parsed.to.length === 0  || ($scope.isAny(data.parsed.from[0]) && $scope.isAny(data.parsed.to[0]))) {
+                    if (!data.parsed.from || data.parsed.from.length === 0) {
+                        $scope.invalidReason = 'A From condition is needed in the firewall rule';
                         $scope.validData = false;
                         return;
                     }
-                    if (!data.parsed.protocol.name) {
+                    if (!data.parsed.to || data.parsed.to.length === 0) {
+                        $scope.invalidReason = 'A To condition is needed in the firewall rule';
                         $scope.validData = false;
                         return;
                     }
-                    if (!data.parsed.protocol.targets || data.parsed.protocol.targets.length === 0) {
-                        $scope.validData = false;
-                        return;
-                    }
+                    $scope.invalidReason = null;
                     $scope.validData = true;
                 }
             }, true);
@@ -567,26 +569,29 @@
                 $scope.protocolForm.code.$setValidity('range', false);
             };
 
+            function showErrorMessage(message) {
+                var title = 'Error';
+                var btns = [
+                    {
+                        result: 'ok',
+                        label: 'OK',
+                        cssClass: 'btn-joyent-blue'
+                    }
+                ];
+
+                return $dialog.messageBox(title, message, btns)
+                    .open()
+                    .then(function (result) {
+                    });
+            }
+
             function addTarget (direction, other) {
                 var target = [];
                 var data = $scope.current[direction];
                 var otherDir = $scope.data.parsed[other];
 
                 if (otherDir[0] && ($scope.isAny(otherDir[0]) && $scope.isAny(data))) {
-                    var title = 'Error';
-                    var message = 'FROM and TO both cannot be set to ANY. Please choose one.';
-                    var btns = [
-                        {
-                            result: 'ok',
-                            label: 'OK',
-                            cssClass: 'btn-joyent-blue'
-                        }
-                    ];
-
-                    return $dialog.messageBox(title, message, btns)
-                        .open()
-                        .then(function (result) {
-                        });
+                    showErrorMessage('FROM and TO both cannot be set to ANY. Please choose one.');
 
                     clearTarget(direction);
                     return;
@@ -717,6 +722,10 @@
             };
 
             $scope.saveRule = function () {
+                if (!$scope.validData) {
+                    showErrorMessage($scope.invalidReason);
+                    return;
+                }
                 return ($scope.data.uuid ? $scope.updateRule : $scope.createRule)();
             };
             $scope.deleteRule = function(r) {
