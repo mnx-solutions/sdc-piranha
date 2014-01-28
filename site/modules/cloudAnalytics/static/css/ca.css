@@ -79,7 +79,7 @@
 
 .options-ctrl{
     background-color: #fffbf2 !important;
-    padding: 0 10px;
+    padding: 0 6px;
     min-width: 10px;
     text-shadow: none;
     color: #f60;
@@ -118,4 +118,43 @@
     color: #f60;
     font-size: 16px;
     font-weight: 500;
+}
+.toggle-graf-width{
+    width: 94%;
+}
+.toggle-graf-width button{
+    background-color: #e9eff4!important;
+}
+.del-btn-graf{
+    width: 43px;
+    height: 36px;
+}
+.rickshaw_legend{
+    background-color: transparent;
+    color: #333333;
+    padding: 0;
+    cursor: default;
+}
+.rickshaw_graph {
+    max-width: 485px !important;
+}
+.rickshaw_legend .line .swatch {
+    border-radius: 0 !important;
+    vertical-align: middle;
+    cursor: default;
+}
+.rickshaw_legend label {
+    cursor: default;
+}
+.heatmap-pos{
+    vertical-align: top;
+    padding-left: 10px;
+}
+.graf-radio-group {
+    float: right;
+    margin-top: -44px;
+    padding-right: 75px;
+}
+.chart-padding{
+    padding-bottom: 7px;
 }

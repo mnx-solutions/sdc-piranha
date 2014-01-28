@@ -607,7 +607,7 @@ p.margin-mini {
 
 
 .listing span2,.listing span5, .listing .container{
-	padding:0px;
+	padding:0;
 }
 .control-group .key,.control-group .value{
     border-bottom:none;
@@ -1360,4 +1360,66 @@ select::-ms-expand {
     line-height: 27px;
     color: #F60;
     margin-top: 3px;
+}
+.remove-icon{
+    width: 13px;
+    height: 13px;
+    background-image: url("../img/remove-icon.png");
+    background-repeat: no-repeat;
+    vertical-align: middle;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.toggle-graf-btn{
+    text-shadow:none !important;
+    width:100%;
+    text-align: left;
+    font-size: 16px !important;
+}
+.toggle-btn-bg, .toggle-btn-bg:hover, .toggle-btn-bg:focus, .toggle-btn-bg.disabled{
+    background-color: #e9eff4 !important;
+}
+.toggle-btn-bg.disabled{
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+
+.toggle-btn-bg:focus{
+    outline: none !important;
+    outline-offset: 0 !important;
+}
+.toggle-btn-bg p{
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: 95%;
+    vertical-align: top;
+    margin: 0 !important;
+}
+
+.graf-radio-btn{
+    background-color: #d6dce0 !important;
+    padding: 3px 10px !important;
+    text-shadow: none !important;
+}
+.graf-radio-btn.active{
+    background-color: #ffffff !important;
+    /*padding: 3px 10px;*/
+}
+
+.accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i, .toggle {
+    width: 15px;
+    height: 15px;
+    background-repeat: no-repeat;
+    background-image: url("../img/accord_i_plus.png") !important;
+    padding-right: 25px;
+    vertical-align: middle;
+}
+.accordion-toggle.active i, .toggle.active {
+    width: 15px;
+    height: 15px;
+    background-repeat: no-repeat;
+    background-image: url("../img/accord_i_down.png") !important;
+    padding-right: 25px;
+    vertical-align: middle;
 }
