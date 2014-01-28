@@ -46,6 +46,10 @@
                 $scope.openRuleForm = !$scope.openRuleForm;
             };
 
+            $scope.disableLoading = function() {
+                $scope.loading = false;
+            };
+
             function query(options, type){
                 if(!type) {
                     type = false;
@@ -677,7 +681,7 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
-                });
+                }, $scope.disableLoading);
             };
 
             $scope.openPopovers = [];
@@ -718,7 +722,7 @@
                     if(r.id) {
                         $scope.refresh();
                     }
-                });
+                }, $scope.disableLoading);
             };
 
             $scope.saveRule = function () {
@@ -745,7 +749,7 @@
                         $scope.loading = true;
                         rule.deleteRule(r).then(function(){
                             $scope.refresh();
-                        });
+                        }, $scope.disableLoading);
                         $scope.openRuleForm = false;
                     });
             };
@@ -765,7 +769,7 @@
                     $scope.resetCurrent();
                     $scope.setRules(r);
                     $scope.loading = false;
-                });
+                }, $scope.disableLoading);
             };
 
 	        $scope.gridOrder = [];
