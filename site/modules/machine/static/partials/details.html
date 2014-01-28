@@ -6,34 +6,32 @@
 </ul>
 
 <h3 class="page-title" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)"><div class="loading-medium wait_rename" data-ng-show="loadingNewName"></div>{{machine.name}}</h3>
-                <form name="instanceRename" class="machine-edit-form">
-                    <div class="error"
-                         data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
-                         data-translate>
-                        Invalid machine name
-                    </div>
 
-                    <div class="error"
-                         data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
-                         data-translate>
-                        Machine name is already in use
-                    </div>
-                    <div class="pull-left machine-edit" data-ng-show="changingName">
+<form name="instanceRename" class="machine-edit-form">
+    <div class="error"
+         data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
+         data-translate>
+        Invalid machine name
+    </div>
+
+    <div class="error"
+         data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
+         data-translate>
+        Machine name is already in use
+    </div>
+    <div class="pull-left machine-edit" data-ng-show="changingName">
         <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
-                        <div class="btn-group machine-edit-buttons">
+        <div class="btn-group machine-edit-buttons">
             <button class="btn" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
             <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
-                        </div>
-                    </div>
-                </form>
+        </div>
+    </div>
+</form>
 
 <div class="portlet-body pb-top">
-<div class="inst_left">
+    <div class="inst_left">
 
-
-
-
-<div class="accordion" id="accordion1">
+    <div class="accordion" id="accordion1">
 
     <div class="accordion-group">
         <div class="accordion-heading">
@@ -42,7 +40,7 @@
                 <i class=""></i>
                 Meta Data
             </a>
-            </div>
+        </div>
         <div id="collapse_1" class="accordion-body collapse in">
             <div class="accordion-inner">
                 <table>
@@ -131,8 +129,8 @@
                     </tbody>
                 </table>
             </div>
-                        </div>
-                        </div>
+        </div>
+    </div>
 
     <div class="accordion-group">
         <div class="accordion-heading">
@@ -152,7 +150,7 @@
                 <div data-tags="tagsArray" machineid="machineid"></div>
             </div>
         </div>
-                        </div>
+    </div>
 
     <div class="accordion-group" data-ng-show="machine  && allowResize">
         <div class="accordion-heading">
@@ -161,7 +159,7 @@
                 <i class=""></i>
                 Resize Instance
             </a>
-                        </div>
+        </div>
         <div id="collapse_4" class="accordion-body collapse">
             <div class="accordion-inner">
                 <p class="" data-translate>
@@ -188,7 +186,7 @@
                             <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
                             <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
                         </div>
-                        </div>
+                    </div>
 
                     <div class="pull-left resize_block">
                         <p class="control-label" data-translate><b>Resize Instance type</b></p>
@@ -204,7 +202,7 @@
                         <div class="control-group resize-button">
                             <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
-                        </div>
+                    </div>
                     <div class="clearfix"></div>
                         </div>
                         </div>
@@ -330,7 +328,7 @@
             </a>
         </div>
         <div id="collapse_7" class="accordion-body collapse">
-            <div class="accordion-inner">
+            <div class="accordion-inner overflow-accordion">
             <span data-ng-switch="features.firewall">
                 <fieldset data-ng-switch-when="enabled">                
                     <div data-ng-show="machine.type == 'virtualmachine'">
@@ -347,6 +345,7 @@
                             </ul>
                             The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
                         </div>
+                    </div>
                     <div data-ng-show="firewallRules.length >= 1">
                             <div data-grid-view
                                  data-props="gridProps"
@@ -363,12 +362,11 @@
                         <a class="btn light margin-top-10" href="#!/firewall">Edit</a>
                         <button class="btn light margin-top-10"
                                 data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
-                                    data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
+                                data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
                                 data-ng-show="firewallChangeable()"
                                 data-ng-click="toggleFirewallEnabled()"
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                         <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
-                    </div>
                     </div>
                 </fieldset>
             </span>
@@ -377,8 +375,6 @@
 
         </div>
     </div>
-
-
 
 </div>
 </div>
