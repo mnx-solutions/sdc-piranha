@@ -12,7 +12,7 @@
                     <li> Analytics</li>
                 </ul>
                 <h3 class="page-title">Analytics</h3>
-				<div class="container_details span9 listing text-medium" style="margin: 0;">
+                <div class="row-fluid">
                     <div class="chart-info" data-ng-show="zoneId">
                         <span class="name-chart">UUID</span>
                         <span class="value-chart">{{zoneId}}</span>
@@ -21,8 +21,9 @@
                         <span class="name-chart">Instance name</span>
                         <span class="value-chart-in">{{zoneName}}</span>
                     </div>
-                    <data-notification></data-notification>
+                </div>
 
+				<div class="container_details span9 listing text-medium" style="margin: 0;">
                     <div data-ng-show="help[current.metric.module]" class="alert alert-info text-small">
                         <span data-ng-show="help[current.metric.module].generic">
 							<h6>{{current.metric.labelHtml.split(':')[0]}}</h6> 
@@ -74,8 +75,8 @@
 
                     <button class="btn icon-zoom-in options-ctrl" data-ng-click="zoomIn()" ></button>
                     <button class="btn icon-zoom-out options-ctrl" data-ng-click="zoomOut()" ></button>
+                    <button class="btn options-ctrl" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
                     <button class="btn options-ctrl" data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button>
-                    <button class="btn options-ctrl" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete</button>
 				</div>
 				
 

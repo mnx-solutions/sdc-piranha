@@ -665,22 +665,6 @@ label.checkbox {
     font-weight: 500;
 }
 
-.accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i {
-    width: 15px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-image: url("../img/accord_i_plus.png") !important;
-    padding-right: 25px;
-    vertical-align: middle;
-}
-.accordion-toggle.active i {
-    width: 15px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-image: url("../img/accord_i_down.png") !important;
-    padding-right: 25px;
-    vertical-align: middle;
-}
 .details-accordion{
     margin-top: 3px;
     padding-right: 5px;
@@ -759,16 +743,13 @@ label.checkbox {
     vertical-align: top;
 }
 .detail_chart {
-    width: 480px;
-    padding-top: 20px;
+    width: 485px;
+    padding-top: 7px;
 }
-.cpu_chart{
-    background-size: 480px 250px;
-    background: url("../img/cpu_chart.png") no-repeat;
-}
-.net_chart{
-    background-size: 480px 250px;
-    background: url("../img/net_chart.png") no-repeat;
+.graf-radio-group{
+    padding-left: 45px;
+    padding-top: 10px;
+    padding-bottom: 15px;
 }
 .pagination ul > li:first-child > a,
 .pagination ul > li:first-child > span {
@@ -1748,15 +1729,6 @@ label.checkbox {
     width: 100%;
 }
 
-.remove-icon {
-    width: 13px;
-    height: 13px;
-    background-image: url("../img/remove-icon.png");
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    cursor: pointer;
-    margin-top: 5px;
-}
 .btn.grey{
     background-color: #ebebeb;
     color: #f60;
@@ -1895,4 +1867,43 @@ label.checkbox {
 }
 .one-k-width{
     width: 1000px !important;
+}
+.toggle-graf-width{
+    width: 100%;
+}
+.del-btn-graf{
+   display: none;
+}
+.vda-btn{
+    padding-top: 10px;
+    padding-bottom: 75px
+}
+
+
+.rickshaw_legend{
+    background-color: transparent;
+    color: #333333;
+    padding: 0;
+    cursor: default;
+    float: right;
+    margin-top: 14px;
+    display: block !important;
+}
+.rickshaw_graph {
+    max-width: 485px !important;
+}
+.rickshaw_legend .line .swatch {
+    border-radius: 0 !important;
+    vertical-align: middle;
+    cursor: default;
+}
+.rickshaw_legend label, .rickshaw_legend .label {
+    cursor: default;
+    font-size: 12px;
+    padding: 0;
+    vertical-align: middle;
+}
+.heatmap-pos{
+    vertical-align: top;
+    padding-left: 10px;
 }
