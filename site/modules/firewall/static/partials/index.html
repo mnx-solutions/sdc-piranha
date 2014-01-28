@@ -7,16 +7,24 @@
         <div data-notification></div>
         <div class="row-fluid">
             <div class="span12">
-                <h1>Firewall Rules<div data-ng-show="loading" class="loading-medium-after-h1"></div></h1>
+                <h1>Cloud Firewall<div data-ng-show="loading" class="loading-medium-after-h1"></div></h1>
             </div>
         </div>
         <div data-ng-hide="(rules.length || loading)">
             <div class="alert alert-joyent-blue alert-global">
                 <div class="pull-left">
                     <h4>Hello there!</h4>
-                    <div data-translate>No firewall rules created.</div>
+                    <div>You don't have any Cloud Firewall rules.
+                        <ol>
+                            <li>Add a new rule for your SmartOS instances.</li>
+                            <li>Enable the Cloud Firewall on each VM you wish to use this feature on.</li>
+                        </ol>
+                    </div>
                 </div>
-                <button class="btn btn-joyent-blue pull-right alert-global add-rule-btn" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
+                <div class="row-fluid" style="margin-top: 45px">
+                    <button class="btn btn-joyent-blue pull-right alert-global add-rule-btn"
+                            data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
+                </div>
                 <div class="clearfix"></div>
             </div>
         </div>
@@ -45,7 +53,7 @@
                     <div class="span12 fw-left-part fw-input-container">
                         <div class="row">
                             <div class="span8">
-<p>Adding or modifying a Firewall Rule will affect all instances in the DC where Firewall Rules is enabled and that match the TO condition.</p>
+<p>Cloud Firewall rules limit network traffic for your SmartOS instances in one system. Cloud Firewall will enforce applicable rules for each instance that has Cloud Firewall enabled in its Instance Details.</p>
 <p>There is no ordering to your own rules and if there are contradictory rules the least restrictive rule is used. ICMP 8:0 is always open to support echo requests using <code class="plain">ping.</code></p>
                             </div>
 
