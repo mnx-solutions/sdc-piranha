@@ -155,8 +155,7 @@
                                data-ng-class="{error: isError('addressLine1')}"
                                data-ng-model="form.cardHolderInfo.addressLine1"
                                size="255"
-                               data-ng-required="true"
-                               data-ng-disabled="useExisting"/>
+                               data-ng-required="true"/>
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -179,8 +178,7 @@
                                name="addressLine2"
                                data-ng-class="{error: isError('addressLine2')}"
                                data-ng-model="form.cardHolderInfo.addressLine2"
-                               size="255"
-                               data-ng-disabled="useExisting">
+                               size="255">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -203,8 +201,7 @@
                                 data-ng-class="{error: isError('country')}"
                                 data-ng-model="form.cardHolderInfo.country"
                                 data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                                data-ng-required="true"
-                                data-ng-disabled="useExisting">
+                                data-ng-required="true">
                         </select>
                     </span>
                     <span class="edit-error">
@@ -229,8 +226,7 @@
                                size="40"
                                data-ng-class="{error: isError('city')}"
                                data-ng-model="form.cardHolderInfo.city"
-                               data-ng-required="true"
-                               data-ng-disabled="useExisting">
+                               data-ng-required="true">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -254,8 +250,7 @@
                                        id="state"
                                        name="state"
                                        data-ng-class="{error: isError('state')}"
-                                       data-ng-model="form.cardHolderInfo.state"
-                                       data-ng-disabled="useExisting">
+                                       data-ng-model="form.cardHolderInfo.state">
                             </span>
                              <span class="edit-error">
                                 <div class="error alert-icon"
@@ -277,7 +272,6 @@
                                         data-ng-class="{error: isError('state')}"
                                         data-ng-model="form.cardHolderInfo.state"
                                         data-ng-required="true"
-                                        data-ng-disabled="useExisting"
                                         data-ng-options="value as label for (value, label) in stateSel">
                                 </select>
                             </span>
@@ -304,8 +298,7 @@
                                name="zipCode"
                                data-ng-class="{error: isError('zipCode')}"
                                data-ng-model="form.cardHolderInfo.zipCode"
-                               data-ng-required="true"
-                               data-ng-disabled="useExisting">
+                               data-ng-required="true">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -318,16 +311,6 @@
         <div class="control-group" data-ng-show="currentStep">
             <span class="edit-name">Phone Number<span class="orange-asterix"> *</span></span>
             <span data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)" data-current-step="currentStep" data-credit-card="true" data-el-width="220"></span>
-        </div>
-        <div class="control-group" data-ng-show="useExistingPossible">
-            <label>
-                <div class="checker content-p" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                            <span data-ng-class="{checked: useExisting}">
-                                <input type="checkbox" checked="" data-column="useExisting" id="useExisting" data-ng-model="useExisting">
-                            </span>
-                </div>
-                Use previous contact info
-            </label>
         </div>
     </fieldset>
     <fieldset class="line" data-ng-show="currentStep && features.promocode != 'disabled'">
@@ -373,7 +356,7 @@
         <div class="fieldset-spacer"></div>
         <br>
     </div>
-    <div data-ng-show="useExistingPossible">
+    <div data-ng-hide="currentStep">
         <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
         <p class="content-p inline-pos or">or</p>
         <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>

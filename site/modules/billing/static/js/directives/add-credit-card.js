@@ -92,7 +92,6 @@
                     $scope.months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
                     $scope.years = [];
                     $scope.prev = $scope.prev || BillingService.getDefaultCreditCard();
-                    $scope.useExisting = false;
                     $scope.formSubmitted = false;
 
                     $scope.saveButton = 'Submit';
@@ -142,7 +141,6 @@
 				                }
 			                });
 
-			                $scope.useExistingPossible = $scope.useExisting = true;
 		                } else {
 			                $q.when(Account.getAccount(), function(account) {
 				                var form = $scope.form.cardHolderInfo;
@@ -162,26 +160,10 @@
 					                form.country = 'USA';
 				                }
 
-				                $scope.useExistingPossible = true;
-
-				                [ 'zipCode','city','state','addressLine1','country' ].some(function (e) {
-					                if(!form[e] || form[e] === '') {
-						                $scope.useExistingPossible = false;
-						                return true;
-					                }
-				                });
-
-				                $scope.useExisting = $scope.useExistingPossible;
 			                });
 		                }
 	                }
                     $q.when($scope.prev, usePrevious);
-
-	                $scope.$watch('useExisting', function (newVal, oldVal) {
-		                if(newVal === true) {
-			                usePrevious($scope.prev);
-		                }
-	                });
 
                     var c = (new Date()).getFullYear();
                     var i = c;
