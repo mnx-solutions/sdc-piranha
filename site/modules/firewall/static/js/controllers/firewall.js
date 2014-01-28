@@ -59,6 +59,9 @@
 
                 if(options.term === '' && !type) {
                     results = ng.copy($scope.dropdown);
+                    if (options.reverse) {
+                        results[0].children.reverse();
+                    }
                 } else {
                     var vms = $scope.vms.filter(function(vm){
                         return ((vm.id.indexOf(options.term) !== -1) || (vm.text.indexOf(options.term) !== -1)) && vm.datacenter === $scope.datacenter;
@@ -97,6 +100,11 @@
 
             function tagsQuery(o) {
                 return query(o, 'Tags');
+            }
+
+            function reverseQuery(o) {
+                o.reverse = true;
+                return query(o);
             }
 
             function extractVmInfo(machines) {
@@ -154,7 +162,7 @@
 
             // Create target comboboxes
             var from = createCombobox('#fromSelect', 'current', 'from', query, false);
-            var to = createCombobox('#toSelect', 'current', 'to', query, false);
+            var to = createCombobox('#toSelect', 'current', 'to', reverseQuery, false);
 
             $scope.CIDRs = [];
             for(var i=0; i<=32; i++) {
@@ -261,25 +269,25 @@
             };
             $scope.data = {};
             $scope.dropdown = [{
-                text:'',
-                children:[{
+                text: '',
+                children: [{
                     id: ng.toJson({
                         type: 'wildcard',
                         text: 'any'
                     }),
                     text: 'Any'
-                },{
+                }, {
+                    id: ng.toJson({type: 'subnet'}),
+                    text: 'Subnet'
+                }, {
+                    id: ng.toJson({type: 'ip'}),
+                    text: 'IP'
+                }, {
                     id: ng.toJson({
                         type: 'wildcard',
                         text: 'all vms'
                     }),
                     text: 'All my VMs in DC'
-                },{
-                    id: ng.toJson({type: 'ip'}),
-                    text: 'IP'
-                }, {
-                    id: ng.toJson({type: 'subnet'}),
-                    text:'Subnet'
                 }, {
                     id: ng.toJson({type: 'tag'}),
                     text:'Tag'
