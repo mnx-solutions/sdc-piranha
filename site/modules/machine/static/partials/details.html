@@ -297,7 +297,7 @@
             <span data-ng-switch="features.firewall">
                 <div data-ng-show="machine" data-ng-switch-when="enabled">
                     <legend>
-                        <span data-translate>Firewall Rules</span>
+                        <span data-translate>Cloud Firewall</span>
                         <div class="beta-sticker pull-right beta"></div>
                     </legend>
 
@@ -313,7 +313,7 @@
                                 <li>Block all inbound traffic</li>
                                 <li>Allow all outbound traffic</li>
                             </ul>
-                            The default rules are overridden by your own rules. There is no ordering to your own rules and if there are contradictory rules the least restrictive rule is used.
+                            The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
                         </div>
                         <div data-ng-show="firewallRules.length >= 1">
                             <div class="span12">
