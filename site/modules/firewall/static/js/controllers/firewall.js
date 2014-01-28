@@ -777,6 +777,7 @@
                     $scope.resetCurrent();
                     $scope.setRules(r);
                     $scope.loading = false;
+                    $scope.openRuleForm = false;
                 }, $scope.disableLoading);
             };
 
