@@ -467,7 +467,8 @@
                 $scope.datacenter = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
                     if(dc) {
-                        $scope.resetCurrent();
+                        $scope.resetCurrent('from');
+                        $scope.resetCurrent('to');
                         $scope.resetData();
                         $scope.loading = false;
                     }
