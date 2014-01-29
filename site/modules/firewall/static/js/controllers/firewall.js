@@ -54,7 +54,6 @@
                 if(!type) {
                     type = false;
                 }
-
                 var results = [];
 
                 if(options.term === '' && !type) {
@@ -151,10 +150,27 @@
                     query: query,
                     initSelection : function () {}
                 }).change(function(e){
+                    var val = ng.fromJson(e.val);
+
+                    if (val.type === 'vm' && val.text && (e.currentTarget.id === 'fromSelect' || e.currentTarget.id === 'toSelect')) {
+                        $(id).select2('data', {
+                            id: ng.toJson({type: 'vm'}),
+                            text: 'Instance'
+                        });
+                    } else {
+                        $scope.$apply(function () {
+                            if (e.currentTarget.id === 'fromSelect') {
+                                $scope.fromForm.$pristine = true;
+                            } else if (e.currentTarget.id === 'toSelect') {
+                                $scope.toForm.$pristine = true;
+                            }
+                        });
+                    }
+
                     $scope.$apply(function(){
-                        $scope[objId][propId] = ng.fromJson(e.val);
+                        $scope[objId][propId] = val;
                         if(addOnSelect) {
-                            addOnSelect(ng.fromJson(e.val));
+                            addOnSelect(val);
                         }
                     });
                 });
@@ -227,34 +243,38 @@
                 }
             });
 
-            $scope.$watch('current.from', function (obj, oldObj) {
-                if (obj && (!oldObj || (obj.type != oldObj.type))) {
-                    switch (obj.type) {
-                        case 'vm':
-                            setTimeout(function(){
-                                createCombobox('#fromInstanceSelect', 'current', 'from', instancesQuery, function(m) {
-                                    $('#fromInstanceSelect').select2('val', m.text);
-                                    $scope.fromForm.$pristine = false;
-                                });
-                            }, 1);
-                            break;
+            function selectVm(select, objId) {
+                $scope.vms.forEach(function (vm) {
+                    var id = ng.fromJson(vm.id);
+                    if (id.text === $scope.current[objId].text) {
+                        select.select2('data', vm);
+                        $scope.$apply(function () {
+                            $scope[objId + 'Form'].$pristine = false;
+                        });
                     }
+                })
+            }
+
+            function formWatch(obj, oldObj, formName, formId) {
+                if (obj && (!oldObj || oldObj.type !== 'vm' || obj.text) && obj.type === 'vm') {
+                    setTimeout(function(){
+                        var fromInstanceSelect = $('#' + formId);
+                        createCombobox('#' + formId, 'current', formName, instancesQuery, function(m) {
+                            fromInstanceSelect.select2('val', m.text);
+                            $scope[formName + 'Form'].$pristine = false;
+                        });
+
+                        selectVm(fromInstanceSelect, formName);
+                    }, 1);
                 }
+            }
+
+            $scope.$watch('current.from', function (obj, oldObj) {
+                formWatch(obj, oldObj, 'from', 'fromInstanceSelect');
             }, true);
 
             $scope.$watch('current.to', function (obj, oldObj) {
-                if (obj && (!oldObj || (obj.type != oldObj.type))) {
-                    switch (obj.type) {
-                        case 'vm':
-                            setTimeout(function(){
-                                createCombobox('#toInstanceSelect', 'current', 'to', instancesQuery, function(m) {
-                                    $('#toInstanceSelect').select2('val', m.text);
-                                    $scope.toForm.$pristine = false;
-                                });
-                            }, 1);
-                            break;
-                    }
-                }
+                formWatch(obj, oldObj, 'to', 'toInstanceSelect');
             }, true);
 
             $scope.loading = true;
