@@ -3,7 +3,7 @@
 (function (app, $) {
     app.controller(
         'signup.LayoutController',
-        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track','PopupDialog'
+        ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track','PopupDialog',
             function ($scope, requestContext, $location, $cookies, Process, $http, $$track, popupDialog) {
                 requestContext.setUpRenderContext('signup', $scope);
                 
