@@ -50,6 +50,7 @@
             $scope.showFinishConfiguration = false;
             $scope.visibilityFilter = 'Public';
             $scope.currentSlidePageIndex = 0;
+            $scope.currentStep = '';
 
             Machine.getSimpleImgList(function (err, data) {
                 if (err) {
@@ -237,10 +238,12 @@
                     .removeClass('active-step')
                     .eq(index).
                     addClass('active-step');
+
+                $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
                 $scope.currentSlidePageIndex = index;
             };
 
-            $scope.selectDataset = function (id) {
+            $scope.selectDataset = function (id, changeDataset) {
                 Dataset.dataset({ id: id, datacenter: $scope.data.datacenter }).then(function (dataset) {
                     if (dataset.type == 'virtualmachine') {
                         $scope.datasetType = 'kvm';
@@ -256,7 +259,6 @@
                     $scope.selectedDataset = dataset;
                     ng.element('#pricing').removeClass('alert-muted');
                     ng.element('#pricing').addClass('alert-info');
-                    $scope.setCurrentStep(1);
 
                     $scope.data.dataset = dataset.id;
                     $scope.searchText = '';
@@ -283,7 +285,10 @@
                         });
                     }
 
-                    $scope.slideCarousel();
+                    if (!changeDataset) {
+                        $scope.setCurrentStep(1);
+                        $scope.slideCarousel();
+                    }
                 });
 
                 $scope.collapseTrigger2($scope.packageTypes.length-1, $scope.packageTypes.length);
@@ -291,7 +296,7 @@
 
             $scope.selectVersion = function (name, version) {
                 $scope.selectedVersions[name] = version;
-                $scope.selectDataset($scope.selectedVersions[name].id);
+                $scope.selectDataset($scope.selectedVersions[name].id, true);
             };
 
             $scope.selectPackageType = function (packageType) {
