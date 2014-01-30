@@ -290,7 +290,7 @@
                             return;
                         }
 
-                        $scope.invalidCCNumber = $scope.missingCCNumber = $scope.invalidCymbolsCCNumber = false;
+                        $scope.invalidCCNumber = $scope.missingCCNumber = false;
 
                         // remove state from submittable form fields to avoid Zuora error on empty state
                         if ($scope.form.cardHolderInfo.state === '') {
