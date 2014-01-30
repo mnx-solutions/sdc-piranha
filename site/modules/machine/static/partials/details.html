@@ -164,7 +164,7 @@
                         </div>
         <div id="collapse_4" class="accordion-body collapse">
             <div class="accordion-inner">
-                <p class="text-small muted" data-translate>
+                <p class="" data-translate>
                     It may not always be possible to resize based on the constraints of your current server location.
                 </p>
 
@@ -224,11 +224,11 @@
                     <span class="font-size16" data-translate>Create Image</span>
                     <div class="beta-sticker pull-right beta"></div>
                 </legend>
-                <p class="text-small muted" data-ng-show="machine.state != 'stopped' && !imageCreateNotSupported" data-translate>
+                <p class="" data-ng-show="machine.state != 'stopped' && !imageCreateNotSupported" data-translate>
                     Instance needs to be stopped before creating an image.
                 </p>
 
-                <p class="text-samll muted" data-ng-show="imageCreateNotSupported">
+                <p class="" data-ng-show="imageCreateNotSupported">
                     {{imageCreateNotSupported}}
                 </p>
                 <div class="clearfix"></div>
@@ -334,12 +334,12 @@
             <span data-ng-switch="features.firewall">
                 <fieldset data-ng-switch-when="enabled">                
                     <div data-ng-show="machine.type == 'virtualmachine'">
-                        <div class="text-small muted">
+                        <div class="">
                         {{machine.type}} instances are not yet supported by the FWAPI.
                         </div>
                     </div>
                     <div data-ng-show="machine.type != 'virtualmachine'">
-                        <div class="text-small muted">
+                        <div class="">
                             ICMP 8:0 is always open. With Firewall Rules enabled:
                             <ul>
                                 <li>Block all inbound traffic</li>
@@ -348,7 +348,6 @@
                             The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
                         </div>
                     <div data-ng-show="firewallRules.length >= 1">
-                        <div class="span12">
                             <div data-grid-view
                                  data-props="gridProps"
                                  data-objects="firewallRules"
@@ -356,20 +355,19 @@
                                  data-order="gridOrder"
                                  data-filter-all="{{query}}"
                                  data-objects-type="firewall"></div>
-                        </div>
                     </div>
-                    <div data-ng-show="firewallRules.length < 1">
-                        <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
+                    <div data-ng-show="firewallRules.length < 1"><br/>
+                        <div data-translate>You have no firewall rules that would apply to this machine</div>
                     </div>
-                    <div class="row text-right">
-                        <a class="editLink" href="#!/firewall">Edit</a>
+                    <div class="pull-left">
+                        <a class="btn light margin-top-10" href="#!/firewall">Edit</a>
                         <button class="btn light margin-top-10"
                                 data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
                                     data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
                                 data-ng-show="firewallChangeable()"
                                 data-ng-click="toggleFirewallEnabled()"
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
-                        <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
+                        <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
                     </div>
                     </div>
                 </fieldset>

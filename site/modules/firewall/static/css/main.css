@@ -85,6 +85,9 @@ th.protocol{
     text-align: right;
     font-weight: bold;
 }
+.fw-controls select{
+    width: 100%;
+}
 
 .padding-5 {
     padding: 5px;
@@ -199,11 +202,12 @@ th.protocol{
     font-size: 16px;
     font-weight: 400;
     color: rgb(51, 51, 51);
-    vertical-align: middle;
 }
-.value-field select{
-    width: 120px;
-    padding-left: 10px;
+.value-field{
+    width: 50%;
+    padding-left: 20px;
+    display: inline-block;
+    vertical-align: top;
 }
 .title-rule{
     width: 100%;
@@ -218,6 +222,7 @@ th.protocol{
     vertical-align: top;
     padding-left: 10px;
     padding-right: 10px;
+    padding-bottom: 10px;
     width: 31%;
 }
 .firewall-table td.one-third legend, .legend-line{
@@ -225,7 +230,6 @@ th.protocol{
 }
 
 .form-horizontal{
-    padding-top: 30px;
     padding-bottom: 30px;
 }
 .form-horizontal .control-label {
@@ -312,7 +316,7 @@ input.ng-invalid, input.ng-pristine {
     padding-top: 20px;
 }
 .result-width{
-    width: 290px;
+    width: 95%;
     display: inline-block;
     float: left;
     overflow: hidden;
@@ -364,9 +368,9 @@ input.ng-invalid, input.ng-pristine {
     padding: 0 3px !important;
 }
 
-.fixed-height165{
-    min-height: 165px;
-    max-height: 165px;
+.fixed-height120{
+    min-height: 120px;
+    max-height: 120px;
 }
 
 .add-rule-btn:hover, .add-rule-btn:focus{
@@ -384,8 +388,8 @@ input.ng-invalid, input.ng-pristine {
 .margin-left-0{
     margin-left: 0 !important;
 }
-.margin-top-35{
-    margin-top: 35px;
+.margin-top-70{
+    margin-top: 70px;
 }
 .min-height-table{
     min-height: 300px;
@@ -421,4 +425,11 @@ code.plain {
     color: #000;
     border: none;
     background-color: transparent;
+}
+.padding-10{
+    padding: 10px;
+}
+.bg-grey{
+    background-color: #eee !important;
+    border-bottom: 2px solid white;
 }

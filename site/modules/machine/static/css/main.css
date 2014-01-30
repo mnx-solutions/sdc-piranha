@@ -1911,3 +1911,7 @@ label.checkbox {
     margin-top: 15px;
     margin-right: 5px;
 }
+.loading-30{
+    display: inline-block;
+    vertical-align: middle;
+}

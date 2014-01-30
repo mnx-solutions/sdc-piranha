@@ -608,7 +608,7 @@
                         {
                             result: 'ok',
                             label: 'OK',
-                            cssClass: 'btn-joyent-blue'
+                            cssClass: 'orange'
                         }
                     ];
 
@@ -915,7 +915,7 @@
 		        },
                 {
                     id: 'enabled',
-                    name: 'Enabled',
+                    name: 'Status',
                     type: 'button',
                     getClass: function () {
                         return 'span1 padding-5';
