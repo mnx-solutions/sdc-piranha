@@ -14,10 +14,16 @@
                                size="40"
                                data-ng-pattern="/^([\*\d]+)$/"
                                data-ng-model="form.creditCardNumber"
+                               data-ng-maxlength="19"
                                data-ng-class="{error: isError('creditCard.creditCardNumber')}"
                                data-ng-required="true">
                     </span>
                     <span class="edit-error">
+                        <div class="error alert-icon"
+                             data-translate
+                             data-ng-show="isError('creditCard.creditCardNumber', 'maxlength')">
+                             Credit card number is too long
+                        </div>
                         <div class="error alert-icon"
                              data-translate
                              data-ng-show="isError('creditCard.creditCardNumber') || isError('creditCard.cardNumber') || isError('creditCard.cardType')">
@@ -34,37 +40,37 @@
                             Invalid symbols (numbers only)
                         </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">Month / Year<span class="orange-asterix"> *</span></span>
                     <span class="edit-value-two">
-                        <select id="expirationMonth"
-                                name="expirationMonth"
-                                class="date-month"
-                                data-expiration-date
-                                data-ng-model="form.expirationMonth"
-                                data-ng-class="{error: isError('creditCard.expirationMonth', 'invalidExpirationDate') || isError('creditCard.expirationMonth')}"
-                                data-ng-options="value for value in months"
-                                data-ng-required="true">
-                        </select>
+                            <select id="expirationMonth"
+                                    name="expirationMonth"
+                                    class="date-month"
+                                    data-expiration-date
+                                    data-ng-model="form.expirationMonth"
+                                    data-ng-class="{error: isError('creditCard.expirationMonth', 'invalidExpirationDate') || isError('creditCard.expirationMonth')}"
+                                    data-ng-options="value for value in months"
+                                    data-ng-required="true">
+                            </select>
                         <span class="selects-spacer"></span>
-                        <select id="expirationYear"
-                                name="expirationYear"
-                                class="date-year"
-                                data-expiration-date
-                                data-ng-model="form.expirationYear"
-                                data-ng-class="{error: isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationYear')}"
-                                data-ng-options="value for value in years"
-                                data-ng-required="true">
+                            <select id="expirationYear"
+                                    name="expirationYear"
+                                    class="date-year"
+                                    data-expiration-date
+                                    data-ng-model="form.expirationYear"
+                                    data-ng-class="{error: isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationYear')}"
+                                    data-ng-options="value for value in years"
+                                    data-ng-required="true">
 
-                        </select>
+                            </select>
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate')">
-                            Invalid credit card expiration date (in past)
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate')">
+                                Invalid credit card expiration date (in past)
+                            </div>
                             <div class="error alert-icon"
                                  data-translate
                                  data-ng-show="isError('creditCard.expirationYear') || isError('creditCard.expirationMonth')">
@@ -76,31 +82,31 @@
                                 Missing expiration info
                             </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">CCV Сode<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                        <input type="text"
-                               id="securityCode"
-                               name="securityCode"
-                               maxlength="4"
-                               data-ng-class="{error: isError('creditCard.securityCode')}"
-                               data-ng-model="form.securityCode"
-                               data-ng-required="true" />
+                            <input type="text"
+                                   id="securityCode"
+                                   name="securityCode"
+                                   maxlength="4"
+                                   data-ng-class="{error: isError('creditCard.securityCode')}"
+                                   data-ng-model="form.securityCode"
+                                   data-ng-required="true" />
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('creditCard.securityCode')">
-                            Invalid security code
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('creditCard.securityCode')">
+                                Invalid security code
+                            </div>
                             <div class="error alert-icon"
                                  data-translate
                                  data-ng-show="isError('creditCard.securityCode', 'required') || isError('securityCode', 'submitRequired')">
                                 Missing security code
                             </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">First Name<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
@@ -110,9 +116,15 @@
                                size="50"
                                data-ng-class="{error: isError('billToContact.firstName')}"
                                data-ng-model="form.firstName"
+                               data-ng-maxlength="25"
                                data-ng-required="true">
                     </span>
                     <span class="edit-error">
+                        <div class="error alert-icon"
+                             data-translate
+                             data-ng-show="isError('billToContact.firstName', 'maxlength')">
+                            First name is too long
+                        </div>
                         <div class="error alert-icon"
                              data-translate
                              data-ng-show="isError('billToContact.firstName')">
@@ -128,129 +140,141 @@
         <div class="control-group">
             <span class="edit-name">Last Name<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                        <input type="text"
-                               id="lastName"
-                               name="lastName"
-                               size="50"
-                               data-ng-class="{error: isError('billToContact.lastName')}"
-                               data-ng-model="form.lastName"
-                               data-ng-required="true" />
+                            <input type="text"
+                                   id="lastName"
+                                   name="lastName"
+                                   size="50"
+                                   data-ng-class="{error: isError('billToContact.lastName')}"
+                                   data-ng-model="form.lastName"
+                                   data-ng-maxlength="25"
+                                   data-ng-required="true" />
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('billToContact.lastName')">
-                            Invalid last name
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('billToContact.lastName', 'maxlength')">
+                                Last name is too long
+                            </div>
+                            <div class="error alert-icon"
+                                 data-translate
+                                 data-ng-show="isError('billToContact.lastName')">
+                                Invalid last name
+                            </div>
                             <div class="error alert-icon"
                                  data-translate
                                  data-ng-show="isError('billToContact.lastName', 'required') || isError('lastName', 'submitRequired')">
                                 Missing last name
                             </div>
                     </span>
-        </div>
+                        </div>
     </fieldset>
     <fieldset class="line">
         <legend>Billing Address</legend>
         <div class="control-group">
             <span class="edit-name">Address Line 1<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                        <input type="text"
-                               id="addressLine1"
-                               name="addressLine1"
-                               data-ng-class="{error: isError('addressLine1')}"
-                               data-ng-model="form.cardHolderInfo.addressLine1"
-                               size="255"
-                               data-ng-required="true"
-                               data-ng-disabled="useExisting"/>
+                            <input type="text"
+                                   id="addressLine1"
+                                   name="addressLine1"
+                                   data-ng-class="{error: isError('addressLine1')}"
+                                   data-ng-model="form.cardHolderInfo.addressLine1"
+                                   size="255"
+                                   data-ng-required="true"
+                                   data-ng-disabled="useExisting"/>
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('addressLine1')">
-                            Invalid address 1 line
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('addressLine1')">
+                                Invalid address 1 line
+                            </div>
                             <div class="error alert-icon"
                                  data-translate
                                  data-ng-show="isError('addressLine1', 'required') || isError('addressLine1', 'submitRequired')">
                                 Missing address 1 line
                             </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">Address Line 2</span>
                     <span class="edit-value">
-                        <input type="text"
-                               id="addressLine2"
-                               name="addressLine2"
-                               data-ng-class="{error: isError('addressLine2')}"
-                               data-ng-model="form.cardHolderInfo.addressLine2"
-                               size="255"
-                               data-ng-disabled="useExisting">
+                            <input type="text"
+                                   id="addressLine2"
+                                   name="addressLine2"
+                                   data-ng-class="{error: isError('addressLine2')}"
+                                   data-ng-model="form.cardHolderInfo.addressLine2"
+                                   size="255"
+                                   data-ng-disabled="useExisting">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('addressLine2')">
-                            Invalid address 2 line
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('addressLine2')">
+                                Invalid address 2 line
+                            </div>
                             <div class="error alert-icon"
                                  data-translate
                                  data-ng-show="isError('addressLine2', 'required')">
                                 Missing address 2 line
                             </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">Country<span class="orange-asterix"> *</span></span>
                     <span class="edit-value-one">
-                        <select id="country"
-                                name="country"
-                                data-ng-class="{error: isError('country')}"
-                                data-ng-model="form.cardHolderInfo.country"
-                                data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                                data-ng-required="true"
-                                data-ng-disabled="useExisting">
-                        </select>
+                            <select id="country"
+                                    name="country"
+                                    data-ng-class="{error: isError('country')}"
+                                    data-ng-model="form.cardHolderInfo.country"
+                                    data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
+                                    data-ng-required="true"
+                                    data-ng-disabled="useExisting">
+                            </select>
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('country') || (formSubmitted && paymentForm.country.$invalid && !paymentForm.country.$error.required)">
-                            Invalid country
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('country') || (formSubmitted && paymentForm.country.$invalid && !paymentForm.country.$error.required)">
+                                Invalid country
+                            </div>
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('country', 'required') || isError('country', 'submitRequired')">
-                            Missing country
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('country', 'required') || isError('country', 'submitRequired')">
+                                Missing country
+                            </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">City<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                        <input type="text"
-                               id="city"
-                               name="city"
-                               size="40"
-                               data-ng-class="{error: isError('city')}"
-                               data-ng-model="form.cardHolderInfo.city"
-                               data-ng-required="true"
-                               data-ng-disabled="useExisting">
+                            <input type="text"
+                                   id="city"
+                                   name="city"
+                                   size="40"
+                                   data-ng-class="{error: isError('city')}"
+                                   data-ng-model="form.cardHolderInfo.city"
+                                   data-ng-required="true"
+                                   data-ng-maxlength="40"
+                                   data-ng-disabled="useExisting">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('city') || (formSubmitted && paymentForm.city.$invalid && !paymentForm.city.$error.required)">
-                            Invalid city
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('city', 'maxlength')">
+                                City is too long
+                            </div>
+                            <div class="error alert-icon"
+                                 data-translate
+                                 data-ng-show="isError('city') || (formSubmitted && paymentForm.city.$invalid && !paymentForm.city.$error.required)">
+                                Invalid city
+                            </div>
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('city', 'required') || isError('city', 'submitRequired')">
-                            Missing city
-                        </div>
+                                 data-translate
+                                 data-ng-show="isError('city', 'required') || isError('city', 'submitRequired')">
+                                Missing city
+                            </div>
                     </span>
-        </div>
+                        </div>
         <div class="control-group">
             <span class="edit-name">State<span data-ng-show="!!stateSel" class="orange-asterix">*</span></span>
             <span data-ng-switch="!!stateSel">
@@ -301,36 +325,53 @@
                             </span>
                 </span>
             </span>
-        </div>
+                            </div>
         <div class="control-group">
             <span class="edit-name">Zip Code<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                        <input type="text"
-                               id="zipCode"
-                               name="zipCode"
-                               data-ng-class="{error: isError('zipCode')}"
-                               data-ng-model="form.cardHolderInfo.zipCode"
-                               data-ng-required="true"
-                               data-ng-disabled="useExisting">
+                            <input type="text"
+                                   id="zipCode"
+                                   name="zipCode"
+                                   data-ng-class="{error: isError('zipCode')}"
+                                   data-ng-model="form.cardHolderInfo.zipCode"
+                                   data-ng-required="true"
+                                   data-ng-maxlength="20"
+                                   data-ng-disabled="useExisting">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
                              data-translate
-                             data-ng-show="isError('zipCode', 'required') || isError('zipCode', 'submitRequired')">
-                            Missing zip code
+                             data-ng-show="isError('zipCode', 'maxlength')">
+                             Zip code is too long
+                            </div>
+                        <div class="error alert-icon"
+                            data-translate
+                            data-ng-show="isError('zipCode') || (formSubmitted && paymentForm.zipCode.$invalid && !paymentForm.zipCode.$error.required)">
+                            Invalid zip code
                         </div>
+                        <div class="error alert-icon"
+                                 data-translate
+                                 data-ng-show="isError('zipCode', 'required') || isError('zipCode', 'submitRequired')">
+                                Missing zip code
+                            </div>
                     </span>
         </div>
         <div class="control-group" data-ng-show="currentStep">
             <span class="edit-name">Phone Number<span class="orange-asterix"> *</span></span>
-            <span data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)" data-current-step="currentStep" data-credit-card="true" data-el-width="220"></span>
+            <span data-phone-number
+                data-number="account.phone"
+                data-country="{{account.country}}"
+                data-is-error="isError(field, type)"
+                data-current-step="currentStep"
+                data-credit-card="true"
+                data-el-width="220"></span>
         </div>
         <div class="control-group" data-ng-show="useExistingPossible">
             <label>
                 <div class="checker content-p" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                             <span data-ng-class="{checked: useExisting}">
                                 <input type="checkbox" checked="" data-column="useExisting" id="useExisting" data-ng-model="useExisting">
-                            </span>
+                        </span>
                 </div>
                 Use previous contact info
             </label>
@@ -347,22 +388,22 @@
                   data-placement="right"
                   class="tooltip-hover icon-info-sign"
                   data-original-title="Promotional Code for a discount"></span>
-            </span>
+                    </span>
             <span class="edit-value">
-                <input type="text"
-                       id="promoCode"
-                       name="promoCode"
-                       data-ng-class="{error: isError('promoCode')}"
-                       data-ng-model="form.promoCode"
-                       size="255"
-                       data-ng-required="false"/>
+                            <input type="text"
+                                   id="promoCode"
+                                   name="promoCode"
+                                   data-ng-class="{error: isError('promoCode')}"
+                                   data-ng-model="form.promoCode"
+                                   size="255"
+                                   data-ng-required="false"/>
         </span>
         <span class="edit-error">
-            <div class="error"
-                 data-translate="value"
-                 data-ng-show="isError('promoCode')">
-                {{errs.promoCode}}
-            </div>
+                            <div class="error"
+                                 data-translate="value"
+                                 data-ng-show="isError('promoCode')">
+                                {{errs.promoCode}}
+                            </div>
         </span>
         </div>
 
@@ -378,7 +419,7 @@
         </div>
         <div class="fieldset-spacer"></div>
         <br>
-    </div>
+                        </div>
     <div data-ng-show="useExistingPossible">
         <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
         <p class="content-p inline-pos or">or</p>
@@ -389,8 +430,7 @@
         <div class="loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>
         <br>
-    </div>
-</form>
-</div>
-</div>
+        </div>
+    </form>
+</div></div>
 

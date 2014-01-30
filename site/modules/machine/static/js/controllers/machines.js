@@ -62,7 +62,7 @@
                     if(el.checked){
                         flag = true;
                     }
-                });
+                    });
                 return flag;
             };
 
@@ -77,7 +77,7 @@
                         $scope,
                         null,
                         'No instance selected for the action.'
-                    ), function () {
+                    ), function() {
                     }
                 );
             };
@@ -167,7 +167,7 @@
                     name: 'Credentials',
                     sequence: 14,
                     active: false
-                },
+                        },
                 {
                     id: 'firewall_enabled',
                     name: 'Firewall Enabled',
@@ -314,7 +314,7 @@
                         }
                     },
                     sequence: 3
-                    },
+                },
                 {
                     label: 'Disable FW',
                     show: function () {
@@ -443,7 +443,7 @@
                 Machine.deleteMachine(el.id).getJob().done(function () {
                     if (!$scope.machines.length) {
                         $location.path("compute/create");
-                    }
+        }
                     el.checked = false;
                 });
             };

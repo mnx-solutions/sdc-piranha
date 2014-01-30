@@ -266,7 +266,7 @@
                             </div>
                             <div class="dpl-inline">
                                 <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
-                            </div>
+                        </div>
 
                         </div>
                         <button class="btn light dpl-inline margin-top-10"
@@ -321,18 +321,32 @@
         </div>
     </div>
 
-    <div class="accordion-group" data-ng-show="features.firewall != 'disabled'">
+    <div class="accordion-group" data-ng-show="features.firewall != 'disabled' && machine">
         <div class="accordion-heading">
             <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[6]}" data-ng-click="collapseTrigger(6)" data-toggle="collapse" data-parent="#accordion1"
                href="#collapse_7">
                 <i class=""></i>
-                Firewall rules
+                Cloud Firewall
             </a>
         </div>
         <div id="collapse_7" class="accordion-body collapse">
             <div class="accordion-inner">
-               <span data-ng-switch="features.firewall">
-                <fieldset data-ng-switch-when="enabled">
+            <span data-ng-switch="features.firewall">
+                <fieldset data-ng-switch-when="enabled">                
+                    <div data-ng-show="machine.type == 'virtualmachine'">
+                        <div class="text-small muted">
+                        {{machine.type}} instances are not yet supported by the FWAPI.
+                        </div>
+                    </div>
+                    <div data-ng-show="machine.type != 'virtualmachine'">
+                        <div class="text-small muted">
+                            ICMP 8:0 is always open. With Firewall Rules enabled:
+                            <ul>
+                                <li>Block all inbound traffic</li>
+                                <li>Allow all outbound traffic</li>
+                            </ul>
+                            The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
+                        </div>
                     <div data-ng-show="firewallRules.length >= 1">
                         <div class="span12">
                             <div data-grid-view
@@ -345,16 +359,18 @@
                         </div>
                     </div>
                     <div data-ng-show="firewallRules.length < 1">
-                        <div data-translate>You have no firewall rules that would apply to this machine</div>
+                        <div class="alert alert-info" data-translate>You have no firewall rules that would apply to this machine</div>
                     </div>
-                    <div>
+                    <div class="row text-right">
+                        <a class="editLink" href="#!/firewall">Edit</a>
                         <button class="btn light margin-top-10"
                                 data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
-                                data-ng-disabled="fireWallActionRunning"
+                                    data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
                                 data-ng-show="firewallChangeable()"
                                 data-ng-click="toggleFirewallEnabled()"
                                 data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                         <div class="pull-right loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
+                    </div>
                     </div>
                 </fieldset>
             </span>
@@ -437,7 +453,7 @@
             <i class="reboot_icon"></i>
             <p data-translate>Reboot</p>
         </button>
-        </div>
+                </div>
     <div data-ng-controller="cloudController" ng-init="createDefaultInstrumentations()">
         <div class="detail_chart" >
             <div class="loading-small" data-ng-hide="cpuGraphs && memGraphs"></div>
@@ -445,14 +461,14 @@
 
         <div class="detail_chart">
             <graph data-ng-repeat="graph in memGraphs" options="graph"></graph>
-        </div>
+            </div>
         <div class="detail_chart">
             <graph data-ng-repeat="graph in nicGraphs" options="graph"></graph>
-        </div>
-    </div>
+                    </div>
+            </div>
         <div class="vda-btn">
             <a href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right "><i class="chart-icon"></i>View Detailed Analytics</a>
-        </div>
+            </div>
 
                     </div>
 

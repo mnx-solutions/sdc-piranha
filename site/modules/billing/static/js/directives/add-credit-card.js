@@ -63,7 +63,7 @@
                         }
                     });
 
-                    if (window.location.href.indexOf('/signup/') !== -1) {
+                    if ($scope.features.promoBillingConfirmation === 'enabled' && window.location.href.indexOf('/signup/') !== -1) {
                         $http.get('billing/promoamount').then(function (amount) {
                             if (amount && amount.data && amount.data > 0) {
                                 var fAmount = parseFloat(amount.data);
@@ -243,7 +243,6 @@
                             return true;
                         }
 
-                        //console.log($scope.paymentForm[field].$error);
                         if ($scope.paymentForm[field] && $scope.paymentForm[field].$dirty) {
                             Object.keys($scope.paymentForm[field].$error).some(function (key) {
                                 if ($scope.paymentForm[field].$error[key] && key === errorType) {

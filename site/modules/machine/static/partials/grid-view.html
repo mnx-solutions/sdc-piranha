@@ -76,8 +76,8 @@
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                             <span data-ng-click="selectCheckbox(object.id)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished)">
                                 <input type="checkbox" class="group-checkable" data-set=".checkboxes" value="">
-                            </span>
-                            </div>
+        </span>
+    </div>
                         </label>
                     </td>
                     <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id">
@@ -85,9 +85,9 @@
                             <a href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                         </div>
-                        <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
-                            <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
-                        </span>
+            <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
+                <div data-object-state data-object="object" data-type="{{objectsType}}"></div>
+            </span>
                         <span data-ng-switch-when="actionButtons">
                             <div data-ng-show="getActionButtons(object).length && imageButtonShow">
                                 <div data-ng-repeat="btn in getActionButtons(object) | orderBy:sequence">
@@ -100,20 +100,20 @@
                         <span data-ng-switch-when="ips">
                             <span data-ng-repeat="ip in object.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
                         </span>
-                        <span data-ng-switch-default data-ng-switch="prop.type">
-                            <span data-ng-switch-when="button">
-                                <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
-                            </span>
-                            <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
-                            <span data-ng-switch-default>
-                                {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
-                            </span>
-                        </span>
+            <span data-ng-switch-default data-ng-switch="prop.type">
+                <span data-ng-switch-when="button">
+                    <div data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
+                </span>
+                <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                <span data-ng-switch-default>
+                    {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
+                </span>
+            </span>
                         <span data-ng-switch-when="firewall_enabled">
                             <span data-ng-show="object.firewall_enabled && !object.fireWallActionRunning">yes</span>
                             <span data-ng-show="!object.firewall_enabled && !object.fireWallActionRunning">no</span>
                             <span data-ng-show="object.fireWallActionRunning" class="loading-small"></span>
-                        </span>
+        </span>
                     </td>
                 </tr>
             </tbody>
@@ -122,7 +122,7 @@
 
 
         <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" class="item row-fluid">
-        </div>
+    </div>
     <div class="row-fluid">
         <div class="pull-left select_position">
             <select ui-select2 data-ng-model="perPage" value="5" class="no-search-box" style="width: 120px !important;">
@@ -132,7 +132,7 @@
                 <option value="10000">All</option>
             </select>
             <span>&nbsp;records per page</span>
-    </div>
+        </div>
         <div class="pagination pagination-right">
             <div class="grid-view-pagination" data-pagination data-num-pages="lastPage" data-current-page="page" data-max-size="showPages" data-on-select-page="changePage(page)"></div>
         </div>

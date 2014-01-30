@@ -81,11 +81,12 @@ module.exports = function execute(scope, app, callback) {
     app.get('/signup/:campaignId?', function (req, res, next) {
         if(req.params.campaignId) {
             // set campaign id to the cookie
+            req.log.debug({campaignId: req.params.campaignId}, 'campaignId cookie set for user');
             res.cookie('campaignId', req.params.campaignId, { maxAge: 900000, httpOnly: false});
             // faking signup button
             req.body.method = 'signup';
         }
-
+        req.log.info({campaignId: req.params.campaignId}, 'User landed on signup url');
         sendToSSO(req, res, 'signup', '/main/', true, req.params.campaignId);
     });
 

@@ -1,40 +1,38 @@
 <span>
     <span class="edit-value-double">
-    <!--<div class="">-->
-        <select name="countrySelect"
-                data-ng-style="selectStyle"
-                data-ng-model="country"
-                data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
-        </select>
-    <!--</div>-->
-    <div class="input-prepend">
-        <span class="add-on" style="width:50px;text-align:left">({{areaCode}})</span>
-        <input type="text"
+      <select name="countrySelect"
+              data-ng-style="selectStyle"
+              data-ng-model="country"
+              data-ng-options="country as (country.name + ' (+' + country.areaCode + ')') group by country.group for country in countryCodes | filter:filterUndefinedAreas | orderBy: ['-group','name']">
+      </select>
+      <div class="input-prepend">
+          <span class="add-on" style="width:50px;text-align:left">({{areaCode}})</span>
+          <input type="text"
                name="phone"
                data-ng-style="inputStyle"
                data-ng-model="plainNumber"
                data-ng-class="{error: isError({field:'phone'})}"
                data-ng-required="currentStep"
                />
-    </div>
+      </div>
     </span>
     <span class="edit-error">
-         <span data-ng-show="currentStep"
-               data-html="true"
-               data-translate-attributes="data-original-title"
-               data-toggle="tooltip"
-               data-trigger="hover"
-               data-placement="right"
-               class="tooltip-hover icon-info-sign"
-               data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
+        <span data-ng-show="currentStep"
+          data-html="true"
+          data-translate-attributes="data-original-title"
+          data-toggle="tooltip"
+          data-trigger="hover"
+          data-placement="right"
+          class="tooltip-hover icon-info-sign"
+          data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
         <div class="error"
-             data-translate
-             data-ng-show="isError({field:'phone', type:'required'})">
-            Missing phone number
+           data-translate
+           data-ng-show="isError({field:'phone', type:'required'}) || isError({field:'phone', type:'submitRequired'})">
+           Missing phone number
         </div>
         <div class="error"
-             data-translate
-             data-ng-show="isError({field:'phone', type:'pattern'})">
+            data-translate
+            data-ng-show="isError({field:'phone', type:'pattern'})">
             Invalid phone number
         </div>
     </span>

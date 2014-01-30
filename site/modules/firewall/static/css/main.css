@@ -21,12 +21,21 @@ input.ng-pristine {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #9ecaed;
 }
 
-.notice-block {
-    margin-bottom: 15px;
-    color:#000 !important;
+select.port {
+    width: 100%;
 }
 
-.notice-block a {
+td.remove {
+    width: 20px;
+    text-align: center
+}
+
+th.protocol{
+    padding: 4px;
+}
+
+.notice-block {
+    margin-bottom: 15px;
     color:#000 !important;
 }
 
@@ -52,6 +61,29 @@ input.ng-pristine {
 
 .control-label {
     font-weight: bold !important;
+}
+
+.fw-controls {
+    margin-left:80px;
+}
+
+.fw-controls input {
+    width  :100%;
+    height :100%;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.fw-port-controls {
+    margin-left: 45px;
+}
+
+.fw-control-label {
+    float: left;
+    padding-top: 5px;
+    text-align: right;
+    font-weight: bold;
 }
 
 .padding-5 {
@@ -365,4 +397,28 @@ input.ng-invalid, input.ng-pristine {
     font-size: 21px;
     line-height: 55px;
     color: #333;
+}
+.fw-input-container {
+    min-height: 150px;
+}
+
+.fw-horizontal-group {
+    margin-top: 15px;
+}
+
+.fw-buttons-row {
+    margin-top:50px;
+}
+
+.fw-form-buttons {
+    line-height: 60px;
+}
+
+.fw-data-table {
+}
+
+code.plain {
+    color: #000;
+    border: none;
+    background-color: transparent;
 }
