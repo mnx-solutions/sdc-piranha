@@ -4,10 +4,10 @@
     app.controller('fileman.LayoutController', [
         '$scope',
         'requestContext',
-        'Account',
-        function ($scope, requestContext, Account) {
-            Account.getAccount().then(function (account) {
-                $scope.account = account;
+        'fileman',
+        function ($scope, requestContext, fileman) {
+            fileman.getUser(function (error, account) {
+                $scope.account = account.__read().user;
                 requestContext.setUpRenderContext('fileman', $scope);
             });
         }

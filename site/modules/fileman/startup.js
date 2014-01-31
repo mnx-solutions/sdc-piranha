@@ -9,6 +9,11 @@ var fileman = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
 
+    server.onCall('getUser', function(call) {
+        var client = Manta.createClient(call);
+        call.done(null, {user: client.user});
+    });
+
     server.onCall('ls', function (call) {
         var client = Manta.createClient(call);
         client.ls(call.data.path, function (err, res) {

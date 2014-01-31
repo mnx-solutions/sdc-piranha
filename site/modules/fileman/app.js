@@ -4,30 +4,38 @@ var fs = require('fs');
 var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
-var multiparty = require('multiparty');
+var express = require('express');
+var vasync = require('vasync');
 
 module.exports = function (scope, app) {
     var Manta = scope.api('MantaClient');
 
-    app.post('/upload', function (req, res, next) {
-        var form = new multiparty.Form();
-        form.parse(req, function handleForm(err, fields, files) {
+    app.post('/upload', [express.multipart()], function (req, res, next) {
+        var files = req.files && req.files.uploadInput;
 
-            if (!(files && files.uploadInput)) {
-                return res.json({success: false});
+        if (files && !Array.isArray(files)) {
+            files = [files];
+        }
+
+        var client = Manta.createClient({req: req});
+        vasync.forEachParallel({
+            inputs: files,
+            func: function (file, callback) {
+                var rs = fs.createReadStream(file.path);
+
+                var filePath = '/' + client.user + req.body.path + '/' + file.originalFilename;
+                filePath = filePath.replace(/\/+/g, '/');
+
+                client.put(filePath, rs, function (error) {
+                    console.log('filePath', filePath, error);
+                    callback();
+                });
             }
-
-            var rs = fs.createReadStream(files.uploadInput.path);
-            var client = Manta.createClient({req: req});
-
-            var filePath = '/' + (config.manta.user || req.session.username) + fields.path + '/' + files.uploadInput.originalFilename;
-
-            client.put(filePath, rs, function (error) {
-                if (error) {
-                    req.log.error(error);
-                }
-                res.json({success: true});
-            });
+        }, function (error) {
+            if (error) {
+                req.log.error(error);
+            }
+            res.json({success: true});
         });
     });
 

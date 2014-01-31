@@ -10,7 +10,7 @@
 
             fileman.setScope = function (scope) {
                 $scope = scope;
-                username = $scope.account.login;
+                username = $scope.account;
             };
 
             function createMethod(name) {
@@ -28,6 +28,11 @@
                     });
                 };
             }
+
+            fileman.getUser = function (callback) {
+                serverTab.call({name: 'getUser', data: {}, done: callback});
+            };
+
             fileman.ls = createMethod('ls');
 
             fileman.get = function (path) {
