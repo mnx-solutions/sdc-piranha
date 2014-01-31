@@ -210,11 +210,11 @@ h4 {
 	text-align:center;
 	display:block;
 	font-weight:normal;
-	padding:2px 5px 2px 5px;
+	/*padding:2px 5px 2px 5px;*/
 	padding:5px;
 	font-size:11px;
 	width:auto;
-	text-shadow:1px 1px 1px rgba(0,0,0,0.2);
+	/*text-shadow:1px 1px 1px rgba(0,0,0,0.2);*/
 	margin-top:1px;
 }
 .arrow-to {
@@ -820,8 +820,8 @@ div .disabled{
 	background-image:url('../img/ajax-loader.gif');
 	background-position:50% 50%;
 	background-repeat:no-repeat;
-	width:16px;
-	height:16px;
+	width:14px;
+	height:14px;
 	display:block;
 }
 
@@ -1233,7 +1233,7 @@ table.table {
     clear: both;
     margin-bottom: 6px !important;
     max-width: none !important;
-    font-size: 16px;
+    font-size: 12px;
     overflow: auto;
 }
 .table-bordered th, .table-bordered td {
@@ -1258,7 +1258,7 @@ table.table {
 }
 .table .table-title{
     color: #666666;
-    font-size: 16px;
+    font-size: 12px;
 }
 .table .table-title.active{
     color: #000000;
@@ -1269,9 +1269,9 @@ table.table {
     padding-bottom: 2px;
 }
 .table > tbody td{
-    height: 38px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 .table-striped tbody > tr:nth-child(odd) > td, .table-striped tbody > tr:nth-child(odd) > th {
     background-color: #f4f4f4;
@@ -1431,4 +1431,13 @@ select::-ms-expand {
 }
 .beta-sticker.beta{
     margin-top: 47px;
+}
+.font-size-12, .font-size-12 span, .font-size-12 .dropdown-menu label{
+    font-size: 12px !important;
+}
+.font-size-12 .label{
+    padding: 4px 8px !important;
+}
+.font-size-12.ci {
+    padding: 1px 8px !important;
 }

@@ -54,8 +54,6 @@
 }
 
 .status.label {
-    text-transform: capitalize;
-    margin-right: 4px;
     margin-top: 0;
 }
 
@@ -67,20 +65,8 @@
     width: 115px !important;
 }
 
-.tags {
-
-}
-
-.tags .tag {
-
-}
-
 .tag.editable {
     margin-top: 10px;
-}
-
-.tag input.tag-key {
-
 }
 
 .label-margin-fix {
@@ -385,27 +371,17 @@
     background-position: -1px 5px;
 }
 .icon-ok {
-    background-position: -288px 0;
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    line-height: 14px;
-    vertical-align: top;
-    margin-left: -5px;
-    background-repeat: no-repeat;
-    margin-top: 4px;
-    padding-right: 5px;
+    vertical-align: middle;
+    float: left;
+    margin-top: 0 !important;
 }
 .warn_icon {
-    width: 16px;
+    width: 14px;
     height: 14px;
     float: left;
-    position: relative;
-    left: 4px;
-    top: 3px;
+    vertical-align: middle;
     background-repeat: no-repeat;
     background-image: url("../img/warn_icon.png");
-    padding-right: 5px;
 }
 .icon-sort-up, .icon-sort-down, .icon-sort-both  {
     background-repeat: no-repeat;
@@ -433,7 +409,7 @@
     min-width: 94px;
 }
 .label {
-    padding: 7px 14px;
+    padding: 10px 14px;
     font-size: 16px;
     cursor: default;
     outline: none;
@@ -469,7 +445,6 @@
 }
 .status.label {
     text-transform: none;
-    line-height: 20px;
 }
 .checkbox input[type="checkbox"] {
     float: left;
@@ -549,8 +524,8 @@ label.checkbox {
 }
 .dropdown-checkboxes label {
     color: #333;
-    margin-bottom: 4px;
-    margin-top: 4px;
+    margin-bottom: 0;
+    margin-top: 0;
 }
 .btn-group + .btn-group {
     margin-left: 0;
@@ -856,11 +831,6 @@ label.checkbox {
     padding-top: 10px;
     float: left;
 }
-.status .loading-small, .details_btn_block .loading-small {
-    padding-top: 6px;
-    padding-right: 15px;
-    margin-left: -15px;
-}
 
 .container_details .error{
     padding-bottom: 15px;
@@ -877,9 +847,7 @@ label.checkbox {
     background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
     background-position: -264px -72px;
 }
-.loading-small{
-    height: 14px !important;
-}
+
 .key-width{
     min-width: 160px;
     max-width: 160px;
