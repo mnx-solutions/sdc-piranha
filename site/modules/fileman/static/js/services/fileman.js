@@ -10,7 +10,7 @@
 
             fileman.setScope = function (scope) {
                 $scope = scope;
-                username = $scope.account;
+                username = $scope.mantaUser;
             };
 
             function createMethod(name) {
