@@ -60,7 +60,7 @@ if (!uuid || argumentsError) {
     if (badUuid) {
         console.log('Bad user uuid');
     } else if (unblockStep && !signupStepsMap[unblockStep]) {
-        console.log('Bad signup step');
+        console.log('Bad signup step. Possible steps: phone, billing, ssh');
     } else {
         console.log('fraudutil <UUID> [-u [<signup step>]]| --unblock [<signup step>]] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
     }
