@@ -6,11 +6,25 @@ var uuid = null;
 var riskScore = null;
 var blockReason = null;
 var badUuid = false;
+var unblockStep = null;
+var signupStepsMap = {
+    "phone": "start",
+    "billing": "phone",
+    "ssh": "billing"
+};
+
 process.argv = process.argv.slice(2); //cutting off node and path to file
 process.argv.forEach(function (argument, index) {
     if (argument.indexOf('-') === 0) {
         if (argument === '-u' || argument === '--unblock') {
             unblockUser = true;
+            var nextArg = process.argv[index + 1];
+            if (nextArg && nextArg !== '--risk-score' && nextArg !== '--block-reason') {
+                unblockStep = nextArg;
+                if (!signupStepsMap[unblockStep]) {
+                    argumentsError = true;
+                }
+            }
         } else if (argument === '--risk-score') {
             riskScore = parseFloat(process.argv[index + 1]);
             if (isNaN(riskScore) || riskScore <= 0 || riskScore >= 100) {
@@ -35,7 +49,7 @@ process.argv.forEach(function (argument, index) {
                 badUuid = true
             }
         }
-    } else if (index >= 5) {
+    } else if (index >= 7) {
         argumentsError = true;
     }
 });
@@ -45,14 +59,15 @@ if (!uuid || argumentsError) {
     console.log('');
     if (badUuid) {
         console.log('Bad user uuid');
+    } else if (unblockStep && !signupStepsMap[unblockStep]) {
+        console.log('Bad signup step');
     } else {
-        console.log('fraudutil <UUID> [-u | --unblock] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
+        console.log('fraudutil <UUID> [-u [<signup step>]]| --unblock [<signup step>]] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
     }
     process.exit();
 }
 
 process.chdir(__dirname + '/..');
-var config = require('easy-config');
 var vasync = require('vasync');
 var metadata = require('../site/modules/account/lib/metadata');
 if (process.argv.length === 1 && uuid) {
@@ -83,7 +98,8 @@ if (process.argv.length === 1 && uuid) {
         'funcs': [
             function(_, callback) {
                 if (unblockUser) {
-                    set(metadata.SIGNUP_STEP, 'completed', callback);
+                    var signupStepValue = unblockStep ? signupStepsMap[unblockStep] : 'completed';
+                    set(metadata.SIGNUP_STEP, signupStepValue, callback);
                 } else {
                     setImmediate(function() {
                         callback();
@@ -133,7 +149,8 @@ function get(key, callback) {
         if (scoreError) {
             callback(scoreError);
         }
-        console.log('User ' + key + ':' + scoreValue);
+        console.log('User' + (key === metadata.SIGNUP_STEP ? ' passed ' : '\'s ') +
+            key + ':' + scoreValue);
         callback();
     });
 }
