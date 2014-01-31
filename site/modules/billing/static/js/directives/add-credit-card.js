@@ -317,13 +317,19 @@
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
                                 }).then(function (account) {
-                                    notification.replace('addPaymentMethod', { type: 'success' },
-                                        localization.translate(null,
-                                            'billing',
-                                            'Billing information updated'
-                                        )
-                                    );
-
+                                        util.message(
+                                            localization.translate(
+                                                $scope,
+                                                null,
+                                                'Message'
+                                            ),
+                                            localization.translate(
+                                                null,
+                                                'billing',
+                                                'Billing information updated'
+                                            ),
+                                            function () {}
+                                        );
                                     window.scrollTo(0,0);
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
