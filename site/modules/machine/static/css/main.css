@@ -346,6 +346,9 @@
     width: 172px !important;
     height: 43px;
 }
+.fw-enabled-text {
+    color:  #afd46c;
+}
 .align_text_btn {
     text-align: left !important;
 }
