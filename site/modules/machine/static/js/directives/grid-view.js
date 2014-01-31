@@ -251,9 +251,11 @@
             });
         };
 
-        $scope.$watch('objects', function(){
-            $scope.selectCheckbox();
-            $scope.disableSelectAllCheckbox();
+        $scope.$watch('objects', function (objects) {
+            if (objects) {
+                $scope.selectCheckbox();
+                $scope.disableSelectAllCheckbox();
+            }
         }, true);
 
         $scope.selectCheckbox = function (obj) {

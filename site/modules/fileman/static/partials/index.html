@@ -21,6 +21,6 @@
             <input type="hidden" name="path" value="{{ currentPath }}"/>
             <label type="button" for="uploadInput" class="btn orange pull-left">Add files</label>
         </form>
-        <iframe src="about:blank" style="display: none;" name="uploadFrame" onload="uploadForm.reset();angular.element(this).scope().setCurrentPath();"></iframe>
+        <iframe src="about:blank" style="display: none;" name="uploadFrame" onload="uploadForm.reset();angular.element(this).scope();"></iframe>
     </div>
 </div>

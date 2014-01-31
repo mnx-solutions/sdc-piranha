@@ -1,17 +1,22 @@
-(function(app) {
+//noinspection JSLint
+(function (app) {
     "use strict";
     app.controller('Fileman.IndexController', [
         '$scope',
         'localization',
         'requestContext',
         'fileman',
-        function($scope, localization, requestContext, fileman) {
+        function ($scope, localization, requestContext, fileman) {
             localization.bind('dashboard-admin', $scope);
             requestContext.setUpRenderContext('dashboard-admin.index', $scope);
+            fileman.setScope($scope);
+
             var inProgress = false;
             $scope.filesTree = {};
             $scope.setCurrentPath = function setCurrentPath(path, force) {
-                if (inProgress) return;
+                if (inProgress) {
+                    return;
+                }
                 if (this.path && this.path.type && this.path.type !== 'directory') {
                     fileman.get($scope.currentPath + '/' + this.path.name);
                     return;
@@ -19,7 +24,7 @@
 
                 inProgress = true;
                 if (!force) {
-                    path = this.path && (this.path.full || this.path.name) || path || $scope.currentPath || '/';
+                    path = (this.path && (this.path.full || this.path.name)) || path || $scope.currentPath || '/';
                     $scope.currentPath = $scope.currentPath || path;
                 } else {
                     $scope.currentPath = path;
@@ -33,8 +38,9 @@
 
 
 
+                //noinspection JSLint
                 $scope.splittedCurrentPath = $scope.currentPath.split(/\/([^/]+)/)
-                    .filter(function(e) {
+                    .filter(function (e) {
                         return !!e;
                     });
 
@@ -42,30 +48,36 @@
                     $scope.splittedCurrentPath.unshift('/');
                 }
 
-                $scope.splittedCurrentPath = $scope.splittedCurrentPath.map(function(e, index, array) {
+                $scope.splittedCurrentPath = $scope.splittedCurrentPath.map(function (e, index, array) {
                     return {
                         name: e,
-                        full: array.slice(0, index+1).join('/').substr(1)
+                        full: array.slice(0, index + 1).join('/').substr(1)
                     };
                 });
 
-                if(this.path) this.path.active = true;
-                var tmpFilesTree = {};
-                for(var index in $scope.filesTree) {
+                if (this.path) {
+                    this.path.active = true;
+                }
+                var tmpFilesTree = {},
+                    index,
+                    i;
+                for (index in $scope.filesTree) {
                     if ($scope.filesTree.hasOwnProperty(index)) {
-                        $scope.filesTree[index].forEach(function(el){
-                            if(el.active){
+                        //noinspection JSLint
+                        $scope.filesTree[index].forEach(function (el) {
+                            if (el.active) {
                                 el.active = false;
-                                for(var i=0;i<$scope.splittedCurrentPath.length;i++){
-                                    if(el.name == $scope.splittedCurrentPath[i].name){
+                                for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
+                                    if (el.name === $scope.splittedCurrentPath[i].name) {
                                         el.active = true;
                                     }
                                 }
                             }
                         });
+
                         if ($scope.filesTree.hasOwnProperty(index)) {
-                            for(var i=0;i<$scope.splittedCurrentPath.length;i++){
-                                if(index == '/'+$scope.splittedCurrentPath[i].full || index == $scope.splittedCurrentPath[i].full){
+                            for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
+                                if (index === '/' + $scope.splittedCurrentPath[i].full || index === $scope.splittedCurrentPath[i].full) {
                                     tmpFilesTree[$scope.splittedCurrentPath[i].full] = $scope.filesTree[index];
                                 }
                             }
@@ -74,21 +86,22 @@
                 }
                 $scope.filesTree = tmpFilesTree;
 
-                fileman.ls($scope.currentPath, function(error, result) {
+                fileman.ls($scope.currentPath, function (error, result) {
+                    //noinspection JSLint
                     $scope.files = result.__read();
-                    if($scope.filesTree[$scope.currentPath] != $scope.files){
+                    if ($scope.filesTree[$scope.currentPath] !== $scope.files) {
                         $scope.filesTree[$scope.currentPath] = $scope.files;
                     }
                     inProgress = false;
                 });
             };
 
-            $scope.addFile = function() {
+            $scope.addFile = function () {
 //                console.warn(arguments);
                 return false;
             };
-            
-            if(!$scope.currentPath) {
+
+            if (!$scope.currentPath) {
                 return $scope.setCurrentPath('/');
             }
 
