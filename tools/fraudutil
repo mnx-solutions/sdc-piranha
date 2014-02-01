@@ -62,7 +62,9 @@ if (!uuid || argumentsError) {
     } else if (unblockStep && !signupStepsMap[unblockStep]) {
         console.log('Bad signup step. Possible steps: phone, billing, ssh');
     } else {
-        console.log('fraudutil <UUID> [-u [<signup step>]]| --unblock [<signup step>]] [--risk-score <number 0.01..99.99>] [--block-reason <reason text>]');
+        console.log('fraudutil <UUID> [-u [<signup step>]]| --unblock [<signup step>]] [--risk-score <risk score>] [--block-reason <reason text>]\n\n' +
+            'signup step = phone | billing | ssh\n' +
+            'risk score  = number 0.01..99.99');
     }
     process.exit();
 }
@@ -139,7 +141,12 @@ function set(key, val, callback) {
         if (err) {
             callback(err);
         }
-        console.log(key + ' set to ' + val);
+        var msg = '';
+        if (key === metadata.SIGNUP_STEP) {
+            msg += 'Completed ';
+        }
+        msg += key + ' set to ' + val;
+        console.log(msg);
         callback();
     });
 }
