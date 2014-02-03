@@ -115,13 +115,14 @@ module.exports = function execute(scope) {
 
     server.onCall('createKey', function(call) {
 
-        console.log('creating key');
         // create new ssh key for this account
         call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
             if(err) {
                 call.done(err);
                 return;
             }
+
+            call.log.info(resp, 'Created (imported) SSH key');
 
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
