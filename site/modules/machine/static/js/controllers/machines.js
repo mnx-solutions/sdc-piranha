@@ -433,9 +433,11 @@
                                     'Restart selected instances'
                                 ), function() {
                                     $scope.machines.forEach(function (el) {
-                                        if(el.checked){
-                                            Machine.rebootMachine(id);
-                                            $$track.event('machine', 'reboot');
+                                        if (el.checked) {
+                                            if (el.state != "stopped") {
+                                                Machine.rebootMachine (el.id);
+                                                $$track.event ('machine', 'reboot');
+                                            }
                                             el.checked = false;
                                         }
                                     });
