@@ -62,7 +62,7 @@
                     if(el.checked){
                         flag = true;
                     }
-                });
+                    });
                 return flag;
             };
 
@@ -77,7 +77,7 @@
                         $scope,
                         null,
                         'No instance selected for the action.'
-                    ), function () {
+                    ), function() {
                     }
                 );
             };
@@ -105,72 +105,66 @@
                 {
                     id: 'created',
                     name: 'Created',
-                    sequence: 4,
+                    sequence: 5,
                     active: true
                 },
                 {
                     id: 'primaryIp',
                     name: 'IP',
-                    sequence: 5,
+                    sequence: 6,
                     active: true
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 6,
+                    sequence: 7,
                     active: true
                 },
                 {
                     id: 'updated',
                     name: 'Updated',
-                    sequence: 7,
+                    sequence: 8,
                     active: true
                 },
                 {
                     id: 'id',
                     name: 'ID',
-                    sequence: 8,
+                    sequence: 9,
                     active: false
                 },
                 {
                     id: 'image',
                     name: 'Image',
-                    sequence: 9,
+                    sequence: 10,
                     active: false
                 },
                 {
                     id: 'type',
                     name: 'Type',
-                    sequence: 10,
+                    sequence: 11,
                     active: false
                 },
                 {
                     id: 'memory',
                     name: 'Memory',
-                    sequence: 11,
+                    sequence: 12,
                     active: false
                 },
                 {
                     id: 'disk',
                     name: 'Disk',
-                    sequence: 12,
+                    sequence: 13,
                     active: false
                 },
                 {
                     id: 'tags',
                     name: 'Tags',
-                    sequence: 13,
+                    sequence: 14,
                     active: false
                 },
                 {
                     id: 'credentials',
                     name: 'Credentials',
-                    sequence: 14,
-                    active: false
-                },
-                {
-                    id: 'firewall_enabled',
-                    name: 'Firewall Enabled',
                     sequence: 15,
                     active: false
                         },
@@ -193,6 +187,30 @@
                     active: false
                     }
             ];
+
+            if ($scope.features.firewall === 'enabled') {
+                var firewallColumn = {
+                    id: 'firewall',
+                    name: 'Firewall',
+                    sequence: 4,
+                    active: true,
+                    type: 'html',
+                    _getter: function (object) {
+                        var state = '';
+
+                        if (object.firewall_enabled) {
+                            state = '<span class="fw-enabled-text">FWAPI</span>';
+                        } else if ("virtualmachine" === object.type || !object.hasOwnProperty("firewall_enabled")) {
+                            state = 'N/A';
+                        } else {
+                            state = 'Off';
+                        }
+                        return state;
+                    }
+                };
+                $scope.gridProps.splice(2, 0, firewallColumn);
+            }
+
             $scope.gridDetailProps = [
                 {
                     id: 'memory',
@@ -314,7 +332,7 @@
                         }
                     },
                     sequence: 3
-                    },
+                },
                 {
                     label: 'Disable FW',
                     show: function () {
@@ -443,7 +461,7 @@
                 Machine.deleteMachine(el.id).getJob().done(function () {
                     if (!$scope.machines.length) {
                         $location.path("compute/create");
-                    }
+        }
                     el.checked = false;
                 });
             };

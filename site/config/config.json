@@ -147,12 +147,13 @@
   , "instanceTagging": "enabled"
   , "promocode": "enabled"
   , "invoices": "enabled"
-  , "imageUse": "yes"
-  , "imageCreate": "yes"
-  , "firewall": "no"
+  , "imageUse": "enabled"
+  , "imageCreate": "enabled"
+  , "firewall": "yes"
   , "freetier": "no"
   , "slb": "no"
   , "skinChange": "no"
+  , "promoBillingConfirmation": "no"
   , "useBrandingOrange": "no"
   }
 }

@@ -6,6 +6,6 @@
         <p>{{ message }} </p>
     </div>
     <div class="modal-footer">
-        <button class="orange" ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">{{ btn.label }}</button>
+        <button ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" ng-click="close(btn.result)" class="btn orange" ng-class="btn.cssClass">{{ btn.label }}</button>
     </div>
 </div>

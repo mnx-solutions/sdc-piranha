@@ -346,6 +346,9 @@
     width: 172px !important;
     height: 43px;
 }
+.fw-enabled-text {
+    color:  #afd46c;
+}
 .align_text_btn {
     text-align: left !important;
 }
@@ -1857,8 +1860,7 @@ label.checkbox {
 }
 .margin10{
     margin: 10px;
-}
-.table .checkbox {
+}.table .checkbox {
     padding-left: 0;
     cursor: default!important
 }
@@ -1906,4 +1908,13 @@ label.checkbox {
 .heatmap-pos{
     vertical-align: top;
     padding-left: 10px;
+}
+.editLink {
+    display: inline-block;
+    margin-top: 15px;
+    margin-right: 5px;
+}
+.loading-30{
+    display: inline-block;
+    vertical-align: middle;
 }

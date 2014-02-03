@@ -8,7 +8,14 @@ window.JP.main.config([
             action: 'machine.index'
         }).when('/compute/instance/:machineid', {
             title: 'Instance Details',
-            action: 'machine.details'
+            action: 'machine.details',
+            resolve: {
+                data: ['$route', '$location', function ($route, $location) {
+                    if (!$route.current.params.machineid) {
+                        $location.path('/dashboard');
+                    }
+                }]
+            }
         }).when('/compute/create', {
             title: 'Create Instance',
             action: 'machine.provision'

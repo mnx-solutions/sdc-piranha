@@ -67,11 +67,11 @@ h4 {
     height: 100%;
 }
 .navbar-inner {
-	border:none;
+    border:none;
 }
 
 .footer .brand {
-	background-image: url('../img/logo-gray.png');
+    background-image: url('../img/logo-gray.png');
     background-repeat:no-repeat;
     background-position:50% 60%;
     width:120px;
@@ -80,7 +80,7 @@ h4 {
 
 .footer {
     position: fixed;
-	padding-top:10px;
+    padding-top:10px;
     margin-left: 175px;
     background-color: #ededed;
     height: 60px;
@@ -93,11 +93,10 @@ h4 {
     z-index: 1000;
 }
 .footer .nav {
-	padding-top:8px;
+    padding-top:8px;
     font-size:12px;
     margin-left: 28px;
     margin-right: 175px;
-
 }
 .footer .nav li {
 	float:left;
@@ -1422,4 +1421,14 @@ select::-ms-expand {
     background-image: url("../img/accord_i_down.png") !important;
     padding-right: 25px;
     vertical-align: middle;
+}
+.beta-sticker{
+    background-image: url("../img/sticker.png");
+    width: 66px;
+    height: 33px;
+    background-repeat: no-repeat;
+    margin-top: 7px;
+}
+.beta-sticker.beta{
+    margin-top: 47px;
 }

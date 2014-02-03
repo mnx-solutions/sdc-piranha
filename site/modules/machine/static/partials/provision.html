@@ -71,14 +71,14 @@
                 <h3 class="page-title no-breadcrumb-line one-k-width" data-translate>Create Instance</h3>
                 <div class="wizard-steps">
                     <div class="firststep active-step">
-                        <p ng-show="currentSlidePageIndex >= 1"><a href="#myCarousel" class="breadcrumb" data-ng-click="reconfigure(0)" data-slide-to="0">Choose Image</a></p>
+                        <p ng-show="currentSlidePageIndex >= 1"><a href="#myCarousel" class="breadcrumb current-step" data-ng-click="reconfigure(0)" data-slide-to="0">Choose Image</a></p>
                         <p ng-hide="currentSlidePageIndex >= 1">Choose Image</p>
                     </div>
                     <div>
-                        <p ng-show="currentSlidePageIndex >= 2"><a data-ng-click="reconfigure(1)" class="breadcrumb" href="#myCarousel" data-slide-to="1">Select Package</a></p>
+                        <p ng-show="currentSlidePageIndex >= 2"><a data-ng-click="reconfigure(1)" class="breadcrumb current-step" href="#myCarousel" data-slide-to="1">Select Package</a></p>
                         <p ng-hide="currentSlidePageIndex >= 2">Select Package</p>
                 </div>
-                    <div><p>Review</p></div>
+                    <div><p class="current-step">Review</p></div>
                     <div><p class="laststep"></p></div>
             </div>
             <div class="row-fluid carousel-container">

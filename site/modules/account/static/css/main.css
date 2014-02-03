@@ -491,6 +491,7 @@ legend + .control-group {
     display: inline-block;
     float: right;
     margin-top: 10px;
+    margin-left: 20px;
 }
 .first-block{
     width: 725px;
