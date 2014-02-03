@@ -20,6 +20,10 @@
     content: 'root' !important;
 }
 
+.container-fileman {
+    padding-left: 48px;
+}
+
 .folder-container{
     height: 392px;
     width: 1000px;
