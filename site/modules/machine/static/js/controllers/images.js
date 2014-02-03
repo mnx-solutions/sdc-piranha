@@ -158,7 +158,7 @@
                         return true;
                     },
                     getClass: function () {
-                        return 'btn orange';
+                        return 'btn orange font-size-12 ci';
                     },
                     sequence: 1
 

@@ -897,7 +897,7 @@
 			        btn: {
 				        label: 'Edit',
 				        getClass: function () {
-					        return 'btn-default';
+					        return 'btn-edit';
 				        },
 				        disabled: function () {
 					        return $scope.loading;
@@ -925,7 +925,7 @@
                             return object.enabled ? 'Enabled' : 'Disabled';
                         },
                         getClass: function (object) {
-                            return (object.enabled ? 'btn-success' : 'btn-danger');
+                            return (object.enabled ? 'btn-success' : 'btn-default');
                         },
                         disabled: function () {
                             return $scope.loading;
