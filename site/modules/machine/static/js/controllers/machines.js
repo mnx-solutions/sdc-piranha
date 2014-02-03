@@ -316,9 +316,10 @@
                                     null,
                                     'Enable firewall for selected instances?'
                                 ), function () {
+                                    // TODO: one method for enable and disable
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
-                                            if (!el.firewall_enabled) {
+                                            if ("virtualmachine" !== el.type && !el.firewall_enabled) {
                                                 $scope.toggleFirewallEnabled(el);
 //                                                el.firewall_enabled = true;
                                             }
@@ -353,7 +354,7 @@
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
                                         if (el.checked) {
-                                            if (el.firewall_enabled) {
+                                            if ("virtualmachine" !== el.type && el.firewall_enabled) {
                                                 $scope.toggleFirewallEnabled(el);
 //                                                el.firewall_enabled = false;
                                             }
