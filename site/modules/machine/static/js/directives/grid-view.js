@@ -261,6 +261,13 @@
                 }
             });
         };
+
+        $scope.noClose = function () {
+            ng.element('.dropdown-menu').click(function(event) {
+                event.stopPropagation();
+            });
+        };
+
         $scope.selectCheckbox();
 
     }]).constant('gridConfig', {
