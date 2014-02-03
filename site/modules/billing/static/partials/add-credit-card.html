@@ -12,7 +12,6 @@
                                id="creditCardNumber"
                                name="creditCardNumber"
                                size="40"
-                               data-ng-pattern="/^([\*\d]+)$/"
                                data-ng-model="form.creditCardNumber"
                                data-ng-maxlength="19"
                                data-ng-class="{error: isError('creditCard.creditCardNumber')}"
@@ -20,27 +19,22 @@
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber', 'maxlength')">
-                             Credit card number is too long
+                            data-translate
+                            data-ng-show="isError('creditCard.creditCardNumber', 'maxlength')">
+                            Credit card number is too long
                         </div>
                         <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber') || isError('creditCard.cardNumber') || isError('creditCard.cardType')">
+                            data-translate
+                            data-ng-show="invalidCCNumber">
                             Invalid credit card number
                         </div>
                         <div class="error alert-icon"
                              data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber', 'required') || isError('creditCardNumber', 'submitRequired')">
+                             data-ng-show="missingCCNumber">
                             Missing credit card number
                         </div>
-                        <div class="error alert-icon"
-                             data-translate
-                             data-ng-show="isError('creditCard.creditCardNumber', 'pattern')">
-                            Invalid symbols (numbers only)
-                        </div>
                     </span>
-                        </div>
+                </div>
         <div class="control-group">
             <span class="edit-name">Month / Year<span class="orange-asterix"> *</span></span>
                     <span class="edit-value-two">
@@ -173,14 +167,13 @@
         <div class="control-group">
             <span class="edit-name">Address Line 1<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                            <input type="text"
-                                   id="addressLine1"
-                                   name="addressLine1"
-                                   data-ng-class="{error: isError('addressLine1')}"
-                                   data-ng-model="form.cardHolderInfo.addressLine1"
-                                   size="255"
-                                   data-ng-required="true"
-                                   data-ng-disabled="useExisting"/>
+                        <input type="text"
+                               id="addressLine1"
+                               name="addressLine1"
+                               data-ng-class="{error: isError('addressLine1')}"
+                               data-ng-model="form.cardHolderInfo.addressLine1"
+                               size="255"
+                               data-ng-required="true"/>
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -198,13 +191,12 @@
         <div class="control-group">
             <span class="edit-name">Address Line 2</span>
                     <span class="edit-value">
-                            <input type="text"
-                                   id="addressLine2"
-                                   name="addressLine2"
-                                   data-ng-class="{error: isError('addressLine2')}"
-                                   data-ng-model="form.cardHolderInfo.addressLine2"
-                                   size="255"
-                                   data-ng-disabled="useExisting">
+                        <input type="text"
+                               id="addressLine2"
+                               name="addressLine2"
+                               data-ng-class="{error: isError('addressLine2')}"
+                               data-ng-model="form.cardHolderInfo.addressLine2"
+                               size="255">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -222,14 +214,13 @@
         <div class="control-group">
             <span class="edit-name">Country<span class="orange-asterix"> *</span></span>
                     <span class="edit-value-one">
-                            <select id="country"
-                                    name="country"
-                                    data-ng-class="{error: isError('country')}"
-                                    data-ng-model="form.cardHolderInfo.country"
-                                    data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
-                                    data-ng-required="true"
-                                    data-ng-disabled="useExisting">
-                            </select>
+                        <select id="country"
+                                name="country"
+                                data-ng-class="{error: isError('country')}"
+                                data-ng-model="form.cardHolderInfo.country"
+                                data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
+                                data-ng-required="true">
+                        </select>
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -247,15 +238,14 @@
         <div class="control-group">
             <span class="edit-name">City<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                            <input type="text"
-                                   id="city"
-                                   name="city"
-                                   size="40"
-                                   data-ng-class="{error: isError('city')}"
-                                   data-ng-model="form.cardHolderInfo.city"
-                                   data-ng-required="true"
-                                   data-ng-maxlength="40"
-                                   data-ng-disabled="useExisting">
+                        <input type="text"
+                               id="city"
+                               name="city"
+                               size="40"
+                               data-ng-class="{error: isError('city')}"
+                               data-ng-model="form.cardHolderInfo.city"
+                               data-ng-required="true"
+                               data-ng-maxlength="40">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -284,8 +274,7 @@
                                        id="state"
                                        name="state"
                                        data-ng-class="{error: isError('state')}"
-                                       data-ng-model="form.cardHolderInfo.state"
-                                       data-ng-disabled="useExisting">
+                                       data-ng-model="form.cardHolderInfo.state">
                             </span>
                              <span class="edit-error">
                                 <div class="error alert-icon"
@@ -307,7 +296,6 @@
                                         data-ng-class="{error: isError('state')}"
                                         data-ng-model="form.cardHolderInfo.state"
                                         data-ng-required="true"
-                                        data-ng-disabled="useExisting"
                                         data-ng-options="value as label for (value, label) in stateSel">
                                 </select>
                             </span>
@@ -329,14 +317,13 @@
         <div class="control-group">
             <span class="edit-name">Zip Code<span class="orange-asterix"> *</span></span>
                     <span class="edit-value">
-                            <input type="text"
-                                   id="zipCode"
-                                   name="zipCode"
-                                   data-ng-class="{error: isError('zipCode')}"
-                                   data-ng-model="form.cardHolderInfo.zipCode"
-                                   data-ng-required="true"
-                                   data-ng-maxlength="20"
-                                   data-ng-disabled="useExisting">
+                        <input type="text"
+                               id="zipCode"
+                               name="zipCode"
+                               data-ng-class="{error: isError('zipCode')}"
+                               data-ng-model="form.cardHolderInfo.zipCode"
+                               data-ng-required="true"
+                               data-ng-maxlength="20">
                     </span>
                     <span class="edit-error">
                         <div class="error alert-icon"
@@ -365,16 +352,6 @@
                 data-current-step="currentStep"
                 data-credit-card="true"
                 data-el-width="220"></span>
-        </div>
-        <div class="control-group" data-ng-show="useExistingPossible">
-            <label>
-                <div class="checker content-p" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                            <span data-ng-class="{checked: useExisting}">
-                                <input type="checkbox" checked="" data-column="useExisting" id="useExisting" data-ng-model="useExisting">
-                        </span>
-                </div>
-                Use previous contact info
-            </label>
         </div>
     </fieldset>
     <fieldset class="line" data-ng-show="currentStep && features.promocode != 'disabled'">
@@ -419,13 +396,13 @@
         </div>
         <div class="fieldset-spacer"></div>
         <br>
-                        </div>
-    <div data-ng-show="useExistingPossible">
+    </div>
+    <div data-ng-hide="currentStep">
         <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
         <p class="content-p inline-pos or">or</p>
         <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
-        <div data-ng-hide="loading" class="required-txt">
-            <span class="pull-right">required fields</span><span class="orange-asterix pull-right">*</span>
+        <div data-ng-hide="loading" class="required-txt pull-right">
+            <span class="orange-asterix">*</span>&nbsp;required fields
         </div>
         <div class="loading-medium" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>
