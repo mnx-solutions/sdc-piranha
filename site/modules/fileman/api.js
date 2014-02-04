@@ -10,14 +10,18 @@ var manta = require('manta');
 var fs = require('fs');
 
 module.exports = function execute(scope, register) {
-    function createClient(call) {
+    function createClient(call, admin) {
+        var key = fs.readFileSync(admin ? config.cloudapi.keyPath : config.manta.privateKey, 'utf8');
+        var keyId = admin ? config.cloudapi.keyId : config.manta.keyId;
+        var user = admin ? config.cloudapi.username : (config.manta.user || call.req.session.userName);
+
         return manta.createClient({
             sign: manta.privateKeySigner({
-                key: fs.readFileSync(config.manta.privateKey, 'utf8'),
-                keyId: config.manta.keyId,
-                user: config.manta.user || call.req.session.userName
+                key: key,
+                keyId: keyId,
+                user: user
             }),
-            user: config.manta.user || call.req.session.userName,
+            user: user,
             url: config.manta.url,
             insecure: true,
             rejectUnauthorized: false

@@ -16,8 +16,9 @@
         '$location',
         'firewall',
         '$rootScope',
+        'Account',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope) {
+        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -76,7 +77,7 @@
                         $scope,
                         null,
                         'No instance selected for the action.'
-                    ), function() {
+                    ), function () {
                     }
                 );
             };
@@ -206,13 +207,13 @@
                 {
                     id: 'primaryIp',
                     name: 'IP',
-                    sequence: 6,
+                    sequence: 5,
                     active: true
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 7,
+                    sequence: 6,
                     active: true
                 },
                 {
@@ -225,37 +226,37 @@
                 {
                     id: 'id',
                     name: 'ID',
-                    sequence: 9,
+                    sequence: 8,
                     active: false
                 },
                 {
                     id: 'dataset',
                     name: 'Dataset',
-                    sequence: 10,
+                    sequence: 9,
                     active: false
                 },
                 {
                     id: 'type',
                     name: 'Type',
-                    sequence: 11,
+                    sequence: 10,
                     active: false
                 },
                 {
                     id: 'memory',
                     name: 'Memory',
-                    sequence: 12,
+                    sequence: 11,
                     active: false
                 },
                 {
                     id: 'disk',
                     name: 'Disk',
-                    sequence: 13,
+                    sequence: 12,
                     active: false
                 },
                 {
                     id: 'tags',
                     name: 'Tags',
-                    sequence: 14,
+                    sequence: 13,
                     active: false
                 },
                 {
@@ -312,6 +313,8 @@
                 };
                 $scope.gridProps.splice(2, 0, firewallColumn);
             }
+
+            $scope.gridUserConfig = Account.getUserConfig().$child('machines');
 
             $scope.gridDetailProps = [
                 {

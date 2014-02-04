@@ -2,12 +2,14 @@
 
 var config = require('easy-config');
 var metadata = require('./lib/metadata');
+var MemoryStream = require('memorystream');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
     var TFA = scope.api('TFA');
     var SignupProgress = scope.api('SignupProgress');
     var Marketo = scope.api('Marketo');
+    var MantaClient = scope.api('MantaClient');
 
     var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
     var updateable = ['email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
@@ -189,6 +191,55 @@ module.exports = function execute(scope) {
                     }
                 }, true);
             })();
+        });
+    });
+
+    server.onCall('get-grid-config', function (call) {
+        var client = MantaClient.createClient(call, true);
+        var configFile = '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
+        client.get(configFile, function (error, stream) {
+            var jsonConfig = {};
+            if (error && error.statusCode !== 404) {
+                call.log.error(error);
+                call.done(null, {});
+            } else if (error && error.statusCode === 404) {
+                call.log.info('Config for user "%s" not found', call.req.session.userName);
+                call.done(null, {});
+            } else {
+                var configStream = new MemoryStream(),
+                    config = '';
+
+                stream.pipe(configStream);
+                configStream.on('data', function (data) {
+                    config += data;
+                });
+                configStream.on('end', function () {
+                    try {
+                        jsonConfig = JSON.parse(config);
+                    } catch (err) {
+                        call.log.error(err, 'Error parsing config file');
+                    }
+                    call.done(null, jsonConfig);
+                });
+                configStream.on('error', function (error) {
+                    call.log.error(error);
+                    call.done(null, {});
+                });
+            }
+        });
+    });
+
+    server.onCall('set-grid-config', function (call) {
+        var client = MantaClient.createClient(call, true);
+        var fileStream = new MemoryStream(JSON.stringify(call.data), {writable: false});
+        call.log.warn(call.data, 'set-grid-config');
+        var configFile = '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
+        client.put(configFile, fileStream, function (error, response) {
+            if (error && error.statusCode !== 404) {
+                call.log.error(error);
+            }
+            call.log.warn(error, 'set-grid-config-complete');
+            call.done(null, !!error);
         });
     });
 };
