@@ -7,8 +7,8 @@
         '$q',
         'serverTab',
         'localization',
-        'util',
-        function ($http, $q, serverTab, localization, util) {
+        'PopupDialog',
+        function ($http, $q, serverTab, localization, PopupDialog) {
         var service = {};
 
         var creditCard = null;
@@ -31,7 +31,7 @@
                     data: {},
                     done: function (err, job) {
                         if(err) {
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,
@@ -67,7 +67,7 @@
                 data: {},
                 done: callback || function (err, job) {
                     if(err && err !== 'Not Implemented') {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 null,
                                 null,
@@ -92,7 +92,7 @@
                 data: {},
                 done: callback || function (err, job) {
                     if(err && err !== 'Not Implemented') {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 null,
                                 null,
@@ -117,7 +117,7 @@
                 data: {},
                 done: callback || function (err, job) {
                     if(err) {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 null,
                                 null,

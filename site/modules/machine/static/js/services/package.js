@@ -4,10 +4,10 @@
         'serverTab',
         '$q',
         'localization',
-        'util',
+        'PopupDialog',
         'errorContext',
 
-        function (serverTab, $q, localization, util, errorContext) {
+        function (serverTab, $q, localization, PopupDialog, errorContext) {
 
         var service = {};
         var packages = { job: {}, index: {}, nameIndex: {}, list: {}, search: {}};
@@ -28,7 +28,7 @@
                     data: { datacenter: datacenter === 'all' ? null : datacenter },
                     done: function(err, job) {
                         if (err) {
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,

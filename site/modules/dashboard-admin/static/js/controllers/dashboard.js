@@ -6,12 +6,11 @@
         [
             '$scope',
             '$$track',
-            '$dialog',
             '$q',
             'requestContext',
             'Account',
             'localization',
-            function ($scope, $$track, $dialog, $q, requestContext, Account, localization) {
+            function ($scope, $$track, $q, requestContext, Account, localization) {
                 localization.bind('dashboard-admin', $scope);
                 requestContext.setUpRenderContext('dashboard-admin.index', $scope);
 

@@ -8,10 +8,9 @@
         'notification',
         '$q',
         '$window',
-        '$dialog',
         '$timeout',
         '$http',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http) {
+        function (Account, localization, notification, $q, $window, $timeout, $http) {
             return {
                 restrict: 'A',
                 replace: true,

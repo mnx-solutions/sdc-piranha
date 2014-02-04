@@ -7,7 +7,6 @@
         '$window',
         '$timeout',
         '$q',
-        '$dialog',
         '$location',
         '$http',
         'Account',
@@ -16,7 +15,7 @@
         'notification',
         'util',
 
-        function ($scope, $window, $timeout, $q, $dialog, $location, $http, Account, localization, requestContext, notification, util) {
+        function ($scope, $window, $timeout, $q, $location, $http, Account, localization, requestContext, notification, util) {
             requestContext.setUpRenderContext('account.ssh', $scope);
             localization.bind('account', $scope);
 

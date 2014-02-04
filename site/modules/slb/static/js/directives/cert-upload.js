@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('certUpload', ['util', 'localization', '$dialog', function (util, localization, $dialog) {
+    app.directive('certUpload', ['PopupDialog', 'localization', function (PopupDialog, localization) {
         return {
             templateUrl: 'slb/static/templates/cert-upload.html',
             restrict: 'EA',
@@ -15,17 +15,17 @@
                 var uploadPass = document.getElementById('certificate_upload_passphrase');
 
                 function passwordPrompt(callback) {
-                    var title = 'Specify passphrase';
-                    var templateUrl = 'slb/static/templates/cert-upload-passphrase.html';
-                    $dialog.messageBox(title, '', [], templateUrl)
-                        .open()
-                        .then(callback);
+                    var opts = {
+                        title: 'Specify passphrase',
+                        templateUrl: 'slb/static/templates/cert-upload-passphrase.html'
+                    };
+                    PopupDialog.custom(opts, callback);
                 }
 
                 window.__uploadCallback__ = function (data) {
                     scope.$apply(function () {
                         if (data.success) {
-                            util.message(
+                            PopupDialog.message(
                                 localization.translate(
                                     null,
                                     null,
@@ -49,7 +49,7 @@
                                 uploadForm.submit();
                             });
                         } else {
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,

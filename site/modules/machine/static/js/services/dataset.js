@@ -6,10 +6,10 @@ window.fn = [];
         'serverTab',
         '$q',
         'localization',
-        'util',
+        'PopupDialog',
         'errorContext',
         '$rootScope',
-        function (serverTab, $q, localization, util, errorContext, $rootScope) {
+        function (serverTab, $q, localization, PopupDialog, errorContext, $rootScope) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
@@ -33,7 +33,7 @@ window.fn = [];
                         datasets.job.finished = true;
 
                         if (err) {
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,

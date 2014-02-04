@@ -7,7 +7,8 @@
         '$q',
         '$rootScope',
         'localization',
-        function (serverTab, $http, $q, $rootScope, localization) {
+        'PopupDialog',
+        function (serverTab, $http, $q, $rootScope, localization, PopupDialog) {
             var service = {};
 
             function filterBalancer(balancer) {
@@ -213,7 +214,7 @@
                 function handleMessage(message) {
                     if (message.status !== 'error') {
                         if ($rootScope.operationLog) {
-                            util.message(
+                            PopupDialog.message(
                                 localization.translate(
                                     null,
                                     null,

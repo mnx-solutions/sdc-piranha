@@ -6,16 +6,15 @@
         '$cookieStore',
         '$filter',
         '$$track',
-        '$dialog',
         '$q',
         'requestContext',
         'Image',
         'localization',
-        'util',
+        'PopupDialog',
         '$http',
         '$location',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Image, localization, util, $http, $location) {
+        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Image, localization, PopupDialog, $http, $location) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.images', $scope, {
                 title: localization.translate(null, 'machine', 'Image List')
@@ -37,7 +36,7 @@
             );
 
             $scope.clickDelete = function (image) {
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,

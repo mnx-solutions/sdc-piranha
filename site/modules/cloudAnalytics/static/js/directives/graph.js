@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng, $) {
-     app.directive('graph', function (util, ca, localization) {
+     app.directive('graph', function (PopupDialog, ca, localization) {
         return {
             restrict: 'E',
             replace: true,
@@ -62,7 +62,7 @@
                             endtime: heatmaptime
                         }, function(err, values) {
                             if (err) {
-                                util.error(
+                                PopupDialog.error(
                                     localization.translate(
                                         null,
                                         null,

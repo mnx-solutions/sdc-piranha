@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'slb.ListController',
-        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location', 'util',
-                function ($scope, requestContext, localization, service, $location, util) {
+        ['$scope', 'requestContext', 'localization', 'slb.Service', '$location', 'PopupDialog',
+                function ($scope, requestContext, localization, service, $location, PopupDialog) {
 
                 $scope.listLoaded = false;
                 localization.bind('slb', $scope);
@@ -13,7 +13,7 @@
                 });
 
                 $scope.disableLb = function () {
-                    util.confirm(
+                    PopupDialog.confirm(
                         localization.translate(
                             $scope,
                             null,
@@ -43,7 +43,7 @@
                         $scope.listLoaded = true;
                     }, function (err) {
                         if (!$scope.deleting) {
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,

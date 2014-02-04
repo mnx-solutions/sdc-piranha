@@ -12,16 +12,15 @@
         'Account',
         'Network',
         'Image',
-        '$dialog',
         '$location',
         'localization',
         '$q',
         '$$track',
-        'util',
+        'PopupDialog',
         '$cookies',
 
         function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network,
-                  Image, $dialog, $location, localization, $q, $$track, util, $cookies) {
+                  Image, $location, localization, $q, $$track, PopupDialog, $cookies) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -122,7 +121,7 @@
             };
 
             function provision(machine) {
-                    util.confirm(
+                    PopupDialog.confirm(
                         localization.translate(
                             $scope,
                             null,
@@ -134,7 +133,7 @@
                             'Billing will start once this instance is created'
                         ), function () {
                         if (machine && !machine.dataset) {
-                            util.message('Error', 'Instance not found', function () {});
+                            PopupDialog.message('Error', 'Instance not found', function () {});
                             return;
                         }
                         $scope.retinfo = Machine.provisionMachine( machine || $scope.data);

@@ -11,8 +11,9 @@
         'Package',
         'Dataset',
         'util',
+        'PopupDialog',
 
-        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util) {
+        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
@@ -115,7 +116,7 @@
                         function handleResponse(chunk) {
                             if(chunk.status === 'error') {
 
-                                util.error(
+                                PopupDialog.error(
                                     localization.translate(
                                         null,
                                         null,
@@ -272,7 +273,7 @@
                         if (!opts.done) {
                             opts.done = function (err, job) {
                                 if (err) {
-                                    util.error(
+                                    PopupDialog.error(
                                         localization.translate(
                                             null,
                                             null,
@@ -332,7 +333,7 @@
             name: 'MachineDelete',
             done: function(err, job) {
                 if (err) {
-                    util.error(
+                    PopupDialog.error(
                         localization.translate(
                             null,
                             null,
@@ -420,7 +421,7 @@
             }
 
             function showError(id, instance, err) {
-                util.error(
+                PopupDialog.error(
                     localization.translate(
                         null,
                         null,
@@ -523,7 +524,7 @@
                 job.deferred.then(function (response) {
                     m.tags = response;
                 }, function (err) {
-                    util.error(
+                    PopupDialog.error(
                         localization.translate(
                             null,
                             null,

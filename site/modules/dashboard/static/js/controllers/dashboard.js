@@ -4,21 +4,20 @@
     app.controller('Dashboard.IndexController', [
         '$scope',
         '$$track',
-        '$dialog',
         '$q',
         'requestContext',
         'Account',
         'Zendesk',
         'Machine',
         'localization',
-        'util',
+        'PopupDialog',
         'BillingService',
         '$http',
         '$cookies',
         'slb.Service',
         '$rootScope',
 
-        function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService, $http, $cookies, slbService, $rootScope) {
+        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, PopupDialog, BillingService, $http, $cookies, slbService, $rootScope) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -92,7 +91,7 @@
             $scope.othercount = 0;
 
             $scope.errorDialog = function () {
-                util.error(
+                PopupDialog.error(
                     localization.translate(
                         $scope,
                         null,
@@ -107,7 +106,7 @@
                     });
             };
             $scope.messageDialog = function () {
-                util.message(
+                PopupDialog.message(
                     localization.translate(
                         $scope,
                         null,
