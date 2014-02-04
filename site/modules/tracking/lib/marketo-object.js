@@ -3,6 +3,9 @@
 function syncLead(userId, object) {
     var xml = '<tns:paramsSyncLead>';
     xml += '<leadRecord><ForeignSysPersonId>' + userId + '</ForeignSysPersonId>';
+    if (object.Email) {
+        xml += '<Email>' + object.Email + '</Email>';
+    }
     xml += '<leadAttributeList>';
 
     Object.keys(object).forEach(function (name) {

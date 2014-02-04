@@ -34,7 +34,7 @@ module.exports = function execute(scope) {
                 Phone: data.phone
             };
 
-            Marketo.update(data.email, marketoData, function (err) {
+            Marketo.update(data.id, marketoData, function (err) {
                 if (err) {
                     call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
@@ -103,8 +103,8 @@ module.exports = function execute(scope) {
                 return;
             }
 
-            Marketo.update(account.email, marketoData, function (err) {
-                if(err) {
+            Marketo.update(account.id, marketoData, function (err) {
+                if (err) {
                     call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
 
