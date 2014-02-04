@@ -27,12 +27,29 @@
         $scope.$watch('page', $scope.calcPageLimits);
         $scope.$watch('perPage', $scope.calcPageLimits);
         $scope.$watch('pageNumSum', $scope.calcPageLimits);
-        var rightSpacer = 100;
+        var rightMargin = 100;
+        var rightMarginDetails = 15;
+        var gridWidthFullPage = 1000;
+        var gridWidthDetails = 500;
 
         function calcWidth() {
-            var gridWidth = ng.element('body').width() - ng.element('.page-sidebar').width() - rightSpacer;
-            ng.element('.item-list-container').width('');
-            if(gridWidth < 1000){gridWidth = 1000;}
+            var gridWidth = 0;
+            var bodyWidth = ng.element('body').width();
+            var leftMenuWidth = ng.element('.page-sidebar').width();
+            var analyticsWidth = ng.element('.right-part').width();
+            var rightSpacerWidth = ng.element('.right-spacer').width();
+
+            if ($scope.fixedWidth && $scope.fixedWidth === "detailsPage") {
+                gridWidth = bodyWidth - leftMenuWidth - analyticsWidth - rightSpacerWidth - rightMargin - rightMarginDetails;
+                if (gridWidth < gridWidthDetails) {
+                    gridWidth = gridWidthDetails;
+                }
+            } else {
+                gridWidth = bodyWidth - leftMenuWidth - rightMargin;
+                if (gridWidth < gridWidthFullPage) {
+                    gridWidth = gridWidthFullPage;
+                }
+            }
             ng.element('.item-list-container').width(gridWidth);
         }
 
@@ -293,6 +310,7 @@
                 exportFields: '=',
                 columnsButton: '=',
                 actionsButton: '=',
+                fixedWidth: '=',
                 instForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',

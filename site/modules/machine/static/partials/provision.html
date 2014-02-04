@@ -1,7 +1,7 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
 	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="" data-ng-hide="loading">
-        <div class="row-fluid" data-ng-show="keys.length">
+        <div class="one-k-width" data-ng-show="keys.length">
         <div data-ng-show="basicCreateInstance">
             <h3 class="page-title no-breadcrumb-line one-k-width" data-translate>Quick Start: Create Instance</h3>
             <div class="ci_desc">Get started with Joyent by selecting an instance below and start computing.</div>
@@ -379,7 +379,7 @@
             </div>
         </div>
 
-        <div data-ng-show="keys.length == 0">
+        <div data-ng-show="keys.length == 0" class="one-k-width">
                 <h4>Hello there!</h4>
                 <div data-translate>I see you have no SSH keys configured.</div>
             <div class="pull-left" style="margin-top: 20px">

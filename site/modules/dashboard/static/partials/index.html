@@ -1,5 +1,5 @@
 <div class="container-fluid dash-container-position" data-ng-controller="Dashboard.IndexController">
-    <div class="container one-k-width">
+    <div class="container one-k-width row-fluid">
         <div class="row-fluid">
             <h3 class="page-title white_line">Dashboard</h3>
         </div>
@@ -40,17 +40,17 @@
                             Compute Instance</button></a>
                 </div>
             </div>
-            <div class="pull-left padding_left10" data-ng-show="slbEnabled">
+            <div class="pull-left padding_left10" data-ng-show="slbFeatureEnabled">
               <div class="dashboard-stat grey links2 balancer_icon">
                   <h4>Load Balancers</h4>
 
                   <div class="details">
-                      <div ng-show="slbEnabled">
+                      <div ng-show="slbControllerCreated">
                           <p class="number">{{balancers.length || 0}}</p>
 
                           <p class="desc"> configured</p>
                       </div>
-                      <div ng-hide="slbEnabled">
+                      <div ng-hide="slbControllerCreated">
                           <p class="desc">not available</p>
                       </div>
                   </div>
@@ -62,7 +62,7 @@
                   </a>
               </div>
               <div class="dashboard-stat-btn">
-                  <a class="more" ng-href="{{(slbEnabled && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
+                  <a class="more" ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
               </div>
           </div>
           <div class="pull-left padding_left10">

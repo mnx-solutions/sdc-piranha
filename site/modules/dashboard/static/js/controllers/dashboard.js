@@ -24,11 +24,13 @@
 
             // populate all datasources
             $scope.account     = Account.getAccount();
-            if ($rootScope.features.slb === 'enabled') {
+            $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
+            if ($scope.slbFeatureEnabled) {
+
                 $scope.balancers = slbService.getBalancers();
 
                 slbService.getController().then(function (isEnabled) {
-                    $scope.slbEnabled = isEnabled;
+                    $scope.slbControllerCreated = isEnabled;
                 });
             }
 

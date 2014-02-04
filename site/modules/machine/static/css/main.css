@@ -533,7 +533,7 @@ label.checkbox {
 .btn-group>.btn, .btn-group>.dropdown-menu, .btn-group>.popover {
     font-size: 14px;
 }
-.open>.dropdown-menu {
+.open>.dropdown-menu{
     display: block;
 }
 .dropdown-menu.pull-right {
@@ -619,9 +619,7 @@ label.checkbox {
     border-radius: 50px;
     background-position: center center;
 }
-#accordion1{
-    width: 500px !important;
-}
+
 .accordion-group {
     border: 0 none;
     margin-bottom: 5px !important;
@@ -654,10 +652,22 @@ label.checkbox {
 .collapse.in {
     height: auto;
 }
-.inst_left{
-    float: left;
-    margin-right: 20px;
+.left-part,.right-part,.right-spacer{
+    display: table-cell;
+    vertical-align: top;
 }
+.right-part{
+    width: 485px;
+}
+.right-spacer{
+    min-width: 20px;
+}
+
+.inl-table{
+    width: 100%;
+    display: inline-table;
+}
+
 .accordion-inner table td {
     font-size: 14px;
     color: #7d7d7d;
@@ -813,8 +823,9 @@ label.checkbox {
     height: 100%;
     background: url('../img/sselect2.png') no-repeat 0 3px !important;
 }
-.resize_block{
+.resize-block{
     padding-top: 20px;
+    display: block;
 }
 .icon-info-sign, .icon-warning-sign, .icon-question-sign{
     background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
@@ -835,7 +846,7 @@ label.checkbox {
 .container_details .error{
     padding-bottom: 15px;
 }
-.wait_rename{
+.wait-rename{
     background-position: 0 0;
     position: relative;
     display: inline-block;
@@ -1826,10 +1837,7 @@ label.checkbox {
     font-weight: 500;
 }.carousel-inner .item:hover {
     background:none !important;
-}.loading-medium{
-    max-width: 1020px;
-}
-.margin10{
+}.margin10{
     margin: 10px;
 }.table .checkbox {
     padding-left: 0;
@@ -1849,7 +1857,6 @@ label.checkbox {
     padding-top: 10px;
     padding-bottom: 75px
 }
-
 
 .rickshaw_legend{
     background-color: transparent;
@@ -1886,4 +1893,11 @@ label.checkbox {
 .loading-30{
     display: inline-block;
     vertical-align: middle;
+}
+.btn-height{
+    min-height: 34px;
+}
+.accordion-max-width{
+    min-width: 465px;
+    max-width: 465px;
 }
