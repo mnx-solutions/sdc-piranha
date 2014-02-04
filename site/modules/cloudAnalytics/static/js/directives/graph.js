@@ -221,7 +221,7 @@
                     return graph;
                 }
 
-                $scope.activeRenderer = 'bar';
+                $scope.activeRenderer = 'line';
                 $scope.renderers = [
                     'area',
                     'bar',
