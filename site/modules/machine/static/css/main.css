@@ -1695,9 +1695,12 @@ label.checkbox {
     padding-right: 10px;
 }
 .container-grid {
-    padding-bottom: 55px;
     float: left;
     width: 100%;
+}
+
+.pagination {
+    margin-bottom: 5px;
 }
 
 .btn.grey{
