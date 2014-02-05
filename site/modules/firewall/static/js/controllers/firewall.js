@@ -885,6 +885,7 @@
 				        action: $scope.deleteRule.bind($scope),
 				        tooltip: 'Delete the rule'
 			        },
+                    sequence: 8,
                     active: true
 		        },
 		        {
@@ -911,6 +912,7 @@
 				        },
 				        tooltip: 'Edit the rule'
 			        },
+                    sequence: 7,
                     active: true
 		        },
                 {
