@@ -259,53 +259,6 @@ module.exports = function execute(scope, register) {
         }
     };
 
-    api.safeSetSignupStep = function (call, step, cb) {
-        function updateStep(req) {
-            function update(userId) {
-                getFromBilling('update', userId, function (err, bStep) {
-
-                    // No errors possible currently
-
-                    step = bStep === 'completed' ? bStep : step;
-
-                    metadata.set(userId, metadata.SIGNUP_STEP, step, function (setError) {
-                        if (!setError) {
-                            call.log.info('Set signup step in metadata to %s', bStep);
-                        }
-                        cb(setError);
-                    });
-                });
-            }
-
-            if (req.session.userId) {
-                update(req.session.userId);
-                return;
-            }
-
-            req.cloud.getAccount(function (accErr, account) {
-                if (accErr) {
-                    req.log.error('Failed to get info from cloudApi', accErr);
-                    cb(accErr);
-                    return;
-                }
-
-                update(account.id);
-            });
-        }
-
-        if (!call.req && !call.done) { // Not a call, but request
-            call.session.signupStep = step;
-            call.session.save();
-            updateStep(call);
-        } else {
-            call.session(function (req) {
-                req.session.signupStep = step;
-                req.session.save();
-            });
-            updateStep(call.req);
-        }
-    };
-
     api.setMinProgress = function (call, step, cb) {
         api.getSignupStep(call, function (err, oldStep) {
             if (err) {
