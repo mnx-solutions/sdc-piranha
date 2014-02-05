@@ -241,7 +241,7 @@
         $scope.selectCheckbox = function (id) {
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
-                if (el.id == id) {
+                if (id && el.id === id) {
                     if ((!el.job && !el.fireWallActionRunning) || (el.job && el.job.finished && !el.fireWallActionRunning)){
                         el.checked = (el.checked) ? false : true;
                     }
