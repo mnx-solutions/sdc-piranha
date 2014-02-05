@@ -1,250 +1,459 @@
 {
     "images": [
         {
+            "name": "SmartOS 64",
+            "className": "smartos-logo",
+            "imageData": {
+                "datacenter": "us-west-1",
+                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
+                "name": "",
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
+                "opsys": "All",
+                "package": "e44cc8ab-d28d-4727-8210-46874dc602f2"
+            },
+            "description": {
+                "text": "A 64-bit SmartOS image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
             "name": "Standard Node.js",
             "className": "nodejs-logo",
             "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "",
+                "datacenter": "us-west-1",
+                "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
                 "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
-                "package": "2a6151bf-6c0f-47b1-a770-3550f3fd83b2"
+                "package": "e44cc8ab-d28d-4727-8210-46874dc602f2"
             },
             "description": {
-                "text": "Optimized Node.js on SmartOS for dev & prod",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A SmartOS 32-bit image with Node.js 0.10.24, npm 1.3.21, MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Standard Ubuntu",
-            "className": "ubuntuos-logo",
-            "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
-                "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
-                "opsys": "All",
-                "package": "d6987187-e4c6-4e89-990c-cd314c216add"
-            },
-            "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
-            }
-        },
-        {
-            "name": "Basic SmartOS",
-            "className": "smartos-logo",
-            "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "f669428c-a939-11e2-a485-b790efc0f0c1",
-                "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
-                "opsys": "All",
-                "package": "f917d6c7-f719-44b0-9ea0-034da05602e5"
-            },
-            "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
-            }
-        },
-        {
-            "name": "Basic CentOS",
+            "name": "CentOS",
             "className": "centos-logo",
             "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
+                "datacenter": "us-west-1",
+                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
                 "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
-                "package": "d6987187-e4c6-4e89-990c-cd314c216add"
+                "package": "bb3fc5de-6e65-49ad-ab54-e8dcc62d3360"
             },
             "description": {
-                "text": "Linux distro with Yum, RPM, Gnome",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Standard Windows",
+            "name": "Ubuntu 12.04 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-west-1",
+                "dataset": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+                "name": "",
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
+                "opsys": "All",
+                "package": "bb3fc5de-6e65-49ad-ab54-e8dcc62d3360"
+            },
+            "description": {
+                "text": "Ubuntu 12.04 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Windows Server",
             "className": "winos-logo",
             "imageData": {
-                "datacenter": "us-west-x",
-                "dataset": "95f6c9a6-a2bd-11e2-b753-dbf2651bf890",
-                "name": "",
-                "networks": ["7cb0dfa0-a5a5-4533-86dc-dedbe6bb662f"],
-                "opsys": "All",
-                "package": "813e5040-04c1-4b25-8e3f-552e08f4969e"
-            },
-            "description": {
-                "text": "Windows 2012 installation with support",
-                "memory": 7.5,
-                "cpu": 2,
-                "disk": 738,
-                "price": 0.300
-            }
-        },
-        {
-            "name": "Basic SmartOS",
-            "className": "smartos-logo",
-            "imageData": {
                 "datacenter": "us-west-1",
-                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
                 "name": "",
                 "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
-                "package": "f917d6c7-f719-44b0-9ea0-034da05602e5"
+                "package": "bb3fc5de-6e65-49ad-ab54-e8dcc62d3360"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "Windows Server 2008r2 Standard 64-bit image.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS 64",
-            "className": "smartos-logo",
+            "name": "MongoDB",
+            "className": "mongodb-logo",
             "imageData": {
                 "datacenter": "us-west-1",
-                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
                 "name": "",
                 "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
-                "package": "f917d6c7-f719-44b0-9ea0-034da05602e5"
+                "package": "e44cc8ab-d28d-4727-8210-46874dc602f2"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS",
+            "name": "SmartOS 64",
             "className": "smartos-logo",
             "imageData": {
                 "datacenter": "us-east-1",
-                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
                 "name": "",
                 "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
                 "opsys": "All",
-                "package": "d71da280-92da-489f-9c4c-c91891fa202f"
+                "package": "53be60b7-baa1-4bee-a337-c151b3eb34e9"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A 64-bit SmartOS image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS 64",
-            "className": "smartos-logo",
+            "name": "Standard Node.js",
+            "className": "nodejs-logo",
             "imageData": {
                 "datacenter": "us-east-1",
-                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
                 "name": "",
                 "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
                 "opsys": "All",
-                "package": "d71da280-92da-489f-9c4c-c91891fa202f"
+                "package": "53be60b7-baa1-4bee-a337-c151b3eb34e9"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A SmartOS 32-bit image with Node.js 0.10.24, npm 1.3.21, MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS",
+            "name": "CentOS",
+            "className": "centos-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "43e0444f-a065-4ea7-ba96-e941abc0b08f"
+            },
+            "description": {
+                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Ubuntu 12.04 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "43e0444f-a065-4ea7-ba96-e941abc0b08f"
+            },
+            "description": {
+                "text": "Ubuntu 12.04 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Windows Server",
+            "className": "winos-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "43e0444f-a065-4ea7-ba96-e941abc0b08f"
+            },
+            "description": {
+                "text": "Windows Server 2008r2 Standard 64-bit image.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "MongoDB",
+            "className": "mongodb-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "53be60b7-baa1-4bee-a337-c151b3eb34e9"
+            },
+            "description": {
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "SmartOS 64",
             "className": "smartos-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
-                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
                 "name": "",
                 "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
-                "package": "8c556858-8137-4b97-9970-d741a96e4e75"
+                "package": "a8a2c001-89b7-4351-97c8-7bbbb0d18918"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A 64-bit SmartOS image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS 64",
-            "className": "smartos-logo",
+            "name": "Standard Node.js",
+            "className": "nodejs-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
-                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
                 "name": "",
                 "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
-                "package": "8c556858-8137-4b97-9970-d741a96e4e75"
+                "package": "a8a2c001-89b7-4351-97c8-7bbbb0d18918"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A SmartOS 32-bit image with Node.js 0.10.24, npm 1.3.21, MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS",
-            "className": "smartos-logo",
+            "name": "CentOS",
+            "className": "centos-logo",
             "imageData": {
-                "datacenter": "eu-ams-1",
-                "dataset": "753ceee6-5372-11e3-8f4e-f79c1154e596",
+                "datacenter": "us-sw-1",
+                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
                 "name": "",
-                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
-                "package": "7fc87f43-2def-4e6f-9f8c-980b0385b36e"
+                "package": "cd594f6e-b22d-4d32-baa0-0361e0d91a53"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         },
         {
-            "name": "Basic SmartOS 64",
+            "name": "Ubuntu 12.04 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-sw-1",
+                "dataset": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+                "name": "",
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
+                "opsys": "All",
+                "package": "cd594f6e-b22d-4d32-baa0-0361e0d91a53"
+            },
+            "description": {
+                "text": "Ubuntu 12.04 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Windows Server",
+            "className": "winos-logo",
+            "imageData": {
+                "datacenter": "us-sw-1",
+                "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
+                "name": "",
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
+                "opsys": "All",
+                "package": "cd594f6e-b22d-4d32-baa0-0361e0d91a53"
+            },
+            "description": {
+                "text": "Windows Server 2008r2 Standard 64-bit image.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "MongoDB",
+            "className": "mongodb-logo",
+            "imageData": {
+                "datacenter": "us-sw-1",
+                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "name": "",
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
+                "opsys": "All",
+                "package": "a8a2c001-89b7-4351-97c8-7bbbb0d18918"
+            },
+            "description": {
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "SmartOS 64",
             "className": "smartos-logo",
             "imageData": {
-                "datacenter": "eu-ams-1",
-                "dataset": "87b9f4ac-5385-11e3-a304-fb868b82fe10",
+                "datacenter": "us-ams-1",
+                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
                 "opsys": "All",
-                "package": "7fc87f43-2def-4e6f-9f8c-980b0385b36e"
+                "package": "d2a22866-9567-44fc-a0ee-9d5225de9047"
             },
             "description": {
-                "text": "The high-performance cloud OS",
-                "memory": 0.25,
-                "cpu": 0.125,
-                "disk": 16,
-                "price": 0.008
+                "text": "A 64-bit SmartOS image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Standard Node.js",
+            "className": "nodejs-logo",
+            "imageData": {
+                "datacenter": "us-ams-1",
+                "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "d2a22866-9567-44fc-a0ee-9d5225de9047"
+            },
+            "description": {
+                "text": "A SmartOS 32-bit image with Node.js 0.10.24, npm 1.3.21, MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "CentOS",
+            "className": "centos-logo",
+            "imageData": {
+                "datacenter": "us-ams-1",
+                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "23a17de8-1796-44fd-b772-992b5949ba66"
+            },
+            "description": {
+                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Ubuntu 12.04 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-ams-1",
+                "dataset": "d2ba0f30-bbe8-11e2-a9a2-6bc116856d85",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "23a17de8-1796-44fd-b772-992b5949ba66"
+            },
+            "description": {
+                "text": "Ubuntu 12.04 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Windows Server",
+            "className": "winos-logo",
+            "imageData": {
+                "datacenter": "us-ams-1",
+                "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "23a17de8-1796-44fd-b772-992b5949ba66"
+            },
+            "description": {
+                "text": "Windows Server 2008r2 Standard 64-bit image.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "MongoDB",
+            "className": "mongodb-logo",
+            "imageData": {
+                "datacenter": "us-ams-1",
+                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "d2a22866-9567-44fc-a0ee-9d5225de9047"
+            },
+            "description": {
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
             }
         }
     ]
