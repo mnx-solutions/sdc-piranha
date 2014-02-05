@@ -291,7 +291,11 @@
                 if ($scope.imageCreateNotSupported || $scope.machine.state !== 'stopped') {
                     var message = $scope.imageCreateNotSupported ||
                         'This instance will be stopped as the first step in creating an image from it.';
-                    if (!$scope.imageCreateNotSupported) {
+                }
+                if (!$scope.imageCreateNotSupported) {
+                    if ($scope.machine.state === 'stopped') {
+                        createImage();
+                    } else {
                         util.confirm(
                             localization.translate(
                                 $scope,
@@ -306,23 +310,21 @@
                                 createImage();
                             }
                         );
-                    } else {
-                        util.message(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Message'
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                message
-                            ), function() {
-                                this.close();
-                        });
                     }
-
-
+                } else {
+                    util.message(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Message'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            message
+                        ),
+                        function() {}
+                    );
                 }
             };
 
@@ -345,9 +347,9 @@
                         $scope,
                         null,
                         'Sorry, this is not implemented yet.'
-                    ), function() {
-                        this.close();
-                    });
+                    ),
+                    function() {}
+                );
             };
             
             $scope.enableRename = function(name) {
