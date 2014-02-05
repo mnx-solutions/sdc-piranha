@@ -38,16 +38,16 @@ module.exports = function execute(scope) {
                 if (err) {
                     call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
-            });
 
-            TFA.get(data.id, function (err, secret) {
-                if (err) {
-                    call.done(err);
-                    return;
-                }
+                TFA.get(data.id, function (err, secret) {
+                    if (err) {
+                        call.done(err);
+                        return;
+                    }
 
-                response.tfaEnabled = !!secret;
-                call.done(null, response);
+                    response.tfaEnabled = !!secret;
+                    call.done(null, response);
+                });
             });
         });
     });
