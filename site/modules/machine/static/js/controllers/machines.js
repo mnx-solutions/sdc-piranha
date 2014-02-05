@@ -36,7 +36,7 @@
                     $scope.machines = Machine.machine();
                 }
             );
-
+            
             $scope.$watch('machines', function (machines) {
                 machines.forEach(function (machine) {
                     machine.label = machine.name || machine.id;
@@ -62,7 +62,7 @@
                     if(el.checked){
                         flag = true;
                     }
-                    });
+                });
                 return flag;
             };
 
@@ -79,6 +79,22 @@
                         'No instance selected for the action.'
                     ), function() {
                     }
+                );
+            };
+
+            $scope.notSupportedFirewallMessage = function () {
+                util.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Some of the instances selected are virtualmachine instances which are not yet supported by the FWAPI.'
+                    ),
+                    function () {}
                 );
             };
 
@@ -167,25 +183,25 @@
                     name: 'Credentials',
                     sequence: 15,
                     active: false
-                        },
+                },
                 {
                     id: 'package',
                     name: 'Package',
                     sequence: 16,
                     active: false
-                        },
+                },
                 {
                     id: '$$hashKey',
                     name: '$$hashKey',
                     sequence: 17,
                     active: false
-                        },
+                },
                 {
                     id: 'ips',
                     name: 'IP-s',
                     sequence: 18,
                     active: false
-                    }
+                }
             ];
 
             if ($scope.features.firewall === 'enabled') {
@@ -304,6 +320,7 @@
                         return $rootScope.features.firewall !== 'disabled';
                     },
                     action: function (object) {
+                        var isFirewallNonSupported = false;
                         if ($scope.actionButton()) {
                             util.confirm(
                                 localization.translate(
@@ -322,11 +339,16 @@
                                             if ("virtualmachine" !== el.type && !el.firewall_enabled) {
                                                 $scope.toggleFirewallEnabled(el);
 //                                                el.firewall_enabled = true;
+                                            } else {
+                                                isFirewallNonSupported = true;
                                             }
                                             el.checked = false;
                                             console.log('Enable FW ready');
                                         }
                                     });
+                                    if (isFirewallNonSupported) {
+                                        $scope.notSupportedFirewallMessage();
+                                    }
                                 });
                         } else {
                             $scope.noCheckBoxChecked();
@@ -340,6 +362,7 @@
                         return $rootScope.features.firewall !== 'disabled';
                     },
                     action: function (object) {
+                        var isFirewallNonSupported = false;
                         if ($scope.actionButton()) {
                             util.confirm(
                                 localization.translate(
@@ -357,11 +380,16 @@
                                             if ("virtualmachine" !== el.type && el.firewall_enabled) {
                                                 $scope.toggleFirewallEnabled(el);
 //                                                el.firewall_enabled = false;
+                                            } else {
+                                                isFirewallNonSupported = true;
                                             }
                                             el.checked = false;
                                             console.log('Disable FW ready');
                                         }
                                     });
+                                    if (isFirewallNonSupported) {
+                                        $scope.notSupportedFirewallMessage();
+                                    }
                                 });
                         } else {
                             $scope.noCheckBoxChecked();
@@ -464,7 +492,7 @@
                 Machine.deleteMachine(el.id).getJob().done(function () {
                     if (!$scope.machines.length) {
                         $location.path("compute/create");
-        }
+                    }
                     el.checked = false;
                 });
             };
