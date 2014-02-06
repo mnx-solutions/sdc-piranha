@@ -83,6 +83,7 @@
             };
 
             $scope.notSupportedFirewallMessage = function () {
+                // TODO: use dialog
                 util.message(
                     localization.translate(
                         $scope,
