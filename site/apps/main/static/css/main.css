@@ -1441,3 +1441,6 @@ select::-ms-expand {
 .font-size-12.ci {
     padding: 1px 8px !important;
 }
+.one-k-width{
+    width: 1000px !important;
+}
