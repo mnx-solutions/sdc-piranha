@@ -1838,9 +1838,7 @@ label.checkbox {
 .overflow-accordion{
     overflow: scroll;
 }
-.one-k-width{
-    width: 1000px !important;
-}
+
 .toggle-graf-width{
     width: 100%;
 }
