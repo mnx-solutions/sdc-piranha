@@ -459,16 +459,10 @@
 
                     Network.network(newVal).then(function(networks) {
                         if(newVal === $scope.data.datacenter) {
-                            var externalNetworkId = null;
                             $scope.networks = networks;
                             $scope.networks.forEach(function(network) {
-                                if(network.name === "JPC-WESTX-External") {
-                                    externalNetworkId = network.id;
-                                }
+                                $scope.selectNetworkCheckbox(network.id);
                             });
-                            if (externalNetworkId) {
-                                $scope.selectNetworkCheckbox(externalNetworkId);
-                            }
                         }
                     });
 
