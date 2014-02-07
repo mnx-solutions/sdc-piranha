@@ -105,15 +105,14 @@
                     <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
                 </span>
                 <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                    <span data-ng-switch-when="firewall_enabled">
+                        <span data-ng-show="object.fireWallActionRunning" class="loading-small loading-small-firewall pull-left"></span>
+                        <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
+                    </span>
                 <span data-ng-switch-default>
                     {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
                 </span>
             </span>
-                        <span data-ng-switch-when="firewall_enabled">
-                            <span data-ng-show="object.firewall_enabled && !object.fireWallActionRunning">yes</span>
-                            <span data-ng-show="!object.firewall_enabled && !object.fireWallActionRunning">no</span>
-                            <span data-ng-show="object.fireWallActionRunning" class="loading-small"></span>
-        </span>
                     </td>
                 </tr>
             </tbody>

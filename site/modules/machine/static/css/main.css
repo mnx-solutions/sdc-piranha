@@ -533,7 +533,7 @@ label.checkbox {
 .btn-group>.btn, .btn-group>.dropdown-menu, .btn-group>.popover {
     font-size: 14px;
 }
-.open>.dropdown-menu{
+.open>.dropdown-menu {
     display: block;
 }
 .dropdown-menu.pull-right {
@@ -1892,11 +1892,16 @@ label.checkbox {
 .loading-30{
     display: inline-block;
     vertical-align: middle;
-}
-.btn-height{
+}.btn-height{
     min-height: 34px;
 }
 .accordion-max-width{
     min-width: 465px;
     max-width: 465px;
+}
+.loading-small-firewall {
+    display: inline-block;
+    height: 20px;
+    width: 16px;
+    padding-right: 8px;
 }

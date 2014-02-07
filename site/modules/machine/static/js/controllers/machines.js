@@ -227,7 +227,7 @@
                     name: 'Firewall',
                     sequence: 4,
                     active: true,
-                    type: 'html',
+                    type: 'firewall_enabled',
                     _getter: function (object) {
                         var state = '';
 
