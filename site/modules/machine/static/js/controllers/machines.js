@@ -82,8 +82,7 @@
             };
 
             $scope.notSupportedFirewallMessage = function () {
-                // TODO: use dialog
-                util.message(
+                PopupDialog.message(
                     localization.translate(
                         $scope,
                         null,
@@ -232,7 +231,7 @@
                         var state = '';
 
                         if (object.firewall_enabled) {
-                            state = '<span class="fw-enabled-text">On</span>';
+                            state = '<span class="grid-enabled-text">On</span>';
                         } else if ("virtualmachine" === object.type || !object.hasOwnProperty("firewall_enabled")) {
                             state = 'N/A';
                         } else {
@@ -498,8 +497,6 @@
                 ignore: ['metadata']
             };
 
-            $scope.columnsButton = true;
-            $scope.actionsButton = true;
             $scope.instForm = true;
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter instances';

@@ -242,7 +242,7 @@
                     checkedFlag += 1;
                 }
 
-                if ( checkedFlag > 0 ){
+                if ( checkedFlag > 0 ) {
                     $scope.checkedCheckBoxDisable = true;
                 } else {
                     $scope.checkedCheckBoxDisable = false;
@@ -255,10 +255,17 @@
             $scope.disableSelectAllCheckbox();
         }, true);
 
-        $scope.selectCheckbox = function (id) {
+        $scope.selectCheckbox = function (obj) {
+            var id;
+            if (obj && obj.id) {
+                id = obj.id;
+            } else if (obj && !obj.id && obj.uuid) {
+                id = obj.uuid;
+            }
+
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
-                if (id && el.id === id) {
+                if ( (id && el.id === id) || (id && el.uuid === id) ){
                     if ((!el.job && !el.fireWallActionRunning) || (el.job && el.job.finished && !el.fireWallActionRunning)){
                         el.checked = (el.checked) ? false : true;
                     }
@@ -307,8 +314,6 @@
                 actionButtons:'=',
                 imageButtonShow:"=",
                 filterAll: '@',
-                exportFields: '=',
-                columnsButton: '=',
                 actionsButton: '=',
                 specialWidth: '=',
                 instForm: '=',

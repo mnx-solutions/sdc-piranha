@@ -87,8 +87,9 @@
                     active: true
                 },
                 {
-                    id: 'actionButtons',
+                    id: 'parsed',
                     name: 'Action',
+                    type: 'button',
                     sequence: 5,
                     active: true,
                     btn: {
@@ -98,6 +99,13 @@
                         },
                         action: function (object) {
                             $scope.provisionInstance(object);
+                        },
+
+                        show: function (object) {
+                            return true;
+                        },
+                        getClass: function () {
+                            return 'btn orange font-size-12 ci';
                         }
                     }
                 },
@@ -141,41 +149,6 @@
                     name: "Public",
                     sequence: 4
                 }
-            ];
-
-            $scope.gridActionButtons = [
-                {
-                    label: 'Create instance',
-                    disabled: function (object) {
-                        return object.job;
-                    },
-                    action: function (object) {
-                        $scope.provisionInstance(object);
-                    },
-
-                    show: function (object) {
-                        return true;
-                    },
-                    getClass: function () {
-                        return 'btn orange grid-small-font ci';
-                    },
-                    sequence: 1
-
-                }/*,
-                {
-                    label: 'Delete',
-                    disabled: function (object) {
-                        return object.job;
-                    },
-                    action: function (object) {
-                        $scope.clickDelete(object);
-                    },
-                    show: function (object) {
-                        return !object.public;
-                    },
-                    tooltip: 'You will not be able to create any instances with this image after this.',
-                    sequence: 2
-                }*/
             ];
 
             $scope.exportFields = {
