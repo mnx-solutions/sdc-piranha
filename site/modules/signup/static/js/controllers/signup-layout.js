@@ -5,7 +5,10 @@
         'signup.LayoutController',
         ['$scope', 'requestContext', '$location', '$cookies', 'Process', '$http', '$$track', 'PopupDialog',
             function ($scope, requestContext, $location, $cookies, Process, $http, $$track, PopupDialog) {
+
                 requestContext.setUpRenderContext('signup', $scope);
+
+                Account.getAccount(true);
 
                 $scope.stepNames = {
                     phone: 'Phone confirmation',
