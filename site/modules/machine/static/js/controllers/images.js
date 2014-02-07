@@ -157,7 +157,7 @@
                         return true;
                     },
                     getClass: function () {
-                        return 'btn orange font-size-12 ci';
+                        return 'btn orange grid-small-font ci';
                     },
                     sequence: 1
 
