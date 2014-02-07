@@ -530,7 +530,6 @@
             }
 
             if ($scope.features.firewall === 'enabled') {
-                $scope.fixedWidth = 485;
                 $scope.gridOrder = [];
                 $scope.gridProps = [
                     {

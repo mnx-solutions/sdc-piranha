@@ -39,7 +39,7 @@
             var analyticsWidth = ng.element('.right-part').width();
             var rightSpacerWidth = ng.element('.right-spacer').width();
 
-            if ($scope.fixedWidth && $scope.fixedWidth === "detailsPage") {
+            if ($scope.specialWidth && $scope.specialWidth === "detailsPage") {
                 gridWidth = bodyWidth - leftMenuWidth - analyticsWidth - rightSpacerWidth - rightMargin - rightMarginDetails;
                 if (gridWidth < gridWidthDetails) {
                     gridWidth = gridWidthDetails;
@@ -310,7 +310,7 @@
                 exportFields: '=',
                 columnsButton: '=',
                 actionsButton: '=',
-                fixedWidth: '=',
+                specialWidth: '=',
                 instForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',

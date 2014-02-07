@@ -1,9 +1,9 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
 	<div class="loading-medium" data-ng-show="loading" style="height:60px;width:100%"></div>
     <div class="" data-ng-hide="loading">
-        <div class="one-k-width" data-ng-show="keys.length">
+        <div class="container-min-width" data-ng-show="keys.length">
         <div data-ng-show="basicCreateInstance">
-            <h3 class="page-title no-breadcrumb-line one-k-width" data-translate>Quick Start: Create Instance</h3>
+            <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Quick Start: Create Instance</h3>
             <div class="ci_desc">Get started with Joyent by selecting an instance below and start computing.</div>
             <div style="padding-bottom: 30px;">
                 <span>Data Center:</span>
@@ -68,7 +68,7 @@
                 </div>
                 </div>
             <div data-ng-show="!basicCreateInstance">
-                <h3 class="page-title no-breadcrumb-line one-k-width" data-translate>Create Instance</h3>
+                <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Create Instance</h3>
                 <div class="wizard-steps">
                     <div class="firststep active-step">
                         <p ng-show="currentSlidePageIndex >= 1"><a href="#myCarousel" class="breadcrumb current-step" data-ng-click="reconfigure(0)" data-slide-to="0">Choose Image</a></p>
@@ -84,7 +84,7 @@
             <div class="row-fluid carousel-container">
                 <div class="span8 provisioning-carousel-span">
                     <div id="provisionCarousel" class="carousel slide">
-                        <div class="carousel-inner item-list-container provisioning-carousel-inner-box advanced-table" data-ng-class="{'loading-medium':reloading}">
+                        <div class="carousel-inner provisioning-carousel-inner-box advanced-table" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
 
                                 <div class="row-fluid advanced-ci-step1">
@@ -379,7 +379,7 @@
             </div>
         </div>
 
-        <div data-ng-show="keys.length == 0" class="one-k-width">
+        <div data-ng-show="keys.length == 0" class="container-min-width">
                 <h4>Hello there!</h4>
                 <div data-translate>I see you have no SSH keys configured.</div>
             <div class="pull-left" style="margin-top: 20px">

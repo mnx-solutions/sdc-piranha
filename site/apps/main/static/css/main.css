@@ -1431,15 +1431,15 @@ select::-ms-expand {
 .beta-sticker.beta{
     margin-top: 47px;
 }
-.font-size-12, .font-size-12 span, .font-size-12 .dropdown-menu label,.network td{
+.grid-small-font, .grid-small-font span, .grid-small-font .dropdown-menu label,.network td{
     font-size: 12px !important;
 }
-.font-size-12 .label{
+.grid-small-font .label{
     padding: 4px 8px !important;
 }
-.font-size-12.ci {
+.grid-small-font.ci {
     padding: 1px 8px !important;
 }
-.one-k-width{
+.container-min-width{
     width: 1000px !important;
 }
