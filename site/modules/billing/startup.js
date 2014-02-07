@@ -51,6 +51,64 @@ module.exports = function execute(scope, callback) {
         });
     });
 
+    function performFraudValidation(call, email, callback) {
+        SignupProgress.setMinProgress(call, 'billing', function (err) {
+            if (err) {
+                call.log.error(err);
+            }
+
+            MaxMind.minFraud(call, email, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
+                if (fraudErr) {
+                    fraudErr.attempt = call.req.session.zuoraServiceAttempt;
+
+                    call.log.error(fraudErr);
+                    callback(fraudErr);
+                    return;
+                }
+
+                if (result.riskScore) {
+                    call.log.info('Saving user risk score in metadata');
+                    Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore, function (setErr) {
+                        if (setErr) {
+                            call.log.error({error: setErr}, 'Saving user risk score in metadata failed');
+                        }
+                    });
+                }
+
+                if (result.explanation) {
+                    call.log.info('Saving user risk explanation in metadata');
+                    Metadata.set(call.req.session.userId, Metadata.RISK_SCORE_EXPLANATION, result.explanation, function (setErr) {
+                        if (setErr) {
+                            call.log.error({error: setErr}, 'Saving user risk explanation in metadata failed');
+                        }
+                    });
+                }
+
+                if (result.block) {
+                    if (result.blockReason) {
+                        Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason, function (setErr) {
+                            if (setErr) {
+                                call.log.error({error: setErr}, 'Saving user block reason in metadata failed');
+                            }
+                        });
+                    }
+
+                    SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
+                        if (blockErr) {
+                            call.log.error(blockErr);
+                        }
+
+                        call.req.session.zuoraServiceAttempt = 0;
+                        callback(null);
+                    });
+                    return;
+                }
+                callback(null);
+            });
+
+        });
+    }
+
     // TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
         call.log.debug('Calling addPaymentMethod');
@@ -119,60 +177,8 @@ module.exports = function execute(scope, callback) {
                     call.log.debug('Updating user progress');
                     call._user = user;
 
-                    SignupProgress.setMinProgress(call, 'billing', function (err) {
-                        if (err) {
-                            call.log.error(err);
-                        }
-
-                        MaxMind.minFraud(call, user, call.req.body.data.cardHolderInfo, call.req.body.data, function (fraudErr, result) {
-                            if (fraudErr) {
-                                fraudErr.attempt = call.req.session.zuoraServiceAttempt;
-
-                                call.log.error(fraudErr);
-                                call.done(fraudErr);
-                                return;
-                            }
-
-                            if (result.riskScore) {
-                                call.log.info('Saving user risk score in metadata');
-                                Metadata.set(call.req.session.userId, Metadata.RISK_SCORE, result.riskScore, function (setErr) {
-                                    if (setErr) {
-                                        call.log.error({error: setErr}, 'Saving user risk score in metadata failed');
-                                    }
-                                });
-                            }
-
-                            if (result.explanation) {
-                                call.log.info('Saving user risk explanation in metadata');
-                                Metadata.set(call.req.session.userId, Metadata.RISK_SCORE_EXPLANATION, result.explanation, function (setErr) {
-                                    if (setErr) {
-                                        call.log.error({error: setErr}, 'Saving user risk explanation in metadata failed');
-                                    }
-                                });
-                            }
-                            
-                            if (result.block) {
-                                if (result.blockReason) {
-                                    Metadata.set(call.req.session.userId, Metadata.BLOCK_REASON, result.blockReason, function (setErr) {
-                                        if (setErr) {
-                                            call.log.error({error: setErr}, 'Saving user block reason in metadata failed');
-                                        }
-                                    });
-                                }
-
-                                SignupProgress.setSignupStep(call, 'blocked', function (blockErr) {
-                                    if (blockErr) {
-                                        call.log.error(blockErr);
-                                    }
-
-                                    call.req.session.zuoraServiceAttempt = 0;
-                                    call.done(null, data);
-                                });
-                                return;
-                            }
-                            call.done(null, data);
-                        });
-
+                    performFraudValidation(call, user.email, function (err) {
+                        call.done(err, data);
                     });
                 });
                 return;
@@ -208,15 +214,23 @@ module.exports = function execute(scope, callback) {
                     call.session(function (req) {
                         req.session.zuoraServiceAttempt = 0;
                     });
-
-                    SignupProgress.safeSetSignupStep(call, 'billing', function (setErr) {
-                        if (setErr) {
-                            call.log.error(setErr, 'Failed to update signupStep');
-                        }
+                    if (call.req.session.signupStep && call.req.session.signupStep !== 'completed') {
+                        var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
+                        performFraudValidation(call, email, function (err) {
+                            if (err) {
+                                count = -1; // No further call.done calls
+                                call.done(err);
+                                return;
+                            }
+                            if (--count === 0) {
+                                call.done(null, resp);
+                            }
+                        });
+                    } else {
                         if (--count === 0) {
                             call.done(null, resp);
                         }
-                    });
+                    }
 
                     // Payment method added
                     // Have to remove previous billing methods.

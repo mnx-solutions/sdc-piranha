@@ -34,7 +34,7 @@ module.exports = function execute(scope, register) {
         return blockBy;
     }
 
-    api.minFraud = function (call, userInfo, billingInfo, creditCardInfo, callback) {
+    api.minFraud = function (call, email, billingInfo, creditCardInfo, callback) {
         call.session(function (req) {
             req.session.blockReason = null;
             req.session.attemptId = null;
@@ -43,7 +43,7 @@ module.exports = function execute(scope, register) {
         var query = {
             country: billingInfo.country,
             postal: billingInfo.zipCode,
-            domain: userInfo.email.substring(userInfo.email.indexOf('@') + 1),
+            domain: email.substring(email.indexOf('@') + 1),
             city: billingInfo.city,
             region: billingInfo.state || null,
             bin: creditCardInfo.creditCardNumber.substring(0, 6),

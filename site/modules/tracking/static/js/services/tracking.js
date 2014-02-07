@@ -13,6 +13,13 @@
                 if (typeof _gaq !== 'undefined') {
                     _gaq.push(['_trackPageview', (window.location.pathname + '#!' + $location.path()).replace(/\/\//,"/")]);
                 }
+                mktoMunchkinFunction(
+                    'visitWebPage',
+                    {
+                        url: $location.path(),
+                        params: ''
+                    }
+                );
             },
             timing: function (category, variable, time) {
                 if (typeof _gaq !== 'undefined') {
@@ -24,17 +31,12 @@
                 var enc_email = '';
                 $http.get('/tracking/sha/' + account.email).success(function (data, status) {
                     enc_email = data;
-
                     //TODO: username was on the wish list also
                     //TODO: campaign id propagation
                     mktoMunchkinFunction(
                         'associateLead',
                         {
                             Email:             account.email,
-                            FirstName:         account.firstName,
-                            LastName:          account.lastName,
-                            Username:          account.login,
-                            Company:           account.companyName || '--',
                             CAPI_UUID__c_lead: account.id || '',
                             Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'
                         },

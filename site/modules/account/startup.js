@@ -25,14 +25,29 @@ module.exports = function execute(scope) {
                 response[field] = data[field] || '';
             });
 
-            TFA.get(data.id, function (err, secret) {
+            var marketoData = {
+                Email: data.email,
+                FirstName: data.firstName,
+                LastName: data.lastName,
+                Username: data.login,
+                Company: data.companyName,
+                Phone: data.phone
+            };
+
+            Marketo.update(data.id, marketoData, function (err) {
                 if (err) {
-                    call.done(err);
-                    return;
+                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
 
-                response.tfaEnabled = !!secret;
-                call.done(null, response);
+                TFA.get(data.id, function (err, secret) {
+                    if (err) {
+                        call.done(err);
+                        return;
+                    }
+
+                    response.tfaEnabled = !!secret;
+                    call.done(null, response);
+                });
             });
         });
     });
@@ -43,7 +58,6 @@ module.exports = function execute(scope) {
         updateable.forEach(function (f) {
             data[f] = call.data[f] || null;
         });
-
 
         // get metadata
         metadata.get(call.req.session.userId, metadata.ACCOUNT_HISTORY, function(err, accountHistory) {
@@ -76,15 +90,29 @@ module.exports = function execute(scope) {
             metadata.set(call.req.session.userId, metadata.ACCOUNT_HISTORY, JSON.stringify(obj), function() {});
         });
 
-        var marketoData = {Email: data.email, Phone: data.phone};
-        Marketo.update(call.req.session.userId, marketoData, function (err) {
-            if(err) {
-                call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+        var marketoData = {
+            Email: data.email,
+            FirstName: data.firstName,
+            LastName: data.lastName,
+            Company: data.companyName,
+            Phone: data.phone
+        };
+        call.cloud.getAccount(function (err, account) {
+            if (err) {
+                call.done(err);
+                return;
             }
+
+            Marketo.update(account.id, marketoData, function (err) {
+                if (err) {
+                    call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
+                }
+
+                call.log.debug('Updating account with', data);
+                call.cloud.updateAccount(data, call.done.bind(call));
+            });
         });
 
-        call.log.debug('Updating account with', data);
-        call.cloud.updateAccount(data, call.done.bind(call));
     });
 
     server.onCall('listKeys', function (call) {
@@ -115,13 +143,14 @@ module.exports = function execute(scope) {
 
     server.onCall('createKey', function(call) {
 
-        console.log('creating key');
         // create new ssh key for this account
         call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
             if(err) {
                 call.done(err);
                 return;
             }
+
+            call.log.info(resp, 'Created (imported) SSH key');
 
             // hold this call until cloudApi really has this key in the list
             (function checkList() {
