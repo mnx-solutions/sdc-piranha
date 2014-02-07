@@ -1443,3 +1443,13 @@ select::-ms-expand {
 .container-min-width{
     width: 1000px !important;
 }
+.edit-text-icon{
+    background: url('../img/pencil.png') no-repeat 50% 50%;
+    width: 24px;
+    height: 36px;
+    display: inline-block;
+    vertical-align: bottom;
+    background-size: 24px;
+    cursor: pointer;
+    padding-left: 6px;
+}
