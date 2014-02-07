@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('mainMenu', ['Menu', '$$track', '$dialog', function (Menu, $$track, $dialog) {
+    app.directive('mainMenu', ['Menu', '$$track', 'PopupDialog', function (Menu, $$track, PopupDialog) {
         return {
             link: function (scope) {
                 scope.mainMenu = Menu.getMenu();
@@ -26,8 +26,10 @@
                 };
 
                 $scope.changeTfa = function () {
-                    var templateUrl = 'account/static/template/dialog/tfa-modal.html';
-                    $dialog.messageBox('', '', [], templateUrl).open();
+                    var opts = {
+                        templateUrl: 'account/static/template/dialog/tfa-modal.html'
+                    };
+                    PopupDialog.custom(opts);
                 };
 
                 $scope.$on('requestContextChanged', function () {

@@ -8,12 +8,11 @@
         'notification',
         '$q',
         '$window',
-        '$dialog',
         '$timeout',
         '$http',
         '$rootScope',
-        'util',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope, util) {
+        'PopupDialog',
+        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -26,10 +25,6 @@
                 link: function ($scope) {
                     /* SSH Key generation popup */
                     $scope.generateSshKey = function() {
-                        var title = 'Create SSH Key';
-                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left'}];
-                        var templateUrl = 'account/static/template/dialog/generate-ssh-modal.html';
-                        /* ssh key generating popup with custom template */
                         var sshKeyModalCtrl = function($scope, dialog) {
                             $scope.keyName = '';
 
@@ -46,10 +41,16 @@
                             };
                         };
 
+                        var opts = {
+                            title: 'Create SSH Key',
+                            templateUrl: 'account/static/template/dialog/generate-ssh-modal.html',
+                            openCtrl: sshKeyModalCtrl
+                        };
+
                         $rootScope.loading = true;
-                        $dialog.messageBox(title, '', btns, templateUrl)
-                            .open(templateUrl, sshKeyModalCtrl)
-                            .then(function(data) {
+                        PopupDialog.custom(
+                            opts,
+                            function (data) {
                                 if(data && data.generate === true) {
                                     var createUrl = 'account/ssh/create/';
 
@@ -71,7 +72,7 @@
                                                         $scope.iframe = '<iframe src="'+ downloadLink +'"></iframe>';
                                                         $rootScope.downloadLink = downloadLink;
 
-                                                        util.message(
+                                                        PopupDialog.message(
                                                             localization.translate(
                                                                 $scope,
                                                                 null,
@@ -105,7 +106,7 @@
                                                         }
                                                         if (data.success === false) {
                                                             // key download failed, show error
-                                                            util.error(
+                                                            PopupDialog.error(
                                                                 localization.translate(
                                                                     $scope,
                                                                     null,
@@ -133,7 +134,7 @@
                                                     clearTimeout(pollingTimeout);
                                                     $rootScope.loading = false;
                                                     $rootScope.pollingJob = false;
-                                                    util.error(
+                                                    PopupDialog.error(
                                                         localization.translate(
                                                             $scope,
                                                             null,
@@ -153,7 +154,7 @@
                                                 // error
                                                 $rootScope.loading = false;
                                                 $rootScope.pollingJob = false;
-                                                util.error(
+                                                PopupDialog.error(
                                                     localization.translate(
                                                         $scope,
                                                         null,
@@ -175,7 +176,8 @@
                                 } else {
                                     $rootScope.loading = false;
                                 }
-                            });
+                            }
+                        );
                     };
                 },
                 templateUrl: 'account/static/partials/account-ssh-create.html'

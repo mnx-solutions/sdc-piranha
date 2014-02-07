@@ -31,11 +31,10 @@
         'rule',
         'Datacenter',
         'Machine',
-        'util',
-        '$dialog',
         '$http',
+        'PopupDialog',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, util, $dialog, $http) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -603,19 +602,18 @@
             };
 
             function showErrorMessage(message) {
-                    var title = 'Error';
-                    var btns = [
-                        {
-                            result: 'ok',
-                            label: 'OK',
-                            cssClass: 'orange'
-                        }
-                    ];
-
-                    return $dialog.messageBox(title, message, btns)
-                        .open()
-                        .then(function (result) {
-                        });
+                PopupDialog.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        message
+                    ), function () {
+                    });
             }
 
             function addTarget (direction, other) {
@@ -762,7 +760,7 @@
                 return ($scope.data.uuid ? $scope.updateRule : $scope.createRule)();
             };
             $scope.deleteRule = function(r) {
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,

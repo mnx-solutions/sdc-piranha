@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'slb.EditController',
-        ['$scope', 'requestContext', 'localization', '$location', 'util', '$q', 'slb.Service', 'Datacenter', 'notification',
-            function ($scope, requestContext, localization, $location, util, $q, service, Datacenter, notification) {
+        ['$scope', 'requestContext', 'localization', '$location', 'PopupDialog', '$q', 'slb.Service', 'Datacenter', 'notification',
+            function ($scope, requestContext, localization, $location, PopupDialog, $q, service, Datacenter, notification) {
                 localization.bind('slb', $scope);
                 requestContext.setUpRenderContext('slb.edit', $scope, {
                     title: localization.translate(null, 'slb', 'Create/Edit Load Balancer')
@@ -134,7 +134,7 @@
                     $q.all(operations).then(function () {
                         $location.path('/slb/list');
                     }, function (err) {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 null,
                                 null,
@@ -163,7 +163,7 @@
                 };
 
                 $scope.delete = function () {
-                    util.confirm(
+                    PopupDialog.confirm(
                         localization.translate(
                             $scope,
                             null,

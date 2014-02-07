@@ -2,10 +2,10 @@
 (function (app, ng) {
     app.controller(
             'cloudController',
-            ['$scope', 'ca', 'util', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
+            ['$scope', 'ca', 'PopupDialog', '$routeParams', 'Machine', '$q', 'caInstrumentation', '$timeout',
             '$location', 'localization',
 
-function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout, $location, localization) {
+function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $timeout, $location, localization) {
     function tick() {
         $scope.endtime++;
         $timeout(tick, 1000);
@@ -96,7 +96,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                         tick();
                     }
                     if (listErr) {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 $scope,
                                 null,
@@ -124,7 +124,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                     $scope.describe = false;
                 });
             } else {
-                util.error(
+                PopupDialog.error(
                     localization.translate(
                         $scope,
                         null,
@@ -191,7 +191,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
         }
 
         if (!datacenter) {
-            util.error(
+            PopupDialog.error(
                 localization.translate(
                     $scope,
                     null,
@@ -339,7 +339,7 @@ function ($scope, ca, util, $routeParams, Machine, $q, instrumentation, $timeout
                     }
                 }
 
-                util.error(
+                PopupDialog.error(
                     localization.translate(
                         $scope,
                         null,

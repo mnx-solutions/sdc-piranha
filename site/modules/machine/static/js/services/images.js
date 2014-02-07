@@ -5,10 +5,10 @@
         'serverTab',
         '$q',
         'localization',
-        'util',
+        'PopupDialog',
         'errorContext',
         'Dataset',
-        function (serverTab, $q, localization, util, errorContext,
+        function (serverTab, $q, localization, PopupDialog, errorContext,
             Dataset) {
 
             var service = {};
@@ -44,7 +44,7 @@
                             function handleResponse(chunk) {
                                 if(chunk.status === 'error') {
 
-                                    util.error(
+                                    PopupDialog.error(
                                         localization.translate(
                                             null,
                                             null,
@@ -129,7 +129,7 @@
                     },
                     done: function(err, image) {
                         if (!err) {
-                            util.message(
+                            PopupDialog.message(
                                 localization.translate(
                                     null,
                                     null,
@@ -150,7 +150,7 @@
                             if (err.code === 'PrepareImageDidNotRun') {
                                 detailMessage += '. You likely need to <a href="http://wiki.joyent.com/wiki/display/jpc2/Upgrading+Linux+Guest+Tools">upgrade Joyent Linux Guest Tools</a>.';
                             }
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,
@@ -178,7 +178,7 @@
                     data: { imageId: image.id, datacenter: image.datacenter },
                     done: function(err, job) {
                         if (!err) {
-                            util.message(
+                            PopupDialog.message(
                                 localization.translate(
                                     null,
                                     null,
@@ -197,7 +197,7 @@
                             delete images.index[image.id];
                             Dataset.updateDatasets('all', true);
                         } else {
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     null,
                                     null,

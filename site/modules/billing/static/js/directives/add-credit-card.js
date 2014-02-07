@@ -10,10 +10,9 @@
         'Account',
         'notification',
         'localization',
-        'util',
-        '$dialog',
+        'PopupDialog',
 
-        function (BillingService, $q, $http, $rootScope, Account, notification, localization, util, $dialog) {
+        function (BillingService, $q, $http, $rootScope, Account, notification, localization, PopupDialog) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -68,22 +67,30 @@
                             if (amount && amount.data && amount.data > 0) {
                                 var fAmount = parseFloat(amount.data);
                                 amount = parseInt(amount.data, 10);
-                                var btns = [{
-                                    result: 'cancel',
-                                    label: 'Take me out',
-                                    cssClass: 'pull-left'
-                                }, {
-                                    result: 'ok',
-                                    label: 'I\'m ready',
-                                    cssClass: 'btn-joyent-blue'
-                                }];
-                                $dialog.messageBox('Billing confirmation', 'Your credit card is about to be billed for $' + fAmount.toFixed(2), btns)
-                                    .open()
-                                    .then(function (result) {
+                                var opts = {
+                                    title: 'Billing confirmation',
+                                    question: 'Your credit card is about to be billed for $' + fAmount.toFixed(2),
+                                    btns: [
+                                        {
+                                            result: 'cancel',
+                                            label: 'Take me out',
+                                            cssClass: 'pull-left'
+                                        },
+                                        {
+                                            result: 'ok',
+                                            label: 'I\'m ready',
+                                            cssClass: 'btn-joyent-blue'
+                                        }
+                                    ]
+                                };
+                                PopupDialog.custom(
+                                    opts,
+                                    function (result) {
                                         if (result === 'cancel') {
                                             window.location = '/landing/forgetToken';
                                         }
-                                    });
+                                    }
+                                );
                             }
                         });
                     }
@@ -302,7 +309,7 @@
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
                                 }).then(function (account) {
-                                        util.message(
+                                        PopupDialog.message(
                                             localization.translate(
                                                 $scope,
                                                 null,
@@ -322,7 +329,7 @@
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
                                 }, function () {
-                                        util.message(
+                                        PopupDialog.message(
                                             localization.translate(
                                                 $scope,
                                                 null,
@@ -392,7 +399,7 @@
                             }
 
 //                            notification.replace('addPaymentMethod', { type: 'error' }, message + addedMessage);
-                            util.message(
+                            PopupDialog.message(
                                 localization.translate(
                                     $scope,
                                     null,

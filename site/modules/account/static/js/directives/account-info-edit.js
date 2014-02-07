@@ -4,13 +4,13 @@
     app.directive('accountInfoEdit', [
         'Account',
         'localization',
-        'util',
+        'PopupDialog',
         '$q',
         '$http',
         '$location',
         'TFAService',
         '$$track',
-        function (Account, localization, util, $q, $http, $location, TFAService, $$track) {
+        function (Account, localization, PopupDialog, $q, $http, $location, TFAService, $$track) {
 
             return {
                 restrict: 'A',
@@ -68,7 +68,7 @@
                                 $scope.setAccount();
                                 $scope.nextStep();
                             } else {
-                                util.message(
+                                PopupDialog.message(
                                     localization.translate(
                                         $scope,
                                         null,
@@ -86,7 +86,7 @@
                             $scope.error = null;
                             $scope.loading = false;
 
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     $scope,
                                     null,

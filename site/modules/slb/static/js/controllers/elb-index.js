@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'slb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'util',
-                function ($scope, requestContext, localization, $location, service, Datacenter, util) {
+        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog',
+                function ($scope, requestContext, localization, $location, service, Datacenter, PopupDialog) {
                 localization.bind('slb', $scope);
                 requestContext.setUpRenderContext('slb.index', $scope, {
                     title: localization.translate(null, 'slb', 'Enable Load Balancing')
@@ -24,7 +24,7 @@
                     service.createController().then(function () {
                         $location.path('/slb/list');
                     }, function (err) {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 null,
                                 null,

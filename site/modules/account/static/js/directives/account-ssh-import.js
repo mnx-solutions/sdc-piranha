@@ -8,12 +8,11 @@
         'notification',
         '$q',
         '$window',
-        '$dialog',
         '$timeout',
         '$http',
         '$rootScope',
-        'util',
-        function (Account, localization, notification, $q, $window, $dialog, $timeout, $http, $rootScope, util) {
+        'PopupDialog',
+        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -25,15 +24,17 @@
 
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function(question, callback) {
-                        var title = 'Add new ssh key';
-                        var btns = [{result:'cancel', label:'Cancel', cssClass: 'pull-left', setFocus: false}, {result:'add', label:'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
-                        var templateUrl = 'account/static/template/dialog/message.html';
-
                         $rootScope.loading = true;
-                        $dialog.messageBox(title, question, btns, templateUrl)
-                            .open()
-                            .then(function(result) {
-                                if(result && result.value === 'add') {
+                        var opts = {
+                            title: 'Add new ssh key',
+                            btns: [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}],
+                            templateUrl: 'account/static/template/dialog/message.html'
+                        };
+
+                        PopupDialog.custom(
+                            opts,
+                            function (result) {
+                                if (result && result.value === 'add') {
                                     $scope.createNewKey({
                                         name: result.data.keyName,
                                         data: result.data.keyData
@@ -42,8 +43,8 @@
                                     $rootScope.loading = false;
                                 }
 
-                                if(result === 'add') {
-                                    util.error(
+                                if (result === 'add') {
+                                    PopupDialog.error(
                                         localization.translate(
                                             $scope,
                                             null,
@@ -57,7 +58,8 @@
                                         function () {}
                                     );
                                 }
-                            });
+                            }
+                        );
                     };
 
                     $scope.createNewKey = function (key) {
@@ -74,7 +76,7 @@
                                 $scope.key = null;
 
                                 if($scope.nextStep) {
-                                    util.message(
+                                    PopupDialog.message(
                                         localization.translate(
                                             $scope,
                                             null,
@@ -90,7 +92,7 @@
                                     $scope.nextStep();
                                 } else {
                                     $scope.updateKeys(function() {
-                                        util.message(
+                                        PopupDialog.message(
                                             localization.translate(
                                                 $scope,
                                                 null,
@@ -106,7 +108,7 @@
                                     });
                                 }
                             } else {
-                                util.error(
+                                PopupDialog.error(
                                     localization.translate(
                                         $scope,
                                         null,
@@ -125,7 +127,7 @@
                             }
                         }, function(key) {
                             $rootScope.loading = false;
-                            util.error(
+                            PopupDialog.error(
                                 localization.translate(
                                     $scope,
                                     null,

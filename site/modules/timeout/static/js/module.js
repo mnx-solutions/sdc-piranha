@@ -1,7 +1,7 @@
 'use strict';
 
 window.JP.createModule('timeout', [ 'notification' ])
-    .run(function($dialog, $http, localization, Account) {
+    .run(function(PopupDialog, $http, localization, Account) {
         var sInteraction = Date.now();
         var uInteraction = Date.now();
         var listening = false;
@@ -41,36 +41,37 @@ window.JP.createModule('timeout', [ 'notification' ])
         //Create a dialog to show to the user allowing them to keep the session alive
         function showWarning() {
             listenClick(true); // Stop listening to clicks otherwise session continuing would be default
-            var title = localization.translate(
-                'timeout',
-                null,
-                'Warning'
-            );
-            var question = localization.translate(
-                'timeout',
-                null,
-                'You will be logged out soon.'
-            );
 
-            var btns = [
-                {
-                    result: 'cancel',
-                    label: 'Log out',
-                    cssClass: 'btn orange grey_new',
-                    setFocus: false
-                },
-                {
-                    result: 'ok',
-                    label: 'Keep me logged in',
-                    cssClass: 'btn orange',
-                    setFocus: true
-                }
-            ];
-
-            messageBox = $dialog.messageBox(title, question, btns)
-                .open()
-                .then(function (result) {
-                    switch(result) {
+            var opts = {
+                title: localization.translate(
+                    'timeout',
+                    null,
+                    'Warning'
+                ),
+                question: localization.translate(
+                    'timeout',
+                    null,
+                    'You will be logged out soon.'
+                ),
+                btns: [
+                    {
+                        result: 'cancel',
+                        label: 'Log out',
+                        cssClass: 'btn orange grey_new',
+                        setFocus: false
+                    },
+                    {
+                        result: 'ok',
+                        label: 'Keep me logged in',
+                        cssClass: 'btn orange',
+                        setFocus: true
+                    }
+                ]
+            };
+            PopupDialog.custom(
+                opts,
+                function (result) {
+                    switch (result) {
                         case 'ok':
                             //User opted to stay logged in so refresh server session and start listening to clicks
                             updateTimeout();
@@ -81,7 +82,8 @@ window.JP.createModule('timeout', [ 'notification' ])
                             logout();
                             break;
                     }
-                });
+                }
+            );
         }
 
 

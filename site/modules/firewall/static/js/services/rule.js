@@ -9,8 +9,9 @@
         '$timeout',
         'localization',
         'util',
+        'PopupDialog',
 
-        function (serverTab, $rootScope, $q, $timeout, localization, util) {
+        function (serverTab, $rootScope, $q, $timeout, localization, util, PopupDialog) {
 
             var service = {};
             var rules = { job: null, index: {}, map: {}, list: [], search: {} };
@@ -63,7 +64,7 @@
                         });
                     }
                 
-                    util.error(
+                    PopupDialog.error(
                         localization.translate(
                             null,
                             null,
@@ -115,7 +116,7 @@
                 return function (rule) {
 	                rule = cleanRule(rule);
                     function showError (err) {
-                        util.error(
+                        PopupDialog.error(
                             localization.translate(
                                 null,
                                 null,
@@ -268,7 +269,7 @@
 
                             function handleResponse(chunk) {
                                 if (chunk.status === 'error') {
-                                    util.error(
+                                    PopupDialog.error(
                                         localization.translate(
                                             null,
                                             null,

@@ -6,19 +6,18 @@
         '$cookieStore',
         '$filter',
         '$$track',
-        '$dialog',
         '$q',
         'requestContext',
         'Machine',
         'Dataset',
         'Package',
         'localization',
-        'util',
+        'PopupDialog',
         '$location',
         'firewall',
         '$rootScope',
 
-        function ($scope, $cookieStore, $filter, $$track, $dialog, $q, requestContext, Machine, Dataset, Package, localization, util, $location, firewall, $rootScope) {
+        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -67,7 +66,7 @@
             };
 
             $scope.noCheckBoxChecked = function(){
-                util.error(
+                PopupDialog.error(
                     localization.translate(
                         $scope,
                         null,
@@ -260,7 +259,7 @@
 //                    },
                     action: function (object) {
                         if($scope.actionButton()) {
-                            util.confirm(
+                            PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
                                     null,
@@ -291,7 +290,7 @@
 //                    },
                     action: function (object) {
                         if($scope.actionButton()) {
-                            util.confirm(
+                            PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
                                     null,
@@ -323,7 +322,7 @@
                     action: function (object) {
                         var isFirewallNonSupported = false;
                         if ($scope.actionButton()) {
-                            util.confirm(
+                            PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
                                     null,
@@ -365,7 +364,7 @@
                     action: function (object) {
                         var isFirewallNonSupported = false;
                         if ($scope.actionButton()) {
-                            util.confirm(
+                            PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
                                     null,
@@ -415,7 +414,7 @@
                             message = checkedInstances.length > 1 ?
                                 'Destroy the information on these instances and stop billing for them.' :
                                 'Destroy the information on this instance and stop billing for selected instances.';
-                            util.confirm(
+                            PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
                                     null,
@@ -450,7 +449,7 @@
 
                     action: function (object) {
                         if($scope.actionButton()) {
-                            util.confirm(
+                            PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
                                     null,

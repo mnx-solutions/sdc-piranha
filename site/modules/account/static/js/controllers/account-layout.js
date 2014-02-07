@@ -21,11 +21,11 @@
         'notification',
         'Account',
         'BillingService',
-        'util',
+        'PopupDialog',
         '$q',
         '$http',
 
-        function ($scope, requestContext, localization, notification, Account, BillingService, util, $q, $http) {
+        function ($scope, requestContext, localization, notification, Account, BillingService, PopupDialog, $q, $http) {
             requestContext.setUpRenderContext('account', $scope, {
                 title: localization.translate(null, 'account', 'Manage My Joyent Account')
             });
@@ -70,7 +70,7 @@
             };
 
             $scope.deleteKey = function (name, fingerprint) {
-                util.confirm(null, localization.translate($scope, null,
+                PopupDialog.confirm(null, localization.translate($scope, null,
                     'Are you sure you want to delete "{{name}}" SSH key',
                     {
                         name: name
@@ -87,7 +87,7 @@
                                 $scope.loading = false;
                                 $scope.openKeyDetails = null;
 
-                                util.message(
+                                PopupDialog.message(
                                     localization.translate(
                                         $scope,
                                         null,

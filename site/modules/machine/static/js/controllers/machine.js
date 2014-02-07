@@ -11,17 +11,16 @@
         'rule',
         'firewall',
         '$filter',
-        '$dialog',
         '$$track',
         'localization',
         '$q',
         '$location',
-        'util',
+        'PopupDialog',
         'Image',
         'FreeTier',
 
-        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $dialog, $$track,
-                  localization, $q, $location, util, Image, FreeTier) {
+        function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $$track,
+                  localization, $q, $location, PopupDialog, Image, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -197,7 +196,7 @@
             };
 
             $scope.clickStart = function () {
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
@@ -214,7 +213,7 @@
             };
 
             $scope.clickStop = function () {
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
@@ -231,7 +230,7 @@
             };
 
             $scope.clickReboot = function () {
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
@@ -252,7 +251,7 @@
                 if(!selected) {
                     return;
                 }
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
@@ -296,7 +295,7 @@
                     if ($scope.machine.state === 'stopped') {
                         createImage();
                     } else {
-                        util.confirm(
+                        PopupDialog.confirm(
                             localization.translate(
                                 $scope,
                                 null,
@@ -312,7 +311,7 @@
                         );
                     }
                 } else {
-                    util.message(
+                    PopupDialog.message(
                         localization.translate(
                             $scope,
                             null,
@@ -337,7 +336,7 @@
             };
 
             $scope.messageDialog = function () {
-                util.message(
+                PopupDialog.message(
                     localization.translate(
                         $scope,
                         null,
@@ -368,7 +367,7 @@
                     return;
                 }
 
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
@@ -396,7 +395,7 @@
             };
 
             $scope.clickDelete = function () {
-                util.confirm(
+                PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
@@ -411,7 +410,7 @@
 
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
-                            util.message(
+                            PopupDialog.message(
                                 localization.translate(
                                     $scope,
                                     null,
