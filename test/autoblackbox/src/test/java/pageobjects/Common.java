@@ -1,8 +1,6 @@
 package pageobjects;
 
-import static com.codeborne.selenide.Condition.matchText;
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -21,34 +19,27 @@ import java.lang.String;
  */
 public class Common {
 
-    private static final int BASE_TIMEOUT = Integer.parseInt(System
-            .getProperty("globaltimeout", "15000"));
+    private static final int BASE_TIMEOUT = Integer.parseInt(System.getProperty("globaltimeout", "15000"));
 
     public static void login() {
         $(byAttribute("type", "button")).click();
-        $(byAttribute("name", "username")).setValue(
-                System.getProperty("loginusr"));
-        $(byAttribute("name", "password")).setValue(
-                System.getProperty("loginpw"));
+        $(byAttribute("name", "username")).setValue(System.getProperty("loginusr"));
+        $(byAttribute("name", "password")).setValue(System.getProperty("loginpw"));
         $("#login-submit").click();
-        $(byAttribute("data-ng-show", "runningcount")).waitUntil(visible,
-                BASE_TIMEOUT);
+        $(".instance_icon div.details div.number").waitWhile(hasText("0"), BASE_TIMEOUT);
     }
 
     public static void checkSubHeadingText(String headingText) {
         ElementsCollection headingTextContainer = $$("legend");
-        assertTrue(Common.checkTextInCollection(headingTextContainer,
-                headingText).exists());
+        assertTrue(Common.checkTextInCollection(headingTextContainer, headingText).exists());
     }
 
     public static void openSubHeadingEditLink(String headingText) {
         ElementsCollection headingTextContainer = $$("legend");
-        Common.checkTextInCollection(headingTextContainer, headingText)
-                .$(byText("Edit")).click();
+        Common.checkTextInCollection(headingTextContainer, headingText).$(byText("Edit")).click();
     }
 
-    public static SelenideElement checkTextInCollection(ElementsCollection col,
-                                                        String filter) {
+    public static SelenideElement checkTextInCollection(ElementsCollection col, String filter) {
         for (SelenideElement element : col) {
             if (element.findAll(byText(filter)).size() > 0) {
                 return element;
@@ -58,15 +49,19 @@ public class Common {
     }
 
     public static void checkHeadingText(String headingText) {
-        $("h1").shouldHave(matchText("(.*)" + headingText + "(.*)"));
+        $(".page-title").shouldHave(matchText("(.*)" + headingText + "(.*)"));
     }
 
     public static void clickNavigationLink(String text) {
         $(byText(text)).click();
     }
 
-    public static int getCollectionIndexByText(ElementsCollection col,
-                                               String filter) {
+    public static void openMyAccount() {
+        $(byText(System.getProperty("loginusr"))).click();
+        $("ul.dropdown-menu.dd-account li", 0).$("a").click();
+    }
+
+    public static int getCollectionIndexByText(ElementsCollection col, String filter) {
         int i = 0;
         $(byText(filter)).shouldBe(visible);
         for (SelenideElement element : col) {
@@ -91,8 +86,8 @@ public class Common {
     }
 
     public static void checkBreadcrumb(String active, String right) {
-        $("ul.breadcrumb").should(matchText(active));
-        $("ul.breadcrumb li.pull-right").shouldHave(text(right));
+        $("ul.breadcrumb li", 0).$("a").should(matchText(active));
+        $("ul.breadcrumb li", 1).shouldHave(matchText("(.*)" + right));
     }
 
     public static void errorNotPresent() {
@@ -102,7 +97,7 @@ public class Common {
     }
 
     public static String[] instanceProperties() {
-        if (System.getProperty("datacenter").equals("us-west-x")) {
+        if (System.getProperty("datacenter").equals("us-west-x") || System.getProperty("datacenter").equals("local-x")) {
             return new String[]{
                     "base",
                     "13.3.0",
@@ -111,21 +106,9 @@ public class Common {
                     "A 32-bit SmartOS",
                     "256 MB",
                     "16 GB",
-                    "0.125 and bursting",
-                    "0.008",
-                    "5.84"};
-        } else if (System.getProperty("datacenter").equals("local-x")) {
-            return new String[]{
-                    "base",
-                    "13.3.0",
-                    "Standard",
-                    "Standard 0.5",
-                    "A 32-bit SmartOS",
-                    "512 MB",
-                    "16 GB",
-                    "0.125 and bursting",
-                    "0.016",
-                    "11.68"};
+                    "0.125 vCPUs",
+                    "$0.008",
+                    "$5.84"};
         } else if (System.getProperty("datacenter").equals("us-west-1")) {
             return new String[]{
                     "base",
@@ -139,6 +122,6 @@ public class Common {
                     "0.008",
                     "5.84"};
         }
-    return new String[]{};
+        return new String[]{};
     }
 }

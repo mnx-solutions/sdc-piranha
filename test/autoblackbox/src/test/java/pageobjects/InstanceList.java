@@ -82,12 +82,10 @@ public class InstanceList {
 
 	public String getFirtstInstanceName() {
 		waitForInstanceList();
-		String name = "";
-		$(".item-list-container .item", 1).$(".machine-list-state").shouldBe(
-				visible);
-		$(".item-list-container .item", 1).$(".status").shouldBe(visible);
-		name = $(".item-list-container .item", 1).$(
-				"span.machine-list-content", 0).getText();
+		String name;
+        $("tbody tr",1).shouldBe(visible);
+		$("tbody tr", 1).$(".status").shouldBe(visible);
+		name = $("tbody tr", 0).$("td",1).$("div a").getText();
 		return name;
 	}
 
@@ -99,9 +97,6 @@ public class InstanceList {
 	public boolean isRunning(String instance) {
 		SelenideElement el = Common.checkTextInCollection(
 				$$(".item-list-container .item"), instance);
-		if (el.$(".machine-list-state").text().equals("Running")) {
-			return true;
-		}
-		return false;
-	}
+        return el.$(".machine-list-state").text().equals("Running");
+    }
 }
