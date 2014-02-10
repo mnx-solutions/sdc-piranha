@@ -113,10 +113,21 @@
                     active: true
                 },
                 {
-                    id: 'dataset',
-                    name: 'Dataset',
+                    id: '',
+                    name: 'Image',
                     sequence: 3,
-                    active: true
+                    active: true,
+                    _getter: function (object) {
+                        var datasetName = '';
+                        var dataset = object.dataset;
+
+                        if (dataset) {
+                            var prefixLength = 'sdc:sdc:'.length;
+                            datasetName = dataset.slice(prefixLength).replace(':', ' - ');
+                        }
+
+                        return datasetName;
+                    }
                 },
                 {
                     id: 'created',
@@ -149,8 +160,8 @@
                     active: false
                 },
                 {
-                    id: 'image',
-                    name: 'Image',
+                    id: 'dataset',
+                    name: 'Dataset',
                     sequence: 10,
                     active: false
                 },
@@ -191,15 +202,21 @@
                     active: false
                 },
                 {
+                    id: 'image',
+                    name: 'Image ID',
+                    sequence: 17,
+                    active: false
+                },
+                {
                     id: '$$hashKey',
                     name: '$$hashKey',
-                    sequence: 17,
+                    sequence: 18,
                     active: false
                 },
                 {
                     id: 'ips',
                     name: 'IP-s',
-                    sequence: 18,
+                    sequence: 19,
                     active: false
                 }
             ];
