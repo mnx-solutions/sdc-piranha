@@ -78,7 +78,8 @@
                            id="companyName"
                            class="span12"
                            name="companyName"
-                           data-ng-model="account.companyName"/>
+                           data-ng-model="account.companyName"
+                           required/>
                 </span>
                 <span class="edit-error">
                     <div class="error alert-icon"
@@ -103,7 +104,7 @@
     </form>
     <button class="btn orange inline-pos" data-ng-show="!currentStep" data-ng-click="submitForm()" data-ng-disabled="loading || accountForm.$invalid" data-translate>Save changes</button>
     <p class="content-p inline-pos or">or</p>
-    <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
+    <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelChanges()" data-translate>Cancel</a>
     <div class="fieldset-spacer"></div>
 
 </div>
