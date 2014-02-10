@@ -20,7 +20,24 @@
 
                         <div data-ng-show="selectedPackageInfo" id="selected-size" class="text-small">
                             <div class="row-fluid">
-                                <b style="width:90px;display:inline-block" data-translate>Datacenter</b> {{data.datacenter}}<br/>
+                                <b style="width:90px;display:inline-block" data-translate>Datacenter</b>
+                                <div class="btn-group"
+                                     data-html="true"
+                                     data-placement="top"
+                                     data-container="body"
+                                     data-ng-show="freeTierDatacenters && freeTierDatacenters.length > 1">
+                                    <button class="btn" data-ng-show="freeTierDatacenter">{{freeTierDatacenter}}</button>
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li data-ng-repeat="datacenterName in freeTierDatacenters">
+                                            <a data-ng-click="selectFreeTierDatacenter(datacenterName)">{{datacenterName}}</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <span data-ng-hide="freeTierDatacenters && freeTierDatacenters.length > 1">{{data.datacenter}}</span>
+                                <br/>
                                 <b style="width:90px;display:inline-block" data-translate>Memory</b> {{selectedPackageInfo.memory | sizeFormat}}<br/>
                                 <b style="width:90px;display:inline-block" data-translate>Disk</b> {{selectedPackageInfo.disk | sizeFormat}}<br />
                                     <span data-ng-show="selectedPackageInfo.vcpus">

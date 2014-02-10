@@ -36,7 +36,8 @@
                         <span>Free Tier Options</span>
                     </h5>
                     <div data-ng-show="freeTierEnabled" class="separation-container separation-container-top text-medium">
-                        <div data-ng-click="chooseFreeTierOption(option)" class="btn btn-info os-btn btn-joyent-blue" data-ng-repeat="option in freeTierOptions">
+                        <span>Free tier is valid until {{freeTierValidUntil | date:'yyyy-MM-dd'}}</span>
+                        <div data-ng-click="chooseFreeTierOption(option)" class="btn btn-info os-btn btn-joyent-blue" data-ng-show="freeTierOptions" data-ng-repeat="option in freeTierOptions">
                             <div class="one-line-text" data-ng-show="option.name.length <= 12">{{option.name}}</div>
                             <div data-ng-show="option.name.length > 12">{{option.name}}</div>
                         </div>

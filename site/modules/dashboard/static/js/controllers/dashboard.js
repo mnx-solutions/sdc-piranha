@@ -17,10 +17,9 @@
         '$cookies',
         'FreeTier',
         '$location',
-        'Package',
 
         function ($scope, $$track, $dialog, $q, requestContext, Account, Zendesk, Machine, localization, util, BillingService,
-                  $http, $cookies, FreeTier, $location, Package) {
+                  $http, $cookies, FreeTier, $location) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -42,15 +41,20 @@
             $scope.machines = Machine.machine();
 
             $scope.freeTierEnabled = false;
-            $scope.freeTierOptions = FreeTier.listFreeTierOptions();
-            $scope.packages = Package.package();
+            $q.when(FreeTier.freetier()).then(function (freeTierOptions) {
+                $scope.freeTierOptions = freeTierOptions.filter(function (option) {
+                    return option.datacenters.length > 0;
+                });
+                $scope.freeTierValidUntil = freeTierOptions.validUntil;
+                $scope.freeTierEnabled = $scope.features.freetier === 'enabled' && freeTierOptions.valid;
+            });
 
 //                $scope.lastInvoice = BillingService.getLastInvoice();
 
             $scope.chooseFreeTierOption = function (option) {
                 var searchParams = {
                     packageid: option.package,
-                    datacenter: option.datacenter
+                    datacenter: option.datacenters[0]
                 };
                 if (option.networks) {
                     searchParams.networks = option.networks;
@@ -73,39 +77,9 @@
                     $q.when($scope.systemStatusTopics),
                     $q.when($scope.softwareUpdateTopics),
                     $q.when($scope.account),
-                    $q.when($scope.rssentries),
-                    $q.when($scope.freeTierOptions),
-                    $q.when($scope.packages)
+                    $q.when($scope.rssentries)
                     ]
             ).then(function (results) {
-                $scope.freeTierEnabled = $scope.features.freetier === 'yes' || $scope.features.freetier === 'enabled';
-                if ($scope.freeTierEnabled) {
-                    var machines = results[0];
-                    var account = results[4];
-                    var freeTierOptions = results[6];
-                    var packages = results[7];
-                    var findPackageIdByName = function (name) {
-                        var result = null;
-                        packages.forEach(function (packageObj) {
-                            if (packageObj.name === name) {
-                                result = packageObj.id;
-                            }
-                        });
-                        return result;
-                    };
-                    var freeMachineFound = false;
-                    machines.forEach(function (machine) {
-                        var machineDatasetId = machine.image;
-                        var machinePackageId = findPackageIdByName(machine.package);
-                        freeTierOptions.forEach(function (option) {
-                            if (option.package === machinePackageId && option.dataset === machineDatasetId) {
-                                freeMachineFound = true;
-                            }
-                        });
-                    });
-                    $scope.freeTierEnabled = !freeMachineFound;
-                }
-
                 $scope.loading = false;
             });
 

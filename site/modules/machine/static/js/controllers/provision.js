@@ -19,9 +19,10 @@
         '$$track',
         'util',
         '$cookies',
+        'FreeTier',
 
         function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network,
-                  Image, $dialog, $location, localization, $q, $$track, util, $cookies) {
+                  Image, $dialog, $location, localization, $q, $$track, util, $cookies, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -38,6 +39,10 @@
             };
 
             reloadSearchParams();
+
+            if ($scope.features.freetier === 'enabled') {
+                $scope.freeTierOptions = FreeTier.freetier();
+            }
 
             $scope.$on('$routeChangeSuccess', function (route, next, prev) {
                 // Additional click on 'Create Instance should start creation from the beginning
@@ -73,12 +78,12 @@
             $scope.visibilityFilter = 'Public';
 
             $q.all([
-                    $q.when($scope.keys),
-                    $q.when($scope.datacenters),
-                    $q.when($scope.preSelectedImage)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
+                $q.when($scope.keys),
+                $q.when($scope.datacenters),
+                $q.when($scope.preSelectedImage)
+            ]).then(function () {
+                $scope.loading = false;
+            });
 
             $scope.data = {};
             $scope.selectedDataset = null;
@@ -274,6 +279,24 @@
                         });
                     }
 
+                    if ($scope.features.freetier === 'enabled') {
+                        $q.when($scope.freeTierOptions).then(function (freeTierOptions) {
+                            $scope.packages.forEach(function (p) {
+                                p.freeTierHidden = freeTierOptions.some(function (option) {
+                                    var packageMatches = p.id === option.package;
+                                    var datacenterMatches = option.datacenters.length > 0 &&
+                                        option.datacenters.indexOf($scope.data.datacenter) >= -1;
+                                    if (packageMatches && datacenterMatches && freeTierOptions.valid) {
+                                        return false;
+                                    } else if (packageMatches) {
+                                        return true;
+                                    }
+                                    return false;
+                                });
+                            });
+                        });
+                    }
+
                     $scope.slideCarousel();
 
                     if ($scope.preSelectedPackageId) {
@@ -348,10 +371,29 @@
                         $scope.selectedNetworks = $scope.preSelectedNetworks;
                     }
                 });
+                if ($scope.features.freetier === 'enabled') {
+                    $q.when($scope.freeTierOptions).then(function (freeTierOptions) {
+                        freeTierOptions = freeTierOptions.filter(function (option) {
+                            return option.package === $scope.data.package && option.dataset === $scope.data.dataset;
+                        });
+                        if (freeTierOptions.length > 0) {
+                            $scope.freeTierDatacenters = freeTierOptions[0].datacenters;
+                            $scope.freeTierDatacenter = $scope.data.datacenter;
+                        }
+                    });
+                }
+            };
+
+            $scope.selectFreeTierDatacenter = function (name) {
+                $scope.selectDatacenter(name);
             };
 
             $scope.filterPackages = function (item) {
                 if ($scope.datasetType !== item.type) {
+                    return false;
+                }
+
+                if (item.freeTierHidden) {
                     return false;
                 }
 

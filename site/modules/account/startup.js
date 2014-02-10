@@ -9,7 +9,7 @@ module.exports = function execute(scope) {
     var SignupProgress = scope.api('SignupProgress');
     var Marketo = scope.api('Marketo');
 
-    var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
+    var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone','created'];
     var updateable = ['email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
 
     server.onCall('getAccount', function (call) {
