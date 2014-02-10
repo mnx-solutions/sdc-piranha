@@ -608,6 +608,10 @@
                     });
                 };
 
+                $scope.exportFields = {
+                    ignore: []
+                };
+
                 $scope.searchForm = false;
 
             }

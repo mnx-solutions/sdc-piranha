@@ -314,6 +314,7 @@
                 actionButtons:'=',
                 imageButtonShow:"=",
                 filterAll: '@',
+                exportFields: '=',
                 actionsButton: '=',
                 specialWidth: '=',
                 searchForm: '=',
@@ -322,6 +323,7 @@
                 objectsType: '@',
                 placeHolderText: '=',
                 multisort: '@'
+
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',

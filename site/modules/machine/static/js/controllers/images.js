@@ -150,6 +150,7 @@
             $scope.exportFields = {
                 ignore: []
             };
+
             $scope.columnsButton = true;
             $scope.imageButtonShow = true;
             $scope.imgForm = true;

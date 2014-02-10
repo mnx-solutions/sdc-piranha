@@ -1012,6 +1012,9 @@
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter rules';
             $scope.searchForm = true;
+            $scope.exportFields = {
+                ignore: []
+            };
         }
 
     ]);
