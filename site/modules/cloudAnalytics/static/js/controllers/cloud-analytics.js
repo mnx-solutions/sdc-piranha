@@ -279,7 +279,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         $scope.croppedModule = !$scope.croppedModule;
     };
 
-    $scope.createInstrumentation = function(){
+    function createOptions() {
         var decomp = [];
 
         if ($scope.current.decomposition.primary) {
@@ -313,7 +313,16 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
             predicate: predicate,
             datacenter: datacenter
         };
-
+        return options;
+    }
+    
+    $scope.canCreate = function () {
+        var uuid = instrumentation.getUUID($scope.zoneId, {createOpts: createOptions()});
+        return $scope.current.metric && $scope.zoneId ? !instrumentations[uuid] : false;
+    };
+    
+    $scope.createInstrumentation = function(){
+        var options = createOptions();
         $scope.ca.createInstrumentations($scope.zoneId, [ options ], function (errs, instrumentations) {
             if (!errs.length) {
                 if (!$scope.endtime) {

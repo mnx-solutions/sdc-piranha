@@ -76,7 +76,7 @@
                     <button class="btn icon-zoom-in options-ctrl" data-ng-click="zoomIn()" ></button>
                     <button class="btn icon-zoom-out options-ctrl" data-ng-click="zoomOut()" ></button>
                     <button class="btn options-ctrl" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
-                    <button class="btn options-ctrl" data-ng-click="createInstrumentation()" data-ng-disabled="!zoneId || !current.metric">Create</button>
+                    <button class="btn options-ctrl" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
 				</div>
 				
 

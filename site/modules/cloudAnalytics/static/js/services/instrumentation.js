@@ -191,11 +191,11 @@ var instrumentations = {};
         function _getUUID(zoneId, opts) {
             var options = opts.createOpts.datacenter ? opts.createOpts : opts.createOpts.init;
 
-            return [zoneId, options.datacenter, options.module, options.stat].join(':');
+            return [zoneId, options.datacenter, options.module, options.stat, options.decomposition.join(':')].join(':');
         }
 
         var service = {};
-
+        service.getUUID = _getUUID;
         service.create = function(zoneId, opts, callback) {
             var uuid = _getUUID(zoneId, opts);
             if(!instrumentations[uuid]) {
