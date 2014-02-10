@@ -21,9 +21,9 @@ module.exports = function execute(scope) {
         } else {
             var googleAnalytics = 'var _gaq = _gaq || [];'+
                 '_gaq.push(["_setAccount", "'+ scope.config.googleAnalytics.identifier +'"]);'+
-                '_gaq.push(["_trackPageview"]);'+
                 '_gaq.push(["_setDomainName", "'+ scope.config.googleAnalytics.domain +'"]);'+
                 '_gaq.push(["_setAllowLinker", true]);'+
+                '_gaq.push(["_trackPageview"]);'+
                 '_gaq.push(["t2._setAccount", "'+ scope.config.googleAnalytics.t2identifier +'"]);'+
                 '_gaq.push(["t2._trackPageview"]);'+
                 '(function() {'+
