@@ -157,7 +157,7 @@
 }
 
 .reconfigure {
-    padding: 0px;
+    padding: 0;
 }
 
 .reconfigure-box {
@@ -167,7 +167,7 @@
 .machine-name {
     margin:2px;
     margin-top: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     padding-bottom: 4px;
     padding-left: 6px;
     padding-right: 6px;
@@ -430,22 +430,6 @@
 .select_position{
     padding-top: 20px;
     color: #666;
-}
-
-.btn_submit_seach {
-    border: 0 none;
-    box-shadow: none;
-    padding: 0;
-    background-image: url(../img/table_i_search.png);
-    background-repeat: no-repeat;
-    width: 24px !important;
-    height: 24px;
-    right: 0;
-    position: absolute;
-    top: 0;
-    background-color: #dedede;
-    border-radius: 50px;
-    background-position: center center;
 }
 
 .accordion-group {

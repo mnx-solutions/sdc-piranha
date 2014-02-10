@@ -497,7 +497,7 @@
                 ignore: ['metadata']
             };
 
-            $scope.instForm = true;
+            $scope.searchForm = true;
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter instances';
 

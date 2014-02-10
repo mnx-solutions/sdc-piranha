@@ -4,14 +4,14 @@
         <span class="grid-small-font">
             Showing <span data-ng-hide="pageNumFirst == pageNumLast"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
         </span>
-        <form class="form-search grid-small-font" data-ng-show="instForm">
+        <form class="grid-small-font" data-ng-show="searchForm">
             <input type="search"
                    name="search"
                    id="search"
                    placeholder="{{placeHolderText}}"
                    data-ng-model="filterAll"
                    data-translate="placeholder" />
-            <input value="" class="btn_submit_seach" type="submit">
+            <input value="" class="grid-search-icon" type="submit">
         </form>
     </div>
     <div class="actions pull-right">

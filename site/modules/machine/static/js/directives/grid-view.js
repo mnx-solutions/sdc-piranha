@@ -316,7 +316,7 @@
                 filterAll: '@',
                 actionsButton: '=',
                 specialWidth: '=',
-                instForm: '=',
+                searchForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',
                 objectsType: '@',

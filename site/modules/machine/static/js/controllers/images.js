@@ -153,7 +153,7 @@
             $scope.columnsButton = true;
             $scope.imageButtonShow = true;
             $scope.imgForm = true;
-            $scope.instForm = true;
+            $scope.searchForm = true;
             $scope.placeHolderText = 'filter images';
         }
     ]);

@@ -608,6 +608,8 @@
                     });
                 };
 
+                $scope.searchForm = false;
+
             }
         }
 
