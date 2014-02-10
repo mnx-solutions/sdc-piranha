@@ -900,157 +900,101 @@
                     _getter: function (object) {
                         return object.enabled ? '<span class="grid-enabled-text">Enabled</span>' : '<span class="grid-disabled-text">Disabled</span>';
                     },
-
-//                    type: 'button',
-//                    getClass: function () {
-//                        return 'span1 padding-5';
-//                    },
-//                    btn: {
-//
-//                        disabled: function () {
-//                            return $scope.loading;
-//                        },
-//                        action: $scope.changeStatus.bind($scope)
-////                        tooltip: 'Change rule status'
-//                    },
                     sequence: 1,
                     active: true
                 }
 	        ];
+
+            function setRuleState (action, el){
+                if (action !== 'deleteRule') {
+                    el.job = false;
+                    el.job.finished = true;
+                    el.checked = false;
+                }
+            }
+
+            function makeRuleAction(object, action, message) {
+                if($scope.actionButton()) {
+                    var checkedRules = $scope.rules.filter(function (rule) {
+                        return rule.checked;
+                    });
+                    var message = message;
+                    message += checkedRules.length > 1 ?
+                        ' all selected rules.':
+                        ' the rule.' ;
+
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: ' + message + ' rule'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            message
+                        ), function () {
+                            var promises = [];
+                            $scope.loading = true;
+                            checkedRules.forEach(function (el) {
+                                var deferred = $q.defer();
+                                promises.push(deferred.promise);
+                                el.job = true;
+                                el.job.finished = false;
+
+                                rule[action](el)
+                                    .then(
+                                        function () {
+                                            deferred.resolve();
+                                            setRuleState(action, el);
+                                        },
+                                        function (err) {
+                                            $scope.disableLoading();
+                                            deferred.reject(err);
+                                            setRuleState(action, el);
+                                        }
+                                    )
+
+                            });
+                            $q.all(promises).then(function () {
+                                $scope.refresh();
+                                $scope.openRuleForm = false;
+                            });
+                        });
+                } else {
+                    $scope.noCheckBoxChecked();
+                }
+            }
+
             $scope.gridActionButtons = [
                 {
                     label: 'Delete',
                     action: function (object) {
-                        if($scope.actionButton()) {
-                            var checkedRule = [];
-                            var message = '';
-                            $scope.rules.forEach(function (el) {
-                                if (el.checked) {
-                                    checkedRule.push(el);
-                                }
-                            });
-                            message = checkedRule.length > 1 ?
-                                'Delete the rule.' :
-                                'Delete all selected rules.';
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Delete rule'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    message
-                                ), function () {
-                                    checkedRule.forEach(function (el) {
-                                        $scope.loading = true;
-                                        el.job = true;
-                                        el.job.finished = false;
-                                        rule.deleteRule(el).then(function(){
-                                            $scope.refresh();
-                                        }, $scope.disableLoading);
-                                        $scope.openRuleForm = false;
-                                        el.checked = false;
-                                    });
-                                });
-                        }else $scope.noCheckBoxChecked();
+                        makeRuleAction(object, 'deleteRule', 'Delete');
                     },
                     sequence: 1
                 },
                 {
                     label: 'Enable',
                     action: function (object) {
-                        if($scope.actionButton()) {
-                            var checkedRule = [];
-                            var message = '';
-                            $scope.rules.forEach(function (el) {
-                                if (el.checked) {
-                                    checkedRule.push(el);
-                                }
-                            });
-                            message = checkedRule.length > 1 ?
-                                'Enable the rule.' :
-                                'Enable all selected rules.';
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Enable rule'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    message
-                                ), function () {
-                                    checkedRule.forEach(function (el) {
-                                        $scope.loading = true;
-                                        el.job = true;
-                                        el.job.finished = false;
-                                        rule['enableRule'](el).then(function() {
-                                            $scope.refresh();
-                                            el.checked = false;
-                                            el.job = false;
-                                            el.job.finished = true;
-                                        });
-                                    });
-                                });
-                        }else $scope.noCheckBoxChecked();
+                        makeRuleAction(object, 'enableRule', 'Enable');
                     },
                     sequence: 2
                 },
                 {
                     label: 'Disable',
                     action: function (object) {
-                        if($scope.actionButton()) {
-                            var checkedRule = [];
-                            var message = '';
-                            $scope.rules.forEach(function (el) {
-                                if (el.checked) {
-                                    checkedRule.push(el);
-                                }
-                            });
-                            message = checkedRule.length > 1 ?
-                                'Disable the rule.' :
-                                'Disable all selected rules.';
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Disable rule'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    message
-                                ), function () {
-                                    checkedRule.forEach(function (el) {
-                                        $scope.loading = true;
-                                        el.job = true;
-                                        el.job.finished = false;
-                                        rule['disableRule'](el).then(function() {
-                                            $scope.refresh();
-                                            el.checked = false;
-                                            el.job = false;
-                                            el.job.finished = true;
-                                        });
-                                    });
-                                });
-                        }else $scope.noCheckBoxChecked();
+                        makeRuleAction(object, 'disableRule', 'Disable');
                     },
                     sequence: 2
                 }
             ];
-            $scope.actionButton = function(){
-                var flag = false;
-                $scope.rules.forEach(function (el) {
-                    if(el.checked){
-                        flag = true;
-                    }
+            $scope.actionButton = function () {
+                return $scope.rules.some(function (rule) {
+                    return rule.checked === true;
                 });
-                return flag;
             };
-            $scope.noCheckBoxChecked = function(){
+            $scope.noCheckBoxChecked = function () {
                 PopupDialog.error(
                     localization.translate(
                         $scope,

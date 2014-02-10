@@ -23,7 +23,7 @@
             $scope.loading = true;
 
             $scope.$watch('images.final', function (final) {
-                if(final) {
+                if (final) {
                     $scope.loading = false;
                 }
             });
@@ -100,12 +100,8 @@
                         action: function (object) {
                             $scope.provisionInstance(object);
                         },
-
-                        show: function (object) {
-                            return true;
-                        },
                         getClass: function () {
-                            return 'btn orange font-size-12 ci';
+                            return 'btn orange small-font ci';
                         }
                     }
                 },
@@ -126,7 +122,7 @@
                     name: 'UUID',
                     sequence: 8,
                     active: false
-                },
+                }
             ];
             $scope.gridDetailProps = [
                 {
