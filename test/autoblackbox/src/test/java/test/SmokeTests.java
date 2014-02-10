@@ -114,8 +114,7 @@ public class SmokeTests extends TestWrapper {
         Common.checkHeadingText("Edit Billing Information");
         Common.openMyAccount();
         $(".key-name.ng-binding").click();
-//TODO: replace with Fingerprint when bug is fixed
-        $(byText("Fingerpint")).shouldBe(visible);
+        $(byText("Fingerprint")).shouldBe(visible);
     }
 
     @Test
