@@ -212,13 +212,13 @@
                                             </div>
                                             </div>
                                     </div>
-                                    <div class="span8">
+                                    <div class="">
                                         <div class="accordion-package-title">
                                             <span class="span-name">NAME</span>
                                             <span class="span-specification">SPECIFICATION</span>
                                             <span class="span-price">PRICE</span>
-                                                    </div>
-                                        <div class="accordion" id="accordion2">
+                                        </div>
+                                        <div class="accordion accordion-package-select" id="accordion2">
                                             <div class="accordion-group" data-ng-repeat="package in packageTypes">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle" data-ng-class="{active: accordionIcon2[$index]}" data-ng-click="collapseTrigger2($index, packageTypes.length)" data-toggle="collapse" data-parent="#accordion2"
@@ -233,11 +233,11 @@
                                                              data-ng-click="selectPackage(package.id)"
                                                              data-ng-checked="selectedPackage == package.id"
                                                              data-ng-class="{active: selectedPackage == package.id}">
-                                                            <span class="short-name">{{package.short_name}}</span>
-                                                            <span class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</span>
-                                                            <span class="disk">{{package.vcpus}} vCPUs</span>
-                                                            <span>{{package.disk | sizeFormat}} Disk</span>
-                                                            <span class="w500">${{package.full_price || package.price}} <p data-translate>per hour</p></span>
+                                                            <div class="short-name">{{package.short_name}}</div>
+                                                            <div class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</div>
+                                                            <div class="cpu">{{package.vcpus}} vCPUs</div>
+                                                            <div class="disk">{{package.disk | sizeFormat}} Disk</div>
+                                                            <div class="price">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
                                                         </div>
                                                     </div>
                                                 </div>

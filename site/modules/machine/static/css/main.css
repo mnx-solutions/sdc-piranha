@@ -1365,124 +1365,87 @@ label.checkbox {
 .package-select td{
     padding-right: 15px;
 }
-.package-select{}
-
-#accordion2{
-    margin-left: -30px;
-    width: 730px;
+.accordion-package-select {
+    width: 720px;
+    font-size: 15px;
+    color: #333;
+    font-weight: 300;
 }
-#accordion2 .accordion-group {
+
+.accordion-package-select .accordion-group {
     min-height: 50px;
 }
-#accordion2 .accordion-inner{
-    margin-left: 15px;
-    margin-top: 9px;
-    padding: 0;
-}
-#accordion2 .accordion-inner span{
-    font-size: 15px;
-    color: #333333;
-    font-weight: 300;
-    height: 50px;
-    width: 100px;
-    display: inline-block;
-    padding-right: 10px;
-    text-align: left;
-    vertical-align: middle;
-    line-height: 50px;
-}
-#accordion2 .machine-info span:first-child{
-     padding-left: 36px;
-     font-weight: 500;
-}
-#accordion2 .machine-info p span:first-child{
-    padding-left: 0;
-    font-weight: 300;
-    font-size: 12px;
-}
-#accordion2 .machine-info .w500{
-    font-weight: 500;
-    margin-left: -12px;
-}
-#accordion2 .machine-info .memory{
-    min-width: 130px;
-}
-#accordion2 .machine-info .short-name{
-    min-width: 140px;
-}
-#accordion2 .machine-info .disk{
-    max-width: 90px;
-}
-#accordion2 .machine-info .select-package{
-    margin-left: -7px;
-}
-#accordion2 .accordion-inner span p{
-    display: inline-block;
-    font-size: 15px;
-    color: #333333;
-    text-align: left;
-    vertical-align: top;
+
+.accordion-package-select .accordion-toggle {
+    padding: 12px 15px;
+    border: 1px solid #dadcdd;
 }
 
-#accordion2 .small-btn{
-    width: 65px!important;
-    height: 26px;
-    color: #f60;
-    background-color: #f3f3f3;
+.accordion-package-select .accordion-inner {
     padding: 0;
 }
-#accordion2 .accordion-heading{
-    height: 50px;
-    background-color: #eef0f2;
-    border: 1px solid #dadcdd;
-    margin-left: 9px;
+
+.accordion-package-select .accordion-inner .short-name,
+.accordion-package-select .accordion-inner .memory,
+.accordion-package-select .accordion-inner .memory p,
+.accordion-package-select .accordion-inner .disk,
+.accordion-package-select .accordion-inner .cpu,
+.accordion-package-select .accordion-inner .price,
+.accordion-package-select .accordion-inner .price p,
+.accordion-package-select .accordion-inner span{
+    display: inline-block;
 }
-#accordion2 .accordion-heading .accordion-toggle {
-    padding: 0;
-    padding-left: 10px;
+
+.accordion-package-select .accordion-inner span.ng-scope{
+    font-size: 12px;
+    font-weight: 300;
 }
-#accordion2 .accordion-group {
-    border: 0 none;
-    margin-bottom: 0 !important;
-    margin-top: -1px;
-}
-#accordion2 .accordion-body{
-    margin-top: -11px;
-    margin-left: -9px;
-}
-#accordion2 .accordion-heading a {
-    color: #333333;
-    font-size: 15px;
-    text-decoration: none;
-    line-height: 50px;
+
+.accordion-package-select .accordion-inner .short-name,
+.accordion-package-select .accordion-inner .price {
     font-weight: 500;
 }
-#accordion2 .machine-info{
-    height: 50px;
-    width: 719px;
-    border: 1px solid #dadcdd;
-    border-top: none;
-    margin-left: 3px;
-    margin-top: 0;
-    cursor: pointer;
+
+.accordion-package-select .accordion-inner .short-name {
+    padding-left: 40px;
 }
-#accordion2 .machine-info:hover{
+
+.accordion-package-select .accordion-inner .memory,
+.accordion-package-select .accordion-inner .short-name {
+    width: 145px;
+}
+
+.accordion-package-select .accordion-inner .cpu {
+    width: 100px;
+}
+
+.accordion-package-select .accordion-inner .disk {
+    width: 90px;
+}
+
+.accordion-package-select .machine-info{
+    border: 1px solid #dadcdd;
+    width: 718px;
+    height: 40px;
+    vertical-align: middle;
+    line-height: 40px;
+    margin-top: -1px;
+}
+
+.accordion-package-select .machine-info:hover{
     background-color: #f6f7f8 !important;
 }
-#accordion2 .machine-info:hover .small-btn{
-    background-color: #f60 !important;
-    color: white !important;
-}
-#accordion2 .machine-info.active{
+
+.accordion-package-select  .machine-info.active{
     background-color: #fef1d2;
 }
+
 .accordion-package-title{
     height: 40px;
-    width: 719px;
+    width: 718px;
     color: #7d7d7d;
     border: 1px solid #dadcdd;
     border-bottom: none;
-    margin-left: -21px;
     margin-top: 0;
     font-weight: 300;
     font-size: 12px;
