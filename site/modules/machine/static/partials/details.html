@@ -4,10 +4,13 @@
         <li><a href="#!/compute"> Instances</a> /</li>
         <li> Instance Details</li>
     </ul>
-    <h3 class="page-title" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">
-        <div class="loading-medium wait-rename" data-ng-show="loadingNewName"></div>
+
+    <h3 class="page-title" data-ng-show="!changingName" data-ng-mouseenter="pencilShow = true" data-ng-mouseleave="pencilShow = false">
+        <div class="loading-medium wait_rename" data-ng-show="loadingNewName" ></div>
         {{machine.name}}
+        <div class="edit-text-icon" data-ng-show="pencilShow" data-ng-click="enableRename(machine.name)"></div>
     </h3>
+
     <form name="instanceRename" class="machine-edit-form">
         <div class="error"
              data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
@@ -21,7 +24,7 @@
             Machine name is already in use
         </div>
         <div class="pull-left machine-edit" data-ng-show="changingName">
-            <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique/>
+            <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
             <div class="btn-group machine-edit-buttons">
                 <button class="btn btn-height" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
                 <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>

@@ -1,6 +1,6 @@
 'use strict';
 
-(function (app, $) {
+(function (app, ng) {
     app.controller('Machine.DetailsController',[
         '$scope',
         'requestContext',
@@ -18,9 +18,10 @@
         'PopupDialog',
         'Image',
         'FreeTier',
+        '$timeout',
 
         function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $$track,
-                  localization, $q, $location, PopupDialog, Image, FreeTier) {
+                  localization, $q, $location, PopupDialog, Image, FreeTier, $timeout) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -355,6 +356,9 @@
                 if($scope.features.instanceRename === 'enabled') {
                     $scope.changingName = true;
                     $scope.newInstanceName = name;
+                    $timeout(function () {
+                        angular.element('#instanceRename').focus();
+                    });
                 }
             };
 
@@ -608,4 +612,4 @@
         }
 
     ]);
-}(window.JP.getModule('Machine'), window.jQuery));
+}(window.JP.getModule('Machine'), window.angular));
