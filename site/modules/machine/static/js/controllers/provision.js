@@ -459,6 +459,7 @@
                     Network.network(newVal).then(function(networks) {
                         if(newVal === $scope.data.datacenter) {
                             $scope.networks = networks;
+                            $scope.selectedNetworks.length = 0;
                             $scope.networks.forEach(function(network) {
                                 $scope.selectNetworkCheckbox(network.id);
                             });
