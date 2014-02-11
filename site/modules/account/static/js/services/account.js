@@ -217,7 +217,7 @@
             service.getUserConfig = function () {
                 function load(callback) {
                     serverTab.call({
-                        name: 'get-grid-config',
+                        name: 'get-user-config',
                         data: {},
                         done: function (err, job) {
                             if (err) {
@@ -290,7 +290,7 @@
             service.setUserConfig = function (config) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'set-grid-config',
+                    name: 'set-user-config',
                     data: config,
                     done: function (err, job) {
                         if (err) {

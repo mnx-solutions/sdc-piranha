@@ -194,8 +194,8 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('get-grid-config', function (call) {
-        var client = MantaClient.createClient(call, true);
+    server.onCall('get-user-config', function (call) {
+        var client = MantaClient.createClient(call);
         var configFile = '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
         client.get(configFile, function (error, stream) {
             var jsonConfig = {};
@@ -229,16 +229,15 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('set-grid-config', function (call) {
-        var client = MantaClient.createClient(call, true);
+    server.onCall('set-user-config', function (call) {
+        var client = MantaClient.createClient(call);
         var fileStream = new MemoryStream(JSON.stringify(call.data), {writable: false});
-        call.log.warn(call.data, 'set-grid-config');
         var configFile = '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
-        client.put(configFile, fileStream, function (error, response) {
+
+        client.put(configFile, fileStream, {mkdirs: true}, function (error, response) {
             if (error && error.statusCode !== 404) {
                 call.log.error(error);
             }
-            call.log.warn(error, 'set-grid-config-complete');
             call.done(null, !!error);
         });
     });

@@ -57,7 +57,9 @@
                 $location.path('/compute/create/' + image.id);
             };
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('images');
+            if ($scope.features.manta === 'enabled') {
+                $scope.gridUserConfig = Account.getUserConfig().$child('images');
+            }
 
             $scope.gridOrder = ['-published_at'];
             $scope.gridProps = [

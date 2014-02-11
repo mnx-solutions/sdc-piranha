@@ -314,7 +314,9 @@
                 $scope.gridProps.splice(2, 0, firewallColumn);
             }
 
-            $scope.gridUserConfig = Account.getUserConfig().$child('machines');
+            if ($scope.features.manta === 'enabled') {
+                $scope.gridUserConfig = Account.getUserConfig().$child('machines');
+            }
 
             $scope.gridDetailProps = [
                 {

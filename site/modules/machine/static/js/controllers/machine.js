@@ -19,9 +19,10 @@
         'Image',
         'FreeTier',
         '$timeout',
+        'Account',
 
         function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $$track,
-                  localization, $q, $location, PopupDialog, Image, FreeTier, $timeout) {
+                  localization, $q, $location, PopupDialog, Image, FreeTier, $timeout, Account) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -467,6 +468,9 @@
             };
 
             if ($scope.features.firewall === 'enabled') {
+                if ($scope.features.manta === 'enabled') {
+                    $scope.gridUserConfig = Account.getUserConfig().$child('firewall');
+                }
                 $scope.gridOrder = [];
                 $scope.gridProps = [
                     {
