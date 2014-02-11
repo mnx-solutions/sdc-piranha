@@ -488,9 +488,9 @@
 .accordion-inner table td:first-child {
     color: #5D80A7;
 }
-.accordion-inner table td:last-child {
-    font-size: 16px;
+#collapse_1 .accordion-inner table td + td {
     font-weight: 300;
+    font-size: 16px;
     overflow: hidden;
     max-width: 325px;
 }
