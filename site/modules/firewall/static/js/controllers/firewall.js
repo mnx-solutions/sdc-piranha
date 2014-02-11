@@ -497,6 +497,7 @@
             // rule create/edit form controls
 
             $scope.resetData = function () {
+                $scope.data.id = null;
                 $scope.data.uuid = null;
                 $scope.data.datacenter = $scope.datacenter;
                 $scope.data.parsed = {};
