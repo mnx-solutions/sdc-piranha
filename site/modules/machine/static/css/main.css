@@ -1892,7 +1892,8 @@ label.checkbox {
 .loading-30{
     display: inline-block;
     vertical-align: middle;
-}.btn-height{
+}
+.btn-height {
     min-height: 34px;
 }
 .accordion-max-width{

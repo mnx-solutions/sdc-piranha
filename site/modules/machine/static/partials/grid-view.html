@@ -105,7 +105,7 @@
                     <div class="grid-small-font" data-action-button data-label-fn="prop.btn.getLabel" data-action-fn="prop.btn.action" data-class-fn="prop.btn.getClass" data-show-fn="prop.btn.show" data-disabled-fn="prop.btn.disabled" data-label="prop.btn.label" data-tooltip-text="prop.btn.tooltip" data-object="object"></div>
                 </span>
                 <span data-ng-switch-when="html" data-ng-bind-html-unsafe="prop._getter(object)"></span>
-                    <span data-ng-switch-when="firewall_enabled">
+                    <span data-ng-switch-when="firewall_state">
                         <span data-ng-show="object.fireWallActionRunning" class="loading-small loading-small-firewall pull-left"></span>
                         <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
                     </span>
