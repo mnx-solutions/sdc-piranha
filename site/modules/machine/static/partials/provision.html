@@ -229,7 +229,7 @@
                                             </div>
                                                 <div id="collapse_{{$index}}" class="accordion-body collapse" data-ng-class="{in:$index == packageTypes.length-1}">
                                                     <div class="accordion-inner">
-                                                        <div class="machine-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages | filter:package"
+                                                        <div class="package-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages | filter:package"
                                                              data-ng-click="selectPackage(package.id)"
                                                              data-ng-checked="selectedPackage == package.id"
                                                              data-ng-class="{active: selectedPackage == package.id}">

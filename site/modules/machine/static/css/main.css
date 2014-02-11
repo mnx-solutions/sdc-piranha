@@ -1423,20 +1423,22 @@ label.checkbox {
     width: 90px;
 }
 
-.accordion-package-select .machine-info{
+
+.accordion-package-select .package-info {
     border: 1px solid #dadcdd;
     width: 718px;
     height: 40px;
     vertical-align: middle;
     line-height: 40px;
     margin-top: -1px;
+    cursor: pointer;
 }
 
-.accordion-package-select .machine-info:hover{
+.accordion-package-select .package-info:hover {
     background-color: #f6f7f8 !important;
 }
 
-.accordion-package-select  .machine-info.active{
+.accordion-package-select .package-info.active {
     background-color: #fef1d2;
 }
 
