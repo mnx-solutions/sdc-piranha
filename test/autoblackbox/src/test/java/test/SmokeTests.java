@@ -67,7 +67,7 @@ public class SmokeTests extends TestWrapper {
         instanceList = page(InstanceList.class);
         instanceList.getFirtstInstanceName();
         $(byText("Actions")).click();
-        $("ul.dropdown-menu.dd-btn").shouldBe(visible);
+        $("ul.dropdown-menu.grid-action-btn").shouldBe(visible);
         $(byText("Columns")).click();
         $(".dropdown-checkboxes").shouldBe(visible);
     }
