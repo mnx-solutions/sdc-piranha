@@ -27,7 +27,7 @@
 
                     $scope.setAccount = function() {
                         $q.when(Account.getAccount(true), function (account) {
-                            $scope.account = account;
+                            $scope.account = ng.copy(account);
                             if ($scope.account.phone && $scope.account.phone.indexOf('+') !== 0) {
                                 $scope.account.phone = '+' + $scope.account.phone;
                             }
@@ -37,6 +37,7 @@
                     $scope.setAccount();
 
                     $scope.cancelChanges = function () {
+                        $scope.setAccount();
                         $location.path('/account/');
                     };
 
