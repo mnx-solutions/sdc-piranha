@@ -368,11 +368,8 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         $scope.ca.deleteAllInstrumentations(cb);
     };
 
-    $scope.$on('requestContextChanged', function (event, context) {
-        var onAnalytics = context.startsWith('machine.details') || context.startsWith('cloudAnalytics.index');
-        if (!onAnalytics && $scope.graphs.length > 0) {
-            $scope.deleteAllInstrumentations();
-        }
+    $scope.$on('$destroy', function () {
+        $scope.deleteAllInstrumentations();
     });
 
     $scope.changeMetric = function(){
