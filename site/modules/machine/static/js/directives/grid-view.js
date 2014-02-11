@@ -301,7 +301,8 @@
         showPages: 5,
         order: [],
         propOn: false,
-        multisort: true
+        multisort: true,
+        controlls: true
     })
     .directive('gridView', ['gridConfig', '$rootScope', function (gridConfig, $rootScope) {
         return {
@@ -336,6 +337,7 @@
                 $scope.order = $scope.order || gridConfig.order;
                 $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
+                $scope.controlls = ng.isDefined(attrs.controlls) ? $scope.$eval(attrs.controlls) : gridConfig.controlls;
 
                 $scope.props.forEach(function (el) {
 

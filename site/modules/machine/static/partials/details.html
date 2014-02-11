@@ -220,7 +220,6 @@
                         <div class="accordion-inner">
                             <legend>
                                 <span class="font-size16" data-translate>Create Image</span>
-                                <div class="beta-sticker pull-right beta"></div>
                             </legend>
                             <p class="" data-ng-show="machine.state != 'stopped' && !imageCreateNotSupported" data-translate>
                                 Instance needs to be stopped before creating an image.
@@ -348,6 +347,7 @@
                                              data-props="gridProps"
                                              data-objects="firewallRules"
                                              data-paginated="false"
+                                             data-controlls="false"
                                              data-order="gridOrder"
                                              data-objects-type="firewall"
                                              data-special-width="'detailsPage'"

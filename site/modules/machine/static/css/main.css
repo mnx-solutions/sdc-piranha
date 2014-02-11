@@ -1583,16 +1583,6 @@
     margin-top: 10px;
 }
 
-.beta-sticker{
-    background-image: url("../img/sticker.png");
-    width: 66px;
-    height: 33px;
-    background-repeat: no-repeat;
-    margin-top: 7px;
-}
-.beta-sticker.beta{
-    margin-top: 7px;
-}
 .img-name{
     max-width: 175px !important;
 }
