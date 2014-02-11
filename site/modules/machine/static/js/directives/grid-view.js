@@ -242,7 +242,7 @@
                     checkedFlag += 1;
                 }
 
-                if ( checkedFlag > 0 ){
+                if ( checkedFlag > 0 ) {
                     $scope.checkedCheckBoxDisable = true;
                 } else {
                     $scope.checkedCheckBoxDisable = false;
@@ -255,10 +255,17 @@
             $scope.disableSelectAllCheckbox();
         }, true);
 
-        $scope.selectCheckbox = function (id) {
+        $scope.selectCheckbox = function (obj) {
+            var id;
+            if (obj && obj.id) {
+                id = obj.id;
+            } else if (obj && !obj.id && obj.uuid) {
+                id = obj.uuid;
+            }
+
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
-                if (id && el.id === id) {
+                if ( (id && el.id === id) || (id && el.uuid === id) ){
                     if ((!el.job && !el.fireWallActionRunning) || (el.job && el.job.finished && !el.fireWallActionRunning)){
                         el.checked = (el.checked) ? false : true;
                     }
@@ -294,7 +301,8 @@
         showPages: 5,
         order: [],
         propOn: false,
-        multisort: true
+        multisort: true,
+        controls: true
     })
     .directive('gridView', ['gridConfig', '$rootScope', function (gridConfig, $rootScope) {
         return {
@@ -308,15 +316,15 @@
                 imageButtonShow:"=",
                 filterAll: '@',
                 exportFields: '=',
-                columnsButton: '=',
                 actionsButton: '=',
                 specialWidth: '=',
-                instForm: '=',
+                searchForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',
                 objectsType: '@',
                 placeHolderText: '=',
                 multisort: '@'
+
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
@@ -329,6 +337,7 @@
                 $scope.order = $scope.order || gridConfig.order;
                 $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
+                $scope.controls = ng.isDefined(attrs.controls) ? $scope.$eval(attrs.controls) : gridConfig.controls;
 
                 $scope.props.forEach(function (el) {
 

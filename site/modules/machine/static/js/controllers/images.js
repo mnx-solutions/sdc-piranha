@@ -23,7 +23,7 @@
             $scope.loading = true;
 
             $scope.$watch('images.final', function (final) {
-                if(final) {
+                if (final) {
                     $scope.loading = false;
                 }
             });
@@ -87,8 +87,9 @@
                     active: true
                 },
                 {
-                    id: 'actionButtons',
+                    id: 'parsed',
                     name: 'Action',
+                    type: 'button',
                     sequence: 5,
                     active: true,
                     btn: {
@@ -98,6 +99,9 @@
                         },
                         action: function (object) {
                             $scope.provisionInstance(object);
+                        },
+                        getClass: function () {
+                            return 'btn orange small-font ci';
                         }
                     }
                 },
@@ -118,7 +122,7 @@
                     name: 'UUID',
                     sequence: 8,
                     active: false
-                },
+                }
             ];
             $scope.gridDetailProps = [
                 {
@@ -143,48 +147,14 @@
                 }
             ];
 
-            $scope.gridActionButtons = [
-                {
-                    label: 'Create instance',
-                    disabled: function (object) {
-                        return object.job;
-                    },
-                    action: function (object) {
-                        $scope.provisionInstance(object);
-                    },
-
-                    show: function (object) {
-                        return true;
-                    },
-                    getClass: function () {
-                        return 'btn orange grid-small-font ci';
-                    },
-                    sequence: 1
-
-                }/*,
-                {
-                    label: 'Delete',
-                    disabled: function (object) {
-                        return object.job;
-                    },
-                    action: function (object) {
-                        $scope.clickDelete(object);
-                    },
-                    show: function (object) {
-                        return !object.public;
-                    },
-                    tooltip: 'You will not be able to create any instances with this image after this.',
-                    sequence: 2
-                }*/
-            ];
-
             $scope.exportFields = {
                 ignore: []
             };
+
             $scope.columnsButton = true;
             $scope.imageButtonShow = true;
             $scope.imgForm = true;
-            $scope.instForm = true;
+            $scope.searchForm = true;
             $scope.placeHolderText = 'filter images';
         }
     ]);

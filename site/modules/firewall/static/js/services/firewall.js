@@ -9,8 +9,9 @@
         'Machine',
         'localization',
         'notification',
+        'PopupDialog',
 
-        function (serverTab, $rootScope, $q, Machine, localization, notification) {
+        function (serverTab, $rootScope, $q, Machine, localization, notification, PopupDialog) {
 
             var service = {};
             var jobs = {};
@@ -30,13 +31,18 @@
 
                                 var error = err || data.err;
                                 if(error) {
-                                    notification.push(chunk.name, { type: 'error' },
-                                        localization.translate(null,
-                                            'firewall',
-                                            'Failed to enable firewall for instance {{id}}',
-                                            { id: id }
-                                        )
-                                    );
+                                    PopupDialog.error(
+                                        localization.translate(
+                                            $rootScope,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            $rootScope,
+                                            null,
+                                            'Failed to enable firewall for instance '+id
+                                        ), function () {
+                                    });
                                 }
 	                            cb(error);
                             }
@@ -59,15 +65,19 @@
                             },
                             done: function(err, job) {
                                 var data = job.__read();
-
                                 var error = err || data.err;if(error) {
-                                    notification.push(chunk.name, { type: 'error' },
-                                        localization.translate(null,
-                                            'firewall',
-                                            'Failed to disable firewall for instance {{id}}',
-                                            { id: id }
-                                        )
-                                    );
+                                    PopupDialog.error(
+                                        localization.translate(
+                                            $rootScope,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            $rootScope,
+                                            null,
+                                            'Failed to disable firewall for instance ' + id
+                                        ), function () {
+                                    });
                                 }
                                 cb(error);
                             }

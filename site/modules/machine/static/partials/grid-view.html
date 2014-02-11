@@ -1,35 +1,36 @@
 <div class="container-grid">
-<div class="dpl-inline row-fluid">
-    <div class="page_row_info">
+<div class="row-fluid">
+    <div class="page-row-info">
         <span class="grid-small-font">
             Showing <span data-ng-hide="pageNumFirst == pageNumLast"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
         </span>
-        <form class="form-search grid-small-font" data-ng-show="instForm">
+        <form class="grid-small-font" data-ng-show="searchForm">
             <input type="search"
                    name="search"
                    id="search"
                    placeholder="{{placeHolderText}}"
                    data-ng-model="filterAll"
                    data-translate="placeholder" />
-            <input value="" class="btn_submit_seach" type="submit">
+            <input value="" class="grid-search-icon" type="submit">
         </form>
     </div>
-    <div class="actions" id="tableBtnAdd">
-        <div class="btn-group" data-ng-show="actionsButton">
-            <a class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" href="#">
-                Actions <i class="icon-drop-down"></i>
+    <div class="actions pull-right" data-ng-show="controls">
+        <div class="btn-group">
+            <a class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" href="#" data-ng-disabled="!getActionButtons(object).length | orderBy:'sequence'">
+                Actions
+                <i class="icon-drop-down"></i>
             </a>
-            <ul class="dropdown-menu dd-btn">
+            <ul class="dropdown-menu grid-action-btn" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
                 <li data-ng-repeat="btn in getActionButtons(object) | orderBy:'sequence'">
-                    <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="dd-btn grid-small-font"></a>
+                    <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn grid-small-font"></a>
                 </li>
             </ul>
         </div>
-        <div class="btn-group" data-ng-show="exportFields">
+        <div class="btn-group">
             <button type="button" class="btn grid-small-font" data-ng-click="export('csv')">Export</button>
             <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
         </div>
-        <div class="btn-group" data-ng-show="columnsButton">
+        <div class="btn-group">
             <a class="btn grid-small-font" href="#" data-toggle="dropdown" data-ng-click="noClose()">
                 Columns
                 <i class="icon-drop-down"></i>
@@ -74,7 +75,7 @@
                     <td width="10" data-ng-show="enabledCheckboxes">
                         <label class="checkbox">
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                            <span data-ng-click="selectCheckbox(object.id)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished)">
+                            <span data-ng-click="selectCheckbox(object)" data-ng-class="{checked: object.checked}" data-ng-disabled="(object.fireWallActionRunning) || (object.job && !object.job.finished)">
                                 <input type="checkbox" class="group-checkable" data-set=".checkboxes" value="">
         </span>
     </div>
@@ -122,7 +123,7 @@
 
         <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" class="item row-fluid">
     </div>
-    <div class="row-fluid">
+    <div class="row-fluid" data-ng-show="paginated">
         <div class="pull-left select_position grid-small-font">
             <select ui-select2 data-ng-model="perPage" value="5" class="no-search-box" style="width: 65px !important;">
                 <option value="5">5</option>

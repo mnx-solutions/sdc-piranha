@@ -18,9 +18,16 @@
     <div data-ng-show="rules.length">
         <div data-grid-view
              data-props="gridProps"
+             data-action-buttons="gridActionButtons"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-multisort="false"
              data-objects="rules"
              data-per-page="15"
              data-order="gridOrder"
+             data-search-form="searchForm"
+             data-filter-all="{{query}}"
+             data-place-Holder-Text="placeHolderText"
+             data-export-fields="exportFields"
              data-objects-type="firewall">
         </div>
     </div>

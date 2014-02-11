@@ -35,18 +35,23 @@ module.exports = function (scope, app) {
             res.send(404);
             return;
         }
-        var type = 'machine';
-        var prefix  = 'export_';
-        if(req.params.type) {
+        var type = '';
+        var prefix  = 'joyent-';
+        if (req.params.type) {
             type = req.params.type;
         }
 
         switch(type) {
+            case 'firewall':
+                prefix += 'fw-rules-';
+                break;
             case 'image':
-                prefix = 'joyent-images-';
+                prefix += 'images-';
                 break;
             case 'machine':
-                prefix = 'joyent-instances-';
+                prefix += 'instances-';
+                break;
+            default:
                 break;
         }
 

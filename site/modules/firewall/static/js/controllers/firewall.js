@@ -497,6 +497,7 @@
             // rule create/edit form controls
 
             $scope.resetData = function () {
+                $scope.data.id = null;
                 $scope.data.uuid = null;
                 $scope.data.datacenter = $scope.datacenter;
                 $scope.data.parsed = {};
@@ -784,7 +785,7 @@
             $scope.changeStatus = function(r) {
                 $scope.loading = true;
 	            var fn = r.enabled ? 'disableRule' : 'enableRule';
-	            rule[fn](r).then(function() {
+                rule[fn](r).then(function() {
 		            $scope.refresh();
 	            });
             };
@@ -865,27 +866,7 @@
                     sequence: 2,
                     active: true
                 },
-		        {
-			        id: 'delete',
-			        name: 'Delete',
-			        type: 'button',
-			        getClass: function () {
-				        return 'pull-right span1 padding-5';
-			        },
-			        btn: {
-				        label: 'Delete',
-				        getClass: function (object) {
-					        return 'btn-danger';
-				        },
-				        disabled: function () {
-					        return $scope.loading;
-				        },
-				        action: $scope.deleteRule.bind($scope),
-				        tooltip: 'Delete the rule'
-			        },
-                    sequence: 8,
-                    active: true
-		        },
+
 		        {
 			        id: 'edit',
 			        name: 'Edit',
@@ -916,28 +897,125 @@
                 {
                     id: 'enabled',
                     name: 'Status',
-                    type: 'button',
-                    getClass: function () {
-                        return 'span1 padding-5';
-                    },
-                    btn: {
-                        getLabel: function (object) {
-                            return object.enabled ? 'Enabled' : 'Disabled';
-                        },
-                        getClass: function (object) {
-                            return (object.enabled ? 'btn-success' : 'btn-default');
-                        },
-                        disabled: function () {
-                            return $scope.loading;
-                        },
-                        action: $scope.changeStatus.bind($scope),
-                        tooltip: 'Change rule status'
+                    type: 'html',
+                    _getter: function (object) {
+                        return object.enabled ? '<span class="grid-enabled-text">Enabled</span>' : '<span class="grid-disabled-text">Disabled</span>';
                     },
                     sequence: 1,
                     active: true
                 }
 	        ];
 
+            function setRuleState (action, el){
+                if (action !== 'deleteRule') {
+                    el.job = false;
+                    el.job.finished = true;
+                    el.checked = false;
+                }
+            }
+
+            function makeRuleAction(object, action, message) {
+                if($scope.actionButton()) {
+                    var checkedRules = $scope.rules.filter(function (rule) {
+                        return rule.checked;
+                    });
+                    var message = message;
+                    message += checkedRules.length > 1 ?
+                        ' all selected rules.':
+                        ' the rule.' ;
+
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: ' + message + ' rule'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            message
+                        ), function () {
+                            var promises = [];
+                            $scope.loading = true;
+                            checkedRules.forEach(function (el) {
+                                var deferred = $q.defer();
+                                promises.push(deferred.promise);
+                                el.job = true;
+                                el.job.finished = false;
+
+                                rule[action](el)
+                                    .then(
+                                        function () {
+                                            deferred.resolve();
+                                            setRuleState(action, el);
+                                        },
+                                        function (err) {
+                                            $scope.disableLoading();
+                                            deferred.reject(err);
+                                            setRuleState(action, el);
+                                        }
+                                    )
+
+                            });
+                            $q.all(promises).then(function () {
+                                $scope.refresh();
+                                $scope.openRuleForm = false;
+                            });
+                        });
+                } else {
+                    $scope.noCheckBoxChecked();
+                }
+            }
+
+            $scope.gridActionButtons = [
+                {
+                    label: 'Delete',
+                    action: function (object) {
+                        makeRuleAction(object, 'deleteRule', 'Delete');
+                    },
+                    sequence: 1
+                },
+                {
+                    label: 'Enable',
+                    action: function (object) {
+                        makeRuleAction(object, 'enableRule', 'Enable');
+                    },
+                    sequence: 2
+                },
+                {
+                    label: 'Disable',
+                    action: function (object) {
+                        makeRuleAction(object, 'disableRule', 'Disable');
+                    },
+                    sequence: 2
+                }
+            ];
+            $scope.actionButton = function () {
+                return $scope.rules.some(function (rule) {
+                    return rule.checked === true;
+                });
+            };
+            $scope.noCheckBoxChecked = function () {
+                PopupDialog.error(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'No rule selected for the action.'
+                    ), function() {
+                    }
+                );
+            };
+            $scope.enabledCheckboxes = true;
+            $scope.placeHolderText = 'filter rules';
+            $scope.searchForm = true;
+            $scope.exportFields = {
+                ignore: []
+            };
         }
 
     ]);
