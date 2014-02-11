@@ -93,8 +93,8 @@
                                     <td>{{machine.datacenter}}</td>
                                 </tr>
                                 <tr data-ng-show="machine.primaryIp">
-                                    <td>login ssh</td>
-                                    <td data-ng-show="machine.os != 'windows'">{{defaultSshUser}}@{{machine.primaryIp}}</td>
+                                    <td>Login</td>
+                                    <td data-ng-show="machine.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIp}}</td>
                                     <td data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIp}}</td>
                                 </tr>
                             </table>
