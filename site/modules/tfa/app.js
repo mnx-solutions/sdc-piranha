@@ -31,6 +31,16 @@ module.exports = function execute(scope, app) {
         }
     }
 
+    function isOTPCorrect(req, res) {
+        var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
+        if (req.body.otpass !== onetimepass) {
+            req.log.info({userId: req.session.userId}, 'User provided password not the same as generated TFA password');
+            res.json({status: 'error'});
+            return false;
+        }
+        return true;
+    }
+
     app.get('/saveToken/:url', function(req, res, next) {
         var token = req.query.token;
         // redirect to this url after we're done with the token
@@ -117,26 +127,22 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass !== onetimepass) {
-            req.log.warn('User provided password not the same as generated TFA password');
-            res.json({status:'error'});
-            return;
+        if (isOTPCorrect(req, res)) {
+            TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
+                if (err) {
+                    req.log.error('Failed to enable TFA', err);
+                    res.json({status:'error', message: 'Internal error'});
+                    return;
+                }
+
+                req.log.info('TFA enabled for user');
+                // tfaEnabled will be enabled for their next login
+                delete req.session._tfaSecret;
+                req.session.save();
+                res.json({status:'ok'});
+            });
         }
 
-        TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
-            if (err) {
-                req.log.error('Failed to enable TFA', err);
-                res.json({status:'error', message: 'Internal error'});
-                return;
-            }
-
-            req.log.info('TFA enabled for user');
-            // tfaEnabled will be enabled for their next login
-            delete req.session._tfaSecret;
-            req.session.save();
-            res.json({status:'ok'});
-        });
     });
 
     app.post('/login', function (req, res, next) {
@@ -147,21 +153,16 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass !== onetimepass) {
-            req.log.warn('User provided password not the same as generated TFA password');
-            res.send({ status: 'error'});
-            return;
+        if (isOTPCorrect(res, req)) {
+            req.session.token = req.session._preToken;
+            delete req.session._preToken;
+
+            var redirect = req.session._tfaRedirect;
+            delete req.session._tfaRedirect;
+            req.session.save();
+
+            logUserInformation(req, redirect);
+            res.send({ status: 'ok', redirect: redirect });
         }
-
-        req.session.token = req.session._preToken;
-        delete req.session._preToken;
-
-        var redirect = req.session._tfaRedirect;
-        delete req.session._tfaRedirect;
-        req.session.save();
-
-        logUserInformation(req, redirect);
-        res.send({ status: 'ok', redirect: redirect });
     });
 };
