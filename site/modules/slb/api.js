@@ -18,45 +18,15 @@ module.exports = function execute(scope, register) {
         metadata = mdata;
     };
 
-    var SscJsonClient = (function () {
-        function SscJsonClient(options) {
-            this.client = restify.createJsonClient(options);
-        }
-        SscJsonClient.prototype.wrap = function (callback, timeout) {
-            timeout = timeout || sscOperationTimeout;
-            var called = false;
-            var wrappedCallback = function () {
-                if (!called) {
-                    called = true;
-                    callback.apply(this, arguments);
-                }
-            };
-            var timer = setTimeout(function () {
-                wrappedCallback('Operation Timeout. Try repeating the operation');
-            }, timeout);
-            return function () {
-                clearTimeout(timer);
-                wrappedCallback.apply(this, arguments);
-            };
+    var SscJsonClient = function (options) {
+        options.connectTimeout = options.connectTimeout || 10000;
+        var client = restify.createJsonClient(options);
+        client.ping = function ping(callback) {
+            client.get({path: '/ping', connectTimeout: 2000, retry: false}, callback);
         };
-        SscJsonClient.prototype.get = function (options, callback) {
-            this.client.get(options, this.wrap(callback, options.connectTimeout));
-        };
-        SscJsonClient.prototype.post = function (options, body, callback) {
-            this.client.post(options, body, this.wrap(callback, options.connectTimeout));
-        };
-        SscJsonClient.prototype.put = function (options, body, callback) {
-            this.client.put(options, body, this.wrap(callback, options.connectTimeout));
-        };
-        SscJsonClient.prototype.del = function (options, callback) {
-            this.client.del(options, this.wrap(callback, options.connectTimeout));
-        };
-        SscJsonClient.prototype.ping = function (callback) {
-            this.get({path: '/ping', connectTimeout: 2000}, callback);
-        };
-        return SscJsonClient;
-    })();
 
+        return client;
+    };
     var getMachinesList = api.getMachinesList = function getMachinesList(call, cb) {
         var cloud = call.cloud || call.req.cloud;
         var datacenter = config.slb.ssc_datacenter || 'us-west-1';
@@ -191,6 +161,7 @@ module.exports = function execute(scope, register) {
             var sscClient = new SscJsonClient({
                 url: sscUrl,
                 rejectUnauthorized: false,
+                serializers: restify.bunyan.serializers,
                 signRequest: function (req) {
                     httpSignature.sign(req, {
                         key: result.privateKey,

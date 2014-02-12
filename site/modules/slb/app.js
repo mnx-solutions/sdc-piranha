@@ -52,7 +52,7 @@ var slb = function execute(scope, app) {
                     'public': privateKey.toPublicPem('utf8')
                 };
 
-                getSscClient({req: req}, function (err, client) {
+                getSscClient({req: req, log: req.log}, function (err, client) {
                     client.post('/certificates', data, function (err, creq, cres, obj) {
                         if (err) {
                             req.log.warn({err: err}, 'Error saving certificate into SLB API');
