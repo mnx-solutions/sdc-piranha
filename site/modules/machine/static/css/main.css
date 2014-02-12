@@ -424,7 +424,7 @@
 
 .accordion-group {
     border: 0 none;
-    margin-bottom: 5px !important;
+    margin-bottom: 5px;
 }
 .accordion-heading {
     background: #f5f5f5;
@@ -452,7 +452,7 @@
     border-top: 0 !important;
 }
 .collapse.in {
-    height: auto;
+    height: auto !important;
 }
 .left-part,.right-part,.right-spacer{
     display: table-cell;
@@ -1168,7 +1168,7 @@
 }
 
 .accordion-package-select .accordion-group {
-    min-height: 50px;
+    margin-bottom: 0;
 }
 
 .accordion-package-select .accordion-toggle {
@@ -1211,11 +1211,11 @@
 }
 
 .accordion-package-select .accordion-inner .cpu {
-    width: 100px;
+    width: 110px;
 }
 
 .accordion-package-select .accordion-inner .disk {
-    width: 90px;
+    width: 120px;
 }
 
 
@@ -1235,6 +1235,10 @@
 
 .accordion-package-select .package-info.active {
     background-color: #fef1d2;
+}
+
+.accordion-package-select .accordion-heading{
+    margin-top: -1px;
 }
 
 .accordion-package-title{
@@ -1265,11 +1269,11 @@
 }
 .accordion-package-title .span-specification{
     width: 400px;
-    padding-left: 74px;
+    padding-left: 70px;
 }
 .accordion-package-title .span-price{
     width: 80px;
-    padding-left: 5px;
+    padding-left: 45px;
 }
 
 .selected-package-box{
