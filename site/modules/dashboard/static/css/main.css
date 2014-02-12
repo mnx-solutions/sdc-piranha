@@ -101,7 +101,7 @@
     right: 7px;
 }
 
-.widget-btn{
+.widget-btn {
     margin-top: -20px;
     height: 55px;
     background: #767676;
@@ -176,33 +176,33 @@
     text-align: left !important;
 }
 
-.manta-start-text-block{
+.manta-ad-block {
     padding-left: 27px;
     padding-top: 13px;
 }
-.manta-start-text-block h4{
+.manta-ad-block h4 {
     line-height: 9px;
 }
-.manta-start-text-block2 h5{
+.manta-ad-block2 h5 {
     font-weight: normal;
     font-size: 14px;
     line-height: 10px;;
 }
-.manta-start-text-block2{
+.manta-ad-block2 {
     margin-left: 27px;
     margin-top: 17px;
 }
-.manta-start-text-block3 a,
-.manta-start-text-block3 a * {
+.manta-ad-block3 a,
+.manta-ad-block3 a * {
     color: #ff6600 !important;
     line-height: 7px;
     text-decoration: none;
 }
-.manta-start-text-block3{
+.manta-ad-block3 {
     margin-left: 66px;
     margin-top: 24px;
 }
-.manta-start{
+.manta-ad {
     width: 490px;
     height: 280px;
     background-image: url("../img/manta_start.jpg");
