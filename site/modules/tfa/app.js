@@ -31,13 +31,19 @@ module.exports = function execute(scope, app) {
         }
     }
 
+    // FIXME: Why abbreviate?
     function isOTPCorrect(req, res) {
+        // FIXME: why not camel case?
         var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
         if (req.body.otpass !== onetimepass) {
+            // FIXME: not sure why userId is not in the request.log automatically.. did you look into it?
+            // 1. enhance storing user info in log object in /auth.js so that we don't need to provide separate objects each time
+            // 2. scan for additional places in app for similar duplications
             req.log.info({userId: req.session.userId}, 'User provided password not the same as generated TFA password');
             res.json({status: 'error'});
             return false;
         }
+        // FIXME: better to have on exit point
         return true;
     }
 
@@ -130,11 +136,13 @@ module.exports = function execute(scope, app) {
         if (isOTPCorrect(req, res)) {
             TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
                 if (err) {
+                    // FIXME: err should be first param?
                     req.log.error('Failed to enable TFA', err);
                     res.json({status:'error', message: 'Internal error'});
                     return;
                 }
 
+                // TODO: check is userId in req.log here though
                 req.log.info('TFA enabled for user');
                 // tfaEnabled will be enabled for their next login
                 delete req.session._tfaSecret;
