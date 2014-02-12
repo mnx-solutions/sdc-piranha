@@ -119,7 +119,7 @@
     , "serviceFails": 3
     , "pinTries": 3
     }
-  , "riskScoreFraudLimit": 60
+  , "riskScoreFraudLimit": 20
   }
 , "slb": {
     "slb_code_url": "https://us-east.manta.joyent.com/dbqp/public/slbapi-2.tgz"
