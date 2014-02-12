@@ -1,33 +1,33 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.ImagesController">
-    <div class="loading-large span12" data-ng-show="loading"></div>
     <ul class="breadcrumb">
         <li><a href="#!/compute"> Compute</a> /</li>
         <li> Images</li>
     </ul>
-    <div class="row-fluid">
+    <div class="page-header row-fluid">
         <h3 class="page-title">Images</h3>
     </div>
 
-    <div class="" data-ng-show="images.length">
-        <div class="clearfix"></div>
-            <div data-grid-view
-                 data-props="gridProps"
-                 data-detail-props="gridDetailProps"
-                 data-action-buttons="gridActionButtons"
-                 data-columns-button="columnsButton"
-                 data-image-button-show="imageButtonShow"
-                 data-search-form="searchForm"
-                 data-objects="images"
-                 data-per-page="15"
-                 data-order="gridOrder"
-                 data-multisort="false"
-                 data-filter-all="{{query}}"
-                 data-place-Holder-Text="placeHolderText"
-                 data-export-fields="exportFields"
-                 data-objects-type="image">
-            </div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+
+    <div data-ng-show="images.length">
+        <div data-grid-view
+             data-props="gridProps"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-columns-button="columnsButton"
+             data-image-button-show="imageButtonShow"
+             data-search-form="searchForm"
+             data-objects="images"
+             data-per-page="15"
+             data-order="gridOrder"
+             data-multisort="false"
+             data-filter-all="{{query}}"
+             data-place-Holder-Text="placeHolderText"
+             data-export-fields="exportFields"
+             data-objects-type="image">
+        </div>
     </div>
-    <div class="" data-ng-show="images.length < 1 && !loading">
+    <div data-ng-show="images.length < 1 && !loading">
         <div class="font-size16 margin-top-10">You don't have any images</div>
     </div>
 </div>
