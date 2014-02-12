@@ -51,7 +51,7 @@ public class SmokeTests extends TestWrapper {
     public void dashboardIsVisible() {
         Common.clickNavigationLink("Dashboard");
         Common.checkHeadingText("Dashboard");
-        $(".instance_icon div.details div.number").shouldNotHave(text("0"));
+        $(".instance-icon div.details div.number").shouldNotHave(text("0"));
         $(withText("DevCenter")).shouldBe(visible);
         $(withText("Support")).shouldBe(visible);
         $(withText("System Status")).shouldBe(visible);
@@ -121,7 +121,7 @@ public class SmokeTests extends TestWrapper {
     public void createInstanceCarouselIsVisible() {
         String instanceName = "selenide-created-instance";
         String[] inst = Common.instanceProperties();
-        $(".btn_stat.orange").click();
+        $(".btn-stat.orange").click();
         Common.checkHeadingText("Quick Start: Create Instance");
         CreateInstanceCarousel createInstanceCarousel = page(CreateInstanceCarousel.class);
         createInstanceCarousel.waitUntilPageIsActive(0);

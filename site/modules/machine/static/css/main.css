@@ -333,18 +333,8 @@
     height: 43px;
 }
 
-.align_text_btn {
+.align-text-btn {
     text-align: left !important;
-}
-.instance_btn_icon {
-    width: 20px;
-    height: 20px;
-    float: left;
-    margin-top: 0;
-    position: relative;
-    left: 3px;
-    background-image: url("../img/plus_icon.png");
-    background-repeat: no-repeat;
 }
 
 .inst_page{

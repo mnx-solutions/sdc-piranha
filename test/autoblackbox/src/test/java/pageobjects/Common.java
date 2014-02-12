@@ -26,7 +26,7 @@ public class Common {
         $(byAttribute("name", "username")).setValue(System.getProperty("loginusr"));
         $(byAttribute("name", "password")).setValue(System.getProperty("loginpw"));
         $("#login-submit").click();
-        $(".instance_icon div.details div.number").waitWhile(hasText("0"), BASE_TIMEOUT);
+        $(".instance-icon div.details div.number").waitWhile(hasText("0"), BASE_TIMEOUT);
     }
 
     public static void checkSubHeadingText(String headingText) {

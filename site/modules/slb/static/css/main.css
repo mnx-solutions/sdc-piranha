@@ -228,16 +228,6 @@ input.ng-invalid-port{
     margin-left: 3px;
 }
 
-.instance_btn_icon{
-    background-image: url("../img/plus_icon.png");
-    width: 20px;
-    height: 20px;
-    float: left;
-    position: relative;
-    background-repeat: no-repeat;
-    padding-right: 10px;
-}
-
 input {
     border-radius: 0;
 }
