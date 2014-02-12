@@ -3,6 +3,8 @@
         <h3 class="page-title">Cloud Firewall</h3>
     </div>
 
+    <div class="loading-large span12" data-ng-show="loading"></div>
+
     <div data-ng-hide="(rules.length || loading)">
         <div class="pull-left">
             <h4>Hello there!</h4>
@@ -32,7 +34,6 @@
         </div>
     </div>
 
-    <div class="loading-large span12" data-ng-show="loading"></div>
     <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
         <div class="item-list-container">
             <legend class="text-right">
