@@ -1081,7 +1081,7 @@ a .feature1 {
     color: #fff !important;
 }
 
-.btn_stat {
+.btn-stat {
     width: 240px !important;
     height: 55px;
 }
@@ -1852,4 +1852,14 @@ label.checkbox {
     background-color: #dedede;
     border-radius: 50px;
     background-position: center center;
+}
+.plus-btn-icon {
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-top: 0;
+    position: relative;
+    left: 3px;
+    background-image: url("../img/plus_icon.png");
+    background-repeat: no-repeat;
 }

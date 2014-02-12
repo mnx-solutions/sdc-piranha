@@ -1,15 +1,14 @@
 <div class="container-fluid dash-container-position" data-ng-controller="Dashboard.IndexController">
     <div class="container container-min-width row-fluid">
         <div class="row-fluid">
-            <h3 class="page-title white_line">Dashboard</h3>
+            <h3 class="page-title white-line">Dashboard</h3>
         </div>
 
-        <div>
-            <div class="">
-                <div class="pull-left">
-                    <div class="dashboard-stat grey links2 instance_icon">
+        <div class="widget-block">
+            <div class="pull-left">
+                <a href="#!/compute">
+                    <div class="widget grey links2 instance-icon">
                         <h4>Instances</h4>
-
                         <div class="details">
                             <div class="number">
                                 {{runningcount}}
@@ -18,8 +17,7 @@
                                 running
                             </div>
                         </div>
-                        <div class="details_subinfo"></div>
-                        &nbsp;
+                        <div class="details-subinfo"></div>
                         <div class="details">
                             <div class="number">
                                 {{othercount}}
@@ -28,138 +26,125 @@
                                 stopped
                             </div>
                         </div>
-                        <a class="more" href="#!/compute">
-                            <span>
-                                view compute details <i class="m-icon-white-arrow"></i>
-                            </span>
-
-                        </a>
+                        <div class="more">
+                            view compute details <i class="m-icon-white-arrow"></i>
+                        </div>
                     </div>
-                    <div class="dashboard-stat-btn">
-                        <a class="more" href="#!/compute/create"><button type="button" class="btn btn_stat orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create
-                            Compute Instance</button></a>
+                </a>
+                <div class="widget-btn">
+                    <a class="more" href="#!/compute/create"><button type="button" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;Create
+                        Compute Instance</button></a>
                 </div>
             </div>
-            <div class="pull-left padding_left10" data-ng-show="slbFeatureEnabled">
-              <div class="dashboard-stat grey links2 balancer_icon">
-                  <h4>Load Balancers</h4>
-
-                  <div class="details">
-                      <div ng-show="slbControllerCreated">
-                          <p class="number">{{balancers.length || 0}}</p>
-
-                          <p class="desc"> configured</p>
-                      </div>
-                      <div ng-hide="slbControllerCreated">
-                          <p class="desc">not available</p>
-                      </div>
-                  </div>
-                  <a class="more" href="#!/slb/list">
-                      <span>
-                          VIEW LOAD BALANCER DETAILS <i class="m-icon-white-arrow"></i>
-                      </span>
-
-                  </a>
-              </div>
-              <div class="dashboard-stat-btn">
-                  <a class="more" ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn_stat blue align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
-              </div>
-          </div>
-          <div class="pull-left padding_left10">
-              <div class="dashboard-stat grey links2 manta_icon">
-                  <h4>Manta Storage</h4>
-
-                  <div class="details">
-                   </div>
-                        <a class="more" href="#!/storage">
-                            <span>
-                               manage storage <i class="m-icon-white-arrow"></i>
-                            </span>
-
-                        </a>
+            <div class="pull-left widget-margin" data-ng-show="slbFeatureEnabled">
+                <a href="#!/slb/list">
+                    <div class="widget grey links2 balancer-icon">
+                        <h4>Load Balancers</h4>
+                        <div class="details">
+                            <div data-ng-show="slbControllerCreated">
+                                <p class="number">{{balancers.length || 0}}</p>
+                                <p class="desc"> configured</p>
+                            </div>
+                            <div data-ng-hide="slbControllerCreated">
+                                <p class="desc">not available</p>
+                            </div>
+                        </div>
+                        <div class="more">
+                            VIEW LOAD BALANCER DETAILS <i class="m-icon-white-arrow"></i>
+                        </div>
                     </div>
-                    <div class="dashboard-stat-btn"></div>
-
+                </a>
+                <div class="widget-btn">
+                    <a class="more" data-ng-href="{{(slbControllerCreated && '#!/slb/edit/') || '#!/slb/'}}"><button type="button" class="btn btn-stat blue align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;Create LB Instance</button></a>
                 </div>
-                <div class="pull-left padding_left10">
-                    <div class="dashboard-stat warn_dash_icon">
-                        <div class="margin-text-block">
-                            <h5><b>New in Dev Center</b></h5>
-                            <h5>Securely back-up data, file</h5>
-                            <h5>and configurations on</h5>
-                            <h5>Joyent Cloud. <a href="http://www.joyent.com/developers/back-up" target="_blank"><b>See how</b></a></h5>
+            </div>
+            <div class="pull-left widget-margin">
+                <a href="#!/storage">
+                    <div class="widget grey links2 manta-icon">
+                        <h4>Manta Storage</h4>
+                        <div class="details"></div>
+                        <div class="more">
+                           manage storage <i class="m-icon-white-arrow"></i>
+                        </div>
                     </div>
-
+                </a>
+                <div class="widget-btn"></div>
+            </div>
+            <div class="pull-left widget-margin">
+                <div class="widget warn-dash-icon">
+                    <div class="margin-text-block">
+                        <h5><b>New in Dev Center</b></h5>
+                        <h5>Securely back-up data, file</h5>
+                        <h5>and configurations on</h5>
+                        <h5>Joyent Cloud. <a href="http://www.joyent.com/developers/back-up" target="_blank"><b>See how</b></a></h5>
                     </div>
                 </div>
             </div>
-            <div class="clearfix"></div>
-            <div class="row-fluid">
-                <div class="pull-left first_colums">
-                    <div class="portlet-body manta_start">
-                        <div class="manta_start_text_block">
-                            <h4>Introducing Joyent Manta</h4>
-                            <h4>Storage Service</h4>
-                        </div>
-                        <div class="manta_start_text_block2">
-                            <h5>A highly scalable, distributed</h5>
-                            <h5>object storage service with</h5>
-                            <h5>integrated compute</h5>
-                        </div>
-                        <div class="manta_start_text_block3">
-                            <a href="http://vimeo.com/68920633" target="_blank">
-                                <h5>Find out how Manta</h5>
-                                <h5>gives storage intelligence</h5>
-                            </a>
-                        </div>
+        </div>
+        <div class="row-fluid">
+            <div class="pull-left first-colums">
+                <div class="portlet-body manta-ad">
+                    <div class="manta-ad-block">
+                        <h4>Introducing Joyent Manta</h4>
+                        <h4>Storage Service</h4>
+                    </div>
+                    <div class="manta-ad-block2">
+                        <h5>A highly scalable, distributed</h5>
+                        <h5>object storage service with</h5>
+                        <h5>integrated compute</h5>
+                    </div>
+                    <div class="manta-ad-block3">
+                        <a href="http://vimeo.com/68920633" target="_blank">
+                            <h5>Find out how Manta</h5>
+                            <h5>gives storage intelligence</h5>
+                        </a>
                     </div>
                 </div>
-                <div class="pull-left secont_colums">
-                        <div class="span">
-                            <h5>SYSTEM STATUS</h5>
-                            <div class="separation-container separation-container-top">
-                                <div class="row-fluid" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
-                                    <span class="pull-left span12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
-                                </div>
+            </div>
+            <div class="pull-left secont-colums">
+                    <div class="span">
+                        <h5>SYSTEM STATUS</h5>
+                        <div class="separation-container separation-container-top">
+                            <div class="row-fluid" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
+                                <span class="pull-left span12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
                             </div>
-                            <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank" style="margin-top: 10px;">
-                                View all System Updates</a>
-                            </div>
-                            <div class="line-spacer"></div>
+                        </div>
+                        <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank" style="margin-top: 10px;">
+                            View all System Updates</a>
+                        </div>
+                        <div class="line-spacer"></div>
 
-                            <div>
-                            </div>
-                        </div>
-                        <div class="span">
-                            <h5>JOYENT BLOG</h5>
-                            <div class="separation-container separation-container-top">
-                                <div class="row-fluid" data-ng-repeat="entry in rssentries">
-                                    <span class="pull-left span12">{{entry.publishedDate | dateTime}} <a target="_blank" href="{{entry.link}}">&nbsp;{{entry.title}}</a></span>
-                                </div>
-                            </div>
-                            <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://www.joyent.com/blog" target="_blank" style="margin-top: 10px;">
-                                More News</a>
-                            </div>
-                            <div class="line-spacer"></div>
-                            <div>
-                            </div>
-                        </div>
-                        <div class="span">
-                            <h5>SUPPORT FAQ</h5>
-                            <div class="separation-container separation-container-top">
-                                <div class="row-fluid" data-ng-repeat="(name, url) in forums">
-                                    <span class="pull-left span12"><a target="_blank" href="{{url}}">{{name}}</a></span>
-                                </div>
-                            </div>
-                            <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank" style="margin-top: 10px;">
-                                Visit DevCenter</a>
-                            </div>
                         <div>
                         </div>
                     </div>
+                    <div class="span">
+                        <h5>JOYENT BLOG</h5>
+                        <div class="separation-container separation-container-top">
+                            <div class="row-fluid" data-ng-repeat="entry in rssentries">
+                                <span class="pull-left span12">{{entry.publishedDate | dateTime}} <a target="_blank" href="{{entry.link}}">&nbsp;{{entry.title}}</a></span>
+                            </div>
+                        </div>
+                        <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://www.joyent.com/blog" target="_blank" style="margin-top: 10px;">
+                            More News</a>
+                        </div>
+                        <div class="line-spacer"></div>
+                        <div>
+                        </div>
+                    </div>
+                    <div class="span">
+                        <h5>SUPPORT FAQ</h5>
+                        <div class="separation-container separation-container-top">
+                            <div class="row-fluid" data-ng-repeat="(name, url) in forums">
+                                <span class="pull-left span12"><a target="_blank" href="{{url}}">{{name}}</a></span>
+                            </div>
+                        </div>
+                        <div style="padding-bottom: 40px;"><a class="btn light-blue span4" href="http://wiki.joyent.com/wiki/display/jpc2/FAQs" target="_blank" style="margin-top: 10px;">
+                            Visit DevCenter</a>
+                        </div>
+                    <div>
+                    </div>
                 </div>
             </div>
-            <div class="clearfix"></div>
         </div>
     </div>
 </div>
