@@ -8,6 +8,14 @@ module.exports = function execute(scope, app) {
 
     var headerClientIpKey = scope.config.server.headerClientIpKey;
 
+    app.use(function (req, res, next) {
+        req.log = req.log.child({
+            userName: req.session.userName,
+            userId: req.session.userId
+        });
+        next();
+    });
+
     function logUserInformation(req, redirectUrl) {
         // Proper user ip taking reverse proxy / load balancer into account
         if (headerClientIpKey) {
@@ -17,9 +25,6 @@ module.exports = function execute(scope, app) {
         req.userIp = req.userIp || req.ip;
 
         var info = {
-            userName: req.session.userName,
-            userId: req.session.userId,
-            userIp: req.userIp,
             userAgent: req.headers['user-agent'],
             campaignId: (req.cookies.campaignId || '')
         };
@@ -31,20 +36,14 @@ module.exports = function execute(scope, app) {
         }
     }
 
-    // FIXME: Why abbreviate?
-    function isOTPCorrect(req, res) {
-        // FIXME: why not camel case?
-        var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass !== onetimepass) {
-            // FIXME: not sure why userId is not in the request.log automatically.. did you look into it?
-            // 1. enhance storing user info in log object in /auth.js so that we don't need to provide separate objects each time
-            // 2. scan for additional places in app for similar duplications
-            req.log.info({userId: req.session.userId}, 'User provided password not the same as generated TFA password');
+    function isOneTimePasswordCorrect(req, res) {
+        var oneTimePass = TFAProvider.generateOTP(req.session._tfaSecret);
+        var oneTimePassCorrect = req.body.otpass === oneTimePass;
+        if (!oneTimePassCorrect) {
+            req.log.info('User provided password not the same as generated TFA password');
             res.json({status: 'error'});
-            return false;
         }
-        // FIXME: better to have on exit point
-        return true;
+        return oneTimePassCorrect;
     }
 
     app.get('/saveToken/:url', function(req, res, next) {
@@ -133,16 +132,14 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        if (isOTPCorrect(req, res)) {
+        if (isOneTimePasswordCorrect(req, res)) {
             TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
                 if (err) {
-                    // FIXME: err should be first param?
-                    req.log.error('Failed to enable TFA', err);
+                    req.log.error(err, 'Failed to enable TFA');
                     res.json({status:'error', message: 'Internal error'});
                     return;
                 }
 
-                // TODO: check is userId in req.log here though
                 req.log.info('TFA enabled for user');
                 // tfaEnabled will be enabled for their next login
                 delete req.session._tfaSecret;
@@ -161,7 +158,7 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        if (isOTPCorrect(res, req)) {
+        if (isOneTimePasswordCorrect(req, res)) {
             req.session.token = req.session._preToken;
             delete req.session._preToken;
 
