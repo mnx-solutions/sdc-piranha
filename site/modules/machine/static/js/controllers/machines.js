@@ -124,6 +124,7 @@
                                 break;
                             case 'delete':
                                 return true;
+                                break;
                             }
                         }
                     });
