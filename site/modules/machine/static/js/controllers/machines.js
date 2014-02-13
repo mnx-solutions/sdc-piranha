@@ -103,26 +103,28 @@
                     var checkedWrong = [];
                     var checkedMachines = $scope.machines.filter(function (machine) {
                         if (machine.checked) {
-                            if (action === 'start') {
+                            switch (action) {
+                            case 'start':
                                 if (machine.state === 'stopped') {
-                                    return machine.checked;
-                                } else {
-                                    checkedWrong.push(machine);
+                                    return true;
                                 }
-                            } else if (action === 'stop') {
+                                checkedWrong.push(machine);
+                                break;
+                            case 'stop':
                                 if (machine.state === 'running') {
-                                    return machine.checked;
-                                } else {
-                                    checkedWrong.push(machine);
+                                    return true;
                                 }
-                            } else if (action === 'reboot') {
+                                checkedWrong.push(machine);
+                                break;
+                            case 'reboot':
                                 if (machine.state !== 'stopped') {
-                                    return machine.checked;
-                                } else {
-                                    checkedWrong.push(machine);
+                                    return true;
                                 }
-                            } else if (action === 'delete') {
-                                return machine.checked;
+                                checkedWrong.push(machine);
+                                break;
+                            case 'delete':
+                                return true;
+                                break;
                             }
                         }
                     });
@@ -136,7 +138,7 @@
                         localization.translate(
                             $scope,
                             null,
-                            message = ((checkedWrong.length + checkedMachines.length) > 1) ? messageBody[1] : messageBody[0]
+                            message = ((checkedWrong.length + checkedMachines.length) > 1) ? messageBody.plural : messageBody.single
                         ), function () {
                             checkedMachines.forEach(function (el) {
                                 if (action === 'delete') {
@@ -148,10 +150,11 @@
                                     } else {
                                         $scope.deleteInstance(el);
                                     }
-                                } else if (action === 'start' || action === 'stop' || action === 'reboot') {
+                                } else {
                                     $$track.event('machine', action);
                                     Machine[action + 'Machine'](el.id);
                                 }
+                                el.checked = false;
                             });
                             checkedWrong.forEach(function (el) {
                                 el.checked = false;
@@ -337,22 +340,22 @@
                 {
                     label: 'Start',
                     action: function (object) {
-                        var messageBody = [
-                            'Start selected instance',
-                            'Start selected instances'
-                        ];
-                        makeMachineAction('start', 'Confirm: Start instances', messageBody);
+                        var messages = {
+                            single: 'Start selected instance',
+                            plural: 'Start selected instances'
+                        };
+                        makeMachineAction('start', 'Confirm: Start instances', messages);
                     },
                     sequence: 1
                 },
                 {
                     label: 'Stop',
                     action: function (object) {
-                        var messageBody = [
-                            'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
-                            'Stopping selected instances does not stop billing, your instance can be started after it is stopped.'
-                        ];
-                        makeMachineAction('stop', 'Confirm: Stop instances', messageBody);
+                        var messages = {
+                            single: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
+                            plural: 'Stopping selected instances does not stop billing, your instance can be started after it is stopped.'
+                        };
+                        makeMachineAction('stop', 'Confirm: Stop instances', messages);
                     },
                     sequence: 2
                 },
@@ -441,22 +444,22 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        var messageBody = [
-                            'Destroy the information on these instances and stop billing for them.',
-                            'Destroy the information on this instance and stop billing for selected instances.'
-                        ];
-                        makeMachineAction('delete', 'Confirm: Delete instances', messageBody);
+                        var messages = {
+                            single: 'Destroy the information on these instances and stop billing for them.',
+                            plural: 'Destroy the information on this instance and stop billing for selected instances.'
+                        };
+                        makeMachineAction('delete', 'Confirm: Delete instances', messages);
                     },
                     sequence: 5
                 },
                 {
                     label: 'Reboot',
                     action: function () {
-                        var messageBody = [
-                            'Restart this instance.',
-                            'Restart selected instances.'
-                        ];
-                        makeMachineAction('reboot', 'Confirm: Restart instances', messageBody);
+                        var messages = {
+                            single: 'Restart this instance.',
+                            plural: 'Restart selected instances.'
+                        };
+                        makeMachineAction('reboot', 'Confirm: Restart instances', messages);
                     },
                     sequence: 6
                 }
