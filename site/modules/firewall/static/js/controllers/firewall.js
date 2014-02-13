@@ -1010,6 +1010,12 @@
                     }
                 );
             };
+
+            $scope.cancelRule = function () {
+                $scope.resetData();
+                $scope.openRuleForm = false;
+            };
+
             $scope.enabledCheckboxes = true;
             $scope.placeHolderText = 'filter rules';
             $scope.searchForm = true;
