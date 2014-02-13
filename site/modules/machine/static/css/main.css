@@ -954,7 +954,6 @@
     color: #d3d3d3;
     font-size: 14px;
     font-weight: 800;
-    margin-right: 12px;
     margin-top: 7px;
 }
 .hotlinks a{
@@ -1047,9 +1046,6 @@
     min-width: 84px;
     max-width: 84px;
     text-align: left;
-}
-.link{
-    margin-right: 22px !important;
 }
 
 .wizard-steps {
