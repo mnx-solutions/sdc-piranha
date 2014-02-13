@@ -126,9 +126,11 @@
                 }
             });
 
-            $scope.gridUserConfig.config.order = $scope.order;
-            $scope.gridUserConfig.config.dirty = true;
-            $scope.gridUserConfig.config.$save();
+            if ($scope.userConfig.__loaded) {
+                $scope.gridUserConfig.config.order = {name: prop.name, ord: $scope.order[0] === prop.order};
+                $scope.gridUserConfig.config.dirty = true;
+                $scope.gridUserConfig.config.$save();
+            }
         };
 
         $scope.matchesFilter = function (obj) {
@@ -291,8 +293,10 @@
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
                     el.active = (el.active) ? false : true;
-                    $scope.gridUserConfig.propKeys[id].active = el.active;
-                    $scope.gridUserConfig.config.dirty = true;
+                    if ($scope.userConfig.__loaded) {
+                        $scope.gridUserConfig.propKeys[id].active = el.active;
+                        $scope.gridUserConfig.config.dirty = true;
+                    }
                 }
             });
             $scope.userConfig.$save();
@@ -350,16 +354,58 @@
                 $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
                 $scope.controls = ng.isDefined(attrs.controls) ? $scope.$eval(attrs.controls) : gridConfig.controls;
-                
+
+                $scope.props.forEach(function (el) {
+
+                    if ($rootScope.features.firewall === 'enabled') {
+                        if (el.id === 'firewall_enabled') {
+                            el.active = true;
+                        }
+                        if (el.id === 'updated') {
+                            el.active = false;
+                        }
+                    }
+
+                    if (el._getter) {
+                        el.order = el._getter;
+                        el.rorder = function (obj) {
+                            var elem = String(el._getter(obj));
+                            var next = '';
+                            var i;
+                            for (i = 0; i < elem.length; i += 1) {
+                                next += String.fromCharCode(255 - elem.charCodeAt(i));
+                            }
+                            return next;
+                        };
+                    } else if (!el.id2) {
+                        if (el.reverseSort) {
+                            el.rorder = el.id;
+                            el.order = '-' + el.id;
+                        } else {
+                            el.order = el.id;
+                            el.rorder = '-' + el.id;
+                        }
+                    } else {
+                        el.order = el.id + '.' + el.id2;
+                        el.rorder = '-' + el.id + '.' + el.id2;
+                    }
+
+                });
+
                 if (!$scope.userConfig) {
                     $scope.userConfig = {
                         $load: function (callback) {callback(null, $scope.userConfig); },
                         $save: function () {},
-                        $child: function () {return $scope.userConfig; }
+                        $child: function () {return $scope.userConfig; },
+                        __proto__: {__loaded: false}
                     };
                 }
-
+                $scope.userConfig.__proto__.__loaded = false;
                 $scope.userConfig.$load(function (error, config) {
+                    if (error) {
+                        return;
+                    }
+                    $scope.userConfig.__proto__.__loaded = true;
                     var propKeys = {};
                     $scope.gridUserConfig = {
                         config: config,
@@ -373,13 +419,6 @@
                     } else {
                         config.props = [];
                         config.dirty = true;
-                    }
-
-                    if (!ng.isDefined(config.order)) {
-                        config.dirty = true;
-                        config.order = $scope.order;
-                    } else {
-                        $scope.order = config.order;
                     }
 
                     if (!ng.isDefined(config.perPage)) {
@@ -396,42 +435,7 @@
                             config.$save();
                         }
                     });
-
                     $scope.props.forEach(function (el) {
-
-                        if ($rootScope.features.firewall === 'enabled') {
-                            if (el.id === 'firewall_enabled') {
-                                el.active = true;
-                            }
-                            if (el.id === 'updated') {
-                                el.active = false;
-                            }
-                        }
-
-                        if (el._getter) {
-                            el.order = el._getter;
-                            el.rorder = function (obj) {
-                                var elem = String(el._getter(obj));
-                                var next = '';
-                                var i;
-                                for (i = 0; i < elem.length; i += 1) {
-                                    next += String.fromCharCode(255 - elem.charCodeAt(i));
-                                }
-                                return next;
-                            };
-                        } else if (!el.id2) {
-                            if (el.reverseSort) {
-                                el.rorder = el.id;
-                                el.order = '-' + el.id;
-                            } else {
-                                el.order = el.id;
-                                el.rorder = '-' + el.id;
-                            }
-                        } else {
-                            el.order = el.id + '.' + el.id2;
-                            el.rorder = '-' + el.id + '.' + el.id2;
-                        }
-
                         if (propKeys[el.id]) {
                             el.active = propKeys[el.id].active;
                             if (!el.id2) {
@@ -446,6 +450,13 @@
                             propKeys[el.id] = el;
                             config.props.push(el);
                             config.dirty = true;
+                        }
+
+                        if (!ng.isDefined(config.order)) {
+                            config.dirty = true;
+                            config.order = $scope.order;
+                        } else if (el.name === config.order.name) {
+                            $scope.order = [config.order.ord ? el.order : el.rorder];
                         }
                     });
                     config.$save();
