@@ -9,7 +9,7 @@
                 <span>Data Center:</span>
                 <div class="provisioning-header-left-button btn-group">
                     <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
-                    <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
+                    <button id="button-select-datacenter" class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>
                     <ul class="dropdown-menu dd-datacenter">
@@ -19,7 +19,7 @@
                     </ul>
             </div>
                 <div class="hotlinks pull-right">
-                    <a href="" data-ng-click="basicCreateInstance = false">View More Images </a>
+                    <a id="link-more-images" href="" data-ng-click="basicCreateInstance = false">View More Images </a>
                     <span data-ng-show="features.imageUse != 'disabled'">
                         | <a data-ng-click="basicCreateInstance = false; selectVisibility(false);" href=""> Saved Images</a>
                                     </span>
@@ -118,7 +118,7 @@
                                             OS:
                                         </span>
                                         <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.opsys">{{data.opsys}}</button>
-                                        <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
+                                        <button id="button-select-os" class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu dd-datacenter" style="margin-left: 50px !important;">
@@ -206,7 +206,7 @@
                                                     <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
                                                 </div>
                                                 <div class="pull-left">
-                                                    <button type="button" class="btn orange review-btn" data-ng-click="reviewPage()">Review</button>
+                                                    <button type="button" id="button-review" class="btn orange review-btn" data-ng-click="reviewPage()">Review</button>
                                                 </div>
 
                                             </div>
@@ -357,7 +357,7 @@
                                                     <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
                                                     <div class="create-tags ci-tags" data-tags tags="tags" review="true"></div>
 
-                                                    <button class="btn orange create-instance-btn-pos"
+                                                    <button id="button-create" class="btn orange create-instance-btn-pos"
                                                             data-ng-disabled="provisionForm.$invalid"
                                                             data-ng-click="clickProvision()"
                                                             data-translate>Create instance</button>
