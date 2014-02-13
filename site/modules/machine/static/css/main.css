@@ -1137,6 +1137,7 @@
 .wizard-steps .breadcrumb {
     color: #333;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .package-select tbody{
@@ -1375,8 +1376,7 @@
     padding: 25px;
     display: inline-block;
 }
-.selected-package-box-2 span{
-    display: block;
+.selected-package-box-2 .package-info-block {
     padding-top: 10px;
 }
 .package-info-desc{

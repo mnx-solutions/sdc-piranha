@@ -71,11 +71,11 @@
                 <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Create Instance</h3>
                 <div class="wizard-steps">
                     <div class="firststep active-step">
-                        <p ng-show="currentSlidePageIndex >= 1"><a href="#myCarousel" class="breadcrumb current-step" data-ng-click="reconfigure(0)" data-slide-to="0">Choose Image</a></p>
+                        <p ng-show="currentSlidePageIndex >= 1"><span class="breadcrumb current-step" data-target="#provisionCarousel" data-ng-click="reconfigure(0)" data-slide-to="0">Choose Image</span></p>
                         <p ng-hide="currentSlidePageIndex >= 1">Choose Image</p>
                     </div>
                     <div>
-                        <p ng-show="currentSlidePageIndex >= 2"><a data-ng-click="reconfigure(1)" class="breadcrumb current-step" href="#myCarousel" data-slide-to="1">Select Package</a></p>
+                        <p ng-show="currentSlidePageIndex >= 2"><span class="breadcrumb current-step" data-target="#provisionCarousel" data-ng-click="reconfigure(1)" data-slide-to="1">Select Package</span></p>
                         <p ng-hide="currentSlidePageIndex >= 2">Select Package</p>
                 </div>
                     <div><p class="current-step">Review</p></div>
@@ -177,7 +177,7 @@
                                     <div class="span3 pull-right selected-package-container">
                                         <div data-ng-show="selectedPackageInfo" class="selected-package-box">
                                             <div class="selected-package-box-content">
-                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure(0)" href="#myCarousel" id="prev" data-slide="prev">Change</a>
+                                                <p>IMAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</span>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc">{{selectedDataset.description}}</div>
 
@@ -253,7 +253,7 @@
                                     <table>
                                         <td style="vertical-align: top;">
                                             <div class="selected-package-box-1">
-                                                <p>IMAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure(0)" href="#myCarousel" id="" data-slide-to="0">Change</a>
+                                                <p>IMAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</span>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc">{{selectedDataset.description}}</div>
 
@@ -281,27 +281,27 @@
                                         </td>
                                         <td style="vertical-align: top;">
                                             <div class="selected-package-box-2">
-                                                <p>PACKAGE:</p><a class="btn small-btn"  data-ng-click="reconfigure(1)" href="#myCarousel" id="prev" data-slide="prev">Change</a>
-                                                <span>
+                                                <p>PACKAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(1)" data-slide="prev">Change</span>
+                                                <div class="package-info-block">
                                                     <div class="package-info-title">Configuration</div>
                                                     <div class="package-info-desc">{{selectedPackageInfo.short_name}}</div>
-                                                </span>
-                                                <span>
+                                                </div>
+                                                <div class="package-info-block">
                                                     <div class="package-info-title">Memory</div>
                                                     <div class="package-info-desc">{{selectedPackageInfo.memory | sizeFormat}}</div>
-                                                </span>
-                                                <span>
+                                                </div>
+                                                <div class="package-info-block">
                                                     <div class="package-info-title">Disk</div>
                                                     <div class="package-info-desc">{{selectedPackageInfo.disk | sizeFormat}}</div>
-                                                </span>
-                                                <span>
+                                                </div>
+                                                <div class="package-info-block">
                                                     <div class="package-info-title">vCPUs</div>
                                                     <div class="package-info-desc">{{selectedPackageInfo.vcpus}} vCPUs</div>
-                                                </span>
-                                                <span>
+                                                </div>
+                                                <div class="package-info-block">
                                                     <div class="package-info-title">DataCenter</div>
                                                     <div class="package-info-desc">{{data.datacenter}} </div>
-                                                </span>
+                                                </div>
 
                                                 <div class="package-info-cost">
                                                     <p>COST:</p>
@@ -370,7 +370,7 @@
 
                             </div>
                         </div>
-                        <a href="#myCarousel" class="btn grey" data-ng-click="simpleCreateInstance()" data-slide-to="0"><b>Back to Quick Start</b></a>
+                        <span class="btn grey" data-target="#provisionCarousel" data-ng-click="simpleCreateInstance()" data-slide-to="0"><b>Back to Quick Start</b></span>
 
                     </div>
                 </div>
