@@ -8,6 +8,14 @@ module.exports = function execute(scope, app) {
 
     var headerClientIpKey = scope.config.server.headerClientIpKey;
 
+    app.use(function (req, res, next) {
+        req.log = req.log.child({
+            userName: req.session.userName,
+            userId: req.session.userId
+        });
+        next();
+    });
+
     function logUserInformation(req, redirectUrl) {
         // Proper user ip taking reverse proxy / load balancer into account
         if (headerClientIpKey) {
@@ -17,9 +25,6 @@ module.exports = function execute(scope, app) {
         req.userIp = req.userIp || req.ip;
 
         var info = {
-            userName: req.session.userName,
-            userId: req.session.userId,
-            userIp: req.userIp,
             userAgent: req.headers['user-agent'],
             campaignId: (req.cookies.campaignId || '')
         };
@@ -29,6 +34,15 @@ module.exports = function execute(scope, app) {
         } else {
             req.log.info(info, 'Existing user logged in');
         }
+    }
+
+    function isOneTimePasswordCorrect(req, res) {
+        var result = req.body.otpass === TFAProvider.generateOTP(req.session._tfaSecret);
+        if (!result) {
+            req.log.info('User provided password not the same as generated TFA password');
+            res.json({status: 'error'});
+        }
+        return result;
     }
 
     app.get('/saveToken/:url', function(req, res, next) {
@@ -117,26 +131,22 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass !== onetimepass) {
-            req.log.warn('User provided password not the same as generated TFA password');
-            res.json({status:'error'});
-            return;
+        if (isOneTimePasswordCorrect(req, res)) {
+            TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
+                if (err) {
+                    req.log.error(err, 'Failed to enable TFA');
+                    res.json({status:'error', message: 'Internal error'});
+                    return;
+                }
+
+                req.log.info('TFA enabled for user');
+                // tfaEnabled will be enabled for their next login
+                delete req.session._tfaSecret;
+                req.session.save();
+                res.json({status:'ok'});
+            });
         }
 
-        TFA.set(req.session.userId, req.session._tfaSecret, function(err, secretkey) {
-            if (err) {
-                req.log.error('Failed to enable TFA', err);
-                res.json({status:'error', message: 'Internal error'});
-                return;
-            }
-
-            req.log.info('TFA enabled for user');
-            // tfaEnabled will be enabled for their next login
-            delete req.session._tfaSecret;
-            req.session.save();
-            res.json({status:'ok'});
-        });
     });
 
     app.post('/login', function (req, res, next) {
@@ -147,21 +157,16 @@ module.exports = function execute(scope, app) {
             return;
         }
 
-        var onetimepass = TFAProvider.generateOTP(req.session._tfaSecret);
-        if (req.body.otpass !== onetimepass) {
-            req.log.warn('User provided password not the same as generated TFA password');
-            res.send({ status: 'error'});
-            return;
+        if (isOneTimePasswordCorrect(req, res)) {
+            req.session.token = req.session._preToken;
+            delete req.session._preToken;
+
+            var redirect = req.session._tfaRedirect;
+            delete req.session._tfaRedirect;
+            req.session.save();
+
+            logUserInformation(req, redirect);
+            res.send({ status: 'ok', redirect: redirect });
         }
-
-        req.session.token = req.session._preToken;
-        delete req.session._preToken;
-
-        var redirect = req.session._tfaRedirect;
-        delete req.session._tfaRedirect;
-        req.session.save();
-
-        logUserInformation(req, redirect);
-        res.send({ status: 'ok', redirect: redirect });
     });
 };
