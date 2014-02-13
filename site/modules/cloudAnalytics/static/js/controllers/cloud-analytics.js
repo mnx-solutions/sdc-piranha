@@ -317,8 +317,11 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     }
     
     $scope.canCreate = function () {
-        var uuid = instrumentation.getUUID($scope.zoneId, {createOpts: createOptions()});
-        return $scope.current.metric && $scope.zoneId ? !instrumentations[uuid] : false;
+        if ($scope.current.metric && $scope.zoneId) {
+            var uuid = instrumentation.getUUID($scope.zoneId, {createOpts: createOptions()});
+            return !instrumentations[uuid];
+        }
+        return false;
     };
     
     $scope.createInstrumentation = function(){
