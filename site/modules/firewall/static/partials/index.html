@@ -47,7 +47,7 @@
                 </div>
                 <table class="firewall-table bg-grey">
                     <thead>
-                        <legend data-ng-show="data.uuid" class="margin-top-10">Edit rule {{data.uuid}} <a class="btn orange pull-right" data-ng-click="resetData()">Create New Instead</a></legend>
+                        <legend data-ng-show="data.uuid" class="margin-top-10">Edit rule {{data.uuid}} <a class="btn light pull-right" data-ng-click="deleteRule(data)">Delete</a></legend>
                     </thead>
                     <tbody>
                     <tr>
@@ -353,7 +353,7 @@
 
             </div>
             <div class="create-update-btn pull-right margin-botton-20" data-ng-show="openRuleForm">
-                <button class="btn light" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
             </div>
         </div>
 
