@@ -37,15 +37,12 @@ module.exports = function execute(scope, app) {
     }
 
     function isOneTimePasswordCorrect(req, res) {
-        // FIXME: do you need this var?  Well I understand this is a code review for GT :)
-        var oneTimePass = TFAProvider.generateOTP(req.session._tfaSecret);
-        // FIXME: this is local var and it is a result of the function.  Name it 'result'.
-        var oneTimePassCorrect = req.body.otpass === oneTimePass;
-        if (!oneTimePassCorrect) {
+        var result = req.body.otpass === TFAProvider.generateOTP(req.session._tfaSecret);
+        if (!result) {
             req.log.info('User provided password not the same as generated TFA password');
             res.json({status: 'error'});
         }
-        return oneTimePassCorrect;
+        return result;
     }
 
     app.get('/saveToken/:url', function(req, res, next) {
