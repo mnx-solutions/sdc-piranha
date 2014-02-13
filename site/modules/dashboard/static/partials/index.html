@@ -10,7 +10,7 @@
                     <div class="widget grey links2 instance-icon">
                         <h4>Instances</h4>
                         <div class="details">
-                            <div class="number">
+                            <div id="count-instances-running" class="number">
                                 {{runningcount}}
                             </div>
                             <div class="desc">
@@ -19,7 +19,7 @@
                         </div>
                         <div class="details-subinfo"></div>
                         <div class="details">
-                            <div class="number">
+                            <div id="count-instances-stopped" class="number">
                                 {{othercount}}
                             </div>
                             <div class="desc">
@@ -32,7 +32,7 @@
                     </div>
                 </a>
                 <div class="widget-btn">
-                    <a class="more" href="#!/compute/create"><button type="button" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;Create
+                    <a class="more" href="#!/compute/create"><button type="button" id="button-create-instance" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;Create
                         Compute Instance</button></a>
                 </div>
             </div>

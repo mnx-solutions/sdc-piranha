@@ -26,7 +26,7 @@ public class Common {
         $(byAttribute("name", "username")).setValue(System.getProperty("loginusr"));
         $(byAttribute("name", "password")).setValue(System.getProperty("loginpw"));
         $("#login-submit").click();
-        $(".instance-icon div.details div.number").waitWhile(hasText("0"), BASE_TIMEOUT);
+        $("#count-instances-running").waitWhile(hasText("0"), BASE_TIMEOUT);
     }
 
     public static void checkSubHeadingText(String headingText) {
@@ -58,7 +58,7 @@ public class Common {
 
     public static void openMyAccount() {
         $(byText(System.getProperty("loginusr"))).click();
-        $("ul.dropdown-menu.dd-account li", 0).$("a").click();
+        $("#link-account").click();
     }
 
     public static int getCollectionIndexByText(ElementsCollection col, String filter) {

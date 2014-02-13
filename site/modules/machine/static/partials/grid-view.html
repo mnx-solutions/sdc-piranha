@@ -16,11 +16,11 @@
     </div>
     <div class="actions pull-right" data-ng-show="controls">
         <div class="btn-group">
-            <a class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" href="#" data-ng-disabled="!getActionButtons(object).length | orderBy:'sequence'">
+            <a id="button-actions" class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" href="#" data-ng-disabled="!getActionButtons(object).length | orderBy:'sequence'">
                 Actions
                 <i class="icon-drop-down"></i>
             </a>
-            <ul class="dropdown-menu grid-action-btn" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
+            <ul id="option-list-actions" class="dropdown-menu grid-action-btn" data-ng-hide="!getActionButtons(object).length | orderBy:'sequence'">
                 <li data-ng-repeat="btn in getActionButtons(object) | orderBy:'sequence'">
                     <a data-action-button data-action-fn="btn.action" data-show-fn="btn.show" data-label="btn.label" data-object="object" class="grid-action-btn grid-small-font"></a>
                 </li>
@@ -31,11 +31,11 @@
             <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
         </div>
         <div class="btn-group">
-            <a class="btn grid-small-font" href="#" data-toggle="dropdown" data-ng-click="noClose()">
+            <a id="button-columns" class="btn grid-small-font" href="#" data-toggle="dropdown" data-ng-click="noClose()">
                 Columns
                 <i class="icon-drop-down"></i>
             </a>
-            <div class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
+            <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
                 <label class="grid-small-font" data-ng-repeat="prop in props | orderBy:'sequence'"><div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                                 <span data-ng-class="{checked: prop.active}">
                                     <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop"></span>
@@ -70,7 +70,7 @@
                     <div class="block" data-translate-value>{{prop.name}}</div>
                 </th>
             </thead>
-            <tbody>
+            <tbody id="grid-instances">
                 <tr data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" style="font-weight: 400;">
                     <td width="10" data-ng-show="enabledCheckboxes">
                         <label class="checkbox">
