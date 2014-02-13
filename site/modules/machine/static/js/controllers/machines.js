@@ -274,7 +274,7 @@
 //                        return object.state === 'running' || (object.job && !object.job.finished);
 //                    },
                     action: function (object) {
-                        if($scope.actionButton()) {
+                        if ($scope.actionButton()) {
                             PopupDialog.confirm(
                                 localization.translate(
                                     $scope,
@@ -287,14 +287,18 @@
                                     'Start selected instances'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
-                                        if(el.checked){
-                                            $$track.event('machine', 'start');
-                                            Machine.startMachine(el.id);
+                                        if (el.checked) {
+                                            if (el.state && el.state === 'stopped') {
+                                                $$track.event('machine', 'start');
+                                                Machine.startMachine(el.id);
+                                            }
                                             el.checked = false;
                                         }
                                     });
                                 });
-                        }else $scope.noCheckBoxChecked();
+                        } else {
+                            $scope.noCheckBoxChecked();
+                        }
                     },
 //                    tooltip: 'Instance configuration and data is preserved when instances are stopped. Use start to restart your instance.',
                     sequence: 1
@@ -318,14 +322,18 @@
                                     'Stopping selected instances does not stop billing, your instance can be started after it is stopped.'
                                 ), function () {
                                     $scope.machines.forEach(function (el) {
-                                        if(el.checked){
-                                            $$track.event('machine', 'stop');
-                                            Machine.stopMachine(el.id);
+                                        if (el.checked) {
+                                            if (el.state && el.state === 'running') {
+                                                $$track.event('machine', 'stop');
+                                                Machine.stopMachine(el.id);
+                                            }
                                             el.checked = false;
                                         }
                                     });
                                 });
-                        }else $scope.noCheckBoxChecked();
+                        } else {
+                            $scope.noCheckBoxChecked();
+                        }
                     },
 //                    tooltip: 'Stopping an instance does not stop billing. You can restart your instance after you stop your machine.',
                     sequence: 2
