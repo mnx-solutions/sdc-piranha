@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$scope', 'requestContext', 'localization', 'Storage', 'util', '$dialog',
-                function ($scope, requestContext, localization, Storage, util, $dialog) {
+        ['$scope', 'requestContext', 'localization', 'Storage', 'util', '$dialog', 'Account',
+                function ($scope, requestContext, localization, Storage, util, $dialog, Account) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.history', $scope);
 
@@ -45,6 +45,10 @@
                         }
                     );
                 };
+
+                if ($scope.features.manta === 'enabled') {
+                    $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                }
 
                 $scope.gridOrder = ['created'];
                 $scope.gridProps = [
