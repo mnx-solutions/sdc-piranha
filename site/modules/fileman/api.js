@@ -1,8 +1,3 @@
-/**
- * User: Vladimir Bulyga <zero@ccxx.cc>
- * Project: piranha
- * Date: 31.01.14 13:12
- */
 "use strict";
 
 var config = require('easy-config');

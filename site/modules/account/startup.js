@@ -194,49 +194,51 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('get-user-config', function (call) {
-        var client = MantaClient.createClient(call);
-        var configFile = '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
-        client.get(configFile, function (error, stream) {
-            var jsonConfig = {};
-            if (error && error.statusCode !== 404) {
-                call.log.error(error);
-                call.done(null, {});
-            } else if (error && error.statusCode === 404) {
-                call.log.info('Config for user "%s" not found', call.req.session.userName);
-                call.done(null, {});
-            } else {
-                var configStream = new MemoryStream(),
-                    config = '';
+    var getConfigPath = function (call, client) {
+        return '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
+    };
 
-                stream.pipe(configStream);
-                configStream.on('data', function (data) {
-                    config += data;
-                });
-                configStream.on('end', function () {
-                    try {
-                        jsonConfig = JSON.parse(config);
-                    } catch (err) {
-                        call.log.error(err, 'Error parsing config file');
-                    }
-                    call.done(null, jsonConfig);
-                });
-                configStream.on('error', function (error) {
-                    call.log.error(error);
-                    call.done(null, {});
-                });
+    server.onCall('GetUserConfig', function (call) {
+        var client = MantaClient.createClient(call);
+        client.get(getConfigPath(call, client), function (error, stream) {
+            var jsonConfig = {};
+            if (error) {
+                if (error.statusCode === 404) {
+                    call.req.log.info('Config for user not found');
+                } else {
+                    call.req.log.error({error: error}, 'Cannot read user config');
+                }
+                call.done(null, {});
+                return;
             }
+            var configStream = new MemoryStream();
+            var config = '';
+
+            stream.pipe(configStream);
+            configStream.on('data', function (data) {
+                config += data;
+            });
+            configStream.on('end', function () {
+                try {
+                    jsonConfig = JSON.parse(config);
+                } catch (err) {
+                    call.req.log.error({error: err}, 'Error parsing config file');
+                }
+                call.done(null, jsonConfig);
+            });
+            configStream.on('error', function (error) {
+                call.req.log.error({error: error}, 'Error occured while reading user config');
+                call.done(null, {});
+            });
         });
     });
 
-    server.onCall('set-user-config', function (call) {
+    server.onCall('SetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
         var fileStream = new MemoryStream(JSON.stringify(call.data), {writable: false});
-        var configFile = '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
-
-        client.put(configFile, fileStream, {mkdirs: true}, function (error, response) {
+        client.put(getConfigPath(call, client), fileStream, {mkdirs: true}, function (error, response) {
             if (error && error.statusCode !== 404) {
-                call.log.error(error);
+                call.req.log.error({error: error}, 'Cannot write user config');
             }
             call.done(null, !!error);
         });

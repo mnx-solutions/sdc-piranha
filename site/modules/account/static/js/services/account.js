@@ -217,15 +217,14 @@
             service.getUserConfig = function () {
                 function load(callback) {
                     serverTab.call({
-                        name: 'get-user-config',
+                        name: 'GetUserConfig',
                         data: {},
                         done: function (err, job) {
                             if (err) {
-                                // catch errors
                                 callback(err, {});
-                            } else {
-                                callback(null, job.__read());
+                                return;
                             }
+                            callback(null, job.__read());
                         }
                     });
                 }
@@ -290,7 +289,7 @@
             service.setUserConfig = function (config) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'set-user-config',
+                    name: 'SetUserConfig',
                     data: config,
                     done: function (err, job) {
                         if (err) {
