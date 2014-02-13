@@ -47,7 +47,7 @@
                 </div>
                 <table class="firewall-table bg-grey">
                     <thead>
-                        <legend data-ng-show="data.uuid" class="margin-top-10">Edit rule {{data.uuid}} <a class="btn light pull-right" data-ng-click="deleteRule(data)">Delete</a></legend>
+                        <legend data-ng-show="data.uuid" class="margin-top-10">Edit rule {{data.uuid}}</legend>
                     </thead>
                     <tbody>
                     <tr>
@@ -120,11 +120,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="margin-top-10" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                            <button class="btn light"
+                        <div class="margin-top-10 pull-right" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
+                            <button class="btn light" data-ng-click="useAllPorts()">Use All</button>
+                            <button class="btn orange"
                                     data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
                                     data-ng-click="addPort()">Add</button>
-                            <button class="btn orange" data-ng-click="useAllPorts()">Use All</button>
                         </div>
 
                         <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
@@ -353,6 +353,8 @@
 
             </div>
             <div class="create-update-btn pull-right margin-botton-20" data-ng-show="openRuleForm">
+                <button class="btn light" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
+                <button class="btn light" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
                 <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
             </div>
         </div>

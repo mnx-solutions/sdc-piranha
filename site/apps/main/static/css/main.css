@@ -1039,27 +1039,26 @@ a .feature1 {
     text-shadow: none;
     background-color: #f3f3f3;
     font-size: 16px;
+    outline: none;
 }
 
-.btn.light-blue {
+.btn.light-small {
     color: #ff6600;
     text-shadow: none;
-    font-weight: bold;
     background-color: #f1f1f1;
     width: auto;
-    min-height: 20px ! important;
     line-height: 6px !important;
     padding-left: 10px !important;
     padding-right: 10px !important;
 
 }
 
-.btn.light-blue:hover,
-.btn.light-blue:focus,
-.btn.light-blue:active,
-.btn.light-blue.active,
-.btn.light-blue.disabled,
-.btn.light-blue[disabled] {
+.btn.light-small:hover,
+.btn.light-small:focus,
+.btn.light-small:active,
+.btn.light-small.active,
+.btn.light-small.disabled,
+.btn.light-small[disabled] {
     background-color: #f1f1f1 !important;
     color: #ff6600 !important;
 }
@@ -1069,6 +1068,7 @@ a .feature1 {
     text-shadow: none;
     background-color: #ff6600;
     min-width: 100px;
+    outline: none;
 }
 
 .btn.orange:hover,
@@ -1862,4 +1862,8 @@ label.checkbox {
     left: 3px;
     background-image: url("../img/plus_icon.png");
     background-repeat: no-repeat;
+}
+.margin-btn-dashboard {
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
