@@ -87,7 +87,7 @@
                         <div class="carousel-inner provisioning-carousel-inner-box advanced-table" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
 
-                                <div class="row-fluid advanced-ci-step1">
+                                <div class="container-min-width advanced-ci-step1">
                                     <div class="" style="display: inline-block;">
                                         <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
                                         <input value="" class="btn-search-images" type="submit">
@@ -128,7 +128,7 @@
                                         </ul>
                                     </div>
 
-                                    <div data-ng-show="features.imageUse != 'disabled'" class="hotlinks pull-right link">
+                                    <div data-ng-show="features.imageUse != 'disabled'" class="hotlinks pull-right">
                                         <a href="" data-ng-show="visibilityFilter != 'Public'" data-ng-click="selectVisibility(true);">Public Images</a>
                                         <a href="" data-ng-show="visibilityFilter != 'Saved'" data-ng-click="selectVisibility(false);">Saved Images</a>
                                     </div>
