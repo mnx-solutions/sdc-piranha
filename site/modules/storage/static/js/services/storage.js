@@ -27,7 +27,7 @@ window.fn = [];
             service.getJob = function (path) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'getJob',
+                    name: 'JobGet',
                     data: {
                         path: path
                     },
@@ -44,7 +44,7 @@ window.fn = [];
             service.getErrors = function (jobId) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'getErrors',
+                    name: 'JobErrors',
                     data: {
                         id: jobId
                     },
@@ -61,7 +61,7 @@ window.fn = [];
             service.getFailures = function (jobId) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'getFailures',
+                    name: 'JobFailures',
                     data: {
                         id: jobId
                     },
@@ -78,7 +78,7 @@ window.fn = [];
             service.getOutput = function (jobId) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'getOutput',
+                    name: 'JobOutput',
                     data: {
                         id: jobId
                     },
@@ -95,7 +95,7 @@ window.fn = [];
             service.getInput = function (jobId) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'getInput',
+                    name: 'JobInputs',
                     data: {
                         id: jobId
                     },
@@ -112,7 +112,7 @@ window.fn = [];
             service.cancelJob = function (jobId) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'cancelJob',
+                    name: 'JobCancel',
                     data: {
                         id: jobId
                     },
@@ -129,7 +129,7 @@ window.fn = [];
             service.cloneJob = function (job) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'cloneJob',
+                    name: 'JobClone',
                     data: job,
                     done: function (err, jobId) {
                         if (err) {

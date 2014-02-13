@@ -24,7 +24,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('getJob', function (call) {
+    server.onCall('JobGet', function (call) {
         var jobPath = call.data.path;
         var client = Manta.createClient(call);
 
@@ -37,7 +37,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('getErrors', function (call) {
+    server.onCall('JobErrors', function (call) {
         var jobId = call.data.id;
         var client = Manta.createClient(call);
 
@@ -58,7 +58,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('getFailures', function (call) {
+    server.onCall('JobFailures', function (call) {
         var jobId = call.data.id;
         var client = Manta.createClient(call);
 
@@ -79,7 +79,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('getOutput', function (call) {
+    server.onCall('JobOutput', function (call) {
         var jobId = call.data.id;
         var client = Manta.createClient(call);
 
@@ -100,7 +100,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('getInput', function (call) {
+    server.onCall('JobInputs', function (call) {
         var jobId = call.data.id;
         var client = Manta.createClient(call);
         client.jobInput(jobId, function (err, res) {
@@ -120,7 +120,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('cancelJob', function (call) {
+    server.onCall('JobCancel', function (call) {
         var jobId = call.data.id;
         var client = Manta.createClient(call);
 
@@ -134,7 +134,7 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('cloneJob', function (call) {
+    server.onCall('JobClone', function (call) {
         var job = call.data;
         var client = Manta.createClient(call);
 
