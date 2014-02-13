@@ -10,19 +10,15 @@
 
                 $scope.loading = true;
 
-                $scope.jobs = Storage.listJobs();
+                $scope.jobs = [];
 
-                //temporarily function
-                $scope.$watch('jobs', function (jobs) {
-                    if (jobs) {
-                        $scope.loading = false;
-                        jobs.forEach(function (job) {
-                            job.id = job.name;
-                        });
-                    }
-
-                }, true);
-                //end
+                Storage.listJobs().then(function (jobs) {
+                    $scope.loading = false;
+                    $scope.jobs = jobs.map(function (job) {
+                        job.id = job.name;
+                        return job;
+                    });
+                });
 
                 $scope.actionButton = function(){
                     var flag = false;
