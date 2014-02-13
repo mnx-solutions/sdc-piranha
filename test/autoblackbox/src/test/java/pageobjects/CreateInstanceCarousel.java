@@ -36,16 +36,16 @@ public class CreateInstanceCarousel {
     public void selectDataCenter(String zone) {
         waitForListingUpdate();
         SelenideElement dataCenterList = $(".provisioning-header-left-button");
-        dataCenterList.$(byAttribute("data-toggle", "dropdown")).click();
-        dataCenterList.find("ul.dropdown-menu").$(byText(zone)).click();
-        $(byText("View More Images")).click();
+        $("#button-select-datacenter").click();
+        $(byText(zone)).click();
+        $("#link-more-images").click();
     }
 
     public void selectOsFilter(String os) {
         waitForListingUpdate();
         SelenideElement t = $(byAttribute("data-original-title", "Filter by operating system"));
-        t.$(byAttribute("data-toggle", "dropdown")).click();
-        SelenideElement toClick = t.find("ul.dropdown-menu").$(byText(os));
+        $("#button-select-os").click();
+        SelenideElement toClick = t.$("ul.dropdown-menu").$(byText(os));
         toClick.click();
     }
 
@@ -87,6 +87,10 @@ public class CreateInstanceCarousel {
             t.$("ul.dropdown-menu").$(byText(version)).click();
             t.$("ul.dropdown-menu").shouldBe(hidden);
         }
+    }
+
+    public static void clickReviewBtn() {
+        $("#button-review").click();
     }
 
     public void selectOsImage(String os) {

@@ -11,10 +11,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import pageobjects.Common;
 import pageobjects.CreateInstanceCarousel;
@@ -51,12 +48,11 @@ public class SmokeTests extends TestWrapper {
     public void dashboardIsVisible() {
         Common.clickNavigationLink("Dashboard");
         Common.checkHeadingText("Dashboard");
-        $(".instance-icon div.details div.number").shouldNotHave(text("0"));
+        $("#count-instances-running").shouldNotHave(text("0"));
         $(withText("DevCenter")).shouldBe(visible);
         $(withText("Support")).shouldBe(visible);
         $(withText("System Status")).shouldBe(visible);
     }
-
 
     @Test
     public void instanceListIsVible() {
@@ -66,10 +62,10 @@ public class SmokeTests extends TestWrapper {
         $(".loading-medium-after-h1").waitUntil(disappear, BASE_TIMEOUT);
         instanceList = page(InstanceList.class);
         instanceList.getFirtstInstanceName();
-        $(byText("Actions")).click();
-        $("ul.dropdown-menu.grid-action-btn").shouldBe(visible);
-        $(byText("Columns")).click();
-        $(".dropdown-checkboxes").shouldBe(visible);
+        $("#button-actions").click();
+        $("#option-list-actions").shouldBe(visible);
+        $("#button-columns").click();
+        $("#checkbox-list-columns").shouldBe(visible);
     }
 
     @Test
@@ -84,9 +80,9 @@ public class SmokeTests extends TestWrapper {
         $(byText(in)).click();
         Common.checkHeadingText(in);
         $$(".detail_chart").shouldHaveSize(3);
-        $(".vda-btn a").click();
+        $("#button-detailed-analytics").click();
         $(byText("Select Instance:")).shouldBe(visible);
-        $(".start-analytics-btn").shouldBe(visible);
+        $("#button-start").shouldBe(visible);
     }
 
     @Test
@@ -121,7 +117,7 @@ public class SmokeTests extends TestWrapper {
     public void createInstanceCarouselIsVisible() {
         String instanceName = "selenide-created-instance";
         String[] inst = Common.instanceProperties();
-        $(".btn-stat.orange").click();
+        $("#button-create-instance").click();
         Common.checkHeadingText("Quick Start: Create Instance");
         CreateInstanceCarousel createInstanceCarousel = page(CreateInstanceCarousel.class);
         createInstanceCarousel.waitUntilPageIsActive(0);
@@ -130,7 +126,7 @@ public class SmokeTests extends TestWrapper {
         createInstanceCarousel.selectOsImage(inst[0]);
         createInstanceCarousel.waitUntilPageIsActive(1);
         createInstanceCarousel.selectPackage(inst[3]);
-        $("[data-ng-click=\"reviewPage()\"]").click();
+        CreateInstanceCarousel.clickReviewBtn();
         createInstanceCarousel.checkSelectedImageDescription(inst[4]);
         createInstanceCarousel.checkPackageInfo(inst[5], inst[6], inst[7], inst[3]);
         createInstanceCarousel.checkPaymentInfo(inst[8], inst[9]);
