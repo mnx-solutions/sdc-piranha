@@ -26,14 +26,12 @@ module.exports = function (scope, app) {
                 var filePath = '/' + client.user + req.body.path + '/' + file.originalFilename;
                 filePath = filePath.replace(/\/+/g, '/');
 
-                client.put(filePath, rs, function (error) {
-                    console.log('filePath', filePath, error);
-                    callback();
-                });
+                req.log.info({filePath: filePath}, 'Uploading file');
+                client.put(filePath, rs, callback);
             }
         }, function (error) {
             if (error) {
-                req.log.error(error);
+                req.log.error({error: error}, 'Error while uploading files');
             }
             res.json({success: true});
         });
@@ -43,7 +41,7 @@ module.exports = function (scope, app) {
         var client = Manta.createClient({req: req});
         client.get(req.query.path, function (err, stream) {
             if (err) {
-                req.log.error(err);
+                req.log.error({error: err}, 'Error while downloading file');
                 return;
             }
             var filename = path.basename(req.query.path);

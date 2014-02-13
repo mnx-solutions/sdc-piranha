@@ -30,20 +30,20 @@
             }
 
             fileman.getUser = function (callback) {
-                serverTab.call({name: 'getUser', data: {}, done: callback});
+                serverTab.call({name: 'FileManGetUser', data: {}, done: callback});
             };
 
-            fileman.ls = createMethod('ls');
+            fileman.ls = createMethod('FileManList');
 
             fileman.get = function (path) {
                 location.href = 'fileman/download?path=' + '/' + username + '/' + path;
             };
 
-            fileman.rm = createMethod('rm');
+            fileman.rm = createMethod('FileManRemove');
 
-            fileman.info = createMethod('info');
+            fileman.info = createMethod('FileManInfo');
 
-            fileman.put = createMethod('put');
+            fileman.put = createMethod('FileManPut');
             return fileman;
         }
     ]);

@@ -17,14 +17,14 @@
                 if (inProgress) {
                     return;
                 }
-                if (this.path && this.path.type && this.path.type !== 'directory') {
-                    fileman.get($scope.currentPath + '/' + this.path.name);
+                if ($scope.path && $scope.path.type && $scope.path.type !== 'directory') {
+                    fileman.get($scope.currentPath + '/' + $scope.path.name);
                     return;
                 }
 
                 inProgress = true;
                 if (!force) {
-                    path = (this.path && (this.path.full || this.path.name)) || path || $scope.currentPath || '/';
+                    path = ($scope.path && ($scope.path.full || $scope.path.name)) || path || $scope.currentPath || '/';
                     $scope.currentPath = $scope.currentPath || path;
                 } else {
                     $scope.currentPath = path;
@@ -34,11 +34,7 @@
                 } else {
                     $scope.currentPath += $scope.currentPath.substr(-1) !== '/' ? '/' + path : path;
                 }
-//                console.warn('Path: ', path, $scope.currentPath);
 
-
-
-                //noinspection JSLint
                 $scope.splittedCurrentPath = $scope.currentPath.split(/\/([^/]+)/)
                     .filter(function (e) {
                         return !!e;
@@ -55,15 +51,13 @@
                     };
                 });
 
-                if (this.path) {
-                    this.path.active = true;
+                if ($scope.path) {
+                    $scope.path.active = true;
                 }
-                var tmpFilesTree = {},
-                    index,
-                    i;
-                for (index in $scope.filesTree) {
+                var tmpFilesTree = {};
+                var i;
+                for (var index in $scope.filesTree) {
                     if ($scope.filesTree.hasOwnProperty(index)) {
-                        //noinspection JSLint
                         $scope.filesTree[index].forEach(function (el) {
                             if (el.active) {
                                 el.active = false;
@@ -87,7 +81,6 @@
                 $scope.filesTree = tmpFilesTree;
 
                 fileman.ls($scope.currentPath, function (error, result) {
-                    //noinspection JSLint
                     $scope.files = result.__read();
                     if ($scope.filesTree[$scope.currentPath] !== $scope.files) {
                         $scope.filesTree[$scope.currentPath] = $scope.files;
@@ -97,7 +90,6 @@
             };
 
             $scope.addFile = function () {
-//                console.warn(arguments);
                 return false;
             };
 

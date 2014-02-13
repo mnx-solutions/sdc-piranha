@@ -9,12 +9,12 @@ var fileman = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
 
-    server.onCall('getUser', function(call) {
+    server.onCall('FileManGetUser', function (call) {
         var client = Manta.createClient(call);
         call.done(null, {user: client.user});
     });
 
-    server.onCall('ls', function (call) {
+    server.onCall('FileManList', function (call) {
         var client = Manta.createClient(call);
         client.ls(call.data.path, function (err, res) {
             if (err) {
@@ -37,20 +37,20 @@ var fileman = function execute(scope) {
             });
         });
     });
-    server.onCall('rm', function (call) {
+    server.onCall('FileManRemove', function (call) {
         var client = Manta.createClient(call);
         client.unlink(call.data.path, call.done.bind(call));
     });
-    server.onCall('put', function (call) {
+    server.onCall('FileManPut', function (call) {
         var fileStream = new MemoryStream(call.data.fileBody);
         var client = Manta.createClient(call);
         client.put(call.data.path, fileStream, {}, call.done.bind(call));
     });
-    server.onCall('get', function (call) {
+    server.onCall('FileManGet', function (call) {
         var client = Manta.createClient(call);
         client.get(call.data.path, call.done.bind(call));
     });
-    server.onCall('info', function (call) {
+    server.onCall('FileManInfo', function (call) {
         var client = Manta.createClient(call);
         client.info(call.data.path, call.done.bind(call));
     });

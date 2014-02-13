@@ -6,7 +6,7 @@
             <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
         </li>
         <li class="single dashboard-icon" ng-class="{active: location.path().search('dashboard') == 1, over: t_start && sideBarMin}" data-ng-mouseenter="t_start=true" ng-mouseleave="t_start=false">
-            <a href="#!/dashboard" data-ng-click="openSubMenu(0)">
+            <a href="#!/dashboard">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_start">Dashboard</span>
                 <span class="selected"></span>
@@ -15,8 +15,8 @@
         <li class="nested compute-icon" data-ng-class="{active: location.path().search('compute') == 1 ||
                                                    location.path().search('slb') == 1 ||
                                                    location.path().search('firewall') == 1 ||
-                                                   location.path().search('images') == 1, open: openMenu[1], over: t_second && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
-                <a href="#!/compute/" data-ng-click="openSubMenu(1)">
+                                                   location.path().search('images') == 1, over: t_second && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="t_second=true" ng-mouseleave="t_second=false">
+                <a href="#!/compute/">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_second">Compute</span>
                 <span class="selected"></span>
@@ -34,8 +34,8 @@
             </ul>
         </li>
         <li class="nested storage-icon" data-ng-class="{active: location.path().search('storage') == 1 ||
-                                                  location.path().search('fileman') == 1, over: t_three && sideBarMin, open: openMenu[2], collapses: sideBarMin}" data-ng-mouseenter="t_three=true" ng-mouseleave="t_three=false">
-            <a href="#!/storage/" data-ng-click="openSubMenu(2)">
+                                                  location.path().search('fileman') == 1, over: t_three && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="t_three=true" ng-mouseleave="t_three=false">
+            <a href="#!/storage/">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || t_three" >Storage</span>
                 <span class="selected"></span>
