@@ -1867,3 +1867,6 @@ label.checkbox {
     padding-bottom: 10px;
     padding-top: 10px;
 }
+.hide {
+    display: none !important;
+}
