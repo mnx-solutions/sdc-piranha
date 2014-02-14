@@ -328,12 +328,9 @@ select.date-month, select.date-year {
 .inline-pos{
     display: inline-block;
 }
-.btn-invoice{
-    width: 65px!important;
-    height: 24px;
-    padding: 0;
-    background-color: #F60;
-    color: white;
+.btn-invoice {
+    cursor: pointer;
+    color: #375675;
 }
 .light {
     color: #f60;
