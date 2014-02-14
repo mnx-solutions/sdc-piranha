@@ -166,7 +166,7 @@
                 }
             }
 
-            $scope.gridOrder = ['created'];
+            $scope.gridOrder = ['-created'];
             $scope.gridProps = [
                 {
                     id: 'label',
