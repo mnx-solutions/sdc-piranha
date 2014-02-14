@@ -8,11 +8,11 @@
 				<!-- <data-breadcrumb></data-breadcrumb> -->
                 <ul class="breadcrumb">
                     <li><a href="#!/compute"> Instances</a> /</li>
-                    <li><a href="#!/compute/instance/{{zoneId}}"> Instance Details</a> /</li>
+                    <li ng-show="existMachine"><a href="#!/compute/instance/{{zoneId}}"> Instance Details</a>/</li>
                     <li> Analytics</li>
                 </ul>
                 <h3 class="page-title">Analytics</h3>
-                <div class="row-fluid">
+                <div ng-show="existMachine" class="row-fluid">
                     <div class="chart-info" data-ng-show="zoneId">
                         <span class="name-chart">UUID</span>
                         <span class="value-chart">{{zoneId}}</span>
@@ -21,6 +21,9 @@
                         <span class="name-chart">Instance name</span>
                         <span class="value-chart-in">{{zoneName}}</span>
                     </div>
+                </div>
+                <div ng-hide="existMachine" class="wrong-instance">
+                    For enable start analytics, please select exist instance
                 </div>
 
 				<div class="container_details span9 listing text-medium" style="margin: 0;">
@@ -37,7 +40,8 @@
 
 		            <graph data-ng-repeat="i in graphs" options="i"></graph>
                     <div class="clearfix"></div>
-                    <a href="#!/compute/instance/{{zoneId}}" class="btid">< Back to Instance Detail</a>
+                    <a ng-show="existMachine" href="#!/compute/instance/{{zoneId}}" class="btid">< Back to Instance Detail</a>
+                    <a ng-hide="existMachine" href="#!/compute" class="btid">< Back to Instances</a>
 					
 				</div>
 				<div class="pull-right alert alert-info span3">
