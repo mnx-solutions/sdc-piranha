@@ -102,6 +102,7 @@
   }
 , "polling": {
     "machineTags": 5000
+  , "machineMetadata": 5000
   , "machineState": 10000
   , "packageChange": 1000
   }
@@ -145,6 +146,7 @@
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
+  , "instanceMetadata": "enabled"
   , "promocode": "enabled"
   , "invoices": "enabled"
   , "imageUse": "enabled"

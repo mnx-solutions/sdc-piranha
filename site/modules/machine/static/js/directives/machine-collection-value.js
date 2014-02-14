@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('tag',[
+    app.directive('machineCollectionValue', [
         function () {
             return {
                 require: 'ngModel',
@@ -11,26 +11,27 @@
                         // Not empty
                         if (!viewValue || viewValue.length === 0) {
                             // Both empty key and val are valid
-                            ctrl.$setValidity('tag', (!$scope.o.key || !$scope.o.val));
+                            ctrl.$setValidity('item', (!$scope.o.key || !$scope.o.val));
                             return viewValue;
                         }
                         // No invalid characters
                         if (/[^A-Z0-9\._\-]/i.test(viewValue)) {
-                            ctrl.$setValidity('tag', false);
+                            ctrl.$setValidity('item', false);
                             return viewValue;
                         }
+
                         // Is unique key
-                        var notUnique = $scope.tagsArray.some(function (tag, index) {
+                        var notUnique = $scope.collection.some(function (tag, index) {
                             if (tag.key === $scope.o.key && index !== $scope.key) {
                                 return true;
                             }
                         });
                         if (notUnique) {
-                            ctrl.$setValidity('tag', false);
+                            ctrl.$setValidity('item', false);
                             return viewValue;
                         }
 
-                        ctrl.$setValidity('tag', true);
+                        ctrl.$setValidity('item', true);
                         return viewValue;
                     });
                 }

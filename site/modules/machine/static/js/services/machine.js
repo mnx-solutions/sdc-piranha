@@ -452,56 +452,64 @@
             return job;
         };
 
-        service.tags = function (id, data) {
-            if (!id) {
-                return false;
-            }
-
-            var m = service.machine(id);
-
-            function tags() {
-                if (m.tags) {
-                    return m.tags;
+        var bindCollectionListUpdate = function (collectionName) {
+            var camelCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+            service[collectionName] = function (id, data) {
+                if (!id) {
+                    return false;
                 }
 
-                var job = serverTab.call({
-                    name: 'MachineTagsList',
-                    data: {uuid: id, datacenter: m.datacenter}
+                var m = service.machine(id);
+
+                function list() {
+                    if (m[collectionName]) {
+                        return m[collectionName];
+                    }
+
+                    var job = serverTab.call({
+                        name: 'Machine' + camelCollectionName + 'List',
+                        data: {uuid: id, datacenter: m.datacenter}
+                    });
+
+                    m[collectionName] = job.deferred;
+                    return m[collectionName];
+                }
+
+                function save() {
+                    var callData = {uuid: id, datacenter: m.datacenter};
+                    callData[collectionName] = data;
+                    var job = serverTab.call({
+                        name: 'Machine' + camelCollectionName + 'Save',
+                        data: callData
+                    });
+
+                    job.deferred.then(function (response) {
+                        m[collectionName] = response;
+                    }, function (err) {
+                        notification.push(m.id + '-' + collectionName, {type: 'error'},
+                            localization.translate(null,
+                                'machine',
+                                'Unable to save ' + collectionName
+                            )
+                        );
+                    });
+
+                    return job.deferred;
+                }
+
+                var d = $q.defer();
+
+                $q.when(m).then(function(machine){
+                    m = machine;
+                    d.resolve(data ? save() : list());
                 });
 
-                m.tags = job.deferred;
-                return m.tags;
-            }
-
-            function save() {
-                var job = serverTab.call({
-                    name: 'MachineTagsSave',
-                    data: { uuid: id, tags: data, datacenter: m.datacenter }
-                });
-
-                job.deferred.then(function (response) {
-                    m.tags = response;
-                }, function (err) {
-                    notification.push(m.id + '-tags', { type: 'error' },
-                        localization.translate(null,
-                            'machine',
-                            'Unable to save tags'
-                        )
-                    );
-                });
-
-                return job.deferred;
-            }
-
-            var d = $q.defer();
-
-            $q.when(m).then(function(machine){
-                m = machine;
-                d.resolve(data ? save() : tags());
-            });
-
-            return d.promise;
+                return d.promise;
+            };
         };
+
+        bindCollectionListUpdate('tags');
+        bindCollectionListUpdate('metadata');
 
         return service;
     }]);
