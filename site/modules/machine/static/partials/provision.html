@@ -72,7 +72,7 @@
                 <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none">
                     <div class="reconfigure-box">
                         <div class="accordion" id="networkAccordion">
-                            <div class="accordion-group" id="network-configuration-accordion-group">
+                            <div class="accordion-group accordion-group-borderless">
                                 <div class="accordion-heading">
                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
                                         <h4>Configure networks +</h4>
@@ -92,7 +92,28 @@
                     </div>
                 </div>
 
-
+                <div id="metadata-configuration" class="alert alert-joyent-blue reconfigure row-fluid none" data-ng-show="features.instanceMetadata == 'enabled'">
+                    <div class="reconfigure-box">
+                        <div class="accordion" id="metadataAccordion">
+                            <div class="accordion-group accordion-group-borderless">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#metadataAccordion" href="#metadataCollapse">
+                                        <h4>Configure metadata +</h4>
+                                    </a>
+                                </div>
+                                <div id="metadataCollapse" class="accordion-body collapse">
+                                    <div class="accordion-inner">
+                                        <div data-machine-collection
+                                             data-collection="metadataArray"
+                                             data-collection-name="'metadata'"
+                                             data-machine="machine">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue reconfigure row-fluid">
                     <div class="reconfigure-box">

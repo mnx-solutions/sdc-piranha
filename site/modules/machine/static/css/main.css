@@ -68,15 +68,6 @@
     cursor: pointer;
 }
 
-.tag input.tag-key {
-
-}
-
-.tag input.tag-value {
-/*    margin-left: 10px;
-    width: 240px;*/
-}
-
 .label-margin-fix {
     margin-left: 0px;
 }
