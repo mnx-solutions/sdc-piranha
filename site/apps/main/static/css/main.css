@@ -1559,18 +1559,6 @@ select::-ms-expand {
     vertical-align: middle;
 }
 
-.beta-sticker {
-    background-image: url("../img/sticker.png");
-    width: 66px;
-    height: 33px;
-    background-repeat: no-repeat;
-    margin-top: 7px;
-}
-
-.beta-sticker.beta {
-    margin-top: 47px;
-}
-
 .grid-small-font, .grid-small-font span, .grid-small-font .dropdown-menu label, .network td {
     font-size: 12px !important;
 }
@@ -1867,6 +1855,74 @@ label.checkbox {
     padding-bottom: 10px;
     padding-top: 10px;
 }
+
 .hide {
     display: none !important;
 }
+
+.beta-sticker {
+    background-image: url("../img/beta-sticker.png");
+    background-position: -3px 0;
+    background-repeat: no-repeat;
+    color: white;
+    width: 46px;
+    height: 24px;
+    margin-top: -15px;
+    padding-top: 3px;
+    padding-left: 15px;
+    font-size: 14px;
+    font-weight: 300;
+}
+.beta-sticker.tab {
+    margin-top: -4px;
+}
+
+.ribbon-wrapper-beta {
+    width: 85px;
+    height: 88px;
+    overflow: hidden;
+    position: absolute;
+    top: -3px;
+    right: -3px;
+}
+
+.ribbon-beta {
+    font-size: 14px;
+    color: white;
+    text-align: center;
+    -webkit-transform: rotate(45deg);
+    -moz-transform:    rotate(45deg);
+    -ms-transform:     rotate(45deg);
+    -o-transform:      rotate(45deg);
+    position: relative;
+    padding: 4px 0;
+    left: 0;
+    top: 12px;
+    width: 120px;
+    background-color: #457b98;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#8AAAC7), to(#316A8A));
+    background-image: -webkit-linear-gradient(top,#8AAAC7,#316A8A);
+    background-image:    -moz-linear-gradient(top,#8AAAC7,#316A8A);
+    background-image:     -ms-linear-gradient(top,#8AAAC7,#316A8A);
+    background-image:      -o-linear-gradient(top,#8AAAC7,#316A8A);
+    -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.3);
+    -moz-box-shadow:    0 0 3px rgba(0,0,0,0.3);
+    box-shadow:         0 0 3px rgba(0,0,0,0.3);
+}
+
+.ribbon-beta:before, .ribbon-beta:after {
+    content: "";
+    border-top:   3px solid #457b98;
+    border-left:  3px solid transparent;
+    border-right: 3px solid transparent;
+    position:absolute;
+    bottom: -3px;
+}
+
+.ribbon-beta:before {
+    left: 0;
+}
+.ribbon-beta:after {
+    right: 0;
+}
+

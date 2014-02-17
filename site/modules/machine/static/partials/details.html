@@ -221,6 +221,7 @@
                             <legend>
                                 <span class="font-size16" data-translate>Create Image</span>
                             </legend>
+                            <div class="beta-sticker pull-right">beta</div>
                             <p class="" data-ng-show="machine.state != 'stopped' && !imageCreateNotSupported" data-translate>
                                 Instance needs to be stopped before creating an image.
                             </p>
@@ -325,7 +326,8 @@
                     </div>
                     <div id="collapse_7" class="accordion-body collapse">
                         <div class="accordion-inner">
-                        <span data-ng-switch="features.firewall">
+                            <div class="beta-sticker pull-right tab">beta</div>
+                            <span data-ng-switch="features.firewall">
                             <fieldset data-ng-switch-when="enabled">
                                 <div data-ng-show="machine.type == 'virtualmachine'">
                                     <div class="item-list-container">
@@ -370,7 +372,6 @@
                                 </div>
                             </fieldset>
                         </span>
-
                     </div>
 
                     </div>
