@@ -12,10 +12,21 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     }
 
     $scope.zoneId = $routeParams.machine || $routeParams.machineid || null;
-    $scope.zoneName = null;
-    $scope.zones = Machine.machine();
     $scope.location = $location;
+    $scope.machineExists = false;
 
+    var uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    if ($scope.zoneId && !uuidPattern.test($scope.zoneId)) {
+        window.location = window.location.protocol + "//" + window.location.host + "/error";
+    } else if (!$scope.zoneId) {
+        $location.url('/compute');
+        $location.replace();
+    }
+
+    $scope.zoneName = null;
+    $scope.datacenter = null;
+    $scope.zones = Machine.machine();
+    $scope.machine = Machine.machine($scope.zoneId);
     $scope.ranges = [ 10, 30, 60, 90, 120, 150, 180 ];
 
     // values graphs are watching
@@ -36,7 +47,6 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     $scope.help = null;
     $scope.croppedModule = true;
     $scope.croppedMetric = true;
-    
     $scope.describe = false;
 
     function createNamedGraphs() {
@@ -81,77 +91,97 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         }
     });
 
+    $scope.$watch('zoneId', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            $scope.deleteAllInstrumentations(angular.noop);
+        }
+    });
+
     $scope.describeCa = function () {
         $scope.describe = true;
-        $scope.ca.describeCa(function (err, conf){
-            if (!err) {
-                $scope.conf = conf;
-                $scope.help = $scope.conf.help;
-                $scope.metrics = $scope.conf.metrics;
-                $scope.fields = $scope.conf.fields;
+        $q.when($scope.machine).then(function (machine) {
+            $scope.machine = machine;
+            $scope.zoneName = machine.name;
+            $scope.datacenter = machine.datacenter;
+            $scope.machineExists = true;
+            $scope.ca.describeCa(function (err, conf) {
+                if (!err) {
+                    $scope.conf = conf;
+                    $scope.help = $scope.conf.help;
+                    $scope.metrics = $scope.conf.metrics;
+                    $scope.fields = $scope.conf.fields;
 
-                $scope.ca.listAllInstrumentations($scope.zoneId, function (listErr, time, instrumentations) {
-                    if (!$scope.endtime && time) {
-                        $scope.endtime = time;
-                        tick();
-                    }
-                    if (listErr) {
-                        PopupDialog.error(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                $scope,
-                                null,
-                                listErr
-                            ),
-                            function () {}
-                        );
-                    }
-                    var empty = true;
-                    for (var i in instrumentations) {
-                        empty = false;
-                        var instrumentation = instrumentations[i];
-                        $scope.graphs.push({
-                            instrumentations: [instrumentation],
-                            title: $scope.ca.instrumentations[instrumentation._datacenter][instrumentation.id].graphtitle
-                        });
-                    }
-                    createNamedGraphs();
-                    $scope.$emit('described', !empty);
+                    $scope.ca.listAllInstrumentations($scope.zoneId, function (listErr, time, instrumentations) {
+                        if (!$scope.endtime && time) {
+                            $scope.endtime = time;
+                            tick();
+                        }
+                        if (listErr) {
+                            PopupDialog.error(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    listErr
+                                ),
+                                function () {}
+                            );
+                        }
+                        var empty = true;
+                        for (var i in instrumentations) {
+                            empty = false;
+                            var instrumentation = instrumentations[i];
+                            $scope.graphs.push({
+                                instrumentations: [instrumentation],
+                                title: $scope.ca.instrumentations[instrumentation._datacenter][instrumentation.id].graphtitle
+                            });
+                        }
+                        createNamedGraphs();
+                        $scope.$emit('described', !empty);
+                        $scope.describe = false;
+                    });
+                } else {
+                    PopupDialog.error(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Error'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            err
+                        ),
+                        function () {}
+                    );
+                    $scope.$emit('described', false);
                     $scope.describe = false;
-                });
-            } else {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        err
-                    ),
-                    function () {}
-                );
-                $scope.$emit('described', false);
-                $scope.describe = false;
-            }
+                }
 
+            });
+        }, function () {
+            $scope.$emit('described', false);
+            $scope.describe = false;
         });
     };
 
     $scope.describeCa();
 
-    $scope.instanceName = function(){
-      $scope.zones.forEach(function(el){
-          if(el.id == $scope.zoneId){
-              $scope.zoneName = el.name;
-          }
-      })
+    $scope.instanceName = function() {
+        var selectInstance = false;
+        $scope.zones.forEach(function(el) {
+            if(el.id == $scope.zoneId){
+                $scope.machine = el;
+                $scope.datacenter = el.datacenter;
+                $scope.zoneName = el.name;
+                selectInstance = true;
+            }
+        })
+        $scope.machineExists = selectInstance;
     };
 
     $scope.createDefaultInstrumentations = function() {
@@ -181,14 +211,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     };
 
     $scope._createDefaultInstrumentations = function() {
-        var datacenter = null;
-
-        for (var i in $scope.zones) {
-            var zone = $scope.zones[i];
-            if (zone.id === $scope.zoneId) {
-                datacenter = zone.datacenter;
-            }
-        }
+        var datacenter = $scope.datacenter;
 
         if (!datacenter) {
             PopupDialog.error(
@@ -292,17 +315,8 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
 
         var mod = $scope.current.metric.module;
         var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
-        var datacenter = null;
 
-        for (var i in $scope.zones) {
-            var zone = $scope.zones[i];
-
-            if (zone.id === $scope.zoneId) {
-                datacenter = zone.datacenter;
-            }
-        }
-
-        if (!datacenter) {
+        if (!$scope.datacenter) {
             //TODO: error handling;
         }
 
@@ -311,7 +325,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
             stat: $scope.current.metric.stat,
             decomposition: decomp,
             predicate: predicate,
-            datacenter: datacenter
+            datacenter: $scope.datacenter
         };
         return options;
     }
@@ -324,7 +338,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         return false;
     };
     
-    $scope.createInstrumentation = function(){
+    $scope.createInstrumentation = function() {
         var options = createOptions();
         $scope.ca.createInstrumentations($scope.zoneId, [ options ], function (errs, instrumentations) {
             if (!errs.length) {
@@ -372,10 +386,10 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     };
 
     $scope.$on('$destroy', function () {
-        $scope.deleteAllInstrumentations();
+        $scope.deleteAllInstrumentations(angular.noop);
     });
 
-    $scope.changeMetric = function(){
+    $scope.changeMetric = function() {
         $scope.croppedMetric = true;
         $scope.croppedModule = true;
         $scope.current.decomposition.primary = null;
@@ -394,7 +408,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     $scope.zoomOut = function() {
         var index = $scope.ranges.indexOf($scope.currentRange);
 
-        if (index+1 < $scope.ranges.length){
+        if (index+1 < $scope.ranges.length) {
             index++;
             $scope.currentRange = $scope.ranges[index];
         }
@@ -433,9 +447,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         }
     };
 
-    if($scope.zoneId != null) {
-        $scope.instanceName();
-    }
+    $scope.instanceName();
 }
 
     ]);
