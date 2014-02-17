@@ -56,7 +56,7 @@
         <div class="key span5"></div>
         <div class="value span5">
             <button class="btn btn-joyent-blue pull-right"
-                    data-ng-show="showCollectionSave"
+                    data-ng-show="machine && showCollectionSave"
                     data-ng-click="save()"
                     data-translate
                     data-ng-disabled="!(machine.state == 'running' || machine.state == 'stopped') || !collectionSaveOk || collectionSaving">Save</button>
