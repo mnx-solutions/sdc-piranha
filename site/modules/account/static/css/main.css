@@ -328,11 +328,11 @@ select.date-month, select.date-year {
 .inline-pos{
     display: inline-block;
 }
-.btn-invoice {
+.cell-link {
     cursor: pointer;
     color: #375675;
 }
-.light {
+.btn.light {
     color: #f60;
     text-shadow: none;
     background-color: #f3f3f3;
