@@ -13,10 +13,10 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
 
     $scope.zoneId = $routeParams.machine || $routeParams.machineid || null;
     $scope.location = $location;
-    $scope.existMachine = false;
+    $scope.machineExists = false;
 
-    var patt = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
-    if ($scope.zoneId && !patt.test($scope.zoneId)){
+    var uuidPattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i;
+    if ($scope.zoneId && !uuidPattern.test($scope.zoneId)) {
         window.location = window.location.protocol + "//" + window.location.host + "/error";
     } else if (!$scope.zoneId) {
         $location.url('/compute');
@@ -24,9 +24,9 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     }
 
     $scope.zoneName = null;
+    $scope.datacenter = null;
     $scope.zones = Machine.machine();
     $scope.machine = Machine.machine($scope.zoneId);
-
     $scope.ranges = [ 10, 30, 60, 90, 120, 150, 180 ];
 
     // values graphs are watching
@@ -47,7 +47,6 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     $scope.help = null;
     $scope.croppedModule = true;
     $scope.croppedMetric = true;
-    
     $scope.describe = false;
 
     function createNamedGraphs() {
@@ -92,20 +91,20 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         }
     });
 
-    function getDatacenter() {
-        for (var i in $scope.zones) {
-            var zone = $scope.zones[i];
-            if (zone.id === $scope.zoneId) {
-                return zone.datacenter;
-            }
+    $scope.$watch('zoneId', function(newValue, oldValue) {
+        if (newValue !== oldValue) {
+            $scope.deleteAllInstrumentations(angular.noop);
         }
-        return null;
-    }
+    });
 
     $scope.describeCa = function () {
+        $scope.describe = true;
         $q.when($scope.machine).then(function (machine) {
-            $scope.existMachine = true;
-            $scope.ca.describeCa(function (err, conf){
+            $scope.machine = machine;
+            $scope.zoneName = machine.name;
+            $scope.datacenter = machine.datacenter;
+            $scope.machineExists = true;
+            $scope.ca.describeCa(function (err, conf) {
                 if (!err) {
                     $scope.conf = conf;
                     $scope.help = $scope.conf.help;
@@ -172,15 +171,17 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
 
     $scope.describeCa();
 
-    $scope.instanceName = function(){
+    $scope.instanceName = function() {
         var selectInstance = false;
-        $scope.zones.forEach(function(el){
+        $scope.zones.forEach(function(el) {
             if(el.id == $scope.zoneId){
+                $scope.machine = el;
+                $scope.datacenter = el.datacenter;
                 $scope.zoneName = el.name;
                 selectInstance = true;
             }
         })
-        $scope.existMachine = selectInstance;
+        $scope.machineExists = selectInstance;
     };
 
     $scope.createDefaultInstrumentations = function() {
@@ -210,7 +211,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     };
 
     $scope._createDefaultInstrumentations = function() {
-        var datacenter = getDatacenter();
+        var datacenter = $scope.datacenter;
 
         if (!datacenter) {
             PopupDialog.error(
@@ -314,9 +315,8 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
 
         var mod = $scope.current.metric.module;
         var predicate = mod === 'zfs' && {} || { "eq": ["zonename", $scope.zoneId ]};
-        var datacenter = getDatacenter();
 
-        if (!datacenter) {
+        if (!$scope.datacenter) {
             //TODO: error handling;
         }
 
@@ -325,7 +325,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
             stat: $scope.current.metric.stat,
             decomposition: decomp,
             predicate: predicate,
-            datacenter: datacenter
+            datacenter: $scope.datacenter
         };
         return options;
     }
@@ -338,7 +338,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         return false;
     };
     
-    $scope.createInstrumentation = function(){
+    $scope.createInstrumentation = function() {
         var options = createOptions();
         $scope.ca.createInstrumentations($scope.zoneId, [ options ], function (errs, instrumentations) {
             if (!errs.length) {
@@ -386,10 +386,10 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     };
 
     $scope.$on('$destroy', function () {
-        $scope.deleteAllInstrumentations();
+        $scope.deleteAllInstrumentations(angular.noop);
     });
 
-    $scope.changeMetric = function(){
+    $scope.changeMetric = function() {
         $scope.croppedMetric = true;
         $scope.croppedModule = true;
         $scope.current.decomposition.primary = null;
@@ -408,7 +408,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
     $scope.zoomOut = function() {
         var index = $scope.ranges.indexOf($scope.currentRange);
 
-        if (index+1 < $scope.ranges.length){
+        if (index+1 < $scope.ranges.length) {
             index++;
             $scope.currentRange = $scope.ranges[index];
         }
@@ -447,9 +447,7 @@ function ($scope, ca, PopupDialog, $routeParams, Machine, $q, instrumentation, $
         }
     };
 
-    if($scope.zoneId != null) {
-        $scope.instanceName();
-    }
+    $scope.instanceName();
 }
 
     ]);
