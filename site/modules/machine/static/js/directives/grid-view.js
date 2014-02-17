@@ -360,7 +360,7 @@
 			                return next;
 		                };
 	                } else if(!el.id2) {
-                        if (el.id === "created") {
+                        if (el.reverseSort) {
                             el.rorder = el.id;
                             el.order = '-' + el.id;
                         } else {
