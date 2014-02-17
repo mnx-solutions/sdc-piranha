@@ -188,9 +188,12 @@
                     _getter: function (object) {
                         var datasetName = '';
                         var dataset = object.dataset;
+                        var winPrefix = 'sdc:admin:';
+                        var otherMachinesPrefix = 'sdc:sdc:';
+                        var prefixLength = 0;
 
                         if (dataset) {
-                            var prefixLength = 'sdc:sdc:'.length;
+                            prefixLength = dataset.indexOf(winPrefix) !== -1 ? winPrefix.length : otherMachinesPrefix.length;
                             datasetName = dataset.slice(prefixLength).replace(':', ' - ');
                         }
 
