@@ -413,7 +413,7 @@
                                 data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
                                 data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="stop_icon"></i>
+                    <i class="stop-icon"></i>
                     <p data-translate>Stop</p>
                 </button>
 
@@ -427,7 +427,7 @@
                                 data-original-title="Click here to reboot your instance."
                                 data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="reboot_icon"></i>
+                    <i class="reboot-icon"></i>
                     <p data-translate>Reboot</p>
                 </button>
 
@@ -440,7 +440,7 @@
                         data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
                         data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
-                    <i class="stop_icon"></i>
+                    <i class="delete-icon"></i>
                     <p data-translate>Delete</p>
                 </button>
             </div>

@@ -494,7 +494,7 @@
     background-repeat: no-repeat;
     background-image: url("../img/details_img_i.png");
 }
-.pause_icon, .stop_icon, .reboot_icon, .icon-play {
+.delete-icon, .reboot-icon, .icon-play, .stop-icon {
     width: 14px;
     height: 14px;
     float: left;
@@ -506,14 +506,14 @@
     vertical-align: top;
     padding-right: 5px;
 }
-.pause_icon {
-    background-image: url("../img/btn_i_pause.png");
+.delete-icon {
+    background-image: url("../img/btn_i_delete.png");
 }
-.stop_icon {
-    background-image: url("../img/btn_i_stop.png");
-}
-.reboot_icon {
+.reboot-icon {
     background-image: url("../img/btn_i_reboot.png");
+}
+.stop-icon {
+    background-image: url("../img/btn_i_stop.png");
 }
 .details_btn_block{
     padding: 18px;
