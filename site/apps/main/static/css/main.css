@@ -1926,3 +1926,17 @@ label.checkbox {
     right: 0;
 }
 
+.feedback-tab {
+    position: fixed;
+    top: 23%;
+    right: 0;
+    width: 42px;
+    height: 108px;
+    margin-top: 125px;
+    background: #457b98 url('../img/feedback-tab.png') 0 0 no-repeat;
+    z-index: 10000
+}
+.feedback-tab-link {
+    display: block;
+    height: 100%;
+}

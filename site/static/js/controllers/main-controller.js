@@ -38,6 +38,7 @@
                         return;
                     }
 
+                    $scope.currentHref = $location.absUrl();
 
                     // Update the view that is being rendered.
                     $scope.subview = renderContext.getNextSection();

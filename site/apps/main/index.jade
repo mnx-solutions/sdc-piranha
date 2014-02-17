@@ -42,6 +42,8 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
                     a &copy; #{currentYear} Joyent, Inc.
             div(class="clearfix")
 
+    div(class="feedback-tab")
+      a(target="_blank" class="feedback-tab-link" title="Feedback" data-ng-href="https://www.surveymonkey.com/s/PortalUpdateSurvey?c=#{userId}+{{currentHref}}")
     each link in js
         script(type='text/javascript',src='#{link._url}')
     each source in jss
