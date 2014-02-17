@@ -170,19 +170,19 @@ module.exports = function execute(scope) {
         });
     });
 
-    var bindCollectionList = function (collectionName, listMethodName) {
-        var camelCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
-        server.onCall('Machine' + camelCollectionName + 'List', {
+    var bindCollectionList = function (collectionName, listMethod) {
+        collectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+        server.onCall('Machine' + collectionName + 'List', {
             verify: function (data) {
                 return data &&
-                    typeof data.uuid === 'string' &&
-                    typeof data.datacenter === 'string';
+                    typeof (data.uuid) === 'string' &&
+                    typeof (data.datacenter) === 'string';
             },
             handler: function (call) {
                 var machineId = call.data.uuid;
                 var machineInfo = {'datacenter': call.data.datacenter};
                 call.log.info(machineInfo, 'Handling machine ' + collectionName + ' list call, machine %s', machineId);
-                call.cloud.separate(call.data.datacenter)[listMethodName](call.data.uuid, call.done.bind(call));
+                call.cloud.separate(call.data.datacenter)[listMethod](call.data.uuid, call.done.bind(call));
             }
         });
     };
@@ -191,9 +191,9 @@ module.exports = function execute(scope) {
 
     bindCollectionList('metadata', 'getMachineMetadata');
 
-    var bindCollectionSave = function (collectionName, listMethodName, updateMethodName, deleteMethodName, deleteAllMethodName) {
-        var camelCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
-        server.onCall('Machine' + camelCollectionName + 'Save', {
+    var bindCollectionSave = function (collectionName, listMethod, updateMethod, deleteMethod, deleteAllMethod) {
+        var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+        server.onCall('Machine' + upperCollectionName + 'Save', {
             verify: function (data) {
                 return data &&
                     typeof data.uuid === 'string' &&
@@ -212,7 +212,7 @@ module.exports = function execute(scope) {
                 };
 
                 var readCollection = function (callback) {
-                    cloud[listMethodName](call.data.uuid, function (collectionErr, collection) {
+                    cloud[listMethod](call.data.uuid, function (collectionErr, collection) {
                         if (collection) {
                             delete collection.root_authorized_keys;
                         }
@@ -237,24 +237,26 @@ module.exports = function execute(scope) {
                                 } else if (readCollectionStr !== oldCollectionStr) {
                                     clearInterval(timer);
                                     clearTimeout(overallTimer);
-                                    call.log.warn(machineInfo, 'Other call changed ' + collectionName + ', returning new tags %j', collection);
+                                    call.log.warn(machineInfo, 'Other call changed ' + collectionName + ', returning new ' + collectionName + ' %j', collection);
                                     call.done(null, collection);
                                 }
                             } else {
                                 call.log.error(machineInfo, 'Cloud polling failed for %s , %o', call.data.uuid, collectionErr);
                             }
                         });
-                    }, config.polling['machine' + camelCollectionName]);
+                    }, config.polling['machine' + upperCollectionName]);
 
+                    //TODO: Move overall timeout (1 minute for now) to config
                     overallTimer = setTimeout(function () {
-                        call.log.error(machineInfo, 'Operation timed out');
+                        var timeoutMessage = 'Polling for ' + collectionName + ' operation timed out';
+                        call.log.error(machineInfo, timeoutMessage);
                         clearInterval(timer);
-                        call.error(new Error('Operation timed out'));
+                        call.error(new Error(timeoutMessage));
                     }, 60 * 1000);
                 }
 
                 var updateCollection = function () {
-                    cloud[updateMethodName](call.data.uuid, newCollection, function (err) {
+                    cloud[updateMethod](call.data.uuid, newCollection, function (err) {
                         if (err) {
                             call.log.error(err);
                             call.error(err);
@@ -264,11 +266,11 @@ module.exports = function execute(scope) {
                     });
                 };
 
-                if (deleteMethodName) {
+                if (deleteMethod) {
                     readCollection(function (collErr, oldCollection) {
                         for (var key in oldCollection) {
                             if (!newCollection[key]) {
-                                cloud[deleteMethodName](call.data.uuid, key, function () {});
+                                cloud[deleteMethod](call.data.uuid, key, function () {});
                             }
                         }
                         updateCollection();
@@ -276,7 +278,7 @@ module.exports = function execute(scope) {
                 } else if (Object.keys(newCollection).length > 0) {
                     updateCollection();
                 } else {
-                    cloud[deleteAllMethodName](call.data.uuid, function (err) {
+                    cloud[deleteAllMethod](call.data.uuid, function (err) {
                         if (err) {
                             call.log.error(err);
                             call.error(err);

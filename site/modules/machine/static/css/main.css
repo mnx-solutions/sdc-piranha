@@ -95,7 +95,7 @@
     right: 10px;
 }
 
-#network-configuration-accordion-group {
+.accordion-group-borderless {
     border:none;
 }
 

@@ -61,7 +61,7 @@
                     data-translate
                     data-ng-disabled="!(machine.state == 'running' || machine.state == 'stopped') || !collectionSaveOk || collectionSaving">Save</button>
             <div class="pull-right loading-medium loading-30" data-ng-show="collectionSaving"></div>
-            <div class="btn btn-link pull-right" data-ng-click="add()" data-translate>+ Add New {{singleCollectionName()}}</div>
+            <div class="btn btn-link pull-right" data-ng-click="add()" data-translate>+ Add New {{collectionItemName}}</div>
         </div>
     </div>
 </div>

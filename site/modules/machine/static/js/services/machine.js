@@ -453,40 +453,40 @@
         };
 
         var bindCollectionListUpdate = function (collectionName) {
-            var camelCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+            var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
             service[collectionName] = function (id, data) {
                 if (!id) {
                     return false;
                 }
 
-                var m = service.machine(id);
+                var machine = service.machine(id);
 
                 function list() {
-                    if (m[collectionName]) {
-                        return m[collectionName];
+                    if (machine[collectionName]) {
+                        return machine[collectionName];
                     }
 
                     var job = serverTab.call({
-                        name: 'Machine' + camelCollectionName + 'List',
-                        data: {uuid: id, datacenter: m.datacenter}
+                        name: 'Machine' + upperCollectionName + 'List',
+                        data: {uuid: id, datacenter: machine.datacenter}
                     });
 
-                    m[collectionName] = job.deferred;
-                    return m[collectionName];
+                    machine[collectionName] = job.deferred;
+                    return machine[collectionName];
                 }
 
                 function save() {
-                    var callData = {uuid: id, datacenter: m.datacenter};
+                    var callData = {uuid: id, datacenter: machine.datacenter};
                     callData[collectionName] = data;
                     var job = serverTab.call({
-                        name: 'Machine' + camelCollectionName + 'Save',
+                        name: 'Machine' + upperCollectionName + 'Save',
                         data: callData
                     });
 
                     job.deferred.then(function (response) {
-                        m[collectionName] = response;
+                        machine[collectionName] = response;
                     }, function (err) {
-                        notification.push(m.id + '-' + collectionName, {type: 'error'},
+                        notification.push(machine.id + '-' + collectionName, {type: 'error'},
                             localization.translate(null,
                                 'machine',
                                 'Unable to save ' + collectionName
@@ -499,8 +499,8 @@
 
                 var d = $q.defer();
 
-                $q.when(m).then(function(machine){
-                    m = machine;
+                $q.when(machine).then(function(machine){
+                    machine = machine;
                     d.resolve(data ? save() : list());
                 });
 

@@ -8,6 +8,7 @@
             scope: {
                 collection: '=',
                 collectionName: '=',
+                collectionItemName: '=',
                 machine: '='
             },
 
@@ -82,14 +83,6 @@
 
                     $scope.collectionSaving = true;
                     Machine[$scope.collectionName]($scope.machine.id, data).then(initCollection);
-                };
-
-                $scope.singleCollectionName = function () {
-                    var str = $scope.collectionName;
-                    if (str.charAt(str.length - 1) === 's') {
-                        str = str.slice(0, -1);
-                    }
-                    return str.charAt(0).toUpperCase() + str.slice(1);
                 };
             },
 
