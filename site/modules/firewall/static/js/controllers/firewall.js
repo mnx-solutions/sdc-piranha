@@ -804,8 +804,7 @@
 	        $scope.gridOrder = [];
 	        $scope.gridProps = [
 		        {
-			        id: 'parsed',
-			        id2: 'from',
+			        id: 'from',
 			        name: 'From',
 			        getClass: function () {
 				        return 'span2 padding-5';
@@ -820,8 +819,7 @@
                     active: true
 		        },
 		        {
-			        id: 'parsed',
-			        id2: 'to',
+			        id: 'to',
 			        name: 'To',
 			        getClass: function () {
 				        return 'span2 padding-5';
