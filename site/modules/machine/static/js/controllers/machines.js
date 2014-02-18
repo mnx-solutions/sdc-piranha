@@ -190,8 +190,7 @@
                         var dataset = object.dataset;
 
                         if (dataset) {
-                            var prefixLength = 'sdc:sdc:'.length;
-                            datasetName = dataset.slice(prefixLength).replace(':', ' - ');
+                            datasetName = dataset.split(':').splice(2).join(' - ');
                         }
 
                         return datasetName;
