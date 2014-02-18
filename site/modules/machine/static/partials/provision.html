@@ -10,7 +10,7 @@
             </div>
 
             <div class="row-fluid">
-            <div class="span4 pull-right">
+            <div class="span4 pull-right" data-ng-form="overallForm">
                 <div data-ng-show="showReConfigure" class="alert alert-joyent-gray row-fluid reconfigure" id="pricing" style="padding-bottom:10px !important;">
                     <div class="reconfigure-box">
 
@@ -141,7 +141,7 @@
                                    data-machine-unique />
 
                             <button class="btn btn-joyent-blue"
-                                    data-ng-disabled="provisionForm.$invalid"
+                                    data-ng-disabled="overallForm.$invalid"
                                     data-ng-click="clickProvision()"
                                     data-translate>Create instance</button>
                         </form>
