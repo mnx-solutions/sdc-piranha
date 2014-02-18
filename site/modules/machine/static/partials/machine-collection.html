@@ -36,7 +36,14 @@
                         <label>Value <span class="required-asterix">*</span></label>
                     </span>
                     <span class="span9">
-                        <input type="text"
+                        <textarea data-ng-show="collectionName == 'metadata'"
+                               placeholder="Value"
+                               data-machine-collection-item
+                               data-translate="placeholder"
+                               data-ng-model="o.val"
+                               data-ng-disabled="collectionSaving"></textarea>
+                        <input data-ng-hide="collectionName == 'metadata'"
+                               type="text"
                                placeholder="Value"
                                data-machine-collection-item
                                data-translate="placeholder"

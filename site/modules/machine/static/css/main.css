@@ -280,7 +280,7 @@
     text-overflow: ellipsis;
 }
 
-.tag.editable input {
+.tag.editable input, .tag.editable textarea{
     width: 85%;
 }
 
