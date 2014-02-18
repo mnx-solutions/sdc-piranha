@@ -278,6 +278,7 @@
     float: left;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 300px;
 }
 
 .tag.editable input, .tag.editable textarea{
