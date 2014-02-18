@@ -127,9 +127,10 @@
             });
 
             if ($scope.userConfig.__loaded) {
-                $scope.gridUserConfig.config.order = {name: prop.name, ord: $scope.order[0] === prop.order};
-                $scope.gridUserConfig.config.dirty = true;
-                $scope.gridUserConfig.config.$save();
+                var userConfig = $scope.gridUserConfig.config;
+                userConfig.order = {name: prop.name, ord: $scope.order[0] === prop.order};
+                userConfig.dirty = true;
+                userConfig.$save();
             }
         };
 
@@ -334,6 +335,9 @@
                 exportFields: '=',
                 columnsButton: '=',
                 actionsButton: '=',
+                specialWidth: '=',
+                //TODO: What are these forms?
+                searchForm: '=',
                 instForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',
@@ -394,10 +398,10 @@
 
                 if (!$scope.userConfig) {
                     $scope.userConfig = {
-                        $load: function (callback) {callback(null, $scope.userConfig); },
+                        $load: function (callback) { callback(null, $scope.userConfig); },
                         $save: function () {},
-                        $child: function () {return $scope.userConfig; },
-                        __proto__: {__loaded: false}
+                        $child: function () { return $scope.userConfig; },
+                        __proto__: { __loaded: false }
                     };
                 }
                 $scope.userConfig.__proto__.__loaded = false;

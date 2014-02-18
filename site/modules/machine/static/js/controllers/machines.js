@@ -207,13 +207,13 @@
                 {
                     id: 'primaryIp',
                     name: 'IP',
-                    sequence: 5,
+                    sequence: 6,
                     active: true
                 },
                 {
                     id: 'state',
                     name: 'Status',
-                    sequence: 6,
+                    sequence: 7,
                     active: true
                 },
                 {
@@ -226,37 +226,37 @@
                 {
                     id: 'id',
                     name: 'ID',
-                    sequence: 8,
+                    sequence: 9,
                     active: false
                 },
                 {
                     id: 'dataset',
                     name: 'Dataset',
-                    sequence: 9,
+                    sequence: 10,
                     active: false
                 },
                 {
                     id: 'type',
                     name: 'Type',
-                    sequence: 10,
+                    sequence: 11,
                     active: false
                 },
                 {
                     id: 'memory',
                     name: 'Memory',
-                    sequence: 11,
+                    sequence: 12,
                     active: false
                 },
                 {
                     id: 'disk',
                     name: 'Disk',
-                    sequence: 12,
+                    sequence: 13,
                     active: false
                 },
                 {
                     id: 'tags',
                     name: 'Tags',
-                    sequence: 13,
+                    sequence: 14,
                     active: false
                 },
                 {

@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.JobDetailsController',
-        ['$scope', 'requestContext', 'localization', 'Storage', '$location', '$q', 'util',
-            function ($scope, requestContext, localization, Storage, $location, $q, util) {
+        ['$scope', 'requestContext', 'localization', 'Storage', '$location', '$q', 'PopupDialog',
+            function ($scope, requestContext, localization, Storage, $location, $q, PopupDialog) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.job', $scope);
 
@@ -34,7 +34,7 @@
                     var state = $scope.job.state;
 
                     if (state !== 'done' && state !== 'canceled') {
-                        util.confirm(
+                        PopupDialog.confirm(
                             localization.translate(
                                 $scope,
                                 null,
@@ -78,7 +78,7 @@
                 };
 
                 $scope.showMessage = function (type, message) {
-                    util.message(
+                    PopupDialog.message(
                         localization.translate(
                             $scope,
                             null,

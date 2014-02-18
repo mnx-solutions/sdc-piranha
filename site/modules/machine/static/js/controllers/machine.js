@@ -469,7 +469,7 @@
 
             if ($scope.features.firewall === 'enabled') {
                 if ($scope.features.manta === 'enabled') {
-                    $scope.gridUserConfig = Account.getUserConfig().$child('firewall');
+                    $scope.gridUserConfig = Account.getUserConfig().$child('firewall-details');
                 }
                 $scope.gridOrder = [];
                 $scope.gridProps = [

@@ -10,6 +10,7 @@ var fileman = function execute(scope) {
     var server = scope.api('Server');
 
     server.onCall('FileManGetUser', function (call) {
+        //TODO: User specific cache of manta client
         var client = Manta.createClient(call);
         call.done(null, {user: client.user});
     });

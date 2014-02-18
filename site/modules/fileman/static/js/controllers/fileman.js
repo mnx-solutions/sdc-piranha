@@ -7,14 +7,15 @@
         'requestContext',
         'fileman',
         function ($scope, localization, requestContext, fileman) {
-            localization.bind('dashboard-admin', $scope);
-            requestContext.setUpRenderContext('dashboard-admin.index', $scope);
+            //TODO: Move fileman to storage module
+            localization.bind('fileman', $scope);
+            requestContext.setUpRenderContext('fileman.index', $scope);
             fileman.setScope($scope);
 
-            var inProgress = false;
+            var loading = false;
             $scope.filesTree = {};
             $scope.setCurrentPath = function setCurrentPath(path, force) {
-                if (inProgress) {
+                if (loading) {
                     return;
                 }
                 if ($scope.path && $scope.path.type && $scope.path.type !== 'directory') {
@@ -22,7 +23,7 @@
                     return;
                 }
 
-                inProgress = true;
+                loading = true;
                 if (!force) {
                     path = ($scope.path && ($scope.path.full || $scope.path.name)) || path || $scope.currentPath || '/';
                     $scope.currentPath = $scope.currentPath || path;
@@ -69,11 +70,10 @@
                             }
                         });
 
-                        if ($scope.filesTree.hasOwnProperty(index)) {
-                            for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                                if (index === '/' + $scope.splittedCurrentPath[i].full || index === $scope.splittedCurrentPath[i].full) {
-                                    tmpFilesTree[$scope.splittedCurrentPath[i].full] = $scope.filesTree[index];
-                                }
+                        for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
+                            var fullPath = $scope.splittedCurrentPath[i].full;
+                            if (index === '/' + fullPath || index === fullPath) {
+                                tmpFilesTree[fullPath] = $scope.filesTree[index];
                             }
                         }
                     }
@@ -85,11 +85,12 @@
                     if ($scope.filesTree[$scope.currentPath] !== $scope.files) {
                         $scope.filesTree[$scope.currentPath] = $scope.files;
                     }
-                    inProgress = false;
+                    loading = false;
                 });
             };
 
             $scope.addFile = function () {
+                //TODO: Check if implementation needed
                 return false;
             };
 

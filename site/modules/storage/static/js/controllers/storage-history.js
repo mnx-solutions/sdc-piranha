@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$scope', 'requestContext', 'localization', 'Storage', 'util', '$dialog', 'Account',
-                function ($scope, requestContext, localization, Storage, util, $dialog, Account) {
+        ['$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account',
+                function ($scope, requestContext, localization, Storage, PopupDialog, $dialog, Account) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.history', $scope);
 
@@ -20,18 +20,18 @@
                     });
                 });
 
-                $scope.actionButton = function(){
+                $scope.actionButton = function () {
                     var flag = false;
                     $scope.jobs.$$v.forEach(function (el) {
-                        if(el.checked){
+                        if (el.checked) {
                             flag = true;
                         }
                     });
                     return flag;
                 };
 
-                $scope.noCheckBoxChecked = function(){
-                    util.error(
+                $scope.noCheckBoxChecked = function () {
+                    PopupDialog.error(
                         localization.translate(
                             $scope,
                             null,
@@ -41,7 +41,7 @@
                             $scope,
                             null,
                             'No jobs selected for the action.'
-                        ),function(){
+                        ), function () {
                         }
                     );
                 };
@@ -104,8 +104,8 @@
                             return false;
                         },
                         action: function (object) {
-                            if($scope.actionButton()) {
-                                util.confirm(
+                            if ($scope.actionButton()) {
+                                PopupDialog.confirm(
                                     localization.translate(
                                         $scope,
                                         null,
@@ -117,12 +117,14 @@
                                         'Clone this task'
                                     ), function () {
                                         $scope.jobs.$$v.forEach(function (el) {
-                                            if(el.checked){
+                                            if (el.checked) {
                                                 el.checked = false;
                                             }
                                         });
                                     });
-                            }else $scope.noCheckBoxChecked();
+                            } else {
+                                $scope.noCheckBoxChecked();
+                            }
                         },
                         show: function (object) {
                             return true;

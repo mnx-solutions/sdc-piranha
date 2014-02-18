@@ -15,7 +15,7 @@
 
             function createMethod(name) {
                 return function (path, data, callback) {
-                    if (typeof data === 'function') {
+                    if (typeof (data) === 'function') {
                         callback = data;
                         data = {};
                     }

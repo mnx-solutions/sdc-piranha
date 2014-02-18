@@ -180,6 +180,7 @@
             };
 
             if ($scope.features.manta === 'enabled') {
+                //TODO: Handle all other DC drop-downs
                 $scope.userConfig = Account.getUserConfig().$child('datacenter');
                 $scope.userConfig.$load(function (error, config) {
                     if (config.datacenter) {

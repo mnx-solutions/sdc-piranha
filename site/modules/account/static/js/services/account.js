@@ -253,7 +253,7 @@
                             return service.setUserConfig(config.parent || config);
                         },
                         $load: function (callback) {
-                            function ret(err, cfg) {
+                            function returnObj(err, cfg) {
                                 var child = config.child;
                                 cfg = createConfig(cfg, !err);
                                 if (child) {
@@ -262,11 +262,11 @@
                                 return cfg;
                             }
                             if (this.loaded) {
-                                callback(null, ret(null, this));
+                                callback(null, returnObj(null, this));
                             } else {
                                 load(function (err, cfg) {
                                     angular.extend(config.parent || config, cfg);
-                                    callback(err, ret(err, cfg));
+                                    callback(err, returnObj(err, cfg));
                                 });
                             }
                         },
