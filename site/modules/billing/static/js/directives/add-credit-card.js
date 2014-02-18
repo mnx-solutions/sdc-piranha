@@ -22,7 +22,7 @@
                     localization.bind('billing', $scope);
                 },
 
-                link: function ($scope) {
+                link: function ($scope, $element, $attrs) {
                     function getCardType(number){
                         if (!number) {
                             return '';
@@ -309,6 +309,7 @@
                                     country: $scope.phone.country.iso3,
                                     phone: $scope.phone.number
                                 }).then(function (account) {
+                                    if ($attrs.billingUpdate) {
                                         PopupDialog.message(
                                             localization.translate(
                                                 $scope,
@@ -322,7 +323,8 @@
                                             ),
                                             function () {}
                                         );
-                                    window.scrollTo(0,0);
+                                        window.scrollTo(0,0);
+                                    }
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
                                         $scope.loading = false;
