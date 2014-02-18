@@ -10,7 +10,7 @@
             </div>
 
             <div class="row-fluid">
-            <div class="span4 pull-right">
+            <div class="span4 pull-right" data-ng-form="overallForm">
                 <div data-ng-show="showReConfigure" class="alert alert-joyent-gray row-fluid reconfigure" id="pricing" style="padding-bottom:10px !important;">
                     <div class="reconfigure-box">
 
@@ -72,7 +72,7 @@
                 <div id="network-configuration" class="alert alert-joyent-blue reconfigure row-fluid none">
                     <div class="reconfigure-box">
                         <div class="accordion" id="networkAccordion">
-                            <div class="accordion-group" id="network-configuration-accordion-group">
+                            <div class="accordion-group accordion-group-borderless">
                                 <div class="accordion-heading">
                                     <a class="accordion-toggle" data-toggle="collapse" data-parent="#networkAccordion" href="#collapseOne">
                                         <h4>Configure networks +</h4>
@@ -92,7 +92,29 @@
                     </div>
                 </div>
 
-
+                <div id="metadata-configuration" class="alert alert-joyent-blue reconfigure row-fluid none" data-ng-show="features.instanceMetadata == 'enabled'">
+                    <div class="reconfigure-box">
+                        <div class="accordion" id="metadataAccordion">
+                            <div class="accordion-group accordion-group-borderless">
+                                <div class="accordion-heading">
+                                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#metadataAccordion" href="#metadataCollapse">
+                                        <h4>Configure metadata +</h4>
+                                    </a>
+                                </div>
+                                <div id="metadataCollapse" class="accordion-body collapse">
+                                    <div class="accordion-inner">
+                                        <div data-machine-collection
+                                             data-collection="metadataArray"
+                                             data-collection-name="'metadata'"
+                                             data-collection-item-name="'Metadata'"
+                                             data-machine="machine">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div id="finish-configuration" data-ng-show="showFinishConfiguration" class="alert alert-joyent-blue reconfigure row-fluid">
                     <div class="reconfigure-box">
@@ -119,7 +141,7 @@
                                    data-machine-unique />
 
                             <button class="btn btn-joyent-blue"
-                                    data-ng-disabled="provisionForm.$invalid"
+                                    data-ng-disabled="overallForm.$invalid"
                                     data-ng-click="clickProvision()"
                                     data-translate>Create instance</button>
                         </form>

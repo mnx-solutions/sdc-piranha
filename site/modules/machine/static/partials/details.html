@@ -185,7 +185,7 @@
                     <div class="pull-right"><a class="tiny-link-text" href="#!/images">My images list</a></div>
                 </div>
             </div><br/>
-            <fieldset data-ng-show="machine && features.instanceTagging != 'disabled'">
+            <fieldset data-ng-show="machine && features.instanceTagging == 'enabled'">
                 <legend>
                     <span data-translate>Tags</span>
                     <small data-translate>Add tags for convenient instance searching</small>
@@ -196,72 +196,25 @@
                     and identify your instances.
                 </p>
 
-                <div data-ng-form="tagForm">
-                    <div class="tags" data-ng-repeat="(key, o) in tagsArray">
-                        <div class="tag row-fluid" data-ng-show="!o.edit">
-                            <span class="key span5"
-                                  data-ng-click="editTag(key)"
-                                  data-ng-class="{error: o.conflict}">{{o.key}}</span>
+                <div data-machine-collection
+                     data-collection="tagsArray"
+                     data-collection-name="'tags'"
+                     data-collection-item-name="'Tag'"
+                     data-machine="machine">
+                </div>
 
-                            <span class="value span5"
-                                  data-ng-click="editTag(key)"
-                                  data-ng-class="{error: o.conflict}">{{o.val}}</span>
+                <div class="clearfix"></div>
+            </fieldset>
+            <fieldset data-ng-show="machine && features.instanceMetadata == 'enabled'">
+                <legend>
+                    <span data-translate>Metadata</span>
+                </legend>
 
-                            <span class="icon-trash pull-left delete"
-                                  data-ng-click="removeTag(key)"
-                                  data-ng-show="!tagsave">
-                            </span>
-                        </div>
-
-                        <div class="tag editable" data-ng-show="o.edit">
-                            <div data-ng-class="{error: o.conflict}" class="tag row-fluid control-group">
-                            <span class="key span5">
-                                <span class="span3 tag-label">
-                                    <label>Key <span class="required-asterix">*</span></label>
-                                </span>
-                                <span class="span9">
-                                    <input type="text"
-                                           placeholder="Key"
-                                           data-tag
-                                           data-translate="placeholder"
-                                           data-ng-model="o.key"
-                                           data-ng-disabled="tagsave">
-                                </span>
-                            </span>
-
-                            <span class="value span5">
-                                <span class="span3 tag-label">
-                                    <label>Value <span class="required-asterix">*</span></label>
-                                </span>
-                                <span class="span9">
-                                    <input type="text"
-                                           placeholder="Value"
-                                           data-tag
-                                           data-translate="placeholder"
-                                           data-ng-model="o.val"
-                                           data-ng-disabled="tagsave">
-                                </span>
-                            </span>
-
-                            <span class="icon-trash pull-left delete"
-                                  data-ng-click="removeTag(key)"
-                                  data-ng-show="!tagsave">
-                            </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tag tag-add row-fluid">
-                        <div class="key span5"></div>
-                        <div class="value span5">
-                            <button class="btn btn-joyent-blue pull-right"
-                                    data-ng-show="showTagSave"
-                                    data-ng-click="saveTags()"
-                                    data-translate
-                                    data-ng-disabled="!(machine.state == 'running' || machine.state == 'stopped') || !tagSaveOk || tagsave">Save</button>
-                            <div class="pull-right loading-medium loading-30" data-ng-show="tagsave"></div>
-                            <div class="btn btn-link pull-right" data-ng-click="addTag()" data-translate>+ Add New Tag</div>
-                        </div>
-                    </div>
+                <div data-machine-collection
+                     data-collection="metadataArray"
+                     data-collection-name="'metadata'"
+                     data-collection-item-name="'Metadata'"
+                     data-machine="machine">
                 </div>
 
                 <div class="clearfix"></div>

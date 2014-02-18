@@ -38,6 +38,8 @@
                 $scope.preSelectedNetworks = requestContext.getParam('networks');
             };
 
+            $scope.metadataArray = [];
+
             reloadSearchParams();
 
             if ($scope.features.freetier === 'enabled') {
@@ -132,6 +134,7 @@
                 function provisionMachine() {
                     // add networks to data
                     $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
+                    $scope.data.metadata = $scope.metadataArray;
                     $scope.retinfo = Machine.provisionMachine($scope.data);
                     $scope.retinfo.done(function(err, job) {
                         var newMachine = job.__read();
@@ -226,6 +229,9 @@
 
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 ng.element('#network-configuration').fadeOut('fast');
+                if ($scope.features.instanceMetadata === 'enabled') {
+                    ng.element('#metadata-configuration').fadeOut('fast');
+                }
                 ng.element('.carousel').carousel(0);
             };
 
@@ -367,6 +373,9 @@
                     $scope.data.package = pkg.id;
                     if (!$scope.preSelectedPackageId) {
                         ng.element('#network-configuration').fadeIn('fast');
+                        if ($scope.features.instanceMetadata === 'enabled') {
+                            ng.element('#metadata-configuration').fadeIn('fast');
+                        }
                     } else if ($scope.preSelectedNetworks) {
                         $scope.selectedNetworks = $scope.preSelectedNetworks;
                     }

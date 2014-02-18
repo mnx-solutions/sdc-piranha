@@ -68,15 +68,6 @@
     cursor: pointer;
 }
 
-.tag input.tag-key {
-
-}
-
-.tag input.tag-value {
-/*    margin-left: 10px;
-    width: 240px;*/
-}
-
 .label-margin-fix {
     margin-left: 0px;
 }
@@ -104,7 +95,7 @@
     right: 10px;
 }
 
-#network-configuration-accordion-group {
+.accordion-group-borderless {
     border:none;
 }
 
@@ -274,7 +265,7 @@
 .value {
     text-align: left !important;
     border-bottom: 1px solid #ddd;
-    min-width: 300px;
+    min-width: 220px;
 }
 
 .key.error, .value.error {
@@ -285,27 +276,28 @@
 .key, .value {
     padding: 3px 0px 3px 0px;
     float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
 }
 
-.tag.editable input {
+.tag.editable input, .tag.editable textarea{
     width: 85%;
 }
 
 .tag.editable .key, .tag.editable .value {
     border-bottom: none;
+    min-width: 257px;
 }
 
 .tag-label {
     color: #000;
     padding-top: 5px;
+    width: 47px;
 }
 
 .tag.tag-add .span5 {
     border-bottom: 0;
-}
-
-.tag.tag-add .btn-link {
-    margin-right: 10px;
 }
 
 .required-asterix {
