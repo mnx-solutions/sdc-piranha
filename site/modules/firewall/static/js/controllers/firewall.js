@@ -932,7 +932,7 @@
                         localization.translate(
                             $scope,
                             null,
-                            'Confirm: ' + message + ' rule'
+                            'Confirm: ' + message
                         ),
                         localization.translate(
                             $scope,
