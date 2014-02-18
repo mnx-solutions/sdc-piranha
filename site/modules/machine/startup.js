@@ -196,9 +196,9 @@ module.exports = function execute(scope) {
         server.onCall('Machine' + upperCollectionName + 'Save', {
             verify: function (data) {
                 return data &&
-                    typeof data.uuid === 'string' &&
-                    typeof data[collectionName] === 'object' &&
-                    typeof data.datacenter === 'string';
+                    typeof (data.uuid) === 'string' &&
+                    typeof (data[collectionName]) === 'object' &&
+                    typeof (data.datacenter) === 'string';
             },
             handler: function (call) {
                 call.log.info('Handling machine ' + collectionName + ' save call, machine %s', call.data.uuid);
