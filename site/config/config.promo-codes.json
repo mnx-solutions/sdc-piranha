@@ -82,10 +82,15 @@
         "campaignId": "7018000000153Jk"
     },
     "NODE.JS CORE SUPPORT": {
-        "expirationDate": "2019-12-31",
+        "expirationDate": "2020-12-31",
         "startDate": "2014-01-01",
         "campaignId": "701800000015696",
         "amount": 990,
         "ratePlanName": "Free Trial"
+    },
+    "JTB214964!" {
+       "expirationDate": "2014-04-01",
+       "startDate": "2014-02-14",
+       "campaignId": "701800000015EwB"
     }
 }
