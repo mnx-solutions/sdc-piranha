@@ -722,41 +722,39 @@
     float: left;
     background-color: #eef0f2;
 }
-.smartos-logo {
-    background-image: url(../img/smartos-logo.png);
+.smartos-logo,
+.ubuntuos-logo,
+.winos-logo,
+.centos-logo,
+.nodejs-logo,
+.joyent-logo,
+.mangodb-logo {
     background-repeat: no-repeat;
     background-position: 190px 15px;
     background-size: 38px;
+}
+
+
+.smartos-logo {
+    background-image: url(../img/smartos-logo.png);
 }
 .ubuntuos-logo {
     background-image: url(../img/ubuntuos-logo.png);
-    background-repeat: no-repeat;
-    background-position: 190px 15px;
-    background-size: 38px;
 }
 .winos-logo {
     background-image: url(../img/winos-logo.png);
-    background-repeat: no-repeat;
-    background-position: 190px 15px;
-    background-size: 38px;
 }
 .centos-logo {
     background-image: url(../img/centos-logo.png);
-    background-repeat: no-repeat;
-    background-position: 190px 15px;
-    background-size: 38px;
 }
 .nodejs-logo {
     background-image: url(../img/nodejs-logo.png);
-    background-repeat: no-repeat;
-    background-position: 190px 15px;
-    background-size: 38px;
 }
 .joyent-logo {
     background-image: url(../img/joyent-logo.png);
-    background-repeat: no-repeat;
-    background-position: 190px 15px;
-    background-size: 38px;
+}
+.mongodb-logo {
+    background-image: url(../img/mongodb-logo.png);
 }
 .basic-instance-info{
     margin-left: 20px;
