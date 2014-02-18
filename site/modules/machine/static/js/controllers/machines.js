@@ -166,7 +166,7 @@
                 }
             }
 
-            $scope.gridOrder = ['created'];
+            $scope.gridOrder = ['-created'];
             $scope.gridProps = [
                 {
                     id: 'label',
@@ -200,7 +200,8 @@
                     id: 'created',
                     name: 'Created',
                     sequence: 5,
-                    active: true
+                    active: true,
+                    reverseSort: true
                 },
                 {
                     id: 'primaryIp',
@@ -218,7 +219,8 @@
                     id: 'updated',
                     name: 'Updated',
                     sequence: 8,
-                    active: true
+                    active: true,
+                    reverseSort: true
                 },
                 {
                     id: 'id',

@@ -57,7 +57,7 @@
             };
 
 
-            $scope.gridOrder = [];
+            $scope.gridOrder = ['-published_at'];
             $scope.gridProps = [
                 {
                     id: 'name',
@@ -81,10 +81,8 @@
                     id: 'published_at',
                     name: 'Published at',
                     sequence: 4,
-                    _getter: function (image) {
-                        return $filter('date')(new Date(image.published_at), 'yyyy-MM-dd HH:mm');
-                    },
-                    active: true
+                    active: true,
+                    reverseSort: true
                 },
                 {
                     id: 'parsed',

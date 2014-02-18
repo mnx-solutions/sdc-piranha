@@ -349,7 +349,6 @@
                             el.active = false;
                         }
                     }
-
 	                if(el._getter) {
 		                el.order = el._getter;
 		                el.rorder = function (obj) {
@@ -361,8 +360,13 @@
 			                return next;
 		                };
 	                } else if(!el.id2) {
-                        el.order = el.id;
-                        el.rorder = '-' + el.id;
+                        if (el.reverseSort) {
+                            el.rorder = el.id;
+                            el.order = '-' + el.id;
+                        } else {
+                            el.order = el.id;
+                            el.rorder = '-' + el.id;
+                        }
                     } else {
                         el.order = el.id + '.' + el.id2;
                         el.rorder = '-' + el.id + '.' + el.id2;
