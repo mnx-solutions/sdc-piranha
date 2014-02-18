@@ -33,8 +33,9 @@
         'Machine',
         '$http',
         'PopupDialog',
+        'Account',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -800,6 +801,11 @@
                     $scope.openRuleForm = false;
                 }, $scope.disableLoading);
             };
+
+            if ($scope.features.manta === 'enabled') {
+                //TODO: Move to grid-view and use grid id as config id
+                $scope.gridUserConfig = Account.getUserConfig().$child('firewall');
+            }
 
 	        $scope.gridOrder = [];
 	        $scope.gridProps = [

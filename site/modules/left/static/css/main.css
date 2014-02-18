@@ -12,9 +12,9 @@
 }
 
 ul.page-sidebar-menu > li.active > a .selected,
-ul.page-sidebar-menu .second.active .sub-menu  > li.active > a .selected-sub,
-.second.active.collapses > li.active > a .selected,
-ul.page-sidebar-menu > li.second.active.collapses > a .selected{
+ul.page-sidebar-menu .nested.active .sub-menu  > li.active > a .selected-sub,
+.nested.active.collapses > li.active > a .selected,
+ul.page-sidebar-menu > li.nested.active.collapses > a .selected{
     display: block;
     width: 8px;
     height: 0;
@@ -32,12 +32,12 @@ ul.page-sidebar-menu > li.second.active.collapses > a .selected{
     -ms-transform: rotate(180deg);
     transform: rotate(180deg);
 }
-ul.page-sidebar-menu > li.second.active > a .selected,
-ul.page-sidebar-menu .second.active.collapses .sub-menu  > li.active > a .selected-sub
+ul.page-sidebar-menu > li.nested.active > a .selected,
+ul.page-sidebar-menu .nested.active.collapses .sub-menu  > li.active > a .selected-sub
 {
     display: none;
 }
-/*.second.active.open.collapses .sub-menu{*/
+/*.nested.active.open.collapses .sub-menu{*/
     /*display: none;*/
 /*}*/
 ul.page-sidebar-menu > li.active.over > a .selected {
@@ -95,29 +95,29 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     background-repeat: no-repeat;
     padding-right: 8px;
 }
-.start i{
+.dashboard-icon i{
     background-image: url("../img/dash_i_white.png");
 }
-.start.active i{
+.dashboard-icon.active i{
     background-image: url("../img/dash_i_orange.png") ! important;
 }
-.second i{
+.compute-icon i{
     background-image: url("../img/compute_i_white.png");
 }
-.second.active i{
+.compute-icon.active i{
     background-image: url("../img/compute_i_orange.png") ! important;
 }
-.three i{
+.storage-icon i{
     background-image: url("../img/storage_i_white.png");
 }
-.three.active i{
+.storage-icon.active i{
     background-image: url("../img/storage_i_orange.png") ! important;
 }
-.start .title, .second .title, .three .title, .last .title {
+.single .title, .nested .title, .three .title, .last .title {
     color: #ffffff;
     font-weight: 400;
 }
-.start.active .title, .second.active .title, .three.active .title, .last.active .title{
+.single.active .title, .nested.active .title, .three.active .title, .last.active .title{
     color: #ff6600 !important;
     font-weight: 400;
 }
@@ -143,44 +143,44 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     opacity: 1;
 }
 
-.second.active.over.collapses .title, .second.open.over.collapses .title{
+.nested.active.over.collapses .title, .nested.open.over.collapses .title{
     margin-left: 15px;
 }
 
-.second.active,  .second.open, .second.open.collapses {
+.nested.active,  .nested.open, .nested.open.collapses {
     height: auto;
     position: relative !important;
     z-index: 2000;
     display: block !important;
 }
 
-.second.active.over,
-.second.open.over{
+.nested.active.over,
+.nested.open.over{
     height: 34px;
 }
-.second.active.over .sub-menu >li a, .second.open.over .sub-menu >li a{
+.nested.active.over .sub-menu >li a, .nested.open.over .sub-menu >li a{
     padding-left: 7px !important;
 }
-.second.active.over.collapses .sub-menu, .second.open.over.collapses .sub-menu, .second.over.collapses .sub-menu{
+.nested.active.over.collapses .sub-menu, .nested.open.over.collapses .sub-menu, .nested.over.collapses .sub-menu{
     margin-left: 56px !important;
 }
-.second.over.collapses .sub-menu > li a{
+.nested.over.collapses .sub-menu > li a{
     padding-left: 7px !important;
 }
-.second.over.collapses .title{
+.nested.over.collapses .title{
     margin-left: 15px;
 }
-.second.active .sub-menu, .second.open .sub-menu {
+.nested.active .sub-menu, .nested.open .sub-menu {
     display: block;
     margin-left: 0;
 }
-.second.active.collapses .sub-menu, .second.open.collapses .sub-menu{
+.nested.active.collapses .sub-menu, .nested.open.collapses .sub-menu{
     display: none;
 }
-.second.active.collapses:hover .sub-menu, .second.open.collapses:hover .sub-menu, .second.collapses:hover .sub-menu{
+.nested.active.collapses:hover .sub-menu, .nested.open.collapses:hover .sub-menu, .nested.collapses:hover .sub-menu{
     display: block !important;
 }
-.second .sub-menu {
+.nested .sub-menu {
     display: none;
 }
 .sub-menu > li a:hover {
@@ -204,13 +204,13 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     font-weight: 300;
     color: #999999;
 }
-.sub0 .titles, .sub1 .titles, .sub2 .titles, .sub3 .titles{
+.sub0 .titles{
     color: #999999;
 }
-.sub0.active .titles, .sub1.active .titles, .sub2.active .titles, .sub3.active .titles{
+.sub0.active .titles{
     color: #f60 !important;
 }
-.sub0.active, .sub1.active, .sub2.active, .sub3.active{
+.sub0.active{
     background: #303030;
 }
 .over{

@@ -1,0 +1,105 @@
+<div class="container" data-ng-controller="Storage.JobDetailsController">
+    <ul class="breadcrumb">
+        <li><a href="#!/storage/history"> Jobs list</a> /</li>
+        <li> Job Details</li>
+    </ul>
+
+    <h3 class="page-title">{{ job.name + ' - ' + job.id }}</h3>
+
+    <div class="row">
+        <div class="span6">
+            <div class="row">
+                <div class="span4">
+                    <div>
+                        <h4>Job status</h4>
+                        <table class="table table-full-width">
+                            <tr>
+                                <th>State:</th>
+                                <th>Cancelled:</th>
+                                <th>Input done:</th>
+                            </tr>
+                            <tr>
+                                <td>{{ job.state }}</td>
+                                <td>{{ job.cancelled }}</td>
+                                <td>{{ job.inputDone }}</td>
+                            </tr>
+                        </table>
+
+                        <div>Time Created: {{ job.timeCreated }}</div>
+                        <div data-ng-show="job.timeDone">Time Completed: {{ job.timeDone }}</div>
+                    </div>
+                </div>
+                <div class="span2">
+                    <h4>Stats</h4>
+                    <table class="table table-striped table-full-width">
+                        <tr>
+                            <td>errors</td>
+                            <td>{{ job.stats.errors }}</td>
+                        </tr>
+                        <tr>
+                            <td>outputs</td>
+                            <td>{{ job.stats.outputs }}</td>
+                        </tr>
+                        <tr>
+                            <td>retries</td>
+                            <td>{{ job.stats.retries }}</td>
+                        </tr>
+                        <tr>
+                            <td>tasks</td>
+                            <td>{{ job.stats.tasks }}</td>
+                        </tr>
+                        <tr>
+                            <td>tasks done</td>
+                            <td>{{ job.stats.tasksDone }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div data-ng-show="inputs.length">
+                <h4>inputs <span>{{ inputs.length }}</span></h4>
+                <ul>
+                    <li data-ng-repeat="input in inputs">{{ input }}</li>
+                </ul>
+            </div>
+            <div data-ng-show="job.phases.length">
+                <div ng-repeat="phase in job.phases">
+                    <h4>{{ phase.type }} step</h4>
+                    <code>{{ phase.exec }}</code>
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <h4>Assets will be here...</h4>
+
+            <div data-ng-show="outputs.length">
+                <h4>Outputs <span>{{ outputs.length }}</span></h4>
+                <ul>
+                    <li data-ng-repeat="out in outputs"><code>{{ out }}</code></li>
+                </ul>
+            </div>
+
+            <div data-ng-show="errors.length">
+                <h4>Errors <span>{{ errors.length }}</span></h4>
+                <ul>
+                    <li data-ng-repeat="error in errors">{{ error }}</li>
+                </ul>
+            </div>
+
+            <div data-ng-show="failures.length">
+                <h4>Failures <span>{{ failures.length }}</span></h4>
+                <ul>
+                    <li data-ng-repeat="fail in failures">{{ fail }}</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="span4 offset8">
+            <button data-ng-click="cloneJob()" class="button">Clone Job</button>
+            <button data-ng-hide="job.state == 'done' || job.state == 'canceled'" data-ng-click="cancelJob()" class="button">Cancel</button>
+        </div>
+    </div>
+    <pre>{{ job | json }}</pre>
+</div>

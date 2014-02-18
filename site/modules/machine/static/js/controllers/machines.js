@@ -16,8 +16,9 @@
         '$location',
         'firewall',
         '$rootScope',
+        'Account',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope) {
+        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -76,7 +77,7 @@
                         $scope,
                         null,
                         'No instance selected for the action.'
-                    ), function() {
+                    ), function () {
                     }
                 );
             };
@@ -311,6 +312,10 @@
                     }
                 };
                 $scope.gridProps.splice(2, 0, firewallColumn);
+            }
+
+            if ($scope.features.manta === 'enabled') {
+                $scope.gridUserConfig = Account.getUserConfig().$child('machines');
             }
 
             $scope.gridDetailProps = [

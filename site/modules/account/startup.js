@@ -2,12 +2,14 @@
 
 var config = require('easy-config');
 var metadata = require('./lib/metadata');
+var MemoryStream = require('memorystream');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
     var TFA = scope.api('TFA');
     var SignupProgress = scope.api('SignupProgress');
     var Marketo = scope.api('Marketo');
+    var MantaClient = scope.api('MantaClient');
 
     var accountFields = ['id','login','email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
     var updateable = ['email','companyName','firstName','lastName','address','postalCode','city','state','country','phone'];
@@ -189,6 +191,56 @@ module.exports = function execute(scope) {
                     }
                 }, true);
             })();
+        });
+    });
+
+    var getConfigPath = function (call, client) {
+        return '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
+    };
+
+    server.onCall('GetUserConfig', function (call) {
+        var client = MantaClient.createClient(call);
+        client.get(getConfigPath(call, client), function (error, stream) {
+            var jsonConfig = {};
+            if (error) {
+                if (error.statusCode === 404) {
+                    call.req.log.info('Config for user not found');
+                } else {
+                    call.req.log.error({error: error}, 'Cannot read user config');
+                }
+                call.done(null, {});
+                return;
+            }
+            var configStream = new MemoryStream();
+            var config = '';
+
+            stream.pipe(configStream);
+            configStream.on('data', function (data) {
+                config += data;
+            });
+            configStream.on('end', function () {
+                try {
+                    jsonConfig = JSON.parse(config);
+                } catch (err) {
+                    call.req.log.error({error: err}, 'Error parsing config file');
+                }
+                call.done(null, jsonConfig);
+            });
+            configStream.on('error', function (error) {
+                call.req.log.error({error: error}, 'Error occured while reading user config');
+                call.done(null, {});
+            });
+        });
+    });
+
+    server.onCall('SetUserConfig', function (call) {
+        var client = MantaClient.createClient(call);
+        var fileStream = new MemoryStream(JSON.stringify(call.data), {writable: false});
+        client.put(getConfigPath(call, client), fileStream, {mkdirs: true}, function (error, response) {
+            if (error && error.statusCode !== 404) {
+                call.req.log.error({error: error}, 'Cannot write user config');
+            }
+            call.done(null, !!error);
         });
     });
 };

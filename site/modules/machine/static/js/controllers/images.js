@@ -13,8 +13,9 @@
         'PopupDialog',
         '$http',
         '$location',
+        'Account',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Image, localization, PopupDialog, $http, $location) {
+        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Image, localization, PopupDialog, $http, $location, Account) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.images', $scope, {
                 title: localization.translate(null, 'machine', 'Image List')
@@ -52,10 +53,13 @@
                     });
             };
 
-            $scope.provisionInstance = function(image) {
-                $location.path('/compute/create/'+ image.id);
+            $scope.provisionInstance = function (image) {
+                $location.path('/compute/create/' + image.id);
             };
 
+            if ($scope.features.manta === 'enabled') {
+                $scope.gridUserConfig = Account.getUserConfig().$child('images');
+            }
 
             $scope.gridOrder = ['-published_at'];
             $scope.gridProps = [

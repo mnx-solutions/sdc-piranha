@@ -1,0 +1,27 @@
+<div class="container machines" data-ng-controller="Storage.HistoryController">
+    <div class="page-header">
+        <h3 class="page-title">Manta - Storage Job History</h3>
+        <div class="header-btn-ci">
+            <button type="button" class="btn btn_ci orange align_text_btn"><i class="instance_btn_icon"></i>&nbsp;&nbsp;Create
+                New Job</button>
+        </div>
+    </div>
+    <div class="loading-large" data-ng-show="loading"></div>
+    <div data-ng-hide="loading">
+        <div data-grid-view
+             data-user-config="gridUserConfig"
+             data-props="gridProps"
+             data-detail-props="gridDetailProps"
+             data-action-buttons="gridActionButtons"
+             data-objects="jobs"
+             data-per-page="15"
+             data-order="gridOrder"
+             data-filter-all="{{query}}"
+             data-export-fields="exportFields"
+             data-actions-button="actionsButton"
+             data-enabled-checkboxes="enabledCheckboxes"
+             data-objects-type="jobs">
+        </div>
+    </div>
+
+</div>

@@ -179,6 +179,21 @@
                 provision(data);
             };
 
+            if ($scope.features.manta === 'enabled') {
+                //TODO: Handle all other DC drop-downs
+                $scope.userConfig = Account.getUserConfig().$child('datacenter');
+                $scope.userConfig.$load(function (error, config) {
+                    if (config.datacenter) {
+                        $scope.selectDatacenter(config.datacenter);
+                    }
+                    $scope.$watch('data.datacenter', function (dc) {
+                        if (config.datacenter !== dc) {
+                            config.datacenter = dc;
+                            config.$save();
+                        }
+                    });
+                });
+            }
             $scope.selectDatacenter = function (name) {
                 if (!name && !$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {

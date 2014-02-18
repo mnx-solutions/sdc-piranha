@@ -1,12 +1,13 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope','$filter','$http', function ($scope, $filter, $http) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', function ($scope, $filter, $http, $location) {
+        $scope.location = $location;
         $scope.getLastPage = function (update) {
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
                 var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
-                if(update && lastPage) {
+                if (update && lastPage) {
                     $scope.lastPage = lastPage;
                 }
 
@@ -60,7 +61,7 @@
         $scope.getLastPage(true);
         $scope.calcPageLimits();
 
-        $scope.isOnPage = function(index) {
+        $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
 
@@ -88,29 +89,29 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
-            if($scope.multisort !== 'false') {
+            if ($scope.multisort !== 'false') {
                 var existed = null;
-                if($scope.order.indexOf(prop.order) !== -1) {
+                if ($scope.order.indexOf(prop.order) !== -1) {
                     existed = 'order';
                     delete $scope.order[$scope.order.indexOf(prop.order)];
                 }
-                if($scope.order.indexOf(prop.rorder) !== -1) {
+                if ($scope.order.indexOf(prop.rorder) !== -1) {
                     existed = 'rorder';
                     delete $scope.order[$scope.order.indexOf(prop.rorder)];
                 }
-                if(reverse === undefined) {
-                    if(!existed) {
+                if (reverse === undefined) {
+                    if (!existed) {
                         $scope.order.push(prop.order);
-                    } else if(existed === 'order'){
+                    } else if (existed === 'order') {
                         $scope.order.push(prop.rorder);
                     }
-                } else if((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
+                } else if ((reverse && existed !== 'rorder') || (!reverse && existed !== 'order')) {
                     $scope.order.push(reverse ? prop.rorder : prop.order);
                 }
             } else {
                 var order = $scope.order[0];
 
-                if(order === prop.order) {
+                if (order === prop.order) {
                     $scope.order = [prop.rorder];
                 } else {
                     $scope.order = [prop.order];
@@ -118,18 +119,25 @@
             }
 
             $scope.props.forEach(function (el) {
-                if (el.name == prop.name){
+                if (el.name === prop.name) {
                     el.columnActive = true;
                 } else {
                     el.columnActive = false;
                 }
             });
+
+            if ($scope.userConfig.__loaded) {
+                var userConfig = $scope.gridUserConfig.config;
+                userConfig.order = {name: prop.name, ord: $scope.order[0] === prop.order};
+                userConfig.dirty = true;
+                userConfig.$save();
+            }
         };
 
         $scope.matchesFilter = function (obj) {
-            if($scope.filterAll) {
+            if ($scope.filterAll) {
                 return $scope.props.some(function (el) {
-                    if(!el.active) {
+                    if (!el.active) {
                         return false;
                     }
 
@@ -139,8 +147,8 @@
                         subject = subject.toString();
                     }
 
-                    if (ng.isObject(subject) || ng.isArray(subject)){
-                        subject = JSON.stringify(subject)
+                    if (ng.isObject(subject) || ng.isArray(subject)) {
+                        subject = JSON.stringify(subject);
                     }
 
                     var needle = $scope.filterAll.toLowerCase();
@@ -174,10 +182,10 @@
             });
 
             var final = [];
-            if($scope.exportFields.ignore) {
+            if ($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
             }
-            if($scope.exportFields.fields) {
+            if ($scope.exportFields.fields) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) !== -1; });
             }
 
@@ -206,18 +214,18 @@
         };
 
         $scope.getActionButtons = function (object) {
-            if(!object) {
+            if (!object) {
                 return $scope.actionButtons;
             }
-	        if(!$scope.actionButtons) {
-		        return [];
-	        }
+            if (!$scope.actionButtons) {
+                return [];
+            }
 
             return $scope.actionButtons.filter(function (btn) {
-                if(btn.show === undefined) {
+                if (btn.show === undefined) {
                     return true;
                 }
-                if(typeof btn.show === 'function') {
+                if (typeof btn.show === 'function') {
                     return btn.show(object);
                 }
 
@@ -225,24 +233,26 @@
             });
         };
 
-        if($scope.checkedCheckBox == undefined) $scope.checkedCheckBox = false;
+        if ($scope.checkedCheckBox === undefined) {
+            $scope.checkedCheckBox = false;
+        }
 
-        $scope.selectAllCheckbox = function(){
-            if($scope.checkedCheckBoxDisable){return;}
+        $scope.selectAllCheckbox = function () {
+            if ($scope.checkedCheckBoxDisable) {return; }
             $scope.checkedCheckBox = ($scope.checkedCheckBox) ? false : true;
             $scope.objects.forEach(function (el) {
                 el.checked = $scope.checkedCheckBox;
             });
         };
 
-        $scope.disableSelectAllCheckbox = function(){
+        $scope.disableSelectAllCheckbox = function () {
             var checkedFlag = 0;
             $scope.objects.forEach(function (el) {
-                if ((el.fireWallActionRunning) || (el.job && !el.job.finished)){
+                if ((el.fireWallActionRunning) || (el.job && !el.job.finished)) {
                     checkedFlag += 1;
                 }
 
-                if ( checkedFlag > 0 ) {
+                if (checkedFlag > 0) {
                     $scope.checkedCheckBoxDisable = true;
                 } else {
                     $scope.checkedCheckBoxDisable = false;
@@ -250,9 +260,11 @@
             });
         };
 
-        $scope.$watch('objects', function(){
-            $scope.selectCheckbox();
-            $scope.disableSelectAllCheckbox();
+        $scope.$watch('objects', function (objects) {
+            if (objects) {
+                $scope.selectCheckbox();
+                $scope.disableSelectAllCheckbox();
+            }
         }, true);
 
         $scope.selectCheckbox = function (obj) {
@@ -280,14 +292,19 @@
 
         $scope.selectColumnsCheckbox = function (id) {
             $scope.props.forEach(function (el) {
-                if(el.id == id){
+                if (el.id === id) {
                     el.active = (el.active) ? false : true;
+                    if ($scope.userConfig.__loaded) {
+                        $scope.gridUserConfig.propKeys[id].active = el.active;
+                        $scope.gridUserConfig.config.dirty = true;
+                    }
                 }
             });
+            $scope.userConfig.$save();
         };
 
         $scope.noClose = function () {
-            ng.element('.dropdown-menu').click(function(event) {
+            ng.element('.dropdown-menu').click(function (event) {
                 event.stopPropagation();
             });
         };
@@ -316,15 +333,18 @@
                 imageButtonShow:"=",
                 filterAll: '@',
                 exportFields: '=',
+                columnsButton: '=',
                 actionsButton: '=',
                 specialWidth: '=',
+                //TODO: What are these forms?
                 searchForm: '=',
+                instForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',
                 objectsType: '@',
                 placeHolderText: '=',
-                multisort: '@'
-
+                multisort: '@',
+                userConfig: '='
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
@@ -349,17 +369,19 @@
                             el.active = false;
                         }
                     }
-	                if(el._getter) {
-		                el.order = el._getter;
-		                el.rorder = function (obj) {
-			                var elem = el._getter(obj) + '';
-			                var next = '';
-			                for(var i = 0; i < elem.length; i++) {
-				                next += String.fromCharCode(255 - elem.charCodeAt(i));
-			                }
-			                return next;
-		                };
-	                } else if(!el.id2) {
+
+                    if (el._getter) {
+                        el.order = el._getter;
+                        el.rorder = function (obj) {
+                            var elem = String(el._getter(obj));
+                            var next = '';
+                            var i;
+                            for (i = 0; i < elem.length; i += 1) {
+                                next += String.fromCharCode(255 - elem.charCodeAt(i));
+                            }
+                            return next;
+                        };
+                    } else if (!el.id2) {
                         if (el.reverseSort) {
                             el.rorder = el.id;
                             el.order = '-' + el.id;
@@ -371,13 +393,84 @@
                         el.order = el.id + '.' + el.id2;
                         el.rorder = '-' + el.id + '.' + el.id2;
                     }
+
+                });
+
+                if (!$scope.userConfig) {
+                    $scope.userConfig = {
+                        $load: function (callback) { callback(null, $scope.userConfig); },
+                        $save: function () {},
+                        $child: function () { return $scope.userConfig; },
+                        __proto__: { __loaded: false }
+                    };
+                }
+                $scope.userConfig.__proto__.__loaded = false;
+                $scope.userConfig.$load(function (error, config) {
+                    if (error) {
+                        return;
+                    }
+                    $scope.userConfig.__proto__.__loaded = true;
+                    var propKeys = {};
+                    $scope.gridUserConfig = {
+                        config: config,
+                        propKeys: propKeys
+                    };
+
+                    if (Array.isArray(config.props)) {
+                        config.props.forEach(function (prop) {
+                            propKeys[prop.id] = prop;
+                        });
+                    } else {
+                        config.props = [];
+                        config.dirty = true;
+                    }
+
+                    if (!ng.isDefined(config.perPage)) {
+                        config.perPage = $scope.perPage;
+                        config.dirty = true;
+                    } else {
+                        $scope.perPage = config.perPage;
+                    }
+
+                    $scope.$watch('perPage', function (num) {
+                        if (ng.isDefined(num)) {
+                            config.perPage = $scope.perPage;
+                            config.dirty = true;
+                            config.$save();
+                        }
+                    });
+                    $scope.props.forEach(function (el) {
+                        if (propKeys[el.id]) {
+                            el.active = propKeys[el.id].active;
+                            if (!el.id2) {
+                                if (propKeys[el.id].order) {
+                                    el.order = propKeys[el.id].order;
+                                }
+                                if (propKeys[el.id].reorder) {
+                                    el.reorder = propKeys[el.id].reorder;
+                                }
+                            }
+                        } else {
+                            propKeys[el.id] = el;
+                            config.props.push(el);
+                            config.dirty = true;
+                        }
+
+                        if (!ng.isDefined(config.order)) {
+                            config.dirty = true;
+                            config.order = $scope.order;
+                        } else if (el.name === config.order.name) {
+                            $scope.order = [config.order.ord ? el.order : el.rorder];
+                        }
+                    });
+                    config.$save();
                 });
             }
         };
     }])
     .filter('jsonArray', function () {
         return function (array) {
-            if(ng.isArray(array)) {
+            if (ng.isArray(array)) {
                 return array.join('; ');
             }
             return JSON.parse(array).join('; ');
