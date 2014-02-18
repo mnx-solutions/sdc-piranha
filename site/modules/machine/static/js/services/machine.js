@@ -499,8 +499,8 @@
 
                 var d = $q.defer();
 
-                $q.when(machine).then(function(machine){
-                    machine = machine;
+                $q.when(machine).then(function (updatedMachine) {
+                    machine = updatedMachine;
                     d.resolve(data ? save() : list());
                 });
 
