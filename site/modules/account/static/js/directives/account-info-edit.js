@@ -10,7 +10,8 @@
         '$location',
         'TFAService',
         '$$track',
-        function (Account, localization, PopupDialog, $q, $http, $location, TFAService, $$track) {
+        '$rootScope',
+        function (Account, localization, PopupDialog, $q, $http, $location, TFAService, $$track, $rootScope) {
 
             return {
                 restrict: 'A',
@@ -69,6 +70,8 @@
                                 $scope.setAccount();
                                 $scope.nextStep();
                             } else {
+                                $rootScope.$broadcast("accountUpdated", acc);
+
                                 PopupDialog.message(
                                     localization.translate(
                                         $scope,
