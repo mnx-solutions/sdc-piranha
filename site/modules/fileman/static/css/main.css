@@ -24,22 +24,28 @@
     padding-left: 48px;
 }
 
-.folder-container{
-    height: 392px;
+.folder-container {
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     width: 1000px;
-    overflow: scroll;
-    display: inline-block;
 }
-.finder-column{
-    margin: 5px;
+.general-column {
+    position:relative;
+    vertical-align: top;
+    height:100%;
+    display: table-cell;
+    min-width: 90px;
+    max-width: 90px;
+    border-right: 1px solid #666;
+}
+.finder-column {
     display: table-cell;
     height: 390px;
-    min-width: 200px;
-    max-width: 200px;
-    overflow: hidden;
-    border:1px solid #ccc ;
+    overflow: auto;
+    background-color: #fafafa;
 }
-.finder-elements{
+.finder-column .finder-elements {
     display: block;
     margin-bottom: 5px;
     margin-top: 5px;
@@ -48,13 +54,266 @@
     overflow: hidden;
     white-space: nowrap;
 }
-.finder-elements a{
+.general-column .finder-elements {
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    background-color: #f7f7f7;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+.finder-elements a {
     text-decoration: none;
     margin-left: 5px;
 }
-.finder-elements.active a,.finder-elements.active{
-    color: white;
-}
 .finder-elements.active {
-    background-color: #f60;
+    background-color: #fef1d2;
+}
+.img-icon {
+    width: 25px;
+    height: 20px;
+}
+.blank,
+.compressed,
+.css,
+.developer,
+.excel,
+.fireworks,
+.flash,
+.html,
+.illustrator,
+.image,
+.keynote,
+.movie,
+.music,
+.numbers,
+.object,
+.pages,
+.pdf,
+.photoshop,
+.powerpoint,
+.text,
+.word {
+    background-repeat: no-repeat;
+    background-size: 25px;
+    width: 25px;
+    height: 25px;
+}
+.blank {
+    background-image: url("../img/blank.png");
+}
+.compressed {
+    background-image: url("../img/compressed.png");
+}
+.css {
+    background-image: url("../img/css.png");
+}
+.developer {
+    background-image: url("../img/developer.png");
+}
+.general-column .finder-elements .directory {
+     background: url("../img/folder.png") no-repeat 50%;
+     background-size: 43px 29px;
+     height: 29px;
+ }
+.general-column .finder-elements.active .directory {
+    background: url("../img/folder-open.png") no-repeat 50% !important;
+    background-size: 43px 29px;
+    height: 29px;
+}
+.finder-column .finder-elements .directory {
+    background: url("../img/folder.png") no-repeat;
+    background-size: 29px 20px;
+    width: 25px;
+    height: 25px;
+}
+.excel {
+    background-image: url("../img/excel.png");
+}
+.fireworks {
+    background-image: url("../img/fireworks.png");
+}
+.flash {
+    background-image: url("../img/flash.png");
+}
+.html {
+    background-image: url("../img/html.png");
+}
+.illustrator {
+    background-image: url("../img/illustrator.png");
+}
+.image {
+    background-image: url("../img/image.png");
+}
+.keynote {
+    background-image: url("../img/keynote.png");
+}
+.movie {
+    background-image: url("../img/movie.png");
+}
+.music {
+    background-image: url("../img/music.png");
+}
+.numbers {
+    background-image: url("../img/numbers.png");
+}
+.object {
+    background-image: url("../img/object.png");
+}
+.pages {
+    background-image: url("../img/pages.png");
+}
+.pdf {
+    background-image: url("../img/pdf.png");
+}
+.photoshop {
+    background-image: url("../img/photoshop.png");
+}
+.powerpoint {
+    background-image: url("../img/powerpoint.png");
+}
+.text {
+    background-image: url("../img/text.png");
+}
+.word {
+    background-image: url("../img/word.png");
+}
+.path-name {
+    vertical-align: middle;
+    max-width: 190px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #969696;
+}
+.general-column .finder-elements .path-name {
+    display: block;
+    width: 80px;
+    font-size: 16px;
+    color: #333;
+}
+.finder-column .finder-elements .path-name {
+    display: inline-block;
+}
+.finder-elements.active .path-name {
+    color: #333;
+}
+.folder-container-sub {
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+}
+.files-box {
+    height: 390px;
+    overflow-x:hidden;
+    overflow-y:auto;
+}
+.general-column .files-box {
+    width: 100px;
+}
+.finder-column .files-box {
+    width: 225px;
+    border: 1px solid #666;
+    margin-left: -1px;
+}
+.cancel-icon, .delete-icon, .download-icon,
+.info-icon, .plus-icon, .share-icon, .upload-icon {
+    background: no-repeat 50%;
+    background-size: 18px;
+    width: 18px;
+    height: 18px;
+    float: left;
+    vertical-align: middle;
+    margin-right: 5px;
+    margin-top: 1px;
+}
+.key-icon {
+    background: url("../img/key-icon.png") no-repeat 50% 50%;
+    background-size: 26px 15px;
+    width: 26px;
+    height: 15px;
+    float: left;
+    vertical-align: middle;
+    margin-right: 5px;
+    margin-top: 1px;
+}
+.cancel-icon {
+    background-image: url("../img/cancel-icon.png");
+}
+.delete-icon {
+    background-image: url("../img/delete-icon.png");
+}
+.download-icon {
+    background-image: url("../img/download-icon.png");
+}
+.info-icon {
+    background-image: url("../img/info-icon.png");
+}
+.plus-icon {
+    background-image: url("../img/plus-icon.png");
+}
+.share-icon {
+    background-image: url("../img/share-icon.png");
+}
+.upload-icon {
+    background-image: url("../img/upload-icon.png");
+}
+.upload-icon-grey {
+    background: url("../img/upload-icon-grey.png") no-repeat 50% 50%;
+    background-size: 14px 14px;
+    position: relative;
+    width: 14px;
+    height: 35px;
+    margin-left: 14px;
+    margin-right: 14px;
+    display: inline-block;
+}
+.header-btn-panel {
+    padding-bottom: 5px;
+}
+.header-btn-panel form {
+    margin-right: 110px;
+    margin-bottom: 0;
+}
+.header-btn-panel input:first-child {
+    margin-top: 3px;
+    color: #333333;
+    border-radius: 18px;
+    border: 0 none;
+    -webkit-box-shadow: none!important;
+    -moz-box-shadow: none!important;
+    box-shadow: none!important;
+    padding-right: 30px;
+    padding-left: 15px;
+    background: #f5f5f5 url("../img/table_i_search.png") no-repeat center right;
+}
+.line-bg {
+    background: url("../img/line-bg.png") repeat-x;
+    width: 100%;
+    height: 35px;
+    vertical-align: top;
+    line-height: 35px;
+    text-align: center;
+    color: #666;
+    font-weight: 200;
+}
+.drag-files {
+    padding-left: 90px;
+    padding-top: 5px;
+}
+.upload-btn {
+    display: inline-block;
+    vertical-align: middle;
+}
+.bottom-btn-panel {
+    margin-left: 90px;
+    padding-top: 15px;
+    padding-bottom: 5px;
+}
+.bottom-btn-panel span {
+    font-weight: 500;
+    font-size: 16px;
+    padding-right: 20px;
+    color: #666;
 }

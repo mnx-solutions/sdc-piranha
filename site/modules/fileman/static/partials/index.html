@@ -1,26 +1,65 @@
-<div class="container container-fileman" data-ng-controller="Fileman.IndexController">
-    <div class="row-fluid">
-        <div class="page-header">
-            <h3 class="page-title">Manta - File Manager</h3>
-        </div>
+<div class="container-fluid container-position container-min-width" data-ng-controller="Fileman.IndexController">
+    <ul class="breadcrumb">
+        <li><a href="#!/storage">Storage</a> /</li>
+    </ul>
+
+    <div class="page-header row-fluid">
+        <h3 class="page-title">Manta - File Manager</h3>
     </div>
 
-    <div id="folder" class="folder-container" data-path="{{ currentPath }}">
-        <div data-ng-repeat="i in filesTree" class="finder-column">
-            <div data-ng-repeat="path in i"  class="finder-elements" data-ng-class="{active: path.active}">
-                <a href="JavaScript:{}" data-ng-click="setCurrentPath('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path,1)">
-                    <img data-ng-src="fileman/static/img/{{ path.type }}.png" alt="{{ path.name }}" style="width: 25px;height: 25px;"/>
-                    {{ path.name }}
-                </a>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+
+    <div class="header-btn-panel pull-right" data-ng-hide="loading">
+        <form class="pull-left">
+            <input type="search"
+                   name="search"
+                   id="search"
+                   placeholder="search files"
+                   data-ng-model="filterAll"
+                   data-translate="search files" />
+            <!--<input value="" class="grid-search-icon" type="submit">-->
+        </form>
+        <button class="btn light"><i class="download-icon"></i>Download</button>
+        <button class="btn light"><i class="info-icon"></i>Get Info</button>
+        <button class="btn light"><i class="share-icon"></i>Share</button>
+        <button class="btn light"><i class="key-icon"></i>mLogin</button>
+        <button class="btn light"><i class="delete-icon"></i>Delete</button>
+    </div>
+
+    <div id="folder" class="folder-container" data-path="{{ currentPath }}" data-ng-hide="loading">
+        <div class="folder-container-sub">
+            <div data-ng-repeat="i in filesTree" class="{{getColumnClass($index)}}">
+                <div class="files-box">
+                    <div data-ng-repeat="path in i"  class="finder-elements" data-ng-class="{active: path.active}">
+                        <a href="JavaScript:{}" data-ng-click="setCurrentPath('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path,1)">
+                            <div class="{{path.type}} path-name"></div>
+                            <div class="path-name">{{ path.name }}</div>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="drag-files">
+            <div class="line-bg"><i class="upload-icon-grey"></i>Drag files to upload<i class="upload-icon-grey"></i></div>
+        </div>
+
     </div>
-    <div id="address">
-        <form name="uploadForm" action="fileman/upload" enctype="multipart/form-data" method="post" target="uploadFrame">
-            <input type="file" id="uploadInput" name="uploadInput" onchange="uploadForm.submit();" style="display: none" multiple/>
-            <input type="hidden" name="path" value="{{ currentPath }}"/>
-            <label type="button" for="uploadInput" class="btn orange pull-left">Add files</label>
-        </form>
-        <iframe src="about:blank" style="display: none;" name="uploadFrame" onload="uploadForm.reset();"></iframe>
+
+    <div class="bottom-btn-panel pull-left" data-ng-hide="loading">
+        <span>Multiple File Upload:</span>
+        <div id="address" class="upload-btn">
+            <form name="uploadForm" action="fileman/upload" enctype="multipart/form-data" method="post" target="uploadFrame">
+                <input type="file" id="uploadInput" name="uploadInput" onchange="uploadForm.submit();" style="display: none" multiple/>
+                <input type="hidden" name="path" value="{{ currentPath }}"/>
+                <label type="button" for="uploadInput" class="btn light pull-left"><i class="plus-icon"></i>Add files</label>
+            </form>
+            <iframe src="about:blank" style="display: none;" name="uploadFrame" onload="uploadForm.reset();"></iframe>
+        </div>
+
+        <button class="btn light"><i class="upload-icon"></i>Start Upload</button>
+        <button class="btn light"><i class="cancel-icon"></i>Cancel</button>
+        <button class="btn light"><i class="delete-icon"></i>Delete</button>
     </div>
+
+
 </div>

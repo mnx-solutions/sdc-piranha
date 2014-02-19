@@ -12,20 +12,28 @@
             requestContext.setUpRenderContext('fileman.index', $scope);
             fileman.setScope($scope);
 
-            var loading = false;
+            $scope.loadingFileman = false;
+            $scope.loading = true;
             $scope.filesTree = {};
+            $scope.getColumnClass = function (index) {
+                if (index === 0) {
+                    return 'general-column';
+                } else {
+                    return 'finder-column';
+                }
+            };
             $scope.setCurrentPath = function setCurrentPath(path, force) {
-                if (loading) {
+                if ($scope.loadingFileman) {
                     return;
                 }
-                if ($scope.path && $scope.path.type && $scope.path.type !== 'directory') {
-                    fileman.get($scope.currentPath + '/' + $scope.path.name);
+                if (this.path && this.path.type && this.path.type !== 'directory') {
+                    fileman.get($scope.currentPath + '/' + this.path.name);
                     return;
                 }
 
-                loading = true;
+                $scope.loadingFileman = true;
                 if (!force) {
-                    path = ($scope.path && ($scope.path.full || $scope.path.name)) || path || $scope.currentPath || '/';
+                    path = (this.path && (this.path.full || this.path.name)) || path || $scope.currentPath || '/';
                     $scope.currentPath = $scope.currentPath || path;
                 } else {
                     $scope.currentPath = path;
@@ -52,29 +60,24 @@
                     };
                 });
 
-                if ($scope.path) {
-                    $scope.path.active = true;
-                }
                 var tmpFilesTree = {};
                 var i;
+
                 for (var index in $scope.filesTree) {
                     if ($scope.filesTree.hasOwnProperty(index)) {
                         $scope.filesTree[index].forEach(function (el) {
-                            if (el.active) {
-                                el.active = false;
-                                for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                                    if (el.name === $scope.splittedCurrentPath[i].name) {
-                                        el.active = true;
-                                    }
+                            el.active = false;
+                            for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
+                                if (el.name === $scope.splittedCurrentPath[i].name && (index + '/' + el.name).replace(/\/+/, '/') === $scope.splittedCurrentPath[i].full.replace(/\/+/, '/')) {
+                                    el.active = true;
                                 }
                             }
                         });
-
-                        for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                            var fullPath = $scope.splittedCurrentPath[i].full;
-                            if (index === '/' + fullPath || index === fullPath) {
-                                tmpFilesTree[fullPath] = $scope.filesTree[index];
-                            }
+                    }
+                    for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
+                        var fullPath = $scope.splittedCurrentPath[i].full;
+                        if (index === '/' + fullPath || index === fullPath) {
+                            tmpFilesTree[fullPath] = $scope.filesTree[index];
                         }
                     }
                 }
@@ -85,7 +88,8 @@
                     if ($scope.filesTree[$scope.currentPath] !== $scope.files) {
                         $scope.filesTree[$scope.currentPath] = $scope.files;
                     }
-                    loading = false;
+                    $scope.loadingFileman = false;
+                    $scope.loading = false;
                 });
             };
 
