@@ -313,7 +313,7 @@
 
     }]).constant('gridConfig', {
         paginated: true,
-        perPage: 5,
+        perPage: 25,
         page: 1,
         showPages: 5,
         order: [],
