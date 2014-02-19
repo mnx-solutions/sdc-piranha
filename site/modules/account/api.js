@@ -200,7 +200,7 @@ module.exports = function execute(scope, register) {
                             call.log.error(metaErr);
                             return;
                         }
-                        call.log.info('Set block step in metadata to true');
+                        call.log.info('Set block status in metadata to true');
                         updateBilling(req);
                     });
                     return;
