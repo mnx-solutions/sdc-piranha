@@ -38,9 +38,9 @@
                 $scope.preSelectedNetworks = requestContext.getParam('networks');
             };
 
-            $scope.metadataArray = [];
-
             reloadSearchParams();
+
+            $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
 
             if ($scope.features.freetier === 'enabled') {
                 $scope.freeTierOptions = FreeTier.freetier();
