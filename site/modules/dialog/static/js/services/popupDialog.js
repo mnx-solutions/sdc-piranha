@@ -70,9 +70,7 @@
             return $dialog.messageBox(title, question, btns, 'dialog/static/partials/messageDialog.html')
                 .open()
                 .then(function (result) {
-                    if (result === 'ok') {
-                        callback();
-                    }
+                     callback();
                 });
         };
 

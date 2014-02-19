@@ -80,7 +80,10 @@
                                         'account',
                                         'Account updated'
                                     ),
-                                    function () {}
+                                    function () {
+                                        $location.url('/account');
+                                        $location.replace();
+                                    }
                                 );
                             }
                         }, function (err) {

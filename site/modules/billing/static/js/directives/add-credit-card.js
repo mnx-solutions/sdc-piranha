@@ -11,8 +11,9 @@
         'notification',
         'localization',
         'PopupDialog',
+        '$location',
 
-        function (BillingService, $q, $http, $rootScope, Account, notification, localization, PopupDialog) {
+        function (BillingService, $q, $http, $rootScope, Account, notification, localization, PopupDialog, $location) {
             return {
                 restrict: 'A',
                 replace: true,
@@ -321,7 +322,10 @@
                                                 'billing',
                                                 'Billing information updated'
                                             ),
-                                            function () {}
+                                            function () {
+                                                $location.url('/account');
+                                                $location.replace();
+                                            }
                                         );
                                         window.scrollTo(0,0);
                                     }
