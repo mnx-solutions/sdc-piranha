@@ -198,9 +198,9 @@ module.exports = function execute(scope, register) {
                     metadata.set(req.session.userId, metadata.BLOCK_STATUS, true, function (metaErr) {
                         if (metaErr) {
                             call.log.error(metaErr);
-                        } else {
-                            call.log.info('Set block step in metadata to true');
+                            return;
                         }
+                        call.log.info('Set block step in metadata to true');
                         updateBilling(req);
                     });
                     return;
