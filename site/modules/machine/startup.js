@@ -256,6 +256,10 @@ module.exports = function execute(scope) {
                 }
 
                 var updateCollection = function () {
+                    if (Object.keys(newCollection).length === 0) {
+                        updateState();
+                        return;
+                    }
                     cloud[updateMethod](call.data.uuid, newCollection, function (err) {
                         if (err) {
                             call.log.error(err);
@@ -266,18 +270,7 @@ module.exports = function execute(scope) {
                     });
                 };
 
-                if (deleteMethod) {
-                    readCollection(function (collErr, oldCollection) {
-                        for (var key in oldCollection) {
-                            if (!newCollection[key]) {
-                                cloud[deleteMethod](call.data.uuid, key, function () {});
-                            }
-                        }
-                        updateCollection();
-                    });
-                } else if (Object.keys(newCollection).length > 0) {
-                    updateCollection();
-                } else {
+                if (Object.keys(newCollection).length === 0 && deleteAllMethod) {
                     cloud[deleteAllMethod](call.data.uuid, function (err) {
                         if (err) {
                             call.log.error(err);
@@ -287,6 +280,17 @@ module.exports = function execute(scope) {
 
                         updateState();
                     });
+                } else if (deleteMethod) {
+                    readCollection(function (collErr, oldCollection) {
+                        for (var key in oldCollection) {
+                            if (!newCollection[key]) {
+                                cloud[deleteMethod](call.data.uuid, key, function () {});
+                            }
+                        }
+                        updateCollection();
+                    });
+                } else {
+                    updateCollection();
                 }
             }
         });
@@ -294,7 +298,7 @@ module.exports = function execute(scope) {
 
     bindCollectionSave('tags', 'listMachineTags', 'replaceMachineTags', null, 'deleteMachineTags');
 
-    bindCollectionSave('metadata', 'getMachineMetadata', 'updateMachineMetadata', 'deleteMachineMetadata', 'deleteAllMachineMetadata');
+    bindCollectionSave('metadata', 'getMachineMetadata', 'updateMachineMetadata', 'deleteMachineMetadata', null);
 
     /* GetMachine */
     server.onCall('MachineDetails', {
