@@ -1591,7 +1591,7 @@
     cursor: default!important
 }
 .overflow-accordion{
-    overflow: scroll;
+    overflow: auto;
 }
 
 .toggle-graf-width{
