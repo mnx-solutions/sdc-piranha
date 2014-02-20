@@ -281,6 +281,10 @@
     max-width: 300px;
 }
 
+.collectionControl {
+    padding: 3px 0px 3px 0px;
+}
+
 .tag.editable input, .tag.editable textarea{
     width: 85%;
 }
