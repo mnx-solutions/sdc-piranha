@@ -17,7 +17,8 @@
                             <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
                         </li>
                     </ul>
-            </div>
+                    <div class="loading-medium loading-medium-inline" data-ng-show="dcLoading"></div>
+                </div>
                 <div class="hotlinks pull-right">
                     <a id="link-more-images" href="" data-ng-click="basicCreateInstance = false">View More Images </a>
                     <span data-ng-show="features.imageUse != 'disabled'">

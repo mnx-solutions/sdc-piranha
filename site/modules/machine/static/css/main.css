@@ -1656,3 +1656,7 @@
 .loading-small {
     padding-right: 8px;
 }
+.loading-medium-inline {
+    float: right;
+    min-height: 28px;
+}
