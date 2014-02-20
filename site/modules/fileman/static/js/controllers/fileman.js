@@ -1,12 +1,13 @@
 //noinspection JSLint
-(function (app) {
+(function (app, ng) {
     "use strict";
     app.controller('Fileman.IndexController', [
         '$scope',
         'localization',
         'requestContext',
         'fileman',
-        function ($scope, localization, requestContext, fileman) {
+        '$timeout',
+        function ($scope, localization, requestContext, fileman, $timeout) {
             //TODO: Move fileman to storage module
             localization.bind('fileman', $scope);
             requestContext.setUpRenderContext('fileman.index', $scope);
@@ -16,32 +17,29 @@
             $scope.loading = true;
             $scope.filesTree = {};
             $scope.getColumnClass = function (index) {
-                if (index === 0) {
-                    return 'general-column';
-                } else {
-                    return 'finder-column';
-                }
+                return index === 0 ? 'general-column' : 'finder-column';
             };
             $scope.setCurrentPath = function setCurrentPath(path, force) {
+                var fullPath = path === '/' ? path : ('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path);
                 if ($scope.loadingFileman) {
                     return;
                 }
-                if (this.path && this.path.type && this.path.type !== 'directory') {
-                    fileman.get($scope.currentPath + '/' + this.path.name);
+                if (path && path.type && path.type !== 'directory') {
+                    fileman.get($scope.currentPath + '/' + path.name);
                     return;
                 }
 
                 $scope.loadingFileman = true;
                 if (!force) {
-                    path = (this.path && (this.path.full || this.path.name)) || path || $scope.currentPath || '/';
-                    $scope.currentPath = $scope.currentPath || path;
+                    fullPath = (path && (path.full || path.name)) || fullPath || $scope.currentPath || '/';
+                    $scope.currentPath = $scope.currentPath || fullPath;
                 } else {
-                    $scope.currentPath = path;
+                    $scope.currentPath = fullPath;
                 }
-                if (path[0] === '/') {
-                    $scope.currentPath = path;
+                if (fullPath[0] === '/') {
+                    $scope.currentPath = fullPath;
                 } else {
-                    $scope.currentPath += $scope.currentPath.substr(-1) !== '/' ? '/' + path : path;
+                    $scope.currentPath += $scope.currentPath.substr(-1) !== '/' ? '/' + fullPath : fullPath;
                 }
 
                 $scope.splittedCurrentPath = $scope.currentPath.split(/\/([^/]+)/)
@@ -68,16 +66,16 @@
                         $scope.filesTree[index].forEach(function (el) {
                             el.active = false;
                             for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                                if (el.name === $scope.splittedCurrentPath[i].name && (index + '/' + el.name).replace(/\/+/, '/') === $scope.splittedCurrentPath[i].full.replace(/\/+/, '/')) {
+                                if ((index + '/' + el.name).replace(/\/+/, '/') === $scope.splittedCurrentPath[i].full.replace(/\/+/, '/')) {
                                     el.active = true;
                                 }
                             }
                         });
                     }
                     for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                        var fullPath = $scope.splittedCurrentPath[i].full;
-                        if (index === '/' + fullPath || index === fullPath) {
-                            tmpFilesTree[fullPath] = $scope.filesTree[index];
+                        var splitFullPath = $scope.splittedCurrentPath[i].full;
+                        if (index === '/' + splitFullPath || index === splitFullPath) {
+                            tmpFilesTree[splitFullPath] = $scope.filesTree[index];
                         }
                     }
                 }
@@ -90,6 +88,12 @@
                     }
                     $scope.loadingFileman = false;
                     $scope.loading = false;
+                    var scrollContent = ng.element('.folder-container-sub');
+                    var fileBoxWidth = ng.element('.finder-column .files-box').width()+1;
+                    $timeout(function () {
+                        scrollContent.scrollLeft(scrollContent.scrollLeft()+fileBoxWidth);
+                    })
+
                 });
             };
 
@@ -104,4 +108,4 @@
 
         }
     ]);
-})(window.JP.getModule('fileman'));
+})(window.JP.getModule('fileman'), angular);

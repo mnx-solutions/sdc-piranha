@@ -31,7 +31,7 @@
             <div data-ng-repeat="i in filesTree" class="{{getColumnClass($index)}}">
                 <div class="files-box">
                     <div data-ng-repeat="path in i"  class="finder-elements" data-ng-class="{active: path.active}">
-                        <a href="JavaScript:{}" data-ng-click="setCurrentPath('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path,1)">
+                        <a href="JavaScript:{}" data-ng-click="setCurrentPath(path, true)">
                             <div class="{{path.type}} path-name"></div>
                             <div class="path-name">{{ path.name }}</div>
                         </a>

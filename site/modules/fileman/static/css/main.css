@@ -208,6 +208,7 @@
     height: 390px;
     overflow-x:hidden;
     overflow-y:auto;
+    display: inline-block;
 }
 .general-column .files-box {
     width: 100px;
