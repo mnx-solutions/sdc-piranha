@@ -50,6 +50,7 @@
             $scope.visibilityFilter = 'Public';
             $scope.currentSlidePageIndex = 0;
             $scope.currentStep = '';
+            $scope.datasetsLoading = false;
 
             Machine.getSimpleImgList(function (err, data) {
                 if (err) {
@@ -426,6 +427,7 @@
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.reloading = true;
+                    $scope.datasetsLoading = true;
                     $scope.networks = [];
                     var count = 2;
 
@@ -437,6 +439,7 @@
                         var manyVersions = {};
                         var operating_systems = {'All': 1};
 
+                        $scope.datasetsLoading = false;
                         datasets.forEach(function (dataset) {
                             operating_systems[dataset.os] = 1;
 
