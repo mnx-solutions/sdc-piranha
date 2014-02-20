@@ -14,6 +14,10 @@
                     $scope.account = account;
                 });
 
+                $scope.$on('accountUpdated', function (event, account) {
+                    $scope.account = account;
+                });
+
                 $scope.skinChange = function () {
                     window.location.href = 'menu/skinChange';
                 };
