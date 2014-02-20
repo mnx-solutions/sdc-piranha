@@ -29,32 +29,32 @@ public class InstanceList {
 	 */
 	public void checkForCreatedInstance(String instance) {
 		waitForInstanceList();
-		SelenideElement el = Common.checkTextInCollection(
-				$$(".item-list-container .item"), instance);
+		SelenideElement el = Common.getRowByText(
+                $$(".item-list-container .item"), instance);
 		if (el.$(".machine-list-state").text().equals("Creating")) {
 			el.$(".loading-small").shouldBe(hidden);
 		}
-		el = Common.checkTextInCollection($$(".item-list-container .item"),
-				instance);
+		el = Common.getRowByText($$(".item-list-container .item"),
+                instance);
 		el.$(".machine-list-state").shouldHave(text("Provisioning"));
 	}
 
 	public void checkInstanceStatus(String status, String instance) {
 		$(".item-list-container").waitUntil(visible, BASE_TIMEOUT);
-		SelenideElement el = Common.checkTextInCollection(
-				$$(".item-list-container .item"), instance);
+		SelenideElement el = Common.getRowByText(
+                $$(".item-list-container .item"), instance);
 		if (el.find(".loading-small").isDisplayed()) {
 			el.find(".loading-small").waitUntil(hidden, CHANGE_STATUS_TIMEOUT);
 		}
-		el = Common.checkTextInCollection($$(".item-list-container .item"),
-				instance);
+		el = Common.getRowByText($$(".item-list-container .item"),
+                instance);
 		el.find(".machine-list-state").waitUntil(hasText(status), BASE_TIMEOUT);
 	}
 
 	public void toggleInstanceControl(String instance) {
 		$(".item-list-container").waitUntil(visible, BASE_TIMEOUT);
-		SelenideElement e = Common.checkTextInCollection(
-				$$(".item-list-container .item"), instance);
+		SelenideElement e = Common.getRowByText(
+                $$(".item-list-container .item"), instance);
 		$(e).waitUntil(visible, BASE_TIMEOUT);
 		$(e).find(".status").waitUntil(visible, BASE_TIMEOUT);
 		e.find(".status").click();
@@ -68,16 +68,16 @@ public class InstanceList {
 
 	public void changeInstanceStatus(String operation, String instance) {
 		$(".item-list-container").waitUntil(visible, BASE_TIMEOUT);
-		SelenideElement e = Common.checkTextInCollection(
-				$$(".item-list-container .row-fluid"), instance);
+		SelenideElement e = Common.getRowByText(
+                $$(".item-list-container .row-fluid"), instance);
 		e.find(byText(operation)).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public void deleteInstance(String instance) {
-		Common.checkTextInCollection($$(".item-list-container .item"), instance)
+		Common.getRowByText($$(".item-list-container .item"), instance)
 				.find(byText("Delete")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public String getFirtstInstanceName() {
@@ -95,8 +95,8 @@ public class InstanceList {
 	}
 
 	public boolean isRunning(String instance) {
-		SelenideElement el = Common.checkTextInCollection(
-				$$(".item-list-container .item"), instance);
+        SelenideElement el = Common.getRowByText(
+                $$(".item-list-container .item"), instance);
         return el.$(".machine-list-state").text().equals("Running");
     }
 }

@@ -18,7 +18,7 @@ import pageobjects.InstanceList;
 import pageobjects.InstancePage;
 import util.TestWrapper;
 
-public class InstanceTagTests extends TestWrapper{
+public class InstanceTagsTests extends TestWrapper{
 
     @BeforeClass
     public static void openDashboard() {
@@ -37,7 +37,7 @@ public class InstanceTagTests extends TestWrapper{
     public void tagOpetationTests() {
         Common.checkHeadingText("Instances");
         InstanceList.waitForInstanceList();
-        String instanceName = Common.testInstanceName();
+        String instanceName = Common.getTestInstanceName();
         $(byText(instanceName)).click();
         Common.checkHeadingText(instanceName);
         InstancePage.openTagsSection();
@@ -52,17 +52,17 @@ public class InstanceTagTests extends TestWrapper{
         InstancePage.addTag(key1, value1);
         Common.errorNotPresent();
         Common.clickNavigationLink("Compute");
-        Common.clickColumnsBtn();
+        Common.clickColumnsButton();
         Common.AddGridColumn("Tags");
-        assertTrue(InstancePage.hasTag(key1, value1));
-        assertFalse(InstancePage.hasTag("WrongKey", value1));
-        assertFalse(InstancePage.hasTag(key1, "WrongValue"));
+        assertTrue(InstancePage.checkTag(key1, value1));
+        assertFalse(InstancePage.checkTag("WrongKey", value1));
+        assertFalse(InstancePage.checkTag(key1, "WrongValue"));
         $(byText(instanceName)).click();
         InstancePage.openTagsSection();
         InstancePage.removeTag(key1);
         InstancePage.removeTag(key2);
-        assertFalse(InstancePage.hasTag(key1, value1));
-        assertFalse(InstancePage.hasTag(key2, value2));
+        assertFalse(InstancePage.checkTag(key1, value1));
+        assertFalse(InstancePage.checkTag(key2, value2));
         Common.errorNotPresent();
     }
 }

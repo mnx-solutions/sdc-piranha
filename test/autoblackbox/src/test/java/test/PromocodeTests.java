@@ -27,14 +27,14 @@ public class PromocodeTests extends TestWrapper {
     @Before
     public void beginTest(){
         $(byText("Create an Account")).click();
-        PhoneConfirmationPage.goToBillingPage();
-        PaymentInformationPage.setCreditCardNumber("4111111111111111");
-        PaymentInformationPage.setExpireDate("5", "3");
-        PaymentInformationPage.setCCVCode("123");
-        PaymentInformationPage.setAddressLine1("st. testStreet");
-        PaymentInformationPage.setCity("Anchorage");
-        PaymentInformationPage.setState("Alaska");
-        PaymentInformationPage.setZipCode("99599");
+        SignupPhoneConfirmationPage.goToBillingPage();
+        SignupBillingInformationPage.setCreditCardNumber("4111111111111111");
+        SignupBillingInformationPage.setExpireDate("5", "3");
+        SignupBillingInformationPage.setCCVCode("123");
+        SignupBillingInformationPage.setAddressLine1("st. testStreet");
+        SignupBillingInformationPage.setCity("Anchorage");
+        SignupBillingInformationPage.setState("Alaska");
+        SignupBillingInformationPage.setZipCode("99599");
     }
 
     @After
@@ -46,17 +46,17 @@ public class PromocodeTests extends TestWrapper {
 
     @Test
     public void ValidPromocode() throws IOException, JSONException {
-        PaymentInformationPage.setPromotionalCode("NODE.JS CORE SUPPORT");
-        PaymentInformationPage.nextBtnClick();
+        SignupBillingInformationPage.setPromotionalCode("NODE.JS CORE SUPPORT");
+        SignupBillingInformationPage.clickNextButton();
         $("button[data-ng-click=\"addNewKey()\"]").waitUntil(visible, 30000);
-        PaymentInformationPage.AssertPromocode();
+        SignupBillingInformationPage.AssertPromocode();
     }
 
     @Test
     public void InvalidPromocode(){
         String promoCode = "invalid Promocode";
-        PaymentInformationPage.setPromotionalCode(promoCode);
-        PaymentInformationPage.nextBtnClick();
+        SignupBillingInformationPage.setPromotionalCode(promoCode);
+        SignupBillingInformationPage.clickNextButton();
         $("[data-ng-repeat=\"notification in group\"]").shouldHave(text("Billing information not updated: " + promoCode + " is not a valid promotional code"));
         $(byText("is not a valid promotional code")).shouldBe(visible);
     }

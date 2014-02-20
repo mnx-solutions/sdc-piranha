@@ -14,7 +14,7 @@ import pageobjects.Common;
 import pageobjects.InstancePage;
 import util.TestWrapper;
 
-public class InstanceRenamingTests extends TestWrapper {
+public class InstanceRenameTests extends TestWrapper {
 
     @BeforeClass
     public static void openDashboard() {
@@ -32,17 +32,17 @@ public class InstanceRenamingTests extends TestWrapper {
     @Before
     public void openImageList() {
         Common.clickNavigationLink("Compute");
-        InstancePage.viewInstanceDetails(Common.testInstanceName());
+        InstancePage.gotoInstanceDetails(Common.getTestInstanceName());
     }
 
     @Test
     public void renameInstanceValidation() {
         InstancePage.clickRenameInstanceIcon();
-        InstancePage.instanceNameField().sendKeys("!!!");
+        InstancePage.getInstanceNameField().sendKeys("!!!");
         $(".loading-medium.wait-rename").waitWhile(visible, timeout);
         $(byText("Invalid machine name")).shouldBe(visible);
-        InstancePage.instanceNameField().clear();
-        InstancePage.instanceNameField().sendKeys("forFIrewallAutoTests");
+        InstancePage.getInstanceNameField().clear();
+        InstancePage.getInstanceNameField().sendKeys("forFIrewallAutoTests");
         $(byText("Machine name is already in use")).shouldBe(visible);
     }
 
@@ -50,7 +50,7 @@ public class InstanceRenamingTests extends TestWrapper {
     public void renameInstance() {
         String instName = "NewInstName";
         InstancePage.rename(instName);
-        InstancePage.instanceNameField().shouldHave(text(instName));
-        InstancePage.rename(Common.testInstanceName());
+        InstancePage.getInstanceNameField().shouldHave(text(instName));
+        InstancePage.rename(Common.getTestInstanceName());
     }
 }

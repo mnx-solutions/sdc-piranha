@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({InstanceTagTests.class, InstanceRenamingTests.class, FirewallTests.class,})
+@Suite.SuiteClasses({InstanceTagsTests.class, InstanceRenameTests.class, FirewallTests.class,})
 public class productionFeatures {
 
 }

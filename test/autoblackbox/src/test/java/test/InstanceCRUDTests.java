@@ -21,7 +21,7 @@ import pageobjects.InstancePage;
 import util.TestWrapper;
 import data.CreateInstanceObject;
 
-public class InstanceManipulationTests extends TestWrapper {
+public class InstanceCRUDTests extends TestWrapper {
 
 	private static InstanceList instanceList;
 	private InstancePage instancePage;
@@ -144,7 +144,7 @@ public class InstanceManipulationTests extends TestWrapper {
 		$(byText(i1Name)).click();
 		Common.checkHeadingText(i1Name);
 		instancePage = page(InstancePage.class);
-		instancePage.rename(i1.getInstanceName());
+		InstancePage.rename(i1.getInstanceName());
 		Common.errorNotPresent();
 		Common.clickNavigationLink("Compute");
 		$(byText(i2Name)).click();
@@ -152,7 +152,7 @@ public class InstanceManipulationTests extends TestWrapper {
 		instancePage = page(InstancePage.class);
 		instancePage.stop();
 		instancePage.validateStatus("Stopped");
-		instancePage.rename(i2.getInstanceName());
+		InstancePage.rename(i2.getInstanceName());
 		Common.errorNotPresent();
 		Common.clickNavigationLink("Compute");
 		$(byText(i1.getInstanceName())).shouldBe(visible);
@@ -176,8 +176,8 @@ public class InstanceManipulationTests extends TestWrapper {
 	}
 
 	public static void generateTestInstances() {
-		String i1Name = i1.getInstanceName();
-		String i2Name = i2.getInstanceName();
+		String i1Name;
+		String i2Name;
 		$(byText("Create Instance")).click();
 		Common.checkHeadingText("Create Instance");
 		i1Name = CreateInstanceCarousel.createIsntance(i1, dc1);

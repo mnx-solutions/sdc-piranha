@@ -16,15 +16,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class PaymentInformationPage {
-    public static void nextBtnClick() {
+public class SignupBillingInformationPage {
+    public static void clickNextButton() {
         $("[data-ng-click=\"submitForm()\"]").click();
     }
 
+    public static void setValue(SelenideElement fieldSelector, String value){
+        fieldSelector.clear();
+        fieldSelector.sendKeys(value);
+    }
+
     public static void setCreditCardNumber(String cardNumber) {
-        SelenideElement element = $("#creditCardNumber");
-        element.clear();
-        element.sendKeys(cardNumber);
+        setValue($("#creditCardNumber"), cardNumber);
     }
 
     public static void setExpireDate(String monthValue, String yearValue) {
@@ -35,15 +38,11 @@ public class PaymentInformationPage {
     }
 
     public static void setCCVCode(String CCVCode) {
-        SelenideElement element = $(By.id("securityCode"));
-        element.clear();
-        element.sendKeys(CCVCode);
+        setValue($(By.id("securityCode")), CCVCode);
     }
 
     public static void setAddressLine1(String address) {
-        SelenideElement element = $(By.id("addressLine1"));
-        element.clear();
-        element.sendKeys(address);
+        setValue($(By.id("addressLine1")), address);
     }
 
     public static void setCountry(String countryValue) {
@@ -51,10 +50,8 @@ public class PaymentInformationPage {
             Country.selectByValue(countryValue);
     }
 
-    public static void setCity(String address) {
-        SelenideElement element = $(By.id("city"));
-        element.clear();
-        element.sendKeys(address);
+    public static void setCity(String city) {
+        setValue($(By.id("city")), city);
     }
 
     public static void setState(String state) {
@@ -63,19 +60,15 @@ public class PaymentInformationPage {
     }
 
     public static void setZipCode(String zipCode) {
-        SelenideElement element = $(By.id("zipCode"));
-        element.clear();
-        element.sendKeys(zipCode);
+        setValue($(By.id("zipCode")), zipCode);
     }
 
     public static void setPromotionalCode(String promoCode) {
-            SelenideElement element = $(By.id("promoCode"));
-            element.clear();
-            element.sendKeys(promoCode);
+        setValue($(By.id("promoCode")), promoCode);
     }
 
     public static void AssertPromocode() throws IOException, JSONException {
-        String userId = Common.getSmthingFromLog("userId");
+        String userId = Common.getValueFromLog("userId");
         String urlString = "https://apisandbox-api.zuora.com/rest/v1/accounts/" + userId + "/summary";
         URL u = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) u.openConnection();

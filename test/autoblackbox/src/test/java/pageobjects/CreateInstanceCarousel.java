@@ -56,7 +56,7 @@ public class CreateInstanceCarousel {
      * @return
      */
     public SelenideElement getListElement(String name) {
-        return Common.checkTextInCollection($$(".active .item-scrolling .provisioning-item"), name);
+        return Common.getRowByText($$(".active .item-scrolling .provisioning-item"), name);
     }
 
     public void waitForListingUpdate() {
@@ -77,7 +77,7 @@ public class CreateInstanceCarousel {
 
     public void setOsVersion(String os, String version) {
         waitForListingUpdate();
-        SelenideElement t = Common.checkTextInCollection($$(".active .item-scrolling .provisioning-item"), os);
+        SelenideElement t = Common.getRowByText($$(".active .item-scrolling .provisioning-item"), os);
         if (t.$(byText("Choose image version")).isDisplayed()) {
             t.$(byAttribute("data-toggle", "dropdown")).click();
             t.$(".btn-group.pull-left").getCssValue("display");

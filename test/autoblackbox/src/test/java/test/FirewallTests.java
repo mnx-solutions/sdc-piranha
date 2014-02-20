@@ -38,43 +38,43 @@ public class FirewallTests extends TestWrapper {
 
     @Test
     public void RuleCreateValidation() {
-        FirewallPage.addNewLinkClick();
-        FirewallPage.createRuleBtn().shouldBe(visible);
+        FirewallPage.clickAddNewButton();
+        FirewallPage.createRuleButton().shouldBe(visible);
         FirewallPage.selectProtocol("UDP");
-        FirewallPage.useAllBtnClick();
-        FirewallPage.selectSource("From", "IP", "192.168.123.23");
-        FirewallPage.selectSource("To", "All my VMs in DC", "");
-        FirewallPage.createRuleBtn().shouldBe(enabled);
-        FirewallPage.removeFirstFromOption("protocol");
-        FirewallPage.createRuleBtn().click();
+        FirewallPage.clickUseAllButton();
+        FirewallPage.selectTargetValue("From", "IP", "192.168.123.23");
+        FirewallPage.selectTargetValue("To", "All my VMs in DC", "");
+        FirewallPage.createRuleButton().shouldBe(enabled);
+        FirewallPage.removeFirstOption("protocol");
+        FirewallPage.createRuleButton().click();
         $(".modal-body p").shouldHave(text("A Protocol condition is needed in the firewall rule"));
-        Common.clickOkInModal();
+        Common.clickButtonInModal("Ok");
         FirewallPage.selectProtocol("UDP");
-        FirewallPage.useAllBtnClick();
-        FirewallPage.removeFirstFromOption("from");
-        FirewallPage.createRuleBtn().click();
+        FirewallPage.clickUseAllButton();
+        FirewallPage.removeFirstOption("from");
+        FirewallPage.createRuleButton().click();
         $(".modal-body p").shouldHave(text("A From condition is needed in the firewall rule"));
-        Common.clickOkInModal();
-        FirewallPage.selectSource("From", "IP", "192.168.123.23");
-        FirewallPage.removeFirstFromOption("to");
-        FirewallPage.createRuleBtn().click();
+        Common.clickButtonInModal("Ok");
+        FirewallPage.selectTargetValue("From", "IP", "192.168.123.23");
+        FirewallPage.removeFirstOption("to");
+        FirewallPage.createRuleButton().click();
         $(".modal-body p").shouldHave(text("A To condition is needed in the firewall rule"));
-        Common.clickOkInModal();
+        Common.clickButtonInModal("Ok");
     }
 
     @Test
     public void editRule() {
         String tag = FirewallPage.createTestRule();
         $(".loading-large").waitWhile(visible, 60000);
-        FirewallPage.editFirstRuleOrByTag("tag: " + tag);
-        FirewallPage.removeFirstFromOption("Protocol");
-        FirewallPage.removeFirstFromOption("From");
-        FirewallPage.removeFirstFromOption("To");
+        FirewallPage.editRule(tag);
+        FirewallPage.removeFirstOption("Protocol");
+        FirewallPage.removeFirstOption("From");
+        FirewallPage.removeFirstOption("To");
         FirewallPage.selectProtocol("UDP");
-        FirewallPage.useAllBtnClick();
-        FirewallPage.selectSource("From", "Tag", tag);
-        FirewallPage.selectSource("To", "All my VMs in DC", "");
-        FirewallPage.createRuleBtn().click();
+        FirewallPage.clickUseAllButton();
+        FirewallPage.selectTargetValue("From", "Tag", tag);
+        FirewallPage.selectTargetValue("To", "All my VMs in DC", "");
+        FirewallPage.createRuleButton().click();
         $(".loading-large").waitWhile(visible, 60000);
         FirewallPage.checkRuleParametersByTag(tag, "allow", "udp", tag, "All my VMs in DC");
         FirewallPage.removeFirstRule();
@@ -82,11 +82,11 @@ public class FirewallTests extends TestWrapper {
 
     @Test
     public void CreateRule() {
-        FirewallPage.addNewLinkClick();
-        FirewallPage.useAllBtnClick();
-        FirewallPage.selectSource("From", "Instance", "forFIre\n");
-        FirewallPage.selectSource("To", "Tag", "notAnInstance");
-        FirewallPage.createRuleBtn().click();
+        FirewallPage.clickAddNewButton();
+        FirewallPage.clickUseAllButton();
+        FirewallPage.selectTargetValue("From", "Instance", "forFIre\n");
+        FirewallPage.selectTargetValue("To", "Tag", "notAnInstance");
+        FirewallPage.createRuleButton().click();
         $(".loading-large").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
         $(".item-list-container").shouldBe(visible);
         $(".item-list-container").$(byText("tag: notAnInstance")).shouldBe(visible);

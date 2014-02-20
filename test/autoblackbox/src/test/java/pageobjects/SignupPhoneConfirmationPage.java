@@ -7,9 +7,9 @@ import static com.codeborne.selenide.Selenide.$;
 
 import com.codeborne.selenide.SelenideElement;
 
-public class PhoneConfirmationPage {
+public class SignupPhoneConfirmationPage {
 
-    public static void verifyBtnClick() {
+    public static void clickVerifyButton() {
         $(byText("Verify")).click();
     }
 
@@ -45,11 +45,11 @@ public class PhoneConfirmationPage {
         callMeNowBtn().click();
         getError().shouldHave(text("Calling..."));
         setPinCode("1234");
-        verifyBtnClick();
+        clickVerifyButton();
         getError().waitUntil(visible, 5000);
         getError().shouldHave(text("Phone verification failed. Incorrect PIN code. Please try again"));
-        setPinCode(Common.getSmthingFromLog("generatedPin"));
-        verifyBtnClick();
+        setPinCode(Common.getValueFromLog("generatedPin"));
+        clickVerifyButton();
         $("[data-ng-model=\"plainNumber\"]").waitUntil(hasValue(phoneNumber), 5000);
     }
 }

@@ -62,9 +62,9 @@ public class SmokeTests extends TestWrapper {
         $(".loading-medium-after-h1").waitUntil(disappear, BASE_TIMEOUT);
         instanceList = page(InstanceList.class);
         instanceList.getFirtstInstanceName();
-        Common.clickActionsBtn();
+        Common.clickActionsButton();
         $("#option-list-actions").shouldBe(visible);
-        Common.clickColumnsBtn();
+        Common.clickColumnsButton();
         $("#checkbox-list-columns").shouldBe(visible);
     }
 

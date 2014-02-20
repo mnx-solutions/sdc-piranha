@@ -14,9 +14,7 @@ import util.TestWrapper;
 
 import com.codeborne.selenide.SelenideElement;
 
-import java.io.*;
-
-public class ImageListTests extends TestWrapper {
+public class ImageTests extends TestWrapper {
 
 	private ImageList imageList;
 
@@ -72,25 +70,4 @@ public class ImageListTests extends TestWrapper {
         imageList.checkImageDatacenter(row, System.getProperty("datacenter"));
         imageList.checkImagePublicStatus(row, publicStatus);
     }
-
-    @Test
-    public void test() throws IOException {
-
-        String imageID = "33c8a8c5-8ef7-e485-c5d4-dedf9c30b4bc";
-        ProcessBuilder cloudApiAuth = new ProcessBuilder("ssh", "-i", System.getProperty("privateKeyPath"), "root@192.168.115.248", "curl", "-kis", "http://10.0.0.15/images/" + imageID, "-XDELETE");
-        cloudApiAuth.start();
-//        InputStream inputStream = process.getErrorStream();
-//        String out = read(inputStream);
-    }
-
-//    private String read(InputStream inputStream) throws IOException {
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-//        StringBuilder out = new StringBuilder();
-//        String line;
-//        while ((line = reader.readLine()) != null)
-//        {
-//            out.append(line).append("\n");
-//        }
-//        return out.toString();
-//    }
 }

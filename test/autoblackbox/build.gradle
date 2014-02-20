@@ -31,20 +31,20 @@ task smokeTests(type: Test) {
 	include '**/SmokeTests.class'	
 }
 
-task InstanceRenamingTests(type: Test) {
-	include '**/InstanceRenamingTests.class'
+task InstanceRenameTests(type: Test) {
+	include '**/InstanceRenameTests.class'
 }
 
-task InstanceTagTests(type: Test) {
-	include '**/InstanceTagTests.class'
+task InstanceTagsTests(type: Test) {
+	include '**/InstanceTagsTests.class'
 }
 
-task InstanceManipulationTests(type: Test) {
-	include '**/InstanceManipulationTests.class'
+task InstanceCRUDTests(type: Test) {
+	include '**/InstanceCRUDTests.class'
 }
 
-task SignupProcessTests(type: Test) {
-	include '**/SignupProcessTests.class'
+task UserSignupTests(type: Test) {
+	include '**/UserSignupTests.class'
 }
 
 task PromocodeTests(type: Test) {
@@ -59,8 +59,8 @@ task FirewallTests(type: Test) {
 	include '**/FirewallTests.class'
 }
 
-task ImageListTests(type: Test) {
-	include '**/ImageListTests.class'
+task ImageTests(type: Test) {
+	include '**/ImageTests.class'
 }
 
 task ProductionFeatures(type: Test) {

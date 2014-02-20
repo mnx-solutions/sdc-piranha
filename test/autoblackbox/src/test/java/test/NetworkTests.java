@@ -113,7 +113,7 @@ public class NetworkTests extends TestWrapper {
 				.setInstanceNameValue(instanceName);
 		updateInstanceNameInList(cio.getInstanceName(), instanceName);
 		$(byText("Create instance")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	private static void updateInstanceNameInList(String instanceName,
@@ -141,10 +141,7 @@ public class NetworkTests extends TestWrapper {
 		Common.checkHeadingText(instanceName);
 		instancePage = page(InstancePage.class);
 		instancePage.validateStatus("Running");
-		if (instancePage.validateIP(dataCenter, ipRange))
-			return true;
-		else
-			return false;
+        return instancePage.validateIP(ipRange);
 
 	}
 

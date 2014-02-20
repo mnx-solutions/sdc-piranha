@@ -20,7 +20,6 @@ public class CreateAccount {
         $(byAttribute("name", "email")).sendKeys(email);
         $(byAttribute("name", "login")).sendKeys(login);
         $(byAttribute("name", "password")).sendKeys(password);
-        $(byAttribute("name", "password2")).clear();
         $(byAttribute("name", "password2")).sendKeys(password2);
         createAcccountClick();
     }

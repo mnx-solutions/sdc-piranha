@@ -39,15 +39,15 @@ public class Common {
 
     public static void checkSubHeadingText(String headingText) {
         ElementsCollection headingTextContainer = $$("legend");
-        assertTrue(Common.checkTextInCollection(headingTextContainer, headingText).exists());
+        assertTrue(Common.getRowByText(headingTextContainer, headingText).exists());
     }
 
     public static void openSubHeadingEditLink(String headingText) {
         ElementsCollection headingTextContainer = $$("legend");
-        Common.checkTextInCollection(headingTextContainer, headingText).$(byText("Edit")).click();
+        Common.getRowByText(headingTextContainer, headingText).$(byText("Edit")).click();
     }
 
-    public static SelenideElement checkTextInCollection(ElementsCollection col, String filter) {
+    public static SelenideElement getRowByText(ElementsCollection col, String filter) {
         for (SelenideElement element : col) {
             if (element.findAll(byText(filter)).size() > 0) {
                 return element;
@@ -86,22 +86,10 @@ public class Common {
         throw new NoSuchElementException("Such element doesn't exist");
     }
 
-    public static void clickYesInModal() {
+    public static void clickButtonInModal(String buttonName){
         $(".modal").shouldBe(visible);
         $(".modal-header").exists();
-        $(".modal-footer").find(byText("Yes")).click();
-    }
-
-    public static void clickNoInModal() {
-        $(".modal").shouldBe(visible);
-        $(".modal-header").exists();
-        $(".modal-footer").find(byText("No")).click();
-    }
-
-    public static void clickOkInModal() {
-        $(".modal").shouldBe(visible);
-        $(".modal-header").exists();
-        $(".modal-footer").find(byText("Ok")).click();
+        $(".modal-footer").find(byText(buttonName)).click();
     }
 
     public static void checkBreadcrumb(String active, String right) {
@@ -144,7 +132,7 @@ public class Common {
         return new String[]{};
     }
 
-    public static String testInstanceName() {
+    public static String getTestInstanceName() {
         if (System.getProperty("datacenter").equals("us-west-x")) {
             return "selenide-created-instance-a";
         } else if (System.getProperty("datacenter").equals("local-x")) {
@@ -152,8 +140,8 @@ public class Common {
         }
         return " ";
     }
-    //looks for a value in server log by key e.g. "generatedPin" or "userId"
-    public static String getSmthingFromLog(String key) {
+
+    public static String getValueFromLog(String key) {
         File log = new File(System.getProperty("serverLogPath"));
         String result = null;
         try {
@@ -174,22 +162,22 @@ public class Common {
     }
 
     public static void AddGridColumn(String columnName) {
-        Common.clickColumnsBtn();
+        Common.clickColumnsButton();
         JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
         executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
         $(By.xpath("//th[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains(.,'" + columnName + "')]")).waitUntil(visible, BASE_TIMEOUT);
     }
 
-    public static void clickColumnsBtn() {
+    public static void clickColumnsButton() {
         $("#button-columns").click();
     }
 
-    public static void clickActionsBtn() {
+    public static void clickActionsButton() {
         $("#button-actions").click();
     }
 
     public static void performAction(String action) {
-        clickActionsBtn();
+        clickActionsButton();
         $("#option-list-actions").waitUntil(visible, BASE_TIMEOUT);
         $("#option-list-actions").$(byText(action)).click();
     }

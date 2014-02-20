@@ -30,30 +30,30 @@ public class InstancePage {
 
 	public void start() {
 		$(byText("Start")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public void stop() {
 		$(byText("Stop")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public void reboot() {
 		$(byText("Reboot")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public void delete() {
 		$(byText("Delete")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public static void rename(String name) {
 		clickRenameInstanceIcon();
-        instanceNameField().clear();
-		instanceNameField().setValue(name);
+        getInstanceNameField().clear();
+		getInstanceNameField().setValue(name);
         $("[data-ng-click=\"clickRename()\"]").click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
         $(".loading-medium.wait-rename").waitWhile(visible, timeout);
     }
 
@@ -79,7 +79,7 @@ public class InstancePage {
 		$(byText("Resize Instance type")).shouldBe(visible);
 		$(By.name("resize")).selectOptionByValue(size);
 		$(byText("Resize")).click();
-		Common.clickYesInModal();
+		Common.clickButtonInModal("Yes");
 	}
 
 	public void validateInstanceSize(String ram, String cpu, String disk) {
@@ -97,15 +97,15 @@ public class InstancePage {
         $("[placeholder=\"Key\"]", lines - 1).setValue(key);
         $("[placeholder=\"Value\"]", lines - 1).setValue(value);
         $("[data-ng-click=\"addTag()\"]", lines-1).click();
-        WaitWhileLoadingsmall();
+        WaitForSmallLaoderDisappear();
     }
 
-    private static void WaitWhileLoadingsmall() {
+    private static void WaitForSmallLaoderDisappear() {
         $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
 
     public static SelenideElement getTagContainerByKey(String key) {
-        taglistVisible();
+        checkTagsVisible();
 		for (SelenideElement el : $$(".tags")) {
 			ElementsCollection ec = el.$$("input");
 			for (SelenideElement e : ec) {
@@ -120,7 +120,7 @@ public class InstancePage {
 
 	public static int getTagContainerIndexByKey(String key) {
 		int i = 0;
-		taglistVisible();
+		checkTagsVisible();
 		for (SelenideElement el : $$(".tags")) {
 			ElementsCollection ec = el.$$("input");
 			for (SelenideElement e : ec) {
@@ -134,24 +134,24 @@ public class InstancePage {
 		throw new NoSuchElementException("No tag with key:" + key + " found!");
 	}
 
-	private static void taglistVisible() {
+	private static void checkTagsVisible() {
 		$(byAttribute("data-ng-form", "tagForm")).shouldBe(visible);
 	}
 
     public static void removeTag(String key) {
         $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeTag(tag)\"]").click();
-        WaitWhileLoadingsmall();
+        WaitForSmallLaoderDisappear();
     }
 
     public static void openTagsSection() {
         $("[data-ng-class=\"{active: accordionIcon[2] }\"]").click();
     }
 
-    public static boolean hasTag(String key, String value) {
+    public static boolean checkTag(String key, String value) {
         return $(By.xpath("//span[contains(.,'\"" + key + "\":\"" + value + "\')]")).isDisplayed();
     }
 
-	public boolean validateIP(String dataCenter, String ipRange) {
+	public boolean validateIP(String ipRange) {
 		SelenideElement div = $(byAttribute("data-ng-show", "machine.ips"));
 		SelenideElement ips = div.find("span.value.span8.pull-right");
 		for (SelenideElement ip : ips.findAll("span")) {
@@ -161,11 +161,11 @@ public class InstancePage {
 		return false;
 	}
 
-    public static void viewInstanceDetails(String instanceName) {
+    public static void gotoInstanceDetails(String instanceName) {
         $(byText(instanceName)).click();
     }
 
-    public static SelenideElement instanceNameField(){
+    public static SelenideElement getInstanceNameField(){
         if (!$("#instanceRename").isDisplayed()) {
             return $(".page-title");
         }
