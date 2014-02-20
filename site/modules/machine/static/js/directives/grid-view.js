@@ -7,8 +7,8 @@
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
                 var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
-                if (update && lastPage) {
-                    $scope.lastPage = lastPage;
+                if (update && lastPage >= 0) {
+                    $scope.lastPage = lastPage === 0 ? 1 : lastPage;
                 }
 
                 return lastPage;
@@ -16,9 +16,7 @@
             }
         };
 
-        $scope.$watch('objects', $scope.getLastPage.bind($scope, true), true);
-        $scope.$watch('props', $scope.getLastPage.bind($scope, true), true);
-        $scope.$watch('perPage', $scope.getLastPage.bind($scope, true), true);
+        $scope.$watch('objects + props + perPage + filterAll', $scope.getLastPage.bind($scope, true), true);
 
         $scope.calcPageLimits = function calcPageLimits() {
             $scope.pageNumFirst = ($scope.page - 1) * $scope.perPage + 1;
