@@ -830,12 +830,12 @@ div .disabled {
 .page-header {
     padding-bottom: 6px !important;
     border-bottom: none !important;
+    margin: 0;
 }
 
 .page-header form {
     padding-top: 20px;
-    padding-bottom: 0px;
-    margin: 0px;
+    padding-bottom: 0;
 }
 
 .sortable, .pointer {
