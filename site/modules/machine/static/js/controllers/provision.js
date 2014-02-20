@@ -50,7 +50,7 @@
             $scope.visibilityFilter = 'Public';
             $scope.currentSlidePageIndex = 0;
             $scope.currentStep = '';
-            $scope.dcLoading = false;
+            $scope.datasetsLoading = false;
 
             Machine.getSimpleImgList(function (err, data) {
                 if (err) {
@@ -197,12 +197,10 @@
             }
             $scope.selectDatacenter = function (name) {
                 if (!name && !$scope.data.datacenter) {
-                    $scope.dcLoading = true;
                     Datacenter.datacenter().then(function (datacenters) {
                         if (datacenters.length > 0) {
                             $scope.data.datacenter = datacenters[0].name;
                         }
-                        $scope.dcLoading = false;
                     });
                 } else if (name && (name !== $scope.data.datacenter)) {
                     $scope.data.datacenter = name;
@@ -429,6 +427,7 @@
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.reloading = true;
+                    $scope.datasetsLoading = true;
                     $scope.networks = [];
                     var count = 2;
 
@@ -440,6 +439,7 @@
                         var manyVersions = {};
                         var operating_systems = {'All': 1};
 
+                        $scope.datasetsLoading = false;
                         datasets.forEach(function (dataset) {
                             operating_systems[dataset.os] = 1;
 
