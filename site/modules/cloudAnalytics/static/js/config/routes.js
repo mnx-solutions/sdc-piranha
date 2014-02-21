@@ -6,7 +6,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Cloud Analytics',
             action: 'cloudAnalytics.index'
         })
-        .when('/cloudAnalytics/:machine', {
+        .when('/cloudAnalytics/:machineid', {
             title: 'Instance Analytics',
             action: 'cloudAnalytics.index'
         });

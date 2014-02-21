@@ -1,97 +1,75 @@
 'use strict';
 
 (function (app, ng, $) {
-     app.directive('graph', function (PopupDialog, ca, localization) {
+    app.directive('graph', function (PopupDialog, localization) {
+        var ca;
         return {
             restrict: 'E',
             replace: true,
             scope: {
-                options:'='
+                options: '='
             },
-
             link: function ($scope) {
                 $scope.instrumentations = $scope.options.instrumentations;
-                $scope.initCa = true;
-
-                if ($scope.$parent.ca) {
-                    $scope.ca = $scope.$parent.ca;
-                    $scope.initCa = false;
-                } else {
-                    (new ca()).then(function(conf) {
-                        $scope.ca = conf.data;
-                        $scope.initCa = false;
-                    })
-                }
+                $scope.instrumentation = $scope.instrumentations[0];
 
                 var ticktime = null;
                 var heatmaptime = null;
                 var graph = false;
                 var legend = null;
                 var units = {
-                    'seconds' : [
-                        { mag : -9, str : 'n'},
-                        { mag : -6, str : 'µ' },
-                        { mag : -3, str : 'm' },
-                        { mag : 0, str : ''}
+                    'seconds': [
+                        { mag: -9, str: 'n'},
+                        { mag: -6, str: 'µ' },
+                        { mag: -3, str: 'm' },
+                        { mag: 0, str: ''}
                     ],
-                    'bytes' : [
-                        { mag : 0, str : ''},
-                        { mag : 10, str : 'K' },
-                        { mag : 20, str : 'M' },
-                        { mag : 30, str : 'G' },
-                        { mag : 40, str : 'T' },
-                        { mag : 50, str : 'P' }
+                    'bytes': [
+                        { mag: 0, str: ''},
+                        { mag: 10, str: 'K' },
+                        { mag: 20, str: 'M' },
+                        { mag: 30, str: 'G' },
+                        { mag: 40, str: 'T' },
+                        { mag: 50, str: 'P' }
                     ]
                 };
 
-                $scope.heatmap; //REVIEW: Wut?
                 $scope.showGraph = true;
                 $scope.loadingText = 'loading...';
                 $scope.details = null;
 
-                $scope.getHeatmapDetails = function(e) {
-                    var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
+                $scope.getHeatmapDetails = function (e) {
+                    var clickpoint = '.chart_container_' + $scope.$id + ' #clickpoint';
                     if (e && e.offsetX && e.offsetY && heatmaptime) {
-                        $scope.ca.getHeatmapDetails({
-                            instrumentation: $scope.instrumentations[0],
-                            location:{
+                        $scope.instrumentation.getHeatmap({
+                            location: {
                                 x: e.offsetX,
                                 y: e.offsetY
                             },
-                            range: $scope.$parent.currentRange,
+                            range: $scope.instrumentation.range,
                             endtime: heatmaptime
-                        }, function(err, values) {
+                        }, function (err, values) {
                             if (err) {
-                                PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Error'
-                                    ),
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        err
-                                    ),
-                                    function () {}
-                                );
+                                PopupDialog.error(localization.translate(null, null, 'Error'),
+                                    localization.translate(null, null, err));
                             } else {
-                                if (values &&
-                                    values[0] &&
-                                    values[0].present &&
-                                    Object.keys(values[0].present)) {
-                                        var details = '';
-                                        for (var name in values[0].present) {
-                                            details += name + ':' + values[0].present[name] + '<br/>';
+                                var present = values && values[0] && values[0].present;
+                                if (Object.keys(Object(present))) {
+                                    var details = '';
+                                    var name;
+                                    for (name in present) {
+                                        if (present.hasOwnProperty(name)) {
+                                            details += name + ':' + present[name] + '<br/>';
                                         }
+                                    }
 
-                                        $scope.details = details;
-                                        if (details !== '') {
-                                            $(clickpoint).css({'top': e.offsetY, left: e.offsetX});
-                                            $(clickpoint).popover('show');
-                                        } else {
-                                            $(clickpoint).popover('hide');
-                                        }
+                                    $scope.details = details;
+                                    if (details !== '') {
+                                        $(clickpoint).css({'top': e.offsetY, left: e.offsetX});
+                                        $(clickpoint).popover('show');
+                                    } else {
+                                        $(clickpoint).popover('hide');
+                                    }
 
                                 } else {
                                     $scope.details = null;
@@ -121,8 +99,9 @@
                 }
 
                 function formatUnit(y, hover) {
-                    var type = $scope.instrumentations[0].type;
-                    if (type && typeof(type) === 'object') {
+                    var type = $scope.instrumentation.type;
+                    //noinspection JSLint
+                    if (type && typeof (type) === 'object') {
                         var unitstr = '';
                         if (y === 0) {
                             return 0;
@@ -131,7 +110,7 @@
                         if (!type.base) {
                             if (type.abbr) {
                                 unitstr = type.abbr;
-                            } else if(type.unit) {
+                            } else if (type.unit) {
                                 unitstr = type.unit;
                             }
                         } else {
@@ -139,7 +118,7 @@
                             var mag = getMagnitude(y, type.base) + power;
 
                             if (units[type.unit]) {
-                                var unit = units[type.unit].reduce(function(cur, obj) {
+                                var unit = units[type.unit].reduce(function (cur, obj) {
                                     return (obj.mag <= mag) ? obj : cur;
                                 });
 
@@ -192,9 +171,9 @@
                 }
 
                 function renderHover(graph) {
-                    new Rickshaw.Graph.HoverDetail( {
+                    new Rickshaw.Graph.HoverDetail({
                         graph: graph,
-                        yFormatter:formatHover
+                        yFormatter: formatHover
                     });
                 }
 
@@ -223,15 +202,13 @@
 
                 $scope.activeRenderer = 'line';
                 $scope.renderers = [
-                    'area',
-                    'bar',
-                    'line'
+                    'area', 'bar', 'line'
                 ];
 
-                $scope.$watch('activeRenderer', function() {
-                    if(graph) {
+                $scope.$watch('activeRenderer', function () {
+                    if (graph) {
                         graph.configure({
-                            renderer:$scope.activeRenderer
+                            renderer: $scope.activeRenderer
                         });
                         graph.render();
                     }
@@ -242,7 +219,9 @@
                 };
 
                 $scope.deleteGraph = function () {
-                    $scope.ca.deleteInstrumentations($scope.instrumentations);
+                    $scope.instrumentation.destroy();
+                    var index = $scope.$parent.graphs.indexOf($scope.options);
+                    $scope.$parent.graphs.splice(index, 1);
                 };
 
                 $scope.changeRenderer = function (renderer) {
@@ -251,21 +230,19 @@
 
                 $scope.ready = false;
 
-                function updateGraph() {
-                    var series = $scope.ca.getSeries(
-                        $scope.instrumentations,
-                        ticktime
-                    );
+                function updateGraph(data) {
+                    ticktime = data[0].end_time;
+                    heatmaptime = ticktime - 1;
+                    var series = $scope.instrumentation.getSeries($scope.instrumentations, ticktime);
+                    if ($scope.instrumentation.config['value-arity'] === 'numeric-decomposition') {
+                        $scope.heatmap = $scope.instrumentation.heatmap;
 
-                    if ($scope.instrumentations[0]['value-arity'] === 'numeric-decomposition') {
-                        $scope.heatmap = $scope.ca.instrumentations[$scope.instrumentations[0]._datacenter][$scope.instrumentations[0].id].heatmap;
-
-                        var clickpoint = '.chart_container_'+ $scope.$id + ' #clickpoint';
+                        var clickpoint = '.chart_container_' + $scope.$id + ' #clickpoint';
                         $(clickpoint).popover({
                             title: 'Details',
                             html: true,
                             trigger: 'manual',
-                            content:function() {
+                            content: function () {
                                 return $scope.details;
                             }
                         });
@@ -273,82 +250,60 @@
 
                     if (series && series.length) {
                         if (!graph) {
-                            graph = createGraph(series);
                             $scope.ready = true;
+                            graph = createGraph(series);
                         } else {
-                            graph.series.splice(0, graph.series.length);
+                            graph.series.splice(0);
                             graph.series.push.apply(graph.series, series);
                             graph.render();
-
                             if (legend) {
-                                document.querySelector('#legend_' + $scope.$id).innerHTML = "";
-                                renderLegend(graph);
+                                var legendElement = document.querySelector('#legend_' + $scope.$id);
+                                if (legendElement) {
+                                    legendElement.innerHTML = "";
+                                    renderLegend(graph);
+                                }
                             }
                         }
                     }
                 }
 
-                $scope.$watch('$parent.currentRange', function(newVal) {
-                    if (newVal){
-                        $scope.ca.changeRange($scope.instrumentations, $scope.$parent.currentRange);
-                        if (!$scope.initCa) {
-                            updateGraph();
-                        }
-                    }
-                });
-
-                $scope.$watch('$parent.endtime', function(newVal) {
-                    if (newVal){
-                        if (!ticktime) {
-                            ticktime = $scope.$parent.endtime;
-                            heatmaptime = ticktime -1;
-                        }
-
-                        if (!$scope.$parent.frozen) {
-                            if (graph && $scope.ca.polltime() > ticktime && !$scope.initCa) {
-                                updateGraph();
-                                ticktime++;
-                            } else if (!graph) {
-                                updateGraph();
-                            }
-
-                            heatmaptime = ticktime -1;
-                        } else {
-                            ticktime++;
-                        }
-
-                    }
-                });
-
+                $scope.instrumentation.onupdate = updateGraph;
             },
-            template:
-                '<div class="chart-padding">' +
-                    '<div class="btn-group margin_btn_0 toggle-graf-width">' +
-                    '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" class="toggle-graf-btn toggle-btn-bg"><i class="toggle" data-ng-class="{collapsed: !showGraph}"></i><p>{{ready && options.title || loadingText}}</p></button>' +
-                       '<button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg" title="delete graph" ><div class="pull-right remove-icon"></div></button>' +
-                    '</div>' +
-                    // '<br/>' +
-                    '<div data-ng-show="showGraph && ready" class="toggle-btn-bg" style="padding-top: 10px;">' +
-                    '<div class="toggle-btn-bg" style="padding-bottom: 7px;">' +
-
-
-                    '<div class="chart_container_{{$id}}" style="position: relative;margin-bottom:10px;width: 450px;display: inline-block;">' +
-
-                    '<div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>' +
-                    '<div id="chart_{{$id}}" style="position: relative; left: 50px;">' +
-                    '<div id="clickpoint" style="position:absolute;height:0;width:0;"></div>' +
-                    '<div class="caOverlaid">' +
-                    '<img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" class="toggle-btn-bg" data-ng-src="data:image/jpeg;base64, {{heatmap}}" />' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div data-ng-hide="heatmap" id="legend_{{$id}}" class="heatmap-pos"></div>' +
-                    '<div class="graf-radio-group" data-toggle="buttons-radio">' +
-                    '<button class="btn default-margin default-margin-mini graf-radio-btn {{renderer == activeRenderer && \'active\' || \'\'}}" data-ng-hide="heatmap" data-ng-repeat="renderer in renderers" data-ng-click="changeRenderer(renderer)">{{renderer}}</button>' +
-                    '</div>' +
-                    '</div>' +
-
-                    '</div>'
+            template: '<div class="chart-padding">\
+                            <div class="btn-group margin_btn_0 toggle-graf-width">\
+                                <button data-ng-click="toggleGraph()" id="control_{{$id}}"\
+                                        data-ng-class="{disabled: !ready, btn: true}" \
+                                        class="toggle-graf-btn toggle-btn-bg">\
+                                    <i class="toggle" data-ng-class="{collapsed: !showGraph}"></i>\
+                                    <p>{{ready && instrumentation.title || loadingText}}</p>\
+                                </button>\
+                                <button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg" title="delete graph">\
+                                    <div class="pull-right remove-icon"></div>\
+                                </button>\
+                            </div>\
+                            <div data-ng-show="showGraph && ready" class="toggle-btn-bg" style="padding-top: 10px;">\
+                                <div class="toggle-btn-bg" style="padding-bottom: 7px;">\
+                                    <div class="chart_container_{{$id}}" style="position: relative;margin-bottom:10px;width: 450px;display: inline-block;">\
+                                        <div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>\
+                                        <div id="chart_{{$id}}" style="position: relative; left: 50px;">\
+                                            <div id="clickpoint" style="position:absolute;height:0;width:0;"></div>\
+                                            <div class="caOverlaid">\
+                                                <img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" class="toggle-btn-bg" data-ng-src="data:image/jpeg;base64, {{heatmap}}"/>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                    <div data-ng-hide="heatmap" id="legend_{{$id}}" class="heatmap-pos"></div>\
+                                    <div class="graf-radio-group" data-toggle="buttons-radio">\
+                                        <button class="btn default-margin default-margin-mini graf-radio-btn" \
+                                            data-ng-class="{active: renderer == activeRenderer}" \
+                                            data-ng-hide="heatmap" \
+                                            data-ng-repeat="renderer in renderers" \
+                                            data-ng-click="changeRenderer(renderer)">{{renderer}}\
+                                        </button>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>'
         };
     });
 }(window.JP.getModule('cloudAnalytics'), window.angular, window.jQuery));

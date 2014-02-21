@@ -1,5 +1,9 @@
 'use strict';
-var instrumentationBlock = {};
+var vasync = require('vasync');
+var config = require('easy-config');
+config.cloudAnalytics = config.cloudAnalytics || {
+    instrumentationTTL: 1000
+};
 
 // default heatmap values for different requests
 var HEATMAP_WIDTH = 580;
@@ -8,196 +12,310 @@ var HEATMAP_NBUCKETS = 25;
 var HEATMAP_DURATION = 60;
 var HEATMAP_HUES = 21;
 
-module.exports = function execute(scope, app) {
-
-    var info = scope.api('Info');
-
-    function removeBlocked(token, instrs) {
-        if (!instrumentationBlock[token]) {
-            return {
-                valid:instrs,
-                blocked:[]
-            };
-        }
-
-        var ret = {};
-        var blocked = {};
-
-        for (var d in instrs) {
-            var instr = instrs[d];
-            if (!ret[d]) {
-                ret[d] = {};
+var metrics = null;
+function InstrumentationCache() {}
+InstrumentationCache.prototype = {
+    findById: function (zoneId, id) {
+        var result = [];
+        this.forEach(zoneId, function (instrumentation) {
+            if (+instrumentation.id === +id) {
+                result.push(instrumentation);
             }
-
-            for (var i in instr) {
-                if (i) {
-                    if (instrumentationBlock[token].indexOf(i + d) === -1) {
-                        ret[d][i] = instr[i];
-                    } else {
-                        blocked[d][i] = instr[i];
-                    }
-                }
-            }
-
+        });
+        return result;
+    },
+    uuidById: function (zoneId, id) {
+        var instrumentation = this.findById(zoneId, id)[0];
+        return instrumentation && instrumentation.key;
+    },
+    length: function (zoneId) {
+        //noinspection JSLint
+        return zoneId ? Object.keys(Object(this[zoneId])).length : Object.keys(this).length;
+    },
+    forEach: function (zoneId, callback) {
+        //noinspection JSLint
+        var k;
+        var keys = Object.keys(Object(this[zoneId]));
+        for (k = 0; k < keys.length; k += 1) {
+            callback(this[zoneId][keys[k]], k);
         }
+    },
+    asArray: function (zoneId) {
+        var array = [];
+        this.forEach(zoneId, function (instrumentation) {
+            array.push(instrumentation);
+        });
+        return array;
+    }
+};
+var instrumentationCache = new InstrumentationCache();
 
-        return {
-            valid: ret,
-            blocked: blocked
-        };
+function createCacheKey(instrumentationConfig) {
+    return [
+        instrumentationConfig.module,
+        instrumentationConfig.stat,
+        instrumentationConfig.decomposition.join(':')
+    ].join(':');
+}
+
+function recreateOnError(instrumentation, error) {
+    if (error.statusCode !== 404) {
+        return false;
+    }
+    instrumentation.initialized = false;
+    instrumentation.options.isNew = true;
+    instrumentation.init(function (error) {
+        if (error) {
+            instrumentation.broken = true;
+            instrumentation.cloud.log.error(error);
+            instrumentation.destroy();
+        }
+    });
+
+    return true;
+}
+
+function Instrumentation(cloud, options) {
+    var key = createCacheKey(options.config);
+    var cache = instrumentationCache[options.machineId] = instrumentationCache[options.machineId] || {};
+    if (cache[key]) {
+        return cache[key];
     }
 
-    app.get('/ca/help', function (req, res) {
-        res.json(info.ca_help);
-    });
+    this.cloud = cloud;
+    this.config = options.config;
+    this.options = options;
+    this.id = options.config.id || null;
+    this.key = key;
+    this.machineId = options.machineId;
+    this.datacenter = options.datacenter;
+    this.timeout = null;
+    this.initialized = false;
+    this.broken = false;
+    cache[key] = this;
+}
 
-    app.get('/ca', function (req, res) {
-        req.cloud.DescribeAnalytics(function (err, resp) {
-            var e = null;
-            if (err) {
-                req.log.warn(err);
-                e = 'Failed to get Cloud Analytics metrics';
-            }
-
-            res.json({ err: e, res: resp });
-        });
-    });
-
-    app.get('/ca/instrumentations', function (req, res) {
-        var client = req.cloud;
-        var errors = [];
-        var response = {
-            time:null,
-            instrumentations:{}
-        };
-        var responseCount = 0;
-
-        client.listDatacenters(function(dcerr, dcs) {
-            if (dcerr) {
-                req.log.warn(dcerr);
-                res.json({
-                    err: [ 'Failed to get Datacenter list' ],
-                    res: response
-                });
+Instrumentation.prototype.init = function (callback) {
+    this.ping();
+    var self = this;
+    if (this.initialized) {
+        callback(null, this);
+        return;
+    }
+    if (this.options.isNew) {
+        this.cloud.createInstrumentation(this.config, function (error, instrumentation) {
+            if (error) {
+                self.broken = true;
+                callback(error);
                 return;
             }
+            self.id = +instrumentation.id;
+            self.config = instrumentation;
+            self.initialized = true;
+            callback(null, self);
+        });
+    } else {
+        this.id = +this.config.id;
+        this.initialized = true;
+        callback(null, this);
+    }
+};
 
-            var handleDC = function(client, dcname) {
-                client.ListInstrumentations(function (err, resp) {
-                    if (!err) {
-                        if (resp.length) {
-                            var id = resp[0].id;
-                            for (var iname in resp) {
-                                resp[iname].datacenter = dcname;
-                            }
+Instrumentation.prototype.ping = function () {
+    if (this.broken) {
+        return;
+    }
+    var self = this;
+    if (this.timeout) {
+        clearTimeout(this.timeout);
+    }
+    // if instrumentation isn't used 10 sec(default) - it should be removed
+    this.timeout = setTimeout(self.destroy.bind(self), config.cloudAnalytics.instrumentationTTL || 10000);
+};
 
-                            // poll the most recent value to sync with ca time.
-                            if (!response.time) {
-                                client.GetInstrumentationValue(+id, {}, function(err2, value) {
-                                    if (!err2) {
-                                        response.time = value.start_time;
-                                        response.instrumentations[dcname] = resp;
-                                    } else {
-                                        req.log.warn(err2);
-                                        errors.push('Failed to get instrumentation time from ' + dcname);
-                                    }
+Instrumentation.prototype.getValue = function (options, callback) {
+    if (this.broken) {
+        callback('Instrumentation is broken');
+        return;
+    }
+    this.ping();
+    var self = this;
+    var arity = this.config['value-arity'];
+    var method = 'getInstrumentationValue';
+    var config = {
+        id: this.id,
+        start_time: options.start || this.config.crtime
+    };
 
-                                    responseCount++;
-                                    if(responseCount === Object.keys(dcs).length) {
-                                        res.json({
-                                            err: errors,
-                                            res:response
-                                        });
-                                        return;
-                                    }
-                                });
-                            } else {
-                                responseCount++;
-                                response.instrumentations[dcname] = resp;
-                            }
-                        } else {
-                            responseCount++;
-                        }
+    if (arity === 'numeric-decomposition') {
+        method = 'getInstrumentationHeatmap';
+        config.width = this.config.width || HEATMAP_WIDTH;
+        config.height = this.config.height || HEATMAP_HEIGHT;
+        config.nbuckets = this.config.nbuckets || HEATMAP_NBUCKETS;
+        config.duration = this.config.duration || HEATMAP_DURATION;
+        config.hues = this.config.hues || HEATMAP_HUES;
+        config.ndatapoints = 1;
+        config.end_time = config.start_time;
+        delete config.start_time;
+    }
 
-                    } else {
-                        responseCount++;
-                        req.log.warn(err);
-                        errors.push('Failed to get instrumentation list for ' + dcname);
+    this.cloud[method](config, config, function (error, response) {
+        if (error) {
+            if (recreateOnError(self, error)) {
+                callback(null, {});
+                return;
+            }
+            callback(error);
+            return;
+        }
+        if (arity === 'numeric-decomposition') {
+            response.end_time += self.config.duration || HEATMAP_DURATION;
+        }
+
+        callback(error, response);
+    });
+};
+
+Instrumentation.prototype.getHeatmap = function (options, callback) {
+    var self = this;
+    if (this.broken) {
+        callback('Instrumentation is broken');
+        return;
+    }
+    this.ping();
+    this.cloud.getInstrumentationHeatmapDetails(options, options, function (error, heatmap) {
+        if (recreateOnError(self, error)) {
+            callback(null, []);
+            return;
+        }
+        callback(error, heatmap);
+    });
+};
+
+Instrumentation.prototype.destroy = function (callback) {
+    callback = callback || function () {};
+    var cache = instrumentationCache[this.machineId] || {};
+    delete cache[this.key];
+
+    if (this.timeout) {
+        clearTimeout(this.timeout);
+    }
+    if (this.broken) {
+        callback();
+        return;
+    }
+    this.cloud.deleteInstrumentation(this.id, callback);
+};
+
+Instrumentation.prototype.toJSON = function () {
+    return this.config;
+};
+
+Instrumentation.prototype.valueOf = function () {
+    return this.config;
+};
+
+module.exports = function execute(scope, app) {
+    var info = scope.api('Info');
+
+    app.get('/ca', function (req, res) {
+        if (metrics) {
+            res.json({error: null, res: metrics});
+            return;
+        }
+        req.cloud.describeAnalytics(function (err, _metrics) {
+            if (err) {
+                req.log.warn(err);
+                err = 'Failed to get Cloud Analytics metrics';
+            } else {
+                metrics = _metrics;
+                metrics.help = info.ca_help.data;
+            }
+            res.json({error: err, res: metrics});
+        }, true);
+    });
+
+    function createInstrumentations(isNew, cloud, machineId, configs, callback) {
+        vasync.forEachParallel({
+            inputs: configs || [],
+            func: function (config, callback) {
+                var instrumentation = new Instrumentation(cloud, {
+                    machineId: machineId,
+                    config: config,
+                    isNew: isNew
+                });
+                instrumentation.init(callback);
+            }
+        }, function (error, response) {
+            callback(error, response.successes);
+        });
+    }
+
+    /**
+     * Get all instrumentations, specified to machine
+     */
+    app.get('/ca/:datacenter/:zoneId/describeInstrumentations', function (req, res) {
+        function getZoneId(config) {
+            var params = (config.predicate && config.predicate.eq) || [];
+            return params[0] === 'zonename' ? params[1] : '*';
+        }
+
+        req.cloud.separate(req.params.datacenter).listInstrumentations(function (error, instrumentationConfigs) {
+            var configs = [];
+            if (error) {
+                res.json({error: error, res: []});
+                return;
+            }
+            instrumentationConfigs.forEach(function (config) {
+                var zoneId = getZoneId(config);
+                if (zoneId === req.params.zoneId || zoneId === '*') {
+                    configs.push(config);
+                }
+            });
+            createInstrumentations(false, req.cloud.separate(req.params.datacenter), req.params.zoneId, configs,
+                function (error, result) {
+                    res.json({error: error, res: result});
+                });
+        });
+    });
+    /**
+     * get machine instrumentation values
+     */
+    app.get('/ca/:datacenter/:zoneId/instrumentations', function (req, res) {
+        vasync.forEachParallel({
+            inputs: instrumentationCache.asArray(req.params.zoneId),
+            func: function (instrumentation, callback) {
+                instrumentation.getValue(req.query, function (error, response) {
+                    var result = {
+                        id: instrumentation.id,
+                        value: null
+                    };
+
+                    if (error) {
+                        req.log.error(error);
                     }
-
-                    if (responseCount === Object.keys(dcs).length) {
-                        res.json({
-                            err: errors,
-                            res: response
-                        });
-                        return;
+                    if (response) {
+                        result.value = response;
                     }
-
+                    callback(error, result);
                 });
             }
-
-            for(var dcname in dcs) {2
-                var dcClient = client.separate(dcname);
-                handleDC(dcClient, dcname);
-            }
-        })
-
-    });
-
-    app.post('/ca/instrumentations/unblock/:datacenter/:id', function(req, res) {
-        if (instrumentationBlock[req.session.token] &&
-            instrumentationBlock[req.session.token][req.params.id + req.params.datacenter]) {
-            instrumentationBlock[req.session.token]
-                .splice(instrumentationBlock[req.session.token]
-                .indexOf(req.params.id + req.params.datacenter), 1);
-        }
-
-        res.json({});
-    });
-
-    app.post('/ca/instrumentations/:datacenter', function (req, res) {
-        var client = req.cloud;
-        client.setDatacenter(req.params.datacenter);
-        client.CreateInstrumentation(req.body, function (err, resp) {
-            var e = null;
-            if (err) {
-                req.log.warn(err);
-                e = req.params.datacenter + 'Failed to create instrumentation';
-            }
-
-            res.json({ err: e, res: resp });
+        }, function (error, response) {
+            res.json({error: error, res: response.successes});
         });
     });
 
-    app.del('/ca/instrumentations/:datacenter/:id', function(req, res) {
-        var token = req.session.token;
-        var id = req.params.id;
-        var datacenter = req.params.datacenter;
-        var name = id + datacenter;
+    /**
+     * get instrumentation heatmap
+     */
+    app.post('/ca/:datacenter/:zoneId/getHeatmap', function (req, res) {
+        var instrumentation = instrumentationCache.findById(req.params.zoneId, req.body.id)[0];
 
-        if (!instrumentationBlock[token]) {
-            instrumentationBlock[token] = [];
+        if (!instrumentation) {
+            res.json({error: 'instrumentation not found', res: []});
+            return;
         }
 
-        instrumentationBlock[token].push(name);
-        setTimeout(function(){
-            instrumentationBlock[token].splice(instrumentationBlock[token].indexOf(name), 1);
-        }, 5000)
-
-        var client = req.cloud;
-        client.setDatacenter(datacenter);
-        client.DeleteInstrumentation(+id, function (err, resp) {
-            var e = null;
-            if (err) {
-                req.log.warn(err);
-                e = 'Failed to delete instrumentation';
-            }
-
-            res.json({err:e, res:resp});
-        });
-    });
-
-    app.post('/ca/getHeatmapDetails/:datacenter/:id', function(req, res) {
         var options = {
             id: +req.params.id,
             ymax: req.body.ymax,
@@ -212,131 +330,43 @@ module.exports = function execute(scope, app) {
             y: req.body.y
         };
 
-        var client = req.cloud;
-        client.setDatacenter(req.params.datacenter);
-        client.getInstrumentationHeatmapDetails(options, options, function (err, resp) {
-            var e = null;
-            if (err) {
-                req.log.warn(err);
-                e = 'Failed to get heatmap details';
-            }
-
-            res.json({err:e, res:resp});
+        instrumentation.getHeatmap(options, function (error, response) {
+            res.json({error: error, res: response});
         });
-
     });
-
-    var errorC = 0;
-    app.post('/ca/getInstrumentations', function(req, res) {
-        var opts = req.body.options;
-        var instrumentations = opts.individual;
-        var response = {
-            datapoints:{},
-            end_time:null
-        };
-
-        var is = removeBlocked(req.session.token, instrumentations);
-        instrumentations = is.valid;
-        var blocked = is.blocked;
-
-        for (var i in blocked) {
-            response.datapoints[i] = blocked[i];
-            response.datapoints[i].blocked = true;
-        }
-
-        if (!Object.keys(instrumentations).length){
-            res.json(response);
-            return;
-        }
-
-        var iCount = 0;
-        var rCount = 0;
-        for (var d in instrumentations) {
-            iCount += Object.keys(instrumentations[d]).length;
-        }
-        for (var datacenter in instrumentations) {
-            for (var instrumentationId in instrumentations[datacenter]) {
-                var instrumentation = instrumentations[datacenter][instrumentationId];
-
-                (function(instrumentation, instrumentationId, datacenter) {
-                    var client = req.cloud;
-                    client.setDatacenter(instrumentation.datacenter);
-
-                    var method;
-                    var options = {
-                        id: instrumentationId
-                    };
-
-                    if (instrumentation.ndatapoints) {
-                        options.ndatapoints = instrumentation.ndatapoints;
-                    } else {
-                        options.ndatapoints = opts.ndatapoints || 1;
-                    }
-
-                    options.duration = 1;
-                    options.start_time = opts.last_poll_time || instrumentation.crtime;
-
-                    switch (instrumentation['value-arity']) {
-                        case 'numeric-decomposition':
-                            options.width = instrumentation.width || HEATMAP_WIDTH;
-                            options.height = instrumentation.height || HEATMAP_HEIGHT;
-                            options.nbuckets = instrumentation.nbuckets || HEATMAP_NBUCKETS;
-                            options.duration = instrumentation.duration || HEATMAP_DURATION;
-                            options.hues = instrumentation.hues || HEATMAP_HUES;
-                            options.ndatapoints = 1;
-                            options.end_time = options.start_time;
-                            delete options.start_time;
-                            method = 'GetInstrumentationHeatmap';
-                            break;
-
-                        case 'scalar':
-                            method = 'GetInstrumentationValue';
-                            break;
-
-                        case 'discrete-decomposition':
-                            method = 'GetInstrumentationValue';
-                            break;
-
-                        default:
-                            method = 'GetInstrumentationValue';
-                            break;
-                    }
-
-                    client[method](options, options, function (err, resp) {
-                        errorC++;
-
-                        if(!response.datapoints[datacenter]) {
-                            response.datapoints[datacenter] = {};
-                        }
-
-                        if (!err) {
-                            response.datapoints[datacenter][options.id] = resp;
-                            response.end_time = resp[resp.length - 1].start_time + 1;
-
-                            if (instrumentation['value-arity'] === 'numeric-decomposition') {
-                                response.end_time += instrumentation.duration || HEATMAP_DURATION;
-                            }
-                        } else {
-                            req.log.warn(err);
-                            response.datapoints[datacenter][options.id] = {
-                                err: 'Failed to get datapoint info'
-                            };
-
-                            if (!response.end_time) {
-                                response.end_time = options.start_time + options.ndatapoints;
-                            }
-                        }
-
-                        response.datapoints[datacenter][options.id].blocked = false;
-                        rCount++;
-
-                        if (rCount === iCount) {
-                            res.json(response);
-                        }
-                    });
-
-                })(instrumentation, instrumentationId, datacenter);
+    /**
+     * create instrumentations
+     */
+    app.post('/ca/:datacenter/:zoneId/instrumentations', function (req, res) {
+        createInstrumentations(true, req.cloud.separate(req.params.datacenter), req.params.zoneId, req.body,
+            function (error, result) {
+                res.json({error: error, res: result});
+            });
+    });
+    /**
+     * delete instrumentation
+     */
+    app.del('/ca/:datacenter/:zoneId/:id', function (req, res) {
+        vasync.forEachParallel({
+            inputs: instrumentationCache.findById(req.params.zoneId, req.params.id),
+            func: function (instrumentation, callback) {
+                instrumentation.destroy(callback);
             }
-        }
+        }, function (error, response) {
+            res.json({error: error, res: response.successes});
+        });
+    });
+    /**
+     * delete all machine instrumentations
+     */
+    app.del('/ca/:datacenter/:zoneId', function (req, res) {
+        vasync.forEachParallel({
+            inputs: instrumentationCache.asArray(req.params.zoneId),
+            func: function (instrumentation, callback) {
+                instrumentation.destroy(callback);
+            }
+        }, function (error) {
+            res.json({error: error, res: true});
+        });
     });
 };
