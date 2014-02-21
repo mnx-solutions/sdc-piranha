@@ -19,7 +19,7 @@
                 </ol>
             </div>
         </div>
-        <button class="btn orange pull-right margin-top-70" data-ng-hide="data.uuid" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
+        <button class="btn orange pull-right margin-top-70" data-ng-hide="data.uuid || openRuleForm" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
     </div>
     <div data-ng-show="rules.length">
         <div data-grid-view
@@ -41,17 +41,17 @@
     <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
         <div class="item-list-container">
             <legend class="text-right">
-                <button class="btn orange margin-botton-20" data-ng-hide="data.uuid || !rules.length" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
+                <button class="btn orange margin-botton-20" data-ng-hide="data.uuid || !rules.length || openRuleForm" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
             </legend>
 
-            <div data-ng-show="openRuleForm" >
+            <div data-ng-show="openRuleForm" id="create-rule">
                 <div class="row-fluid">
                     <p>Cloud Firewall rules limit network traffic for your SmartOS instances in one system. Cloud Firewall will enforce applicable rules for each instance that has Cloud Firewall enabled in its Instance Details.</p>
                     <p>There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins. ICMP 8:0 is always open to support echo requests using <code class="plain">ping.</code></p>
                 </div>
                 <table class="firewall-table bg-grey">
                     <thead>
-                        <legend data-ng-show="data.uuid" class="margin-top-10">Edit rule {{data.uuid}}</legend>
+                        <legend data-ng-show="data.uuid" class="margin-top-10" id="edit-rule">Edit rule {{data.uuid}}</legend>
                     </thead>
                     <tbody>
                     <tr>

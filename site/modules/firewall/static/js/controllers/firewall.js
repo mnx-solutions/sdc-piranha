@@ -34,8 +34,11 @@
         '$http',
         'PopupDialog',
         'Account',
+        '$location',
+        '$anchorScroll',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account, $location,
+                  $anchorScroll) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -44,6 +47,10 @@
 
             $scope.toggleOpenRuleForm = function () {
                 $scope.openRuleForm = !$scope.openRuleForm;
+                if ($scope.openRuleForm) {
+                    $location.hash('create-rule');
+                    $anchorScroll();
+                }
             };
 
             $scope.disableLoading = function() {
@@ -892,6 +899,8 @@
                             $scope.refreshSelects();
                             $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
+                            $location.hash('edit-rule');
+                            $anchorScroll();
 				        },
 				        tooltip: 'Edit the rule'
 			        },
