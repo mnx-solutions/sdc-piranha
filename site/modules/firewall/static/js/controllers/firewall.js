@@ -801,7 +801,6 @@
             $scope.refresh = function() {
                 $scope.loading = true;
                 rule.rule().then(function(r){
-                    $scope.resetData();
                     $scope.resetCurrent();
                     $scope.setRules(r);
                     $scope.loading = false;

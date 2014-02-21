@@ -316,8 +316,7 @@ input.ng-invalid, input.ng-pristine {
     background-color: #fef1d2;
 }
 .result-width{
-    width: 95%;
-    display: inline-block;
+    width: 90%;
     float: left;
     overflow: hidden;
     white-space: nowrap;
