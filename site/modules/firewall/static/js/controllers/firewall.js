@@ -836,7 +836,7 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 6,
+			        sequence: 7,
                     active: true
 		        },
 		        {
@@ -846,7 +846,7 @@
 			        getClass: function () {
 				        return 'span1 padding-5';
 			        },
-			        sequence: 3,
+			        sequence: 6,
                     active: true
 		        },
 		        {

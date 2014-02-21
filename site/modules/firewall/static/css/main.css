@@ -214,15 +214,15 @@ th.protocol{
     width: 100%;
     background-color: #fef1d2;
 }
-.firewall-table td.one-third{
+.firewall-table td.column {
     display: inline-block;
     vertical-align: top;
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
-    width: 31%;
+    width: 23%;
 }
-.firewall-table td.one-third legend, .legend-line{
+.firewall-table td.column legend, .legend-line{
     border-bottom: 1px solid #cbc1a8;
 }
 
