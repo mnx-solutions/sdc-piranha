@@ -310,7 +310,10 @@ input.ng-invalid, input.ng-pristine {
     padding-top: 40px;
 }
 .create-update-btn{
-    padding-top: 20px;
+    padding: 20px 26px 20px 0;
+    margin-bottom: 20px;
+    text-align: right;
+    background-color: #fef1d2;
 }
 .result-width{
     width: 95%;

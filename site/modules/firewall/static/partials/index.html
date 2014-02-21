@@ -246,7 +246,7 @@
                                         <span data-ng-show="data.parsed.from.length" class="">
                                             <span class="f-result" data-ng-repeat="from in data.parsed.from">
                                                 <div class="result-width">{{from|targetInfo}}</div>
-                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeFrom($index)" data-ng-hide="isAny(from)"></div>
+                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeFrom($index)"></div>
                                             </span>
                                         </span>
                     </div>
@@ -346,7 +346,7 @@
                                         <span data-ng-show="data.parsed.to.length" class="">
                                             <span class="f-result" data-ng-repeat="to in data.parsed.to">
                                                 <div class="result-width">{{to|targetInfo}}</div>
-                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeTo($index)" data-ng-hide="isAny(to)"></div>
+                                                <div class="remove-icon delete pull-right tags-delete-pos" data-ng-click="removeTo($index)"></div>
                                             </span>
                                         </span>
                     </div>
@@ -354,12 +354,11 @@
                 </tr>
                 </tbody>
                 </table>
-
-            </div>
-            <div class="create-update-btn pull-right margin-botton-20" data-ng-show="openRuleForm">
-                <button class="btn light" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
-                <button class="btn light" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
-                <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                <div class="create-update-btn" data-ng-show="openRuleForm">
+                    <button class="btn light" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
+                    <button class="btn light" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
+                    <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
+                </div>
             </div>
         </div>
 
