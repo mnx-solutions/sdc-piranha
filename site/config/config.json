@@ -102,6 +102,7 @@
   }
 , "polling": {
     "machineTags": 5000
+  , "machineMetadata": 5000
   , "machineState": 10000
   , "packageChange": 1000
   }
@@ -135,6 +136,8 @@
     , "base64": "13.3.0"
     , "centos-6": "2.5.0"
     , "ubuntu-12.04": "2.4.2"
+    , "ubuntu-certified-12.04": "20140219"
+    , "ubuntu-certified-13.10": "20140219"
     }
   , "earliest_date": "2013-12-18"
 }
@@ -145,6 +148,7 @@
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
+  , "instanceMetadata": "disabled"
   , "promocode": "enabled"
   , "invoices": "enabled"
   , "imageUse": "enabled"

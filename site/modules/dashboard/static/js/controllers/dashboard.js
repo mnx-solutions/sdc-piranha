@@ -10,14 +10,13 @@
         'Zendesk',
         'Machine',
         'localization',
-        'PopupDialog',
         'BillingService',
         '$http',
         '$cookies',
         'slb.Service',
         '$rootScope',
 
-        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, PopupDialog, BillingService, $http, $cookies, slbService, $rootScope) {
+        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -65,8 +64,8 @@
                     $q.when($scope.systemStatusTopics),
                     $q.when($scope.softwareUpdateTopics),
                     $q.when($scope.account),
-                        $q.when($scope.rssentries),
-                        $q.when($scope.balancers)
+                    $q.when($scope.rssentries),
+                    $q.when($scope.balancers)
                 ]).then( function(){
                 $scope.loading = false;
             });
@@ -91,38 +90,6 @@
 
             $scope.runningcount = 0;
             $scope.othercount = 0;
-
-            $scope.errorDialog = function () {
-                PopupDialog.error(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Failed:  API method not found.'
-                    ),function(){
-                        this.close();
-                    });
-            };
-            $scope.messageDialog = function () {
-                PopupDialog.message(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Message'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Sorry, this is not implemented yet.'
-                    ),function(){
-                        this.close();
-                    });
-            };
         }
-
     ]);
 }(window.angular, window.JP.getModule('Dashboard')));

@@ -96,10 +96,6 @@
     right: 10px;
 }
 
-#network-configuration-accordion-group {
-    border:none;
-}
-
 .disabledNetworkSelection {
     color:#b3b3b3;
 }
@@ -1636,8 +1632,7 @@
     display: inline-block;
     margin-top: 15px;
     margin-right: 5px;
-}
-.loading-30{
+}.loading-30{
     display: inline-block;
     vertical-align: middle;
 }

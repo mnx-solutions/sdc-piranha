@@ -494,35 +494,39 @@
             return job;
         };
 
-        service.tags = function (id, data) {
+        var bindCollectionListUpdate = function (collectionName) {
+            var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+            service[collectionName] = function (id, data) {
             if (!id) {
                 return false;
             }
 
-            var m = service.machine(id);
+                var machine = service.machine(id);
 
-            function tags() {
-                if (m.tags) {
-                    return m.tags;
+                function list() {
+                    if (machine[collectionName]) {
+                        return machine[collectionName];
                 }
 
                 var job = serverTab.call({
-                    name: 'MachineTagsList',
-                    data: {uuid: id, datacenter: m.datacenter}
+                        name: 'Machine' + upperCollectionName + 'List',
+                        data: {uuid: id, datacenter: machine.datacenter}
                 });
 
-                m.tags = job.deferred;
-                return m.tags;
+                    machine[collectionName] = job.deferred;
+                    return machine[collectionName];
             }
 
             function save() {
+                    var callData = {uuid: id, datacenter: machine.datacenter};
+                    callData[collectionName] = data;
                 var job = serverTab.call({
-                    name: 'MachineTagsSave',
-                    data: { uuid: id, tags: data, datacenter: m.datacenter }
+                        name: 'Machine' + upperCollectionName + 'Save',
+                        data: callData
                 });
 
                 job.deferred.then(function (response) {
-                    m.tags = response;
+                        machine[collectionName] = response;
                 }, function (err) {
                     PopupDialog.error(
                         localization.translate(
@@ -533,7 +537,7 @@
                         localization.translate(
                             null,
                             'machine',
-                            'Unable to save tags'
+                            'Unable to save ' + collectionName
                         ),
                         function () {}
                     );
@@ -544,13 +548,17 @@
 
             var d = $q.defer();
 
-            $q.when(m).then(function(machine){
-                m = machine;
-                d.resolve(data ? save() : tags());
+            $q.when(machine).then(function (updatedMachine) {
+                    machine = updatedMachine;
+                    d.resolve(data ? save() : list());
             });
 
             return d.promise;
         };
+        };
+
+        bindCollectionListUpdate('tags');
+        bindCollectionListUpdate('metadata');
 
         return service;
     }]);

@@ -170,94 +170,135 @@ module.exports = function execute(scope) {
         });
     });
 
-    /* listMachineTags */
-    server.onCall('MachineTagsList', {
-        verify: function (data) {
-            return data &&
-                typeof data.uuid === 'string' &&
-                typeof data.datacenter === 'string';
-        },
-        handler: function (call) {
-            var machineId = call.data.uuid;
-            var machineInfo = {'datacenter': call.data.datacenter};
-            call.log.info(machineInfo, 'Handling machine tags list call, machine %s', machineId);
-            call.cloud.separate(call.data.datacenter).listMachineTags(call.data.uuid, call.done.bind(call));
-        }
-    });
+    var bindCollectionList = function (collectionName, listMethod) {
+        collectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+        server.onCall('Machine' + collectionName + 'List', {
+            verify: function (data) {
+                return data &&
+                    typeof (data.uuid) === 'string' &&
+                    typeof (data.datacenter) === 'string';
+            },
+            handler: function (call) {
+                var machineId = call.data.uuid;
+                var machineInfo = {'datacenter': call.data.datacenter};
+                call.log.info(machineInfo, 'Handling machine ' + collectionName + ' list call, machine %s', machineId);
+                call.cloud.separate(call.data.datacenter)[listMethod](call.data.uuid, call.done.bind(call));
+            }
+        });
+    };
 
-    /* listMachineTags */
-    server.onCall('MachineTagsSave', {
-        verify: function (data) {
-            return data &&
-                typeof data.uuid === 'string' &&
-                typeof data.tags === 'object' &&
-                typeof data.datacenter === 'string';
-        },
-        handler: function (call) {
-            call.log.info('Handling machine tags save call, machine %s', call.data.uuid);
+    bindCollectionList('tags', 'listMachineTags');
 
-            var newTags = JSON.stringify(call.data.tags);
-            var oldTags = null;
-            var cloud = call.cloud.separate(call.data.datacenter);
-            var machineInfo = {
-                'datacenter': call.data.datacenter
-            };
+    bindCollectionList('metadata', 'getMachineMetadata');
 
-            function updateState () {
-                var timer = setInterval(function () {
-                    call.log.debug(machineInfo, 'Polling for machine %s tags to become %s', call.data.uuid, newTags);
-                    cloud.listMachineTags(call.data.uuid, function (tagsErr, tags) {
-                        if (!tagsErr) {
-                            var json = JSON.stringify(tags);
-                            if (json === newTags) {
-                                call.log.debug(machineInfo, 'Machine %s tags changed successfully', call.data.uuid);
-                                clearInterval(timer);
-                                clearTimeout(timer2);
-                                call.done(null, tags);
-                            } else if (!oldTags) {
-                                oldTags = json;
-                            } else if (json !== oldTags) {
-                                clearInterval(timer);
-                                clearTimeout(timer2);
-                                call.log.warn(machineInfo, 'Other call changed tags, returning new tags %j', tags);
-                                call.done(null, tags);
-                            }
-                        } else {
-                            call.log.error(machineInfo, 'Cloud polling failed for %s , %o', call.data.uuid, tagsErr);
+    var bindCollectionSave = function (collectionName, listMethod, updateMethod, deleteMethod, deleteAllMethod) {
+        var upperCollectionName = collectionName.charAt(0).toUpperCase() + collectionName.slice(1);
+        server.onCall('Machine' + upperCollectionName + 'Save', {
+            verify: function (data) {
+                return data &&
+                    typeof (data.uuid) === 'string' &&
+                    typeof (data[collectionName]) === 'object' &&
+                    typeof (data.datacenter) === 'string';
+            },
+            handler: function (call) {
+                call.log.info('Handling machine ' + collectionName + ' save call, machine %s', call.data.uuid);
+
+                var newCollection = call.data[collectionName];
+                var newCollectionStr = JSON.stringify(newCollection);
+                var oldCollectionStr = null;
+                var cloud = call.cloud.separate(call.data.datacenter);
+                var machineInfo = {
+                    datacenter: call.data.datacenter
+                };
+
+                var readCollection = function (callback) {
+                    cloud[listMethod](call.data.uuid, function (collectionErr, collection) {
+                        if (collection) {
+                            delete collection.root_authorized_keys;
                         }
-                    }, undefined, true);
-                }, config.polling.machineTags);
+                        callback(collectionErr, collection);
+                    }, null, true, true);
+                };
 
-                var timer2 = setTimeout(function () {
-                    call.log.error(machineInfo, 'Operation timed out');
-                    clearInterval(timer);
-                    call.error(new Error('Operation timed out'));
-                }, 1 * 60 * 1000);
-            }
+                function updateState() {
+                    var overallTimer;
+                    var timer = setInterval(function () {
+                        call.log.debug(machineInfo, 'Polling for machine %s ' + collectionName + ' to become %s', call.data.uuid, newCollectionStr);
+                        readCollection(function (collectionErr, collection) {
+                            if (!collectionErr) {
+                                var readCollectionStr = JSON.stringify(collection);
+                                if (readCollectionStr === newCollectionStr) {
+                                    call.log.debug(machineInfo, 'Machine %s ' + collectionName + ' changed successfully', call.data.uuid);
+                                    clearInterval(timer);
+                                    clearTimeout(overallTimer);
+                                    call.done(null, collection);
+                                } else if (!oldCollectionStr) {
+                                    oldCollectionStr = readCollectionStr;
+                                } else if (readCollectionStr !== oldCollectionStr) {
+                                    clearInterval(timer);
+                                    clearTimeout(overallTimer);
+                                    call.log.warn(machineInfo, 'Other call changed ' + collectionName + ', returning new ' + collectionName + ' %j', collection);
+                                    call.done(null, collection);
+                                }
+                            } else {
+                                call.log.error(machineInfo, 'Cloud polling failed for %s , %o', call.data.uuid, collectionErr);
+                            }
+                        });
+                    }, config.polling['machine' + upperCollectionName]);
 
-            if (Object.keys(call.data.tags).length > 0) {
-                cloud.replaceMachineTags(call.data.uuid, call.data.tags, function (err) {
-                    if (err) {
-                        call.log.error(err);
-                        call.error(err);
+                    //TODO: Move overall timeout (1 minute for now) to config
+                    overallTimer = setTimeout(function () {
+                        var timeoutMessage = 'Polling for ' + collectionName + ' operation timed out';
+                        call.log.error(machineInfo, timeoutMessage);
+                        clearInterval(timer);
+                        call.error(new Error(timeoutMessage));
+                    }, 60 * 1000);
+                }
+
+                var updateCollection = function () {
+                    if (Object.keys(newCollection).length === 0) {
+                        updateState();
                         return;
                     }
+                    cloud[updateMethod](call.data.uuid, newCollection, function (err) {
+                        if (err) {
+                            call.log.error(err);
+                            call.error(err);
+                            return;
+                        }
+                        updateState();
+                    });
+                };
 
-                    updateState();
-                });
-            } else {
-                cloud.deleteMachineTags(call.data.uuid, function (err) {
-                    if (err) {
-                        call.log.error(err);
-                        call.error(err);
-                        return;
-                    }
+                if (Object.keys(newCollection).length === 0 && deleteAllMethod) {
+                    cloud[deleteAllMethod](call.data.uuid, function (err) {
+                        if (err) {
+                            call.log.error(err);
+                            call.error(err);
+                            return;
+                        }
 
-                    updateState();
-                });
+                        updateState();
+                    });
+                } else if (deleteMethod) {
+                    readCollection(function (collErr, oldCollection) {
+                        for (var key in oldCollection) {
+                            if (!newCollection[key]) {
+                                cloud[deleteMethod](call.data.uuid, key, function () {});
+                            }
+                        }
+                        updateCollection();
+                    });
+                } else {
+                    updateCollection();
+                }
             }
-        }
-    });
+        });
+    };
+
+    bindCollectionSave('tags', 'listMachineTags', 'replaceMachineTags', null, 'deleteMachineTags');
+
+    bindCollectionSave('metadata', 'getMachineMetadata', 'updateMachineMetadata', 'deleteMachineMetadata', null);
 
     /* GetMachine */
     server.onCall('MachineDetails', {

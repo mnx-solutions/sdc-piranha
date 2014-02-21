@@ -32,8 +32,6 @@
 
             $scope.machineid = machineid;
             $scope.machine = Machine.machine(machineid);
-            $scope.freeTierOptions = $scope.features.freetier === 'yes' || $scope.features.freetier === 'enabled' ?
-                FreeTier.listFreeTierOptions() : [];
             $scope.packages = Package.package();
             $scope.loading = true;
             $scope.changingName = false;
@@ -41,35 +39,11 @@
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
-            $scope.allowResize = true;
-
 
             // Handle case when machine loading fails or machine uuid is invalid
-            $q.all([
-                $q.when($scope.machine),
-                $q.when($scope.freeTierOptions),
-                $q.when($scope.packages)
-            ]).then(function (results) {
+            $q.when($scope.machine).then(function () {
                 $scope.loading = false;
                 $scope.newInstanceName = $scope.machine.name;
-                var machine = results[0];
-                var freeTierOptions = results[1];
-                var packages = results[2];
-                var getPackageIdByName = function (name) {
-                    var result = null;
-                    packages.forEach(function (machinePackage) {
-                        if (machinePackage.name === name) {
-                            result = machinePackage.id;
-                        }
-                    });
-                    return result;
-                };
-                var machinePackageId = getPackageIdByName(machine.package);
-                freeTierOptions.forEach(function (option) {
-                    if (option.dataset === machine.image && option.package === machinePackageId) {
-                        $scope.allowResize = false;
-                    }
-                });
             }, function () {
                 $location.url('/compute');
                 $location.replace();
@@ -293,7 +267,7 @@
                     var message = $scope.imageCreateNotSupported ||
                         'This instance will be stopped as the first step in creating an image from it.';
                 }
-                if (!$scope.imageCreateNotSupported) {
+                    if (!$scope.imageCreateNotSupported) {
                     if ($scope.machine.state === 'stopped') {
                         createImage();
                     } else {
@@ -309,9 +283,9 @@
                                 message
                             ), function () {
                                 createImage();
-                            }
-                        );
                     }
+                        );
+                            }
                 } else {
                     PopupDialog.message(
                         localization.translate(
@@ -431,7 +405,7 @@
                                 ),
                                 function () {}
                             );
-                            if ($location.url() === '/compute/instance/'+ machineid) {
+                            if($location.url() === '/compute/instance/'+ machineid) {
                                 $location.url('/compute');
                                 $location.replace();
                             }
@@ -467,10 +441,13 @@
                 return false;
             };
 
+            $scope.tagsArray = [];
+            $scope.metadataArray = [];
+
             if ($scope.features.firewall === 'enabled') {
                 if ($scope.features.manta === 'enabled') {
                     $scope.gridUserConfig = Account.getUserConfig().$child('firewall-details');
-                }
+                        }
                 $scope.gridOrder = [];
                 $scope.gridProps = [
                     {
