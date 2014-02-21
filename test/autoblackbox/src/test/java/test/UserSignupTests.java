@@ -17,6 +17,7 @@ public class UserSignupTests {
     private static final String BASE_URL = System.getProperty("endpoint");
     private static final int BASE_TIMEOUT = Integer.parseInt(System
             .getProperty("globaltimeout", "30000"));
+
     @BeforeClass
     public static void openSite() {
         timeout = BASE_TIMEOUT;
@@ -25,7 +26,7 @@ public class UserSignupTests {
     }
 
     @Before
-    public void goCreateAccountPage(){
+    public void goCreateAccountPage() {
         $("[data-ng-click=\"signup();\"]").click();
     }
 
@@ -41,7 +42,7 @@ public class UserSignupTests {
     }
 
     @Test
-    public void createAccountValidation(){
+    public void createAccountValidation() {
         CreateAccount.createAcccountClick();
         $(By.id("firstName-errors")).shouldBe(visible);
         $(By.id("lastName-errors")).shouldBe(visible);
@@ -55,7 +56,7 @@ public class UserSignupTests {
         $(byAttribute("name", "password2")).clear();
         $(byAttribute("name", "password2")).sendKeys("notthesameaspasword1");
         CreateAccount.createAcccountClick();
-         $(By.id("password-errors")).shouldBe(visible);
+        $(By.id("password-errors")).shouldBe(visible);
         $(By.id("password-errors")).shouldHave(text("Passwords do not match. Password should have at least 7 characters. Password should have at least 1 alpha character. Password should have at least 1 numeric character."));
     }
 
@@ -86,7 +87,7 @@ public class UserSignupTests {
     }
 
     @Test
-    public void PaymentInformationValidation(){
+    public void PaymentInformationValidation() {
         SignupPhoneConfirmationPage.goToBillingPage();
         SignupBillingInformationPage.clickNextButton();
         $(byText("Missing credit card number")).shouldBe(visible);
@@ -102,7 +103,7 @@ public class UserSignupTests {
     }
 
     @Test
-    public void passBillingStep(){
+    public void passBillingStep() {
         SignupPhoneConfirmationPage.goToBillingPage();
         SignupBillingInformationPage.setCreditCardNumber("4111111111111111");
         SignupBillingInformationPage.setExpireDate("5", "3");
@@ -116,7 +117,7 @@ public class UserSignupTests {
     }
 
     @Test
-    public void blockedByBlackList(){
+    public void blockedByBlackList() {
         SignupPhoneConfirmationPage.goToBillingPage();
         SignupBillingInformationPage.setCreditCardNumber("4111111111111111");
         SignupBillingInformationPage.setExpireDate("5", "3");

@@ -37,7 +37,7 @@ public class SignupPhoneConfirmationPage {
         return $("[data-ng-repeat=\"notification in group\"]");
     }
 
-    public static void goToBillingPage(){
+    public static void goToBillingPage() {
         CreateAccount.createTestAccount();
         String phoneNumber = "6666666667";
         setPhoneNumber(phoneNumber);

@@ -18,7 +18,7 @@ import pageobjects.InstanceList;
 import pageobjects.InstancePage;
 import util.TestWrapper;
 
-public class InstanceTagsTests extends TestWrapper{
+public class InstanceTagsTests extends TestWrapper {
 
     @BeforeClass
     public static void openDashboard() {

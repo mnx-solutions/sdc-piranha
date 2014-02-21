@@ -21,7 +21,7 @@ public class SignupBillingInformationPage {
         $("[data-ng-click=\"submitForm()\"]").click();
     }
 
-    public static void setValue(SelenideElement fieldSelector, String value){
+    public static void setValue(SelenideElement fieldSelector, String value) {
         fieldSelector.clear();
         fieldSelector.sendKeys(value);
     }
@@ -46,8 +46,8 @@ public class SignupBillingInformationPage {
     }
 
     public static void setCountry(String countryValue) {
-            Select Country = new Select($(By.id("country")));
-            Country.selectByValue(countryValue);
+        Select Country = new Select($(By.id("country")));
+        Country.selectByValue(countryValue);
     }
 
     public static void setCity(String city) {
@@ -55,8 +55,8 @@ public class SignupBillingInformationPage {
     }
 
     public static void setState(String state) {
-            Select State = new Select($(By.id("stateSel")));
-            State.selectByVisibleText(state);
+        Select State = new Select($(By.id("stateSel")));
+        State.selectByVisibleText(state);
     }
 
     public static void setZipCode(String zipCode) {

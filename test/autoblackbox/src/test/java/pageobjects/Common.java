@@ -64,7 +64,7 @@ public class Common {
         $(byText(text)).click();
     }
 
-    public static void openFirewallPage(){
+    public static void openFirewallPage() {
         $(byText("Compute")).click();
         $(byText("Firewall")).click();
     }
@@ -86,7 +86,7 @@ public class Common {
         throw new NoSuchElementException("Such element doesn't exist");
     }
 
-    public static void clickButtonInModal(String buttonName){
+    public static void clickButtonInModal(String buttonName) {
         $(".modal").shouldBe(visible);
         $(".modal-header").exists();
         $(".modal-footer").find(byText(buttonName)).click();
@@ -148,7 +148,7 @@ public class Common {
             Scanner scanner = new Scanner(log);
             while (scanner.hasNext()) {
                 String line = scanner.nextLine();
-                if (line.contains(key)){
+                if (line.contains(key)) {
                     JSONObject newJson = new JSONObject(line);
                     result = newJson.get(key).toString();
                 }

@@ -16,42 +16,38 @@ import com.codeborne.selenide.SelenideElement;
 
 public class ImageTests extends TestWrapper {
 
-	private ImageList imageList;
+    private ImageList imageList;
 
-	@BeforeClass
-	public static void openDashboard() {
-		timeout = BASE_TIMEOUT;
-		baseUrl = BASE_URL;
-		open("/");
-		Common.login();
-	}
+    @BeforeClass
+    public static void openDashboard() {
+        timeout = BASE_TIMEOUT;
+        baseUrl = BASE_URL;
+        open("/");
+        Common.login();
+    }
 
-	@AfterClass
-	public static void logout() {
-		open("/landing/forgetToken");
-	}
+    @AfterClass
+    public static void logout() {
+        open("/landing/forgetToken");
+    }
 
-	@Before
-	public void openImageList() {
-		Common.clickNavigationLink("Compute");
-		$(byText("List My Images")).click();
-	}
+    @Before
+    public void openImageList() {
+        Common.clickNavigationLink("Compute");
+        $(byText("List My Images")).click();
+    }
 
-	@Test
-	public void checkImageListView() {
-		Common.checkBreadcrumb("Compute/ Image List", "Create Instance");
-		$(".item-list-container").shouldBe(visible);
-	}
+    @Test
+    public void checkImageListView() {
+
+        Common.checkBreadcrumb("Compute/ Image List", "Create Instance");
+        $(".item-list-container").shouldBe(visible);
+    }
 
     @Test
     public void checkImageListItemDetails() {
         imageList = page(ImageList.class);
-        String name = "base"
-                , version = "1.9.1"
-                , uuid = "60ed3a3e-92c7-11e2-ba4a-9b6d5feaa0c4"
-                , os = "smartos"
-                , description = "A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools."
-                , publicStatus = "true";
+        String name = "base", version = "1.9.1", uuid = "60ed3a3e-92c7-11e2-ba4a-9b6d5feaa0c4", os = "smartos", description = "A SmartOS image with just essential packages installed. Ideal for users who are comfortable with setting up their own environment and tools.", publicStatus = "true";
         if (System.getProperty("datacenter").equals("local-x")) {
             name = "testCreateImage";
             version = "1.0.0";

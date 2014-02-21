@@ -18,14 +18,14 @@ import java.io.*;
 public class PromocodeTests extends TestWrapper {
 
     @BeforeClass
-    public static void start(){
+    public static void start() {
         timeout = BASE_TIMEOUT;
         baseUrl = BASE_URL;
         open("/");
     }
 
     @Before
-    public void beginTest(){
+    public void beginTest() {
         $(byText("Create an Account")).click();
         SignupPhoneConfirmationPage.goToBillingPage();
         SignupBillingInformationPage.setCreditCardNumber("4111111111111111");
@@ -53,7 +53,7 @@ public class PromocodeTests extends TestWrapper {
     }
 
     @Test
-    public void InvalidPromocode(){
+    public void InvalidPromocode() {
         String promoCode = "invalid Promocode";
         SignupBillingInformationPage.setPromotionalCode(promoCode);
         SignupBillingInformationPage.clickNextButton();

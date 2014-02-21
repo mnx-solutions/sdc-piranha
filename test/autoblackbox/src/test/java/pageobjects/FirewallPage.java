@@ -104,9 +104,9 @@ public class FirewallPage {
     }
 
     public static void editRule(String tagName) {
-            ElementsCollection rows = ($$("[data-ng-repeat=\"object in objects | orderBy:order | filter:matchesFilter\"]"));
-            SelenideElement row = Common.getRowByText(rows, "tag: " + tagName);
-            row.$("[data-original-title=\"Edit the rule\"]").click();
+        ElementsCollection rows = ($$("[data-ng-repeat=\"object in objects | orderBy:order | filter:matchesFilter\"]"));
+        SelenideElement row = Common.getRowByText(rows, "tag: " + tagName);
+        row.$("[data-original-title=\"Edit the rule\"]").click();
     }
 
     public static String createTestRule() {

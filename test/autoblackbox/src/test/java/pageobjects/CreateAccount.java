@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class CreateAccount {
 
-    public static void createAcccountClick(){
+    public static void createAcccountClick() {
         $(By.id("createAccount")).click();
     }
 
