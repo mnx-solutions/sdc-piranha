@@ -11,26 +11,26 @@
         <div class="edit-text-icon" data-ng-show="pencilShow" data-ng-click="enableRename(machine.name)"></div>
     </h3>
 
-    <form name="instanceRename" class="machine-edit-form">
-        <div class="error"
-             data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
-             data-translate>
-            Invalid machine name
-        </div>
+                <form name="instanceRename" class="machine-edit-form">
+                    <div class="error"
+                         data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
+                         data-translate>
+                        Invalid machine name
+                    </div>
 
-        <div class="error"
-             data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
-             data-translate>
-            Machine name is already in use
-        </div>
-        <div class="pull-left machine-edit" data-ng-show="changingName">
+                    <div class="error"
+                         data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
+                         data-translate>
+                        Machine name is already in use
+                    </div>
+                    <div class="pull-left machine-edit" data-ng-show="changingName">
             <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name data-machine-unique />
-            <div class="btn-group machine-edit-buttons">
+                        <div class="btn-group machine-edit-buttons">
                 <button class="btn btn-height" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
                 <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
-            </div>
-        </div>
-    </form>
+                        </div>
+                    </div>
+                </form>
 
     <div class="inl-table">
         <div class="left-part">
@@ -42,7 +42,7 @@
                             <i class=""></i>
                             Summary
                         </a>
-                    </div>
+            </div>
                     <div id="collapse_1" class="accordion-body collapse in">
                         <div class="accordion-inner">
                             <table>
@@ -98,9 +98,9 @@
                                     <td data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIp}}</td>
                                 </tr>
                             </table>
-                        </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+    </div>
 
                 <div class="accordion-group">
                     <div class="accordion-heading">
@@ -131,8 +131,8 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                </div>
+                        </div>
+                        </div>
 
                 <div class="accordion-group">
                     <div class="accordion-heading">
@@ -152,7 +152,7 @@
                             <div data-tags="tagsArray" machineid="machineid" class="accordion-max-width"></div>
                         </div>
                     </div>
-                </div>
+                        </div>
 
                 <div class="accordion-group" data-ng-show="machine  && allowResize">
                     <div class="accordion-heading">
@@ -161,7 +161,7 @@
                             <i class=""></i>
                             Resize Instance
                         </a>
-                    </div>
+                        </div>
                     <div id="collapse_4" class="accordion-body collapse">
                         <div class="accordion-inner">
                             <p class="" data-translate>
@@ -187,8 +187,8 @@
                                         <span>{{currentPackage.disk | sizeFormat}}</span><br />
                                         <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
                                         <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
-                                    </div>
-                                </div>
+                        </div>
+                        </div>
                                 <div class="pull-left resize-block">
                                     <p class="control-label" data-translate><b>Resize Instance type</b></p>
                                     <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName">
@@ -201,13 +201,13 @@
                                     </select>
                                     <div class="control-group resize-button">
                                         <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
-                                    </div>
-                                </div>
+                        </div>
+                        </div>
                                 <div class="clearfix"></div>
-                            </div>
+                        </div>
+                        </div>
                         </div>
                     </div>
-                </div>
                 <div class="accordion-group">
                     <div class="accordion-heading">
                         <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[4] }" data-ng-click="collapseTrigger(4)" data-toggle="collapse" data-parent="#accordion1"
@@ -215,71 +215,71 @@
                             <i class=""></i>
                             Images
                         </a>
-                    </div>
+                </div>
                     <div id="collapse_5" class="accordion-body collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
                         <div class="accordion-inner">
-                            <legend>
+                <legend>
                                 <span class="font-size16" data-translate>Create Image</span>
-                            </legend>
+                </legend>
                             <div class="beta-sticker pull-right">beta</div>
                             <p class="" data-ng-show="machine.state != 'stopped' && !imageCreateNotSupported" data-translate>
-                                Instance needs to be stopped before creating an image.
-                            </p>
+                    Instance needs to be stopped before creating an image.
+                </p>
 
                             <p class="" data-ng-show="imageCreateNotSupported">
-                                {{imageCreateNotSupported}}
-                            </p>
-                            <div class="clearfix"></div>
-                            <div>
-                                <form name="imageForm">
-                                    <div class="error"
-                                         data-ng-show="imageForm.imageName.$error.imageUnique"
-                                         data-translate>
-                                        Image name is already in use
-                                    </div>
-                                    <div class="error"
-                                         data-ng-show="imageForm.imageName.$error.machineName"
-                                         data-translate>
-                                        Invalid image name
-                                    </div>
-                                    <div>
+                    {{imageCreateNotSupported}}
+                </p>
+                <div class="clearfix"></div>
+                <div>
+                    <form name="imageForm">
+                        <div class="error"
+                             data-ng-show="imageForm.imageName.$error.imageUnique"
+                             data-translate>
+                            Image name is already in use
+                        </div>
+                        <div class="error"
+                             data-ng-show="imageForm.imageName.$error.machineName"
+                             data-translate>
+                            Invalid image name
+                        </div>
+                        <div>
                                         <div class="dpl-inline">
-                                        <input type="text"
-                                            placeholder="Image name"
-                                            name="imageName"
-                                            data-ng-model="imageName"
-                                            data-ng-disabled="imageJob && !imageJob.finished"
-                                            data-machine-name
-                                            data-image-unique
+                            <input type="text"
+                                placeholder="Image name"
+                                name="imageName"
+                                data-ng-model="imageName"
+                                data-ng-disabled="imageJob && !imageJob.finished"
+                                data-machine-name
+                                data-image-unique
                                                    value=""
                                                    class="key-width img-name"/>
                                         </div>
                                         <div class="dpl-inline">
-                                        <input type="text" placeholder="Image description (optional)"
-                                            name="imageDescription"
-                                            data-ng-model="imageDescription"
-                                            data-ng-disabled="imageJob && !imageJob.finished"
+                            <input type="text" placeholder="Image description (optional)"
+                                name="imageDescription"
+                                data-ng-model="imageDescription"
+                                data-ng-disabled="imageJob && !imageJob.finished"
                                                    value=""
                                                    class="value-width img-desk"/>
-                                        </div>
+                        </div>
                                         <div class="dpl-inline">
                                             <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
                                     </div>
 
                                     </div>
                                     <button class="btn light dpl-inline margin-top-10"
-                                            data-ng-click="clickCreateImage()"
-                                            data-translate
-                                            data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
-                                        Create Image
-                                    </button>
+                                data-ng-click="clickCreateImage()"
+                                data-translate
+                                data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
+                            Create Image
+                        </button>
                                     <div class="dpl-inline"><a class="btn light margin-top-10" href="#!/images">My Images List</a></div>
-                                </form>
-                                <br/>
+                    </form>
+                    <br />
+                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                 <div class="accordion-group" data-ng-show="machine.metadata.credentials">
                     <div class="accordion-heading">
                         <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[5]}" data-ng-click="collapseTrigger(5)" data-toggle="collapse" data-parent="#accordion1"
@@ -287,7 +287,7 @@
                             <i class=""></i>
                             Credentials
                         </a>
-                    </div>
+                        </div>
                     <div id="collapse_6" class="accordion-body collapse">
                         <div class="accordion-inner" data-ng-show="machine.metadata.credentials">
                             <div class="accordiaon-line">
@@ -296,10 +296,10 @@
                                         <td style="width:140px">System</td>
                                         <td >{{credential.system}}</td>
                                     </tr>
-                                    <tr>
+                        <tr>
                                         <td>Username</td>
                                         <td>{{credential.username}}</td>
-                                    </tr>
+                        </tr>
                                     <tr>
                                         <td>Password</td>
                                         <td style="min-width: 260px;"><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span></td>
@@ -307,9 +307,9 @@
                                             <a class="btn light show-hide" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
                                             <a class="btn light show-hide" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
                                         </td>
-                                    </tr>
-                                </table>
-                            </div>
+                        </tr>
+                    </table>
+                </div>
                         </div>
                         <div class="accordion-inner" data-ng-hide="machine.metadata.credentials">
                             <p>There is no credentials for this instance.</p>
@@ -327,55 +327,55 @@
                     <div id="collapse_7" class="accordion-body collapse">
                         <div class="accordion-inner">
                             <div class="beta-sticker pull-right tab">beta</div>
-                            <span data-ng-switch="features.firewall">
+            <span data-ng-switch="features.firewall">
                             <fieldset data-ng-switch-when="enabled">
-                                <div data-ng-show="machine.type == 'virtualmachine'">
+                    <div data-ng-show="machine.type == 'virtualmachine'">
                                     <div class="item-list-container">
-                                    {{machine.type}} instances are not yet supported by the FWAPI.
-                                    </div>
-                                </div>
-                                <div data-ng-show="machine.type != 'virtualmachine'">
+                        {{machine.type}} instances are not yet supported by the FWAPI.
+                        </div>
+                    </div>
+                    <div data-ng-show="machine.type != 'virtualmachine'">
                                     <div class="item-list-container">
-                                        ICMP 8:0 is always open. With Firewall Rules enabled:
-                                        <ul>
-                                            <li>Block all inbound traffic</li>
-                                            <li>Allow all outbound traffic</li>
-                                        </ul>
-                                        The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.
-                                    </div>
+                            ICMP 8:0 is always open. With Firewall Rules enabled:
+                            <ul>
+                                <li>Block all inbound traffic</li>
+                                <li>Allow all outbound traffic</li>
+                            </ul>
+                            The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
+                        </div>
                                 </div>
-                                <div data-ng-show="firewallRules.length >= 1">
-                                        <div data-grid-view
+                        <div data-ng-show="firewallRules.length >= 1">
+                                <div data-grid-view
                                              data-user-config="gridUserConfig"
-                                             data-props="gridProps"
-                                             data-objects="firewallRules"
-                                             data-paginated="false"
+                                     data-props="gridProps"
+                                     data-objects="firewallRules"
+                                     data-paginated="false"
                                              data-controls="false"
-                                             data-order="gridOrder"
+                                     data-order="gridOrder"
                                              data-objects-type="firewall"
                                              data-special-width="'detailsPage'"
                                              data-search-form="searchForm"
                                              data-export-fields="exportFields"
                                              class="grid-small-font"></div>
-                                </div>
+                        </div>
                                 <div data-ng-show="firewallRules.length < 1"><br/>
                                     <div data-translate>You have no firewall rules that would apply to this machine</div>
-                                </div>
+                        </div>
                                 <div class="pull-left">
                                     <a class="btn light margin-top-10" href="#!/firewall">Edit</a>
                                     <button class="btn light margin-top-10"
-                                            data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
-                                            data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
-                                            data-ng-show="firewallChangeable()"
-                                            data-ng-click="toggleFirewallEnabled()"
-                                            data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
+                                    data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
+                                    data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
+                                    data-ng-show="firewallChangeable()"
+                                    data-ng-click="toggleFirewallEnabled()"
+                                    data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                                     <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
-                                </div>
+                        </div>
                             </fieldset>
                         </span>
                     </div>
 
-                    </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -389,15 +389,15 @@
                     <i class="icon-ok" data-ng-show="(machine.state == 'running' && !machine.job) || (machine.state == 'running' && machine.job.finished)"></i>
                     <i class="warn_icon" data-ng-show="(machine.state == 'stopped' && !machine.job) || (machine.state == 'stopped' && machine.job.finished)"></i>
                     <span data-translate>{{machine.state}}</span>
-                </span>
+            </span>
 
                 <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
                         data-ng-show="machine.state == 'stopped'"
-                                data-ng-click="clickStart(machine.id)"
-                                data-toggle="tooltip"
-                                data-placement="top"
-                                data-html="true"
-                                data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
+                        data-ng-click="clickStart(machine.id)"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Instance configuration and data is preserved when instances are stopped. Use start to restart your instance."
 
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                     <i class="icon-play"></i>
@@ -406,13 +406,13 @@
 
                 <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
                         data-ng-show="machine.state == 'running'"
-                                data-ng-click="clickStop(machine.id)"
-                                data-translate-attributes="data-original-title"
-                                data-toggle="tooltip"
-                                data-placement="top"
-                                data-html="true"
-                                data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
-                                data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
+                        data-ng-click="clickStop(machine.id)"
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
+                        data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
+                        data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                     <i class="stop-icon"></i>
                     <p data-translate>Stop</p>
@@ -421,10 +421,10 @@
                 <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'running'"
                                 data-ng-click="clickReboot(machine.id)"
                                 data-toggle="modal"
-                                data-translate-attributes="data-original-title"
-                                data-toggle="tooltip"
-                                data-placement="top"
-                                data-html="true"
+                        data-translate-attributes="data-original-title"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        data-html="true"
                                 data-original-title="Click here to reboot your instance."
                                 data-ng-class="{'btn-warning': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
@@ -444,22 +444,22 @@
                     <i class="delete-icon"></i>
                     <p data-translate>Delete</p>
                 </button>
-            </div>
+    </div>
             <div data-ng-controller="cloudController" ng-init="createDefaultInstrumentations()">
                 <div class="detail_chart" >
                     <div class="loading-small" data-ng-hide="cpuGraphs && memGraphs"></div>
                     <graph data-ng-repeat="graph in cpuGraphs" options="graph"></graph>
                     <div class="detail_chart">
                         <graph data-ng-repeat="graph in memGraphs" options="graph"></graph>
-                    </div>
+                        </div>
                     <div class="detail_chart">
                         <graph data-ng-repeat="graph in nicGraphs" options="graph"></graph>
                     </div>
-                </div>
+                        </div>
                 <div class="vda-btn">
                     <a id="button-detailed-analytics" href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right "><i class="chart-icon"></i>View Detailed Analytics</a>
+                    </div>
                 </div>
-            </div>
         </div>
     </div>
 </div>

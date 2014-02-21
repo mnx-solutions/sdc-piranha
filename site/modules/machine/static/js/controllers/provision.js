@@ -28,13 +28,15 @@
 
             $scope.campaignId = ($cookies.campaignId || 'default');
 
-            $scope.preSelectedImageId = requestContext.getParam('imageid');
-            $scope.preSelectedImage = null;
+                $scope.preSelectedImageId = requestContext.getParam('imageid');
+                $scope.preSelectedImage = null;
 
             if ($scope.preSelectedImageId) {
-                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
-            }
+                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                }
 
+            $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
+            
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
             $scope.datacenters = Datacenter.datacenter();
@@ -138,17 +140,17 @@
                             return;
                         }
                         $scope.retinfo = Machine.provisionMachine( machine || $scope.data);
-                            $scope.retinfo.done(function(err, job) {
-                                var newMachine = job.__read();
-                                if(newMachine.id) {
-                                    var listMachines = Machine.machine();
-                                    $q.when(listMachines, function() {
-                                        if(listMachines.length == 1) {
-                                            $$track.marketo_machine_provision($scope.account);
-                                        }
-                                    });
+                    $scope.retinfo.done(function(err, job) {
+                        var newMachine = job.__read();
+                        if(newMachine.id) {
+                            var listMachines = Machine.machine();
+                            $q.when(listMachines, function() {
+                                if(listMachines.length == 1) {
+                                    $$track.marketo_machine_provision($scope.account);
                                 }
                             });
+                        }
+                    });
 
                         $location.path('/compute');
                     });
@@ -158,6 +160,7 @@
 
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
+                $scope.data.metadata = $scope.metadataArray;
                 $scope.data.tags = $scope.tags || {};
 
                 if (!$scope.data.datacenter) {
@@ -235,6 +238,9 @@
                 };
                 $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
+                if ($scope.features.instanceMetadata === 'enabled') {
+                    ng.element('#metadata-configuration').fadeOut('fast');
+                }
                 ng.element('#network-configuration').fadeOut('fast');
                 ng.element('.carousel').carousel(goto);
             };
@@ -368,7 +374,10 @@
                     $scope.selectedPackageInfo = pkg;
 
                     $scope.data.package = pkg.id;
-                    ng.element('#network-configuration').fadeIn('fast');
+                        ng.element('#network-configuration').fadeIn('fast');
+                    if ($scope.features.instanceMetadata === 'enabled') {
+                        ng.element('#metadata-configuration').fadeIn('fast');
+                    }
                 });
             };
 
@@ -403,7 +412,7 @@
                 if(!$scope.searchPackages) {
                     return true;
                 }
-                
+
                 var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
                 return props.some(function (prop) {
                     if(!item[prop]) {

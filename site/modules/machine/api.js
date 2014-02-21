@@ -156,6 +156,12 @@ module.exports = function execute(scope, register) {
 
         var cloud = call.cloud.separate(options.datacenter);
 
+        if (options.metadata && options.metadata.length > 0) {
+            options.metadata.forEach(function (metaOption) {
+                options['metadata.' + metaOption.key] = metaOption.val;
+            });
+        }
+
         cloud.createMachine(options, function (err, machine) {
             if (!err) {
                 if (call.immediate) {
