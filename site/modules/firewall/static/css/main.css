@@ -34,9 +34,17 @@ th.protocol{
     padding: 4px;
 }
 
+.notice-block-wrapper {
+    width: 50%;
+}
+
 .notice-block {
     margin-bottom: 15px;
     color:#000 !important;
+}
+
+.description {
+    width: 50%;
 }
 
 .margin-top-10 {
