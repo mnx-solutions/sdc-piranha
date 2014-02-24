@@ -16,20 +16,23 @@
                    id="search"
                    placeholder="search files"
                    data-ng-model="filterAll"
-                   data-translate="search files" />
+                   data-translate="search files"
+                   data-ng-click="constraction()"/>
             <!--<input value="" class="grid-search-icon" type="submit">-->
         </form>
-        <button class="btn light"><i class="download-icon"></i>Download</button>
-        <button class="btn light"><i class="info-icon"></i>Get Info</button>
-        <button class="btn light"><i class="share-icon"></i>Share</button>
-        <button class="btn light"><i class="key-icon"></i>mLogin</button>
-        <button class="btn light"><i class="delete-icon"></i>Delete</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="plus-icon"></i>New Folder</button>
+        <button class="btn light" data-ng-click="downloadFile()"><i class="download-icon"></i>Download</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="info-icon"></i>Get Info</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="share-icon"></i>Share</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="key-icon"></i>mLogin</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="delete-icon"></i>Delete</button>
     </div>
 
     <div id="folder" class="folder-container" data-path="{{ currentPath }}" data-ng-hide="loading">
         <div class="folder-container-sub">
             <div data-ng-repeat="i in filesTree" class="{{getColumnClass($index)}}">
                 <div class="files-box">
+                    <div class="loading-medium-transparent" data-ng-show="loadingFileman"></div>
                     <div data-ng-repeat="path in i"  class="finder-elements" data-ng-class="{active: path.active}">
                         <a href="JavaScript:{}" data-ng-click="setCurrentPath(path, true)">
                             <div class="{{path.type}} path-name"></div>
@@ -38,8 +41,13 @@
                     </div>
                 </div>
             </div>
+            <div class="finder-column" data-ng-show="loadingFileman">
+                <div class="files-box">
+                    <div class="loading-medium-transparent"></div>
+                </div>
+            </div>
         </div>
-        <div class="drag-files">
+        <div class="drag-files" data-ng-click="constraction()">
             <div class="line-bg"><i class="upload-icon-grey"></i>Drag files to upload<i class="upload-icon-grey"></i></div>
         </div>
 
@@ -48,17 +56,14 @@
     <div class="bottom-btn-panel pull-left" data-ng-hide="loading">
         <span>Multiple File Upload:</span>
         <div id="address" class="upload-btn">
-            <form name="uploadForm" action="fileman/upload" enctype="multipart/form-data" method="post" target="uploadFrame">
-                <input type="file" id="uploadInput" name="uploadInput" onchange="uploadForm.submit();" style="display: none" multiple/>
-                <input type="hidden" name="path" value="{{ currentPath }}"/>
-                <label type="button" for="uploadInput" class="btn light pull-left"><i class="plus-icon"></i>Add files</label>
-            </form>
-            <iframe src="about:blank" style="display: none;" name="uploadFrame" onload="uploadForm.reset();"></iframe>
+            <input type="file" id="uploadInput" name="uploadInput"  style="display: none" multiple data-fileman-upload="currentPath">
+            <input type="hidden" name="path" value="{{ currentPath }}"/>
+            <label type="button" for="uploadInput" class="btn light pull-left"><i class="plus-icon"></i>Add files</label>
         </div>
 
-        <button class="btn light"><i class="upload-icon"></i>Start Upload</button>
-        <button class="btn light"><i class="cancel-icon"></i>Cancel</button>
-        <button class="btn light"><i class="delete-icon"></i>Delete</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="upload-icon"></i>Start Upload</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="cancel-icon"></i>Cancel</button>
+        <button class="btn light" data-ng-click="constraction()"><i class="delete-icon"></i>Delete</button>
     </div>
 
 

@@ -7,7 +7,11 @@
         'requestContext',
         'fileman',
         '$timeout',
-        function ($scope, localization, requestContext, fileman, $timeout) {
+        'PopupDialog',
+        'Account',
+        '$q',
+
+        function ($scope, localization, requestContext, fileman, $timeout, PopupDialog, Account, $q) {
             //TODO: Move fileman to storage module
             localization.bind('fileman', $scope);
             requestContext.setUpRenderContext('fileman.index', $scope);
@@ -16,18 +20,69 @@
             $scope.loadingFileman = false;
             $scope.loading = true;
             $scope.filesTree = {};
+            var rootPath = '/';
+            var defaultPath = {path: 'public', parent: '/'};
+            var previousFullPath;
+            var fullPath;
+            var fullParent;
+            var lastSelectedFile=[];
+
+            var clearSelectedFiles = function () {
+                lastSelectedFile[0].active = false;
+                lastSelectedFile = [];
+            }
+
             $scope.getColumnClass = function (index) {
                 return index === 0 ? 'general-column' : 'finder-column';
             };
-            $scope.setCurrentPath = function setCurrentPath(path, force) {
-                var fullPath = path === '/' ? path : ('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path);
+
+            $scope.downloadFile = function () {
+                if (lastSelectedFile.length && lastSelectedFile[0].active) {
+                    fileman.get($scope.currentPath + '/' + lastSelectedFile[0].name);
+                    clearSelectedFiles();
+                } else {
+                    PopupDialog.message(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Message'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Not selected file.'
+                        ),
+                        function () {}
+                    );
+                }
+
+            };
+
+            $scope.setCurrentPath = function setCurrentPath(path, force, callback) {
+                fullPath = path === rootPath ? path : ('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path);
+                fullParent = '/' || path.parent;
+
+                var scrollContent = ng.element('.folder-container-sub');
+                var fileBoxWidth = ng.element('.finder-column .files-box').width()+1;
+                $timeout(function () {
+                    scrollContent.scrollLeft(scrollContent.scrollLeft()+fileBoxWidth);
+                })
+
                 if ($scope.loadingFileman) {
                     return;
                 }
                 if (path && path.type && path.type !== 'directory') {
-                    fileman.get($scope.currentPath + '/' + path.name);
+                    if (lastSelectedFile.length) {
+                        clearSelectedFiles();
+                    }
+                    path.active = true;
+                    lastSelectedFile.push(path);
                     return;
                 }
+                if (fullPath === previousFullPath && force) {
+                    return;
+                }
+                previousFullPath = fullPath;
 
                 $scope.loadingFileman = true;
                 if (!force) {
@@ -88,12 +143,16 @@
                     }
                     $scope.loadingFileman = false;
                     $scope.loading = false;
-                    var scrollContent = ng.element('.folder-container-sub');
-                    var fileBoxWidth = ng.element('.finder-column .files-box').width()+1;
-                    $timeout(function () {
-                        scrollContent.scrollLeft(scrollContent.scrollLeft()+fileBoxWidth);
-                    })
-
+                    if (callback) {
+                        callback(error, result);
+                    }
+                    if (rootPath !== $scope.currentPath && force) {
+                        $scope.userConfig.$load(function (err, config) {
+                            config.path = fullPath;
+                            config.dirty = true;
+                            config.$save();
+                        });
+                    }
                 });
             };
 
@@ -102,10 +161,76 @@
                 return false;
             };
 
+            $q.denodeify = function (func) {
+                return function () {
+                    var d = $q.defer();
+                    [].push.call(arguments, function (err) {
+                        if (err) {
+                            d.reject(err);
+                            return;
+                        }
+                        d.resolve([].slice.call(arguments, 1));
+                    });
+                    func.apply(this, arguments);
+                    return d.promise;
+                };
+            };
+
+            $scope.userConfig = Account.getUserConfig().$child('fileman');
             if (!$scope.currentPath) {
-                return $scope.setCurrentPath('/');
+                $scope.userConfig.$load(function (err, config) {
+                    var path = config.path;
+                    var loadedPath = path.split(/\/([^/]+)/);
+                    var filteredPath = [];
+                    var parentPath = '/';
+                    for (var i = 0; i < loadedPath.length; i++) {
+                        if (loadedPath[i] !== "") {
+                            if (loadedPath[i] !== "/") {
+                                filteredPath.push({path: loadedPath[i], parent: parentPath});
+                                parentPath += '/' + loadedPath[i];
+                            }
+                        }
+                    }
+                    if (!filteredPath.length) {
+                        filteredPath.push(defaultPath);
+                    }
+
+                    var setCurrentPathPromise = $q.denodeify($scope.setCurrentPath);
+
+                    var resultingPromise = filteredPath.reduce(function (soFar, newPath) {
+                        return soFar.then(function () {
+                            return setCurrentPathPromise(newPath, false);
+                        });
+                    }, setCurrentPathPromise(rootPath, false));
+
+                    resultingPromise.then(function () {
+                    });
+                });
             }
 
+            $scope.constraction = function () {
+                PopupDialog.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Message'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Construction works.'
+                    ),
+                    function () {}
+                );
+            };
+
+            $scope.$on('uploadready', function () {
+                $scope.setCurrentPath({path: fullPath, parent: fullParent}, false);
+            });
+
+            $scope.$on('uploadStart', function () {
+//                $scope.setCurrentPath();
+            });
         }
     ]);
 })(window.JP.getModule('fileman'), angular);

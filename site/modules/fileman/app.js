@@ -22,7 +22,6 @@ module.exports = function (scope, app) {
             inputs: files,
             func: function (file, callback) {
                 var rs = fs.createReadStream(file.path);
-
                 var filePath = '/' + client.user + req.body.path + '/' + file.originalFilename;
                 filePath = filePath.replace(/\/+/g, '/');
 
