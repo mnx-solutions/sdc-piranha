@@ -53,7 +53,7 @@ public class InstanceTagsTests extends TestWrapper {
         Common.errorNotPresent();
         Common.clickNavigationLink("Compute");
         Common.clickColumnsButton();
-        Common.AddGridColumn("Tags");
+        Common.addGridColumn("Tags");
         assertTrue(InstancePage.isTagDisplayed(key1, value1));
         assertFalse(InstancePage.isTagDisplayed("WrongKey", value1));
         assertFalse(InstancePage.isTagDisplayed(key1, "WrongValue"));

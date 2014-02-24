@@ -1,13 +1,16 @@
 package pageobjects;
 
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.*;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * ImageList page object. Holds methods to interact with given pages.
@@ -49,4 +52,41 @@ public class ImageList {
         return row.$(".toolbox .machine-details-info").$(".row-fluid", i);
     }
 
+    public static void gotoImageList() {
+        Common.clickNavigationLink("Compute");
+        $("[href=\"#!/images\"] span", 0).click();
+    }
+
+    public static String getImageUUID(String imageName) {
+        Common.addGridColumn("UUID");
+        int lines = $("#grid-instances tr").$$("[data-ng-repeat=\"prop in props | orderBy:'sequence' | filter:{active:true}\"]").size();
+        SelenideElement table = $("#grid-instances");
+        SelenideElement row = table.$(By.xpath("//td[contains(., " + imageName + ")]/.."));
+        SelenideElement cell = row.$("[data-ng-repeat=\"prop in props | orderBy:'sequence' | filter:{active:true}\"]", lines - 1);
+        return cell.getText();
+    }
+
+    public static void setImageName(String imageName) {
+        $("[name=\"imageName\"]").sendKeys(imageName);
+    }
+
+    public static String createTestImage() {
+        Common.clickNavigationLink("Compute");
+        InstancePage.gotoInstanceDetails(Common.getTestInstanceName());
+        InstancePage.openImagesSection();
+        Date date = new Date();
+        long timestamp = date.getTime();
+        String imageName = "testImage" + timestamp;
+        setImageName(imageName);
+        $("[data-ng-click=\"clickCreateImage()\"]").click();
+        Common.clickButtonInModal("Yes");
+        Common.waitForMediumLaoderDisappear();
+        Common.clickButtonInModal("Ok");
+        return imageName;
+    }
+
+    public static void deleteImage(String imageId) throws IOException {
+        ProcessBuilder cloudApiAuth = new ProcessBuilder("ssh", "-i", System.getProperty("privateKeyPath"), "root@192.168.115.248", "curl", "-kis", "http://10.0.0.15/images/" + imageId, "-XDELETE");
+        cloudApiAuth.start();
+    }
 }

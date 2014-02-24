@@ -237,7 +237,8 @@ public class AccountPage {
         }
     }
 
-    public String getBillingAddressLine1() {
+    public String
+    getBillingAddressLine1() {
         return $("#addressLine1").val();
     }
 
