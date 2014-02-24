@@ -266,12 +266,12 @@
                 $scope.currentSlidePageIndex = index;
             };
 
-            $scope.getDefaultPackageId = function (datasetType) {
+            $scope.getDefaultPackageId = function () {
                 var packageId = '';
                 var sortPackage = '';
 
                 $scope.packages.forEach(function (pkg) {
-                    if (pkg.group === "Standard" && pkg.type === datasetType) {
+                    if ($scope.filterPackages(pkg)) {
                         if (!sortPackage || (sortPackage && sortPackage > parseInt(pkg.memory, 10))) {
                             sortPackage = parseInt(pkg.memory, 10);
                             packageId = pkg.id;
@@ -329,7 +329,7 @@
                     }
 
                     if ($scope.packages) {
-                        var packageId = $scope.getDefaultPackageId($scope.datasetType);
+                        var packageId = $scope.getDefaultPackageId();
                         if (packageId) {
                             $scope.selectPackage(packageId);
                         }
