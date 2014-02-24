@@ -224,9 +224,11 @@
             $scope.reconfigure = function (goto) {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
-                $scope.selectedPackage = null;
-                $scope.selectedPackageInfo = null;
-                $scope.packageType = null;
+                if (goto !== 1) {
+                    $scope.selectedPackage = null;
+                    $scope.selectedPackageInfo = null;
+                    $scope.packageType = null;
+                }
                 $scope.selectedNetworks = [];
 
                 var ds = $scope.data.datacenter;
@@ -262,6 +264,21 @@
 
                 $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
                 $scope.currentSlidePageIndex = index;
+            };
+
+            $scope.getDefaultPackageId = function (datasetType) {
+                var packageId = '';
+                var sortPackage = '';
+
+                $scope.packages.forEach(function (pkg) {
+                    if (pkg.group === "Standard" && pkg.type === datasetType) {
+                        if (!sortPackage || (sortPackage && sortPackage > parseInt(pkg.memory, 10))) {
+                            sortPackage = parseInt(pkg.memory, 10);
+                            packageId = pkg.id;
+                        }
+                    }
+                });
+                return packageId;
             };
 
             $scope.selectDataset = function (id, changeDataset) {
@@ -309,6 +326,13 @@
                     if (!changeDataset) {
                         $scope.setCurrentStep(1);
                         $scope.slideCarousel();
+                    }
+
+                    if ($scope.packages) {
+                        var packageId = $scope.getDefaultPackageId($scope.datasetType);
+                        if (packageId) {
+                            $scope.selectPackage(packageId);
+                        }
                     }
                 });
 

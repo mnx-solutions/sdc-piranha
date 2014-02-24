@@ -1295,7 +1295,7 @@
     line-height: 18px;
     margin-top: -5px;
     padding-top: 7px;
-    padding-right: 10px;
+    padding-right: 20px;
     word-wrap: break-word;
 }
 .selected-package-box-3 h2{
@@ -1484,6 +1484,11 @@
     background-position: 160px 15px;
     background-size: 24px;
 }
+
+.selected-package-box-content.small-icon, .selected-package-box-1.small-icon {
+    background-position: 210px 50px;
+}
+
 .small-icon.cassandra {background-image: url(../img/icons/cassandra.png);}
 .small-icon.centos {background-image: url(../img/icons/centos.png);}
 .small-icon.chef {background-image: url(../img/icons/chef.png);}
