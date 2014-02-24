@@ -5,6 +5,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.Assert.assertTrue;
 
+import org.openqa.selenium.NoSuchElementException;
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 
@@ -62,6 +63,7 @@ public class FirewallPage {
                 case "Subnet":
                     inputField = $("input[name=\"toValue\"]");
                     break;
+                default: throw new NoSuchElementException("Unable to locate " + targetName);
             }
         } else if (direction.equals("From")) {
             switch (targetName) {
@@ -75,6 +77,7 @@ public class FirewallPage {
                 case "Instance":
                     selectInstance(direction, targetValue);
                     break;
+                default: throw new NoSuchElementException("Unable to locate " + targetName);
             }
         }
         if (targetName.equals("Subnet") || targetName.equals("IP") || targetName.equals("Tag")) {

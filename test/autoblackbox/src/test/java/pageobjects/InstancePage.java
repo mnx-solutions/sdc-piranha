@@ -96,10 +96,10 @@ public class InstancePage {
         $("[placeholder=\"Key\"]", lines - 1).setValue(key);
         $("[placeholder=\"Value\"]", lines - 1).setValue(value);
         $("[data-ng-click=\"addTag()\"]", lines - 1).click();
-        WaitForSmallLaoderDisappear();
+        WaitForSmallSpinnerDisappear();
     }
 
-    private static void WaitForSmallLaoderDisappear() {
+    private static void WaitForSmallSpinnerDisappear() {
         $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
 
@@ -139,14 +139,14 @@ public class InstancePage {
 
     public static void removeTag(String key) {
         $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeTag(tag)\"]").click();
-        WaitForSmallLaoderDisappear();
+        WaitForSmallSpinnerDisappear();
     }
 
     public static void openTagsSection() {
         $("[data-ng-class=\"{active: accordionIcon[2] }\"]").click();
     }
 
-    public static boolean checkTag(String key, String value) {
+    public static boolean isTagDisplayed(String key, String value) {
         return $(By.xpath("//span[contains(.,'\"" + key + "\":\"" + value + "\')]")).isDisplayed();
     }
 

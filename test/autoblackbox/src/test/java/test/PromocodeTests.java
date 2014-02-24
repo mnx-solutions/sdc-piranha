@@ -14,7 +14,7 @@ import pageobjects.*;
 import util.TestWrapper;
 
 import java.io.*;
-
+//TODO: refactor class to avoid code duplication with UserSignupTests
 public class PromocodeTests extends TestWrapper {
 
     @BeforeClass

@@ -54,15 +54,15 @@ public class InstanceTagsTests extends TestWrapper {
         Common.clickNavigationLink("Compute");
         Common.clickColumnsButton();
         Common.AddGridColumn("Tags");
-        assertTrue(InstancePage.checkTag(key1, value1));
-        assertFalse(InstancePage.checkTag("WrongKey", value1));
-        assertFalse(InstancePage.checkTag(key1, "WrongValue"));
+        assertTrue(InstancePage.isTagDisplayed(key1, value1));
+        assertFalse(InstancePage.isTagDisplayed("WrongKey", value1));
+        assertFalse(InstancePage.isTagDisplayed(key1, "WrongValue"));
         $(byText(instanceName)).click();
         InstancePage.openTagsSection();
         InstancePage.removeTag(key1);
         InstancePage.removeTag(key2);
-        assertFalse(InstancePage.checkTag(key1, value1));
-        assertFalse(InstancePage.checkTag(key2, value2));
+        assertFalse(InstancePage.isTagDisplayed(key1, value1));
+        assertFalse(InstancePage.isTagDisplayed(key2, value2));
         Common.errorNotPresent();
     }
 }
