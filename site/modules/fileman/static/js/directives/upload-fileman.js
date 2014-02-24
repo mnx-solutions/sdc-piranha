@@ -29,7 +29,6 @@
 
                 element.change(function (e) {
                     if (e.target.files && e.target.files.length) {
-                        scope.$parent.$emit('uploadStart', true);
                         uploadFile(e.target.files[0]);
                     }
                 });

@@ -227,10 +227,6 @@
             $scope.$on('uploadready', function () {
                 $scope.setCurrentPath({path: fullPath, parent: fullParent}, false);
             });
-
-            $scope.$on('uploadStart', function () {
-//                $scope.setCurrentPath();
-            });
         }
     ]);
 })(window.JP.getModule('fileman'), angular);
