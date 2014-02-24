@@ -63,6 +63,7 @@ public class FirewallPage {
                 case "Subnet":
                     inputField = $("input[name=\"toValue\"]");
                     break;
+                default: break;
             }
         } else if (direction.equals("From")) {
             switch (targetName) {
@@ -76,6 +77,7 @@ public class FirewallPage {
                 case "Instance":
                     selectInstance(direction, targetValue);
                     break;
+                default: break;
             }
         }
         if (targetName.equals("Subnet") || targetName.equals("IP") || targetName.equals("Tag")) {
