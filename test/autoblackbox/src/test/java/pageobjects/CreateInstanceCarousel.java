@@ -77,15 +77,15 @@ public class CreateInstanceCarousel {
 
     public void setOsVersion(String os, String version) {
         waitForListingUpdate();
-        SelenideElement Os = Common.getRowByText($$(".active .item-scrolling .provisioning-item"), os);
-        if (Os.$(byText("Choose image version")).isDisplayed()) {
-            Os.$(byAttribute("data-toggle", "dropdown")).click();
-            Os.$(".btn-group.pull-left").getCssValue("display");
-            Os.$(".btn-group.pull-left").should(hasClass("open"));
-            Os.$("ul.dropdown-menu").shouldBe(visible);
-            Os.$("ul.dropdown-menu").$(byText(version)).shouldBe(visible);
-            Os.$("ul.dropdown-menu").$(byText(version)).click();
-            Os.$("ul.dropdown-menu").shouldBe(hidden);
+        SelenideElement instanceOs = Common.getRowByText($$(".active .item-scrolling .provisioning-item"), os);
+        if (instanceOs.$(byText("Choose image version")).isDisplayed()) {
+            instanceOs.$(byAttribute("data-toggle", "dropdown")).click();
+            instanceOs.$(".btn-group.pull-left").getCssValue("display");
+            instanceOs.$(".btn-group.pull-left").should(hasClass("open"));
+            instanceOs.$("ul.dropdown-menu").shouldBe(visible);
+            instanceOs.$("ul.dropdown-menu").$(byText(version)).shouldBe(visible);
+            instanceOs.$("ul.dropdown-menu").$(byText(version)).click();
+            instanceOs.$("ul.dropdown-menu").shouldBe(hidden);
         }
     }
 
