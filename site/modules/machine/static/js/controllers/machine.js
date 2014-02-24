@@ -39,6 +39,7 @@
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
+            $scope.incorrectNameMessage = "name can contain only letters, digits and signs like '.' and '-'.";
 
             // Handle case when machine loading fails or machine uuid is invalid
             $q.when($scope.machine).then(function () {

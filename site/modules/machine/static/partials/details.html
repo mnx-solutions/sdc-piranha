@@ -15,7 +15,7 @@
                     <div class="error"
                          data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
                          data-translate>
-                        Machine name can contain only letters, digits and signs like '.' and '-'.
+                        Machine&nbsp;{{incorrectNameMessage}}
                     </div>
 
                     <div class="error"
@@ -262,7 +262,7 @@
                         <div class="error"
                              data-ng-show="imageForm.imageName.$error.machineName"
                              data-translate>
-                            Image name can contain only letters, digits and signs like '.' and '-'.
+                            Image&nbsp;{{incorrectNameMessage}}
                         </div>
                         <div>
                                         <div class="dpl-inline">
