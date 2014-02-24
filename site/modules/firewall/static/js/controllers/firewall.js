@@ -622,6 +622,29 @@
                         null,
                         message
                     ), function () {
+                        var data = $scope.data.parsed;
+
+                        function setFocus(direction) {
+                            var current = $scope.current;
+
+                            if (current[direction].type === 'vm') {
+                                ng.element('#s2id_' + direction + 'InstanceSelect').find('a').eq(0).mousedown();
+                            } else if (current[direction].type === 'subnet' || current[direction].type === 'ip') {
+                                ng.element('input[name="' + direction + 'Value"]').focus();
+                            } else if (current[direction].type === 'tag') {
+                                ng.element('input[data-ng-model="current.' + direction + '.text"]').focus();
+                            } else {
+                                ng.element('#s2id_' + direction + 'Select').find('a').eq(0).mousedown();
+                            }
+                        }
+
+                        if (!data.protocol.targets.length) {
+                            ng.element('#port').focus();
+                        } else if (!data.from.length) {
+                            setFocus('from');
+                        } else if (!data.to.length) {
+                            setFocus('to');
+                        }
                     });
             }
 
