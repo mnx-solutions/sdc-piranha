@@ -63,7 +63,6 @@ public class FirewallPage {
                 case "Subnet":
                     inputField = $("input[name=\"toValue\"]");
                     break;
-                default: throw new NoSuchElementException("Unable to locate " + targetName);
             }
         } else if (direction.equals("From")) {
             switch (targetName) {
@@ -77,7 +76,6 @@ public class FirewallPage {
                 case "Instance":
                     selectInstance(direction, targetValue);
                     break;
-                default: throw new NoSuchElementException("Unable to locate " + targetName);
             }
         }
         if (targetName.equals("Subnet") || targetName.equals("IP") || targetName.equals("Tag")) {
