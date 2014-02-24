@@ -19,7 +19,7 @@
                 </ol>
             </div>
         </div>
-        <button class="btn orange pull-right margin-top-70" data-ng-hide="data.uuid || openRuleForm" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
+        <button class="btn orange pull-right margin-top-70" data-ng-hide="openRuleForm" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
     </div>
     <div data-ng-show="rules.length">
         <div data-grid-view
@@ -41,7 +41,7 @@
     <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
         <div class="item-list-container">
             <legend class="text-right">
-                <button class="btn orange margin-botton-20" data-ng-hide="data.uuid || !rules.length || openRuleForm" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
+                <button class="btn orange margin-botton-20" data-ng-hide="!rules.length || openRuleForm" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
             </legend>
 
             <div data-ng-show="openRuleForm" id="create-rule">

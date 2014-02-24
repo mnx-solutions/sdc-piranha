@@ -717,6 +717,7 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
+                    $scope.data.uuid = '';
                 }, $scope.disableLoading);
             };
 
