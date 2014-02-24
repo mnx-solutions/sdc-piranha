@@ -187,14 +187,14 @@
                     sequence: 3,
                     active: true,
                     _getter: function (object) {
-                        var datasetName = '';
+                        var imageText = '';
                         var dataset = object.dataset;
 
                         if (dataset) {
-                            datasetName = dataset.split(':').splice(2).join(' - ');
+                            imageText = dataset.split(':').splice(2).join('/');
                         }
 
-                        return datasetName;
+                        return imageText;
                     }
                 },
                 {
