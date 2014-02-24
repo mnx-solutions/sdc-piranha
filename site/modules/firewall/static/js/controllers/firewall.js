@@ -34,8 +34,11 @@
         '$http',
         'PopupDialog',
         'Account',
+        '$location',
+        '$anchorScroll',
 
-        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account) {
+        function ($scope, $cookieStore, $filter, $q, requestContext, localization, rule, Datacenter, Machine, $http, PopupDialog, Account, $location,
+                  $anchorScroll) {
 
             localization.bind('firewall', $scope);
             requestContext.setUpRenderContext('firewall.index', $scope);
@@ -44,6 +47,10 @@
 
             $scope.toggleOpenRuleForm = function () {
                 $scope.openRuleForm = !$scope.openRuleForm;
+                if ($scope.openRuleForm) {
+                    $location.hash('create-rule');
+                    $anchorScroll();
+                }
             };
 
             $scope.disableLoading = function() {
@@ -710,6 +717,7 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
+                    $scope.data.uuid = '';
                 }, $scope.disableLoading);
             };
 
@@ -794,7 +802,6 @@
             $scope.refresh = function() {
                 $scope.loading = true;
                 rule.rule().then(function(r){
-                    $scope.resetData();
                     $scope.resetCurrent();
                     $scope.setRules(r);
                     $scope.loading = false;
@@ -836,7 +843,7 @@
 				        });
 				        return arr.join('; ');
 			        },
-			        sequence: 6,
+			        sequence: 7,
                     active: true
 		        },
 		        {
@@ -846,7 +853,7 @@
 			        getClass: function () {
 				        return 'span1 padding-5';
 			        },
-			        sequence: 3,
+			        sequence: 6,
                     active: true
 		        },
 		        {
@@ -892,6 +899,8 @@
                             $scope.refreshSelects();
                             $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
+                            $location.hash('edit-rule');
+                            $anchorScroll();
 				        },
 				        tooltip: 'Edit the rule'
 			        },

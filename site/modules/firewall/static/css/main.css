@@ -34,9 +34,17 @@ th.protocol{
     padding: 4px;
 }
 
+.notice-block-wrapper {
+    width: 50%;
+}
+
 .notice-block {
     margin-bottom: 15px;
     color:#000 !important;
+}
+
+.description {
+    width: 50%;
 }
 
 .margin-top-10 {
@@ -214,15 +222,15 @@ th.protocol{
     width: 100%;
     background-color: #fef1d2;
 }
-.firewall-table td.one-third{
+.firewall-table td.column {
     display: inline-block;
     vertical-align: top;
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
-    width: 31%;
+    width: 23%;
 }
-.firewall-table td.one-third legend, .legend-line{
+.firewall-table td.column legend, .legend-line{
     border-bottom: 1px solid #cbc1a8;
 }
 
@@ -310,11 +318,13 @@ input.ng-invalid, input.ng-pristine {
     padding-top: 40px;
 }
 .create-update-btn{
-    padding-top: 20px;
+    padding: 20px 26px 20px 0;
+    margin-bottom: 20px;
+    text-align: right;
+    background-color: #fef1d2;
 }
 .result-width{
-    width: 95%;
-    display: inline-block;
+    width: 90%;
     float: left;
     overflow: hidden;
     white-space: nowrap;

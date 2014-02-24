@@ -366,7 +366,7 @@
                     sequence: 2
                 },
                 {
-                    label: 'Enable FW',
+                    label: 'Enable Firewall',
                     show: function () {
                         return $rootScope.features.firewall !== 'disabled';
                     },
@@ -407,7 +407,7 @@
                     sequence: 3
                 },
                 {
-                    label: 'Disable FW',
+                    label: 'Disable Firewall',
                     show: function () {
                         return $rootScope.features.firewall !== 'disabled';
                     },
