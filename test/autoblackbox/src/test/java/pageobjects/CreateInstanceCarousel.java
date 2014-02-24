@@ -43,9 +43,9 @@ public class CreateInstanceCarousel {
 
     public void selectOsFilter(String os) {
         waitForListingUpdate();
-        SelenideElement t = $(byAttribute("data-original-title", "Filter by operating system"));
+        SelenideElement dropList = $(byAttribute("data-original-title", "Filter by operating system"));
         $("#button-select-os").click();
-        SelenideElement toClick = t.$("ul.dropdown-menu").$(byText(os));
+        SelenideElement toClick = dropList.$("ul.dropdown-menu").$(byText(os));
         toClick.click();
     }
 
@@ -56,7 +56,7 @@ public class CreateInstanceCarousel {
      * @return
      */
     public SelenideElement getListElement(String name) {
-        return Common.checkTextInCollection($$(".active .item-scrolling .provisioning-item"), name);
+        return Common.getRowByText($$(".active .item-scrolling .provisioning-item"), name);
     }
 
     public void waitForListingUpdate() {
@@ -65,10 +65,10 @@ public class CreateInstanceCarousel {
 
     public void selectInstanceType(String type) {
         waitForListingUpdate();
-        SelenideElement t = $(byAttribute("data-original-title", "Filter by instance type"));
-        t.shouldBe(visible);
-        t.$(byAttribute("data-toggle", "dropdown")).click();
-        t.$(byText(type)).click();
+        SelenideElement dropList = $(byAttribute("data-original-title", "Filter by instance type"));
+        dropList.shouldBe(visible);
+        dropList.$(byAttribute("data-toggle", "dropdown")).click();
+        dropList.$(byText(type)).click();
     }
 
     public void selectPackage(String name) {
@@ -77,15 +77,15 @@ public class CreateInstanceCarousel {
 
     public void setOsVersion(String os, String version) {
         waitForListingUpdate();
-        SelenideElement t = Common.checkTextInCollection($$(".active .item-scrolling .provisioning-item"), os);
-        if (t.$(byText("Choose image version")).isDisplayed()) {
-            t.$(byAttribute("data-toggle", "dropdown")).click();
-            t.$(".btn-group.pull-left").getCssValue("display");
-            t.$(".btn-group.pull-left").should(hasClass("open"));
-            t.$("ul.dropdown-menu").shouldBe(visible);
-            t.$("ul.dropdown-menu").$(byText(version)).shouldBe(visible);
-            t.$("ul.dropdown-menu").$(byText(version)).click();
-            t.$("ul.dropdown-menu").shouldBe(hidden);
+        SelenideElement element = Common.getRowByText($$(".active .item-scrolling .provisioning-item"), os);
+        if (element.$(byText("Choose image version")).isDisplayed()) {
+            element.$(byAttribute("data-toggle", "dropdown")).click();
+            element.$(".btn-group.pull-left").getCssValue("display");
+            element.$(".btn-group.pull-left").should(hasClass("open"));
+            element.$("ul.dropdown-menu").shouldBe(visible);
+            element.$("ul.dropdown-menu").$(byText(version)).shouldBe(visible);
+            element.$("ul.dropdown-menu").$(byText(version)).click();
+            element.$("ul.dropdown-menu").shouldBe(hidden);
         }
     }
 
