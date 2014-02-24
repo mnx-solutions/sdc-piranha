@@ -625,13 +625,13 @@
                         var data = $scope.data.parsed;
 
                         function setFocus(direction) {
-                            var current = $scope.current;
+                            var type = $scope.current[direction].type;
 
-                            if (current[direction].type === 'vm') {
+                            if (type === 'vm') {
                                 ng.element('#s2id_' + direction + 'InstanceSelect').find('a').eq(0).mousedown();
-                            } else if (current[direction].type === 'subnet' || current[direction].type === 'ip') {
+                            } else if (type === 'subnet' || type === 'ip') {
                                 ng.element('input[name="' + direction + 'Value"]').focus();
-                            } else if (current[direction].type === 'tag') {
+                            } else if (type === 'tag') {
                                 ng.element('input[data-ng-model="current.' + direction + '.text"]').focus();
                             } else {
                                 ng.element('#s2id_' + direction + 'Select').find('a').eq(0).mousedown();
