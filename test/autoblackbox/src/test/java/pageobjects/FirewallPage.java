@@ -17,10 +17,10 @@ import java.util.Date;
 
 public class FirewallPage {
     public static void clickAddNewButton() {
-        if ($("[data-ng-hide=\"data.uuid\"]").isDisplayed()) {
-            $("[data-ng-hide=\"data.uuid\"]").click();
+        if ($("[data-ng-hide=\"openRuleForm\"]").isDisplayed()) {
+            $("[data-ng-hide=\"openRuleForm\"]").click();
         } else if (!FirewallPage.createRuleButton().isDisplayed()) {
-            $("[data-ng-hide=\"data.uuid || !rules.length\"]").click();
+            $("[data-ng-hide=\"!rules.length || openRuleForm\"]").click();
         }
     }
 
