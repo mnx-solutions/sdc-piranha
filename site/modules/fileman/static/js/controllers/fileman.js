@@ -25,7 +25,7 @@
             var previousFullPath;
             var fullPath;
             var fullParent;
-            var lastSelectedFile=[];
+            var lastSelectedFile = [];
 
             var clearSelectedFiles = function () {
                 lastSelectedFile[0].active = false;
@@ -50,7 +50,7 @@
                         localization.translate(
                             $scope,
                             null,
-                            'Not selected file.'
+                            'No file selected.'
                         ),
                         function () {}
                     );
@@ -58,35 +58,35 @@
 
             };
 
-            $scope.setCurrentPath = function setCurrentPath(path, force, callback) {
-                fullPath = path === rootPath ? path : ('/' + path.parent.split('/').slice(2).join('/') + '/' + path.path);
-                fullParent = '/' || path.parent;
+            $scope.setCurrentPath = function setCurrentPath(obj, userAction, callback) {
+                fullPath = obj === rootPath ? obj : ('/' + obj.parent.split('/').slice(2).join('/') + '/' + obj.path);
+                fullParent = '/' || obj.parent;
 
                 var scrollContent = ng.element('.folder-container-sub');
-                var fileBoxWidth = ng.element('.finder-column .files-box').width()+1;
+                var fileBoxWidth = ng.element ('.finder-column .files-box').width() + 1;
                 $timeout(function () {
-                    scrollContent.scrollLeft(scrollContent.scrollLeft()+fileBoxWidth);
+                    scrollContent.scrollLeft(scrollContent.scrollLeft() + fileBoxWidth);
                 })
 
                 if ($scope.loadingFileman) {
                     return;
                 }
-                if (path && path.type && path.type !== 'directory') {
+                if (obj && obj.type && obj.type !== 'directory') {
                     if (lastSelectedFile.length) {
                         clearSelectedFiles();
                     }
-                    path.active = true;
-                    lastSelectedFile.push(path);
+                    obj.active = true;
+                    lastSelectedFile.push(obj);
                     return;
                 }
-                if (fullPath === previousFullPath && force) {
+                if (fullPath === previousFullPath && userAction) {
                     return;
                 }
                 previousFullPath = fullPath;
 
                 $scope.loadingFileman = true;
-                if (!force) {
-                    fullPath = (path && (path.full || path.name)) || fullPath || $scope.currentPath || '/';
+                if (!userAction) {
+                    fullPath = (obj && (obj.full || obj.name)) || fullPath || $scope.currentPath || '/';
                     $scope.currentPath = $scope.currentPath || fullPath;
                 } else {
                     $scope.currentPath = fullPath;
@@ -146,7 +146,7 @@
                     if (callback) {
                         callback(error, result);
                     }
-                    if (rootPath !== $scope.currentPath && force) {
+                    if (rootPath !== $scope.currentPath && userAction) {
                         $scope.userConfig.$load(function (err, config) {
                             config.path = fullPath;
                             config.dirty = true;
@@ -164,18 +164,25 @@
             $scope.userConfig = Account.getUserConfig().$child('fileman');
             if (!$scope.currentPath) {
                 $scope.userConfig.$load(function (err, config) {
-                    var path = config.path;
-                    var loadedPath = path.split(/\/([^/]+)/);
+                    var obj;
+                    var loadedPath;
                     var filteredPath = [];
                     var parentPath = '/';
-                    for (var i = 0; i < loadedPath.length; i++) {
-                        if (loadedPath[i] !== "") {
-                            if (loadedPath[i] !== "/") {
-                                filteredPath.push({path: loadedPath[i], parent: parentPath});
-                                parentPath += '/' + loadedPath[i];
+
+                    if (config && config.path) {
+                        obj = config.path;
+                        loadedPath = obj.split(/\/([^/]+)/);
+                        for (var i = 0; i < loadedPath.length; i++) {
+                            if (loadedPath[i] !== "") {
+                                if (loadedPath[i] !== "/") {
+                                    filteredPath.push({path: loadedPath[i], parent: parentPath});
+                                    parentPath += '/' + loadedPath[i];
+                                }
                             }
                         }
                     }
+
+
                     if (!filteredPath.length) {
                         filteredPath.push(defaultPath);
                     }
@@ -188,7 +195,7 @@
                 });
             }
 
-            $scope.constraction = function () {
+            $scope.construction = function () {
                 PopupDialog.message(
                     localization.translate(
                         $scope,

@@ -10,14 +10,13 @@
             },
             link: function (scope, element, attrs) {
                 function uploadFile(file) {
-                    var data = new FormData(), xhr = new XMLHttpRequest();
+                    var data = new FormData();
+                    var xhr = new XMLHttpRequest();
                     xhr.onload = function () {
                         scope.$apply(function () {
                             if (xhr.status === 200) {
                                 scope.$parent.$emit('uploadready', true);
                                 scope.model = JSON.parse(xhr.responseText).id;
-                            } else {
-
                             }
                         });
                     };
