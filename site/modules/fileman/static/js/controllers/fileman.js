@@ -9,9 +9,9 @@
         '$timeout',
         'PopupDialog',
         'Account',
-        '$q',
+        '$qe',
 
-        function ($scope, localization, requestContext, fileman, $timeout, PopupDialog, Account, $q) {
+        function ($scope, localization, requestContext, fileman, $timeout, PopupDialog, Account, $qe) {
             //TODO: Move fileman to storage module
             localization.bind('fileman', $scope);
             requestContext.setUpRenderContext('fileman.index', $scope);
@@ -161,21 +161,6 @@
                 return false;
             };
 
-            $q.denodeify = function (func) {
-                return function () {
-                    var d = $q.defer();
-                    [].push.call(arguments, function (err) {
-                        if (err) {
-                            d.reject(err);
-                            return;
-                        }
-                        d.resolve([].slice.call(arguments, 1));
-                    });
-                    func.apply(this, arguments);
-                    return d.promise;
-                };
-            };
-
             $scope.userConfig = Account.getUserConfig().$child('fileman');
             if (!$scope.currentPath) {
                 $scope.userConfig.$load(function (err, config) {
@@ -195,16 +180,11 @@
                         filteredPath.push(defaultPath);
                     }
 
-                    var setCurrentPathPromise = $q.denodeify($scope.setCurrentPath);
-
-                    var resultingPromise = filteredPath.reduce(function (soFar, newPath) {
-                        return soFar.then(function () {
-                            return setCurrentPathPromise(newPath, false);
-                        });
-                    }, setCurrentPathPromise(rootPath, false));
-
-                    resultingPromise.then(function () {
-                    });
+                    var setCurrentPathPromise = $qe.denodeify($scope.setCurrentPath);
+                    // Navigate up to saved path from root
+                    $qe.series(filteredPath.map(function (newPath) {
+                        return function () { return setCurrentPathPromise(newPath, false); };
+                    }), setCurrentPathPromise(rootPath, false));
                 });
             }
 
