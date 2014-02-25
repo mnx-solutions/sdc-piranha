@@ -45,11 +45,23 @@
 
             $scope.openRuleForm = false;
 
+            function scrollTo(id) {
+                if ($location.hash() === id) {
+                    $location.hash('');
+                }
+
+                setTimeout(function () {
+                    $scope.$apply(function () {
+                        $location.hash(id);
+                        $anchorScroll();
+                    });
+                }, 50);
+            }
+
             $scope.toggleOpenRuleForm = function () {
                 $scope.openRuleForm = !$scope.openRuleForm;
                 if ($scope.openRuleForm) {
-                    $location.hash('create-rule');
-                    $anchorScroll();
+                    scrollTo('create-rule');
                 }
             };
 
@@ -740,7 +752,6 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
-                    $scope.data.uuid = '';
                 }, $scope.disableLoading);
             };
 
@@ -829,6 +840,7 @@
                     $scope.setRules(r);
                     $scope.loading = false;
                     $scope.openRuleForm = false;
+                    $scope.data.uuid = '';
                 }, $scope.disableLoading);
             };
 
@@ -922,8 +934,7 @@
                             $scope.refreshSelects();
                             $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
-                            $location.hash('edit-rule');
-                            $anchorScroll();
+                            scrollTo('edit-rule');
 				        },
 				        tooltip: 'Edit the rule'
 			        },

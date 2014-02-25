@@ -9,7 +9,7 @@
     </div>
     <div class="loading-large span12" data-ng-show="loading"></div>
 
-    <div data-ng-hide="(rules.length || loading)">
+    <div data-ng-hide="(rules.length || loading)" class="clearfix">
         <div class="pull-left">
             <h4>Hello there!</h4>
             <div>You don't have any Cloud Firewall rules.
@@ -159,12 +159,12 @@
                                         <span data-ng-switch="current.from.type">
                                             <span data-ng-switch-when="wildcard"></span>
                                             <span data-ng-switch-when="tag">
-                                                <div class="fw-control-label">Tag Name</div>
+                                                <label class="fw-control-label">Name</label>
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.from.text" required/>
                                                 </div>
                                                 <div data-ng-show="current.from.text" class="row-fluid margin-top-10">
-                                                    <div class="fw-control-label">Tag Value</div>
+                                                    <label class="fw-control-label">Value</label>
                                                     <div class="fw-controls">
                                                         <input type="text" data-ng-model="current.from.value" />
                                                     </div>
@@ -174,25 +174,25 @@
                                                 <!-- due to the nature of directives, we need another switch here -->
                                                 <span data-ng-switch="current.from.type">
                                                     <span data-ng-switch-when="subnet">
-                                                        <div class="fw-control-label">Subnet</div>
+                                                        <label class="fw-control-label">Subnet</label>
                                                         <div class="fw-controls">
                                                             <input  type="text" name="fromValue" data-ng-model="fromSubnet.address" data-ip required/>
                                                         </div>
                                                         <div data-ng-show="current.from.text" class="row-fluid margin-top-10">
-                                                            <div class="fw-control-label">CIDR</div>
+                                                            <label class="fw-control-label">CIDR</label>
                                                             <div class="fw-controls">
                                                                 <select data-ng-options="c for c in CIDRs" data-ng-model="fromSubnet.CIDR"> </select>
                                                             </div>
                                                         </div>
                                                     </span>
                                                     <span data-ng-switch-when="ip">
-                                                        <div class="fw-control-label">IP</div>
+                                                        <label class="fw-control-label">IP</label>
                                                         <div class="fw-controls">
                                                             <input type="text" name="fromValue" data-ng-model="current.from.text" data-ip required />
                                                         </div>
                                                     </span>
                                                     <span data-ng-switch-default>
-                                                        <div class="fw-control-label">UUID</div>
+                                                        <label class="fw-control-label">UUID</label>
                                                         <div class="fw-controls">
                                                             <input type="hidden" id="fromInstanceSelect" />
                                                         </div>
@@ -263,12 +263,12 @@
                                             <span data-ng-switch-when="wildcard">
                                         </span>
                                         <span data-ng-switch-when="tag">
-                                            <div class="fw-control-label">Tag name</div>
+                                            <label class="fw-control-label">Name</label>
                                             <div class="fw-controls">
                                                 <input type="text" data-ng-model="current.to.text" required />
                                             </div>
                                             <div data-ng-show="current.to.text" class="row-fluid margin-top-10">
-                                                <div class="fw-control-label">Tag value</div>
+                                                <label class="fw-control-label">Value</label>
                                                 <div class="fw-controls">
                                                     <input type="text" data-ng-model="current.to.value" />
                                                 </div>
@@ -278,25 +278,25 @@
                                             <!-- due to the nature of directives, we need another switch here -->
                                             <span data-ng-switch="current.to.type">
                                                 <span data-ng-switch-when="subnet">
-                                                    <div class="fw-control-label">Subnet</div>
+                                                    <label class="fw-control-label">Subnet</label>
                                                     <div class="fw-controls">
                                                         <input type="text" name="toValue" data-ng-model="toSubnet.address" data-ip required />
                                                     </div>
                                                     <div data-ng-show="current.to.text" class="row-fluid margin-top-10">
-                                                        <div class="fw-control-label">CIDR</div>
+                                                        <label class="fw-control-label">CIDR</label>
                                                         <div class="fw-controls">
                                                             <select data-ng-options="c for c in CIDRs" data-ng-model="toSubnet.CIDR"> </select>
                                                         </div>
                                                     </div>
                                                 </span>
                                                 <span data-ng-switch-when="ip">
-                                                    <div class="fw-control-label">IP</div>
+                                                    <label class="fw-control-label">IP</label>
                                                     <div class="fw-controls">
                                                         <input type="text" name="toValue" data-ng-model="current.to.text" data-ip required />
                                                     </div>
                                                 </span>
                                                 <span data-ng-switch-default>
-                                                    <div class="fw-control-label">UUID</div>
+                                                    <label class="fw-control-label">UUID</label>
                                                     <div class="fw-controls">
                                                         <input type="hidden" class="select2-input" id="toInstanceSelect" />
                                                     </div>
