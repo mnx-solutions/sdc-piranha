@@ -358,7 +358,20 @@
                                         </div>
                                                     <div><h2>Tags</h2></div>
                                                     <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
-                                                    <div class="create-tags ci-tags" data-tags tags="tags" review="true"></div>
+                                                    <div class="create-tags ci-tags"
+                                                        data-machine-collection
+                                                        data-collection="tags"
+                                                        data-collection-name="'tags'"
+                                                        data-review="true">
+                                                    </div>
+
+                                                    <div><h2>Metadata</h2></div>
+                                                    <div class="create-tags ci-tags"
+                                                         data-machine-collection
+                                                         data-collection="metadata"
+                                                         data-collection-name="'tags'"
+                                                         data-review="true">
+                                                    </div>
 
                                                     <button id="button-create" class="btn orange create-instance-btn-pos"
                                                             data-ng-disabled="provisionForm.$invalid"

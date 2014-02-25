@@ -149,20 +149,45 @@
                                 Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and
                                 identify your instances.
                             </p>
-                            <div data-tags="tagsArray" machineid="machineid" class="accordion-max-width"></div>
+                            <div data-machine-collection
+                                 data-collection="tagsArray"
+                                 data-collection-name="'tags'"
+                                 data-machineid="machineid"
+                                 class="accordion-max-width">
+                             </div>
                         </div>
                     </div>
-                        </div>
+                </div>
 
-                <div class="accordion-group" data-ng-show="machine  && allowResize">
+                <div class="accordion-group">
                     <div class="accordion-heading">
-                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[3]}" data-ng-click="collapseTrigger(3)" data-toggle="collapse" data-parent="#accordion1"
+                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[3] }" data-ng-click="collapseTrigger(3)" data-toggle="collapse" data-parent="#accordion1"
                            href="#collapse_4">
+                            <i class=""></i>
+                            Metadata
+                        </a>
+                    </div>
+                    <div id="collapse_4" class="accordion-body collapse">
+                        <div class="accordion-inner">
+                            <div data-machine-collection
+                                 data-collection="metadataArray"
+                                 data-collection-name="'metadata'"
+                                 data-machineid="machineid"
+                                 class="accordion-max-width">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-group" data-ng-show="machine && allowResize">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[4]}" data-ng-click="collapseTrigger(4)" data-toggle="collapse" data-parent="#accordion1"
+                           href="#collapse_5">
                             <i class=""></i>
                             Resize Instance
                         </a>
                         </div>
-                    <div id="collapse_4" class="accordion-body collapse">
+                    <div id="collapse_5" class="accordion-body collapse">
                         <div class="accordion-inner">
                             <p class="" data-translate>
                                 It may not always be possible to resize based on the constraints of your current server location.
@@ -210,13 +235,13 @@
                     </div>
                 <div class="accordion-group">
                     <div class="accordion-heading">
-                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[4] }" data-ng-click="collapseTrigger(4)" data-toggle="collapse" data-parent="#accordion1"
-                           href="#collapse_5">
+                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[5] }" data-ng-click="collapseTrigger(5)" data-toggle="collapse" data-parent="#accordion1"
+                           href="#collapse_6">
                             <i class=""></i>
                             Images
                         </a>
                 </div>
-                    <div id="collapse_5" class="accordion-body collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
+                    <div id="collapse_6" class="accordion-body collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
                         <div class="accordion-inner">
                 <legend>
                                 <span class="font-size16" data-translate>Create Image</span>
@@ -279,13 +304,13 @@
                     </div>
                 <div class="accordion-group" data-ng-show="machine.metadata.credentials">
                     <div class="accordion-heading">
-                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[5]}" data-ng-click="collapseTrigger(5)" data-toggle="collapse" data-parent="#accordion1"
-                            href="#collapse_6">
+                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[6]}" data-ng-click="collapseTrigger(6)" data-toggle="collapse" data-parent="#accordion1"
+                            href="#collapse_7">
                             <i class=""></i>
                             Credentials
                         </a>
                         </div>
-                    <div id="collapse_6" class="accordion-body collapse">
+                    <div id="collapse_7" class="accordion-body collapse">
                         <div class="accordion-inner" data-ng-show="machine.metadata.credentials">
                             <div class="accordiaon-line">
                                 <table data-ng-repeat="(key,credential) in machine.metadata.credentials">
@@ -315,13 +340,13 @@
                 </div>
                 <div class="accordion-group" data-ng-show="features.firewall != 'disabled' && machine">
                     <div class="accordion-heading">
-                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[6]}" data-ng-click="collapseTrigger(6)" data-toggle="collapse" data-parent="#accordion1"
-                           href="#collapse_7">
+                        <a class="accordion-toggle collapsed" data-ng-class="{active: accordionIcon[7]}" data-ng-click="collapseTrigger(7)" data-toggle="collapse" data-parent="#accordion1"
+                           href="#collapse_8">
                             <i class=""></i>
                             Cloud Firewall
                         </a>
                     </div>
-                    <div id="collapse_7" class="accordion-body collapse">
+                    <div id="collapse_8" class="accordion-body collapse">
                         <div class="accordion-inner">
                             <div class="beta-sticker pull-right tab">beta</div>
             <span data-ng-switch="features.firewall">

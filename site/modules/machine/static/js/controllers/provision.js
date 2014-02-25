@@ -160,7 +160,7 @@
 
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                $scope.data.metadata = $scope.metadataArray;
+                $scope.data.metadata = $scope.metadata || {};
                 $scope.data.tags = $scope.tags || {};
 
                 if (!$scope.data.datacenter) {

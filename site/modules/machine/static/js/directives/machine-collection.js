@@ -1,92 +1,70 @@
 'use strict';
 
 (function (app) {
-    app.directive('machineCollection', [function () {
+    app.directive('machineCollection', ['Machine', function (Machine) {
         return {
+            templateUrl: 'machine/static/partials/machine-collection.html',
             restrict: 'EA',
-            replace: true,
             scope: {
                 collection: '=',
                 collectionName: '=',
-                collectionItemName: '=',
-                machine: '='
+                machineid: '=',
+                review: '='
             },
-
-            controller: function ($scope, Machine, $$track) {
-
-                $scope.collectionSaving = false;
-
-                function initCollection(collection) {
-                    $scope.collection = [];
-                    $scope.collectionSaving = false;
-                    Object.keys(collection).forEach(function (key) {
-                        if (key !== 'root_authorized_keys' && key !== 'credentials') {
-                            $scope.collection.push({key: key, val: collection[key], conflict: false, edit: false});
+            link: function (scope, element, attrs) {
+                scope.internalCollection = [];
+                scope.addNew = function addNew() {
+                    scope.internalCollection.push({key: '', value: '', edit: true, isNew: true});
+                };
+                scope.loadCollection = function s() {
+                    function convertCollection() {
+                        scope.internalCollection = [];
+                        for (var key in scope.collection) {
+                            if (key !== 'root_authorized_keys' && key !== 'credentials') {
+                                scope.internalCollection.push({key: key, val: scope.collection[key]});
+                            }
                         }
-                    });
-                    $scope.showCollectionSave = !!$scope.collection.length;
-                    $scope.collectionSaveOk = $scope.showCollectionSave;
-                }
-
-                var loadCollection = function () {
-                    if ($scope.machine) {
-                        Machine[$scope.collectionName]($scope.machine.id).then(initCollection);
+                        scope.addNew();
+                    }
+                    if (scope.machineid) {
+                        Machine[scope.collectionName](scope.machineid).then(function (collection) {
+                            scope.collection = collection;
+                            convertCollection();
+                        });
                     } else {
-                        setTimeout(loadCollection, 100);
+                        convertCollection();
                     }
                 };
-                loadCollection();
-
-                $scope.$watch('collection', function (newVal) {
-                    var collectionSaveOk = true;
-                    // Search for conflicts
-                    var keyMap = {};
-                    newVal.forEach(function (item, index) {
-                        if (keyMap[item.key]) {
-                            item.conflict = true;
-                            keyMap[item.key].conflict = true;
-                            collectionSaveOk = false;
-                        } else if (!item.key && index !== (newVal.length - 1)) {
-                            item.conflict = true;
-                            collectionSaveOk = false;
-                        } else {
-                            item.conflict = false;
-                            keyMap[item.key] = item;
-                        }
-                    });
-                    $scope.collectionSaveOk = collectionSaveOk;
-
-                }, true);
-
-                $scope.add = function () {
-                    $scope.collection.push({key: '', val: '', edit: true, conflict: false});
-                    $scope.showCollectionSave = true;
-                };
-
-                $scope.edit = function (index) {
-                    $scope.collection[index].edit = true;
-                };
-
-                $scope.remove = function (index) {
-                    $scope.collection.splice(index, 1);
-                };
-
-                $scope.save = function () {
-                    $$track.event('machine', 'save ' + $scope.collectionName);
-
-                    var data = {};
-                    $scope.collection.forEach(function (item) {
+                scope.loadCollection();
+                scope.saveCollection = function () {
+                    scope.collection = {};
+                    scope.internalCollection.forEach(function (item) {
                         if (item.key && item.val) {
-                            data[item.key] = item.val;
+                            scope.collection[item.key] = item.val;
                         }
                     });
-
-                    $scope.collectionSaving = true;
-                    Machine[$scope.collectionName]($scope.machine.id, data).then(initCollection);
+                    if (scope.machineid) {
+                        scope.saving = true;
+                        Machine[scope.collectionName](scope.machineid, scope.collection).then(function () {
+                            scope.loadCollection();
+                            scope.saving = false;
+                        });
+                    } else {
+                        scope.loadCollection();
+                    }
                 };
-            },
-
-            templateUrl: 'machine/static/partials/machine-collection.html'
+                scope.addItem = function () {
+                    scope.saveCollection();
+                };
+                scope.editItem = function (item) {
+                    item.edit = true;
+                };
+                scope.removeItem = function (item) {
+                    var itemIndex = scope.internalCollection.indexOf(item);
+                    scope.internalCollection.splice(itemIndex, 1);
+                    scope.saveCollection();
+                };
+            }
         };
     }]);
 }(window.JP.getModule('Machine')));
