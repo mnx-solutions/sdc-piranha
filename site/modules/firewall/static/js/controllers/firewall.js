@@ -45,11 +45,23 @@
 
             $scope.openRuleForm = false;
 
+            function scrollTo(id) {
+                if ($location.hash() === id) {
+                    $location.hash('');
+                }
+
+                setTimeout(function () {
+                    $scope.$apply(function () {
+                        $location.hash(id);
+                        $anchorScroll();
+                    });
+                }, 50);
+            }
+
             $scope.toggleOpenRuleForm = function () {
                 $scope.openRuleForm = !$scope.openRuleForm;
                 if ($scope.openRuleForm) {
-                    $location.hash('create-rule');
-                    $anchorScroll();
+                    scrollTo('create-rule');
                 }
             };
 
@@ -622,6 +634,29 @@
                         null,
                         message
                     ), function () {
+                        var data = $scope.data.parsed;
+
+                        function setFocus(direction) {
+                            var type = $scope.current[direction].type;
+
+                            if (type === 'vm') {
+                                ng.element('#s2id_' + direction + 'InstanceSelect').find('a').eq(0).mousedown();
+                            } else if (type === 'subnet' || type === 'ip') {
+                                ng.element('input[name="' + direction + 'Value"]').focus();
+                            } else if (type === 'tag') {
+                                ng.element('input[data-ng-model="current.' + direction + '.text"]').focus();
+                            } else {
+                                ng.element('#s2id_' + direction + 'Select').find('a').eq(0).mousedown();
+                            }
+                        }
+
+                        if (!data.protocol.targets.length) {
+                            ng.element('#port').focus();
+                        } else if (!data.from.length) {
+                            setFocus('from');
+                        } else if (!data.to.length) {
+                            setFocus('to');
+                        }
                     });
             }
 
@@ -717,7 +752,6 @@
                 rule.updateRule($scope.data).then(function () {
                     rule.clearRules();
                     $scope.refresh();
-                    $scope.data.uuid = '';
                 }, $scope.disableLoading);
             };
 
@@ -806,6 +840,7 @@
                     $scope.setRules(r);
                     $scope.loading = false;
                     $scope.openRuleForm = false;
+                    $scope.data.uuid = '';
                 }, $scope.disableLoading);
             };
 
@@ -899,8 +934,7 @@
                             $scope.refreshSelects();
                             $('#dcSelect').select2('disable');
                             $scope.openRuleForm = true;
-                            $location.hash('edit-rule');
-                            $anchorScroll();
+                            scrollTo('edit-rule');
 				        },
 				        tooltip: 'Edit the rule'
 			        },
