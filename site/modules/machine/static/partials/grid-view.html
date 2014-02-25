@@ -2,7 +2,7 @@
 <div class="row-fluid">
     <div class="page-row-info">
         <span class="grid-small-font">
-            Showing <span data-ng-hide="pageNumFirst == pageNumLast"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
+            Showing <span data-ng-hide="pageNumFirst == pageNumLast || pageNumSum == 0"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
         </span>
         <form class="grid-small-font" data-ng-show="searchForm">
             <input type="search"
