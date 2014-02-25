@@ -15,7 +15,7 @@
                     xhr.onload = function () {
                         scope.$apply(function () {
                             if (xhr.status === 200) {
-                                scope.$parent.$emit('uploadready', true);
+                                scope.$parent.$emit('uploadReady', true);
                                 scope.model = JSON.parse(xhr.responseText).id;
                             }
                         });
@@ -29,6 +29,7 @@
                 element.change(function (e) {
                     if (e.target.files && e.target.files.length) {
                         uploadFile(e.target.files[0]);
+                        scope.$parent.$emit('uploadStart', true);
                     }
                 });
                 scope.upload = function () {
