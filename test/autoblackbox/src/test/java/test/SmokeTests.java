@@ -152,4 +152,17 @@ public class SmokeTests extends TestWrapper {
         $(byAttribute("name", "password")).setValue(System.getProperty("loginpw"));
         $("#login-submit").click();
     }
+
+    @Test
+    public void changePassword(){
+        Common.openChangePasswordDialog();
+        Common.switchWindow($(byText("Current Password")));
+        $("[name=\"oldPassword\"]").sendKeys(System.getProperty("loginpw"));
+        String testPass = "newTestPass";
+        $("[name=\"newPassword\"]").sendKeys(testPass);
+        $("[name=\"newPasswordConfirmation\"]").sendKeys(testPass);
+        $("[type=\"submit\"]").click();
+        $("button.btn").click();
+        Common.switchWindow($("#count-instances-running"));
+    }
 }

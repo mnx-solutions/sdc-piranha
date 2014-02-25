@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.String;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Common interaction methods for UI elements
@@ -72,6 +73,11 @@ public class Common {
     public static void openMyAccount() {
         $(byText(System.getProperty("loginusr"))).click();
         $("#link-account").click();
+    }
+
+    public static void openChangePasswordDialog() {
+        $(byText(System.getProperty("loginusr"))).click();
+        $("[data-ng-click=\"changePassword()\"]").click();
     }
 
     public static int getCollectionIndexByText(ElementsCollection col, String filter) {
@@ -180,5 +186,15 @@ public class Common {
         clickActionsButton();
         $("#option-list-actions").waitUntil(visible, BASE_TIMEOUT);
         $("#option-list-actions").$(byText(action)).click();
+    }
+
+    public static void switchWindow(SelenideElement elementToBeVisible){
+        Set<String> windows = WebDriverRunner.getWebDriver().getWindowHandles();
+        for (String window1 : windows) {
+            WebDriverRunner.getWebDriver().switchTo().window(window1);
+            if (elementToBeVisible.isDisplayed()) {
+                return;
+            }
+        }
     }
 }
