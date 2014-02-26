@@ -156,18 +156,18 @@ module.exports = function execute(scope, register) {
 
         var cloud = call.cloud.separate(options.datacenter);
 
-        if (options.metadata) {
-            for (var metaKey in options.metadata) {
-                options['metadata.' + metaKey] = options.metadata[metaKey];
+        var transformCollections = {
+            metadata: 'metadata',
+            tags: 'tag'
+        };
+        for (var collectionName in transformCollections) {
+            if (options[collectionName]) {
+                var collectionPrefix = transformCollections[collectionName];
+                for (var itemKey in options[collectionName]) {
+                    options[collectionPrefix + '.' + itemKey] = options[collectionName][itemKey];
+                }
+                delete options[collectionName];
             }
-            delete options.metadata;
-        }
-
-        if (options.tags) {
-            for (var tagKey in options.tags) {
-                options['tag.' + tagKey] = options.tags[tagKey];
-            }
-            delete options.tags;
         }
 
         cloud.createMachine(options, function (err, machine) {

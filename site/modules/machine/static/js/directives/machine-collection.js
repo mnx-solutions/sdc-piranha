@@ -8,15 +8,15 @@
             scope: {
                 collection: '=',
                 collectionName: '=',
-                machineid: '=',
+                machineId: '=',
                 review: '='
             },
             link: function (scope, element, attrs) {
                 scope.internalCollection = [];
-                scope.addNew = function addNew() {
+                scope.addNew = function () {
                     scope.internalCollection.push({key: '', value: '', edit: true, isNew: true});
                 };
-                scope.loadCollection = function s() {
+                scope.loadCollection = function () {
                     function convertCollection() {
                         scope.internalCollection = [];
                         for (var key in scope.collection) {
@@ -26,8 +26,8 @@
                         }
                         scope.addNew();
                     }
-                    if (scope.machineid) {
-                        Machine[scope.collectionName](scope.machineid).then(function (collection) {
+                    if (scope.machineId) {
+                        Machine[scope.collectionName](scope.machineId).then(function (collection) {
                             scope.collection = collection;
                             convertCollection();
                         });
@@ -43,9 +43,9 @@
                             scope.collection[item.key] = item.val;
                         }
                     });
-                    if (scope.machineid) {
+                    if (scope.machineId) {
                         scope.saving = true;
-                        Machine[scope.collectionName](scope.machineid, scope.collection).then(function () {
+                        Machine[scope.collectionName](scope.machineId, scope.collection).then(function () {
                             scope.loadCollection();
                             scope.saving = false;
                         });
