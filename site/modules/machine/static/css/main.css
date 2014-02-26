@@ -819,17 +819,22 @@
     font-weight: normal;
     line-height: 16px;
 }
-.basic-instance-description{
+.basic-instance-description {
     padding: 0 50px 0 20px;
+    height: 55px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
-.basic-instance-line{
-    margin: 18px 20px 0 20px;
-}
-.basic-instance-btn.btn_s{
-    position: absolute;
-    right: -20px;
+.basic-instance-btn.small {
     margin-top: 0;
-    top: -2px;
+    float: right;
+}
+.basic-instance-btn-block .btn-browse {
+    padding: 0 10px 0 10px;
+    float: right;
+    height: 24px;
+    margin-right: 20px;
+    margin-top: 4px;
 }
 .basic-instance-btn{
     width: 65px !important;
@@ -845,11 +850,8 @@
     background-color: #FF6600;
     color: white;
 }
-.basic-instance-btn-block{
-    position: absolute;
-    bottom: 20px;
-    left:20px;
-    right: 20px;
+.basic-instance-btn-block {
+    padding: 20px 0 0 20px;
 }
 .basic-instance-btn-block span p{
     font-size: 12px;
@@ -886,13 +888,6 @@
     height: 28px;
     padding: 2px 10px 10px 10px;
 }
-.btn_browse{
-    margin-top: 14px;
-    padding: 0 10px 0 10px;
-    float: right;
-    height: 24px;
-}
-
 .search-images{
     margin: 0!important;
     background-color: #eef0f2 !important;
@@ -1680,4 +1675,7 @@
 .loading-medium-inline {
     float: right;
     min-height: 28px;
+}
+.click-cursor {
+    cursor: pointer;
 }

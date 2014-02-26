@@ -32,11 +32,19 @@
                 $scope.preSelectedImage = null;
 
             if ($scope.preSelectedImageId) {
-                    $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
-                }
+                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+            }
+
+            if ($location.search().saved) {
+                $scope.visibilityFilter = 'Saved';
+                $scope.selectedVisibility = false;
+            } else {
+                $scope.visibilityFilter = 'Public';
+                $scope.selectedVisibility = true;
+            }
 
             $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
-            
+
             $scope.account = Account.getAccount();
             $scope.keys = Account.getKeys();
             $scope.datacenters = Datacenter.datacenter();
@@ -44,12 +52,10 @@
             $scope.packageTypes = [];
             $scope.packageType = null;
             $scope.loading = true;
-            $scope.basicCreateInstance = !$scope.preSelectedImageId;
 
             $scope.reConfigurable = false;
             $scope.showReConfigure = false;
             $scope.showFinishConfiguration = false;
-            $scope.visibilityFilter = 'Public';
             $scope.currentSlidePageIndex = 0;
             $scope.currentStep = '';
             $scope.datasetsLoading = false;
@@ -75,7 +81,6 @@
             $scope.selectedDataset = null;
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
-            $scope.selectedVisibility = true; // defaults to Public true
             $scope.previousPos = 0;
 
             // version number comparison
@@ -386,8 +391,8 @@
                 } else if(type === false) {
                     $scope.visibilityFilter = 'Saved';
                 }
-
                 $scope.selectedVisibility = type;
+
             };
 
             $scope.selectPackage = function (id) {
@@ -596,9 +601,13 @@
                 $scope.setCurrentStep(2);
             };
 
-            $scope.simpleCreateInstance = function(){
-                $scope.reconfigure(0);
-                $scope.basicCreateInstance = true;
+            $scope.quickStart = function(){
+                $location.path('/compute/create');
+            }
+
+            $scope.selectedViewImages = function (visible) {
+                $scope.selectVisibility(visible);
+                $location.path('/compute/create/simple').search({saved: visible});
             }
         }
 
