@@ -39,7 +39,7 @@
                 $scope.details = null;
 
                 $scope.getHeatmapDetails = function (e) {
-                    var clickpoint = '.chart_container_' + $scope.$id + ' #clickpoint';
+                    var clickpoint = '.chart_container_' + $scope.$id + ' .clickpoint';
                     if (e && e.offsetX && e.offsetY && heatmaptime) {
                         $scope.instrumentation.getHeatmap({
                             location: {
@@ -237,7 +237,7 @@
                     if ($scope.instrumentation.config['value-arity'] === 'numeric-decomposition') {
                         $scope.heatmap = $scope.instrumentation.heatmap;
 
-                        var clickpoint = '.chart_container_' + $scope.$id + ' #clickpoint';
+                        var clickpoint = '.chart_container_' + $scope.$id + ' .clickpoint';
                         $(clickpoint).popover({
                             title: 'Details',
                             html: true,
@@ -286,7 +286,7 @@
                                     <div class="chart_container_{{$id}}" style="position: relative;margin-bottom:10px;width: 450px;display: inline-block;">\
                                         <div id="y_axis_{{$id}}" style="position: absolute;top: 0; bottom: 0; width: 50px;"></div>\
                                         <div id="chart_{{$id}}" style="position: relative; left: 50px;">\
-                                            <div id="clickpoint" style="position:absolute;height:0;width:0;"></div>\
+                                            <div class="clickpoint" style="position:absolute;height:0;width:0;"></div>\
                                             <div class="caOverlaid">\
                                                 <img data-ng-show="heatmap" data-ng-click="getHeatmapDetails($event)" class="toggle-btn-bg" data-ng-src="data:image/jpeg;base64, {{heatmap}}"/>\
                                             </div>\

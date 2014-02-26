@@ -1,10 +1,6 @@
 'use strict';
-/**
- * User: Vladimir Bulyga <zero@ccxx.cc>
- * Project: piranha
- * Date: 25.02.14 18:33
- */
-(function (app, ng) {
+
+(function (app) {
     app.service('ca.http', [
         '$http',
         function ($http) {
@@ -122,5 +118,5 @@
             };
         }
     ]);
-})(window.JP.getModule('cloudAnalytics'), angular);
+})(window.JP.getModule('cloudAnalytics'));
 

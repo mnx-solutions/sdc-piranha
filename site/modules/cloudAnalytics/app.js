@@ -2,7 +2,7 @@
 var vasync = require('vasync');
 var config = require('easy-config');
 config.cloudAnalytics = config.cloudAnalytics || {
-    instrumentationTTL: 1000
+    instrumentationTTL: 10000
 };
 
 // default heatmap values for different requests
@@ -13,6 +13,7 @@ var HEATMAP_DURATION = 60;
 var HEATMAP_HUES = 21;
 
 var metrics = null;
+
 function InstrumentationCache() {}
 InstrumentationCache.prototype = {
     findById: function (zoneId, id) {
@@ -24,7 +25,7 @@ InstrumentationCache.prototype = {
         });
         return result;
     },
-    uuidById: function (zoneId, id) {
+    keyById: function (zoneId, id) {
         var instrumentation = this.findById(zoneId, id)[0];
         return instrumentation && instrumentation.key;
     },
@@ -33,14 +34,14 @@ InstrumentationCache.prototype = {
         return zoneId ? Object.keys(Object(this[zoneId])).length : Object.keys(this).length;
     },
     forEach: function (zoneId, callback) {
-        //noinspection JSLint
         var k;
+        //noinspection JSLint
         var keys = Object.keys(Object(this[zoneId]));
         for (k = 0; k < keys.length; k += 1) {
             callback(this[zoneId][keys[k]], k);
         }
     },
-    asArray: function (zoneId) {
+    toArray: function (zoneId) {
         var array = [];
         this.forEach(zoneId, function (instrumentation) {
             array.push(instrumentation);
@@ -232,7 +233,7 @@ module.exports = function execute(scope, app) {
                 metrics.help = info.ca_help.data;
             }
             res.json({error: err, res: metrics});
-        }, true);
+        });
     });
 
     function createInstrumentations(isNew, cloud, machineId, configs, callback) {
@@ -278,12 +279,13 @@ module.exports = function execute(scope, app) {
                 });
         });
     });
+
     /**
      * get machine instrumentation values
      */
     app.get('/ca/:datacenter/:zoneId/instrumentations', function (req, res) {
         vasync.forEachParallel({
-            inputs: instrumentationCache.asArray(req.params.zoneId),
+            inputs: instrumentationCache.toArray(req.params.zoneId),
             func: function (instrumentation, callback) {
                 instrumentation.getValue(req.query, function (error, response) {
                     var result = {
@@ -361,7 +363,7 @@ module.exports = function execute(scope, app) {
      */
     app.del('/ca/:datacenter/:zoneId', function (req, res) {
         vasync.forEachParallel({
-            inputs: instrumentationCache.asArray(req.params.zoneId),
+            inputs: instrumentationCache.toArray(req.params.zoneId),
             func: function (instrumentation, callback) {
                 instrumentation.destroy(callback);
             }

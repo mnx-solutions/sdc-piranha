@@ -51,7 +51,7 @@
 	                    <option value="">-- Choose Instance --</option>
 	                </select>
 					<div class="clearfix"></div>
-			        <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
+			        <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="resetMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
 			            <option value="">-- Choose Metric --</option>
 			        </select>
 					<div class="clearfix"></div>

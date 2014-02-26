@@ -1,9 +1,5 @@
 'use strict';
-/**
- * User: Vladimir Bulyga <zero@ccxx.cc>
- * Project: piranha
- * Date: 21.02.14 16:49
- */
+
 (function (app, ng) {
     app.factory('ca.dataset', [
         function () {

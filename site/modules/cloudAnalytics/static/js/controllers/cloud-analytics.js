@@ -262,7 +262,6 @@
             }
 
             $scope.createDefaultInstrumentations = function () {
-                $scope.graphs = [];
                 createDefaultInstrumentations(false);
             };
 
@@ -300,7 +299,7 @@
                 });
             };
 
-            $scope.changeMetric = function() {
+            $scope.resetMetric = function() {
                 $scope.croppedMetric = true;
                 $scope.croppedModule = true;
                 $scope.current.decomposition.primary = null;

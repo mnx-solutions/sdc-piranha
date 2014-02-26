@@ -1,10 +1,6 @@
 'use strict';
 
-/**
- * User: Vladimir Bulyga <zero@ccxx.cc>
- * Project: piranha
- * Date: 18.02.14 17:33
- */
+
 (function (app, ng) {
     function InstrumentationCache() {}
     InstrumentationCache.prototype = {
@@ -17,7 +13,7 @@
             });
             return result;
         },
-        uuidById: function (zoneId, id) {
+        keyById: function (zoneId, id) {
             var instrumentation = this.findById(zoneId, id)[0];
             return instrumentation && instrumentation.key;
         },
@@ -26,8 +22,8 @@
             return zoneId ? Object.keys(Object(this[zoneId])).length : Object.keys(this).length;
         },
         forEach: function (zoneId, callback) {
-            //noinspection JSLint
             var k;
+            //noinspection JSLint
             var keys = Object.keys(Object(this[zoneId]));
             for (k = 0; k < keys.length; k += 1) {
                 callback(this[zoneId][keys[k]], k);
@@ -365,10 +361,10 @@
             };
 
             CloudAnalytics.prototype.remove = function (zoneId, id, callback) {
-                var uuid = instrumentationCache.uuidById(zoneId, id);
-                var instrumentation = instrumentationCache[uuid];
+                var key = instrumentationCache.keyById(zoneId, id);
+                var instrumentation = instrumentationCache[key];
                 instrumentation.destroy(function () {
-                    delete instrumentation[uuid];
+                    delete instrumentation[key];
                     callback(this, arguments);
                 });
             };
