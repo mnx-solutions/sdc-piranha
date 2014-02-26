@@ -681,6 +681,14 @@
     max-width: 120px;
     vertical-align: middle;
 }
+.metadata .editable .key-width{
+    min-width: 380px;
+    max-width: 380px;
+}
+.metadata .editable .value-width{
+    min-width: 380px;
+    max-width: 380px;
+}
 .tags-title{
     color: #5D80A7;
     font-size: 14px;
@@ -689,11 +697,11 @@
     margin-top: 10px;
 }
 .tag-add-btn{
-    margin-top: -10px;
     height: 31px;
     padding-bottom: 7px;
     padding-top: 5px;
     max-width: 62px;
+    vertical-align: top;
 }
 .controls{
     width: 100%;
