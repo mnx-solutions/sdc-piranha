@@ -15,6 +15,7 @@ var HEATMAP_HUES = 21;
 var metrics = null;
 
 function InstrumentationCache() {}
+
 InstrumentationCache.prototype = {
     findById: function (zoneId, id) {
         var result = [];
