@@ -168,7 +168,7 @@
             }
 
             var stateOrder = function (object) {
-                var statuses = {running: 3, stopped: 3, provisioning: 2, creating: 1};
+                var statuses = {stopped: 4, running: 3, provisioning: 2, creating: 1};
                 return statuses[object.state];
             };
 
