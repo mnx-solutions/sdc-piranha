@@ -1,74 +1,61 @@
 <div data-ng-form="collectionForm">
-    <div class="tags" data-ng-repeat="(key, o) in collection">
-        <div class="tag row-fluid" data-ng-show="!o.edit">
-            <span class="key span5"
-                  data-ng-click="edit(key)"
-                  data-ng-class="{error: o.conflict}">{{o.key}}</span>
-
-            <span class="value span5"
-                  data-ng-click="edit(key)"
-                  data-ng-class="{error: o.conflict}">{{o.val}}</span>
-
-            <span class="icon-trash pull-left delete"
-                  data-ng-click="remove(key)"
-                  data-ng-show="!collectionSaving">
-            </span>
-        </div>
-
-        <div data-ng-form="itemForm" class="tag editable" data-ng-show="o.edit">
-            <div data-ng-class="{error: o.conflict || itemForm.$invalid}" class="tag row-fluid control-group">
-                <span class="key">
-                    <span class="span3 tag-label">
-                        <label>Key <span class="required-asterix">*</span></label>
-                    </span>
-                    <span class="span9">
-                        <input type="text"
-                               placeholder="Key"
-                               data-machine-collection-item
-                               data-translate="placeholder"
-                               data-ng-model="o.key"
-                               data-ng-disabled="collectionSaving">
-                    </span>
-                </span>
-
-                <span class="value">
-                    <span class="span3 tag-label">
-                        <label>Value <span class="required-asterix">*</span></label>
-                    </span>
-                    <span class="span9">
-                        <textarea data-ng-show="collectionName == 'metadata'"
-                               placeholder="Value"
-                               data-machine-collection-item
-                               data-translate="placeholder"
-                               data-ng-model="o.val"
-                               data-ng-disabled="collectionSaving"></textarea>
-                        <input data-ng-hide="collectionName == 'metadata'"
-                               type="text"
-                               placeholder="Value"
-                               data-machine-collection-item
-                               data-translate="placeholder"
-                               data-ng-model="o.val"
-                               data-ng-disabled="collectionSaving">
-                    </span>
-                </span>
-
-                <span class="icon-trash pull-left delete"
-                      data-ng-click="remove(key)"
-                      data-ng-show="!collectionSaving">
-                </span>
+    <div class="controls" data-ng-show="internalCollection.length > 1">
+        <div class="key key-width tags-title">Key</div>
+        <div class="value value-width tags-title">Value</div>
+    </div>
+    <div data-ng-click="editItem(item)" data-ng-repeat="item in internalCollection">
+        <div data-ng-show="!item.edit">
+            <div class="controls">
+                <div class="key key-width">{{item.key}}</div>
+                <div class="value value-width">{{item.val}}</div>
+                <div class="remove-icon delete pull-right tags-delete-pos"
+                     data-ng-click="removeItem(item)"
+                     data-ng-show="!saving">
+                </div>
             </div>
         </div>
-    </div>
-    <div class="tag tag-add row-fluid">
-        <div class="span5"></div>
-        <div class="collectionControl span5">
-            <button class="btn btn-joyent-blue pull-right"
-                    data-ng-show="machine && showCollectionSave"
-                    data-ng-click="save()"
-                    data-translate
-                    data-ng-disabled="!(machine.state == 'running' || machine.state == 'stopped') || !collectionSaveOk || collectionSaving || collectionForm.$invalid">Save</button>
-            <div class="pull-right loading-medium loading-30" data-ng-show="collectionSaving"></div>
-            <div class="btn btn-link pull-right" data-ng-click="add()" data-translate>+ Add New {{collectionItemName}}</div>
+
+        <div class="tag editable" data-ng-show="item.edit" data-ng-form="itemForm">
+            <span class="key-container">
+                <input type="text"
+                    name="key"
+                    placeholder="Key"
+                    data-translate="placeholder"
+                    data-ng-model="item.key"
+                    data-ng-required="!review"
+                    data-ng-pattern="/^[a-zA-Z0-9\._\-]+$/"
+                    data-ng-disabled="saving"
+                    class="key-width">
+                <span class="error key-width" data-ng-show="itemForm.key.$error.pattern">
+                    Must be alphanumeric
+                </span>
+            </span>
+            <span class="value-container">
+                <input type="text"
+                    data-ng-hide="collectionName == 'metadata' && !review"
+                    placeholder="Value"
+                    data-translate="placeholder"
+                    data-ng-model="item.val"
+                    data-ng-required="!review"
+                    data-ng-disabled="saving"
+                    class="value-width"/>
+                <textarea type="text"
+                     data-ng-show="collectionName == 'metadata' && !review"
+                     placeholder="Value"
+                     data-translate="placeholder"
+                     data-ng-model="item.val"
+                     data-ng-required="!review"
+                     data-ng-disabled="saving"
+                     class="value-width"
+                     rows="8"></textarea>
+            </span>
+            <button class="btn light tag-add-btn"
+                data-ng-click="addItem()"
+                data-translate
+                data-ng-disabled="!item.val || !item.key || saving">{{item.isNew && 'Add' || 'Save'}}</button>
         </div>
+    </div>
+    <div class="tags row-fluid">
+        <div class="pull-right loading-small" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="saving"></div>
     </div>
 </div>
