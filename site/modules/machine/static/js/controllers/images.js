@@ -54,7 +54,7 @@
             };
 
             $scope.provisionInstance = function (image) {
-                $location.path('/compute/create/simple/' + image.id);
+                $location.path('/compute/create/' + image.id);
             };
 
             if ($scope.features.manta === 'enabled') {

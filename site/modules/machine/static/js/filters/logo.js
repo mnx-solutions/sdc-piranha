@@ -4,10 +4,7 @@
 
     app.filter('logo', function () {
         return function (name) {
-
-            if (name) {
-                name = name.toLowerCase();
-            }
+            name = name && name.toLowerCase();
 
             var instances = {
                 "arch-demo-0001": "arch",

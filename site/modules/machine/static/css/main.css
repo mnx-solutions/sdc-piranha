@@ -324,10 +324,6 @@
     text-shadow: none;
     background-color: #afd46c;
 }
-.btn_ci {
-    width: 172px !important;
-    height: 43px;
-}
 
 .align-text-btn {
     text-align: left !important;
@@ -873,7 +869,7 @@
 .basic-instance-price-per-time{
     font-size: 12px;
 }
-.ci_desc{
+.ci-desc {
     font-size: 16px;
     font-weight: 400;
     padding-bottom: 30px;
@@ -1052,10 +1048,11 @@
     vertical-align: middle;
     padding-right: 2px;
 }
-.dd-fixed-width{
-    min-width: 84px;
-    max-width: 84px;
+.dd-fixed-width {
+    min-width: 90px;
+    max-width: 90px;
     text-align: left;
+    font-size: 14px;
 }
 
 .wizard-steps {
@@ -1676,6 +1673,4 @@
     float: right;
     min-height: 28px;
 }
-.click-cursor {
-    cursor: pointer;
-}
+

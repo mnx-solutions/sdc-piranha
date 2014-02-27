@@ -28,20 +28,15 @@
 
             $scope.campaignId = ($cookies.campaignId || 'default');
 
-                $scope.preSelectedImageId = requestContext.getParam('imageid');
-                $scope.preSelectedImage = null;
+            $scope.preSelectedImageId = requestContext.getParam('imageid');
+            $scope.preSelectedImage = null;
 
             if ($scope.preSelectedImageId) {
                 $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
             }
 
-            if ($location.search().saved) {
-                $scope.visibilityFilter = 'Saved';
-                $scope.selectedVisibility = false;
-            } else {
-                $scope.visibilityFilter = 'Public';
-                $scope.selectedVisibility = true;
-            }
+            $scope.selectedVisibility = !$location.search().saved;
+            $scope.visibilityFilter = $scope.selectedVisibility ? 'Public' : 'Saved';
 
             $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
 
@@ -601,13 +596,13 @@
                 $scope.setCurrentStep(2);
             };
 
-            $scope.quickStart = function(){
-                $location.path('/compute/create');
+            $scope.clickBackToQuickStart = function () {
+                $location.path('/compute/create/simple');
             }
 
-            $scope.selectedViewImages = function (visible) {
+            $scope.clickMoreImages = function (visible) {
                 $scope.selectVisibility(visible);
-                $location.path('/compute/create/simple').search({saved: visible});
+                $location.path('/compute/create').search({saved: visible});
             }
         }
 
