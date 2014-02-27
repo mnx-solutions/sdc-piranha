@@ -58,6 +58,25 @@
             }
         },
         {
+            "name": "Ubuntu 13.10 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-west-1",
+                "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
+                "name": "",
+                "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
+                "opsys": "All",
+                "package": "bb3fc5de-6e65-49ad-ab54-e8dcc62d3360"
+            },
+            "description": {
+                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
             "name": "Ubuntu 12.04 64-bit",
             "className": "ubuntuos-logo",
             "imageData": {
@@ -172,6 +191,25 @@
             }
         },
         {
+            "name": "Ubuntu 13.10 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-east-1",
+                "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
+                "name": "",
+                "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
+                "opsys": "All",
+                "package": "43e0444f-a065-4ea7-ba96-e941abc0b08f"
+            },
+            "description": {
+                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
             "name": "Ubuntu 12.04 64-bit",
             "className": "ubuntuos-logo",
             "imageData": {
@@ -286,6 +324,25 @@
             }
         },
         {
+            "name": "Ubuntu 13.10 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-sw-1",
+                "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
+                "name": "",
+                "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
+                "opsys": "All",
+                "package": "cd594f6e-b22d-4d32-baa0-0361e0d91a53"
+            },
+            "description": {
+                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
             "name": "Ubuntu 12.04 64-bit",
             "className": "ubuntuos-logo",
             "imageData": {
@@ -393,6 +450,25 @@
             },
             "description": {
                 "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "memory": 4,
+                "cpu": 1,
+                "disk": 131,
+                "price": 0.128
+            }
+        },
+        {
+            "name": "Ubuntu 13.10 64-bit",
+            "className": "ubuntuos-logo",
+            "imageData": {
+                "datacenter": "us-ams-1",
+                "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
+                "name": "",
+                "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+                "opsys": "All",
+                "package": "23a17de8-1796-44fd-b772-992b5949ba66"
+            },
+            "description": {
+                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
