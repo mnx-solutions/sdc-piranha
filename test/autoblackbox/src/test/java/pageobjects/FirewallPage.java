@@ -3,9 +3,10 @@ package pageobjects;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Condition.visible;
 import static org.junit.Assert.assertTrue;
 
-import org.openqa.selenium.NoSuchElementException;
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 
@@ -28,6 +29,10 @@ public class FirewallPage {
         return $("[data-ng-click=\"saveRule()\"]");
     }
 
+    public static void clickCancelCreateButton() {
+        $("[data-ng-click=\"cancelRule()\"]").click();
+    }
+
     public static void selectProtocol(String protocolText) {
         $("#s2id_protocolSelect a").click();
         $(byText(protocolText)).click();
@@ -39,12 +44,14 @@ public class FirewallPage {
 
     private static void selectInstance(String direction, String instanceName) {
         $("#s2id_" + direction.toLowerCase() + "InstanceSelect a").click();
-        $("#select2-drop").sendKeys(instanceName);
+        $("#select2-drop div input").setValue(instanceName);
     }
 
     private static void selectTarget(String direction, String targetName) {
         String fieldId = "s2id_" + direction.toLowerCase() + "Select";
-        $(By.id(fieldId)).$(".select2-choice").click();
+        if (!$("#select2-drop").isDisplayed()){
+            $(By.id(fieldId)).$(".select2-choice").click();
+        }
         $("#select2-drop").$(byText(targetName)).click();
     }
 

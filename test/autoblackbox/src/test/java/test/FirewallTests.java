@@ -59,6 +59,7 @@ public class FirewallTests extends TestWrapper {
         FirewallPage.removeFirstOption("to");
         FirewallPage.createRuleButton().click();
         $(".modal-body p").shouldHave(text("A To condition is needed in the firewall rule"));
+        FirewallPage.clickCancelCreateButton();
         Common.clickButtonInModal("Ok");
     }
 
