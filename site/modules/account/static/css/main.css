@@ -261,24 +261,6 @@ select.date-month, select.date-year {
     display: inline-block;
 }
 
-.accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i {
-    width: 15px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-image: url("../img/accord_i_plus.png") !important;
-    padding-right: 27px;
-    vertical-align: middle;
-    margin-left: 5px;
-}
-.accordion-toggle.active i {
-    width: 15px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-image: url("../img/accord_i_down.png") !important;
-    padding-right: 27px;
-    vertical-align: middle;
-    margin-left: 5px;
-}
 .key-info-content{
     padding-left: 40px;
     padding-top: 15px;

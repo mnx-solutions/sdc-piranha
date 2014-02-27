@@ -1542,22 +1542,17 @@ select::-ms-expand {
     background-color: #ffffff !important;
 }
 
-.accordion-toggle i, .accordion-toggle.collapsed i, .accordion-toggle.active.collapsed i, .toggle {
+.accordion-toggle i, .toggle {
     width: 15px;
     height: 15px;
     background-repeat: no-repeat;
-    background-image: url("../img/accord_i_plus.png") !important;
+    background-image: url("../img/accord_i_down.png");
     padding-right: 25px;
     vertical-align: middle;
 }
 
-.accordion-toggle.active i, .toggle.active {
-    width: 15px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-image: url("../img/accord_i_down.png") !important;
-    padding-right: 25px;
-    vertical-align: middle;
+.accordion-toggle.collapsed i, .toggle.collapsed {
+    background-image: url("../img/accord_i_plus.png");
 }
 
 .grid-small-font, .grid-small-font span, .grid-small-font .dropdown-menu label, .network td {

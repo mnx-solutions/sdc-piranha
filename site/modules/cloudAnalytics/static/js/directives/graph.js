@@ -324,7 +324,7 @@
             template:
                 '<div class="chart-padding">' +
                     '<div class="btn-group margin_btn_0 toggle-graf-width">' +
-                    '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" class="toggle-graf-btn toggle-btn-bg"><i class="toggle" data-ng-class="{active: showGraph}"></i><p>{{ready && options.title || loadingText}}</p></button>' +
+                    '<button data-ng-click="toggleGraph()" id="control_{{$id}}" data-ng-class="{disabled: !ready, btn: true}" class="toggle-graf-btn toggle-btn-bg"><i class="toggle" data-ng-class="{collapsed: !showGraph}"></i><p>{{ready && options.title || loadingText}}</p></button>' +
                        '<button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg" title="delete graph" ><div class="pull-right remove-icon"></div></button>' +
                     '</div>' +
                     // '<br/>' +

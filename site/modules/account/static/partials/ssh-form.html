@@ -6,7 +6,7 @@
     <div class="accordion" id="accordion3">
         <div class="accordion-group" data-ng-repeat="key in keys | reverse">
             <div class="accordion-heading">
-                <a class="accordion-toggle" data-ng-class="{active: accordionIcon3[$index]}" data-ng-click="collapseTrigger3($index, keys.length)" data-toggle="collapse" data-parent="#accordion3"
+                <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion3"
                    href="#collapse_{{$index}}">
                     <i class=""></i>
                     <span class="key-name">{{key.name.length > 0 && key.name != key.fingerprint && (key.name) || ''}}</span>
