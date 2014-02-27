@@ -139,39 +139,28 @@ module.exports = function execute(scope, register) {
             return;
         }
         function getMetadata(userId) {
-            metadata.get(userId, metadata.BLOCK_STATUS, function (err, blockStatus) {
+            metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
                 if (err) {
                     req.log.error({error: err}, 'Cannot get signup step from metadata');
-                }
+                } else if (storedStep) {
+                    req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
+                        storedStep, _nextStep(storedStep));
 
-                if (blockStatus) {
-                    end('blocked');
+                    end(storedStep);
                     return;
                 }
 
-                metadata.get(userId, metadata.SIGNUP_STEP, function (err, storedStep) {
-                    if (err) {
-                        req.log.error({error: err}, 'Cannot get signup step from metadata');
-                    } else if (storedStep) {
-                        req.log.debug('Got signupStep from metadata: %s; User landing in step: %s',
-                            storedStep, _nextStep(storedStep));
-
-                        end(storedStep);
+                api.getAccountVal(req, function (accountError, value) {
+                    if (accountError) {
+                        req.log.error(accountError, 'Got error from billing-api');
+                        cb(accountError);
                         return;
                     }
 
-                    api.getAccountVal(req, function (accountError, value) {
-                        if (accountError) {
-                            req.log.error(accountError, 'Got error from billing-api');
-                            cb(accountError);
-                            return;
-                        }
+                    req.log.debug('Got signup step from billing-api: %s; User landing in step: %s',
+                        value, _nextStep(value));
 
-                        req.log.debug('Got signup step from billing-api: %s; User landing in step: %s',
-                            value, _nextStep(value));
-
-                        end(value);
-                    });
+                    end(value);
                 });
             });
         }
@@ -194,23 +183,14 @@ module.exports = function execute(scope, register) {
     api.setSignupStep = function (call, step, cb) {
         function updateStep(req) {
             if (req.session) {
-                if (step === 'blocked') {
-                    metadata.set(req.session.userId, metadata.BLOCK_STATUS, true, function (metaErr) {
-                        if (metaErr) {
-                            call.log.error(metaErr);
-                            return;
-                        }
-                        call.log.info('Set block status in metadata to true');
-                        updateBilling(req);
-                    });
-                    return;
-                }
-
                 metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function (metaErr) {
                     if (metaErr) {
                         call.log.error(metaErr);
                     } else {
                         call.log.info('Set signup step in metadata to %s and move to %s', step, _nextStep(step));
+                    }
+                    if (step === 'blocked') {
+                        updateBilling(req);
                     }
                 });
             }

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-var blockStatus = null;
-var setStep = false;
+var unblockUser = false;
 var argumentsError = false;
 var uuid = null;
 var riskScore = null;
@@ -17,19 +16,15 @@ var signupStepsMap = {
 process.argv = process.argv.slice(2); //cutting off node and path to file
 process.argv.forEach(function (argument, index) {
     if (argument.indexOf('-') === 0) {
-        if (argument === '-s' || argument === '--step') {
-            setStep = true;
+        if (argument === '-u' || argument === '--unblock') {
+            unblockUser = true;
             var nextArg = process.argv[index + 1];
-            if (nextArg && nextArg.indexOf('--') !== 0) {
+            if (nextArg && nextArg !== '--risk-score' && nextArg !== '--block-reason') {
                 unblockStep = nextArg;
                 if (!signupStepsMap[unblockStep]) {
                     argumentsError = true;
                 }
             }
-        } else if (argument === '--block') {
-            blockStatus = true;
-        } else if (argument === '--unblock') {
-            blockStatus = false;
         } else if (argument === '--risk-score') {
             riskScore = parseFloat(process.argv[index + 1]);
             if (isNaN(riskScore) || riskScore <= 0 || riskScore >= 100) {
@@ -54,7 +49,7 @@ process.argv.forEach(function (argument, index) {
                 badUuid = true
             }
         }
-    } else if (index >= 8) {
+    } else if (index >= 7) {
         argumentsError = true;
     }
 });
@@ -67,7 +62,7 @@ if (!uuid || argumentsError) {
     } else if (unblockStep && !signupStepsMap[unblockStep]) {
         console.log('Bad signup step. Possible steps: phone, billing, ssh');
     } else {
-        console.log('fraudutil <UUID> [-s [<signup step>]]| --step [<signup step>]] [--risk-score <risk score>] [--block | --unblock] [--block-reason <reason text>]\n\n' +
+        console.log('fraudutil <UUID> [-u [<signup step>]]| --unblock [<signup step>]] [--risk-score <risk score>] [--block-reason <reason text>]\n\n' +
             'signup step = phone | billing | ssh\n' +
             'risk score  = number 0.01..99.99');
     }
@@ -91,9 +86,6 @@ if (process.argv.length === 1 && uuid) {
             },
             function(_, callback) {
                 get(metadata.BLOCK_REASON, callback);
-            },
-            function(_, callback) {
-                get(metadata.BLOCK_STATUS, callback);
             }
         ]
     }, function(err) {
@@ -107,20 +99,11 @@ if (process.argv.length === 1 && uuid) {
     vasync.pipeline({
         'funcs': [
             function(_, callback) {
-                if (setStep) {
+                if (unblockUser) {
                     var signupStepValue = unblockStep ? signupStepsMap[unblockStep] : 'completed';
                     set(metadata.SIGNUP_STEP, signupStepValue, callback);
                 } else {
                     setImmediate(function() {
-                        callback();
-                    });
-                }
-            },
-            function (_, callback) {
-                if (blockStatus !== null) {
-                    set(metadata.BLOCK_STATUS, blockStatus, callback);
-                } else {
-                    setImmediate(function () {
                         callback();
                     });
                 }
