@@ -15,32 +15,40 @@
             </div>
         </div>
 
-        <div class="tag editable" data-ng-show="item.edit">
-            <input type="text"
-                placeholder="Key"
-                data-translate="placeholder"
-                data-ng-model="item.key"
-                data-ng-required="!review"
-                data-ng-pattern="/^[a-zA-Z0-9\._\-]+$/"
-                data-ng-disabled="saving"
-                class="key-width">
-            <input type="text"
-                data-ng-hide="collectionName == 'metadata' && !review"
-                placeholder="Value"
-                data-translate="placeholder"
-                data-ng-model="item.val"
-                data-ng-required="!review"
-                data-ng-disabled="saving"
-                class="value-width"/>
-            <textarea type="text"
-                 data-ng-show="collectionName == 'metadata' && !review"
-                 placeholder="Value"
-                 data-translate="placeholder"
-                 data-ng-model="item.val"
-                 data-ng-required="!review"
-                 data-ng-disabled="saving"
-                 class="value-width"
-                 rows="8"></textarea>
+        <div class="tag editable" data-ng-show="item.edit" data-ng-form="itemForm">
+            <span class="key-container">
+                <input type="text"
+                    name="key"
+                    placeholder="Key"
+                    data-translate="placeholder"
+                    data-ng-model="item.key"
+                    data-ng-required="!review"
+                    data-ng-pattern="/^[a-zA-Z0-9\._\-]+$/"
+                    data-ng-disabled="saving"
+                    class="key-width">
+                <span class="error key-width" data-ng-show="itemForm.key.$error.pattern">
+                    Must be alphanumeric
+                </span>
+            </span>
+            <span class="value-container">
+                <input type="text"
+                    data-ng-hide="collectionName == 'metadata' && !review"
+                    placeholder="Value"
+                    data-translate="placeholder"
+                    data-ng-model="item.val"
+                    data-ng-required="!review"
+                    data-ng-disabled="saving"
+                    class="value-width"/>
+                <textarea type="text"
+                     data-ng-show="collectionName == 'metadata' && !review"
+                     placeholder="Value"
+                     data-translate="placeholder"
+                     data-ng-model="item.val"
+                     data-ng-required="!review"
+                     data-ng-disabled="saving"
+                     class="value-width"
+                     rows="8"></textarea>
+            </span>
             <button class="btn light tag-add-btn"
                 data-ng-click="addItem()"
                 data-translate

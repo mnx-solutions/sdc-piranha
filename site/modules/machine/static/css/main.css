@@ -657,6 +657,17 @@
     background-position: -264px -72px;
 }
 
+.key-container {
+    display: inline-block;
+    width: 175px;
+}
+.value-container {
+    display: inline-block;
+    vertical-align: top;
+}
+.create-tags .key-container {
+    width: 133px;
+}
 .key-width{
     min-width: 160px;
     max-width: 160px;
