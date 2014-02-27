@@ -1,0 +1,32 @@
+<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="modal-header message">
+        <h5><i class="icon-info-sign"></i><b>{{ title }} </b></h5>
+    </div>
+    <div class="modal-body">
+        <table class="table table-striped table-bordered table-hover table-full-width">
+            <tr>
+                <td>Name:</td>
+                <td>{{info.name}}</td>
+            </tr>
+            <tr>
+                <td>Type:</td>
+                <td>{{info.type}}</td>
+            </tr>
+            <tr>
+                <td>Size:</td>
+                <td>{{info.size}}</td>
+            </tr>
+            <tr>
+                <td>Creation Date:</td>
+                <td>{{info.headers.date | date:'yyyy-MM-dd HH:mm'}}</td>
+            </tr>
+            <tr>
+                <td>Last Modified At:</td>
+                <td>{{info.headers['last-modified']}}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn orange">Ok</button>
+    </div>
+</div>

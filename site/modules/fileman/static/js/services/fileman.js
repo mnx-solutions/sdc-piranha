@@ -44,6 +44,10 @@
             fileman.info = createMethod('FileManInfo');
 
             fileman.put = createMethod('FileManPut');
+
+            fileman.mkdir = createMethod('FileManCreateDir');
+
+            fileman.deleteFile = createMethod('FileManRemove');
             return fileman;
         }
     ]);

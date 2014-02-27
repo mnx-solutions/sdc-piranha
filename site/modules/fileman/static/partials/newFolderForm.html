@@ -1,0 +1,24 @@
+<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="modal-header message">
+        <h5><i class="icon-info-sign"></i><b>{{ title }} </b></h5>
+    </div>
+    <div class="modal-body">
+        <form name="folderNameForm">
+            <p>Folder name can contain only letters, digits and signs like '.' and '-'.</p>
+            <input type="text"
+                   id="folderName"
+                   data-ng-model="folderName"
+                   data-machine-name
+                   placeholder="Enter folder name"
+                    />
+            <div class="error alert-icon"
+                 data-ng-show="folderNameForm.$invalid"
+                 data-translate>
+                Invalid folder name
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button data-ng-click="createFolder()" data-button-focus="false" data-ng-disabled="folderNameForm.$invalid || folderNameForm.$pristine" data-label="Cancel" class="btn orange">Ok</button>
+    </div>
+</div>

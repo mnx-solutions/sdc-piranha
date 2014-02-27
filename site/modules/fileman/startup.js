@@ -40,7 +40,9 @@ var fileman = function execute(scope) {
     });
     server.onCall('FileManRemove', function (call) {
         var client = Manta.createClient(call);
-        client.unlink(call.data.path, call.done.bind(call));
+        client.unlink(call.data.path, function (error) {
+            call.done(error, true);
+        });
     });
     server.onCall('FileManPut', function (call) {
         var fileStream = new MemoryStream(call.data.fileBody);
@@ -54,6 +56,12 @@ var fileman = function execute(scope) {
     server.onCall('FileManInfo', function (call) {
         var client = Manta.createClient(call);
         client.info(call.data.path, call.done.bind(call));
+    });
+    server.onCall('FileManCreateDir', function (call) {
+        var client = Manta.createClient(call);
+        client.mkdir(call.data.path, function (error) {
+            call.done(error, true);
+        });
     });
 };
 
