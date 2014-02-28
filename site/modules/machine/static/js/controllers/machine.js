@@ -157,20 +157,6 @@
                 }
             });
 
-            $scope.accordionIcon={
-                0:true
-            };
-            $scope.collapseTrigger = function(item){
-                $scope.accordionIcon = {
-                    0:false,
-                    1:false,
-                    2:false,
-                    3:false,
-                    4:false
-                };
-                return $scope.accordionIcon[item] = true;
-            };
-
             $scope.clickStart = function () {
                 PopupDialog.confirm(
                     localization.translate(

@@ -336,7 +336,7 @@
                     }
                 });
 
-                $scope.collapseTrigger2($scope.packageTypes.length-1, $scope.packageTypes.length);
+                ng.element('#accordion2 .accordion-toggle:last').click();
             };
 
             $scope.selectVersion = function (name, version) {
@@ -589,17 +589,6 @@
                 $scope.previousPos = ng.element('.carousel-inner').scrollTop();
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
-            };
-
-            $scope.accordionIcon2 = {};
-            $scope.collapseTrigger2 = function(item, items){
-                for(var i = 0; i < items; i++){
-                    $scope.accordionIcon2[i] = false;
-                }
-
-                $scope.accordionIcon2[item] = true;
-
-                return $scope.accordionIcon2[item];
             };
 
             $scope.reviewPage = function () {
