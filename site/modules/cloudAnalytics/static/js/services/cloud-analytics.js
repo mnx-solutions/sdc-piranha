@@ -233,7 +233,7 @@
                             }
 
                             data.push({
-                                x: times[dp],
+                                x: times[dp] || 0,
                                 y: y
                             });
                         }
