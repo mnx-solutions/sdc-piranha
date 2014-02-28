@@ -61,7 +61,7 @@ function createCacheKey(instrumentationConfig) {
 }
 
 function recreateOnError(instrumentation, error) {
-    if (error.statusCode !== 404) {
+    if (!error || error.statusCode !== 404) {
         return false;
     }
     instrumentation.initialized = false;
@@ -94,6 +94,7 @@ function Instrumentation(cloud, options) {
     this.timeout = null;
     this.initialized = false;
     this.broken = false;
+    this.lastUpdate = null;
     cache[key] = this;
 }
 
@@ -146,7 +147,7 @@ Instrumentation.prototype.getValue = function (options, callback) {
     var method = 'getInstrumentationValue';
     var config = {
         id: this.id,
-        start_time: options.start || this.config.crtime
+        start_time: (this.lastUpdate || Math.floor(this.config.crtime / 1000))
     };
 
     if (arity === 'numeric-decomposition') {
@@ -162,7 +163,7 @@ Instrumentation.prototype.getValue = function (options, callback) {
     }
 
     this.cloud[method](config, config, function (error, response) {
-        if (error) {
+        if (error || !response) {
             if (recreateOnError(self, error)) {
                 callback(null, {});
                 return;
@@ -170,6 +171,9 @@ Instrumentation.prototype.getValue = function (options, callback) {
             callback(error);
             return;
         }
+
+        self.lastUpdate = (response.end_time || self.lastUpdate);
+
         if (arity === 'numeric-decomposition') {
             response.end_time += self.config.duration || HEATMAP_DURATION;
         }
@@ -206,6 +210,8 @@ Instrumentation.prototype.destroy = function (callback) {
         callback();
         return;
     }
+
+    this.broken = true;
     this.cloud.deleteInstrumentation(this.id, callback);
 };
 
