@@ -167,7 +167,12 @@
                 }
             }
 
-            $scope.gridOrder = ['-created'];
+            var stateOrder = function (object) {
+                var statuses = {stopped: 4, running: 3, provisioning: 2, creating: 1};
+                return statuses[object.state];
+            };
+
+            $scope.gridOrder = [stateOrder, '-created'];
             $scope.gridProps = [
                 {
                     id: 'label',
@@ -214,7 +219,8 @@
                     id: 'state',
                     name: 'Status',
                     sequence: 7,
-                    active: true
+                    active: true,
+                    _getter: stateOrder
                 },
                 {
                     id: 'updated',
