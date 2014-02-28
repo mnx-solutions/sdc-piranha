@@ -494,61 +494,6 @@ legend + .control-group {
     width: 725px;
     display: inline-block;
 }
-
-div.selector, div.selector span, div.checker span, div.radio span, div.uploader, div.uploader span.action, div.button, div.button span {
-    background-image: url("../img/sprite.png");
-    background-repeat: no-repeat;
-    -webkit-font-smoothing: antialiased; }
-
-div.checker {
-    position: relative; }
-div.checker, div.checker span, div.checker input {
-    width: 19px;
-    height: 19px;
-    display: inline-block;
-    margin-right: 5px;
-    margin-top: 2px;
-    vertical-align: middle;
-}
-div.checker span {
-    display: -moz-inline-box;
-    display: inline-block;
-    *display: inline;
-    zoom: 1;
-    text-align: center;
-    background-position: 0 -260px; }
-div.checker span.checked {
-    background-position: -76px -260px; }
-div.checker input {
-    opacity: 0;
-    filter: alpha(opacity=0);
-    -moz-opacity: 0;
-    border: none;
-    background: none;
-    display: -moz-inline-box;
-    display: inline-block;
-    *display: inline;
-    zoom: 1; }
-div.checker.active span {
-    background-position: -19px -260px; }
-div.checker.active span.checked {
-    background-position: -95px -260px; }
-div.checker.hover span, div.checker.focus span {
-    background-position: -38px -260px; }
-div.checker.hover span.checked, div.checker.focus span.checked {
-    background-position: -114px -260px; }
-div.checker.hover.active span, div.checker.focus.active span {
-    background-position: -57px -260px; }
-div.checker.hover.active span.checked, div.checker.focus.active span.checked {
-    background-position: -133px -260px; }
-div.checker.disabled, div.checker.disabled.active {
-    background-position: -152px -260px; }
-div.checker.disabled span.checked, div.checker.disabled.active span.checked {
-    background-position: -171px -260px; }
-
-label.checkbox {
-    margin-bottom: 0;
-}
 .modal-header.message, .modal-header.confirm {
     background-color: #ff6600;
 }

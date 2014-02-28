@@ -364,7 +364,7 @@
                                 <li>Allow all outbound traffic</li>
                             </ul>
                             The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
-                        </div>
+                        </div><br/>
                                 </div>
                         <div data-ng-show="firewallRules.length >= 1">
                                 <div data-grid-view
@@ -378,6 +378,7 @@
                                              data-special-width="'detailsPage'"
                                              data-search-form="searchForm"
                                              data-export-fields="exportFields"
+                                             data-multisort="false"
                                              class="grid-small-font"></div>
                         </div>
                                 <div data-ng-show="firewallRules.length < 1"><br/>
