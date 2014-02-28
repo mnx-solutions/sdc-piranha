@@ -22,15 +22,15 @@
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
-                <li class="sub0" data-ng-class="{active: location.path().search('compute') == 1}">
+                <li class="sub" data-ng-class="{active: location.path().search('compute') == 1}">
                     <a href="#!/compute/">
                         <span class="titles" data-ng-show="!sideBarMin || t_second">Instances</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub1" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'"><a href="#!/slb"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Load Balancers</span><span class="selected-sub"></span></a></li>
-                <li class="sub2" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'"><a href="#!/firewall"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Firewall</span><span class="selected-sub"></span></a></li>
-                <li class="sub3" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'"><a href="#!/slb"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Load Balancers</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'"><a href="#!/firewall"><span class="titles" data-ng-show="!sideBarMin || t_second" data-translate>Firewall</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || t_second">Images</span><span class="selected-sub"></span></a></li>
             </ul>
         </li>
         <li class="nested storage-icon" data-ng-class="{active: location.path().search('storage') == 1 ||
@@ -41,14 +41,14 @@
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu" data-ng-show="features.manta == 'enabled'">
-                <li class="sub0" data-ng-class="{active: location.path().search('storage') == 1 && location.path() != '/storage/history'}">
+                <li class="sub" data-ng-class="{active: location.path().search('storage') == 1 && location.path() != '/storage/history'}">
                     <a href="#!/storage/">
                         <span class="titles" data-ng-show="!sideBarMin || t_three">Manta</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub0" data-ng-class="{active: location.path().search('storage.history') == 1}"><a href="#!/storage/history"><span class="titles" data-ng-show="!sideBarMin || t_three" data-translate>Job History</span><span class="selected-sub"></span></a></li>
-                <li class="sub0" data-ng-class="{active: location.path().search('fileman') == 1}"><a href="#!/fileman"><span class="titles" data-ng-show="!sideBarMin || t_three" data-translate>File Manager</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('storage.history') == 1}"><a href="#!/storage/history"><span class="titles" data-ng-show="!sideBarMin || t_three" data-translate>Job History</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('fileman') == 1}"><a href="#!/fileman"><span class="titles" data-ng-show="!sideBarMin || t_three" data-translate>File Manager</span><span class="selected-sub"></span></a></li>
             </ul>
         </li>
     </ul>
