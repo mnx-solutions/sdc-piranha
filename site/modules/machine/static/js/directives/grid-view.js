@@ -64,12 +64,7 @@
         };
 
         $scope.showAll = function () {
-            $scope.oldPerPage = $scope.perPage;
             $scope.perPage = 10000;
-        };
-
-        $scope.showPaginated = function () {
-            $scope.perPage = $scope.oldPerPage;
         };
 
         $scope.openDetails = {};
@@ -423,15 +418,19 @@
                         config.dirty = true;
                     }
 
-                    if (!ng.isDefined(config.perPage)) {
-                        config.perPage = $scope.perPage;
-                        config.dirty = true;
+                    if ($scope.paginated) {
+                        if (!ng.isDefined(config.perPage)) {
+                            config.perPage = $scope.perPage;
+                            config.dirty = true;
+                        } else {
+                            $scope.perPage = config.perPage;
+                        }
                     } else {
-                        $scope.perPage = config.perPage;
+                        $scope.showAll();
                     }
 
                     $scope.$watch('perPage', function (num) {
-                        if (ng.isDefined(num)) {
+                        if (ng.isDefined(num) && $scope.paginated) {
                             config.perPage = $scope.perPage;
                             config.dirty = true;
                             config.$save();

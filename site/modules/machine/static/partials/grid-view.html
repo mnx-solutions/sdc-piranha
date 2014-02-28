@@ -1,6 +1,6 @@
 <div class="container-grid">
 <div class="row-fluid">
-    <div class="page-row-info">
+    <div class="page-row-info" data-ng-show="paginated">
         <span class="grid-small-font">
             Showing <span data-ng-hide="pageNumFirst == pageNumLast || pageNumSum == 0"> {{pageNumFirst}} -</span> {{pageNumLast}} of {{pageNumSum}} entries
         </span>
@@ -38,8 +38,8 @@
             <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
                 <label class="grid-small-font" data-ng-repeat="prop in props | orderBy:'sequence'"><div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
                                 <span data-ng-class="{checked: prop.active}">
-                                    <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop"></span>
-                </div>{{prop.name}}</label>
+                                    <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop"></span>{{prop.name}}
+                </div></label>
             </div>
         </div>
     </div>
