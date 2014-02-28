@@ -165,7 +165,7 @@ Instrumentation.prototype.getValue = function (options, callback) {
     this.cloud[method](config, config, function (error, response) {
         if (error || !response) {
             if (recreateOnError(self, error)) {
-                callback(null, {});
+                callback(null, 0);
                 return;
             }
             callback(error);

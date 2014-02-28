@@ -40,7 +40,7 @@
                         ymin: value.ymin
                     };
                     self.endTime = value.end_time + 1;
-                } else if (ng.isObject(value.value)) {
+                } else if (ng.isObject(value.value) && !angular.equals({}, value.value)) {
                     Object.keys(value.value).forEach(function (k) {
                         if (!self.map[k]) {
                             self.map[k] = {};
@@ -48,7 +48,10 @@
                         self.map[k][value.start_time.toString()] = value.value[k];
                         self.endTime = value.start_time;
                     });
-                } else if (value.value === +value.value) {
+                } else {
+                    if (+value.value !== value.value) {
+                        value.value = 0;
+                    }
                     if (!self.map['default']) {
                         self.map['default'] = {};
                     }
