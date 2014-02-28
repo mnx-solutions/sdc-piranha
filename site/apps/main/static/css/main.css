@@ -838,7 +838,7 @@ div .disabled {
     padding-bottom: 0;
 }
 
-.sortable, .pointer {
+.sortable, a {
     cursor: pointer;
 }
 
@@ -1461,10 +1461,6 @@ select::-ms-expand {
     vertical-align: text-top;
 }
 
-.cursor-point {
-    cursor: pointer;
-}
-
 .edit-value-tfa {
     width: 150px;
     display: inline-block;
@@ -1936,4 +1932,8 @@ label.checkbox {
 .feedback-tab-link {
     display: block;
     height: 100%;
+}
+.btn-big {
+    width: 172px !important;
+    height: 43px;
 }

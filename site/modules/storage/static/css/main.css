@@ -411,17 +411,3 @@ ul.dropdown-menu{
     float: right;
     margin-top: -73px;
 }
-.btn_ci {
-    width: 172px!important;
-    height: 43px;
-}
-.instance_btn_icon {
-    width: 20px;
-    height: 20px;
-    float: left;
-    margin-top: 0;
-    position: relative;
-    left: 3px;
-    background-image: url("../img/plus_icon.png");
-    background-repeat: no-repeat;
-}
