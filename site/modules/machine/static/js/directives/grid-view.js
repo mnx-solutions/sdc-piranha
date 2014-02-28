@@ -64,12 +64,7 @@
         };
 
         $scope.showAll = function () {
-            $scope.oldPerPage = $scope.perPage;
             $scope.perPage = 10000;
-        };
-
-        $scope.showPaginated = function () {
-            $scope.perPage = $scope.oldPerPage;
         };
 
         $scope.openDetails = {};
@@ -432,8 +427,6 @@
                         }
                     } else {
                         $scope.showAll();
-                        config.perPage = $scope.oldPerPage;
-                        config.dirty = true;
                     }
 
                     $scope.$watch('perPage', function (num) {
