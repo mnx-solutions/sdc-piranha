@@ -266,6 +266,7 @@
 
 .tag.editable input {
     width: 85%;
+    height: 21px;
 }
 
 .tag.editable .key, .tag.editable .value {
@@ -653,47 +654,65 @@
     background-position: -264px -72px;
 }
 
-.key-container {
+.accordion-max-width .key-container {
     display: inline-block;
-    width: 175px;
+    padding-right: 10px;
 }
-.value-container {
+.accordion-max-width .value-container {
     display: inline-block;
     vertical-align: top;
+    padding-right: 10px;
 }
 .create-tags .key-container {
     width: 133px;
+    padding-right: 10px;
 }
-.key-width{
+.create-mdata .key-container input {
+    width: 310px !important;
+}
+.create-mdata .value-width {
+    width: 310px !important;
+    height: 80px;
+}
+.key-width, .value-width {
+    border-radius: 0;
+    display: inline-block;
+    overflow: hidden;
+}
+.detail-tags .key-width, .detail-mdata .key.key-width {
     min-width: 160px;
     max-width: 160px;
-    display: inline-block;
-    overflow: hidden;
-    border-radius: 0;
 }
-.value-width{
-    min-width: 202px;
-    max-width: 202px;
-    display: inline-block;
-    overflow: hidden;
-    border-radius: 0;
+.detail-tags .value-width, .detail-mdata .value.value-width {
+    min-width: 195px;
+    max-width: 195px;
 }
-.create-tags .value-width{
+.detail-tags .value-container textarea,
+.create-tags .value-container textarea,
+.detail-mdata .value-container input,
+.create-mdata .value-container input {
+    display: none;
+}
+.create-tags .value-width,
+.create-mdata .value.value-width {
     min-width: 162px;
     max-width: 162px;
-    vertical-align: middle;
 }
-.create-tags .key-width{
+.create-tags .key-width,
+.create-mdata .key.key-width {
     min-width: 120px;
     max-width: 120px;
+}
+.create-tags .key-width,
+.create-mdata .key.key-width,
+.create-tags .value-width,
+.create-mdata .value.value-width {
     vertical-align: middle;
+    height: 20px;
 }
 
+.metadata .editable .value-width,
 .metadata .editable .key-width {
-    min-width: 380px;
-    max-width: 380px;
-}
-.metadata .editable .value-width {
     min-width: 380px;
     max-width: 380px;
 }
@@ -1370,12 +1389,12 @@
     padding: 25px;
     display: inline-block;
 }
-.selected-package-box-2{
+.selected-package-box-2 {
     min-width: 270px;
     max-width: 270px;
     border-right: 1px solid #cbc1a8;
     border-left: 1px solid #cbc1a8;
-    height: 408px;
+    height: 600px;
     margin-top: 25px;
     padding: 0 0 0 25px;
 }
