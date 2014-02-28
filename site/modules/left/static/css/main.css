@@ -204,13 +204,13 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     font-weight: 300;
     color: #999999;
 }
-.sub0 .titles{
+.sub .titles{
     color: #999999;
 }
-.sub0.active .titles{
+.sub.active .titles{
     color: #f60 !important;
 }
-.sub0.active{
+.sub.active{
     background: #303030;
 }
 .over{
