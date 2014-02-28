@@ -39,15 +39,14 @@
                 location.href = 'fileman/download?path=' + '/' + username + '/' + path;
             };
 
-            fileman.rm = createMethod('FileManRemove');
+            fileman.rm = createMethod('FileManDelete');
 
             fileman.info = createMethod('FileManInfo');
 
             fileman.put = createMethod('FileManPut');
 
-            fileman.mkdir = createMethod('FileManCreateDir');
+            fileman.mkdir = createMethod('FileManCreateFolder');
 
-            fileman.deleteFile = createMethod('FileManRemove');
             return fileman;
         }
     ]);

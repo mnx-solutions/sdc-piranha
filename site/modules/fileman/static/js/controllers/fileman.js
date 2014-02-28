@@ -61,7 +61,7 @@
             };
 
             $scope.createFolder = function () {
-                var createDirModalCtrl = function ($scope, dialog) {
+                var createFolderModalCtrl = function ($scope, dialog) {
                     $scope.title = 'Create folder';
 
                     $scope.close = function (res) {
@@ -77,7 +77,7 @@
 
                 var opts = {
                     templateUrl: 'fileman/static/partials/newFolderForm.html',
-                    openCtrl: createDirModalCtrl
+                    openCtrl: createFolderModalCtrl
                 };
 
                 PopupDialog.custom(
@@ -126,7 +126,7 @@
                     ),
                     function () {
                         $scope.refreshingFolder = true;
-                        fileman.deleteFile(path, function (error) {
+                        fileman.rm(path, function (error) {
                             if (error) {
                                 return PopupDialog.error(
                                     localization.translate(
