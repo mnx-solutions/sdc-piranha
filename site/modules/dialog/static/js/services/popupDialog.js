@@ -26,6 +26,7 @@
                 }
             ];
 
+            callback = callback || angular.noop;
             return $dialog.messageBox(title, question, btns, 'dialog/static/partials/confirmationDialog.html')
                 .open()
                 .then(function (result) {
@@ -47,6 +48,7 @@
                 }
             ];
 
+            callback = callback || angular.noop;
             return $dialog.messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html')
                 .open()
                 .then(function (result) {
@@ -67,10 +69,11 @@
                 }
             ];
 
+            callback = callback || angular.noop;
             return $dialog.messageBox(title, question, btns, 'dialog/static/partials/messageDialog.html')
                 .open()
                 .then(function (result) {
-                     callback();
+                    callback();
                 });
         };
 
@@ -81,10 +84,7 @@
             var templateUrl = opts.templateUrl || 'dialog/static/partials/messageDialog.html';
             var openCtrl = opts.openCtrl;
 
-            if (typeof callback !== 'function') {
-                callback = function () {};
-            }
-
+            callback = callback || angular.noop;
             return $dialog.messageBox(title, question, btns, templateUrl)
                 .open('', openCtrl)
                 .then(function (data) {

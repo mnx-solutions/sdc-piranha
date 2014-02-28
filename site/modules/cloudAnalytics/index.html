@@ -8,14 +8,14 @@
 				<!-- <data-breadcrumb></data-breadcrumb> -->
                 <ul class="breadcrumb">
                     <li><a href="#!/compute"> Instances</a> /</li>
-                    <li ng-show="machineExists"><a href="#!/compute/instance/{{zoneId}}"> Instance Details</a> /</li>
+                    <li ng-show="machineExists"><a href="#!/compute/instance/{{selectedInstance}}"> Instance Details</a> /</li>
                     <li> Analytics</li>
                 </ul>
                 <h3 class="page-title">Analytics</h3>
                 <div ng-show="machineExists" class="row-fluid">
-                    <div class="chart-info" data-ng-show="zoneId">
+                    <div class="chart-info" data-ng-show="selectedInstance">
                         <span class="name-chart">UUID</span>
-                        <span class="value-chart">{{zoneId}}</span>
+                        <span class="value-chart">{{selectedInstance}}</span>
                     </div>
                     <div class="chart-info" data-ng-show="zoneName">
                         <span class="name-chart">Instance name</span>
@@ -40,18 +40,18 @@
 
 		            <graph data-ng-repeat="i in graphs" options="i"></graph>
                     <div class="clearfix"></div>
-                    <a ng-show="machineExists" href="#!/compute/instance/{{zoneId}}" class="btid">< Back to Instance Details</a>
+                    <a ng-show="machineExists" href="#!/compute/instance/{{selectedInstance}}" class="btid">< Back to Instance Details</a>
                     <a ng-hide="machineExists" href="#!/compute" class="btid">< Back to Instances</a>
 					
 				</div>
 				<div class="pull-right alert alert-info span3">
 					<h5>Select Instance:</h5>
 
-					<select data-ng-show="zones.final" data-ng-model="zoneId" data-ng-options="item.id as item.name for item in zones" data-ng-change="instanceName()">
+					<select data-ng-show="zones.final" data-ng-model="selectedInstance" data-ng-options="item.id as item.name for item in zones" data-ng-change="changeInstance()">
 	                    <option value="">-- Choose Instance --</option>
 	                </select>
 					<div class="clearfix"></div>
-			        <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="changeMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
+			        <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="resetMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
 			            <option value="">-- Choose Metric --</option>
 			        </select>
 					<div class="clearfix"></div>
@@ -69,21 +69,18 @@
 			        </span>
 	                <div class="clearfix"></div>
                     <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
-                    <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!zoneId">Start Analysis</button>
+                    <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!selectedInstance">Start Analysis</button>
 
 
 
 
                     <p class="p-padding">Analytics Options:</p>
 
-                    <button class="btn icon-zoom-in options-ctrl" data-ng-click="zoomIn()" ></button>
-                    <button class="btn icon-zoom-out options-ctrl" data-ng-click="zoomOut()" ></button>
-                    <button class="btn options-ctrl" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="graphs.length == 0">Delete All</button>
+                    <button class="btn icon-zoom-in options-ctrl" data-ng-click="zoom(1)" ></button>
+                    <button class="btn icon-zoom-out options-ctrl" data-ng-click="zoom(-1)" ></button>
+                    <button class="btn options-ctrl" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
                     <button class="btn options-ctrl" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
 				</div>
-				
-
-
 		    </div>
 		</div>
 	</div>
