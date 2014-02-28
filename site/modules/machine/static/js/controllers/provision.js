@@ -336,7 +336,10 @@
                     }
                 });
 
-                ng.element('#accordion2 .accordion-toggle:last').click();
+                var lastSectionHeader = ng.element('#accordion2 .accordion-toggle:last');
+                if (lastSectionHeader.hasClass('collapsed')) {
+                    lastSectionHeader.click();
+                }
             };
 
             $scope.selectVersion = function (name, version) {
