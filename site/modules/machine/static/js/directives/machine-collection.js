@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('machineCollection', ['Machine', function (Machine) {
+    app.directive('machineCollection', ['Machine', 'PopupDialog', 'localization', function (Machine, PopupDialog, localization) {
         return {
             templateUrl: 'machine/static/partials/machine-collection.html',
             restrict: 'EA',
@@ -37,21 +37,42 @@
                 };
                 scope.loadCollection();
                 scope.saveCollection = function () {
-                    scope.collection = {};
+                    var newCollection = {};
+                    var hasDuplicates = false;
                     scope.internalCollection.forEach(function (item) {
                         if (item.key && item.val) {
-                            scope.collection[item.key] = item.val;
+                            hasDuplicates = hasDuplicates || newCollection[item.key];
+                            newCollection[item.key] = item.val;
                         }
                     });
-                    if (scope.machineId) {
-                        scope.saving = true;
-                        Machine[scope.collectionName](scope.machineId, scope.collection).then(function () {
+                    var persistCollection = function () {
+                        if (scope.machineId) {
+                            scope.saving = true;
+                            Machine[scope.collectionName](scope.machineId, newCollection).then(function () {
+                                scope.loadCollection();
+                                scope.saving = false;
+                            });
+                        } else {
+                            scope.collection = newCollection;
                             scope.loadCollection();
-                            scope.saving = false;
-                        });
+                        }
+                    };
+
+                    if (hasDuplicates) {
+                        PopupDialog.confirm(
+                            null,
+                            localization.translate(scope, null,
+                                'This {{name}} key already exists. Previous value will be lost. Are you sure?',
+                                {
+                                    name: scope.collectionName.replace(/s$/, '')
+                                }
+                            ),
+                            persistCollection
+                        );
                     } else {
-                        scope.loadCollection();
+                        persistCollection();
                     }
+
                 };
                 scope.addItem = function () {
                     scope.saveCollection();
