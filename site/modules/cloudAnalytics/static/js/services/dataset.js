@@ -55,8 +55,10 @@
                     if (!self.map['default']) {
                         self.map['default'] = {};
                     }
-                    self.map['default'][value.start_time.toString()] = value.value;
-                    self.endTime = value.start_time;
+                    if (value.start_time) {
+                        self.map['default'][value.start_time.toString()] = value.value;
+                        self.endTime = value.start_time;
+                    }
                 }
             };
 
