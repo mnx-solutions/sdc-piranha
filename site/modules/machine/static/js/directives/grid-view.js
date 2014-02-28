@@ -423,15 +423,21 @@
                         config.dirty = true;
                     }
 
-                    if (!ng.isDefined(config.perPage)) {
-                        config.perPage = $scope.perPage;
-                        config.dirty = true;
+                    if ($scope.paginated) {
+                        if (!ng.isDefined(config.perPage)) {
+                            config.perPage = $scope.perPage;
+                            config.dirty = true;
+                        } else {
+                            $scope.perPage = config.perPage;
+                        }
                     } else {
-                        $scope.perPage = config.perPage;
+                        $scope.showAll();
+                        config.perPage = $scope.oldPerPage;
+                        config.dirty = true;
                     }
 
                     $scope.$watch('perPage', function (num) {
-                        if (ng.isDefined(num)) {
+                        if (ng.isDefined(num) && $scope.paginated) {
                             config.perPage = $scope.perPage;
                             config.dirty = true;
                             config.$save();
