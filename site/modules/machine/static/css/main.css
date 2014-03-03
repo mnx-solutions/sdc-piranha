@@ -112,13 +112,8 @@
     padding-right:5px;
     padding-top:2px;
 }
-
-.provisioning-carousel-inner-box {
-
-}
-
-.reconfigure-btn {
-    margin-top:10px;
+.reconfigure-btn, .indent {
+    margin-top: 10px;
 }
 .item-scrolling {
     min-height: 470px;
@@ -126,11 +121,6 @@
     overflow-y: auto;
     overflow-x: hidden;
 }
-
-.outer-provisioning-item {
-
-}
-
 .provisioning-carousel-span {
     margin-left: 0px;
 }
