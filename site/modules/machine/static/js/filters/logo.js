@@ -55,10 +55,24 @@
                 "ubuntu-certified-12.04": "ubuntu",
                 "ws2008ent-r2-sp1": "windows",
                 "ws2008std-r2-sp1": "windows",
-                "ws2012std": "windows"
-            }
+                "ws2012std": "windows",
+                "centos": "centos",
+                "ubuntu": "ubuntu"
+            };
 
-            return instances[name] ? instances[name] : 'advanced-instance-default';
+            var result = instances[name];
+            if (!result) {
+                for (var instanceKey in instances) {
+                    if (name && name.indexOf(instanceKey) !== -1) {
+                        result = instances[instanceKey];
+                        break;
+                    }
+                }
+            }
+            if (!result) {
+                result = 'advanced-instance-default';
+            }
+            return result;
         };
     });
 

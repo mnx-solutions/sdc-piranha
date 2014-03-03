@@ -44,8 +44,11 @@
                         <p>Disk</p><span><p>{{ image.description.disk }} GB</p></span>
                     </div>
                     <div class="basic-instance-btn-block">
-                        <span class="basic-instance-price">${{ image.description.price }}</span>
-                        <span class="basic-instance-price-per-time">per hour</span>
+                        <span data-ng-hide="image.imageData.freetier">
+                            <span class="basic-instance-price">${{ image.description.price }}</span>
+                            <span class="basic-instance-price-per-time">per hour</span>
+                        </span>
+                        <span class="basic-instance-price" data-ng-show="image.imageData.freetier">FREE TIER</span>
                         <button type="button"
                                 class="btn basic-instance-btn small"
                                 ng-click="createSimple(image.imageData)"><b>Select</b>

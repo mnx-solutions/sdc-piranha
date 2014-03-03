@@ -86,12 +86,14 @@
                     $q.all(packageRequests).then(function (packageResults) {
                         freeTierOptions.forEach(function (option) {
                             packageResults.forEach(function (packages, datacenterIndex) {
-                                var packageFound = packages.some(function (availPackage) {
+                                var matchingPackages = packages.filter(function (availPackage) {
                                     return availPackage.id === option.package;
                                 });
                                 // Remove datacenter if it has no free tier package
-                                if (!packageFound) {
+                                if (matchingPackages.length === 0) {
                                     removeElement(option.datacenters, datacenters[datacenterIndex]);
+                                } else {
+                                    option.original = matchingPackages[0];
                                 }
                                 // Remove datacenter if it has free tier machine already created
                                 machines.forEach(function (machine) {
