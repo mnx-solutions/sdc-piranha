@@ -659,7 +659,7 @@
 }
 .create-tags .key-container {
     width: 133px;
-    padding-right: 10px;
+    padding-right: 5px;
 }
 .create-mdata .key-container input {
     width: 310px !important;
@@ -674,11 +674,14 @@
     overflow: hidden;
 }
 .detail-tags .key-width, .detail-mdata .key.key-width {
-    min-width: 160px;
-    max-width: 160px;
+    width: 165px;
 }
 .detail-tags .value-width {
-    width: 195px;
+    width: 211px;
+}
+.detail-tags .key-container input {
+    width: 145px;
+    margin-right: 5px;
 }
 .detail-mdata .value.value-width,
 .detail-tags .value.value-width {
@@ -691,7 +694,10 @@
     display: none;
 }
 .create-tags .value-width {
-    width: 162px;
+    width: 152px;
+}
+.create-tags .key-container input {
+    width: 135px;
 }
 .create-mdata .value.value-width,
 .create-tags .value.value-width {
@@ -699,8 +705,7 @@
 }
 .create-tags .key-width,
 .create-mdata .key.key-width {
-    min-width: 120px;
-    max-width: 120px;
+    width: 156px;
 }
 .create-tags .key-width,
 .create-mdata .key.key-width,
@@ -1426,8 +1431,8 @@
 .cost {
     padding-top: 50px;
 }
-.instance-name-input{
-    width: 300px;
+.instance-name-input {
+    width: 310px;
     border-radius: 0;
 }
 .networks-box-3 span{
