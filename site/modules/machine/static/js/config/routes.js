@@ -17,13 +17,16 @@ window.JP.main.config([
                 }]
             }
         }).when('/compute/create/simple', {
-            title: 'Simple Create Instance',
+            title: 'Quick Start Instance',
             action: 'machine.simple'
         }).when('/compute/create', {
             title: 'Create Instance',
             action: 'machine.provision'
+        }).when('/compute/create/custom', {
+            title: 'Create Instance',
+            action: 'machine.provision'
         }).when('/compute/create/:imageid', {
-            title: 'Create Instance For Image',
+            title: 'Create Instance from custom image',
             action: 'machine.provision'
         }).when('/images', {
             title: 'Image List',

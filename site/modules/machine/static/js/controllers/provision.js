@@ -36,8 +36,7 @@
                 $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
             }
 
-            $scope.selectedVisibility = !$location.search().saved;
-            $scope.visibilityFilter = $scope.selectedVisibility ? 'Public' : 'Saved';
+            $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
             $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
 
@@ -296,6 +295,11 @@
                     $scope.data.package = instancePackage;
                 }
                 $scope.setCurrentStep(goto);
+
+                if ($scope.preSelectedImageId && goto === 0) {
+                    $scope.selectInstanceType('Saved');
+                }
+
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 if ($scope.features.instanceMetadata === 'enabled') {
                     ng.element('#metadata-configuration').fadeOut('fast');
@@ -440,27 +444,23 @@
                 return true;
             };
 
-            $scope.filterDatasetsByVisibility = function(item) {
-                if($scope.features.imageUse !== 'disabled'
-                    && ($scope.selectedVisibility === false
-                    || $scope.selectedVisibility === true)
-                    && item.public !== $scope.selectedVisibility) {
-                    return false;
+            $scope.filterDatasetsByVisibility = function (item) {
+                if ($scope.features.imageUse !== 'disabled') {
+                    if ((item.public && $scope.instanceType === 'Saved') ||
+                        (!item.public && $scope.instanceType === 'Public')) {
+                        return false;
+                    }
                 }
-
                 return true;
             };
 
-            $scope.selectVisibility = function(type) {
-                if(type === null) {
-                    $scope.visibilityFilter = 'All';
-                } else if(type === true) {
-                    $scope.visibilityFilter = 'Public';
-                } else if(type === false) {
-                    $scope.visibilityFilter = 'Saved';
+            $scope.selectInstanceType = function (type) {
+                $scope.instanceType = type;
+                if (type === 'Public') {
+                    $location.path('/compute/create');
+                } else if (type === 'Saved') {
+                    $location.path('/compute/create/custom');
                 }
-                $scope.selectedVisibility = type;
-
             };
 
             $scope.selectPackage = function (id) {
@@ -677,10 +677,6 @@
                 $location.path('/compute/create/simple');
             }
 
-            $scope.clickMoreImages = function (visible) {
-                $scope.selectVisibility(visible);
-                $location.path('/compute/create').search({saved: visible});
-            }
         }
 
     ]);
