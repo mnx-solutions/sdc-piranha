@@ -1390,6 +1390,13 @@
 .review .center .package {
     padding-top: 10px;
 }
+.review div.checker,
+.review div.checker span,
+.review div.checker input {
+    display: inline-block;
+    margin-top: 3px;
+}
+
 .package .value {
     font-size: 14px;
     font-weight: 500;
