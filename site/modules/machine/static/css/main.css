@@ -265,7 +265,6 @@
 }
 
 .tag.editable input {
-    width: 85%;
     height: 21px;
 }
 
@@ -665,7 +664,7 @@
 .create-mdata .key-container input {
     width: 310px !important;
 }
-.create-mdata .value-width {
+.create-mdata .value-container .value-width {
     width: 310px !important;
     height: 80px;
 }
@@ -678,9 +677,12 @@
     min-width: 160px;
     max-width: 160px;
 }
-.detail-tags .value-width, .detail-mdata .value.value-width {
-    min-width: 195px;
-    max-width: 195px;
+.detail-tags .value-width {
+    width: 195px;
+}
+.detail-mdata .value.value-width,
+.detail-tags .value.value-width {
+    width: 270px;
 }
 .detail-tags .value-container textarea,
 .create-tags .value-container textarea,
@@ -688,10 +690,12 @@
 .create-mdata .value-container input {
     display: none;
 }
-.create-tags .value-width,
-.create-mdata .value.value-width {
-    min-width: 162px;
-    max-width: 162px;
+.create-tags .value-width {
+    width: 162px;
+}
+.create-mdata .value.value-width,
+.create-tags .value.value-width {
+    width: 220px;
 }
 .create-tags .key-width,
 .create-mdata .key.key-width {
@@ -701,7 +705,11 @@
 .create-tags .key-width,
 .create-mdata .key.key-width,
 .create-tags .value-width,
-.create-mdata .value.value-width {
+.create-mdata .value.value-width,
+.detail-tags .key-width,
+.detail-mdata .key.key-width,
+.detail-tags .value-width,
+.detail-mdata .value.value-width {
     vertical-align: middle;
     height: 20px;
 }

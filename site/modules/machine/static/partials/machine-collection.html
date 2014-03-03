@@ -6,8 +6,8 @@
     <div data-ng-click="editItem(item)" data-ng-repeat="item in internalCollection">
         <div data-ng-show="!item.edit">
             <div class="controls">
-                <div class="key key-width">{{item.key}}</div>
-                <div class="value value-width">{{item.val}}</div>
+                <div class="key key-width crop">{{item.key}}</div>
+                <div class="value value-width crop">{{item.val}}</div>
                 <div class="remove-icon delete pull-right tags-delete-pos"
                      data-ng-click="removeItem(item)"
                      data-ng-show="!saving">
