@@ -91,11 +91,12 @@ public class InstancePage {
     }
 
     public static void addTag(String key, String value) {
-        int lines = $$("[data-ng-repeat=\"tag in internalTags\"]").size();
-        $("[data-ng-click=\"addTag()\"]", lines - 1).shouldBe(disabled);
-        $("[placeholder=\"Key\"]", lines - 1).setValue(key);
-        $("[placeholder=\"Value\"]", lines - 1).setValue(value);
-        $("[data-ng-click=\"addTag()\"]", lines - 1).click();
+        SelenideElement tagSection = $("[data-collection-name=\"'tags'\"]");
+        int lines = tagSection.$$("[data-ng-repeat=\"item in internalCollection\"]").size();
+        SelenideElement row = $("[data-ng-repeat=\"item in internalCollection\"]", lines - 1);
+        row.$("[placeholder=\"Key\"]").setValue(key);
+        row.$("[placeholder=\"Value\"]").setValue(value);
+        row.$("[data-ng-click=\"addItem()\"]").click();
         WaitForSmallSpinnerDisappear();
     }
 
@@ -138,7 +139,7 @@ public class InstancePage {
     }
 
     public static void removeTag(String key) {
-        $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeTag(tag)\"]").click();
+        $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeItem(item)\"]").click();
         WaitForSmallSpinnerDisappear();
     }
 
