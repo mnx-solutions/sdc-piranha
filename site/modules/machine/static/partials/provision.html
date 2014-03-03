@@ -95,9 +95,8 @@
 
                             <div class="item outer-provisioning-item">
                                 <div class="item provisioning-item header row-fluid">
-                                    <div class="span3 pull-right selected-package-container">
-                                        <div data-ng-show="selectedPackageInfo" class="selected-package-box">
-                                            <div class="selected-package-box-content small-icon"
+                                        <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
+                                            <div class="info small-icon"
                                                  data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
                                                 <p>IMAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</span>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
@@ -121,7 +120,7 @@
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div class="dataset-coast">
+                                                <div class="dataset-cost">
                                                     <p>EST. MONTHLY COST:</p>
                                                     <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
                                                 </div>
@@ -130,8 +129,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
+                                    <div class="">
                                         <div class="accordion-package-title">
                                             <span class="span-name">NAME</span>
                                             <span class="span-specification">SPECIFICATION</span>
@@ -167,10 +165,10 @@
                             </div>
                             <div class="item outer-provisioning-item">
                                 <div class="item-scrolling">
-                                    <div class="review-box">
+                                    <div class="review">
                                         <table>
-                                            <td style="vertical-align: top;">
-                                                <div class="selected-package-box-1 small-icon"
+                                            <td>
+                                                <div class="left small-icon"
                                                      data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
                                                     <p>IMAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</span>
                                                     <span><h2>{{selectedDataset.name}}</h2></span>
@@ -198,31 +196,31 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td style="vertical-align: top;">
-                                                <div class="selected-package-box-2">
+                                            <td class="separator">
+                                                <div class="center">
                                                     <p>PACKAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(1)" data-slide="prev">Change</span>
-                                                    <div class="package-info-block">
-                                                        <div class="package-info-title">Configuration</div>
-                                                        <div class="package-info-desc">{{selectedPackageInfo.short_name}}</div>
+                                                    <div class="package">
+                                                        <div class="name">Configuration</div>
+                                                        <div class="value">{{selectedPackageInfo.short_name}}</div>
                                                     </div>
-                                                    <div class="package-info-block">
-                                                        <div class="package-info-title">Memory</div>
-                                                        <div class="package-info-desc">{{selectedPackageInfo.memory | sizeFormat}}</div>
+                                                    <div class="package">
+                                                        <div class="name">Memory</div>
+                                                        <div class="value">{{selectedPackageInfo.memory | sizeFormat}}</div>
                                                     </div>
-                                                    <div class="package-info-block">
-                                                        <div class="package-info-title">Disk</div>
-                                                        <div class="package-info-desc">{{selectedPackageInfo.disk | sizeFormat}}</div>
+                                                    <div class="package">
+                                                        <div class="name">Disk</div>
+                                                        <div class="value">{{selectedPackageInfo.disk | sizeFormat}}</div>
                                                     </div>
-                                                    <div class="package-info-block">
-                                                        <div class="package-info-title">vCPUs</div>
-                                                        <div class="package-info-desc">{{selectedPackageInfo.vcpus}} vCPUs</div>
+                                                    <div class="package">
+                                                        <div class="name">vCPUs</div>
+                                                        <div class="value">{{selectedPackageInfo.vcpus}} vCPUs</div>
                                                     </div>
-                                                    <div class="package-info-block">
-                                                        <div class="package-info-title">DataCenter</div>
-                                                        <div class="package-info-desc">{{data.datacenter}} </div>
+                                                    <div class="package">
+                                                        <div class="name">DataCenter</div>
+                                                        <div class="value">{{data.datacenter}} </div>
                                                     </div>
 
-                                                    <div class="package-info-cost">
+                                                    <div class="cost">
                                                         <p>COST:</p>
                                                         <div class="dataset-cost">
                                                             <h3>${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</h3>
@@ -235,9 +233,9 @@
                                                      </div>
                                                 </div>
                                             </td>
-                                            <td style="vertical-align: top;">
+                                            <td>
                                                 <form name="provisionForm" id="provision-form">
-                                                    <div class="selected-package-box-3">
+                                                    <div class="right">
                                                         <p class="title-box-3">OPTIONAL SETTINGS:</p>
                                                         <span><h2>Name Instance</h2><p> (Optional)</p></span>
                                                         <input name="machineName"
@@ -282,7 +280,7 @@
                                                         </div>
 
                                                         <div><h2>Metadata</h2></div>
-                                                        <div class="create-tags ci-tags"
+                                                        <div class="create-mdata ci-tags"
                                                              data-machine-collection
                                                              data-collection="metadata"
                                                              data-collection-name="'metadata'"

@@ -6,8 +6,8 @@
     <div data-ng-click="editItem(item)" data-ng-repeat="item in internalCollection">
         <div data-ng-show="!item.edit">
             <div class="controls">
-                <div class="key key-width">{{item.key}}</div>
-                <div class="value value-width">{{item.val}}</div>
+                <div class="key key-width crop">{{item.key}}</div>
+                <div class="value value-width crop">{{item.val}}</div>
                 <div class="remove-icon delete pull-right tags-delete-pos"
                      data-ng-click="removeItem(item)"
                      data-ng-show="!saving">
@@ -16,6 +16,9 @@
         </div>
 
         <div class="tag editable" data-ng-show="item.edit" data-ng-form="itemForm">
+            <div class="error" data-ng-show="itemForm.key.$error.pattern">
+                    Must be alphanumeric
+            </div>
             <span class="key-container">
                 <input type="text"
                     name="key"
@@ -26,13 +29,13 @@
                     data-ng-pattern="/^[a-zA-Z0-9\._\-]+$/"
                     data-ng-disabled="saving"
                     class="key-width">
-                <span class="error key-width" data-ng-show="itemForm.key.$error.pattern">
-                    Must be alphanumeric
-                </span>
             </span>
+            <button class="btn light tag-add-btn pull-right"
+                    data-ng-click="addItem()"
+                    data-translate
+                    data-ng-disabled="!item.val || !item.key || saving">{{item.isNew && 'Add' || 'Save'}}</button>
             <span class="value-container">
                 <input type="text"
-                    data-ng-hide="collectionName == 'metadata' && !review"
                     placeholder="Value"
                     data-translate="placeholder"
                     data-ng-model="item.val"
@@ -40,7 +43,6 @@
                     data-ng-disabled="saving"
                     class="value-width"/>
                 <textarea type="text"
-                     data-ng-show="collectionName == 'metadata' && !review"
                      placeholder="Value"
                      data-translate="placeholder"
                      data-ng-model="item.val"
@@ -49,10 +51,6 @@
                      class="value-width"
                      rows="8"></textarea>
             </span>
-            <button class="btn light tag-add-btn"
-                data-ng-click="addItem()"
-                data-translate
-                data-ng-disabled="!item.val || !item.key || saving">{{item.isNew && 'Add' || 'Save'}}</button>
         </div>
     </div>
     <div class="tags row-fluid">

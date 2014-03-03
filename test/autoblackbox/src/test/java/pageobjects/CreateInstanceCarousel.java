@@ -104,7 +104,7 @@ public class CreateInstanceCarousel {
     }
 
     public void checkPackageInfo(String mem, String disk, String cpu, String instancePackage) {
-        ElementsCollection elements = $$(".selected-package-box-2 .package-info-desc");
+        ElementsCollection elements = $$(".center .value");
         String[] texts = elements.getTexts();
         assertTrue(texts[0].equals(instancePackage));
         assertTrue(texts[1].equals(mem));
