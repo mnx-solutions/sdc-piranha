@@ -349,53 +349,56 @@
                     <div id="collapse_8" class="accordion-body collapse">
                         <div class="accordion-inner">
                             <div class="beta-sticker pull-right tab">beta</div>
-            <span data-ng-switch="features.firewall">
+                            <div>
+                                            <span data-ng-switch="features.firewall">
                             <fieldset data-ng-switch-when="enabled">
-                    <div data-ng-show="machine.type == 'virtualmachine'">
+                                <div data-ng-show="machine.type == 'virtualmachine'">
                                     <div class="item-list-container">
-                        {{machine.type}} instances are not yet supported by the FWAPI.
-                        </div>
-                    </div>
-                    <div data-ng-show="machine.type != 'virtualmachine'">
-                                    <div class="item-list-container">
-                            ICMP 8:0 is always open. With Firewall Rules enabled:
-                            <ul>
-                                <li>Block all inbound traffic</li>
-                                <li>Allow all outbound traffic</li>
-                            </ul>
-                            The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.  
-                        </div><br/>
+                                        {{machine.type}} instances are not yet supported by the FWAPI.
+                                    </div>
                                 </div>
-                        <div data-ng-show="firewallRules.length >= 1">
-                                <div data-grid-view
-                                             data-user-config="gridUserConfig"
-                                     data-props="gridProps"
-                                     data-objects="firewallRules"
-                                     data-paginated="false"
-                                             data-controls="false"
-                                     data-order="gridOrder"
-                                             data-objects-type="firewall"
-                                             data-special-width="'detailsPage'"
-                                             data-search-form="searchForm"
-                                             data-export-fields="exportFields"
-                                             data-multisort="false"
-                                             class="grid-small-font"></div>
-                        </div>
+                                <div data-ng-show="machine.type != 'virtualmachine'">
+                                    <div class="item-list-container">
+                                        ICMP 8:0 is always open. With Firewall Rules enabled:
+                                        <ul>
+                                            <li>Block all inbound traffic</li>
+                                            <li>Allow all outbound traffic</li>
+                                        </ul>
+                                        The default rules are overridden by your own rules. There is no ordering to your own rules. For incoming traffic, the least restrictive rule wins. For outgoing traffic, the most restrictive rule wins.
+                                    </div>
+                                </div>
+                                <div data-ng-show="firewallRules.length >= 1">
+                                    <div data-grid-view
+                                         data-user-config="gridUserConfig"
+                                         data-props="gridProps"
+                                         data-objects="firewallRules"
+                                         data-paginated="false"
+                                         data-controls="false"
+                                         data-order="gridOrder"
+                                         data-objects-type="firewall"
+                                         data-special-width="'detailsPage'"
+                                         data-search-form="searchForm"
+                                         data-export-fields="exportFields"
+                                         data-multisort="false"
+                                         class="grid-small-font indent"></div>
+                                </div>
                                 <div data-ng-show="firewallRules.length < 1"><br/>
                                     <div data-translate>You have no firewall rules that would apply to this machine</div>
-                        </div>
+                                </div>
                                 <div class="pull-left">
                                     <a class="btn light margin-top-10" href="#!/firewall">Edit</a>
                                     <button class="btn light margin-top-10"
-                                    data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
-                                    data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
-                                    data-ng-show="firewallChangeable()"
-                                    data-ng-click="toggleFirewallEnabled()"
-                                    data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
+                                            data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
+                                            data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
+                                            data-ng-show="firewallChangeable()"
+                                            data-ng-click="toggleFirewallEnabled()"
+                                            data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
                                     <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
-                        </div>
+                                </div>
                             </fieldset>
                         </span>
+
+                            </div>
                     </div>
 
                 </div>
