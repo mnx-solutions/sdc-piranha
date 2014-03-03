@@ -120,8 +120,9 @@ public class SmokeTests extends TestWrapper {
         $("#button-create-instance").click();
         Common.checkHeadingText("Quick Start: Create Instance");
         CreateInstanceCarousel createInstanceCarousel = page(CreateInstanceCarousel.class);
-        createInstanceCarousel.waitUntilPageIsActive(0);
         createInstanceCarousel.selectDataCenter(System.getProperty("datacenter"));
+        CreateInstanceCarousel.clickViewMoreImages();
+        createInstanceCarousel.waitUntilPageIsActive(0);
         createInstanceCarousel.selectOsFilter("smartos");
         createInstanceCarousel.selectOsImage(inst[0]);
         createInstanceCarousel.waitUntilPageIsActive(1);

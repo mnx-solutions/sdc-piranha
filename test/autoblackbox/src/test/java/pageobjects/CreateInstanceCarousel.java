@@ -34,11 +34,11 @@ public class CreateInstanceCarousel {
     }
 
     public void selectDataCenter(String zone) {
-        waitForListingUpdate();
-        SelenideElement dataCenterList = $(".provisioning-header-left-button");
+        if(!$(byText("Quick Start: Create Instance")).isDisplayed()){
+            waitForListingUpdate();
+        }
         $("#button-select-datacenter").click();
         $(byText(zone)).click();
-        $("#link-more-images").click();
     }
 
     public void selectOsFilter(String os) {
@@ -185,5 +185,9 @@ public class CreateInstanceCarousel {
         $(byText("Create instance")).click();
         createInstanceCarousel.confirmInstanceCreation();
         return instanceName;
+    }
+
+    public static void clickViewMoreImages(){
+        $("#link-more-images").click();
     }
 }
