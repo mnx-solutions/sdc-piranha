@@ -653,11 +653,6 @@
     background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
     background-position: -264px -72px;
 }
-
-.accordion-max-width .key-container {
-    display: inline-block;
-    padding-right: 10px;
-}
 .accordion-max-width .value-container {
     display: inline-block;
     vertical-align: top;
@@ -728,7 +723,7 @@
     height: 31px;
     padding-bottom: 7px;
     padding-top: 5px;
-    max-width: 62px;
+    width: 62px;
     vertical-align: top;
 }
 .controls{
