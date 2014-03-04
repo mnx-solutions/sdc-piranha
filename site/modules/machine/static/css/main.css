@@ -9,7 +9,6 @@
 }
 
 .error span {
-    margin-left: 20px;
     vertical-align: middle;
 }
 
@@ -18,6 +17,10 @@
     background-repeat: no-repeat;
     background-position: 0 0;
     font-weight: normal;
+}
+
+.alert-icon span {
+    margin-left: 20px;
 }
 
 .machines button.create-instance {
