@@ -29,6 +29,7 @@ import java.util.Set;
 public class Common {
 
     private static final int BASE_TIMEOUT = Integer.parseInt(System.getProperty("globaltimeout", "15000"));
+    private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System.getProperty("statustimeout", "240000"));
 
     public static void login() {
         $(byAttribute("type", "button")).click();
@@ -167,7 +168,7 @@ public class Common {
         return result;
     }
 
-    public static void AddGridColumn(String columnName) {
+    public static void addGridColumn(String columnName) {
         Common.clickColumnsButton();
         JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
         executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
@@ -196,5 +197,13 @@ public class Common {
                 return;
             }
         }
+    }
+
+    public static void waitForSmallLaoderDisappear() {
+        $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    }
+
+    public static void waitForMediumLaoderDisappear() {
+        $(".loading-medium.spiner-height").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
 }

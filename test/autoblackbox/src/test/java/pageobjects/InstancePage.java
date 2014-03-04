@@ -147,6 +147,10 @@ public class InstancePage {
         $("[data-ng-class=\"{active: accordionIcon[2] }\"]").click();
     }
 
+    public static void openImagesSection() {
+        $("#accordion1 a[href=\"#collapse_images\"]").click();
+    }
+
     public static boolean isTagDisplayed(String key, String value) {
         return $(By.xpath("//span[contains(.,'\"" + key + "\":\"" + value + "\')]")).isDisplayed();
     }
