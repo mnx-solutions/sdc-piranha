@@ -144,7 +144,7 @@ public class InstancePage {
     }
 
     public static void openTagsSection() {
-        $("[data-ng-class=\"{active: accordionIcon[2] }\"]").click();
+        $("#accordion1 a[href=\"#collapse_tags\"]").click();
     }
 
     public static void openImagesSection() {
