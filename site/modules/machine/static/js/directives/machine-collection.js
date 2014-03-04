@@ -85,9 +85,8 @@
                     scope.internalCollection.splice(itemIndex, 1);
                     scope.saveCollection();
                 };
-                scope.$parent.$on('ReConfigure', function () {
-                    scope.internalCollection = [];
-                    scope.addNew();
+                scope.$watch('collection', function () {
+                    scope.loadCollection();
                 });
             }
         };

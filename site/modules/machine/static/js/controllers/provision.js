@@ -236,8 +236,8 @@
                         network.active = true;
                     });
                 }
-
-                $scope.$emit('ReConfigure', true);
+                $scope.metadata = [];
+                $scope.tags = [];
 
                 var ds = $scope.data.datacenter;
                 var opsys = $scope.data.opsys;
