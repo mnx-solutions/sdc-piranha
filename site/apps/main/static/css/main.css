@@ -1928,3 +1928,6 @@ label.checkbox {
     width: 172px !important;
     height: 43px;
 }
+.middle {
+    vertical-align: middle;
+}

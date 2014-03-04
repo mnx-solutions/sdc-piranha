@@ -210,20 +210,20 @@ select.date-month, select.date-year {
     border: 1px solid #dadcdd;
     margin-left: 9px;
 }
-#accordion3 .accordion-heading .accordion-toggle.active {
+#accordion3 .accordion-heading .accordion-toggle {
     background-color: #f3f7fb !important;
     border-bottom: 0;
 }
 
-#accordion3 .accordion-heading .accordion-toggle.active.collapsed {
+#accordion3 .accordion-heading .accordion-toggle.collapsed {
     background-color: white !important;
     border-bottom: 1px solid #dadcdd;
 }
 
-#accordion3 .accordion-toggle.active .small-btn{
+#accordion3 .accordion-toggle .small-btn {
     display: block !important;
 }
-#accordion3 .accordion-toggle.active.collapsed .small-btn{
+#accordion3 .accordion-toggle.collapsed .small-btn {
     display: none !important;
 }
 
@@ -260,8 +260,8 @@ select.date-month, select.date-year {
     display: inline-block;
 }
 
-.key-info-content{
-    padding-left: 40px;
+.key-info-content {
+    padding-left: 33px;
     padding-top: 15px;
 }
 .txt-name span{
@@ -305,9 +305,6 @@ select.date-month, select.date-year {
     margin-left: 10px;
     margin-top: -3px;
     display: none;
-}
-.inline-pos{
-    display: inline-block;
 }
 .cell-link {
     cursor: pointer;
