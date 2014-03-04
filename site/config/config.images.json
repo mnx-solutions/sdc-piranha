@@ -2,7 +2,7 @@
     "images": [
         {
             "name": "SmartOS 64",
-            "className": "smartos-logo",
+            "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-west-1",
                 "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
@@ -21,7 +21,7 @@
         },
         {
             "name": "Standard Node.js",
-            "className": "nodejs-logo",
+            "className": "node-logo",
             "imageData": {
                 "datacenter": "us-west-1",
                 "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
@@ -59,7 +59,7 @@
         },
         {
             "name": "Ubuntu Certified 13.10",
-            "className": "ubuntuos-logo",
+            "className": "ubuntu-logo",
             "imageData": {
                 "datacenter": "us-west-1",
                 "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
@@ -78,7 +78,7 @@
         },
         {
             "name": "Windows Server",
-            "className": "winos-logo",
+            "className": "windows-logo",
             "imageData": {
                 "datacenter": "us-west-1",
                 "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
@@ -116,7 +116,7 @@
         },
         {
             "name": "SmartOS 64",
-            "className": "smartos-logo",
+            "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-east-1",
                 "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
@@ -135,7 +135,7 @@
         },
         {
             "name": "Standard Node.js",
-            "className": "nodejs-logo",
+            "className": "node-logo",
             "imageData": {
                 "datacenter": "us-east-1",
                 "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
@@ -173,7 +173,7 @@
         },
         {
             "name": "Ubuntu Certified 13.10",
-            "className": "ubuntuos-logo",
+            "className": "ubuntu-logo",
             "imageData": {
                 "datacenter": "us-east-1",
                 "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
@@ -192,7 +192,7 @@
         },
         {
             "name": "Windows Server",
-            "className": "winos-logo",
+            "className": "windows-logo",
             "imageData": {
                 "datacenter": "us-east-1",
                 "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
@@ -230,7 +230,7 @@
         },
         {
             "name": "SmartOS 64",
-            "className": "smartos-logo",
+            "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
                 "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
@@ -249,7 +249,7 @@
         },
         {
             "name": "Standard Node.js",
-            "className": "nodejs-logo",
+            "className": "node-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
                 "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
@@ -287,7 +287,7 @@
         },
         {
             "name": "Ubuntu Certified 13.10",
-            "className": "ubuntuos-logo",
+            "className": "ubuntu-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
                 "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
@@ -306,7 +306,7 @@
         },
         {
             "name": "Windows Server",
-            "className": "winos-logo",
+            "className": "windows-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
                 "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
@@ -344,7 +344,7 @@
         },
         {
             "name": "SmartOS 64",
-            "className": "smartos-logo",
+            "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-ams-1",
                 "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
@@ -363,7 +363,7 @@
         },
         {
             "name": "Standard Node.js",
-            "className": "nodejs-logo",
+            "className": "node-logo",
             "imageData": {
                 "datacenter": "us-ams-1",
                 "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
@@ -401,7 +401,7 @@
         },
         {
             "name": "Ubuntu Certified 13.10",
-            "className": "ubuntuos-logo",
+            "className": "ubuntu-logo",
             "imageData": {
                 "datacenter": "us-ams-1",
                 "dataset": "46407334-9096-40ef-bb72-6f9a094f0507",
@@ -420,7 +420,7 @@
         },
         {
             "name": "Windows Server",
-            "className": "winos-logo",
+            "className": "windows-logo",
             "imageData": {
                 "datacenter": "us-ams-1",
                 "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",

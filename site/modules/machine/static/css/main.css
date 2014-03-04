@@ -735,11 +735,11 @@
     float: left;
     background-color: #eef0f2;
 }
-.smartos-logo,
-.ubuntuos-logo,
-.winos-logo,
+.smart-logo,
+.ubuntu-logo,
+.windows-logo,
 .centos-logo,
-.nodejs-logo,
+.node-logo,
 .joyent-logo,
 .mongodb-logo {
     background-repeat: no-repeat;
@@ -748,20 +748,20 @@
 }
 
 
-.smartos-logo {
-    background-image: url(../img/smartos-logo.png);
+.smart-logo {
+    background-image: url(../img/smart-logo.png);
 }
-.ubuntuos-logo {
-    background-image: url(../img/ubuntuos-logo.png);
+.ubuntu-logo {
+    background-image: url(../img/ubuntu-logo.png);
 }
-.winos-logo {
-    background-image: url(../img/winos-logo.png);
+.windows-logo {
+    background-image: url(../img/windows-logo.png);
 }
 .centos-logo {
     background-image: url(../img/centos-logo.png);
 }
-.nodejs-logo {
-    background-image: url(../img/nodejs-logo.png);
+.node-logo {
+    background-image: url(../img/node-logo.png);
 }
 .joyent-logo {
     background-image: url(../img/joyent-logo.png);
