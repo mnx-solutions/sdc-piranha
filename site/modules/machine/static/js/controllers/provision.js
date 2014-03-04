@@ -231,6 +231,14 @@
                 }
                 $scope.selectedNetworks = [];
 
+                if ($scope.networks && $scope.networks.length) {
+                    $scope.networks.forEach(function(network) {
+                        network.active = true;
+                    });
+                }
+
+                $scope.$emit('ReConfigure', true);
+
                 var ds = $scope.data.datacenter;
                 var opsys = $scope.data.opsys;
 
