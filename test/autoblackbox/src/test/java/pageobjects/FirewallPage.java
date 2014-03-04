@@ -3,10 +3,8 @@ package pageobjects;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Condition.visible;
 import static org.junit.Assert.assertTrue;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 
@@ -18,11 +16,9 @@ import java.util.Date;
 
 public class FirewallPage {
     public static void clickAddNewButton() {
-        if ($("[data-ng-hide=\"openRuleForm\"]").isDisplayed()) {
-            $("[data-ng-hide=\"openRuleForm\"]").click();
-        } else if (!FirewallPage.createRuleButton().isDisplayed()) {
-            $("[data-ng-hide=\"!rules.length || openRuleForm\"]").click();
-        }
+        if ($(byText("Hello there!")).isDisplayed()) {
+            $("button[data-ng-hide=\"openRuleForm\"]").click();
+        } else $("[data-ng-hide=\"!rules.length || openRuleForm\"]").click();
     }
 
     public static SelenideElement createRuleButton() {
