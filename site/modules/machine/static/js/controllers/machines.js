@@ -284,15 +284,9 @@
                     active: false
                 },
                 {
-                    id: '$$hashKey',
-                    name: '$$hashKey',
-                    sequence: 18,
-                    active: false
-                },
-                {
                     id: 'ips',
-                    name: 'IP-s',
-                    sequence: 19,
+                    name: 'IPs',
+                    sequence: 18,
                     active: false
                 }
             ];
