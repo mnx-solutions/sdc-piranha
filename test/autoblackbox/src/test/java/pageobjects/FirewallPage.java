@@ -3,10 +3,8 @@ package pageobjects;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Condition.visible;
 import static org.junit.Assert.assertTrue;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
 
@@ -18,9 +16,9 @@ import java.util.Date;
 
 public class FirewallPage {
     public static void clickAddNewButton() {
-        if ($("[data-ng-hide=\"openRuleForm\"]").isDisplayed()) {
-            $("[data-ng-hide=\"openRuleForm\"]").click();
-        } else if (!FirewallPage.createRuleButton().isDisplayed()) {
+        if ($(byText("Hello there!")).isDisplayed()) {
+            $("button[data-ng-hide=\"openRuleForm\"]").click();
+        } else {
             $("[data-ng-hide=\"!rules.length || openRuleForm\"]").click();
         }
     }
@@ -49,7 +47,7 @@ public class FirewallPage {
 
     private static void selectTarget(String direction, String targetName) {
         String fieldId = "s2id_" + direction.toLowerCase() + "Select";
-        if (!$("#select2-drop").isDisplayed()){
+        if (!$("#select2-drop").isDisplayed()) {
             $(By.id(fieldId)).$(".select2-choice").click();
         }
         $("#select2-drop").$(byText(targetName)).click();
@@ -70,7 +68,8 @@ public class FirewallPage {
                 case "Subnet":
                     inputField = $("input[name=\"toValue\"]");
                     break;
-                default: break;
+                default:
+                    break;
             }
         } else if (direction.equals("From")) {
             switch (targetName) {
@@ -84,7 +83,8 @@ public class FirewallPage {
                 case "Instance":
                     selectInstance(direction, targetValue);
                     break;
-                default: break;
+                default:
+                    break;
             }
         }
         if (targetName.equals("Subnet") || targetName.equals("IP") || targetName.equals("Tag")) {
