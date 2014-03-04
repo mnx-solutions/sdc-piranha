@@ -1302,14 +1302,12 @@
 
 .preselected {
     width: 253px;
-    height: 420px;
+    min-height: 420px;
     background-color: #fef1d2;
     margin-right: 20px;
 }
 .preselected .info {
     padding: 25px;
-    min-height: 360px;
-    max-height: 800px;
     white-space: normal;
 }
 .preselected .info p, .review .left p, .review .center p, .review .right p {
@@ -1370,6 +1368,8 @@
     height: 35px;
     font-size: 16px;
     font-weight: 400 !important;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 .review {
     padding-top: 25px;
