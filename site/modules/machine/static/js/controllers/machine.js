@@ -111,12 +111,6 @@
                 });
                 $scope.package = Package.package(m.package);
 
-                if(m.networks) {
-                    m.networks.forEach(function(networkId) {
-                       $scope.networks.push(Network.getNetwork(m.datacenter, networkId));
-                    });
-                }
-
                 $scope.dataset.then(function(ds){
                     $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
 
@@ -146,6 +140,14 @@
                     $scope.currentPackageName = pkg.name;
                     $scope.currentPackage = pkg;
                 });
+            });
+
+            $scope.$watch('machine.networks', function (networks) {
+                if (networks) {
+                    $scope.networks = networks.map(function (networkId) {
+                        return Network.getNetwork($scope.machine.datacenter, networkId);
+                    });
+                }
             });
 
             $scope.$watch('selectedPackageName', function (pkgName) {
