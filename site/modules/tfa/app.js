@@ -9,10 +9,12 @@ module.exports = function execute(scope, app) {
     var headerClientIpKey = scope.config.server.headerClientIpKey;
 
     app.use(function (req, res, next) {
-        req.log = req.log.child({
-            userName: req.session.userName,
-            userId: req.session.userId
-        });
+        if (req.session && req.session.userId && req.session.userName) {
+            req.log = req.log.child({
+                userName: req.session.userName,
+                userId: req.session.userId
+            });
+        }
         next();
     });
 
@@ -61,6 +63,11 @@ module.exports = function execute(scope, app) {
                 if (err) {
                     next(err);
                     return;
+                }
+
+                if (!req.session) {
+                    req.log.fatal('Session is not valid, probably Redis is not running');
+                    process.exit();
                 }
 
                 req.session.userId = user.id;
