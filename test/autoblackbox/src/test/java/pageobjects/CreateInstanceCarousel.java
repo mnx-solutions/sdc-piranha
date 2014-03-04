@@ -115,8 +115,8 @@ public class CreateInstanceCarousel {
 
     public void checkPaymentInfo(String h, String d) {
         String[] texts = $$(".dataset-cost h3").getTexts();
-        assertTrue(texts[0].equals(h));
-        assertTrue(texts[1].equals(d));
+        assertTrue(texts[1].equals(h));
+        assertTrue(texts[2].equals(d));
     }
 
     /**
