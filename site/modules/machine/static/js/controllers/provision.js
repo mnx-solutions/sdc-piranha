@@ -254,6 +254,7 @@
                     ng.element('#metadata-configuration').fadeOut('fast');
                 }
                 ng.element('#network-configuration').fadeOut('fast');
+                ng.element('#button-create').prop('disabled','');
                 ng.element('.carousel').carousel(goto);
             };
 
