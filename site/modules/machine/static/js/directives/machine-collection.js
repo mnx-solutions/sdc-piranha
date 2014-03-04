@@ -85,6 +85,9 @@
                     scope.internalCollection.splice(itemIndex, 1);
                     scope.saveCollection();
                 };
+                scope.$watch('collection', function () {
+                    scope.loadCollection();
+                });
             }
         };
     }]);

@@ -231,12 +231,19 @@
                 }
                 $scope.selectedNetworks = [];
 
-                var ds = $scope.data.datacenter;
-                var opsys = $scope.data.opsys;
+                if ($scope.networks && $scope.networks.length) {
+                    $scope.networks.forEach(function(network) {
+                        network.active = true;
+                    });
+                }
+                $scope.metadata = [];
+                $scope.tags = [];
+                $scope.provisionForm.machineName.$setValidity('machineName', true);
+                $scope.provisionForm.machineName.$setValidity('machineUnique', true);
 
                 $scope.data = {
-                    datacenter: ds,
-                    opsys: opsys
+                    datacenter: $scope.data.datacenter,
+                    opsys: $scope.data.opsys
                 };
                 $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
