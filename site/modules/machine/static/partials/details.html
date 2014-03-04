@@ -15,7 +15,7 @@
                     <div class="error"
                          data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
                          data-translate>
-                        Invalid machine name
+                        Machine&nbsp;{{incorrectNameMessage}}
                     </div>
 
                     <div class="error"
@@ -262,7 +262,7 @@
                         <div class="error"
                              data-ng-show="imageForm.imageName.$error.machineName"
                              data-translate>
-                            Invalid image name
+                            Image&nbsp;{{incorrectNameMessage}}
                         </div>
                         <div>
                                         <div class="dpl-inline">

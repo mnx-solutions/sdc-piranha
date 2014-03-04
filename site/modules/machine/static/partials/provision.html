@@ -219,7 +219,6 @@
                                                         <div class="name">DataCenter</div>
                                                         <div class="value">{{data.datacenter}} </div>
                                                     </div>
-
                                                     <div class="cost">
                                                         <p>COST:</p>
                                                         <div class="dataset-cost">
@@ -244,10 +243,10 @@
                                                                data-machine-name
                                                                data-machine-unique
                                                                class="instance-name-input"/>
-                                                        <div class="error alert-icon"
+                                                        <div class="error"
                                                             data-ng-show="provisionForm.machineName.$error.machineName"
                                                             data-translate>
-                                                            Invalid machine name
+                                                            Machine name can contain only letters, digits and signs like '.' and '-'.
                                                         </div>
 
                                                         <div class="error alert-icon"
