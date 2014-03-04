@@ -238,15 +238,12 @@
                 }
                 $scope.metadata = [];
                 $scope.tags = [];
-                $scope.provisionForm.machineName.$error.machineName = false;
-                $scope.provisionForm.machineName.$error.machineUnique = false;
-
-                var ds = $scope.data.datacenter;
-                var opsys = $scope.data.opsys;
+                $scope.provisionForm.machineName.$setValidity('machineName', true);
+                $scope.provisionForm.machineName.$setValidity('machineUnique', true);
 
                 $scope.data = {
-                    datacenter: ds,
-                    opsys: opsys
+                    datacenter: $scope.data.datacenter,
+                    opsys: $scope.data.opsys
                 };
                 $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
@@ -254,7 +251,6 @@
                     ng.element('#metadata-configuration').fadeOut('fast');
                 }
                 ng.element('#network-configuration').fadeOut('fast');
-                ng.element('#button-create').prop('disabled','');
                 ng.element('.carousel').carousel(goto);
             };
 
