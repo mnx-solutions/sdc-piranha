@@ -40,7 +40,7 @@ public class InstanceRenameTests extends TestWrapper {
         InstancePage.clickRenameInstanceIcon();
         InstancePage.getInstanceNameField().sendKeys("!!!");
         $(".loading-medium.wait-rename").waitWhile(visible, timeout);
-        $(byText("Invalid machine name")).shouldBe(visible);
+        $(byText("Machine name can contain only letters, digits and signs like '.' and '-'.")).shouldBe(visible);
         InstancePage.getInstanceNameField().clear();
         InstancePage.getInstanceNameField().sendKeys("forFIrewallAutoTests");
         $(byText("Machine name is already in use")).shouldBe(visible);
