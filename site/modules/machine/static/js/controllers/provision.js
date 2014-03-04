@@ -408,12 +408,16 @@
                             $scope.selectPackage(packageId);
                         }
                     }
-                });
 
-                var lastSectionHeader = ng.element('#accordion2 .accordion-toggle:last');
-                if (lastSectionHeader.hasClass('collapsed')) {
-                    lastSectionHeader.click();
-                }
+                    var expandLastSection = function () {
+                        var lastSectionHeader = ng.element('#packagesAccordion .accordion-toggle:last');
+                        if (lastSectionHeader.hasClass('collapsed')) {
+                            lastSectionHeader.click();
+                        }
+                    };
+                    setTimeout(expandLastSection, 600);
+                    ng.element('.carousel').one('slid', expandLastSection);
+                });
             };
 
             $scope.selectVersion = function (name, version) {
