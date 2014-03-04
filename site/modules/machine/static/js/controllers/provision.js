@@ -265,15 +265,17 @@
             $scope.reconfigure = function (goto) {
                 $scope.showReConfigure = false;
                 $scope.showFinishConfiguration = false;
+                // TODO: Change magic numbers to constants
                 if (goto !== 1) {
                     $scope.selectedPackage = null;
                     $scope.selectedPackageInfo = null;
                     $scope.packageType = null;
                 }
-                $scope.selectedNetworks = [];
 
                 if ($scope.networks && $scope.networks.length) {
+                    $scope.selectedNetworks = [];
                     $scope.networks.forEach(function(network) {
+                        $scope.selectedNetworks.push(network.id);
                         network.active = true;
                     });
                 }
@@ -282,10 +284,17 @@
                 $scope.provisionForm.machineName.$setValidity('machineName', true);
                 $scope.provisionForm.machineName.$setValidity('machineUnique', true);
 
+                var instancePackage = $scope.data.package;
+
                 $scope.data = {
                     datacenter: $scope.data.datacenter,
-                    opsys: $scope.data.opsys
+                    opsys: $scope.data.opsys,
+                    name: null,
+                    dataset: $scope.data.dataset
                 };
+                if (goto === 1) {
+                    $scope.data.package = instancePackage;
+                }
                 $scope.setCurrentStep(goto);
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 if ($scope.features.instanceMetadata === 'enabled') {
