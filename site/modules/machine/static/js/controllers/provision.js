@@ -238,6 +238,8 @@
                 }
                 $scope.metadata = [];
                 $scope.tags = [];
+                $scope.provisionForm.machineName.$error.machineName = false;
+                $scope.provisionForm.machineName.$error.machineUnique = false;
 
                 var ds = $scope.data.datacenter;
                 var opsys = $scope.data.opsys;
