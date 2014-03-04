@@ -42,7 +42,7 @@ public class ImageTests extends TestWrapper {
     }
 
     @Test
-    public void ImageCRUDE() throws IOException {
+    public void imageCRUD() throws IOException {
         InstancePage.gotoInstanceDetails(Common.getTestInstanceName());
         String imageName = ImageList.createTestImage();
         ImageList.gotoImageList();
