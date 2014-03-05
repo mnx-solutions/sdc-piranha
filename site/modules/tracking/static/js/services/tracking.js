@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.factory('$$track', ['$location', '$http', '$cookies', function ($location, $http, $cookies) {
+    app.factory('$$track', ['$location', '$http', '$cookies', 'loggingService', function ($location, $http, $cookies, loggingService) {
 
         return {
             event: function (category, action, label) {
@@ -31,17 +31,13 @@
                 var enc_email = '';
                 $http.get('/tracking/sha/' + account.email).success(function (data, status) {
                     enc_email = data;
-                    //TODO: username was on the wish list also
-                    //TODO: campaign id propagation
-                    mktoMunchkinFunction(
-                        'associateLead',
-                        {
-                            Email:             account.email,
-                            CAPI_UUID__c_lead: account.id || '',
-                            Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'
-                        },
-                        enc_email
-                    );
+                    var marketoData = {
+                        Email:             account.email,
+                        CAPI_UUID__c_lead: account.id || '',
+                        Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'
+                    };
+                    mktoMunchkinFunction('associateLead', marketoData, enc_email);
+                    loggingService.log('debug', 'Associate Marketo lead from client', marketoData);
                 });
             },
             //inform marketo about machine provisioned

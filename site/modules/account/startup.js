@@ -40,7 +40,7 @@ module.exports = function execute(scope) {
                 if (err) {
                     call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
-
+                call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
                 TFA.get(data.id, function (err, secret) {
                     if (err) {
                         call.done(err);
@@ -109,7 +109,7 @@ module.exports = function execute(scope) {
                 if (err) {
                     call.log.error({error: err, data: marketoData}, 'Failed to update marketo account');
                 }
-
+                call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
                 call.log.debug('Updating account with', data);
                 call.cloud.updateAccount(data, call.done.bind(call));
             });
