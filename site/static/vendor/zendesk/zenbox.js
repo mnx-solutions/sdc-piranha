@@ -151,12 +151,13 @@
     return settings.assetHost + '/external/zenbox/v2.1/loading.html';
   }
 
-  function dropboxURL() {
-    var url = settings.url + "/account/dropboxes/" + settings.dropboxID + '?x=1';
-    if (settings.request_subject)     { url += '&subject='      + settings.request_subject; }
-    if (settings.request_description) { url += '&description='  + settings.request_description; }
-    if (settings.requester_name)      { url += '&name='         + settings.requester_name; }
-    if (settings.requester_email)     { url += '&email='        + settings.requester_email; }
+  function dropboxURL(overrideOptions) {
+    var options = overrideOptions || settings;
+    var url = options.url + "/account/dropboxes/" + options.dropboxID + '?x=1';
+    if (options.request_subject)     { url += '&subject='      + options.request_subject; }
+    if (options.request_description) { url += '&description='  + options.request_description; }
+    if (options.requester_name)      { url += '&name='         + options.requester_name; }
+    if (options.requester_email)     { url += '&email='        + options.requester_email; }
     return url;
   }
 
@@ -174,8 +175,8 @@
     }, false);
   }
 
-  function show(evt) {
-    iframe.src = dropboxURL();
+  function show(evt, overrideOptions) {
+    iframe.src = dropboxURL(overrideOptions);
     overlay.style.height = scrim.style.height = getDocHeight() + 'px';
     container.style.top = getScrollOffsets().top + 50 + 'px';
     overlay.style.display = "block";
@@ -229,8 +230,8 @@
      *  @return {false} false always, in case users want to bind it to an
      *                  onclick or other event and want to prevent default behavior.
      */
-    show: function(evt) {
-      attempt(function() { return show(evt); });
+    show: function(evt, overrideOptions) {
+      attempt(function() { return show(evt, overrideOptions); });
     },
 
     /*

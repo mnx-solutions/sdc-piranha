@@ -676,8 +676,16 @@
             };
 
             $scope.reviewPage = function () {
-                $scope.slideCarousel();
-                $scope.setCurrentStep(2);
+                if ($scope.selectedPackageInfo.createdBySupport) {
+                    var el = $scope.selectedPackageInfo;
+                    var contactSupportParams = ng.copy(window.zenbox_params);
+                    contactSupportParams.request_subject = 'I want to order ' + el.description + ' instance';
+                    contactSupportParams.request_description = el.name;
+                    Zenbox.show(null, contactSupportParams);
+                } else {
+                    $scope.slideCarousel();
+                    $scope.setCurrentStep(2);
+                }
             };
 
             $scope.clickBackToQuickStart = function () {
