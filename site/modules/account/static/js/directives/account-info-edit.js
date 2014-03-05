@@ -57,7 +57,10 @@
                         return isPresent;
                     };
 
-                    $scope.submitForm = function () {
+                    $scope.submitForm = function (form) {
+                        if (form.$invalid) {
+                            return;
+                        }
                         // clean the phone number
                         var account = ng.copy($scope.account);
 
