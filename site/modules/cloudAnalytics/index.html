@@ -40,8 +40,9 @@
 
 		            <graph data-ng-repeat="i in graphs" options="i"></graph>
                     <div class="clearfix"></div>
-                    <a ng-show="machineExists" href="#!/compute/instance/{{selectedInstance}}" class="btid">< Back to Instance Details</a>
-                    <a ng-hide="machineExists" href="#!/compute" class="btid">< Back to Instances</a>
+                    <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey">
+                        <b>{{ machineExists && 'Back to Instance Details' || 'Back to Instances' }}</b>
+                    </a>
 					
 				</div>
 				<div class="pull-right alert alert-info span3">
