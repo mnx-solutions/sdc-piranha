@@ -100,14 +100,14 @@
             "className": "mongodb-logo",
             "imageData": {
                 "datacenter": "us-west-1",
-                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "dataset": "649e0c72-89ec-11e3-a7c2-97e6a67823b0",
                 "name": "",
                 "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
                 "package": "e44cc8ab-d28d-4727-8210-46874dc602f2"
             },
             "description": {
-                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.9",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -214,14 +214,14 @@
             "className": "mongodb-logo",
             "imageData": {
                 "datacenter": "us-east-1",
-                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "dataset": "649e0c72-89ec-11e3-a7c2-97e6a67823b0",
                 "name": "",
                 "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
                 "opsys": "All",
                 "package": "53be60b7-baa1-4bee-a337-c151b3eb34e9"
             },
             "description": {
-                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.9",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -328,14 +328,14 @@
             "className": "mongodb-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
-                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "dataset": "649e0c72-89ec-11e3-a7c2-97e6a67823b0",
                 "name": "",
                 "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
                 "package": "a8a2c001-89b7-4351-97c8-7bbbb0d18918"
             },
             "description": {
-                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.9",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -442,14 +442,14 @@
             "className": "mongodb-logo",
             "imageData": {
                 "datacenter": "us-ams-1",
-                "dataset": "ec5defa8-16fe-11e3-948e-8f59b3488902",
+                "dataset": "649e0c72-89ec-11e3-a7c2-97e6a67823b0",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
                 "opsys": "All",
                 "package": "d2a22866-9567-44fc-a0ee-9d5225de9047"
             },
             "description": {
-                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.6",
+                "text": "A SmartOS 64-bit image that comes with MongoDB 2.4.9",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
