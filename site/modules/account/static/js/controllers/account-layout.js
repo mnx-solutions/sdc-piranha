@@ -72,7 +72,7 @@
             $scope.deleteKey = function (name, fingerprint, $event) {
                 $event.stopPropagation();
                 PopupDialog.confirm(null,
-                    localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key', {name: name}),
+                    localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key?', {name: name}),
                     function () {
                         $scope.loading = true;
                         $scope.keys = null;
@@ -93,7 +93,7 @@
                                     localization.translate(
                                         $scope,
                                         null,
-                                        'Key successfully deleted'
+                                        'Key successfully deleted.'
                                     ),
                                     function () {}
                                 );

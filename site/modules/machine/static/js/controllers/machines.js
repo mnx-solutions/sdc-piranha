@@ -61,14 +61,10 @@
                 }
             });
 
-            $scope.actionButton = function(){
-                var flag = false;
-                $scope.machines.forEach(function (el) {
-                    if(el.checked){
-                        flag = true;
-                    }
+            $scope.getCheckedItems = function () {
+                return $scope.machines.filter(function (el) {
+                    return el.checked;
                 });
-                return flag;
             };
 
             $scope.noCheckBoxChecked = function(){
@@ -103,8 +99,9 @@
                 );
             };
 
-            function makeMachineAction (action, messageTitle, messageBody) {
-                if ($scope.actionButton()) {
+            function makeMachineAction(action, messageTitle, messageBody) {
+                var checkedInstances = $scope.getCheckedItems();
+                if (checkedInstances.length) {
                     var message = '';
                     var checkedFreeMachines = true;
                     var checkedMachines = $scope.machines.filter(function (machine) {
@@ -149,7 +146,7 @@
                             null,
                             message = function () {
                                 var result = messageBody.single;
-                                if (checkedMachines.length > 1) {
+                                if (checkedInstances.length > 1) {
                                     result = checkedFreeMachines && messageBody.freetier_plural ?
                                         messageBody.freetier_plural : messageBody.plural;
                                 } else if (checkedFreeMachines && messageBody.freetier_single) {
@@ -385,8 +382,8 @@
 
             var gridMessages = {
                 start: {
-                    single: 'Start selected instance.',
-                    plural: 'Start selected instances.'
+                    single: 'Start selected instance?',
+                    plural: 'Start selected instances?'
                 },
                 stop : {
                     single: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
@@ -395,14 +392,54 @@
                     freetier_plural: 'Your instances can be started after they are stopped.'
                 },
                 delete: {
-                    single: 'Destroying this instance will stop billing.',
-                    plural: 'Destroying selected instances will stop billing.',
+                    single: 'Destroy the information on this instance and stop billing for this instance?',
+                    plural: 'Destroy the information on these instances and stop billing for them?',
                     freetier_single: 'Destroying this instance.',
                     freetier_plural: 'Destroying selected instances.'
                 },
                 reboot: {
                     single: 'Restart this instance.',
                     plural: 'Restart selected instances.'
+                }
+            };
+
+            var doFirewallAction = function (action) {
+                var isFirewallNonSupported = false;
+                var checkedInstances = $scope.getCheckedItems();
+                var checkedInstancesQuantity = checkedInstances.length;
+
+                if (checkedInstancesQuantity) {
+                    var message = action + ' firewall for selected instance';
+                    message += checkedInstancesQuantity > 1 ? 's?' : '?';
+
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: ' + action + ' Firewall'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            message
+                        ),
+                        function () {
+                            checkedInstances.forEach(function (el) {
+                                var state = action === 'Enable' ? !el.firewall_enabled : el.firewall_enabled;
+                                if ("virtualmachine" !== el.type && state) {
+                                    $scope.toggleFirewallEnabled(el);
+                                } else {
+                                    isFirewallNonSupported = true;
+                                }
+                                el.checked = false;
+                            });
+                            if (isFirewallNonSupported) {
+                                $scope.notSupportedFirewallMessage();
+                            }
+                        }
+                    );
+                } else {
+                    $scope.noCheckBoxChecked();
                 }
             };
 
@@ -426,22 +463,8 @@
                     show: function () {
                         return $rootScope.features.firewall !== 'disabled';
                     },
-                    action: function (object) {
-                        if ($scope.actionButton()) {
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Enable Firewall'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Enable firewall for selected instances?'
-                                ), toggleSwitchFirewall(true));
-                        } else {
-                            $scope.noCheckBoxChecked();
-                        }
+                    action: function () {
+                        doFirewallAction('Enable');
                     },
                     sequence: 3
                 },
@@ -450,22 +473,8 @@
                     show: function () {
                         return $rootScope.features.firewall !== 'disabled';
                     },
-                    action: function (object) {
-                        if ($scope.actionButton()) {
-                            PopupDialog.confirm(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Confirm: Disable Firewall'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Disable firewall for selected instances?'
-                                ), toggleSwitchFirewall(false));
-                        } else {
-                            $scope.noCheckBoxChecked();
-                        }
+                    action: function () {
+                        doFirewallAction('Disable');
                     },
                     sequence: 4
                 },
@@ -480,8 +489,8 @@
                     label: 'Reboot',
                     action: function () {
                         var messages = {
-                            single: 'Restart this instance.',
-                            plural: 'Restart selected instances.'
+                            single: 'Restart this instance?',
+                            plural: 'Restart selected instances?'
                         };
                         makeMachineAction('reboot', 'Confirm: Restart instances', messages);
                     },

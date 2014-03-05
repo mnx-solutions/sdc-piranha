@@ -125,7 +125,7 @@
                                     localization.translate(
                                         null,
                                         'machine',
-                                        'Unable to retrieve instances from datacenter {{name}}',
+                                        'Unable to retrieve instances from datacenter {{name}}.',
                                         { name: chunk.name }
                                     ),
                                     function () {}
@@ -282,7 +282,7 @@
                                         localization.translate(
                                             null,
                                             'machine',
-                                            'Unable to execute command "{{command}}" for instance {{uuid}}',
+                                            'Unable to execute command "{{command}}" for instance {{uuid}}.',
                                             {
                                                 command: job.name,
                                                 uuid: job.machine.id
@@ -342,7 +342,7 @@
                         localization.translate(
                             null,
                             'machine',
-                            'Unable to execute command "{{command}}" for instance {{uuid}}',
+                            'Unable to execute command "{{command}}" for instance {{uuid}}.',
                             {
                                 command: job.name,
                                 uuid: job.machine.id
@@ -430,7 +430,7 @@
                     localization.translate(
                         null,
                         'machine',
-                        'Unable to create instance {{name}} ({{uuid}})',
+                        'Unable to create instance {{name}} ({{uuid}}).',
                         {
                             name: (machine.name || ''),
                             uuid: (machine.id || '')
@@ -537,7 +537,7 @@
                         localization.translate(
                             null,
                             'machine',
-                            'Unable to save ' + collectionName
+                            'Unable to save ' + collectionName + '.'
                         ),
                         function () {}
                     );

@@ -40,7 +40,7 @@
                                         localization.translate(
                                             $rootScope,
                                             null,
-                                            'Failed to enable firewall for instance '+id
+                                            'Failed to enable firewall for instance ' + id + '.'
                                         ), function () {
                                     });
                                 }

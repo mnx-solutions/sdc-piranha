@@ -320,7 +320,7 @@
                                             localization.translate(
                                                 null,
                                                 'billing',
-                                                'Billing information updated'
+                                                'Billing information updated.'
                                             ),
                                             function () {
                                                 $location.url('/account');
@@ -344,7 +344,7 @@
                                             localization.translate(
                                                 null,
                                             'billing',
-                                            'Billing information not updated'
+                                            'Billing information not updated.'
                                             ),
                                             function () {}
                                     );

@@ -172,7 +172,7 @@
             function provision(machine) {
                 var finalProvision = function () {
                     if (machine && !machine.dataset) {
-                        PopupDialog.message('Error', 'Instance not found', function () {});
+                        PopupDialog.message('Error', 'Instance not found.', function () {});
                         return;
                     }
                     Machine.provisionMachine(machine || $scope.data).done(function(err, job) {

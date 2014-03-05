@@ -53,7 +53,7 @@
                                         localization.translate(
                                             $scope,
                                             null,
-                                            'Please enter a SSH key'
+                                            'Please enter a SSH key.'
                                         ),
                                         function () {}
                                     );
@@ -85,7 +85,7 @@
                                         localization.translate(
                                             $scope,
                                             null,
-                                            'SSH Key successfully added to your account'
+                                            'SSH Key successfully added to your account.'
                                         ),
                                         function () {}
                                     );
@@ -101,7 +101,7 @@
                                             localization.translate(
                                                 $scope,
                                                 null,
-                                                'New key successfully added'
+                                                'New key successfully added.'
                                             ),
                                             function () {}
                                         );
@@ -117,7 +117,7 @@
                                     localization.translate(
                                         $scope,
                                         null,
-                                        'Failed to add new key: {{message}}',
+                                        'Failed to add new key: {{message}}.',
                                         {
                                             message: (key.message || '') + ' ' + (key.code || '')
                                         }
@@ -136,7 +136,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    'Failed to add new key: {{message}}',
+                                    'Failed to add new key: {{message}}.',
                                     {
                                         message: (key.message || '') + ' ' + (key.code || '')
                                     }

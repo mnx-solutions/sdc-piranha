@@ -813,7 +813,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Delete current firewall rule'
+                        'Delete current firewall rule?'
                     ), function () {
 
                         // Redirect if complete
@@ -968,8 +968,8 @@
                     });
                     var message = message;
                     message += checkedRules.length > 1 ?
-                        ' all selected rules.':
-                        ' the rule.' ;
+                        ' selected rules?':
+                        ' selected rule?' ;
 
                     PopupDialog.confirm(
                         localization.translate(

@@ -97,7 +97,7 @@
                                     localization.translate(
                                         $scope,
                                         'account',
-                                        'Account updated'
+                                        'Account updated.'
                                     ),
                                     function () {
                                         $location.url('/account');
@@ -118,7 +118,7 @@
                                 localization.translate(
                                     $scope,
                                     'account',
-                                    'Account update failed'
+                                    'Account update failed.'
                                 ),
                                 function () {}
                             );
