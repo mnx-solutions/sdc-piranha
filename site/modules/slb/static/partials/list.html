@@ -1,9 +1,5 @@
     <div class="container container-elb" data-ng-controller="slb.ListController">
-    <ul class="breadcrumb">
-        <li class="ng-scope active">
-            <span class="ng-binding" data-translate>Load Balancers</span>
-        </li>
-    </ul>
+        <div data-breadcrumbs></div>
     <div class="loading-large" data-ng-hide="listLoaded"></div>
     <div data-ng-show="listLoaded" class="table-overflow group-checkable">
         <h3 class="page-title" data-ng-hide="deleting" data-translate>Load Balancers</h3>

@@ -4,13 +4,17 @@ window.JP.main.config([
     'routeProvider',
     function (routeProvider) {
         routeProvider.when('/slb', {
-            title: 'Enable Load Balancing',
-            action: 'slb.index'
+            title: 'Load Balancers',
+            action: 'slb.index',
+            parent: 'machine.index'
         }).when('/slb/list', {
             title: 'Load Balancers List',
             action: 'slb.list'
+        }).when('/slb/edit/', {
+            title: 'Create Load Balancer',
+            action: 'slb.edit'
         }).when('/slb/edit/:balancerId', {
-            title: 'Create/Edit Load Balancer',
+            title: 'Edit Load Balancer',
             action: 'slb.edit'
         }).when('/slb/detail/:balancerId', {
             title: 'Load Balancer Details',

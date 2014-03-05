@@ -6,11 +6,11 @@
         ['$scope', 'requestContext', 'localization', '$location', 'PopupDialog', '$q', 'slb.Service', 'Datacenter', 'notification',
             function ($scope, requestContext, localization, $location, PopupDialog, $q, service, Datacenter, notification) {
                 localization.bind('slb', $scope);
-                requestContext.setUpRenderContext('slb.edit', $scope, {
-                    title: localization.translate(null, 'slb', 'Create/Edit Load Balancer')
-                });
 
                 $scope.balancerId = requestContext.getParam('balancerId');
+                requestContext.setUpRenderContext('slb.edit', $scope, {
+                    title: localization.translate(null, 'slb', ($scope.balancerId ? 'Edit' : 'Create') + ' Load Balancer')
+                });
                 $scope.server = {};
                 $scope.hcDelays = [1, 3, 5, 10];
                 $scope.timeouts = [1, 2, 5, 10, 20];

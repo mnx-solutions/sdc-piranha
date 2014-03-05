@@ -1,15 +1,5 @@
 <div class="container container-elb" data-ng-controller="slb.DetailController">
-    <ul class="breadcrumb">
-        <li class="ng-scope">
-            <a href="#!/slb" class="ng-binding">
-                <span class="ng-scope ng-binding" data-translate>Load Balancers</span>
-            </a>
-            <span class="divider">/</span>
-        </li>
-        <li class="ng-scope active">
-            <span class="ng-binding" data-translate>Load Balancer Details</span>
-        </li>
-    </ul>
+    <div data-breadcrumbs></div>
 
     <!--<div class="page-header">-->
         <h3 class="page-title" data-ng-show="detailLoaded" data-translate>Load Balancer: {{server.name}}:

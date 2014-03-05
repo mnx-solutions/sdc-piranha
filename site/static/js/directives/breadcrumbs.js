@@ -1,6 +1,6 @@
 'use strict';
 
-window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
+window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext',
     function (route, requestContext) {
         return {
             priority: 10,
@@ -19,13 +19,10 @@ window.JP.main.directive('breadcrumb', [ 'route', 'requestContext',
                               ' {{item.title}}' +
                           '</span>' +
                         '</li>' +
-                        '<li class="pull-right" data-ng-show="!hideCreateInstance"><i class="icon-plus-sign"></i>&nbsp;<a class="add-machine" href="#!/compute/create">Create Instance</a></li>' +
                       '</ul>',
 
             controller: function ($scope, $routeParams, $attrs, route, localization) {
                 localization.bind('dashboard', $scope);
-
-                $scope.hideCreateInstance = ($attrs.hideCreateInstance || false);
 
                 function updateItems() {
                     $scope.navigationPath = route.resolveNavigation($routeParams);
