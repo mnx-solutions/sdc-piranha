@@ -51,7 +51,7 @@
                     'visitWebPage',
                     {
                         url: '/main/#!/compute/create/success',
-                        params: {email: account.email}
+                        params: 'email=' + account.email
                     }
                 );
             },
