@@ -19,9 +19,9 @@
                     <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                 </div>
                 <div class="hotlinks pull-right">
-                    <a id="link-more-images" data-ng-click="clickMoreImages(false)">View More Images </a>
+                    <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">View More Images </a>
                     <span data-ng-show="features.imageUse != 'disabled'">
-                        | <a data-ng-click="clickMoreImages(true)"> Saved Images</a>
+                        | <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved Images</a>
                     </span>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                         <span><p>Instances suitable for specific<br>applications, database, traffic<br>management and more.</p></span>
                     </div>
                     <div class="basic-instance-btn-block">
-                        <button data-ng-click="clickMoreImages(false)" class="btn orange btn-browse">View More Images</button>
+                        <button data-ng-click="selectInstanceType('Public')" class="btn orange btn-browse">View More Images</button>
                     </div>
                 </div>
             </div>

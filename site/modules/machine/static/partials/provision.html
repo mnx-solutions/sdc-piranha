@@ -59,8 +59,8 @@
                                     </div>
 
                                     <div data-ng-show="features.imageUse != 'disabled'" class="hotlinks pull-right">
-                                        <a href="" data-ng-show="visibilityFilter != 'Public'" data-ng-click="selectVisibility(true);">Public Images</a>
-                                        <a href="" data-ng-show="visibilityFilter != 'Saved'" data-ng-click="selectVisibility(false);">Saved Images</a>
+                                        <a href="#!/compute/create" data-ng-show="instanceType != 'Public'" data-ng-click="selectInstanceType('Public');">Public Images</a>
+                                        <a href="#!/compute/create/custom" data-ng-show="instanceType != 'Saved'" data-ng-click="selectInstanceType('Saved');">Saved Images</a>
                                     </div>
                                 </div>
                                 <div class="advanced-table tooltip-hover">
