@@ -12,7 +12,7 @@
                     <span class="key-name">{{key.name.length > 0 && key.name != key.fingerprint && (key.name) || ''}}</span>
                     <span class="key-hash"> / {{key.fingerprint}}</span>
                                     <span class="dpl-inline middle"><button class="small-btn"
-                                                                     data-ng-click="deleteKey(key.name, key.fingerprint)"
+                                                                     data-ng-click="deleteKey(key.name, key.fingerprint, $event)"
                                                                      data-translate>Delete</button>
                                     </span>
                 </a>
