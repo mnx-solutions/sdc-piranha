@@ -57,8 +57,21 @@
                         return isPresent;
                     };
 
-                    $scope.submitForm = function (form) {
-                        if (form.$invalid) {
+                    $scope.submitForm = function () {
+                        if ($scope.accountForm.$invalid) {
+                            PopupDialog.message(
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    $scope,
+                                    null,
+                                    'Please validate your input.'
+                                ),
+                                function () {}
+                            );
                             return;
                         }
                         // clean the phone number
