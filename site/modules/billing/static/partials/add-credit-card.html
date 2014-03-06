@@ -389,7 +389,7 @@
     <div data-ng-show="currentStep">
         <button class="btn orange pull-left" data-ng-click="submitForm()" data-ng-disabled="loading">Complete Account Setup</button>
         <p class="or-pos">&nbsp;or&nbsp;</p>
-        <a data-ng-show="currentStep" data-ng-click="signOut()" class="grey_btn" data-translate>Cancel signup process</a>
+        <a data-ng-show="currentStep" data-ng-click="signOut()" class="grey_btn effect-orange-button" data-translate>Cancel signup process</a>
         <div class="loading-medium pull-right" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
         <div style="margin-top: 5px;" data-ng-hide="loading">
             <span class="pull-right">required fields</span><span class="orange-asterix pull-right">*</span>
@@ -400,7 +400,7 @@
     <div data-ng-hide="currentStep">
         <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
         <p class="content-p dpl-inline or">or</p>
-        <a class="btn light"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
+        <a class="btn light effect-orange-button"  data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
         <div data-ng-hide="loading" class="required-txt pull-right">
             <span class="orange-asterix">*</span>&nbsp;required fields
         </div>

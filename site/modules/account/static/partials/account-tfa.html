@@ -29,7 +29,7 @@
 
     <div class="modal-footer">
         <div class="pull-right">
-            <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey_new">Cancel</button>
+            <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey_new effect-orange-button">Cancel</button>
             <button data-ng-show="qrImage" class="btn orange" data-ng-click="testTwoFactorAuth()" data-translate>Verify</button>
             <button data-ng-show="!tfaEnabled && !qrImage" data-ng-click="enableTwoFactorAuth()" class="btn orange" data-translate>Enable</button>
             <button data-ng-show="tfaEnabled" data-ng-click="disableTwoFactorAuth()" class="btn orange" data-translate>Disable</button>

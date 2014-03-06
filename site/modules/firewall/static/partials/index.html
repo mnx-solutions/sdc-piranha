@@ -112,7 +112,7 @@
                             </div>
                         </div>
                         <div class="margin-top-10 pull-right" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name != 'icmp'">
-                            <button class="btn light" data-ng-click="useAllPorts()">Use All</button>
+                            <button class="btn light effect-orange-button" data-ng-click="useAllPorts()">Use All</button>
                             <button class="btn orange"
                                     data-ng-disabled="!protocolForm.port.$dirty || protocolForm.port.$error.range"
                                     data-ng-click="addPort()">Add</button>
@@ -120,7 +120,7 @@
 
                         <div class="warning" data-ng-show="data.parsed.protocol.name && data.parsed.protocol.name == 'icmp'">
                             <div class="margin-top-10 pull-right">
-                                <button class="btn light"
+                                <button class="btn light effect-orange-button"
                                         data-ng-disabled="!protocolForm.type.$valid || !protocolForm.code.$valid"
                                         data-ng-click="addType()">Add</button>
                             </div>
@@ -200,7 +200,7 @@
                                             <span>
                                                 <span class="row-fluid">
                                                     <div class="margin-top-10">
-                                                        <button class="btn light pull-right" data-ng-disabled="current.from.text != 'all vms' && current.from.text != 'any'" data-ng-click="addFrom()">Add</button>
+                                                        <button class="btn light pull-right effect-orange-button" data-ng-disabled="current.from.text != 'all vms' && current.from.text != 'any'" data-ng-click="addFrom()">Add</button>
                                                     </div>
                                                 </span>
                                             </span>
@@ -208,14 +208,14 @@
                                         <span data-ng-switch-when="tag">
                                             <span class="row-fluid">
                                                 <div class="margin-top-10">
-                                                    <button class="btn light pull-right" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
+                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
                                         <span data-ng-switch-default>
                                             <span class="row-fluid">
                                                 <div class="margin-top-10">
-                                                    <button class="btn light pull-right" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
+                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addFrom()" data-ng-disabled="fromForm.$invalid || fromForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
@@ -305,7 +305,7 @@
                                             <span>
                                                 <span class="row-fluid">
                                                     <div class="margin-top-10">
-                                                        <button class="btn light pull-right" data-ng-disabled="current.to.text != 'all vms' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
+                                                        <button class="btn light pull-right effect-orange-button" data-ng-disabled="current.to.text != 'all vms' && current.to.text != 'any'" data-ng-click="addTo()">Add</button>
                                                     </div>
                                                 </span>
                                             </span>
@@ -313,14 +313,14 @@
                                         <span data-ng-switch-when="tag">
                                             <span class="row-fluid">
                                                 <div class="margin-top-10">
-                                                    <button class="btn light pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
+                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
                                         <span data-ng-switch-default>
                                             <span class="row-fluid">
                                                 <div class="margin-top-10">
-                                                    <button class="btn light pull-right" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
+                                                    <button class="btn light pull-right effect-orange-button" data-ng-click="addTo()" data-ng-disabled="toForm.$invalid || toForm.$pristine">Add</button>
                                                 </div>
                                             </span>
                                         </span>
@@ -346,8 +346,8 @@
                 </tbody>
                 </table>
                 <div class="create-update-btn" data-ng-show="openRuleForm">
-                    <button class="btn light" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
-                    <button class="btn light" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
+                    <button class="btn light effect-orange-button" data-ng-show="data.uuid" data-ng-click="deleteRule(data)">Delete</button>
+                    <button class="btn light effect-orange-button" data-ng-click="cancelRule()" data-translate-value>Cancel</button>
                     <button class="btn orange" data-ng-click="saveRule()" data-translate-value>{{data.uuid && 'Update Rule' || 'Create Rule'}}</button>
                 </div>
             </div>

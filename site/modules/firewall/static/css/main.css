@@ -264,12 +264,6 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .f-value{
     display: inline-block;
 }
-.f-btn{
-    margin-left: 240px;
-}
-.f-btn-two{
-    margin-left: 135px;
-}
 input.ng-valid {
     border: 1px solid #00b900;
     color: #00b900;
@@ -317,12 +311,6 @@ input.ng-invalid, input.ng-pristine {
 .results-group{
     padding-top: 40px;
 }
-.create-update-btn{
-    padding: 20px 26px 20px 0;
-    margin-bottom: 20px;
-    text-align: right;
-    background-color: #fef1d2;
-}
 .result-width{
     width: 90%;
     float: left;
@@ -330,68 +318,9 @@ input.ng-invalid, input.ng-pristine {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-
-.btn-warning, .btn-default, .btn-success, .btn-danger, .btn-edit{
-    min-width: 94px;
-    color: white;
-    text-shadow: none !important;
-    background-image: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    outline: none;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-    display: inline-block;
-    vertical-align: middle;
-    text-align: center;
-    padding: 1px 8px;
-}
-.btn-default{
-    background-color: #999999;
-    color: white;
-}
-.btn-success{
-    color: black;
-    background-color: #afd46c;
-}
-.btn-warning{
-    color: white;
-    background-color: #f60;
-}
-.btn-danger{
-    color: white;
-    background-color: rgb(255, 73, 73);
-}
-.btn-edit{
-    color: white;
-    background-color: #7d7d7d;
-}
-.btn-minier {
-    padding: 0 4px !important;
-}
-
-.btn-minier.btn-danger {
-    padding: 0 3px !important;
-}
-
 .fixed-height120{
     min-height: 120px;
     max-height: 120px;
-}
-
-.add-rule-btn:hover, .add-rule-btn:focus{
-    color: #fff;
-    text-decoration: none;
-    background-position: 50% 50%;
-    -webkit-transition: background-position 0.1s linear;
-    -moz-transition: background-position 0.1s linear;
-    -o-transition: background-position 0.1s linear;
-    transition: background-position 0.1s linear;
 }
 .padding-left-0{
     padding-left: 0 !important;

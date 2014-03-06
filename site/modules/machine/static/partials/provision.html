@@ -98,7 +98,7 @@
                                         <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
                                             <div class="info small-icon"
                                                  data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
-                                                <p>IMAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</span>
+                                                <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
                                                 <div class="dataset-desc crop">{{selectedDataset.description}}</div>
 
@@ -170,7 +170,7 @@
                                             <td>
                                                 <div class="left small-icon"
                                                      data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
-                                                    <p>IMAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</span>
+                                                    <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</button>
                                                     <span><h2>{{selectedDataset.name}}</h2></span>
                                                     <div class="dataset-desc crop">{{selectedDataset.description}}</div>
 
@@ -198,7 +198,7 @@
                                             </td>
                                             <td class="separator">
                                                 <div class="center">
-                                                    <p>PACKAGE:</p><span class="btn small-btn" data-ng-click="reconfigure(1)" data-slide="prev">Change</span>
+                                                    <p>PACKAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(1)" data-slide="prev">Change</button>
                                                     <div class="package">
                                                         <div class="name">Configuration</div>
                                                         <div class="value">{{selectedPackageInfo.short_name}}</div>
@@ -298,7 +298,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="btn grey" data-ng-click="clickBackToQuickStart()"><b>Back to Quick Start</b></span>
+                        <span class="btn grey effect-orange-button" data-ng-click="clickBackToQuickStart()"><b>Back to Quick Start</b></span>
                     </div>
                 </div>
             </div>
