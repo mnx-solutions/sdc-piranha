@@ -69,7 +69,7 @@
                 "package": "bb3fc5de-6e65-49ad-ab54-e8dcc62d3360"
             },
             "description": {
-                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "text": "Ubuntu 13.10 (20140227 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -183,7 +183,7 @@
                 "package": "43e0444f-a065-4ea7-ba96-e941abc0b08f"
             },
             "description": {
-                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "text": "Ubuntu 13.10 (20140227 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -297,7 +297,7 @@
                 "package": "cd594f6e-b22d-4d32-baa0-0361e0d91a53"
             },
             "description": {
-                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "text": "Ubuntu 13.10 (20140227 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -411,7 +411,7 @@
                 "package": "23a17de8-1796-44fd-b772-992b5949ba66"
             },
             "description": {
-                "text": "Ubuntu 13.10 (20140219 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
+                "text": "Ubuntu 13.10 (20140227 64-bit). Certified Ubuntu Server Cloud Image from Canonical.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
