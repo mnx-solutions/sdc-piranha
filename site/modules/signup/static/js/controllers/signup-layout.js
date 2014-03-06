@@ -86,7 +86,7 @@
                 $scope.signOut = function() {
                     PopupDialog.confirm("Warning",'Clicking Yes will cancel the sign-up to Joyent Cloud',function(){
                         $$track.event('Signup', 'Cancel Signup');
-                        window.location = '/landing/forgetToken';
+                        window.location = 'signup/cancel';
                     });
                     return false;
                 };
