@@ -44,7 +44,9 @@
 
             $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
 
-            $scope.account = Account.getAccount();
+            Account.getAccount(true).then(function (account) {
+                $scope.account = account;
+            });
             $scope.keys = Account.getKeys();
             $scope.datacenters = Datacenter.datacenter();
             $scope.networks = [];
@@ -642,6 +644,8 @@
                     var contactSupportParams = ng.copy(window.zenbox_params);
                     contactSupportParams.request_subject = 'I want to order ' + el.description + ' instance';
                     contactSupportParams.request_description = el.name;
+                    contactSupportParams.requester_name = $scope.account.firstName;
+                    contactSupportParams.requester_email = $scope.account.email;
                     Zenbox.show(null, contactSupportParams);
                 } else {
                     $scope.slideCarousel();
