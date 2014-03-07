@@ -341,7 +341,25 @@
                     sequence: 4
                 }
             ];
-
+            function toggleSwitchFirewall(enable) {
+                return function () {
+                    var isFirewallNonSupported = $scope.machines.filter(function (machine) {
+                        var result = false;
+                        if (machine.checked) {
+                            machine.checked = false;
+                            if ("virtualmachine" === machine.type) {
+                                result = true;
+                            } else if (enable !== machine.firewall_enabled) {
+                                $scope.toggleFirewallEnabled(machine);
+                            }
+                        }
+                        return result;
+                    }).length;
+                    if (isFirewallNonSupported) {
+                        $scope.notSupportedFirewallMessage();
+                    }
+                };
+            }
             $scope.gridActionButtons = [
                 {
                     label: 'Start',
@@ -371,7 +389,6 @@
                         return $rootScope.features.firewall !== 'disabled';
                     },
                     action: function (object) {
-                        var isFirewallNonSupported = false;
                         if ($scope.actionButton()) {
                             PopupDialog.confirm(
                                 localization.translate(
@@ -383,23 +400,7 @@
                                     $scope,
                                     null,
                                     'Enable firewall for selected instances?'
-                                ), function () {
-                                    // TODO: one method for enable and disable
-                                    $scope.machines.forEach(function (el) {
-                                        if (el.checked) {
-                                            if ("virtualmachine" !== el.type && !el.firewall_enabled) {
-                                                $scope.toggleFirewallEnabled(el);
-//                                                el.firewall_enabled = true;
-                                            } else {
-                                                isFirewallNonSupported = true;
-                                            }
-                                            el.checked = false;
-                                        }
-                                    });
-                                    if (isFirewallNonSupported) {
-                                        $scope.notSupportedFirewallMessage();
-                                    }
-                                });
+                                ), toggleSwitchFirewall(true));
                         } else {
                             $scope.noCheckBoxChecked();
                         }
@@ -412,7 +413,6 @@
                         return $rootScope.features.firewall !== 'disabled';
                     },
                     action: function (object) {
-                        var isFirewallNonSupported = false;
                         if ($scope.actionButton()) {
                             PopupDialog.confirm(
                                 localization.translate(
@@ -424,23 +424,7 @@
                                     $scope,
                                     null,
                                     'Disable firewall for selected instances?'
-                                ), function () {
-                                    $scope.machines.forEach(function (el) {
-                                        if (el.checked) {
-                                            if ("virtualmachine" !== el.type && el.firewall_enabled) {
-                                                $scope.toggleFirewallEnabled(el);
-//                                                el.firewall_enabled = false;
-                                            } else {
-                                                isFirewallNonSupported = true;
-                                            }
-                                            el.checked = false;
-                                            console.log('Disable FW ready');
-                                        }
-                                    });
-                                    if (isFirewallNonSupported) {
-                                        $scope.notSupportedFirewallMessage();
-                                    }
-                                });
+                                ), toggleSwitchFirewall(false));
                         } else {
                             $scope.noCheckBoxChecked();
                         }
