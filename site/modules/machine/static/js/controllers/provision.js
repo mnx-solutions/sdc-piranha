@@ -18,10 +18,11 @@
         '$$track',
         'PopupDialog',
         '$cookies',
+        '$rootScope',
         'FreeTier',
 
         function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network,
-                  Image, $location, localization, $q, $$track, PopupDialog, $cookies, FreeTier) {
+                  Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -34,6 +35,9 @@
 
             if ($scope.preSelectedImageId) {
                 $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                $q.when($scope.preSelectedImage).then(function (image) {
+                    $scope.selectDatacenter(image.datacenter);
+                });
             }
 
             $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
@@ -111,6 +115,10 @@
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
             $scope.previousPos = 0;
+
+            if ($rootScope.commonConfig('datacenter')) {
+                $scope.data.datacenter = $rootScope.commonConfig('datacenter');
+            }
 
             // version number comparison
             var isVersionHigher = function (v1, v2) {
@@ -223,7 +231,7 @@
                 provision(data);
             };
 
-            if ($scope.features.manta === 'enabled') {
+            if ($scope.features.manta === 'enabled' && !$scope.data.datacenter) {
                 //TODO: Handle all other DC drop-downs
                 $scope.userConfig = Account.getUserConfig().$child('datacenter');
                 $scope.userConfig.$load(function (error, config) {
@@ -242,11 +250,14 @@
                 if (!name && !$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
                         if (datacenters.length > 0) {
-                            $scope.data.datacenter = datacenters[0].name;
+                            var datacenter = datacenters[0].name;
+                            $scope.data.datacenter = datacenter;
+                            $rootScope.commonConfig('datacenter', datacenter);
                         }
                     });
                 } else if (name && (name !== $scope.data.datacenter)) {
                     $scope.data.datacenter = name;
+                    $rootScope.commonConfig('datacenter', name);
                 }
 
             };
@@ -630,16 +641,8 @@
                 }
             });
 
-            // if we have pre-selected image, select correct datacenter
             if (!$scope.data.datacenter) {
-                if($scope.preSelectedImageId) {
-                    // wait until we have the pre-selected image (loading will not finish before it anyway)
-                    $q.when($scope.preSelectedImage).then(function(image) {
-                        $scope.selectDatacenter(image.datacenter);
-                    });
-                } else {
-                    $scope.selectDatacenter();
-                }
+                $scope.selectDatacenter();
             }
 
             if (!$scope.data.opsys) {

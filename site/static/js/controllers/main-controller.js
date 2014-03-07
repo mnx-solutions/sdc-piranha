@@ -23,6 +23,8 @@
             // Get the render context local to this controller (and relevant params).
             var renderContext = requestContext.getRenderContext();
 
+            var commonConfig = {};
+
             // The subview indicates which view is going to be rendered on the page.
             $scope.subview = renderContext.getNextSection();
 
@@ -104,6 +106,18 @@
 
             $scope.changeLocation = function(path) {
                 $location.path(path);
+            };
+
+            $rootScope.commonConfig = function (name, value) {
+                if (!name) {
+                    return commonConfig;
+                }
+
+                if (!value) {
+                    return commonConfig[name];
+                }
+
+                commonConfig[name] = value;
             };
         }
     ]);
