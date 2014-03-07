@@ -13,6 +13,16 @@
                 $scope.instrumentations = $scope.options.instrumentations;
                 $scope.instrumentation = $scope.instrumentations[0];
 
+                if (!$scope.instrumentation.type) {
+                    var k;
+                    for (k = 0; k < $scope.instrumentations.length; k += 1) {
+                        if ($scope.instrumentations[k].type) {
+                            $scope.instrumentation.type = $scope.instrumentations[k].type;
+                            break;
+                        }
+                    }
+                }
+
                 var ticktime = null;
                 var heatmaptime = null;
                 var graph = false;
@@ -158,6 +168,7 @@
                     });
 
                     axis.render();
+                    axis.setSize({width: 50, height: 170});
                     return axis;
                 }
 

@@ -284,7 +284,7 @@
                 this.polls = {};
             }
 
-            CloudAnalytics.prototype.ranges = [ 10, 30, 60, 90, 120, 150, 180 ];
+            CloudAnalytics.prototype.ranges = [ 10, 31, 60, 90, 120, 150, 180 ];
             CloudAnalytics.prototype.ca = {};
             CloudAnalytics.prototype.describeAnalytics = function (callback) {
                 var self = this;
