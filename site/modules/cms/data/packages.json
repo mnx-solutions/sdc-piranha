@@ -8,6 +8,10 @@
           "price": "0",
           "price_month": "0",
           "vcpus": "2",
+          "memory": 15360,
+          "disk": 368640,
+          "swap": 30720,
+          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-15-kvm": {
@@ -18,6 +22,10 @@
           "price": "0",
           "price_month": "0",
           "vcpus": "2",
+          "memory": 15360,
+          "disk": 368640,
+          "swap": 30720,
+          "default": "false",
           "createdBySupport": true
       },
       "g3-highio-30-smartos": {
@@ -28,9 +36,13 @@
           "price": "0",
           "price_month": "0",
           "vcpus": "4",
+          "memory": 30720,
+          "disk": 742400,
+          "swap": 30720,
+          "default": "false",
           "createdBySupport": true
       },
-      "g3-highio-30-kvm ": {
+      "g3-highio-30-kvm": {
           "short_name": "High I/O 30",
           "type": "kvm",
           "group": "High I/O",
@@ -38,6 +50,10 @@
           "price": "0",
           "price_month": "0",
           "vcpus": "4",
+          "memory": 30720,
+          "disk": 742400,
+          "swap": 30720,
+          "default": "false",
           "createdBySupport": true
       },
       "g3-standard-0.25-smartos": {

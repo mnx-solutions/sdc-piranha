@@ -136,17 +136,17 @@
                                             <span class="span-price">PRICE</span>
                                         </div>
                                         <div class="accordion accordion-package-select" id="packagesAccordion">
-                                            <div class="accordion-group" data-ng-repeat="package in packageTypes">
+                                            <div class="accordion-group" data-ng-repeat="packageType in packageTypes">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#packagesAccordion"
                                                        href="#collapse_{{$index}}">
                                                         <i class=""></i>
-                                                        {{package}}
+                                                        {{packageType}}
                                                     </a>
                                                 </div>
                                                 <div id="collapse_{{$index}}" class="accordion-body collapse">
                                                     <div class="accordion-inner">
-                                                        <div class="package-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages | filter:package"
+                                                        <div class="package-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages(packageType)"
                                                              data-ng-click="selectPackage(package.id)"
                                                              data-ng-checked="selectedPackage == package.id"
                                                              data-ng-class="{active: selectedPackage == package.id}">

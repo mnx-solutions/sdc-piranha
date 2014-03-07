@@ -493,59 +493,22 @@
                 });
             };
 
-            $scope.filterPackages = function (item) {
-                if ($scope.datasetType !== item.type) {
-                    return false;
-                }
-
-                if (item.freeTierHidden) {
-                    return false;
-                }
-
-                if($scope.selectedDataset && $scope.selectedDataset.requirements) {
-                    var requirements = $scope.selectedDataset.requirements;
-                    for (var requirement in requirements) {
-                        var value = parseInt(requirements[requirement]);
-
-                        if (requirement === 'min_memory' &&
-                            item['memory'] &&
-                            parseInt(item['memory']) < value) {
-                            return false;
-                        }
-
-                        if (requirement == 'max_memory' &&
-                            item['memory'] &&
-                            parseInt(item['memory']) > value) {
-                            return false;
-                        }
-                    }
-                }
-
-                if ($scope.packageType && $scope.packageType !== item.group) {
-                    return false;
-                }
-
-                if(!$scope.searchPackages) {
-                    return true;
-                }
-
-                var props = [ 'name', 'description', 'memory', 'disk', 'vcpus' ];
-                return props.some(function (prop) {
-                    if(!item[prop]) {
+            $scope.filterPackages = function (packageType) {
+                return function (item) {
+                    if ($scope.datasetType !== item.type) {
                         return false;
                     }
-                    var val = item[prop];
-                    if(typeof val !== 'string') {
-                        if(typeof val === 'object') {
-                            val = JSON.stringify(val);
-                        } else {
-                            val += '';
-                        }
+
+                    if (item.freeTierHidden) {
+                        return false;
                     }
-                    if (val.toLowerCase().indexOf($scope.searchPackages.toLowerCase()) !== -1) {
-                        return true;
+
+                    if (packageType && packageType !== item.group) {
+                        return false;
                     }
-                });
+
+                    return true;
+                };
             };
 
             // Watch datacenter change
@@ -634,9 +597,7 @@
 
                         $scope.packageTypes = packageTypes;
                         $scope.packages = packages;
-                        $scope.searchPackages = '';
                         $scope.reloading = (--count > 0);
-
 
                         if($scope.preSelectedImageId)
                             $scope.selectDataset($scope.preSelectedImageId);
