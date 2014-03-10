@@ -69,21 +69,18 @@
                 }
             };
 
-            $scope.deleteKey = function (name, fingerprint) {
-                PopupDialog.confirm(null, localization.translate($scope, null,
-                    'Are you sure you want to delete "{{name}}" SSH key',
-                    {
-                        name: name
-                    }
-                ),
+            $scope.deleteKey = function (name, fingerprint, $event) {
+                $event.stopPropagation();
+                PopupDialog.confirm(null,
+                    localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key', {name: name}),
                     function () {
                         $scope.loading = true;
                         $scope.keys = null;
                         $scope.loadingKeys = true;
                         var deleteKey = Account.deleteKey(fingerprint);
 
-                        $q.when(deleteKey, function (data) {
-                            $scope.updateKeys(function() {
+                        $q.when(deleteKey, function () {
+                            $scope.updateKeys(function () {
                                 $scope.loading = false;
                                 $scope.openKeyDetails = null;
 
