@@ -12,19 +12,11 @@
                data-ng-style="inputStyle"
                data-ng-model="plainNumber"
                data-ng-class="{error: isError({field:'phone'})}"
-               required
+               data-ng-required="currentStep"
                />
       </div>
     </span>
-    <span class="edit-error">
-        <span data-ng-show="currentStep"
-          data-html="true"
-          data-translate-attributes="data-original-title"
-          data-toggle="tooltip"
-          data-trigger="hover"
-          data-placement="right"
-          class="tooltip-hover icon-info-sign"
-          data-original-title="Enter your full phone number with country code and area code. We use this number to verify your account."></span>
+    <span class="edit-error alert-icon">
         <div class="error"
            data-translate
            data-ng-show="isError({field:'phone', type:'required'}) || isError({field:'phone', type:'submitRequired'})">
