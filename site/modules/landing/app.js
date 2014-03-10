@@ -102,7 +102,7 @@ module.exports = function execute(scope, app, callback) {
         res.redirect('/');
     });
 
-    app.get('/forgetToken', function(req, res) {
+    app.get('/forgetToken', function (req, res) {
         req.session.destroy(function (err) {
             res.redirect('/');
         });

@@ -283,5 +283,9 @@ module.exports = function execute(scope, register) {
         });
     };
 
+    api.getCurrentStep = function (req) {
+        return _nextStep(req.session.signupStep);
+    };
+
     register('SignupProgress', api);
 };
