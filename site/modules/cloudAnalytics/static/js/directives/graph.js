@@ -2,14 +2,13 @@
 
 (function (app, ng, $) {
     app.directive('graph', function (PopupDialog, localization) {
-        var ca;
         return {
             restrict: 'E',
             replace: true,
             scope: {
                 options: '='
             },
-            link: function ($scope) {
+            link: function ($scope, element) {
                 $scope.instrumentations = $scope.options.instrumentations;
                 $scope.instrumentation = $scope.instrumentations[0];
 
@@ -21,6 +20,9 @@
                             break;
                         }
                     }
+                }
+                function getElement(selector) {
+                    return element.find(selector).get()[0];
                 }
 
                 var ticktime = null;
@@ -94,7 +96,7 @@
                     if (graph.series[0].name !== 'default') {
                         legend = new Rickshaw.Graph.Legend({
                             graph: graph,
-                            element: document.querySelector('#legend_' + $scope.$id)
+                            element: getElement('#legend_' + $scope.$id)
                         });
                     }
                 }
@@ -164,7 +166,7 @@
                         graph: graph,
                         orientation: 'left',
                         tickFormat: formatYAxis,
-                        element: document.getElementById('y_axis_' + $scope.$id)
+                        element: getElement('#y_axis_' + $scope.$id)
                     });
 
                     axis.render();
@@ -190,7 +192,7 @@
 
                 function createGraph(series) {
                     var conf = {
-                        element: document.querySelector('#chart_' + $scope.$id),
+                        element: getElement('#chart_' + $scope.$id),
                         renderer: $scope.activeRenderer,
                         width: $scope.width || 410,
                         height: $scope.height || 150,
@@ -268,7 +270,7 @@
                             graph.series.push.apply(graph.series, series);
                             graph.render();
                             if (legend) {
-                                var legendElement = document.querySelector('#legend_' + $scope.$id);
+                                var legendElement = getElement('#legend_' + $scope.$id);
                                 if (legendElement) {
                                     legendElement.innerHTML = "";
                                     renderLegend(graph);
