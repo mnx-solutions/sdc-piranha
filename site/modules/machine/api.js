@@ -369,6 +369,13 @@ module.exports = function execute(scope, register) {
             });
         });
     };
+    var supportPackages = [];
+    for (var name in info.packages.data.all) {
+        if (info.packages.data.all.hasOwnProperty(name) && info.packages.data.all[name].createdBySupport) {
+            info.packages.data.all[name].name = info.packages.data.all[name].id = info.packages.data.all[name].id || name;
+            supportPackages.push(info.packages.data.all[name]);
+        }
+    }
 
     api.PackageList = function (call, options, callback) {
         call.log.info('Handling list packages event');
@@ -379,18 +386,27 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
+            data = data.concat(supportPackages);
+
             if (!info.packages.data[options.datacenter]) {
                 options.datacenter = 'all';
             }
 
-            var filteredPackages = [];
+            var filteredPackagesMap = {};
             data.forEach(function (p) {
                 if (info.packages.data[options.datacenter][p.name]) {
-                    filteredPackages.push(utils.extend(p, info.packages.data[options.datacenter][p.name]));
+                    filteredPackagesMap[p.name] = utils.extend(p, info.packages.data[options.datacenter][p.name]);
                 } else {
-                    filteredPackages.push(p);
+                    filteredPackagesMap[p.name] = p;
                 }
             });
+
+            var filteredPackages = [];
+            for (var name in filteredPackagesMap) {
+                if (filteredPackagesMap.hasOwnProperty(name)) {
+                    filteredPackages.push(filteredPackagesMap[name]);
+                }
+            }
             callback(null, filteredPackages);
         });
     };
