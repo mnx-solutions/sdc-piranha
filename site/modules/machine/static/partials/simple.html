@@ -26,42 +26,46 @@
                 </div>
             </div>
 
-            <div class="row-fluid basic-instance-box-padding">
-                <div class="basic-instance-box" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className">
-                    <div class="basic-instance-title">
+            <div class="row-fluid">
+                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className">
+                    <div class="name">
                         <p>{{image.name}}</p>
                     </div>
-                    <div class="basic-instance-description">
+                    <div class="description">
                         <p>{{image.description.text}}</p>
                     </div>
-                    <div class="basic-instance-info">
+                    <div class="info">
                         <p>MEMORY</p><span><p>{{ image.description.memory }} GB</p></span>
                     </div>
-                    <div class="basic-instance-info">
+                    <div class="info">
                         <p>vCPUs</p><span><p>{{ image.description.cpu }}</p></span>
                     </div>
-                    <div class="basic-instance-info">
+                    <div class="info">
                         <p>Disk</p><span><p>{{ image.description.disk }} GB</p></span>
                     </div>
-                    <div class="basic-instance-btn-block">
+                    <div class="btn-block">
                         <span data-ng-hide="image.imageData.freetier">
-                            <span class="basic-instance-price">${{ image.description.price }}</span>
-                            <span class="basic-instance-price-per-time">per hour</span>
+                            <span class="price">${{ image.description.price }}</span>
+                            <span class="hour">per hour</span>
                         </span>
-                        <span class="basic-instance-price" data-ng-show="image.imageData.freetier">FREE TIER</span>
+                        <span class="price" data-ng-show="image.imageData.freetier">FREE TIER</span>
                         <button type="button"
-                                class="btn basic-instance-btn small"
+                                class="btn select-btn small"
                                 ng-click="createSimple(image.imageData)"><b>Select</b>
                         </button>
                     </div>
                 </div>
 
-                <div class="basic-instance-box joyent-logo">
-                    <div class="basic-instance-browse">
-                        <p>Browse our<br>complete image<br>library</p>
-                        <span><p>Instances suitable for specific<br>applications, database, traffic<br>management and more.</p></span>
+                <div class="simple-image joyent-logo">
+                    <div class="browse">
+                        <div class="title">
+                            Browse our<br/>complete image<br/>library
+                        </div>
+                        <div class="description">
+                            Instances suitable for specific<br/>applications, database, traffic<br/>management and more.
+                        </div>
                     </div>
-                    <div class="basic-instance-btn-block">
+                    <div class="btn-block">
                         <button data-ng-click="selectInstanceType('Public')" class="btn orange btn-browse">View More Images</button>
                     </div>
                 </div>

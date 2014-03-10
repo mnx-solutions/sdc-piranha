@@ -743,10 +743,10 @@
 .item-list-container{
     overflow: auto;
 }
-.basic-instance-box:hover{
+.simple-image:hover {
     background-color: #e2e8ec !important;
 }
-.basic-instance-box{
+.simple-image {
     width: 240px;
     height: 206px;
     position: relative;
@@ -762,8 +762,7 @@
 .node-logo,
 .joyent-logo,
 .mongodb-logo {
-    background-repeat: no-repeat;
-    background-position: 190px 15px;
+    background: #eef0f2 no-repeat 190px 10px;
     background-size: 38px;
 }
 
@@ -789,11 +788,11 @@
 .mongodb-logo {
     background-image: url(../img/mongodb-logo.png);
 }
-.basic-instance-info{
+.simple-image .info {
     margin-left: 20px;
     display: inline-block;
 }
-.basic-instance-info p{
+.simple-image .info p {
     margin-top: 7px;
     text-align: left;
     color: #666666;
@@ -801,58 +800,57 @@
     font-weight: 400;
     line-height: 14px;
 }
-.basic-instance-info span p{
+.simple-image .info span p {
     text-align: left;
     color: #000000;
     font-size: 14px;
     font-weight: 300;
     line-height: 0px;
 }
-.basic-instance-title{
-    padding: 26px 20px 0 20px;
+.simple-image .name {
+    padding: 15px 60px 0 20px;
+    height: 44px;
+    overflow: hidden;
 }
-.basic-instance-browse p{
+.simple-image .browse .title {
     font-size: 16px;
     font-weight: bold;
     line-height: 18px;
-    padding-left: 20px;
-    padding-top: 20px;
+    padding: 15px 0 14px 20px;
 }
-.basic-instance-browse span p{
+.simple-image .browse .description {
     font-size: 12px;
     font-weight: normal;
     line-height: 16px;
-    margin-top: -24px;
 }
-.basic-instance-title p{
+.simple-image .name p {
     font-size: 16px;
     font-weight: bold;
-    line-height: 10px;
 }
-.basic-instance-title span p,
-.basic-instance-description{
+.simple-image .name span p,
+.simple-image .description {
     font-size: 12px;
     font-weight: normal;
     line-height: 16px;
 }
-.basic-instance-description {
-    padding: 0 50px 0 20px;
-    height: 55px;
+.simple-image .description {
+    padding: 5px 20px 0 20px;
+    height: 50px;
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.basic-instance-btn.small {
+.simple-image .btn-block .select-btn.small {
     margin-top: 0;
     float: right;
 }
-.basic-instance-btn-block .btn-browse {
+.simple-image .btn-block .btn-browse {
     padding: 0 10px 0 10px;
     float: right;
     height: 24px;
     margin-right: 20px;
-    margin-top: 4px;
+    margin-top: 18px;
 }
-.basic-instance-btn{
+.simple-image .btn-block .select-btn {
     width: 65px !important;
     height: 24px;
     margin-left: 12px;
@@ -862,32 +860,35 @@
     margin-right: 20px;
     margin-top: 15px;
 }
-.basic-instance-box:hover .basic-instance-btn{
+.simple-image:hover .btn-block .select-btn {
     background-color: #FF6600;
     color: white;
 }
-.basic-instance-btn-block {
-    padding: 20px 0 0 20px;
+.simple-image .btn-block {
+    padding: 15px 0 0 20px;
 }
-.basic-instance-btn-block span p{
+.simple-image .btn-block span p {
     font-size: 12px;
     display: inline-block;
     float: left;
     margin-left: 80px;
     margin-top: -17px;
 }
-.basic-instance-btn-block p.ft{
+.simple-image .btn-block p.ft {
     text-transform: uppercase;
     font-weight: bold;
     float: left;
     margin: 17px 50px 0 20px;
 }
-.basic-instance-price{
+.simple-image .btn-block .price {
     font-size: 18px;
     font-weight: bold;
+    vertical-align: middle;
 }
-.basic-instance-price-per-time{
+.simple-image .btn-block .hour {
     font-size: 12px;
+    line-height: 14px;
+    vertical-align: bottom;
 }
 .ci-desc {
     font-size: 16px;
@@ -895,9 +896,7 @@
     padding-bottom: 30px;
     padding-top: 15px;
 }
-.basic-instance-box-padding{
-    padding-bottom: 10px;
-}
+
 .datacenter-select{
     background-color: white !important;
     border: 1px solid #c5c5c5 !important;
