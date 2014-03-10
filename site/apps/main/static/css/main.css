@@ -1180,6 +1180,9 @@ a .feature1 {
     background-color: #405f7c !important;
     color: #fff !important;
 }
+.btn:focus, .btn-search-images, .btn-search-images:focus, .grid-search-icon, .grid-search-icon:focus {
+    outline: none;
+}
 
 .alert-joyent-blue {
     background: #eaf0f6;
