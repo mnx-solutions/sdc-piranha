@@ -14,14 +14,26 @@
             link: function (scope, element, attrs) {
                 scope.internalCollection = [];
                 scope.addNew = function () {
-                    scope.internalCollection.push({key: '', value: '', edit: true, isNew: true});
+                    scope.internalCollection.push({
+                        key: '',
+                        val: '',
+                        edit: true,
+                        isNew: true,
+                        dirtyKey: '',
+                        dirtyVal: ''
+                    });
                 };
                 scope.loadCollection = function () {
                     function convertCollection() {
                         scope.internalCollection = [];
                         for (var key in scope.collection) {
                             if (key !== 'root_authorized_keys' && key !== 'credentials') {
-                                scope.internalCollection.push({key: key, val: scope.collection[key]});
+                                scope.internalCollection.push({
+                                    key: key,
+                                    val: scope.collection[key],
+                                    dirtyKey: key,
+                                    dirtyVal: scope.collection[key]
+                                });
                             }
                         }
                         scope.addNew();
@@ -36,14 +48,19 @@
                     }
                 };
                 scope.loadCollection();
-                scope.saveCollection = function () {
+                scope.saveCollection = function (obj) {
                     var newCollection = {};
                     var hasDuplicates = false;
+                    obj = obj || {};
                     scope.internalCollection.forEach(function (item) {
-                        if (item.key && item.val) {
-                            hasDuplicates = hasDuplicates || newCollection[item.key];
-                            newCollection[item.key] = item.val;
+                        if (item.dirtyKey && item.dirtyVal) {
+                            if (obj.isNew || (item.key === obj.key && item.val === obj.val)) {
+                                obj.key = obj.dirtyKey;
+                                obj.val = obj.dirtyVal;
+                            }
                         }
+                        hasDuplicates = hasDuplicates || newCollection[item.key];
+                        newCollection[item.key] = item.val;
                     });
                     var persistCollection = function () {
                         if (scope.machineId) {
@@ -74,15 +91,21 @@
                     }
 
                 };
-                scope.addItem = function () {
-                    scope.saveCollection();
+                scope.addItem = function (item) {
+                    scope.saveCollection(item);
                 };
                 scope.editItem = function (item) {
                     item.edit = true;
                 };
                 scope.removeItem = function (item) {
-                    var itemIndex = scope.internalCollection.indexOf(item);
-                    scope.internalCollection.splice(itemIndex, 1);
+                    var collection = scope.internalCollection;
+                    var itemIndex = collection.indexOf(item);
+
+                    collection.splice(itemIndex, 1);
+
+                    if (collection[collection.length - 1].isNew) {
+                        collection.splice(collection.length - 1, 1);
+                    }
                     scope.saveCollection();
                 };
                 scope.$watch('collection', function () {
