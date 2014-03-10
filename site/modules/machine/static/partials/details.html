@@ -435,7 +435,7 @@
                         data-toggle="tooltip"
                         data-placement="top"
                         data-html="true"
-                        data-original-title="Stopping an instance does not stop billing. You can restart your instance after you stop your machine."
+                        data-original-title="{{buttonTooltipText.stop(machine)}}"
                         data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'running')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                     <i class="stop-icon"></i>
@@ -462,7 +462,7 @@
                         data-toggle="tooltip"
                         data-placement="top"
                         data-html="true"
-                        data-original-title="You will lose all information and data on this instance if you delete an instance. Deleting an instance also stops billing."
+                        data-original-title="{{buttonTooltipText.delete(machine)}}"
                         data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                     <i class="delete-icon"></i>

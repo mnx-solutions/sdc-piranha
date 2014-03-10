@@ -17,8 +17,9 @@
         'firewall',
         '$rootScope',
         'Account',
+        'FreeTier',
 
-        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account) {
+        function ($scope, $cookieStore, $filter, $$track, $q, requestContext, Machine, Dataset, Package, localization, PopupDialog, $location, firewall, $rootScope, Account, FreeTier) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
@@ -29,6 +30,10 @@
             // Pagination
             $scope.machines = Machine.machine();
             $scope.packages = Package.package();
+
+            if ($scope.features.freetier === 'enabled') {
+                $scope.freetier = FreeTier.freetier();
+            }
 
             $scope.$on(
                 'event:forceUpdate',
@@ -101,27 +106,30 @@
             function makeMachineAction (action, messageTitle, messageBody) {
                 if ($scope.actionButton()) {
                     var message = '';
-                    var checkedWrong = [];
+                    var checkedFreeMachines = true;
                     var checkedMachines = $scope.machines.filter(function (machine) {
                         if (machine.checked) {
+                            if (!machine.freetier) {
+                                checkedFreeMachines = false
+                            }
                             switch (action) {
                             case 'start':
                                 if (machine.state === 'stopped') {
                                     return true;
                                 }
-                                checkedWrong.push(machine);
+                                machine.checked = false;
                                 break;
                             case 'stop':
                                 if (machine.state === 'running') {
                                     return true;
                                 }
-                                checkedWrong.push(machine);
+                                machine.checked = false;
                                 break;
                             case 'reboot':
                                 if (machine.state !== 'stopped') {
                                     return true;
                                 }
-                                checkedWrong.push(machine);
+                                machine.checked = false;
                                 break;
                             case 'delete':
                                 return true;
@@ -139,7 +147,16 @@
                         localization.translate(
                             $scope,
                             null,
-                            message = ((checkedWrong.length + checkedMachines.length) > 1) ? messageBody.plural : messageBody.single
+                            message = function () {
+                                var result = messageBody.single;
+                                if (checkedMachines.length > 1) {
+                                    result = checkedFreeMachines && messageBody.freetier_plural ?
+                                        messageBody.freetier_plural : messageBody.plural;
+                                } else if (checkedFreeMachines && messageBody.freetier_single) {
+                                    result = messageBody.freetier_single;
+                                }
+                                return result;
+                            }
                         ), function () {
                             checkedMachines.forEach(function (el) {
                                 if (action === 'delete') {
@@ -155,9 +172,6 @@
                                     $$track.event('machine', action);
                                     Machine[action + 'Machine'](el.id);
                                 }
-                                el.checked = false;
-                            });
-                            checkedWrong.forEach(function (el) {
                                 el.checked = false;
                             });
                         }
@@ -178,7 +192,15 @@
                     id: 'label',
                     name: 'Name',
                     sequence: 1,
-                    active: true
+                    active: true,
+                    type: 'html',
+                    _getter: function (machine) {
+                        var html = '<a href="#!/compute/instance/' + machine.id + '" style="min-width: 140px;">' + machine.label + '</a>';
+                        if (machine.freetier) {
+                            html += '<span> *</span>'
+                        }
+                        return html;
+                   }
                 },
                 {
                     id: 'datacenter',
@@ -360,26 +382,42 @@
                     }
                 };
             }
+
+            var gridMessages = {
+                start: {
+                    single: 'Start selected instance.',
+                    plural: 'Start selected instances.'
+                },
+                stop : {
+                    single: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
+                    plural: 'Stopping selected instances does not stop billing, your instances can be started after they are stopped.',
+                    freetier_single: 'Your instance can be started after it is stopped.',
+                    freetier_plural: 'Your instances can be started after they are stopped.'
+                },
+                delete: {
+                    single: 'Destroying this instance will stop billing.',
+                    plural: 'Destroying selected instances will stop billing.',
+                    freetier_single: 'Destroying this instance.',
+                    freetier_plural: 'Destroying selected instances.'
+                },
+                reboot: {
+                    single: 'Restart this instance.',
+                    plural: 'Restart selected instances.'
+                }
+            };
+
             $scope.gridActionButtons = [
                 {
                     label: 'Start',
                     action: function (object) {
-                        var messages = {
-                            single: 'Start selected instance',
-                            plural: 'Start selected instances'
-                        };
-                        makeMachineAction('start', 'Confirm: Start instances', messages);
+                        makeMachineAction('start', 'Confirm: Start instances', gridMessages.start);
                     },
                     sequence: 1
                 },
                 {
                     label: 'Stop',
                     action: function (object) {
-                        var messages = {
-                            single: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
-                            plural: 'Stopping selected instances does not stop billing, your instance can be started after it is stopped.'
-                        };
-                        makeMachineAction('stop', 'Confirm: Stop instances', messages);
+                        makeMachineAction('stop', 'Confirm: Stop instances', gridMessages.stop);
                     },
                     sequence: 2
                 },
@@ -434,11 +472,7 @@
                 {
                     label: 'Delete',
                     action: function () {
-                        var messages = {
-                            single: 'Destroy the information on these instances and stop billing for them.',
-                            plural: 'Destroy the information on this instance and stop billing for selected instances.'
-                        };
-                        makeMachineAction('delete', 'Confirm: Delete instances', messages);
+                        makeMachineAction('delete', 'Confirm: Delete instances', gridMessages.delete);
                     },
                     sequence: 5
                 },
@@ -482,6 +516,12 @@
                         m.firewall_enabled = expected;
                     }
                     m.fireWallActionRunning = false;
+                });
+            };
+
+            $scope.freeTierFound = function () {
+                return $scope.machines.some(function (machine) {
+                    return machine.freetier === true;
                 });
             };
         }

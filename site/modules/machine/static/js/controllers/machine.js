@@ -41,6 +41,10 @@
             $scope.defaultSshUser = 'root';
             $scope.incorrectNameMessage = "name can contain only letters, digits and signs like '.' and '-'.";
 
+            if ($scope.features.freetier === 'enabled') {
+                $scope.freetier = FreeTier.freetier();
+            }
+
             // Handle case when machine loading fails or machine uuid is invalid
             $q.when($scope.machine).then(function () {
                 $scope.loading = false;
@@ -160,6 +164,20 @@
                 }
             });
 
+            var machineMessages = {
+                resizeMessage: 'Resize this instance.',
+                stopMessage: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
+                deleteMessage: 'Destroying an instance will stop billing.'
+            };
+
+            $q.when($scope.freetier, function () {
+                if ($scope.machine.freetier) {
+                    machineMessages.resizeMessage = 'Resize this instance will start billing.';
+                    machineMessages.stopMessage = 'Your instance can be started after it is stopped.';
+                    machineMessages.deleteMessage = 'Destroy this instance.';
+                }
+            });
+
             $scope.clickStart = function () {
                 PopupDialog.confirm(
                     localization.translate(
@@ -187,7 +205,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Stopping an instance does not stop billing, your instance can be started after it is stopped.'
+                        machineMessages.stopMessage
                     ), function () {
                         Machine.stopMachine(machineid);
                         $$track.event('machine', 'stop');
@@ -226,7 +244,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Resize this instance'
+                        machineMessages.resizeMessage
                     ), function () {
                         $scope.isResizing = true;
                         $$track.event('machine', 'resize');
@@ -237,6 +255,7 @@
                             $scope.isResizing = false;
                             $scope.currentPackageName = selected.name;
                             $scope.currentPackage = selected;
+                            $scope.machine.freetier = false;
                         });
                     });
             };
@@ -372,7 +391,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Destroy the information on this instance and stop billing for this instance.'
+                        machineMessages.deleteMessage
                     ), function () {
                         $$track.event('machine', 'delete');
 
@@ -403,6 +422,23 @@
                             }
                         });
                     });
+            };
+
+            $scope.buttonTooltipText = {
+                delete: function () {
+                    var result = 'You will lose all information on this instance if you delete it.';
+                    if (!$scope.machine.freetier) {
+                        result = result + ' Deleting an instance also stops billing.';
+                    }
+                    return result;
+                },
+                stop: function () {
+                    var result = 'You can start your instance after stopping it.';
+                    if (!$scope.machine.freetier) {
+                        result = 'Stopping an instance does not stop billing. ' + result;
+                    }
+                    return result;
+                }
             };
 
             $scope.togglePassword = function (id) {

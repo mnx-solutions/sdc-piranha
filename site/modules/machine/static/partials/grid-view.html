@@ -82,10 +82,7 @@
                         </label>
                     </td>
                     <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id">
-                        <div data-ng-switch-when="label" style="min-width: 140px;">
-                            <a href="#!/compute/instance/{{object.id}}">{{object.label}}</a>
-                            <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
-                        </div>
+                        <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                         <div data-ng-switch-when="name"  style="min-width: 140px;">
                             <a href="#!/storage/job/{{object.name}}" data-ng-show="location.path().search('storage.history')==1">{{object.name}}</a>
                             <a href="" data-ng-show="location.path().search('images')==1">{{object.name}}</a>
