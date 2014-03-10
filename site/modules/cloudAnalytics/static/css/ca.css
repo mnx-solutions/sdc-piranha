@@ -158,3 +158,10 @@
 .chart-padding{
     padding-bottom: 7px;
 }
+.btn.grey{
+    background-color: #ebebeb;
+    color: #f60;
+    margin-top: 20px;
+    font-size: 15px;
+    text-shadow: none;
+}
