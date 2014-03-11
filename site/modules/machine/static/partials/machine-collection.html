@@ -24,28 +24,28 @@
                     name="key"
                     placeholder="Key"
                     data-translate="placeholder"
-                    data-ng-model="item.key"
+                    data-ng-model="item.dirtyKey"
                     data-ng-required="!review"
                     data-ng-pattern="/^[a-zA-Z0-9\._\-]+$/"
                     data-ng-disabled="saving"
                     class="key-width">
             </span>
             <button class="btn light tag-add-btn pull-right"
-                    data-ng-click="addItem()"
+                    data-ng-click="addItem(item)"
                     data-translate
-                    data-ng-disabled="!item.val || !item.key || saving">{{item.isNew && 'Add' || 'Save'}}</button>
+                    data-ng-disabled="!item.dirtyVal || !item.dirtyKey || saving">{{item.isNew && 'Add' || 'Save'}}</button>
             <span class="value-container">
                 <input type="text"
                     placeholder="Value"
                     data-translate="placeholder"
-                    data-ng-model="item.val"
+                    data-ng-model="item.dirtyVal"
                     data-ng-required="!review"
                     data-ng-disabled="saving"
                     class="value-width"/>
                 <textarea type="text"
                      placeholder="Value"
                      data-translate="placeholder"
-                     data-ng-model="item.val"
+                     data-ng-model="item.dirtyVal"
                      data-ng-required="!review"
                      data-ng-disabled="saving"
                      class="value-width"
