@@ -345,12 +345,10 @@
                 var sortPackage = '';
 
                 $scope.packages.forEach(function (pkg) {
-                    if ($scope.filterPackages(pkg)) {
-                        if (pkg.price && pkg.price_month && pkg.memory && (pkg.type === $scope.datasetType)) {
-                            if (!sortPackage || (sortPackage && sortPackage > parseInt(pkg.memory, 10))) {
-                                sortPackage = parseInt(pkg.memory, 10);
-                                packageId = pkg.id;
-                            }
+                    if ($scope.filterPackages()(pkg)) {
+                        if (!sortPackage || (sortPackage && sortPackage > parseInt(pkg.memory, 10))) {
+                            sortPackage = parseInt(pkg.memory, 10);
+                            packageId = pkg.id;
                         }
                     }
                 });
