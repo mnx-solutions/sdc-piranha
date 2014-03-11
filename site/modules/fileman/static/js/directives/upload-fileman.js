@@ -9,7 +9,7 @@
                 filemanUpload: '='
             },
             link: function (scope, element, attrs) {
-                function uploadFile(file) {
+                function uploadFiles(files) {
                     var data = new FormData();
                     var xhr = new XMLHttpRequest();
                     xhr.onload = function () {
@@ -20,7 +20,9 @@
                             }
                         });
                     };
-                    data.append('uploadInput', file);
+                    for (var fileIndex = 0; fileIndex < files.length; fileIndex++) {
+                        data.append('uploadInput', files[fileIndex]);
+                    }
                     data.append('path', scope.filemanUpload);
                     xhr.open('POST', 'fileman/upload');
                     xhr.send(data);
@@ -28,7 +30,7 @@
 
                 element.change(function (e) {
                     if (e.target.files && e.target.files.length) {
-                        uploadFile(e.target.files[0]);
+                        uploadFiles(e.target.files);
                         scope.$parent.$emit('uploadStart', true);
                     }
                 });
