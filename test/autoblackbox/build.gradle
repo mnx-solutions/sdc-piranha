@@ -4,73 +4,73 @@ apply plugin: 'eclipse'
 repositories {
     mavenCentral()
     maven {
-    	url 'https://repository-saucelabs.forge.cloudbees.com/release'
+        url 'https://repository-saucelabs.forge.cloudbees.com/release'
     }
 }
 
 dependencies {
     compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-    testCompile group: 'junit', name: 'junit', version: '4.+'
-    testCompile 'com.codeborne:selenide:2.6.1'
+    compile group: 'junit', name: 'junit', version: '4.+'
+    compile 'com.codeborne:selenide:2.6.1'
     testCompile 'com.saucelabs:sauce_junit:1.0.13'
-    testCompile 'com.google.code.gson:gson:2.2.4'
-    testCompile 'org.apache.commons:commons-lang3:3.0'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'org.apache.commons:commons-lang3:3.0'
 }
 
 tasks.withType(Test) {
-	systemProperties = System.getProperties()
+    systemProperties = System.getProperties()
     systemProperties loadConf()
     def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['endpoint'])
     systemProperties['endpoint'] = appEndpoint
-	systemProperties['file.encoding'] = 'UTF-8'
-	reports.html.enabled false
-	reports.junitXml.destination = "$buildDir/test-results/" + systemProperties['browser']
+    systemProperties['file.encoding'] = 'UTF-8'
+    reports.html.enabled false
+    reports.junitXml.destination = "$buildDir/test-results/" + systemProperties['browser']
 }
 
 task smokeTests(type: Test) {
-	include '**/SmokeTests.class'	
+    include '**/SmokeTests.class'
 }
 
 task InstanceRenameTests(type: Test) {
-	include '**/InstanceRenameTests.class'
+    include '**/InstanceRenameTests.class'
 }
 
 task InstanceTagsTests(type: Test) {
-	include '**/InstanceTagsTests.class'
+    include '**/InstanceTagsTests.class'
 }
 
 task InstanceCRUDTests(type: Test) {
-	include '**/InstanceCRUDTests.class'
+    include '**/InstanceCRUDTests.class'
 }
 
 task UserSignupTests(type: Test) {
-	include '**/UserSignupTests.class'
+    include '**/UserSignupTests.class'
 }
 
 task PromocodeTests(type: Test) {
-	include '**/PromocodeTests.class'
+    include '**/PromocodeTests.class'
 }
 
 task allTests(type: Test) {
-	include '**/AllTests.class'
+    include '**/AllTests.class'
 }
 
 task FirewallTests(type: Test) {
-	include '**/FirewallTests.class'
+    include '**/FirewallTests.class'
 }
 
 task ImageTests(type: Test) {
-	include '**/ImageTests.class'
+    include '**/ImageTests.class'
 }
 
 task ProductionFeatures(type: Test) {
-	include '**/productionFeatures.class'
+    include '**/productionFeatures.class'
 }
 
 def loadConf() {
-	file("build.properties").withReader { reader ->
-		def buildProps = new Properties()
-		buildProps.load(reader)
-		return buildProps
-	}
+    file("build.properties").withReader { reader ->
+        def buildProps = new Properties()
+        buildProps.load(reader)
+        return buildProps
+    }
 }

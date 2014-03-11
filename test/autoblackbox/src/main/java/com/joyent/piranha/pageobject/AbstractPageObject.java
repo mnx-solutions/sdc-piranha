@@ -1,0 +1,54 @@
+package com.joyent.piranha.pageobject;
+
+import static com.codeborne.selenide.Condition.disappear;
+import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Selenide.$;
+
+public abstract class AbstractPageObject {
+    private static final String GLOBAL_TIMEOUT_KEY = "globaltimeout";
+    private static final String GLOBAL_TIMEOUT_DEF = "15000";
+
+    static final String DASHBOARD_MENU_TITLE = "Dashboard";
+    static final String COMPUTE_MENU_TITLE = "Compute";
+    static final String STORAGE_MENU_TITLE = "Storage";
+
+    static int baseTimeout;
+
+    public AbstractPageObject() {
+        this(Integer.parseInt(System.getProperty(GLOBAL_TIMEOUT_KEY, GLOBAL_TIMEOUT_DEF)));
+    }
+
+    public AbstractPageObject(int baseTimeout) {
+        AbstractPageObject.baseTimeout = baseTimeout;
+    }
+
+    public void errorNotPresent() {
+        if ($(".alert-error").isDisplayed()) {
+            System.out.println($(".alert-error").text());
+        }
+    }
+
+    public void checkBreadcrumb(String active, String right) {
+        $("ul.breadcrumb li", 0).$("a").should(matchText(active));
+        $("ul.breadcrumb li", 1).shouldHave(matchText("(.*)" + right));
+    }
+
+    public void checkHeadingText(String headingText) {
+        $(".page-title").shouldHave(matchText("(.*)" + headingText + "(.*)"));
+    }
+
+    public void checkHeadingText() {
+        $(".page-title").shouldHave(matchText("(.*)" + getTitle() + "(.*)"));
+    }
+
+    String getTitle() {
+        throw new NullPointerException();
+    }
+
+
+    public void waitingLoading() {
+        $(".loading-large").waitUntil(disappear, baseTimeout);
+        $(".loading-medium-after-h1").waitUntil(disappear, baseTimeout);
+    }
+
+}
