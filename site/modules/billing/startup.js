@@ -109,6 +109,158 @@ module.exports = function execute(scope, callback) {
         });
     }
 
+    function zuoraError(call, err, resp, msg) {
+        // changing zuoras errorCode from 401's to 500
+        if (err.statusCode === 401) {
+            err.statusCode = 500;
+        }
+
+        var logObj = {
+            err: err
+        };
+
+        if (resp && resp.reasons) {
+            logObj.zuoraErr = resp.reasons;
+        }
+
+        var lvl = 'error';
+        logObj.attempt = call.req.session.zuoraServiceAttempt;
+
+        if ((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general') || !err.statusCode) {
+            lvl = 'info';
+        }
+
+        call.log[lvl](logObj, msg || 'Failed to save to zuora');
+
+        zHelpers.updateErrorList(scope, resp, function () {
+            err.zuora = err.zuora || resp;
+            call.done(err, true);
+        });
+    }
+
+    var addOrUpdatePaymentMethod = function (call, acc) {
+        var clearPaymentMethods = function (paymentMethodResponse) {
+            var count = 3;
+
+            call.session(function (req) {
+                req.session.zuoraServiceAttempt = 0;
+            });
+            if (call.req.session.signupStep && call.req.session.signupStep !== 'completed') {
+                var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
+                performFraudValidation(call, email, function (err) {
+                    if (err) {
+                        count = -1; // No further call.done calls
+                        call.done(err);
+                        return;
+                    }
+                    if (--count === 0) {
+                        call.done(null, paymentMethodResponse);
+                    }
+                });
+            } else {
+                if (--count === 0) {
+                    call.done(null, paymentMethodResponse);
+                }
+            }
+
+            // Payment method added
+            // Have to remove previous billing methods.
+            zHelpers.deleteAllButDefaultPaymentMethods(call, function (err) {
+                //Ignoring errors
+                if (--count === 0) {
+                    call.done(null, paymentMethodResponse);
+                }
+            });
+
+            // Check if we need to update account info
+            zHelpers.composeBillToContact(call, function (err, billToContact) {
+                if (err) { // Ignore errors here
+                    if (--count === 0) {
+                        call.done(null, paymentMethodResponse);
+                    }
+                    return;
+                }
+
+                var same = zHelpers.compareBillToContacts(acc.basicInfo.billToContact, billToContact);
+                if (!same) { // Have to update
+                    var obj = {
+                        billToContact: billToContact,
+                        soldToContact: billToContact
+                    };
+
+                    zuora.account.update(call.req.session.userId, obj, function (err, res) {
+                        // Ignoring errors here
+                        if (--count === 0) {
+                            call.done(null, paymentMethodResponse);
+                        }
+                    });
+                    return;
+                }
+
+                if (--count === 0) {
+                    call.done(null, paymentMethodResponse);
+                }
+            });
+        };
+
+        //Compose the creditcard object
+        zHelpers.composeCreditCardObject(call, function (err, data) {
+            if (err) {
+                // changing zuoras errorCode from 401's to 500
+                if (err.statusCode === 401) {
+                    err.statusCode = 500;
+                }
+                zuoraError(call, err, data, 'CC failed local validation');
+                return;
+            }
+            if (data.creditCardNumber.indexOf('*') !== -1) {
+                zHelpers.getPaymentMethods(call, function (err, pms) {
+                    if (err) {
+                        zuoraError(call, err, data, 'CC number failed local validation');
+                        return;
+                    }
+                    var defaultMethods = pms.creditCards.filter(function (creditCard) {
+                        return creditCard.defaultPaymentMethod;
+                    });
+                    if (defaultMethods.length !== 1) {
+                        zuoraError(call, err, data, 'CC number failed local validation');
+                        return;
+                    }
+                    var defaultMethodId = defaultMethods[0].id;
+                    for (var holderKey in data.cardHolderInfo) {
+                        data[holderKey] = data.cardHolderInfo[holderKey];
+                    }
+                    delete data.creditCardNumber;
+                    delete data.creditCardType;
+                    delete data.cardHolderInfo;
+                    delete data.accountKey;
+                    console.log(data);
+                    zuora.payment.update(defaultMethodId, data, function (updateErr, updateResult) {
+                        if (updateErr) {
+                            zuoraError(call, updateErr, updateResult, 'Error updating payment method');
+                            return;
+                        }
+                        clearPaymentMethods(updateResult);
+                    });
+                });
+                return;
+            }
+            // Create payment
+            zuora.payment.create(data, function (err, resp) {
+                if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if (err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
+                    zuoraError(call, err, resp);
+                    return;
+                }
+                call.log.debug('Zuora payment.create returned with', resp);
+                clearPaymentMethods(resp);
+            });
+        });
+    };
+
     // TODO: Some proper error logging
     server.onCall('addPaymentMethod', function (call) {
         call.log.debug('Calling addPaymentMethod');
@@ -116,45 +268,15 @@ module.exports = function execute(scope, callback) {
         var serviceAttempts = call.req.session.zuoraServiceAttempt || 0;
         call.req.session.zuoraServiceAttempt = serviceAttempts + 1;
 
-        function error(err, resp, msg) {
-            // changing zuoras errorCode from 401's to 500
-            if (err.statusCode === 401) {
-                err.statusCode = 500;
-            }
-
-            var logObj = {
-                err: err
-            };
-
-            if (resp && resp.reasons) {
-                logObj.zuoraErr = resp.reasons;
-            }
-
-            var lvl = 'error';
-            logObj.attempt = call.req.session.zuoraServiceAttempt;
-
-            if((logObj.zuoraErr && logObj.zuoraErr.split && logObj.zuoraErr.split.field === '_general')
-              || !err.statusCode) {
-                lvl = 'info';
-            }
-
-            call.log[lvl](logObj, msg || 'Failed to save to zuora');
-
-            zHelpers.updateErrorList(scope, resp, function () {
-                err.zuora = err.zuora || resp;
-                call.done(err, true);
-            });
-        }
-
         call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
             if (err) {
                 // changing zuoras errorCode from 401's to 500
-                if(err.statusCode === 401) {
+                if (err.statusCode === 401) {
                     err.statusCode = 500;
                 }
                 if (!zHelpers.notFound(acc)) {
-                    error(err, acc, 'Account check with zuora failed');
+                    zuoraError(call, err, acc, 'Account check with zuora failed');
                     return;
                 }
 
@@ -163,10 +285,10 @@ module.exports = function execute(scope, callback) {
                 zHelpers.createZuoraAccount(call, function (err, data, user) {
                     if (err) {
                         // changing zuoras errorCode from 401's to 500
-                        if(err.statusCode === 401) {
+                        if (err.statusCode === 401) {
                             err.statusCode = 500;
                         }
-                        error(err, data, 'Zuora account.create failed');
+                        zuoraError(call, err, data, 'Zuora account.create failed');
                         return;
                     }
                     call.session(function (req) {
@@ -186,96 +308,11 @@ module.exports = function execute(scope, callback) {
 
             call.log.debug('Attempting to add cc to zuora');
 
-            //Compose the creditcard object
-            zHelpers.composeCreditCardObject(call, function (err, data) {
-                if (err) {
-                    // changing zuoras errorCode from 401's to 500
-                    if(err.statusCode === 401) {
-                        err.statusCode = 500;
-                    }
-                    error(err, data, 'CC failed local validation');
-                    return;
-                }
-
-                // Create payment
-                zuora.payment.create(data, function (err, resp) {
-                    if (err) {
-                        // changing zuoras errorCode from 401's to 500
-                        if(err.statusCode === 401) {
-                            err.statusCode = 500;
-                        }
-                        error(err, resp);
-                        return;
-                    }
-
-                    call.log.debug('Zuora payment.create returned with', resp);
-                    var count = 3;
-
-                    call.session(function (req) {
-                        req.session.zuoraServiceAttempt = 0;
-                    });
-                    if (call.req.session.signupStep && call.req.session.signupStep !== 'completed') {
-                        var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
-                        performFraudValidation(call, email, function (err) {
-                            if (err) {
-                                count = -1; // No further call.done calls
-                                call.done(err);
-                                return;
-                            }
-                            if (--count === 0) {
-                                call.done(null, resp);
-                            }
-                        });
-                    } else {
-                        if (--count === 0) {
-                            call.done(null, resp);
-                        }
-                    }
-
-                    // Payment method added
-                    // Have to remove previous billing methods.
-                    zHelpers.deleteAllButDefaultPaymentMethods(call, function (err) {
-                        //Ignoring errors
-                        if (--count === 0) {
-                            call.done(null, resp);
-                        }
-                    });
-
-                    // Check if we need to update account info
-                    zHelpers.composeBillToContact(call, function (err, billToContact) {
-                        if (err) { // Ignore errors here
-                            if (--count === 0) {
-                                call.done(null, resp);
-                            }
-                            return;
-                        }
-
-                        var same = zHelpers.compareBillToContacts(acc.basicInfo.billToContact, billToContact);
-                        if (!same) { // Have to update
-                            var obj = {
-                                billToContact: billToContact,
-                                soldToContact: billToContact
-                            };
-
-                            zuora.account.update(call.req.session.userId, obj, function (err, res) {
-                                // Ignoring errors here
-                                if (--count === 0) {
-                                    call.done(null, resp);
-                                }
-                            });
-                            return;
-                        }
-
-                        if (--count === 0) {
-                            call.done(null, resp);
-                        }
-                    });
-                });
-            });
+            addOrUpdatePaymentMethod(call, acc);
         });
     });
 
-    if(config.features.invoices !== 'disabled') {
+    if (config.features.invoices !== 'disabled') {
         server.onCall('listInvoices', function (call) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
