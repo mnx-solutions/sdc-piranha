@@ -161,5 +161,6 @@
   , "useBrandingOrange": "no"
   , "manta": "no"
   , "phoneVerification": "yes"
+  , "usageData": "disabled"
   }
 }
