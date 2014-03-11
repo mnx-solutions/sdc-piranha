@@ -16,6 +16,9 @@
                     ssh: 'SSH Key'
                 };
                 $scope.steps = ['phone', 'billing', 'ssh'];
+                if ($scope.features.phoneVerification !== 'enabled') {
+                    $scope.steps.splice($scope.steps.indexOf('phone'), 1);
+                }
                 $scope.currentStep = $('#signupStep').val();
 
                 $scope.campaignId = $cookies.campaignId;
