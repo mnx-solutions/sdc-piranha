@@ -14,14 +14,15 @@
 ul.page-sidebar-menu > li.active > a .selected,
 ul.page-sidebar-menu .nested.active .sub-menu  > li.active > a .selected-sub,
 .nested.active.collapses > li.active > a .selected,
-ul.page-sidebar-menu > li.nested.active.collapses > a .selected{
+ul.page-sidebar-menu > li.nested.active.collapses > a .selected {
     display: block;
     width: 8px;
     height: 0;
     float: right;
     position: absolute;
     right: 0;
-    top: 7px;
+    top: 50%;
+    margin-top: -10px;
     border-style: solid;
     border-width: 10px 0 10px 10px;
     border-color: transparent transparent transparent #FFFFFF;
@@ -95,23 +96,29 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     background-repeat: no-repeat;
     padding-right: 8px;
 }
-.dashboard-icon i{
+.dashboard-icon i {
     background-image: url("../img/dash_i_white.png");
 }
-.dashboard-icon.active i{
+.dashboard-icon.active i {
     background-image: url("../img/dash_i_orange.png") ! important;
 }
-.compute-icon i{
+.compute-icon i {
     background-image: url("../img/compute_i_white.png");
 }
-.compute-icon.active i{
+.compute-icon.active i {
     background-image: url("../img/compute_i_orange.png") ! important;
 }
-.storage-icon i{
+.storage-icon i {
     background-image: url("../img/storage_i_white.png");
 }
-.storage-icon.active i{
+.storage-icon.active i {
     background-image: url("../img/storage_i_orange.png") ! important;
+}
+.support-icon i {
+    background-image: url("../img/support_i_white.png");
+}
+.support-icon.active i {
+    background-image: url("../img/support_i_orange.png") ! important;
 }
 .single .title, .nested .title, .three .title, .last .title {
     color: #ffffff;
@@ -185,10 +192,8 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 }
 .sub-menu > li a:hover {
     background: #303030;
-    height: 20px;
 }
 .sub-menu > li {
-    height: 34px;
     list-style: none;
     background-color: #3d3d3d;
 }

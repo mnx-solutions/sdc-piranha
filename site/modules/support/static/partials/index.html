@@ -1,0 +1,26 @@
+<div class="container-fluid container-position">
+    <div class="row-fluid">
+        <ul class="breadcrumb">
+            <li>Support&nbsp;/&nbsp;</li>
+            <li>Joyent Support</li>
+        </ul>
+        <div class="page-header row-fluid">
+            <h3 class="page-title">Joyent Support</h3>
+        </div>
+
+        <div class="loading-large span12" data-ng-show="loading"></div>
+
+        <div>
+            Joyent provides expert support services for Node.js to help enterprises adopt this powerful application and API stack. These support services are available in two options: Node.js Core Support and Joyent Cloud Node.js Support. As the corporate steward of Node.js, Joyent can provide the highest level of support for this dynamic runtime.
+        </div>
+
+        <div class="support-holder" data-ng-repeat="supportPackage in supportPackages" data-ng-click="clickHolder(supportPackage.link)">
+            <i class="{{supportPackage.icon}}"></i>
+            <div class="title">{{supportPackage.title}}</div>
+            <div class="desc">{{supportPackage.description}}</div>
+        </div>
+
+
+    </div>
+</div>
+

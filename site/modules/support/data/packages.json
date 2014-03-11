@@ -1,0 +1,26 @@
+{
+    "index": {
+        "menuButton": "Joyent Support",
+        "title": "Standart Support",
+        "description": "Included as part of Subscription",
+        "link": "",
+        "icon": "standart-icon",
+        "template": ""
+    },
+    "nodeCore": {
+        "menuButton": "Node.js Core Support",
+        "title": "Node.js Core Support",
+        "description": "Node.js Core Support is available standalone (à la carte), and bundled. It is bundled at no additional cost with the broader support services for the Joyent Compute Service in the public cloud and Joyent SmartDataCenter",
+        "link": "/core",
+        "icon": "node-core-icon",
+        "template": "Provides a direct line to the Node.js Core engineering team at Joyent. Node.js Core Support is available to virtually any user of Node.js for production time debugging of crashing bugs. It is available for Linux and SunOS operating systems in virtually any hosting environment (including public or private clouds). Node.js Core Support is available standalone (à la carte), and bundled. It is bundled at no additional cost with the broader support services for the Joyent Compute Service in the public cloud and Joyent SmartDataCenter private cloud software if you have purchased either the Business Critical or Mission Critical Support Tiers. View our support levels for more details on these offerings."
+    },
+    "nodeCloud": {
+        "menuButton": "Joyent Cloud Node.js Support",
+        "title": "Joyent Cloud Node.js Support",
+        "description": "Provides a direct line to the Node.js Core engineering team at Joyent. Node.js Core Support is available to virtually any user of Node.js for production time debugging of crashing bugs.",
+        "link": "/cloud",
+        "icon": "node-cloud-icon",
+        "template": "Provides summary Q&A technical support guidance when using Node.js, including consultative summary Q&A and recommendations on how to run in production, how to architect, develop, and package customer applications. Joyent Cloud Node.js Support is available only as a bundled feature of the broader support services for the Joyent Compute Service in the public cloud and Joyent SmartDataCenter private cloud software. It is bundled at no additional cost if you have purchased either the Production, Business Critical or Mission Critical Support Tiers. View our support levels for more details on these offerings."
+    }
+}
