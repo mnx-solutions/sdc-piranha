@@ -41,8 +41,8 @@
             };
 
             $scope.downloadFile = function () {
-                if (lastSelectedFile.length && lastSelectedFile[0].active) {
-                    fileman.get($scope.currentPath + '/' + lastSelectedFile[0].name);
+                if (lastSelectedFile.length && lastSelectedFile[0].active && lastSelectedFile[0].type === 'object') {
+                    fileman.get($scope.currentPath);
                 } else {
                     PopupDialog.message(
                         localization.translate(
@@ -83,25 +83,27 @@
                 PopupDialog.custom(
                     opts,
                     function (data) {
-                        fileman.mkdir(fullPath + '/' + data.folderName, function (error) {
-                            if (error) {
-                                return PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Error'
-                                    ),
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        error.message
-                                    ),
-                                    function () {}
-                                );
-                            }
-                            $scope.refreshingFolder = true;
-                            $scope.createFilesTree();
-                        });
+                        if (data) {
+                            fileman.mkdir(fullPath + '/' + data.folderName, function (error) {
+                                if (error) {
+                                    return PopupDialog.error(
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            'Error'
+                                        ),
+                                        localization.translate(
+                                            null,
+                                            null,
+                                            error.message
+                                        ),
+                                        function () {}
+                                    );
+                                }
+                                $scope.refreshingFolder = true;
+                                $scope.createFilesTree();
+                            });
+                        }
                     }
                 );
             };
@@ -139,16 +141,18 @@
                                         null,
                                         error.message
                                     ),
-                                    function () {}
+                                    function () {
+                                        $scope.refreshingFolder = false;
+                                    }
                                 );
                             }
-
-                            $scope.createFilesTree();
+                            delete $scope.filesTree[$scope.currentPath];
+                            $scope.currentPath = fullPath = $scope.currentPath.slice(0, $scope.currentPath.lastIndexOf('/'));
+                            $scope.createFilesTree(true);
                         });
                     }
                 );
             };
-
             $scope.getInfo = function () {
                 if (!lastSelectedFile.length) {
                     return false;
@@ -193,7 +197,7 @@
             $scope.createFilesTree = function (userAction, callback) {
                 fileman.ls($scope.currentPath, function (error, result) {
                     $scope.files = result.__read();
-                    if ($scope.filesTree[$scope.currentPath] !== $scope.files) {
+                    if (!error && ($scope.filesTree[$scope.currentPath] !== $scope.files)) {
                         $scope.filesTree[$scope.currentPath] = $scope.files;
                     }
                     $scope.loadingFolder = false;
@@ -224,20 +228,19 @@
                 if ($scope.loadingFolder) {
                     return;
                 }
-                if (obj && obj.type && obj.type !== 'directory') {
-                    if (lastSelectedFile.length) {
-                        clearSelectedFiles();
-                    }
-                    obj.active = true;
-                    lastSelectedFile.push(obj);
-                    return;
+                if (lastSelectedFile.length) {
+                    clearSelectedFiles();
                 }
+
+                lastSelectedFile.push(obj);
+                obj.active = true;
+
                 if (fullPath === previousFullPath && userAction) {
                     return;
                 }
                 previousFullPath = fullPath;
 
-                $scope.loadingFolder = true;
+                $scope.loadingFolder = !obj.type || obj.type === 'directory';
                 if (!userAction) {
                     fullPath = (obj && (obj.full || obj.name)) || fullPath || $scope.currentPath || '/';
                     $scope.currentPath = $scope.currentPath || fullPath;

@@ -163,5 +163,6 @@
   , "phoneVerification": "yes"
   , "usageData": "no"
   , "support": "no"
+  , "mantaJobs": "no"
   }
 }

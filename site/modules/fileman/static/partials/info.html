@@ -3,25 +3,25 @@
         <h5><i class="icon-info-sign"></i><b>{{ title }}</b></h5>
     </div>
     <div class="modal-body">
-        <table class="table table-striped table-bordered table-hover table-full-width">
+        <table class="info-table">
             <tr>
-                <td>Name:</td>
+                <td>Name</td>
                 <td>{{info.name}}</td>
             </tr>
             <tr>
-                <td>Type:</td>
+                <td>Type</td>
                 <td>{{info.type}}</td>
             </tr>
-            <tr>
-                <td>Size:</td>
+            <tr data-ng-show="info.size">
+                <td>Size</td>
                 <td>{{info.size}}</td>
             </tr>
             <tr>
-                <td>Creation Date:</td>
+                <td>Creation Date</td>
                 <td>{{info.headers.date | date:'yyyy-MM-dd HH:mm'}}</td>
             </tr>
             <tr>
-                <td>Last Modified At:</td>
+                <td>Last Modified At</td>
                 <td>{{info.headers['last-modified']}}</td>
             </tr>
         </table>

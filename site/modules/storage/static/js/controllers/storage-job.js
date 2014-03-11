@@ -22,7 +22,7 @@
                             $scope.failures = Storage.getFailures(jobId);
                         },
                         function () {
-                            $location.url('/storage/history');
+                            $location.url('/manta/jobs');
                             $location.replace();
                         }
                     );

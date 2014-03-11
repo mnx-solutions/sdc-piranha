@@ -33,29 +33,40 @@
                 <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || compute">Images</span><span class="selected-sub"></span></a></li>
             </ul>
         </li>
-        <li class="nested storage-icon" data-ng-class="{active: location.path().search('storage') == 1 ||
-                                                  location.path().search('fileman') == 1, over: storage && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="storage=true" ng-mouseleave="storage=false">
-            <a href="#!/storage/">
+        <li class="nested storage-icon" data-ng-class="{active: location.path().search('manta/') == 1, over: storage && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="storage=true" ng-mouseleave="storage=false">
+            <a href="#!/manta/intro">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || storage" >Storage</span>
+                <span class="title" data-ng-show="!sideBarMin || storage">Storage</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu" data-ng-show="features.manta == 'enabled'">
-                <li class="sub" data-ng-class="{active: location.path().search('storage') == 1 && location.path() != '/storage/history'}">
-                    <a href="#!/storage/">
-                        <span class="titles" data-ng-show="!sideBarMin || storage">Manta</span>
+                <li class="sub" data-ng-class="{active: location.path().search('manta/intro') == 1}">
+                    <a href="#!/manta/intro">
+                        <span class="titles" data-ng-show="!sideBarMin || storage">Introduction</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub" data-ng-class="{active: location.path().search('storage.history') == 1}"><a href="#!/storage/history"><span class="titles" data-ng-show="!sideBarMin || storage" data-translate>Job History</span><span class="selected-sub"></span></a></li>
-                <li class="sub" data-ng-class="{active: location.path().search('fileman') == 1}"><a href="#!/fileman"><span class="titles" data-ng-show="!sideBarMin || storage" data-translate>File Manager</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('manta/files') == 1}">
+                    <a href="#!/manta/files">
+                        <span class="titles" data-ng-show="!sideBarMin || storage" data-translate>File Manager</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li class="sub"
+                    data-ng-class="{active: location.path().search('manta/jobs') == 1}"
+                    data-ng-show="features.mantaJobs == 'enabled'">
+                    <a href="#!/manta/jobs">
+                        <span class="titles" data-ng-show="!sideBarMin || storage" data-translate>Job History</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nested support-icon" data-ng-show="features.support == 'enabled'" data-ng-class="{active: location.path().search('support') == 1 ||
                                                   location.path().search('support.cloud') == 1, over: support && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="support=true" ng-mouseleave="support=false">
             <a data-ng-click="clickSupportMenu('')">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || support" >Support</span>
+                <span class="title" data-ng-show="!sideBarMin || support">Support</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">

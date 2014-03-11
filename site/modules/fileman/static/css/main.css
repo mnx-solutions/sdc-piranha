@@ -29,6 +29,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     width: 1000px;
+    padding-bottom: 30px;
 }
 .general-column {
     position:relative;
