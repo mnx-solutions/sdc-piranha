@@ -28,6 +28,9 @@ module.exports = function execute(scope, register) {
     //Compatibility with old version
     var api = {};
     var steps = [ 'start', 'phone', 'billing', 'ssh' ];
+    if (config.features.phoneVerification !== 'enabled') {
+        steps.splice(steps.indexOf('phone'), 1);
+    }
 
     function _nextStep(step) {
         return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step)+1];
@@ -264,6 +267,10 @@ module.exports = function execute(scope, register) {
             if (err) {
                 cb(err);
                 return;
+            }
+
+            if (steps.indexOf(oldStep) === -1 && oldStep !== 'blocked') {
+                oldStep = 'start';
             }
 
             var isCompleted = oldStep === 'completed' || oldStep === 'complete';

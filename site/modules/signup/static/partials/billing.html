@@ -3,7 +3,7 @@
         <div class="page-title">Billing Information</div>
         <div class="wizard-steps">
             <div><p class="firststep">Account Details</p></div>
-            <div><p>Verification</p></div>
+            <div data-ng-show="features.phoneVerification == 'enabled'"><p>Verification</p></div>
             <div class="active-step"><p>Payment Information</p></div>
             <div><p class="laststep"></p></div>
         </div>

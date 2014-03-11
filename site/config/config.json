@@ -160,5 +160,6 @@
   , "promoBillingConfirmation": "no"
   , "useBrandingOrange": "no"
   , "manta": "no"
+  , "phoneVerification": "yes"
   }
 }

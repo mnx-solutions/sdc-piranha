@@ -253,7 +253,7 @@
                             $scope.selectedCountryCode = account.country.areaCode;
 
                             $scope.phone = {
-                                number: account.phone.replace(new RegExp(/[^0-9#\*]/g), ''),
+                                number: account.phone.replace(new RegExp(/[^\+0-9#\*]/g), ''),
                                 country: account.country
                             };
 
