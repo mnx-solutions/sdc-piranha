@@ -99,6 +99,7 @@
                                 machines.forEach(function (machine) {
                                     var machinePackageId = findPackageIdByName(packages, machine.package);
                                     if (option.package === machinePackageId) {
+                                        machine.freetier = true;
                                         freeTierOptions.forEach(function (freeOption) {
                                             removeElement(freeOption.datacenters, machine.datacenter);
                                         });

@@ -175,6 +175,9 @@
                     }
                     Machine.provisionMachine(machine || $scope.data).done(function(err, job) {
                         var newMachine = job.__read();
+                        if ($scope.features.freetier === 'enabled') {
+                            $scope.freetier = FreeTier.freetier();
+                        }
                         if(newMachine.id) {
                             var listMachines = Machine.machine();
                             $q.when(listMachines, function() {
