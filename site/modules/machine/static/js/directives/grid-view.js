@@ -119,10 +119,10 @@
                 }
             });
 
-            if ($scope.userConfig.__loaded) {
+            if ($scope.userConfig._loaded) {
                 var userConfig = $scope.gridUserConfig.config;
                 userConfig.order = {name: prop.name, ord: $scope.order[0] === prop.order};
-                userConfig.dirty = true;
+                userConfig.dirty(true);
                 userConfig.$save();
             }
         };
@@ -278,9 +278,9 @@
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
                     el.active = (el.active) ? false : true;
-                    if ($scope.userConfig.__loaded) {
+                    if ($scope.userConfig._loaded) {
                         $scope.gridUserConfig.propKeys[id].active = el.active;
-                        $scope.gridUserConfig.config.dirty = true;
+                        $scope.gridUserConfig.config.dirty(true);
                     }
                 }
             });
@@ -382,18 +382,18 @@
 
                 if (!$scope.userConfig) {
                     $scope.userConfig = {
-                        $load: function (callback) { callback(null, $scope.userConfig); },
+                        $load: function (callback) { this._loaded = true;callback(null, $scope.userConfig); },
                         $save: function () {},
                         $child: function () { return $scope.userConfig; },
-                        __proto__: { __loaded: false }
+                        dirty: function () {},
+                        _loaded: false
                     };
                 }
-                $scope.userConfig.__proto__.__loaded = false;
+
                 $scope.userConfig.$load(function (error, config) {
                     if (error) {
                         return;
                     }
-                    $scope.userConfig.__proto__.__loaded = true;
                     var propKeys = {};
                     $scope.gridUserConfig = {
                         config: config,
@@ -406,13 +406,13 @@
                         });
                     } else {
                         config.props = [];
-                        config.dirty = true;
+                        config.dirty(true);
                     }
 
                     if ($scope.paginated) {
                         if (!ng.isDefined(config.perPage)) {
                             config.perPage = $scope.perPage;
-                            config.dirty = true;
+                            config.dirty(true);
                         } else {
                             $scope.perPage = config.perPage;
                         }
@@ -423,7 +423,7 @@
                     $scope.$watch('perPage', function (num) {
                         if (ng.isDefined(num) && $scope.paginated) {
                             config.perPage = $scope.perPage;
-                            config.dirty = true;
+                            config.dirty(true);
                             config.$save();
                         }
                     });
@@ -441,11 +441,11 @@
                         } else {
                             propKeys[el.id] = el;
                             config.props.push(el);
-                            config.dirty = true;
+                            config.dirty(true);
                         }
 
                         if (!ng.isDefined(config.order)) {
-                            config.dirty = true;
+                            config.dirty(true);
                             config.order = $scope.order;
                         } else if (el.name === config.order.name) {
                             $scope.order = [config.order.ord ? el.order : el.rorder];
