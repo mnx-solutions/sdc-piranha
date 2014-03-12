@@ -43,7 +43,11 @@
                     <div class="info">
                         <p>Disk</p><span><p>{{ image.description.disk }} GB</p></span>
                     </div>
-                    <div class="btn-block">
+                    <div data-ng-show="image.imageData.freetier" class="freetier-info">
+                        <span>Free tier is valid until {{image.imageData.freeTierValidUntil | date:'yyyy-MM-dd'}}</span>
+                    </div>
+
+                    <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier}">
                         <span data-ng-hide="image.imageData.freetier">
                             <span class="price">${{ image.description.price }}</span>
                             <span class="hour">per hour</span>
