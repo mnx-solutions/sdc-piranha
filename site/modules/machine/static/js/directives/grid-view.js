@@ -226,30 +226,22 @@
             });
         };
 
-        if ($scope.checkedCheckBox === undefined) {
-            $scope.checkedCheckBox = false;
-        }
 
         $scope.selectAllCheckbox = function () {
             if ($scope.checkedCheckBoxDisable) {return; }
-            $scope.checkedCheckBox = ($scope.checkedCheckBox) ? false : true;
+            $scope.checkedCheckBox = !$scope.checkedCheckBox;
             $scope.objects.forEach(function (el) {
+                el.checked = false;
+            });
+            var objects = $filter('filter')($scope.objects, $scope.matchesFilter);
+            objects.forEach(function (el) {
                 el.checked = $scope.checkedCheckBox;
             });
         };
 
         $scope.disableSelectAllCheckbox = function () {
-            var checkedFlag = 0;
-            $scope.objects.forEach(function (el) {
-                if ((el.fireWallActionRunning) || (el.job && !el.job.finished)) {
-                    checkedFlag += 1;
-                }
-
-                if (checkedFlag > 0) {
-                    $scope.checkedCheckBoxDisable = true;
-                } else {
-                    $scope.checkedCheckBoxDisable = false;
-                }
+            $scope.checkedCheckBoxDisable = $scope.objects.some(function (el) {
+                return (el.fireWallActionRunning) || (el.job && !el.job.finished);
             });
         };
 
@@ -261,28 +253,27 @@
         }, true);
 
         $scope.selectCheckbox = function (obj) {
-            var id;
-            if (obj && obj.id) {
-                id = obj.id;
-            } else if (obj && !obj.id && obj.uuid) {
-                id = obj.uuid;
-            }
+            var id = obj && (obj.id || obj.uuid);
 
-            var checkedFlag = 0;
+            var selectedItemsCount = 0;
+            var objects = $filter('filter')($scope.objects, $scope.matchesFilter);
             $scope.objects.forEach(function (el) {
-                if ( (id && el.id === id) || (id && el.uuid === id) ){
-                    if ((!el.job && !el.fireWallActionRunning) || (el.job && el.job.finished && !el.fireWallActionRunning)){
-                        el.checked = (el.checked) ? false : true;
-                    }
+                if (objects.indexOf(el) === -1) {
+                    el.checked = false;
+                    return;
                 }
-                if (el.checked && el.checked != undefined) {
-                    checkedFlag += 1;
+
+                var objId = el.id || el.uuid;
+                if (objId === id && !el.fireWallActionRunning && (!el.job || el.job.finished)) {
+                    el.checked = !el.checked;
+                }
+                if (el.checked) {
+                    selectedItemsCount += 1;
                 }
             });
-            if (checkedFlag == 0 || checkedFlag != $scope.objects.length) $scope.checkedCheckBox = false;
-            if (checkedFlag == $scope.objects.length && $scope.objects.length > 0) $scope.checkedCheckBox = true;
-        };
 
+            $scope.checkedCheckBox = objects.length && selectedItemsCount === objects.length;
+        };
         $scope.selectColumnsCheckbox = function (id) {
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
