@@ -24,6 +24,7 @@
             // populate all datasources
             $scope.account     = Account.getAccount();
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
+            $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
             if ($scope.slbFeatureEnabled) {
 
                 $scope.balancers = slbService.getBalancers();

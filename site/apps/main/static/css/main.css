@@ -1827,15 +1827,21 @@ label.checkbox {
     border-radius: 50px;
     background-position: center center;
 }
-.plus-btn-icon {
+.plus-btn-icon,
+.chart-btn-icon {
     width: 20px;
     height: 20px;
     float: left;
     margin-top: 0;
     position: relative;
     left: 3px;
-    background-image: url("../img/plus_icon.png");
-    background-repeat: no-repeat;
+}
+.plus-btn-icon {
+    background: url("../img/plus_icon.png") no-repeat;
+}
+.chart-btn-icon {
+    background: url("../img/chart-icon.png") no-repeat;
+    background-size: 20px;
 }
 .margin-btn-dashboard {
     padding-bottom: 10px;
