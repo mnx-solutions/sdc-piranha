@@ -28,8 +28,12 @@ module.exports = function execute(scope, app, callback) {
         var date = new Date().toUTCString();
         var nonce = Math.random().toString(36).substring(7);
 
+        var brandingEnabled = scope.config.features.useBrandingOrange === 'enabled';
+        var phoneVerificationDisabled = scope.config.features.phoneVerification !== 'enabled';
+
         // build the query string
-        var querystring = (scope.config.features.useBrandingOrange === 'enabled' ? 'branding=orange&' : '') +
+        var querystring = (brandingEnabled ? 'branding=orange&' : '') +
+            (brandingEnabled && phoneVerificationDisabled ? 'hideVerify=true&' : '') +
             'keyid=' + encodeURIComponent(config.keyId) + '&' +
             'nonce=' + encodeURIComponent(nonce) + '&' +
             'now=' + encodeURIComponent(date) + '&' +
@@ -58,8 +62,11 @@ module.exports = function execute(scope, app, callback) {
                 'returnto': returnUrl,
                 'sig': signature
             };
-            if (scope.config.features.useBrandingOrange === 'enabled') {
+            if (brandingEnabled) {
                 url = url + 'branding=orange&';
+                if (phoneVerificationDisabled) {
+                    url = url + 'hideVerify=true&';
+                }
             }
             url = url + 'verifystring=' + encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
         } else {
