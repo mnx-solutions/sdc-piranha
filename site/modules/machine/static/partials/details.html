@@ -222,7 +222,7 @@
                                         </option>
                                     </select>
                                     <div class="control-group resize-button">
-                                        <button class="btn light" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
+                                        <button class="btn light effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
                         </div>
                                 <div class="clearfix"></div>
@@ -286,13 +286,13 @@
                                     </div>
 
                                     </div>
-                                    <button class="btn light dpl-inline margin-top-10"
+                                    <button class="btn light dpl-inline margin-top-10 effect-orange-button"
                                 data-ng-click="clickCreateImage()"
                                 data-translate
                                 data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
                             Create Image
                         </button>
-                                    <div class="dpl-inline"><a class="btn light margin-top-10" href="#!/images">My Images List</a></div>
+                                    <div class="dpl-inline"><a class="btn light margin-top-10 effect-orange-button" href="#!/images">My Images List</a></div>
                     </form>
                     <br />
                 </div>
@@ -383,8 +383,8 @@
                                             <div data-translate>You have no firewall rules that would apply to this machine</div>
                                         </div>
                                         <div class="pull-left">
-                                            <a class="btn light margin-top-10" href="#!/firewall">Edit</a>
-                                            <button class="btn light margin-top-10"
+                                            <a class="btn light margin-top-10 effect-orange-button" href="#!/firewall">Edit</a>
+                                            <button class="btn light margin-top-10 effect-orange-button"
                                                     data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
                                                     data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
                                                     data-ng-show="firewallChangeable()"
@@ -478,7 +478,7 @@
                     </div>
                         </div>
                 <div class="vda-btn">
-                    <a id="button-detailed-analytics" href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right "><i class="chart-icon"></i>View Detailed Analytics</a>
+                    <a id="button-detailed-analytics" href="#!/cloudAnalytics/{{machine.id}}" class="btn light pull-right effect-orange-button"><i class="chart-icon"></i>View Detailed Analytics</a>
                     </div>
                 </div>
         </div>

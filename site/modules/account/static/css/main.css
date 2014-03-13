@@ -117,11 +117,6 @@ select.date-month, select.date-year {
     border-color: #FF6600;
 }
 
-.create-key-btn {
-    margin-left: 20px;
-    margin-top: 2px;
-}
-
 .ssh-download-link {
     width:300px;
     float:left;
@@ -292,48 +287,14 @@ select.date-month, select.date-year {
     vertical-align: top !important;
     word-wrap: break-word !important;
 }
-.small-btn {
-    width: 56px!important;
-    height: 21px;
-    color: #f60;
-    background-color: #ebebeb;
-    padding: 0;
-    font-size: 12px!important;
-    font-weight: 500!important;
-    text-shadow: none;
-    border: 0;
-    margin-left: 10px;
-    margin-top: -3px;
-    display: none;
+
+.inline-pos{
+    display: inline-block;
+
 }
 .cell-link {
     cursor: pointer;
     color: #375675;
-}
-.btn.light {
-    color: #f60;
-    text-shadow: none;
-    background-color: #f3f3f3;
-    font-size: 16px;
-}
-.edit-btn {
-    width: 56px!important;
-    height: 21px;
-    color: #f60;
-    background-color: #ebebeb;
-    font-size: 12px!important;
-    font-weight: 500!important;
-    text-shadow: none;
-    border: 0;
-    margin-left: 10px;
-    text-decoration: none;
-    vertical-align: middle;
-    text-align: left;
-    padding: 2px 6px;
-}
-.edit-btn:hover {
-    background-color: #f60 !important;
-    color: white !important;
 }
 
 .edit-name{
@@ -508,14 +469,6 @@ legend + .control-group {
     background-color: transparent!important;
     margin-top: 20px;
     margin-bottom: 10px!important;
-}
-.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
-    width: 50px;
-    border-radius: 0;
-    float: left;
-    text-shadow: none;
-    font-size: 16px;
-    color: #555555;
 }
 #phone{
     width: 150px;

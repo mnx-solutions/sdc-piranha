@@ -72,11 +72,15 @@
 .icon-zoom-in{
     background-image: url(../img/zoomin.png);
 }
-
+.icon-zoom-in:hover{
+    background-image: url(../img/zoomin-white.png);
+}
 .icon-zoom-out{
     background-image: url(../img/zoomout.png);
 }
-
+.icon-zoom-out:hover{
+    background-image: url(../img/zoomout-white.png);
+}
 .options-ctrl{
     background-color: #fffbf2 !important;
     padding: 0 6px;

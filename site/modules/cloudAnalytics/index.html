@@ -35,7 +35,7 @@
 
 		            <graph data-ng-repeat="i in graphs" options="i"></graph>
                     <div class="clearfix"></div>
-                    <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey">
+                    <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey effect-orange-button">
                         <b>{{ machineExists && 'Back to Instance Details' || 'Back to Instances' }}</b>
                     </a>
 					
@@ -72,10 +72,10 @@
 
                     <p class="p-padding">Analytics Options:</p>
 
-                    <button class="btn icon-zoom-in options-ctrl" data-ng-click="zoom(1)" ></button>
-                    <button class="btn icon-zoom-out options-ctrl" data-ng-click="zoom(-1)" ></button>
-                    <button class="btn options-ctrl" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
-                    <button class="btn options-ctrl" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
+                    <button class="btn icon-zoom-in options-ctrl effect-orange-button" data-ng-click="zoom(1)" ></button>
+                    <button class="btn icon-zoom-out options-ctrl effect-orange-button" data-ng-click="zoom(-1)" ></button>
+                    <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
+                    <button class="btn options-ctrl effect-orange-button" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
 				</div>
 		    </div>
 		</div>

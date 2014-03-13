@@ -13,7 +13,7 @@
                 {
                     result: 'cancel',
                     label: 'No',
-                    cssClass: 'btn grey_new',
+                    cssClass: 'btn grey_new effect-orange-button',
                     datatabindex: "1",
                     setFocus: false
                 },

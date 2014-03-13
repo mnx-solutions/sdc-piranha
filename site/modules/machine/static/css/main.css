@@ -1352,6 +1352,7 @@
     padding: 0;
     font-size: 12px;
     font-weight: 400;
+    display: inline-block;
 }
 .dataset-desc{
     max-width: 200px;
@@ -1486,6 +1487,9 @@
     background-repeat: no-repeat;
     vertical-align: middle;
     padding-right: 10px;
+}
+.effect-orange-button:hover .chart-icon {
+    background-image: url("../img/icon-chart-white.png");
 }
 .container-grid {
     float: left;
