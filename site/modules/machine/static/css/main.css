@@ -748,7 +748,7 @@
 }
 .simple-image {
     width: 240px;
-    height: 206px;
+    height: 220px;
     position: relative;
     margin: 0 10px 10px 0;
     border-radius: 3px;
@@ -791,6 +791,13 @@
 .simple-image .info {
     margin-left: 20px;
     display: inline-block;
+}
+.simple-image .freetier-info {
+    margin-left: 20px;
+    padding-top: 5px;
+    color: #666;
+    font-size: 12px;
+    font-weight: 400;
 }
 .simple-image .info p {
     margin-top: 7px;
@@ -865,7 +872,10 @@
     color: white;
 }
 .simple-image .btn-block {
-    padding: 15px 0 0 20px;
+    padding: 30px 0 0 20px;
+}
+.simple-image .freetier-btn-block {
+    padding-top: 5px;
 }
 .simple-image .btn-block span p {
     font-size: 12px;
