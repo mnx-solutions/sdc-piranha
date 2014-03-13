@@ -60,7 +60,9 @@
                             }
                         }
                         hasDuplicates = hasDuplicates || newCollection[item.key];
-                        newCollection[item.key] = item.val;
+                        if (item.key && item.val) {
+                            newCollection[item.key] = item.val;
+                        }
                     });
                     var persistCollection = function () {
                         if (scope.machineId) {
