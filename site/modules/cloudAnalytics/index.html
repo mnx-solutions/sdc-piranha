@@ -72,8 +72,8 @@
 
                     <p class="p-padding">Analytics Options:</p>
 
-                    <button class="btn icon-zoom-in options-ctrl effect-orange-button" data-ng-click="zoom(1)" ></button>
-                    <button class="btn icon-zoom-out options-ctrl effect-orange-button" data-ng-click="zoom(-1)" ></button>
+                    <button class="btn icon-zoom-in options-ctrl effect-orange-button" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
+                    <button class="btn icon-zoom-out options-ctrl effect-orange-button" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
                     <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
                     <button class="btn options-ctrl effect-orange-button" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
 				</div>
