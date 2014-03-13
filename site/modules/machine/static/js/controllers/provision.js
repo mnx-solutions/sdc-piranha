@@ -20,9 +20,10 @@
         '$cookies',
         '$rootScope',
         'FreeTier',
+        '$compile',
 
         function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network,
-                  Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier) {
+                  Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -194,17 +195,36 @@
                     finalProvision();
                     return;
                 }
+
+                var dataset = $scope.selectedDataset;
+                var description = dataset.description;
+                var billingStartMessage = localization.translate(
+                    $scope,
+                    'machine',
+                    'Billing will start once this instance is created'
+                );
+                var title = 'Confirm: Create Instance';
+                var popupContent = billingStartMessage;
+                if (dataset.eula || description.indexOf('Stingray') > -1) {
+                    title = 'Accept End-User License Agreement';
+
+                    var eulaLink = dataset.eula || 'slb/static/templates/eula.html';
+                    var popupTpl = document.createElement("div");
+                    popupTpl.setAttribute("ng-include", '"' + eulaLink + '"');
+
+                    popupContent = {
+                        body: $compile(popupTpl)($scope),
+                        footer: billingStartMessage
+                    };
+                }
+
                 PopupDialog.confirm(
                     localization.translate(
                         $scope,
                         null,
-                        'Confirm: Create Instance'
+                        title
                     ),
-                    localization.translate(
-                        $scope,
-                        'machine',
-                        'Billing will start once this instance is created'
-                    ),
+                    popupContent,
                     finalProvision
                 );
             };
