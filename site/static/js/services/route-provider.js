@@ -83,6 +83,10 @@ window.JP.main.provider('route', [
             }
 
             if (context) {
+                if (context.parent) {
+                    navigationPath = this._buildNavigationPath(context.parent);
+                }
+
                 if (context.children.length > 0 || 
                     (context.action === action  && this._matchParams(params, context))) {
                     navigationPath.push({
@@ -107,15 +111,16 @@ window.JP.main.provider('route', [
             return navigationPath;
         };
 
-        Provider.prototype.registerNavigation = function (path, action, title) {
-            var navigationPath = action.split('.');
+        Provider.prototype.registerNavigation = function (path, route) {
+            var navigationPath = route.action.split('.');
 
             if (navigationPath.length > 0) {
                 var context = {};
-                context.title = title;
-                context.action = action;
+                context.title = route.title;
+                context.action = route.action;
                 context.path = path;
                 context.children = [];
+                context.parent = route.parent;
 
                 if (this._navigation.length === 0) {
                     this._navigation.push(context);
@@ -161,7 +166,7 @@ window.JP.main.provider('route', [
 
             when: function (path, route) {
                 if (route.action) {
-                    provider.registerNavigation(path, route.action, route.title);
+                    provider.registerNavigation(path, route);
                 }
 
                 $routeProvider.when(path, route);

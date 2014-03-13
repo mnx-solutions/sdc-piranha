@@ -7,7 +7,8 @@ window.JP.main.config([
         if (features && features.firewall !== 'disabled') {
             routeProvider.when('/firewall', {
                 title: 'Cloud Firewall',
-                action: 'firewall.index'
+                action: 'firewall.index',
+                parent: 'machine.index'
             });
         }
     }]);
