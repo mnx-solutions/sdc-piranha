@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "sdc-clients": "git+ssh://git@git.joyent.com:node-sdc-clients.git"
+  }
+}
