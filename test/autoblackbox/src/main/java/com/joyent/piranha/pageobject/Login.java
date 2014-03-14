@@ -43,4 +43,12 @@ public class Login extends AbstractPageObject {
     public SelenideElement setUserName(String userName) {
         return $(USERNAME_INPUT_SELECTOR).setValue(userName);
     }
+
+    public SelenideElement getErrorLabel(){
+        return $(".alert.alert-error");
+    }
+
+    public SelenideElement getInfoLabel(){
+        return $(".alert.alert-info");
+    }
 }
