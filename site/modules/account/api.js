@@ -198,7 +198,7 @@ module.exports = function execute(scope, register) {
                 });
             }
             // Billing server is updated on billing step and forward
-            if (steps.indexOf(step) >= steps.indexOf('billing')) {
+            if (steps.indexOf(step) >= steps.indexOf('billing') || step === 'completed') {
                 updateBilling(req);
             } else if (!req.session || step !== 'blocked') {
                 setImmediate(cb);
