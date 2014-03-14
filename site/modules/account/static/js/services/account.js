@@ -229,61 +229,66 @@
                     });
                 }
 
-                function createConfig(config, loaded) {
-                    config.__proto__ = {
-                        _dirty: false,
-                        set dirty(val) {
-                            if (this.parent) {
-                                this.parent._dirty = !!val;
-                            } else {
-                                this._dirty = !!val;
-                            }
-                        },
-                        get dirty() {
-                            return this.parent ? this.parent._dirty : this._dirty;
-                        },
-                        child: null,
-                        loaded: config.loaded !== undefined ? config.loaded : !!loaded,
-                        $save: function () {
-                            if (!this.dirty) {
-                                return;
-                            } else {
-                                this.dirty = false;
-                            }
-                            return service.setUserConfig(config.parent || config);
-                        },
-                        $load: function (callback) {
-                            function returnObj(err, cfg) {
-                                var child = config.child;
-                                cfg = createConfig(cfg, !err);
-                                if (child) {
-                                    cfg = config.$child(child);
-                                }
-                                return cfg;
-                            }
-                            if (this.loaded) {
-                                callback(null, returnObj(null, this));
-                            } else {
-                                load(function (err, cfg) {
-                                    angular.extend(config.parent || config, cfg);
-                                    callback(err, returnObj(err, cfg));
-                                });
-                            }
-                        },
-                        $child: function (name) {
-                            if (this.child) {
-                                return this.parent.$child(name);
-                            }
-                            this[name] = this[name] || {};
-                            this[name] = createConfig(this[name]);
-                            this[name].__proto__.child = name;
-                            this[name].__proto__.parent = this;
-                            return this[name];
-                        }
-                    };
-                    return config;
+                function UserConfig(config, parent) {
+                    if (!(this instanceof UserConfig)) {
+                        return new UserConfig(config, parent);
+                    }
+
+                    angular.extend(this, config);
+                    this._parent = parent || this;
+                    this._dirty = false;
                 }
-                return createConfig(service.userConfig);
+                UserConfig.prototype.dirty = function (value) {
+                    if (Boolean(value) === value) {
+                        this._parent._dirty = value;
+                    }
+                    return this._parent._dirty;
+                };
+                UserConfig.prototype.$save = function () {
+                    if (this.dirty()) {
+                        service.setUserConfig(this._parent);
+                        this.dirty(false);
+                    }
+                };
+
+                UserConfig.prototype.$load = function (callback) {
+                    var self = this;
+                    if (this._parent._loaded) {
+                        callback(null, this);
+                    } else {
+                        load(function (err, cfg) {
+                            angular.extend(self._parent, cfg);
+                            self._parent._loaded = true;
+                            callback(err, self._child ? self._parent.$child(self._child) : self);
+                        });
+                    }
+                };
+
+                UserConfig.prototype.$child = function (name) {
+                    if (this._child) {
+                        return this._parent.$child(name);
+                    }
+                    var config = this._parent[name] || {};
+                    if (config instanceof UserConfig) {
+                        return config;
+                    }
+                    this._parent[name] = new UserConfig(config, this);
+                    this._parent[name]._child = name;
+                    return this._parent[name];
+                };
+
+                UserConfig.prototype.toJSON = function () {
+                    var config = {};
+                    var k;
+                    for (k in this) {
+                        if (this.hasOwnProperty(k) && k[0] !== '_') {
+                            config[k] = this[k];
+                        }
+                    }
+                    return config;
+                };
+
+                return new UserConfig(service.userConfig);
             };
 
             service.setUserConfig = function (config) {
