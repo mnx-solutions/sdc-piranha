@@ -15,7 +15,7 @@
             <input value="" class="grid-search-icon" type="submit">
         </form>
     </div>
-    <div class="actions pull-right" data-ng-show="controls">
+    <div class="actions pull-right" data-ng-show="controls" data-ng-class="{'actions-down': tabFilterField}">
         <div class="btn-group">
             <a id="button-actions" class="btn dropdown-toggle grid-small-font" data-toggle="dropdown" href="#" data-ng-disabled="!getActionButtons(object).length | orderBy:'sequence'">
                 Actions
@@ -47,7 +47,22 @@
 </div>
 
 <div class="item header machine-list-item item-list-container">
-        <table class="table table-striped table-bordered table-hover table-full-width" id="insTable">
+    <div class="grid-tabs-container" data-ng-show="tabFilterField">
+        <span class="grid-tabs-title">{{tabFilterField}}:</span>
+        <span data-ng-repeat="filter in tabFilters">
+            <input type="radio"
+                   name="filter"
+                   id="filter{{$index}}"
+                   class="grid-tab-radio"
+                   data-ng-model="$parent.tabFilter"
+                   value="{{filter}}"
+                    />
+            <label for="filter{{$index}}" class="grid-tab">{{filter}}</label>
+        </span>
+    </div>
+        <table class="table table-striped table-bordered table-hover table-full-width"
+               data-ng-class="{'grid-view-table': tabFilterField}"
+               id="insTable">
             <thead>
                 <th class="hidden-480" data-ng-show="enabledCheckboxes">
                     <label class="checkbox" >
@@ -72,7 +87,7 @@
                 </th>
             </thead>
             <tbody id="grid-instances">
-                <tr data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" style="font-weight: 400;">
+                <tr data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter | filter:propertyFilter" data-ng-show="isOnPage($index)" style="font-weight: 400;">
                     <td width="10" data-ng-show="enabledCheckboxes">
                         <label class="checkbox">
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
