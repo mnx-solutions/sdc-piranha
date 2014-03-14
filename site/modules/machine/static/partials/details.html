@@ -2,10 +2,10 @@
 
     <div data-breadcrumbs></div>
 
-    <h3 class="page-title" data-ng-show="!changingName" data-ng-mouseenter="pencilShow = true" data-ng-mouseleave="pencilShow = false">
+    <h3 class="page-title" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">
         <div class="loading-medium wait_rename" data-ng-show="loadingNewName" ></div>
         {{machine.name}}
-        <div class="edit-text-icon" data-ng-show="pencilShow" data-ng-click="enableRename(machine.name)"></div>
+        <div class="edit-text-icon"></div>
     </h3>
 
                 <form name="instanceRename" class="machine-edit-form">
