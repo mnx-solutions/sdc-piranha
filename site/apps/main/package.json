@@ -25,7 +25,8 @@
             "slb",
             "dialog",
             "fileman",
-            "support"
+            "support",
+            "utilization"
         ],
 		"auth": true,
         "error": true,

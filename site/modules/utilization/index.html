@@ -1,0 +1,7 @@
+<div data-ng-switch="subview">
+    <div data-ng-switch-when="index" data-ng-include="'utilization/static/partials/index.html'" data-ng-controller="Utilization.IndexController"></div>
+    <div data-ng-switch-when="spend" data-ng-include="'utilization/static/partials/spend.html'" data-ng-controller="Utilization.SpendController"></div>
+    <div data-ng-switch-when="cpu" data-ng-include="'utilization/static/partials/cpu.html'" data-ng-controller="Utilization.CpuController"></div>
+    <div data-ng-switch-when="manta" data-ng-include="'utilization/static/partials/manta.html'" data-ng-controller="Utilization.MantaController"></div>
+    <div data-ng-switch-when="bandwidth" data-ng-include="'utilization/static/partials/bandwidth.html'" data-ng-controller="Utilization.BandwidthController"></div>
+</div>
