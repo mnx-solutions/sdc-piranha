@@ -923,7 +923,7 @@
 			        btn: {
 				        label: 'Edit',
 				        getClass: function () {
-					        return 'btn-edit';
+					        return 'btn-edit ci effect-orange-button';
 				        },
 				        disabled: function () {
 					        return $scope.loading;
