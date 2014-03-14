@@ -1365,6 +1365,11 @@ select::-ms-expand {
     background-size: 24px;
     cursor: pointer;
     padding-left: 6px;
+    opacity: 0.5;
+}
+
+.page-title:hover .edit-text-icon {
+    opacity: 1;
 }
 
 .page-row-info {
