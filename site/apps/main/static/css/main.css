@@ -1331,13 +1331,13 @@ select::-ms-expand {
     width: 15px;
     height: 15px;
     background-repeat: no-repeat;
-    background-image: url("../img/accord_i_down.png");
+    background-image: url("../img/accord_i_plus.png");
     padding-right: 25px;
     vertical-align: middle;
 }
 
 .accordion-toggle.collapsed i, .toggle.collapsed {
-    background-image: url("../img/accord_i_plus.png");
+    background-image: url("../img/accord_i_down.png");
 }
 
 .grid-small-font, .grid-small-font span, .grid-small-font .dropdown-menu label, .network td {

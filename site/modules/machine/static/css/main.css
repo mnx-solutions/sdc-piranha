@@ -493,6 +493,9 @@
     width: 485px;
     padding-top: 7px;
 }
+.detail_chart .toggle-btn-bg p {
+    width: 420px;
+}
 .graf-radio-group{
     padding-left: 45px;
     padding-top: 10px;
