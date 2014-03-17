@@ -211,7 +211,7 @@
                                         <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
                         </div>
                         </div>
-                                <div class="pull-left resize-block">
+                                <div data-ng-show="selectedPackageName" class="pull-left resize-block">
                                     <p class="control-label" data-translate><b>Resize Instance type</b></p>
                                     <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName">
                                         <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
@@ -225,6 +225,9 @@
                                         <button class="btn light effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
                         </div>
+                                <div data-ng-hide="selectedPackageName" class="pull-left resize-block">
+                                    You currently have maximum possible size of the instance. <a data-href="#" data-ng-click="contactSupport()">Click here</a> to contact support.
+                                </div>
                                 <div class="clearfix"></div>
                         </div>
                         </div>
