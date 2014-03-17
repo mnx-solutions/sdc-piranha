@@ -3,7 +3,7 @@
     <div data-breadcrumbs></div>
 
     <h3 class="page-title" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">
-        <div class="loading-medium wait_rename" data-ng-show="loadingNewName" ></div>
+        <div class="loading-medium wait_rename" data-ng-show="loadingNewName"></div>
         {{machine.name}}
         <div class="edit-text-icon"></div>
     </h3>
@@ -243,10 +243,10 @@
                 </div>
                     <div id="collapse_images" class="accordion-body collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
                         <div class="accordion-inner">
-                <legend>
+                            <div class="beta-sticker pull-right tab">beta</div>
+                <p>
                                 <span class="font-size16" data-translate>Create Image</span>
-                </legend>
-                            <div class="beta-sticker pull-right">beta</div>
+                </p>
 
                             <p class="" data-ng-show="imageCreateNotSupported">
                     {{imageCreateNotSupported}}
@@ -470,7 +470,7 @@
                 </button>
     </div>
             <div data-ng-controller="cloudController" ng-init="createMachineDetailInstrumentations()">
-                <div class="detail_chart" >
+                <div class="detail_chart">
                     <div class="loading-small" data-ng-hide="cpuGraphs && memGraphs"></div>
                     <graph data-ng-repeat="graph in cpuGraphs" options="graph"></graph>
                     <div class="detail_chart">

@@ -1176,6 +1176,10 @@ table.table {
     padding-top: 5px;
     padding-bottom: 5px;
 }
+.table > thead > tr.grid-small-font th {
+    padding-top: 0;
+    padding-bottom: 5px;
+}
 
 .table > tbody td {
     height: 30px;
@@ -1659,6 +1663,8 @@ label.checkbox {
 }
 .beta-sticker.tab {
     margin-top: -4px;
+    right: 0;
+    position: absolute;
 }
 
 .ribbon-wrapper-beta {
