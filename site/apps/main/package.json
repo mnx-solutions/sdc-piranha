@@ -24,7 +24,8 @@
 			"maxmind",
             "slb",
             "dialog",
-            "fileman"
+            "fileman",
+            "support"
         ],
 		"auth": true,
         "error": true,
