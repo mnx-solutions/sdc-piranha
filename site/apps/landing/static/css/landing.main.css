@@ -4,3 +4,46 @@
 body {
     background-color:#e4e7eb;
 }
+.orange {
+    background-color: #ff6600;
+    color: #fff;
+}
+.orange-text {
+    color: #ff6600;
+}
+i {
+    font-style: italic;
+}
+/* Buttons */
+.btn {
+    padding: 7px 14px;
+    outline: none;
+    border: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    background-image: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    color: #333333;
+    text-transform: capitalize;
+    font-size: 14px;
+    filter: none;
+    cursor: pointer;
+}
+.btn.orange {
+    min-width: 100px;
+    outline: none;
+    text-shadow: none;
+    color: #fff;
+}
+.btn.orange:hover,
+.btn.orange:focus,
+.btn.orange:active,
+.btn.orange.active,
+.btn.orange.disabled,
+.btn.orange[disabled] {
+    background-color: #ff6600 !important;
+    color: #fff !important;
+}
