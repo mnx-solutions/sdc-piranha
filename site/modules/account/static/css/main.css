@@ -437,7 +437,6 @@ legend + .control-group {
 .required-txt {
     display: inline-block;
     vertical-align: middle;
-    float: right;
     margin-right: 20px;
 }
 .message-box {

@@ -276,7 +276,7 @@ body{
     padding-top: 15px;
     padding-left: 97px;
 }
-.si_btn{
+.si-btn {
     color: white;
     text-shadow: none;
     background-color: #f60;
@@ -286,22 +286,21 @@ body{
     font-weight: 600;
     cursor: pointer;
     display: block;
-    float: left;
+    float: right;
     border: none;
 }
-.grey_btn{
-    color: #ff6600;
-    text-shadow: none;
-    background-color: #ededed;
-    min-width: 46px;
+.grey-btn {
+    display: inline-block;
     padding: 7px 11px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    display: block;
-    float: left;
+    min-width: 46px;
     border: none;
+    background-color: #ededed;
+    color: #ff6600;
     text-decoration: none;
+    text-shadow: none;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
 }
 .error{
     display: inline-block;
@@ -580,10 +579,9 @@ legend {
     position: absolute;
     top: 153px;
 }
-.phone_btn_pos{
+.phone-btn-pos {
     margin-top: -19px;
     padding-bottom: 35px;
-    margin-left: 200px;
 }
 
 .notification-wrapper {
@@ -612,4 +610,8 @@ legend {
     text-shadow: none;
     font-size: 16px;
     color: #555555;
+}
+
+.cancel-signup-btn {
+    margin-right: 15px;
 }
