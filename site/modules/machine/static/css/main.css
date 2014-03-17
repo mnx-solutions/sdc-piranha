@@ -289,24 +289,6 @@
     margin-top: -73px;
 }
 
-.btn {
-    background-color: #e5e5e5;
-    background-image: none;
-    filter: none;
-    border: 0;
-    padding: 7px 14px;
-    text-shadow: none;
-    font-size: 15px;
-    color: #333333;
-    cursor: pointer;
-    outline: none;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
-}
 .btn.orange {
     color: white;
     text-shadow: none;
@@ -1501,8 +1483,6 @@
 }
 
 .btn.grey{
-    background-color: #ebebeb;
-    color: #f60;
     margin-top: 20px;
 }
 

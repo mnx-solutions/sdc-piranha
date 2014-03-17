@@ -1973,7 +1973,6 @@ label.checkbox {
 .btn-danger,
 .btn-edit {
     display: inline-block;
-    padding: 1px 8px;
     min-width: 94px;
     outline: none;
     border: none;
