@@ -198,7 +198,7 @@
                 }
 
                 var dataset = $scope.selectedDataset;
-                var description = dataset.description;
+                var description = dataset && dataset.description;
                 var billingStartMessage = localization.translate(
                     $scope,
                     'machine',
@@ -206,7 +206,7 @@
                 );
                 var title = 'Confirm: Create Instance';
                 var popupContent = billingStartMessage;
-                if (dataset.eula || description.indexOf('Stingray') > -1) {
+                if (dataset && dataset.eula || description && description.indexOf('Stingray') > -1) {
                     title = 'Accept End-User License Agreement';
 
                     var eulaLink = dataset.eula || 'slb/static/templates/eula.html';
