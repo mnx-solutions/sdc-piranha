@@ -14,5 +14,6 @@ module.exports = function (req, res, next) {
         req.session.save();
     }
     res.locals.signupStep = req.session.signupStep;
+    res.locals.currentYear = new Date().getFullYear();
     next();
 };
