@@ -1,6 +1,6 @@
-
-<form class="form-signin" data-ng-controller="TFAController">
-    <h2 class="form-signin-heading" data-translate>Two Factor Authentication</h2>
+<div class="branding-background"></div>
+<form class="form-signin branding" data-ng-controller="TFAController">
+    <h2 class="form-signin-heading orange" data-translate>Two Factor Authentication</h2>
 
     <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password">
 
@@ -8,5 +8,5 @@
 
     <div class="alert alert-danger" data-ng-show="error">{{error}}</div>
 
-    <button class="btn btn-large btn-primary" type="submit" data-ng-click="login()" data-translate>Sign in</button>
+    <button class="btn btn-large orange" type="submit" data-ng-click="login()" data-translate>Sign in</button>
 </form>
