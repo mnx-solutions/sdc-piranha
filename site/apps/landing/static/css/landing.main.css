@@ -8,32 +8,29 @@ body {
     background-color: #ff6600;
     color: #fff;
 }
-
+.orange-text {
+    color: #ff6600;
+}
+i {
+    font-style: italic;
+}
 /* Buttons */
 .btn {
     padding: 7px 14px;
     outline: none;
     border: 0;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
     background-image: none;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
     color: #333333;
     text-transform: capitalize;
     font-size: 14px;
     filter: none;
     cursor: pointer;
-}
-.btn[disabled],
-.btn.disabled {
-    background-color: #d8d8d8 !important;
-    color: #333333;
-    opacity: 0.35;
-    filter: alpha(opacity=35);
-    cursor: default !important;
 }
 .btn.orange {
     min-width: 100px;
