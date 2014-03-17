@@ -451,16 +451,6 @@
     overflow: hidden;
     max-width: 325px;
 }
-.details-images-icon {
-    width: 16px;
-    height: 16px;
-    float: right;
-    margin-top: 6px;
-    position: relative;
-    left: -70px;
-    background-repeat: no-repeat;
-    background-image: url("../img/details_img_i.png");
-}
 .delete-icon, .reboot-icon, .icon-play, .stop-icon {
     width: 14px;
     height: 14px;
