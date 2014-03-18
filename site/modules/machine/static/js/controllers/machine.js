@@ -49,6 +49,8 @@
                 $scope.freetier = FreeTier.freetier();
             }
 
+            $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
+
             // Handle case when machine loading fails or machine uuid is invalid
             $q.when($scope.machine).then(function () {
                 $scope.loading = false;
