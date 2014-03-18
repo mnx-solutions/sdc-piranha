@@ -34,7 +34,7 @@
                                 localization.translate(
                                     null,
                                     'slb',
-                                    'Certificate added'
+                                    'Certificate added.'
                                 ),
                                 function () {}
                             );

@@ -37,7 +37,7 @@
                                 localization.translate(
                                     null,
                                     'machine',
-                                    'Unable to retrieve packages from datacenter {{name}}',
+                                    'Unable to retrieve packages from datacenter {{name}}.',
                                     { name: datacenter }
                                 ),
                                 function () {}

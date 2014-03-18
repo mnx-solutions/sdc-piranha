@@ -73,7 +73,7 @@
                         localization.translate(
                             null,
                             'firewall',
-                            'Unable to a create rule: {{error}}',
+                            'Unable to a create rule: {{error}}.',
                             {
                                 error: errMsg
                             }
@@ -125,7 +125,7 @@
                             localization.translate(
                                 null,
                                 'firewall',
-                                'Unable to update rule: {{error}}',
+                                'Unable to update rule: {{error}}.',
                                 {
                                     error: (err.message) ? '<br />' + err.message : ''
                                 }
@@ -278,7 +278,7 @@
                                         localization.translate(
                                             null,
                                             'rule',
-                                            'Unable to retrieve rules from datacenter {{name}}',
+                                            'Unable to retrieve rules from datacenter {{name}}.',
                                             { name: chunk.name }
                                         ),
                                         function () {}

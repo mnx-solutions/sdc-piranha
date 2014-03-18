@@ -173,16 +173,16 @@
             });
 
             var machineMessages = {
-                resizeMessage: 'Resize this instance.',
+                resizeMessage: 'Resize this instance?',
                 stopMessage: 'Stopping this instance does not stop billing, your instance can be started after it is stopped.',
-                deleteMessage: 'Destroying an instance will stop billing.'
+                deleteMessage: 'Destroy the information on this instance and stop billing for this instance?'
             };
 
             $q.when($scope.freetier, function () {
                 if ($scope.machine.freetier) {
                     machineMessages.resizeMessage = 'Resize this instance will start billing.';
                     machineMessages.stopMessage = 'Your instance can be started after it is stopped.';
-                    machineMessages.deleteMessage = 'Destroy this instance.';
+                    machineMessages.deleteMessage = 'Destroy this instance?';
                 }
             });
 
@@ -196,7 +196,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Start this instance'
+                        'Start this instance?'
                     ), function () {
                         $$track.event('machine', 'start');
                         var job = Machine.startMachine(machineid);
@@ -230,7 +230,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Restart this instance'
+                        'Restart this instance?'
                     ), function () {
                         $$track.event('machine', 'reboot');
                         var job  = Machine.rebootMachine(machineid);

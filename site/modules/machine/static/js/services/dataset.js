@@ -42,7 +42,7 @@ window.fn = [];
                                 localization.translate(
                                     null,
                                     'machine',
-                                    'Unable to retrieve datasets from datacenter {{name}}',
+                                    'Unable to retrieve datasets from datacenter {{name}}.',
                                     { name: datacenter }
                                 ),
                                 function () {}

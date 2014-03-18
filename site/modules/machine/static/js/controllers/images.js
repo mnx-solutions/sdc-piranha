@@ -46,7 +46,7 @@
                     localization.translate(
                         $scope,
                         'machine',
-                        'Are you sure you want to delete this image'
+                        'Are you sure you want to delete this image?'
                     ), function () {
                         $$track.event('image', 'delete');
                         $scope.imageJob = Image.deleteImage(image);

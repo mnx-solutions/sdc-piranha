@@ -53,7 +53,7 @@
                                         localization.translate(
                                             null,
                                             'machine',
-                                            'Unable to retrieve images from datacenter {{name}}',
+                                            'Unable to retrieve images from datacenter {{name}}.',
                                             { name: chunk.name }
                                         ),
                                         function () {}
@@ -138,7 +138,7 @@
                                 localization.translate(
                                     null,
                                     'machine',
-                                    'Image "{{name}}" successfully created',
+                                    'Image "{{name}}" successfully created.',
                                     { name: image.data.name }
                                 ),
                                 function () {}
@@ -206,7 +206,7 @@
                                 localization.translate(
                                     null,
                                     'machine',
-                                    'Unable to delete image "{{name}}"',
+                                    'Unable to delete image "{{name}}".',
                                     { name: image.name }
                                 ),
                                 function () {}

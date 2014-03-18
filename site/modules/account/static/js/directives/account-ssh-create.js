@@ -81,7 +81,7 @@
                                                             localization.translate(
                                                                 $scope,
                                                                 null,
-                                                                'SSH key successfully added to your account'
+                                                                'SSH key successfully added to your account.'
                                                             ),
                                                             function () {}
                                                         );
@@ -115,7 +115,7 @@
                                                                 localization.translate(
                                                                     $scope,
                                                                     null,
-                                                                    'SSH Key generation error'
+                                                                    'SSH Key generation error.'
                                                                 ),
                                                                 function () {}
                                                             );
@@ -143,7 +143,7 @@
                                                         localization.translate(
                                                             $scope,
                                                             null,
-                                                            'SSH Key generation error'
+                                                            'SSH Key generation error.'
                                                         ),
                                                         function () {}
                                                     );
@@ -163,7 +163,7 @@
                                                     localization.translate(
                                                         $scope,
                                                         null,
-                                                        'Unable to generate SSH key: {{message}}',
+                                                        'Unable to generate SSH key: {{message}}.',
                                                         {
                                                             message: data.err.message
                                                         }

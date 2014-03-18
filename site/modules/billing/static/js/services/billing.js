@@ -40,7 +40,7 @@
                                 localization.translate(
                                     null,
                                     'billing',
-                                    'Unable to retrieve defaultCreditCard'
+                                    'Unable to retrieve defaultCreditCard.'
                                 ),
                                 function(){}
                             );
@@ -76,7 +76,7 @@
                             localization.translate(
                                 null,
                                 'billing',
-                                'Unable to retrieve invoices'
+                                'Unable to retrieve invoices.'
                             ),
                             function(){}
                         );
@@ -101,7 +101,7 @@
                             localization.translate(
                                 null,
                                 'billing',
-                                'Unable to retrieve subscriptions'
+                                'Unable to retrieve subscriptions.'
                             ),
                             function(){}
                         );
@@ -126,7 +126,7 @@
                             localization.translate(
                                 null,
                                 'billing',
-                                'Unable to retrieve latest invoice'
+                                'Unable to retrieve latest invoice.'
                             ),
                             function(){}
                         );
