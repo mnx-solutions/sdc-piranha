@@ -2,15 +2,15 @@
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
-        .when('/storage', {
+        .when('/manta/intro', {
             title: 'Storage',
             action: 'storage.index'
         })
-        .when('/storage/history', {
+        .when('/manta/jobs', {
             title: 'Storage',
             action: 'storage.history'
         })
-        .when('/storage/job/:jobid', {
+        .when('/manta/jobs/:jobid', {
             title: 'Job details',
             action: 'storage.job'
         });

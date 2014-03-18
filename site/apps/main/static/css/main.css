@@ -2121,3 +2121,15 @@ label.checkbox {
     -moz-border-radius-topright: 0;
     -moz-border-radius-bottomright: 0;
 }
+.info-table tr td {
+    line-height: 28px;
+}
+.info-table tr td:first-child {
+    color: #5D80A7;
+    padding-right: 20px;
+}
+.info-table tr td:nth-child(2) {
+    font-weight: 300;
+    font-size: 16px;
+    color: #7d7d7d;
+}
