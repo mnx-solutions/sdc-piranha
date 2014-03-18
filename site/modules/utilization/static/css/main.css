@@ -1,0 +1,198 @@
+.utilization {
+    width: 100%;
+    margin-bottom: 30px;
+    display: inline-flex;
+}
+
+.utilization .tile {
+    min-width: 220px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.utilization .tile h4 {
+    font-size: 16px;
+    font-weight: 300;
+    color: white;
+    padding: 15px;
+}
+
+.utilization .tile .left-block,
+.utilization .tile .right-block {
+    float: left;
+    padding-left: 15px;
+    padding-right: 10px;
+    display: inline-block;
+    line-height: 20px;
+    margin-top: 5px;
+}
+
+.utilization .tile .left-block {
+    max-width: 60px;
+}
+
+.utilization .tile .right-block {
+    max-width: 94px;
+}
+
+.utilization .tile .left-block .desc,
+.utilization .tile .right-block .desc {
+    text-align: left;
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: 300;
+    padding-bottom: 10px;
+}
+
+.desc.small {
+    font-size: 12px !important;
+}
+
+.left-block .desc {
+    color: #fff;
+}
+
+.tile.orange .right-block .desc {
+    color: #333;
+}
+
+.tile.blue .right-block .desc {
+    color: #00096B;
+}
+
+.utilization .chart {
+    min-width: 770px;
+    width: 100%;
+    background-color: #f5f5f5;
+}
+
+.utilization,
+.utilization .tile,
+.utilization .chart {
+    height: 250px;
+}
+
+.utilization .tile.orange {
+    background-color: #f60;
+}
+
+.utilization .tile.blue {
+    background-color: #589dbe;
+}
+
+.sub-line {
+    border-left: solid 1px white;
+}
+
+.left-block .num {
+    color: white;
+}
+
+.tile.orange .right-block .num {
+    color: #333333;
+}
+
+.tile.blue .right-block .num {
+    color: #00096B;
+}
+
+.left-block .num,
+.right-block .num {
+    font-size: 20px;
+    font-weight: 500;
+    padding-bottom: 10px;
+}
+
+.left-block .num.small,
+.right-block .num.small {
+    font-size: 14px !important;
+}
+
+.chart .chart-line {
+    width: 10px;
+    height: 160px;
+    background-color: #f60;
+    margin-top: -175px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.orange-chart {
+    background: url("../img/orange-chart.png") no-repeat;
+}
+
+.blue-chart {
+    background: url("../img/blue-chart.png") no-repeat;
+}
+
+.orange-chart,
+.blue-chart {
+    background-size: 323px 224px;
+    width: 416px;
+    height: 224px;
+    margin-left: 47px;
+}
+
+.chart-nums {
+    font-size: 12px;
+    display: inline-block;
+    padding-right: 10px;
+    opacity: 0.5;
+    width: 12px;
+    text-align: center;
+}
+
+.top-line {
+    border-top: solid 1px #ccc;
+    position: relative;
+    top: 10px;
+    left: 50px;
+    margin-right: 70px;
+}
+
+.top-line .text {
+    width: 53px;
+    height: 45px;
+    position: relative;
+    float: right;
+    line-height: 15px;
+    font-size: 12px;
+    color: #999;
+    top: 5px;
+}
+
+.btn-group-chart {
+    padding-bottom: 10px;
+}
+
+.grid-holder {
+    width: 100%;
+    height: auto;
+}
+
+.grid-title {
+    background-color: #fef1d2;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.grid-holder .container-grid {
+    padding: 10px 10px 0 10px;
+}
+
+.back-btn {
+    margin-bottom: 30px;
+}
+
+.rickshaw_graph {
+    width: 50px;
+    height: 240px;
+    float: left;
+    display: inline-block;
+    top: -20px;
+    position: relative;
+}
+
+.days {
+    margin-left: 50px;
+}
