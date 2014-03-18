@@ -1927,7 +1927,13 @@ label.checkbox {
 .btn-mini {
     padding: 0 6px !important;
 }
-
+.btn:focus,
+.btn-search-images,
+.btn-search-images:focus,
+.grid-search-icon,
+.grid-search-icon:focus {
+    outline: none;
+}
 /* Account */
 .edit-btn,
 .small-btn {
