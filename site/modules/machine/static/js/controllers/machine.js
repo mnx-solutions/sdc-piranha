@@ -30,6 +30,10 @@
 
             var machineid = requestContext.getParam('machineid');
 
+            Account.getAccount(true).then(function (account) {
+                $scope.account = account;
+            });
+
             $scope.machineid = machineid;
             $scope.machine = Machine.machine(machineid);
             $scope.packages = Package.package();
@@ -144,6 +148,9 @@
                 $scope.package.then(function (pkg) {
                     $scope.currentPackageName = pkg.name;
                     $scope.currentPackage = pkg;
+                    if (!$scope.selectedPackageName) {
+                       $scope.selectedPackageName = [$scope.getSelectedPackageName()];
+                    }
                 });
             });
 
@@ -157,6 +164,7 @@
 
             $scope.$watch('selectedPackageName', function (pkgName) {
                 if(pkgName) {
+                    pkgName = ng.isArray(pkgName) ? pkgName[0] : pkgName;
                     Package.package(pkgName).then(function (pkg) {
                         $scope.selectedPackageName = pkg.name;
                         $scope.selectedPackage = pkg;
@@ -249,13 +257,13 @@
                         $scope.isResizing = true;
                         $$track.event('machine', 'resize');
                         $scope.retinfo = Machine.resizeMachine(machineid, selected);
-
                         var job = $scope.retinfo.getJob();
                         job.done(function () {
                             $scope.isResizing = false;
                             $scope.currentPackageName = selected.name;
                             $scope.currentPackage = selected;
                             $scope.machine.freetier = false;
+                            $scope.selectedPackageName = $scope.getSelectedPackageName();
                         });
                     });
             };
@@ -465,6 +473,29 @@
                 }
                 return false;
             };
+
+            $scope.getSelectedPackageName = function () {
+                var packageName = '';
+                var sortPackage = '';
+
+                ng.forEach($scope.packages.$$v, function (pkg) {
+                    if ($scope.filterPackages(pkg)) {
+                        if (!sortPackage || sortPackage > pkg.memory) {
+                            sortPackage = pkg.memory;
+                            packageName = pkg.name;
+                        }
+                    }
+                });
+                return packageName;
+            };
+
+            $scope.contactSupport = function () {
+                var contactSupportParams = ng.copy(window.zenbox_params);
+                contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
+                contactSupportParams.requester_name = $scope.account.firstName;
+                contactSupportParams.requester_email = $scope.account.email;
+                Zenbox.show(null, contactSupportParams);
+            }
 
             $scope.tagsArray = [];
             $scope.metadataArray = [];
