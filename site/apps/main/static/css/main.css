@@ -1683,12 +1683,12 @@ label.checkbox {
     left: 0;
     top: 12px;
     width: 120px;
-    background-color: #457b98;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#8AAAC7), to(#316A8A));
-    background-image: -webkit-linear-gradient(top,#8AAAC7,#316A8A);
-    background-image:    -moz-linear-gradient(top,#8AAAC7,#316A8A);
-    background-image:     -ms-linear-gradient(top,#8AAAC7,#316A8A);
-    background-image:      -o-linear-gradient(top,#8AAAC7,#316A8A);
+    background-color: #999;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#C8C8C8), to(#828282));
+    background-image: -webkit-linear-gradient(top,#C8C8C8,#828282);
+    background-image:    -moz-linear-gradient(top,#C8C8C8,#828282);
+    background-image:     -ms-linear-gradient(top,#C8C8C8,#828282);
+    background-image:      -o-linear-gradient(top,#C8C8C8,#828282);
     -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.3);
     -moz-box-shadow:    0 0 3px rgba(0,0,0,0.3);
     box-shadow:         0 0 3px rgba(0,0,0,0.3);
@@ -1718,7 +1718,7 @@ label.checkbox {
     width: 42px;
     height: 108px;
     margin-top: 125px;
-    background: #457b98 url('../img/feedback-tab.png') 0 0 no-repeat;
+    background: #999 url('../img/feedback-tab.png') 0 0 no-repeat;
     z-index: 10000
 }
 .feedback-tab-link {
