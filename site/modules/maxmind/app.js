@@ -50,6 +50,7 @@ module.exports = function execute(scope, app) {
 
         req.log.warn('User account is locked');
         req.session.maxmindLocked = true;
+        req.session.save();
         SignupProgress.setSignupStep(req, 'blocked', function (err) {
             if (err) {
                 req.log.error(err);
@@ -82,6 +83,7 @@ module.exports = function execute(scope, app) {
             }
 
             req.session.maxmindServiceFails = 0;
+            req.session.save();
 
             SignupProgress.setMinProgress(req, 'phone', function(err) {
                 if(err) {
@@ -125,6 +127,7 @@ module.exports = function execute(scope, app) {
             if (err) {
                 req.log.error(err);
                 req.session.maxmindServiceFails = serviceFails + 1;
+                req.session.save();
                 res.json({message: serviceMessages.serviceFailed, success: false});
                 return;
             }
@@ -135,6 +138,7 @@ module.exports = function execute(scope, app) {
                 if (error.serviceFailed) {
                     req.session.maxmindServiceFails = serviceFails + 1;
                 }
+                req.session.save();
                 res.json({message: error.message, success: false});
                 return;
             }
@@ -145,7 +149,7 @@ module.exports = function execute(scope, app) {
 
             req.session.maxmindRetries = retries + 1;
             req.session.maxmindPinTries = 0; //Reset pin tries
-          
+            req.session.save();
             res.json({message: serviceMessages.calling, success: true});
         });
     });
@@ -163,9 +167,12 @@ module.exports = function execute(scope, app) {
         if (req.session.maxmindPinTries++ >= limits.pinTries) {
             req.session.blockReason = 'Phone verification, too many pins. ' +
                 (req.session.attemptId ? 'REF ID: ' + req.session.attemptId : 'No calls made.');
+            req.session.save();
             lockAccount(req, res);
             return;
         }
+
+        req.session.save();
 
         // Is code correct ?
         if (req.session.maxmindCode && req.params.code === req.session.maxmindCode) {

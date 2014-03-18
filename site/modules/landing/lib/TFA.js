@@ -19,6 +19,7 @@ var updateMoreSecurity = function (req, res, next) {
     if (disableTFA) {
         req.session.tfaEnabled = false;
         req.session.visibleSecretKey = false;
+        req.session.save();
         toggle.set(req.session.uuid, false);
         next();
     }
@@ -26,6 +27,7 @@ var updateMoreSecurity = function (req, res, next) {
         tfaProvider.generateSecret(req.session.uuid, function (err, secretkey) {
             // store & show secret key for ONLY this session
             req.session.visibleSecretKey = secretkey;
+            req.session.save();
             res.redirect('/account/twofactor');
         });
     }
@@ -64,6 +66,7 @@ var checkExampleCode = function (req, res, next) {
                 delete req.session.visibleSecretKey;
                 req.session.tfaEnabled = secretkey;
                 req.session.tfaVerified = true;
+                req.session.save();
                 next();
             });
         } else {

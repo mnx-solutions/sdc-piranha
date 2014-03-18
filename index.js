@@ -42,6 +42,20 @@ app.use(express.session({
     secret: 'secret'
 }));
 
+app.use(function (req, res, next) {
+    // Don't save session on res.end, only explicitly
+    var end = res.end;
+    res.end = function (data, encoding) {
+        if (!req.session) {
+            return end(data, encoding);
+        }
+        req.session.reload(function () {
+            end(data, encoding);
+        });
+    };
+    next();
+});
+
 app.get('/healthcheck', function(req, res, next) {
     res.send('ok');
 });
