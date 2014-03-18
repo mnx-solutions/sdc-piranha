@@ -277,13 +277,14 @@
                                                              data-collection-name="'tags'"
                                                              data-review="true">
                                                         </div>
-
-                                                        <div><h2>Metadata</h2></div>
-                                                        <div class="create-mdata ci-tags"
-                                                             data-machine-collection
-                                                             data-collection="metadata"
-                                                             data-collection-name="'metadata'"
-                                                             data-review="true">
+                                                        <div class="metadata-section" data-ng-show="instanceMetadataEnabled">
+                                                            <div><h2>Metadata</h2></div>
+                                                            <div class="create-mdata ci-tags"
+                                                                 data-machine-collection
+                                                                 data-collection="metadata"
+                                                                 data-collection-name="'metadata'"
+                                                                 data-review="true">
+                                                            </div>
                                                         </div>
                                                         <button id="button-create" class="btn orange create-instance-btn-pos"
                                                                 data-ng-disabled="provisionForm.$invalid"

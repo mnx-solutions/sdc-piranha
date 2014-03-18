@@ -43,6 +43,7 @@
 
             $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
+            $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
             $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
 
             Account.getAccount(true).then(function (account) {
