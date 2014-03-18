@@ -2133,3 +2133,38 @@ label.checkbox {
     font-size: 16px;
     color: #7d7d7d;
 }
+.grid-view-table {
+    padding-top: 25px;
+}
+.grid-tabs-container {
+    padding-top: 10px;
+}
+.grid-tabs-title,
+.grid-tab {
+    display: inline-block;
+    vertical-align: top;
+}
+.grid-tabs-title {
+    padding: 3px 10px 0 0;
+    text-transform: capitalize;
+}
+.grid-tab {
+    padding: 3px 10px;
+    margin: 0 2px -1px 0;
+    background: #EBEBEB;
+    border: 1px solid #cccccc;
+}
+.grid-tab-radio {
+    position: absolute;
+    left: -1000px;
+    visibility: hidden;
+}
+.grid-tab-radio:checked + .grid-tab {
+    background: #ffffff;
+    border-color: #dddddd;
+    border-bottom: 1px solid #ffffff;
+}
+.actions-down {
+    position: relative;
+    top: 38px;
+}

@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', function ($scope, $filter, $http, $location) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', function ($scope, $filter, $http, $location, Account, $rootScope) {
         $scope.location = $location;
         $scope.getLastPage = function (update) {
             if ($scope.objects) {
@@ -15,6 +15,9 @@
 
             }
         };
+
+        $scope.tabFilters = ['all'];
+        $scope.tabFilter = '';
 
         $scope.$watch('objects + props + perPage + filterAll', $scope.getLastPage.bind($scope, true), true);
 
@@ -245,10 +248,40 @@
             });
         };
 
+        $scope.propertyFilter = function (obj) {
+            if ($scope.tabFilter === 'all') {
+                return obj;
+            }
+            return obj[$scope.tabFilterField] === $scope.tabFilter;
+        };
+
         $scope.$watch('objects', function (objects) {
             if (objects) {
                 $scope.selectCheckbox();
                 $scope.disableSelectAllCheckbox();
+
+                if ($scope.tabFilterField) {
+                    objects.forEach(function (obj) {
+                        if ($scope.tabFilters.indexOf(obj[$scope.tabFilterField]) === -1) {
+                            $scope.tabFilters.unshift(obj[$scope.tabFilterField]);
+                        }
+                    });
+                    if ($rootScope.features.manta === 'enabled') {
+                        $scope.userConfig = Account.getUserConfig().$child($scope.tabFilterField);
+                        $scope.userConfig.$load(function (error, config) {
+                            $scope.tabFilter = config[$scope.tabFilterField] || 'all';
+                        });
+                        $scope.$watch('tabFilter', function (filter) {
+                            if (filter && $scope.userConfig[$scope.tabFilterField] && $scope.userConfig[$scope.tabFilterField] !== filter && filter !== 'all') {
+                                $scope.userConfig[$scope.tabFilterField] = filter;
+                                $scope.userConfig.dirty = true;
+                                $scope.userConfig.$save();
+                            }
+                        });
+                    } else {
+                        $scope.tabFilter = $scope.tabFilters[0];
+                    }
+                }
             }
         }, true);
 
@@ -328,7 +361,8 @@
                 objectsType: '@',
                 placeHolderText: '=',
                 multisort: '@',
-                userConfig: '='
+                userConfig: '=',
+                tabFilterField: '='
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
@@ -464,5 +498,6 @@
             return JSON.parse(array).join('; ');
         };
     });
+
 }(window.angular, window.JP.getModule('Machine')));
 

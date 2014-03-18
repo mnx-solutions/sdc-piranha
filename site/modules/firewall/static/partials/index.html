@@ -29,7 +29,8 @@
              data-filter-all="{{query}}"
              data-place-Holder-Text="placeHolderText"
              data-export-fields="exportFields"
-             data-objects-type="firewall">
+             data-objects-type="firewall"
+             data-tab-filter-field="'datacenter'">
         </div>
     </div>
     <button class="btn orange pull-right add-rule-btn" data-ng-class="{'no-rules' : !rules.length}" data-ng-hide="openRuleForm" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
