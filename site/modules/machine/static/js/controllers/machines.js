@@ -203,7 +203,7 @@
                     id: 'datacenter',
                     name: 'Data Center',
                     sequence: 2,
-                    active: true
+                    active: false
                 },
                 {
                     id: '',
