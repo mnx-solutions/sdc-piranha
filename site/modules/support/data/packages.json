@@ -1,10 +1,10 @@
 {
     "index": {
         "menuButton": "Joyent Support",
-        "title": "Standart Support",
+        "title": "Standard Support",
         "description": "Included as part of Subscription",
         "link": "",
-        "icon": "standart-icon",
+        "icon": "standard-icon",
         "template": ""
     },
     "nodeCore": {
