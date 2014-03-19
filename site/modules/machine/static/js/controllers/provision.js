@@ -59,6 +59,14 @@
 
             $scope.simpleImages = [];
 
+            $scope.filterValues = {
+                'vcpus': [],
+                'memory': [],
+                'disk': []
+            };
+
+            $scope.filterProps = Object.keys($scope.filterValues);
+
             Machine.getSimpleImgList(function (err, data) {
                 if (err) {
                     console.error(err);
@@ -542,6 +550,26 @@
                 };
             };
 
+            $scope.filterPackagesByProp = function (obj) {
+                if (!$scope.filterProperty || !$scope.filterPropertyValue) {
+                    return obj;
+                }
+                return String(obj[$scope.filterProperty]) === String($scope.filterPropertyValue);
+            };
+
+            $scope.formatFilterValue = function (value) {
+                if ($scope.filterProperty === 'vcpus') {
+                    return value + ' vCPUs';
+                }
+                return $filter('sizeFormat')(value);
+            };
+
+            $scope.onFilterChange = function (newVal) {
+                if (newVal) {
+                    $scope.filterPropertyValue = $scope.filterValues[newVal][0];
+                }
+            };
+
             // Watch datacenter change
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
@@ -624,7 +652,29 @@
                             var priceMonth = getNr(p.price_month);
                             p.price = (price || price === 0) && price.toFixed(3) || undefined;
                             p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
+
+                            if (p.price) {
+                                var cpu = Number(p.vcpus);
+                                if ($scope.filterValues.vcpus.indexOf(cpu) === -1) {
+                                    $scope.filterValues.vcpus.push(cpu);
+                                }
+                                if ($scope.filterValues.memory.indexOf(p.memory) === -1) {
+                                    $scope.filterValues.memory.push(p.memory);
+                                }
+                                if ($scope.filterValues.disk.indexOf(p.disk) === -1) {
+                                    $scope.filterValues.disk.push(p.disk);
+                                }
+                            }
                         });
+
+                        $scope.filterProps.forEach(function (prop) {
+                            $scope.filterValues[prop].sort(function (a, b) {
+                                return a - b;
+                            });
+                        });
+
+                        $scope.filterProperty = $scope.filterProps[0];
+                        $scope.onFilterChange($scope.filterProperty);
 
                         var standardIndex = packageTypes.indexOf('Standard');
                         if (standardIndex !== -1) {

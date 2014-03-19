@@ -133,6 +133,54 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    <div class="filter-container">
+                                        Filter:
+                                        <div class="btn-group btn-group-filter">
+                                            <button class="btn datacenter-select filter-select">
+                                                {{filterProperty | uppercase}}
+                                            </button>
+
+                                            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                            </button>
+
+                                            <ul class="dropdown-menu dd-image-versions">
+                                                <li data-ng-repeat="prop in filterProps">
+                                                    <label class="filter-value">
+                                                        {{prop}}
+                                                        <input type="radio"
+                                                               class="filter-radio"
+                                                               name="filterProperty"
+                                                               data-ng-model="$parent.filterProperty"
+                                                               data-ng-change="$parent.onFilterChange(prop)"
+                                                               value="{{prop}}" />
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="btn-group btn-group-filter">
+                                            <button class="btn datacenter-select filter-select">
+                                                {{ formatFilterValue(filterPropertyValue) }}
+                                            </button>
+
+                                            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                                                <span class="caret"></span>
+                                            </button>
+
+                                            <ul class="dropdown-menu dd-image-versions">
+                                                <li data-ng-repeat="prop in filterValues[filterProperty]">
+                                                    <label class="filter-value">
+                                                        {{ formatFilterValue(prop) }}
+                                                        <input type="radio"
+                                                               class="filter-radio"
+                                                               name="filterPropertyValue"
+                                                               data-ng-model="$parent.filterPropertyValue"
+                                                               value="{{prop}}" />
+                                                    </label>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <div class="">
                                         <div class="accordion-package-title">
                                             <span class="span-name">NAME</span>
@@ -150,7 +198,7 @@
                                                 </div>
                                                 <div id="collapse_{{$index}}" class="accordion-body collapse">
                                                     <div class="accordion-inner">
-                                                        <div class="package-info" data-ng-repeat="package in (packages | orderBy:sortPackages) | filter:filterPackages(packageType)"
+                                                        <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackagesByProp | orderBy:sortPackages) | filter:filterPackages(packageType)"
                                                              data-ng-click="selectPackage(package.id)"
                                                              data-ng-checked="selectedPackage == package.id"
                                                              data-ng-class="{active: selectedPackage == package.id}">
