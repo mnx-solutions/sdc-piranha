@@ -31,8 +31,8 @@
     float: left;
 }
 
-.standart-icon {
-    background-image: url("../img/standart.png");
+.standard-icon {
+    background-image: url("../img/standard.png");
 }
 .enhanced-icon {
     background-image: url("../img/enhanced.png");
@@ -43,7 +43,7 @@
 .node-cloud-icon {
     background-image: url("../img/node-cloud.png");
 }
-.standart-icon,
+.standard-icon,
 .enhanced-icon,
 .node-core-icon,
 .node-cloud-icon {
