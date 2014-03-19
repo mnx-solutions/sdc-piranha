@@ -1,13 +1,35 @@
 <div class="container-fluid container-position">
-    <div class="row-fluid">
+    <div class="row-fluid" data-ng-hide="loading">
         <ul class="breadcrumb">
             <li>Support&nbsp;/&nbsp;</li>
-            <li>{{pageTitle}}</li>
+            <li>{{package.title}}</li>
         </ul>
         <div class="page-header row-fluid">
-            <h3 class="page-title">{{pageTitle}}</h3>
+            <h3 class="page-title">{{package.title}}</h3>
         </div>
-        <div>{{template}}</div>
+        <div>{{package.template}}</div>
+        <div class="package-holder" data-ng-repeat="packageHolder in packageHolders" data-ng-show="packageHolders">
+            <div class="header">
+                <div class="brim">
+                    <h4>{{packageHolder.title}}<a class="info" data-ng-show="packageHolder.info" href="{{packageHolder.url}}" target="_blank">i</a></h4>
+                    <span>{{packageHolder.description}}</span>
+                </div>
+            </div>
+            <div class="control">
+                <div class="brim">
+                    <p>monthly</p>
+                    <h3><p class="upper" data-ng-show="packageHolder.costSign">{{packageHolder.costSign}}</p>{{packageHolder.cost}}</h3>
+                    <span data-ng-show="packageHolder.ratePlanId == ''" class="btn pull-right">Subscription</span>
+                    <button data-ng-show="!packageHolder.active" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickSignUp(packageHolder)">Sign Up<i class="arrow-right"></i></button>
+                    <button data-ng-show="packageHolder.active && packageHolder.ratePlanId != ''" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickUnsubscribe(packageHolder)">Unsubscribe<i class="arrow-down"></i></button>
+                </div>
+            </div>
+            <div class="desc">
+                <div class="brim">
+                    <p data-ng-repeat="service in packageHolder.services">{{service}}</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -371,6 +371,63 @@ module.exports = function execute(scope, callback) {
                 call.done(null, resp.subscriptions);
             });
         });
+
+        server.onCall('BillingSubscriptionCreate', {
+            verify: function (data) {
+                return data && data.hasOwnProperty('ratePlanId');
+            },
+
+            handler: function (call) {
+                zuora.subscription.create( {
+                    termType: 'EVERGREEN',
+                    accountKey: call.req.session.userId,
+                    contractEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD'), // PST date
+                    subscribeToRatePlans: [
+                        {
+                            productRatePlanId: call.data.ratePlanId
+                        }
+                    ]
+                }, function (err, resp) {
+                    if (err) {
+                        // changing zuoras errorCode from 401's to 500
+                        if (err.statusCode === 401) {
+                            err.statusCode = 500;
+                        }
+
+                        call.done(err);
+                        return;
+                    }
+
+                    call.done(null, resp.subscriptions);
+                });
+            }
+        });
+
+        server.onCall('BillingSubscriptionCancel', {
+            verify: function (data) {
+                return data && data.hasOwnProperty('id');
+            },
+
+            handler: function (call) {
+                zuora.subscription.cancel(call.data.id, {
+                    cancellationPolicy: "SpecificDate",
+                    invoiceCollect: true,
+                    cancellationEffectiveDate: moment().utc().subtract('hours', 8).format('YYYY-MM-DD')
+                }, function (err, resp) {
+                    if (err) {
+                        // changing zuoras errorCode from 401's to 500
+                        if (err.statusCode === 401) {
+                            err.statusCode = 500;
+                        }
+
+                        call.done(err);
+                        return;
+                    }
+
+                    call.done(null, resp);
+                });
+            }
+        });
     }
 
     zHelpers.init(zuora, function (err, errType) {
