@@ -136,7 +136,7 @@
                                             <span class="span-price">PRICE</span>
                                         </div>
                                         <div class="accordion accordion-package-select" id="packagesAccordion">
-                                            <div class="accordion-group" data-ng-repeat="packageType in packageTypes">
+                                            <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#packagesAccordion"
                                                        href="#collapse_{{$index}}">
