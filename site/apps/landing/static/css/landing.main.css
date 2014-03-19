@@ -11,11 +11,11 @@ body {
 .orange-text {
     color: #ff6600;
 }
-i {
+.branding i {
     font-style: italic;
 }
 /* Buttons */
-.btn {
+.branding .btn {
     padding: 7px 14px;
     outline: none;
     border: 0;
