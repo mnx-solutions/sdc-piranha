@@ -8,6 +8,7 @@ var countryCodes = require('./data/country-codes');
 var exec = require('child_process').exec;
 var os = require('os');
 var uuid = require('../../static/vendor/uuid/uuid.js');
+var ursa = require('ursa');
 var jobs = {};
 
 /**
@@ -22,10 +23,10 @@ module.exports = function execute(scope, app) {
 
     var SignupProgress = scope.api('SignupProgress');
 
-    app.get('/countryCodes',function(req, res) {
+    app.get('/countryCodes', function (req, res) {
         var data = countryCodes.getArray(config.zuora.rest.validation.countries);
         data.forEach(function (el) {
-            if (['USA','CAN','GBR'].indexOf(el.iso3) >= 0) {
+            if (['USA', 'CAN', 'GBR'].indexOf(el.iso3) >= 0) {
                 el.group = 'Default';
             } else {
                 el.group = 'All countries';
@@ -34,23 +35,23 @@ module.exports = function execute(scope, app) {
         res.json(data);
     });
 
-    app.get('/setStep/:step', function(req, res) {
+    app.get('/setStep/:step', function (req, res) {
         // This allows to skip signup, so only allowing it in test mode
         req.session.allowSignup = true;
-        res.redirect('/signup/#!/'+ req.params.step);
+        res.redirect('/signup/#!/' + req.params.step);
     });
 
-    app.get('/signup/skipSsh', function(req, res) {
-        SignupProgress.setMinProgress(req, 'ssh', function() {
+    app.get('/signup/skipSsh', function (req, res) {
+        SignupProgress.setMinProgress(req, 'ssh', function () {
             scope.log.info('User skipped SSH step');
-            res.json({success:true});
+            res.json({success: true});
         });
     });
 
-    app.get('/signup/passSsh', function(req, res) {
-        SignupProgress.setMinProgress(req, 'ssh', function() {
+    app.get('/signup/passSsh', function (req, res) {
+        SignupProgress.setMinProgress(req, 'ssh', function () {
             scope.log.info('User passed SSH step');
-            res.json({success:true});
+            res.json({success: true});
         });
     });
 
@@ -63,115 +64,51 @@ module.exports = function execute(scope, app) {
     });
 
     /* SSH keys logic */
-    app.post('/ssh/create/:name?', function(req, res, next) {
-        var jobId = uuid.v4();
-        jobs[jobId] = {status: 'pending'};
-
-        // generate 2048 bit rsa key and add public part to cloudapi
-        var randomBytes = crypto.randomBytes(4).readUInt32LE(0);
-        var filePath = os.tmpdir() +'/'+ randomBytes;
-        var name = (req.body.name || crypto.createHash('sha1').update(filePath).digest('hex').substr(0, 10));
-        var cmd = 'ssh-keygen -t rsa -q -f ' + filePath + ' -N "" -C "' + req.session.userName +'" && cat ' + filePath +'.pub';
-
-
+    app.post('/ssh/create/:name?', function (req, res, next) {
         req.log.debug('Generating SSH key pair');
+        var key = ursa.generatePrivateKey();
+        var privateKey = key.toPrivatePem('utf8');
+        var publicKey = 'ssh-rsa ' + key.toPublicSsh('base64');
+        var fingerprintHex = key.toPublicSshFingerprint('hex');
+        var fingerprint = fingerprintHex.replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
+        var name = req.body.name || fingerprintHex.slice(-10);
 
-        exec(cmd, function(err, stdout, stderr) {
-
-            jobs[jobId].filePath = filePath;
-            jobs[jobId].name = name;
-            jobs[jobId].fileName = randomBytes;
-
-            req.log.debug('Adding SSH key to the account');
-
-            SignupProgress.addSshKey(req, name, stdout, function(err) {
-                if (err) {
-                    req.log.error(err);
-                    res.json({success: false, jobId: jobId, err: err});
-                    return;
-                }
-
-                // start unlink timeout
-                // if file hasn't been deleted within 2 minutes, it will get deleted here
-                setTimeout(function() {
-                    fs.exists(filePath, function(exists) {
-                        if (exists) {
-                            fs.unlink(filePath, function(err) {
-                                if (err) {
-                                    req.log.error(err);
-                                }
-                            });
-                        }
-
-                    });
-                }, (2 * 60 * 1000));
-
-
-                // success
-                req.log.debug('Added SSH key to the account');
-                res.json({success: true, jobId: jobId, keyId: randomBytes, name: name});
-            });
-
+        req.log.debug('Adding SSH key to the account');
+        SignupProgress.addSshKey(req, name, publicKey, function (err) {
+            if (err) {
+                req.log.error(err);
+                res.json({success: false, err: err});
+                return;
+            }
+            req.session.privateKeys = req.session.privateKeys || {};
+            req.session.privateKeys[fingerprint] = {
+                privateKey: privateKey,
+                publicKey: publicKey,
+                name: name,
+                fingerprint: fingerprint
+            };
+            req.session.save();
+            res.json({success: true, keyId: fingerprint, name: name});
         });
     });
 
-    app.get('/ssh/job/:jobId', function(req, res, next) {
-        if (jobs[req.params.jobId]) {
-            res.json(jobs[req.params.jobId]);
-        } else {
-            res.send(404);
-        }
-    });
+    app.get('/ssh/download/:keyId', function (req, res, next) {
+        var keyId = req.params.keyId;
+        var key = req.session.privateKeys && req.session.privateKeys[keyId];
 
-
-    app.get('/ssh/download/:jobId', function(req, res, next) {
-        var jobId = req.params.jobId;
-
-        if (!jobs[jobId]) {
-            jobs[jobId] = {
-                error: 'Invalid SSH key requested',
-                success: false,
-                status: 'finished'
-            };
+        if (!key) {
             req.log.error('Invalid SSH key requested');
             return;
         }
 
-        var filePath = jobs[jobId].filePath;
+        var fileName = key.name + '_id_rsa';
 
-        // file name for download
-        var fileName = (jobs[jobId].name || jobs[jobId].fileName) +'_id_rsa';
-
-        fs.readFile(filePath, {encoding: 'UTF8'}, function(err, data) {
-            if (err) {
-                jobs[jobId] = {
-                    error: 'Internal error',
-                    success: false,
-                    status: 'finished'
-                };
-                req.log.error(err);
-                return;
-            }
-
-            res.set('Content-type', 'application/x-pem-file');
-            res.set('Content-Disposition', 'attachment; filename="'+ fileName +'"');
-            res.send(data);
-
-            fs.unlink(filePath, function(err) {
-                if (err) {
-                    req.log.error(err);
-                }
-            });
-
-            jobs[jobId] = {
-                error: null,
-                success: true,
-                status: 'finished'
-            };
-        });
+        res.set('Content-type', 'application/x-pem-file');
+        res.set('Content-Disposition', 'attachment; filename="' + fileName + '"');
+        res.send(key.privateKey);
     });
 
-    app.post('/log/error', function(req, res) {
+    app.post('/log/error', function (req, res) {
         // note that client-side is not able to log "FATAL" level errors
         var supportedLevels = [
             'error',
