@@ -531,6 +531,24 @@
           "price_month": "1,692.87",
           "vcpus": "32"
       },
+      "g3-highio-15-smartos": {
+          "short_name": "High I/O 15",
+          "type": "smartos",
+          "group": "High I/O SSD",
+          "description": "High I/O 15 GB RAM 2 vCPUs 360 GB Disk",
+          "price": "0.76",
+          "price_month": "554.8",
+          "vcpus": "2"
+      },
+      "g3-highio-30-smartos": {
+          "short_name": "High I/O 30",
+          "type": "smartos",
+          "group": "High I/O SSD",
+          "description": "High I/O 30 GB RAM 4 vCPUs 725 GB Disk",
+          "price": "1.52",
+          "price_month": "1109.6",
+          "vcpus": "4"
+      },
       "g3-highstorage-32-smartos": {
           "short_name": "High Storage 32",
           "type": "smartos",
@@ -1170,6 +1188,24 @@
           "price_month": "1,692.87",
           "vcpus": "32"
       },
+      "g3-highio-15-kvm": {
+          "short_name": "High I/O 15",
+          "type": "kvm",
+          "group": "High I/O SSD",
+          "description": "High I/O 15 GB RAM 2 vCPUs 360 GB Disk",
+          "price": "0.76",
+          "price_month": "554.8",
+          "vcpus": "2"
+      },
+      "g3-highio-30-kvm": {
+          "short_name": "High I/O 30",
+          "type": "kvm",
+          "group": "High I/O SSD",
+          "description": "High I/O 30 GB RAM 4 vCPUs 725 GB Disk",
+          "price": "1.52",
+          "price_month": "1109.6",
+          "vcpus": "4"
+      },
       "g3-highstorage-32-kvm": {
           "short_name": "High Storage 32",
           "type": "kvm",
@@ -1277,42 +1313,6 @@
           "price": "12.976",
           "price_month": "9,472.48",
           "vcpus": "32"
-      },
-      "g3-standard-2-smartos-image-creation": {
-          "short_name": "Standard 2",
-          "type": "smartos",
-          "group": "Image Creation",
-          "description": "2GB RAM, 1 CPUs and bursting, and 66GB Disk. Required for Image Creation.",
-          "price": "0.064",
-          "price_month": "46.72",
-          "vcpus": "1"
-      },
-      "g3-standard-4-smartos-image-creation": {
-          "short_name": "Standard 4",
-          "type": "smartos",
-          "group": "Image Creation",
-          "description": "4GB RAM, 1 CPUs and bursting, and 131GB Disk. Required for Image Creation.",
-          "price": "0.128",
-          "price_month": "93.44",
-          "vcpus": "1"
-      },
-      "g3-standard-2-kvm-image-creation": {
-          "short_name": "Standard 2",
-          "type": "kvm",
-          "group": "Image Creation",
-          "description": "2GB RAM, 1 CPUs, and 66GB Disk. Required for Image Creation.",
-          "price": "0.064",
-          "price_month": "46.72",
-          "vcpus": "1"
-      },
-      "g3-standard-4-kvm-image-creation": {
-          "short_name": "Standard 4",
-          "type": "kvm",
-          "group": "Image Creation",
-          "description": "4GB RAM, 1 CPUs, and 131GB Disk. Required for Image Creation.",
-          "price": "0.128",
-          "price_month": "93.44",
-          "vcpus": "1"
       }
   }
 }
