@@ -338,6 +338,9 @@
                     if (range) {
                         instrumentation.range = range;
                     }
+
+                    $scope.zoomOutDisable = (index + inc === 0);
+                    $scope.zoomInDisable = (index + inc === CloudAnalytics.ranges.length - 1);
                 });
             };
 
