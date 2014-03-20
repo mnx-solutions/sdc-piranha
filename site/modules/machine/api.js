@@ -115,7 +115,7 @@ module.exports = function execute(scope, register) {
                         return;
                     }
 
-                    if (err.message && err.message === 'socket hang up') {
+                    if (err.message === 'socket hang up') {
                         call.log.error({error: err}, 'Cloud polling failed, but polling continues');
                         return;
                     }
