@@ -910,7 +910,7 @@
                         return 'span2 padding-5';
                     },
                     sequence: 2,
-                    active: true
+                    active: false
                 },
 
 		        {
