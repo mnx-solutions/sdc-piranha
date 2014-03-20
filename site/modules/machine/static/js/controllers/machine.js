@@ -363,7 +363,8 @@
                 if ($scope.machine.name === $scope.newInstanceName) {
                     return;
                 }
-
+                var currentMachineName = $scope.machine.name;
+                $scope.machine.name = $scope.newInstanceName;
                 PopupDialog.confirm(
                     localization.translate(
                         $scope,
@@ -382,11 +383,12 @@
                         var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
 
                         job.getJob().done(function() {
-                            $scope.machine.name = $scope.newInstanceName;
                             $scope.changingName = false;
 	                        $scope.renaming = false;
                             $scope.loadingNewName = false;
-                        });
+                        })
+                    }, function () {
+                        $scope.machine.name = currentMachineName;
                     }
                 );
             };
