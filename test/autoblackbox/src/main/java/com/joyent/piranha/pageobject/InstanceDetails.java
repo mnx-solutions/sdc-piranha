@@ -18,7 +18,7 @@ public class InstanceDetails extends AbstractPageObject {
     }
 
 
-    public void checkHeadingText() {
+    public void checkTitle() {
         checkHeadingText(name);
     }
 
@@ -30,4 +30,11 @@ public class InstanceDetails extends AbstractPageObject {
         $("#button-detailed-analytics").click();
         return page(Analytics.class);
     }
+
+    public TagSection openTagsSection() {
+        $("[href=\"#collapse_tags\"]").click();
+        return page(TagSection.class);
+    }
+
 }
+

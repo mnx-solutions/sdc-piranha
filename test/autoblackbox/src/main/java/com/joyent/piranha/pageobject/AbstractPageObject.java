@@ -4,11 +4,13 @@ import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.matchText;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public abstract class AbstractPageObject {
     private static final String GLOBAL_TIMEOUT_KEY = "globaltimeout";
     private static final String GLOBAL_TIMEOUT_DEF = "15000";
+    private static final Integer CHANGE_STATUS_TIMEOUT = Integer.parseInt(System.getProperty("statustimeout", "240000"));
 
     static final String DASHBOARD_MENU_TITLE = "Dashboard";
     static final String COMPUTE_MENU_TITLE = "Compute";
@@ -36,11 +38,15 @@ public abstract class AbstractPageObject {
     }
 
     public void checkHeadingText(String headingText) {
-        $(".page-title").shouldHave(matchText("(.*)" + headingText + "(.*)"));
+        getPageTitle().shouldHave(matchText("(.*)" + headingText + "(.*)"));
     }
 
-    public void checkHeadingText() {
-        $(".page-title").shouldHave(matchText("(.*)" + getTitle() + "(.*)"));
+    public SelenideElement getPageTitle() {
+        return $(".page-title");
+    }
+
+    public void checkTitle() {
+        getPageTitle().shouldHave(matchText("(.*)" + getTitle() + "(.*)"));
     }
 
     String getTitle() {
@@ -53,11 +59,7 @@ public abstract class AbstractPageObject {
         $(".loading-medium-after-h1").waitUntil(disappear, baseTimeout);
     }
 
-    public SelenideElement getErrorLabel() {
-        return $(".alert.alert-error");
-    }
-
-    public SelenideElement getInfoLabel() {
-        return $(".alert.alert-info");
+    public void WaitForSmallSpinnerDisappear() {
+        $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
 }

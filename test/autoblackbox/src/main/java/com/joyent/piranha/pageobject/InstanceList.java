@@ -93,14 +93,14 @@ public class InstanceList extends AbstractPageObject {
         return $("tbody tr", 0).$("td", 1).$("div a");
     }
 
-    public InstanceDetails clickByFirstInstanceName() {
+    public InstanceDetails clickFirstInstance() {
         final SelenideElement firstInstanceElement = getFirstInstanceElement();
         final String text = firstInstanceElement.getText();
         firstInstanceElement.click();
         return new InstanceDetails(text);
     }
 
-    public static void waitForInstanceList() {
+    public void waitForInstanceList() {
         $(byText("Instances")).shouldBe(visible);
         $(".loading-medium-after-h1").waitUntil(disappear, baseTimeout);
     }
@@ -109,5 +109,10 @@ public class InstanceList extends AbstractPageObject {
         SelenideElement el = Common.getRowByText(
                 $$(".item-list-container .item"), instance);
         return el.$(".machine-list-state").text().equals("Running");
+    }
+
+    public InstanceDetails openInstanceDetails(String instanceName) {
+        $(byText(instanceName)).click();
+        return new InstanceDetails(instanceName);
     }
 }

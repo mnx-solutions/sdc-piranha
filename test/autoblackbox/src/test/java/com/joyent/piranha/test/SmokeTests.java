@@ -56,7 +56,6 @@ public class SmokeTests extends TestWrapper {
         sideBarMenu.errorNotPresent();
     }
 
-
     @Test
     public void dashboardIsVisible() {
         final Dashboard dashboard = sideBarMenu.clickDashboard();
@@ -74,7 +73,7 @@ public class SmokeTests extends TestWrapper {
         Instances instances = sideBarMenu.clickCompute();
         instances.waitingLoading();
 
-        instances.checkHeadingText();
+        instances.checkTitle();
         instances.clickActionsButton();
         instances.getListActions().shouldBe(visible);
 
@@ -86,12 +85,12 @@ public class SmokeTests extends TestWrapper {
     public void instanceAnalyticsIsVisible() {
         Instances instances = sideBarMenu.clickCompute();
         instances.waitingLoading();
-        instances.checkHeadingText();
+        instances.checkTitle();
         instances.errorNotPresent();
 
-        InstanceDetails instanceDetails = instances.getList().clickByFirstInstanceName();
+        InstanceDetails instanceDetails = instances.getList().clickFirstInstance();
 
-        instanceDetails.checkHeadingText();
+        instanceDetails.checkTitle();
         instanceDetails.getChartElements().shouldHaveSize(3);
         final Analytics analytics = instanceDetails.clickDetailedAnalytics();
 
@@ -111,19 +110,19 @@ public class SmokeTests extends TestWrapper {
         final AccountMenu accountMenu = navBarMenu.clickAccountMenu();
         final Account account = accountMenu.clickAccount();
 
-        account.checkHeadingText();
+        account.checkTitle();
         account.getLabel(YouProfile).should(visible);
         account.getLabel(BillingInformation).should(visible);
         account.getLabel(SSH).should(visible);
         account.getSSHContainer().getKeyNameLabel().shouldHave(text("Key Name / UUID"));
         final EditProfile editProfile = account.clickEditProfile();
-        editProfile.checkHeadingText();
+        editProfile.checkTitle();
 //till PIRANHA-1441 is done
 //        editProfile.checkBreadcrumb("Account", "Edit account");
 
         navBarMenu.clickAccountMenu().clickAccount();
         final EditBillingInformation editBillingInformation = account.clickEditBilling();
-        editBillingInformation.checkHeadingText();
+        editBillingInformation.checkTitle();
 //till PIRANHA-1441 is done
 //        editBillingInformation.checkBreadcrumb("Account", "Billing information");
 
@@ -137,7 +136,7 @@ public class SmokeTests extends TestWrapper {
         String[] inst = Common.instanceProperties();
         final Dashboard dashboard = sideBarMenu.clickDashboard();
         final CreateInstance createInstance = dashboard.clickCreateComputeInstance();
-        createInstance.checkHeadingText();
+        createInstance.checkTitle();
 
         createInstance.selectDataCenter(DATACENTER);
         createInstance.clickViewMoreImages();

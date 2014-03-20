@@ -1,12 +1,10 @@
 package com.joyent.piranha.pageobjects;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.NoSuchElementException;
 
 import static com.codeborne.selenide.Condition.hasText;
 import static com.codeborne.selenide.Condition.matchText;
@@ -15,7 +13,6 @@ import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selectors.byAttribute;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
 /**
  * Instance details page object. Holds methods to interact with given pages.
@@ -92,69 +89,8 @@ public class InstancePage {
                 matchText("Disk: " + disk));
     }
 
-    public static void addTag(String key, String value) {
-        SelenideElement tagSection = $("[data-collection-name=\"'tags'\"]");
-        int lines = tagSection.$$("[data-ng-repeat=\"item in internalCollection\"]").size();
-        SelenideElement row = $("[data-ng-repeat=\"item in internalCollection\"]", lines - 1);
-        row.$("[placeholder=\"Key\"]").setValue(key);
-        row.$("[placeholder=\"Value\"]").setValue(value);
-        row.$("[data-ng-click=\"addItem()\"]").click();
-        WaitForSmallSpinnerDisappear();
-    }
-
-    private static void WaitForSmallSpinnerDisappear() {
-        $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
-    }
-
-    public static SelenideElement getTagContainerByKey(String key) {
-        checkTagsVisible();
-        for (SelenideElement el : $$(".tags")) {
-            ElementsCollection ec = el.$$("input");
-            for (SelenideElement e : ec) {
-                if (!e.getAttribute("value").isEmpty()
-                        && e.getAttribute("value").equals(key)) {
-                    return el;
-                }
-            }
-        }
-        throw new NoSuchElementException("Such element doesn't exist");
-    }
-
-    public static int getTagContainerIndexByKey(String key) {
-        int i = 0;
-        checkTagsVisible();
-        for (SelenideElement el : $$(".tags")) {
-            ElementsCollection ec = el.$$("input");
-            for (SelenideElement e : ec) {
-                if (!e.getAttribute("value").isEmpty()
-                        && e.getAttribute("value").equals(key)) {
-                    return i;
-                }
-            }
-            i++;
-        }
-        throw new NoSuchElementException("No tag with key:" + key + " found!");
-    }
-
-    private static void checkTagsVisible() {
-        $(byAttribute("data-ng-form", "tagForm")).shouldBe(visible);
-    }
-
-    public static void removeTag(String key) {
-        $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeItem(item)\"]").click();
-        WaitForSmallSpinnerDisappear();
-    }
-
-    public static void openTagsSection() {
-        $("[data-ng-class=\"{active: accordionIcon[2] }\"]").click();
-    }
-
     public static void openImagesSection() {
         $("#accordion1 a[href=\"#collapse_images\"]").click();
-    }
-
-    public static boolean isTagDisplayed(String key, String value) {
-        return $(By.xpath("//span[contains(.,'\"" + key + "\":\"" + value + "\')]")).isDisplayed();
     }
 
     public boolean validateIP(String ipRange) {
