@@ -34,13 +34,6 @@
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
-            if ($scope.preSelectedImageId) {
-                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
-                $q.when($scope.preSelectedImage).then(function (image) {
-                    $scope.selectDatacenter(image.datacenter);
-                });
-            }
-
             $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
@@ -120,10 +113,6 @@
             $scope.selectedPackage = null;
             $scope.selectedNetworks = [];
             $scope.previousPos = 0;
-
-            if ($rootScope.commonConfig('datacenter')) {
-                $scope.data.datacenter = $rootScope.commonConfig('datacenter');
-            }
 
             // version number comparison
             var isVersionHigher = function (v1, v2) {
@@ -633,8 +622,27 @@
                 }
             });
 
-            if (!$scope.data.datacenter) {
-                $scope.selectDatacenter();
+            function setDatacenter () {
+                if ($rootScope.commonConfig('datacenter')) {
+                    $scope.data.datacenter = $rootScope.commonConfig('datacenter');
+                } else {
+                    $scope.selectDatacenter();
+                }
+            }
+
+            if ($scope.preSelectedImageId) {
+                $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
+                $q.when($scope.preSelectedImage).then(function (image) {
+                    if (image && image.datacenter) {
+                        $scope.selectDatacenter(image.datacenter);
+                    } else {
+                        $location.url('/compute/create');
+                        $location.replace();
+                        setDatacenter();
+                    }
+                });
+            } else {
+                setDatacenter();
             }
 
             if (!$scope.data.opsys) {
