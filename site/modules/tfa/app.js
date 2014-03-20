@@ -153,7 +153,6 @@ module.exports = function execute(scope, app) {
                 res.json({status:'ok'});
             });
         }
-
     });
 
     app.post('/login', function (req, res, next) {

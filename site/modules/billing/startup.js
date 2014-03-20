@@ -99,6 +99,7 @@ module.exports = function execute(scope, callback) {
                         }
 
                         call.req.session.zuoraServiceAttempt = 0;
+                        call.req.session.save();
                         callback(null);
                     });
                     return;
@@ -144,6 +145,7 @@ module.exports = function execute(scope, callback) {
 
             call.session(function (req) {
                 req.session.zuoraServiceAttempt = 0;
+                req.session.save();
             });
             if (call.req.session.signupStep && call.req.session.signupStep !== 'completed') {
                 var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
@@ -267,6 +269,7 @@ module.exports = function execute(scope, callback) {
 
         var serviceAttempts = call.req.session.zuoraServiceAttempt || 0;
         call.req.session.zuoraServiceAttempt = serviceAttempts + 1;
+        call.req.session.save();
 
         call.log.debug('Checking if zuora account exists');
         zuora.account.get(call.req.session.userId, function (err, acc) {
@@ -293,6 +296,7 @@ module.exports = function execute(scope, callback) {
                     }
                     call.session(function (req) {
                         req.session.zuoraServiceAttempt = 0;
+                        req.session.save();
                     });
 
                     //Set minimum progress to session and ask billing server to update
