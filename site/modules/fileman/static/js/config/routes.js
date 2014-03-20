@@ -6,6 +6,7 @@ window.JP.main.config([
         routeProvider
             .when('/manta/files', {
                 title: 'File Manager',
-                action: 'fileman.index'
+                action: 'fileman.index',
+                parent: 'manta.index'
             });
     }]);

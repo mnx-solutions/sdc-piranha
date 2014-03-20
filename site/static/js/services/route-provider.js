@@ -84,7 +84,8 @@ window.JP.main.provider('route', [
 
             if (context) {
                 if (context.parent) {
-                    navigationPath = this._buildNavigationPath(context.parent);
+                    var parentContext = this._findRootContext(context.parent);
+                    navigationPath = this._buildNavigationPath(context.parent, params, parentContext);
                 }
 
                 if (context.children.length > 0 || 
@@ -92,7 +93,8 @@ window.JP.main.provider('route', [
                     navigationPath.push({
                         title: context.title,
                         path: context.path,
-                        params: params
+                        params: params,
+                        showLatest: context.showLatest
                     });
                 }
 
@@ -105,6 +107,10 @@ window.JP.main.provider('route', [
                     if (childContext) {
                         navigationPath = navigationPath.concat(childContext);
                     }
+                }
+
+                if (context.parent) {
+                    navigationPath = navigationPath.concat(this._buildNavigationPath(context.parent, params, this._findRootContext(context.parent)));
                 }
             }
 
@@ -121,6 +127,7 @@ window.JP.main.provider('route', [
                 context.path = path;
                 context.children = [];
                 context.parent = route.parent;
+                context.showLatest = route.showLatest;
 
                 if (this._navigation.length === 0) {
                     this._navigation.push(context);
@@ -140,11 +147,12 @@ window.JP.main.provider('route', [
 
         Provider.prototype.resolveNavigation = function (action, params) {
             var currentContext = this._findNavigationContext(action, params);
+            var navigationPath = [];
             if (currentContext) {
-                return this._buildNavigationPath(action, params);
+                navigationPath = this._buildNavigationPath(action, params);
             }
 
-            return [];
+            return navigationPath;
         };
 
         var provider = new Provider();

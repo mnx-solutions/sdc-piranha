@@ -9,6 +9,7 @@ window.JP.main.config([
         }).when('/compute/instance/:machineid', {
             title: 'Instance Details',
             action: 'machine.details',
+            showLatest: true,
             resolve: {
                 data: ['$route', '$location', function ($route, $location) {
                     if (!$route.current.params.machineid) {
@@ -17,19 +18,16 @@ window.JP.main.config([
                 }]
             }
         }).when('/compute/create/simple', {
-            title: 'Quick Start Instance',
+            title: 'Quick Start: Create Instance',
             action: 'machine.simple'
         }).when('/compute/create', {
-            title: 'Create Instance',
-            action: 'machine.provision'
-        }).when('/compute/create/custom', {
             title: 'Create Instance',
             action: 'machine.provision'
         }).when('/compute/create/:imageid', {
             title: 'Create Instance from custom image',
             action: 'machine.provision'
         }).when('/images', {
-            title: 'Image List',
+            title: 'Images',
             action: 'machine.images'
         });
     }
