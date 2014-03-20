@@ -38,10 +38,11 @@ public class Account extends AbstractPageObject {
     }
 
     public SelenideElement getEdit(final Legend legend) {
-        return $(By.xpath(String.format("//legend/span[.='%s']/../a[@class='edit-btn']", legend.label)));
+        return $(By.xpath(String.format("//legend/span[.='%s']/../a", legend.label)));
     }
 
     public AccountSSH getSSHContainer() {
         return page(AccountSSH.class);
     }
 }
+

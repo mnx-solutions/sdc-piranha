@@ -1,11 +1,15 @@
 package com.joyent.piranha.pageobject;
 
+import com.codeborne.selenide.SelenideElement;
+
 import static com.codeborne.selenide.Selenide.$;
 
 public class ChangePassword extends AbstractPageObject {
 
     public void setOldPassword(String oldPassword){
-        $("[name=\"oldPassword\"]").sendKeys(oldPassword);
+        SelenideElement oldPasswor = $("[name=\"oldPassword\"]");
+        oldPasswor.clear();
+        oldPasswor.sendKeys(oldPassword);
     }
 
     public void setNewPassword(String testPass){
@@ -22,5 +26,11 @@ public class ChangePassword extends AbstractPageObject {
 
     public void clickCloseButton(){
         $("button.btn").click();
+    }
+
+    public void fillForm(String oldPass, String newPass) {
+        setOldPassword(oldPass);
+        setNewPassword(newPass);
+        setConfirmNewPassword(newPass);
     }
 }
