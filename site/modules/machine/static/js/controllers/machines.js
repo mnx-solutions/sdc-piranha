@@ -54,8 +54,7 @@
                         $scope.loading = false;
 
                         if (!$scope.machines.length) {
-                            $location.path("compute/create");
-                            return;
+                            $location.path("compute/create/simple");
                         }
                     });
                 }
