@@ -24,7 +24,6 @@
                     }
                 });
             };
-
             return service;
         }]);
 }(window.JP.getModule('support')));

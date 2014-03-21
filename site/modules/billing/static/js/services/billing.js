@@ -111,6 +111,60 @@
             return call.deferred;
         };
 
+        service.createSupportSubscription = function (ratePlanId, callback) {
+            var call = serverTab.call({
+                name: 'BillingSubscriptionCreate',
+                data: {
+                    ratePlanId: ratePlanId
+                },
+                done: callback || function (err) {
+                    if (err) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'billing',
+                                'Unable to retrieve subscriptions'
+                            ),
+                            function(){}
+                        );
+                    }
+                }
+            });
+            return call.deferred;
+        };
+
+        service.cancelSupportSubscription = function (subscriptionId, callback) {
+            var call = serverTab.call({
+                name: 'BillingSubscriptionCancel',
+                data: {
+                    id: subscriptionId
+                },
+                done: callback || function (err) {
+                    if (err) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'billing',
+                                'Unable to unsubscribe'
+                            ),
+                            function(){}
+                        );
+                    }
+                }
+            });
+            return call.deferred;
+        };
+
         service.getLastInvoice = function (callback) {
             var call = serverTab.call({
                 name: 'getLastInvoice',

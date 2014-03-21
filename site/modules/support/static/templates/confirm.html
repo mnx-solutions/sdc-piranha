@@ -1,0 +1,10 @@
+<div class="modal support-confirm" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="info-icon"></div>
+    <div class="title">{{title}}</div>
+    <div class="modal-body">
+        <p data-ng-bind-html-unsafe="message.body || message"></p>
+    </div>
+    <div class="modal-footer white">
+        <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" ng-repeat="btn in buttons" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">{{ btn.label }}</button>
+    </div>
+</div>
