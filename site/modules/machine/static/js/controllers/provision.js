@@ -45,6 +45,7 @@
             $scope.keys = Account.getKeys();
             $scope.datacenters = Datacenter.datacenter();
             $scope.networks = [];
+            $scope.indexPackageTypes = {};
             $scope.packageTypes = [];
             $scope.packageType = null;
             $scope.loading = true;
@@ -527,6 +528,12 @@
                 };
             };
 
+            $scope.filterPackageTypes = function (datasetType) {
+                return function (packageType) {
+                    return $scope.indexPackageTypes[packageType].indexOf(datasetType) > -1;
+                };
+            };
+
             // Watch datacenter change
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
@@ -593,10 +600,17 @@
                             return;
                         }
 
+                        var indexPackageTypes = {};
                         var packageTypes = [];
                         packages.forEach(function (p) {
-                            if (p.group && packageTypes.indexOf(p.group) === -1 && p.price) {
-                                packageTypes.push(p.group);
+                            if (p.group && p.price) {
+                                var indexPackageType = indexPackageTypes[p.group];
+                                if (!indexPackageType) {
+                                    indexPackageTypes[p.group] = [p.type];
+                                    packageTypes.push(p.group);
+                                } else if (!indexPackageType[p.type]) {
+                                    indexPackageTypes[p.group].push(p.type);
+                                }
                             }
                             var price = getNr(p.price);
                             var priceMonth = getNr(p.price_month);
@@ -604,18 +618,17 @@
                             p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
                         });
 
-
                         var standardIndex = packageTypes.indexOf('Standard');
                         if (standardIndex !== -1) {
                             packageTypes.splice(standardIndex, 1);
                             packageTypes.push('Standard');
                         }
-
+                        $scope.indexPackageTypes = indexPackageTypes;
                         $scope.packageTypes = packageTypes;
                         $scope.packages = packages;
                         $scope.reloading = (--count > 0);
 
-                        if($scope.preSelectedImageId)
+                        if ($scope.preSelectedImageId)
                             $scope.selectDataset($scope.preSelectedImageId);
                     });
 
