@@ -1,11 +1,13 @@
-<div class="branding-background"></div>
-<form class="form-signin branding" data-ng-controller="TFAController">
-    <h2 class="form-signin-heading orange" data-translate>Two Factor Authentication</h2>
+<div data-ng-show="brandingEnabled" class="branding-background" data-ng-controller="TFAController"></div>
+<form class="form-signin" data-ng-class="{branding: brandingEnabled}" data-ng-controller="TFAController">
+    <h2 class="form-signin-heading" data-ng-class="{orange: brandingEnabled}" data-translate>Two Factor Authentication</h2>
 
     <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password">
 
-    <p class="error orange-text alert-icon" data-ng-show="error"><i>{{error}}</i></p>
+    <p class="alert alert-success" data-ng-show="success && !brandingEnabled" data-translate>Logging in successful. Redirecting...</p>
+
+    <p class="error" data-ng-class="{'orange-text alert-icon': brandingEnabled, 'alert-danger': !brandingEnabled}"  data-ng-show="error"><i>{{error}}</i></p>
     <div class="footer">
-        <button class="btn btn-large orange" type="submit" data-ng-click="login()" data-translate>Sign in</button>
+        <button class="btn btn-large" data-ng-class="{'orange': brandingEnabled, 'btn-primary': !brandingEnabled}" type="submit" data-ng-click="login()" data-translate>Sign in</button>
     </div>
 </form>

@@ -13,6 +13,9 @@
 
             $scope.otpass = '';
 
+            $scope.features = window.JP.get('features') || {};
+            $scope.brandingEnabled = $scope.features.useBrandingOrange === 'enabled';
+
             $scope.login = function () {
                 $scope.error = false;
                 TFAService.login($scope.otpass).then(function () {
