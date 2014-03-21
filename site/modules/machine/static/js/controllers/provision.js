@@ -34,7 +34,7 @@
             $scope.preSelectedImageId = requestContext.getParam('imageid');
             $scope.preSelectedImage = null;
 
-            $scope.instanceType = $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
+            $scope.instanceType = $scope.preSelectedImageId || $location.path().indexOf('/custom') > -1 ? 'Saved' : 'Public';
 
             $scope.instanceMetadataEnabled = $scope.features.instanceMetadata === 'enabled';
             $scope.metadataArray = [{key: '', val: '', edit: true, conflict: false}];
@@ -323,11 +323,6 @@
                     $scope.data.package = instancePackage;
                 }
                 $scope.setCurrentStep(goto);
-
-                if ($scope.preSelectedImageId && goto === 0) {
-                    $scope.selectInstanceType('Saved');
-                }
-
                 ng.element('.carousel-inner').scrollTop($scope.previousPos);
                 if ($scope.features.instanceMetadata === 'enabled') {
                     ng.element('#metadata-configuration').fadeOut('fast');
