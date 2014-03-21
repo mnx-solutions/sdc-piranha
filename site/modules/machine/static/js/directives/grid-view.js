@@ -1,7 +1,7 @@
 'use strict';
 
 (function (ng, app) {
-    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', function ($scope, $filter, $http, $location, Account, $rootScope) {
+    app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', '$q', 'Datacenter', function ($scope, $filter, $http, $location, Account, $rootScope, $q, Datacenter) {
         $scope.location = $location;
         $scope.getLastPage = function (update) {
             if ($scope.objects) {
@@ -16,10 +16,21 @@
             }
         };
 
-        $scope.tabFilters = ['all'];
         $scope.tabFilter = '';
 
-        $scope.$watch('objects + props + perPage + filterAll', $scope.getLastPage.bind($scope, true), true);
+        if ($scope.tabFilterField === 'datacenter') {
+            Datacenter.datacenter().then(function (datacenters) {
+                $scope.tabFilters = datacenters.map(function (datacenter) {
+                    return datacenter.name;
+                });
+                $scope.tabFilters.push('all');
+                $scope.tabFilter = $scope.tabFilter || $scope.tabFilters[0];
+            });
+        } else {
+            $scope.tabFilters = ['all'];
+        }
+
+        $scope.$watch('objects + props + perPage + filterAll + tabFilter', $scope.getLastPage.bind($scope, true), true);
 
         $scope.calcPageLimits = function calcPageLimits() {
             $scope.pageNumFirst = ($scope.page - 1) * $scope.perPage + 1;
@@ -131,29 +142,31 @@
         };
 
         $scope.matchesFilter = function (obj) {
-            if ($scope.filterAll) {
-                return $scope.props.some(function (el) {
-                    if (!el.active) {
-                        return false;
-                    }
+            if ($scope.propertyFilter(obj)) {
+                if ($scope.filterAll) {
+                    return $scope.props.some(function (el) {
+                        if (!el.active) {
+                            return false;
+                        }
 
-                    var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                        var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
 
-                    if (ng.isNumber(subject) || typeof subject === "boolean") {
-                        subject = subject.toString();
-                    }
+                        if (ng.isNumber(subject) || typeof subject === "boolean") {
+                            subject = subject.toString();
+                        }
 
-                    if (ng.isObject(subject) || ng.isArray(subject)) {
-                        subject = JSON.stringify(subject);
-                    }
+                        if (ng.isObject(subject) || ng.isArray(subject)) {
+                            subject = JSON.stringify(subject);
+                        }
 
-                    var needle = $scope.filterAll.toLowerCase();
+                        var needle = $scope.filterAll.toLowerCase();
 
-                    return (subject.toLowerCase().indexOf(needle) !== -1);
-                });
+                        return (subject.toLowerCase().indexOf(needle) !== -1);
+                    });
+                }
+                return true;
             }
-
-            return true;
+            return false;
         };
 
         $scope.changePage = function (t) {
@@ -242,6 +255,13 @@
             });
         };
 
+        $scope.unSelectAllCheckbox = function () {
+            $scope.checkedCheckBox = false;
+            $scope.objects.forEach(function (el) {
+                el.checked = false;
+            });
+        };
+
         $scope.disableSelectAllCheckbox = function () {
             $scope.checkedCheckBoxDisable = $scope.objects.some(function (el) {
                 return (el.fireWallActionRunning) || (el.job && !el.job.finished);
@@ -249,8 +269,8 @@
         };
 
         $scope.propertyFilter = function (obj) {
-            if ($scope.tabFilter === 'all') {
-                return obj;
+            if ($scope.tabFilter === 'all' || !$scope.tabFilter) {
+                return true;
             }
             return obj[$scope.tabFilterField] === $scope.tabFilter;
         };
@@ -261,25 +281,30 @@
                 $scope.disableSelectAllCheckbox();
 
                 if ($scope.tabFilterField) {
-                    objects.forEach(function (obj) {
-                        if ($scope.tabFilters.indexOf(obj[$scope.tabFilterField]) === -1) {
-                            $scope.tabFilters.unshift(obj[$scope.tabFilterField]);
-                        }
-                    });
-                    if ($rootScope.features.manta === 'enabled') {
-                        $scope.userConfig = Account.getUserConfig().$child($scope.tabFilterField);
-                        $scope.userConfig.$load(function (error, config) {
-                            $scope.tabFilter = config[$scope.tabFilterField] || 'all';
-                        });
-                        $scope.$watch('tabFilter', function (filter) {
-                            if (filter && $scope.userConfig[$scope.tabFilterField] && $scope.userConfig[$scope.tabFilterField] !== filter && filter !== 'all') {
-                                $scope.userConfig[$scope.tabFilterField] = filter;
-                                $scope.userConfig.dirty = true;
-                                $scope.userConfig.$save();
+                    if ($scope.tabFilterField !== 'datacenter') {
+                        objects.forEach(function (obj) {
+                            if ($scope.tabFilters.indexOf(obj[$scope.tabFilterField]) === -1) {
+                                $scope.tabFilters.unshift(obj[$scope.tabFilterField]);
                             }
                         });
-                    } else {
-                        $scope.tabFilter = $scope.tabFilters[0];
+                    }
+
+                    if (!$scope.tabFilter && $scope.tabFilters) {
+                        if ($rootScope.features.manta === 'enabled') {
+                            $scope.userConfig = Account.getUserConfig().$child($scope.tabFilterField);
+                            $scope.userConfig.$load(function (error, config) {
+                                $scope.tabFilter = config[$scope.tabFilterField] || 'all';
+                            });
+                            $scope.$watch('tabFilter', function (filter) {
+                                if (filter && $scope.userConfig[$scope.tabFilterField] && $scope.userConfig[$scope.tabFilterField] !== filter && filter !== 'all') {
+                                    $scope.userConfig[$scope.tabFilterField] = filter;
+                                    $scope.userConfig.dirty = true;
+                                    $scope.userConfig.$save();
+                                }
+                            });
+                        } else {
+                            $scope.tabFilter = $scope.tabFilters[0];
+                        }
                     }
                 }
             }

@@ -2211,3 +2211,6 @@ label.checkbox {
     position: relative;
     top: 38px;
 }
+.grid-no-entries hr {
+    margin-top: 0;
+}
