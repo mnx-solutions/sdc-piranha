@@ -46,6 +46,7 @@ public class InstancePage {
         Common.clickButtonInModal("Yes");
     }
 
+    //TODO: remove method
     public static void rename(String name) {
         clickRenameInstanceIcon();
         getInstanceNameField().clear();
@@ -103,10 +104,12 @@ public class InstancePage {
         return false;
     }
 
+    //TODO: remove method
     public static void gotoInstanceDetails(String instanceName) {
         $(byText(instanceName)).click();
     }
 
+    //TODO: remove method
     public static SelenideElement getInstanceNameField() {
         if (!$("#instanceRename").isDisplayed()) {
             return $(".page-title");
@@ -114,6 +117,7 @@ public class InstancePage {
         return $("#instanceRename");
     }
 
+    //TODO: remove method
     public static void clickRenameInstanceIcon() {
         JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
         executor.executeScript("$('.edit-text-icon').click()");

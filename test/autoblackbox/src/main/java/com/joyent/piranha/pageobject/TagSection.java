@@ -15,7 +15,7 @@ public class TagSection extends AbstractPageObject {
         row.$("[placeholder=\"Key\"]").setValue(key);
         row.$("[placeholder=\"Value\"]").setValue(value);
         row.$("[data-ng-click=\"addItem(item)\"]").click();
-        WaitForSmallSpinnerDisappear();
+        waitForSmallSpinnerDisappear();
     }
 
     public SelenideElement getTagRepeaterByKey(String key) {
@@ -25,6 +25,6 @@ public class TagSection extends AbstractPageObject {
 
     public void removeTag(String key) {
         $(byText(key)).$(By.xpath("..")).$("[data-ng-click=\"removeItem(item)\"]").click();
-        WaitForSmallSpinnerDisappear();
+        waitForSmallSpinnerDisappear();
     }
 }

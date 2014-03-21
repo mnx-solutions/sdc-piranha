@@ -59,7 +59,19 @@ public abstract class AbstractPageObject {
         $(".loading-medium-after-h1").waitUntil(disappear, baseTimeout);
     }
 
-    public void WaitForSmallSpinnerDisappear() {
+    public void waitForSmallSpinnerDisappear() {
         $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    }
+
+    public void waitForMediumSpinnerDisappear() {
+        $(".loading-medium[style=\"\"]").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    }
+
+    public SelenideElement getErrorLabel(){
+        return $(".alert.alert-error");
+    }
+
+    public SelenideElement getInfoLabel(){
+        return $(".alert.alert-info");
     }
 }
