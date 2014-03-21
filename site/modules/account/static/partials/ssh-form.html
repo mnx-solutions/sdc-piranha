@@ -9,7 +9,7 @@
                 <span class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion3"
                    href="#collapse_{{$index}}">
                     <i class=""></i>
-                    <span class="key-name">{{key.name.length > 0 && key.name != key.fingerprint && (key.name) || ''}}</span>
+                    <span class="key-name">{{ getKeyName(key) }}</span>
                     <span class="key-hash"> / {{key.fingerprint}}</span>
                                     <span class="dpl-inline middle"><button class="small-btn effect-orange-button"
                                                                      data-ng-click="deleteKey(key.name, key.fingerprint, $event)"

@@ -104,6 +104,13 @@
 
             $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
 
+            $scope.getKeyName = function (key) {
+                if (key.name === key.fingerprint) {
+                    return key.name.split(':').splice(-5).join('');
+                }
+                return key.name || '';
+            };
+
         }
     ]);
 }(window.JP.getModule('Account')));

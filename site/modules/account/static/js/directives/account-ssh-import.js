@@ -35,6 +35,12 @@
                             opts,
                             function (result) {
                                 if (result && result.value === 'add') {
+                                    if (!result.data.keyName) {
+                                        var keyParts = result.data.keyData.split(' ');
+                                        if (keyParts[2]) {
+                                            result.data.keyName = keyParts[2];
+                                        }
+                                    }
                                     $scope.createNewKey({
                                         name: result.data.keyName,
                                         data: result.data.keyData
