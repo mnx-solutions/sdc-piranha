@@ -119,6 +119,14 @@
 
                 commonConfig[name] = value;
             };
+
+            $rootScope.clearCommonConfig = function (name) {
+                if (name) {
+                    delete commonConfig[name];
+                } else {
+                    commonConfig = {};
+                }
+            };
         }
     ]);
 }(window.JP.main));

@@ -532,6 +532,16 @@
                     return machine.freetier === true;
                 });
             };
+
+            $scope.tabFilterField = 'datacenter';
+            $scope.tabFilterDefault = $rootScope.commonConfig($scope.tabFilterField);
+            $scope.$on('gridViewChangeTab', function (event, tab) {
+                if (tab === 'all') {
+                    $rootScope.clearCommonConfig($scope.tabFilterField);
+                } else {
+                    $rootScope.commonConfig($scope.tabFilterField, tab);
+                }
+            });
         }
 
     ]);
