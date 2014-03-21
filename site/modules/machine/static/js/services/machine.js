@@ -240,20 +240,30 @@
         if (!machines.job) {
             // run updateMachines
             service.updateMachines();
-            
-            /*
-            service.updateMachines().done(function (err, job) {
-                if (!err) {
-                    service.pollMachines(5000);
-                }
-            });
-            */
         }
 
         function changeState(opts) {
             return function (uuid) {
                 var machine = service.machine(uuid);
                 function start() {
+                    var stateChanged = true;
+                    switch (opts.name) {
+                        case 'MachineStart' :
+                            machine.state = 'starting';
+                            break;
+                        case 'MachineStop' :
+                            machine.state = 'stopping';
+                            break;
+                        case 'MachineReboot' :
+                            machine.state = 'rebooting';
+                            break;
+                        case 'MachineDelete' :
+                            machine.state = 'deleting';
+                            break;
+                        default :
+                            stateChanged = false;
+                    }
+
                     if (!machine.job || machine.job.finished) {
                         opts.data = opts.data || {};
                         opts.data.uuid = uuid;
@@ -264,7 +274,9 @@
                                 var step = job.step;
                                 if (step && typeof step === 'object'){
                                     Object.keys(step).forEach(function (k) {
-                                        job.machine[k] = step[k];
+                                        if (!stateChanged || k !== 'state') {
+                                            job.machine[k] = step[k];
+                                        }
                                     });
                                 }
                             };
