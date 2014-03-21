@@ -1,7 +1,7 @@
 'use strict';
 
-window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext',
-    function (route, requestContext) {
+window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext', '$rootScope',
+    function (route, requestContext, $rootScope) {
         return {
             priority: 10,
             restrict: 'EA',
@@ -9,30 +9,19 @@ window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext',
             template: '<ul class="breadcrumb">' +
                         '<li data-ng-class="{active: $last}" ' +
                              'data-ng-repeat="item in navigationPath">' +
-                          '<span data-ng-show="!$last">' +
+                          '<span data-ng-show="!$last || $last && item.showLatest">' +
                             '<a href="#!{{item.path}}" data-translate data-translate-expression="true">' +
                               '{{item.title}}' +
                             '</a>' +
                           '</span>' +
-                          '<span data-ng-show="!$last" class="divider">/</span>' +
-                          '<span data-ng-show="$last">' +
-                              ' {{item.title}}' +
-                          '</span>' +
+                          '<span data-ng-show="!$last || !$last && item.showLatest" class="divider">/</span>' +
                         '</li>' +
                       '</ul>',
 
             controller: function ($scope, $routeParams, $attrs, route, localization) {
                 localization.bind('dashboard', $scope);
 
-                function updateItems() {
-                    $scope.navigationPath = route.resolveNavigation($routeParams);
-
-                    $scope.navigationPath.forEach(function (item) {
-                        item.path = $scope.resolveLink(item.path);
-                    });
-                }
-
-                $scope.resolveLink = function (path) {
+                function resolveLink(path) {
                     var keys = Object.keys($routeParams);
 
                     for (var i = 0, c = keys.length; i < c; i++) {
@@ -43,14 +32,12 @@ window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext',
                     return path;
                 };
 
-                $scope.$on(
-                    'requestContextChanged',
-                    function () {
-                        updateItems();
-                    }
-                );
+                $scope.navigationPath = route.resolveNavigation($routeParams);
+                $rootScope.pageTitle = route.$route.current.$$route.title;
 
-                updateItems();
+                $scope.navigationPath.forEach(function (item) {
+                    item.path = resolveLink(item.path);
+                });
             }
         };
     }]);

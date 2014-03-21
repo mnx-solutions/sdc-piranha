@@ -6,7 +6,7 @@
 			
 		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
                 <div data-breadcrumbs></div>
-                <h3 class="page-title">Analytics</h3>
+                <h3 class="page-title">{{ pageTitle }}</h3>
                 <div ng-show="machineExists" class="row-fluid">
                     <div class="chart-info" data-ng-show="selectedInstance">
                         <span class="name-chart">UUID</span>
