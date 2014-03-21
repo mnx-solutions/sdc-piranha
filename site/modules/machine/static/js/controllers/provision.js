@@ -683,8 +683,8 @@
                 if ($scope.selectedPackageInfo.createdBySupport) {
                     var el = $scope.selectedPackageInfo;
                     var contactSupportParams = ng.copy(window.zenbox_params);
-                    contactSupportParams.request_subject = 'I want to order ' + el.description + ' instance';
-                    contactSupportParams.request_description = el.name;
+                    contactSupportParams.request_subject = 'I want to order ' + el.description + ' compute instance';
+                    contactSupportParams.request_description = 'API Name: ' + el.name;
                     contactSupportParams.requester_name = $scope.account.firstName;
                     contactSupportParams.requester_email = $scope.account.email;
                     Zenbox.show(null, contactSupportParams);

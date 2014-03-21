@@ -205,7 +205,11 @@
           "description": "Standard 96 GB RAM 24 vCPUs 3150 GB Disk",
           "price": "3.072",
           "price_month": "2,242.56",
-          "vcpus": "24"
+          "vcpus": "24",
+          "memory": 98304,
+          "disk": 3225600,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-standard-104-smartos": {
           "short_name": "Standard 104",
@@ -241,7 +245,11 @@
           "description": "Standard-CC 128 GB RAM 32 vCPUs 4200 GB Disk",
           "price": "4.096",
           "price_month": "2,990.08",
-          "vcpus": "32"
+          "vcpus": "32",
+          "memory": 131072,
+          "disk": 4300800,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highmemory-17.125-smartos": {
           "short_name": "High Memory 17.125",
@@ -322,7 +330,11 @@
           "description": "High Memory 144 GB RAM 18 vCPUs 2363 GB Disk",
           "price": "3.433",
           "price_month": "2,506.09",
-          "vcpus": "18"
+          "vcpus": "18",
+          "memory": 147456,
+          "disk": 2419712,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highmemory-160-smartos": {
           "short_name": "High Memory 160",
@@ -385,7 +397,11 @@
           "description": "High Memory-CC 256 GB RAM 32 vCPUs 4200 GB Disk",
           "price": "6.102",
           "price_month": "4,454.46",
-          "vcpus": "32"
+          "vcpus": "32",
+          "memory": 262144,
+          "disk": 4300800,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highcpu-1.75-smartos": {
           "short_name": "High CPU 1.75",
@@ -529,7 +545,11 @@
           "description": "High CPU-CC 32 GB RAM 32 vCPUs 1200 GB Disk",
           "price": "2.319",
           "price_month": "1,692.87",
-          "vcpus": "32"
+          "vcpus": "32",
+          "memory": 32768,
+          "disk": 1228800,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-15-smartos": {
           "short_name": "High I/O 15",
@@ -556,7 +576,11 @@
           "description": "High Storage 32 GB RAM 8 vCPUs 7680 GB Disk",
           "price": "0.863",
           "price_month": "629.99",
-          "vcpus": "8"
+          "vcpus": "8",
+          "memory": 32768,
+          "disk": 7864320,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highstorage-48-smartos": {
           "short_name": "High Storage 48",
@@ -574,7 +598,11 @@
           "description": "High Storage 64 GB RAM 16 vCPUs 15360 GB Disk",
           "price": "1.726",
           "price_month": "1,259.98",
-          "vcpus": "16"
+          "vcpus": "16",
+          "memory": 65536,
+          "disk": 15728640,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highstorage-96-smartos": {
           "short_name": "High Storage 96",
@@ -592,7 +620,11 @@
           "description": "High Storage 128 GB RAM 32 vCPUs 30720 GB Disk",
           "price": "3.451",
           "price_month": "2,519.23",
-          "vcpus": "32"
+          "vcpus": "32",
+          "memory": 131072,
+          "disk": 31457280,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-60.5-smartos": {
           "short_name": "High I/O 60.5",
@@ -601,7 +633,11 @@
           "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk",
           "price": "3.067",
           "price_month": "2,238.91",
-          "vcpus": "8"
+          "vcpus": "8",
+          "memory": 61952,
+          "disk": 1486848,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-96-smartos": {
           "short_name": "High I/O 96",
@@ -619,7 +655,11 @@
           "description": "High I/O 128 GB RAM 16 vCPUs 3072 GB Disk",
           "price": "6.488",
           "price_month": "4,736.24",
-          "vcpus": "16"
+          "vcpus": "16",
+          "memory": 131072,
+          "disk": 3145728,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-160-smartos": {
           "short_name": "High I/O 160",
@@ -655,7 +695,11 @@
           "description": "High I/O 256 GB RAM 32 vCPUs 6144 GB Disk",
           "price": "12.976",
           "price_month": "9,472.48",
-          "vcpus": "32"
+          "vcpus": "32",
+          "memory": 262144,
+          "disk": 6291456,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-standard-0.25-kvm": {
           "short_name": "Standard 0.25",
@@ -1213,7 +1257,11 @@
           "description": "High Storage 32 GB RAM 8 vCPUs 7680 GB Disk",
           "price": "0.863",
           "price_month": "629.99",
-          "vcpus": "8"
+          "vcpus": "8",
+          "memory": 32768,
+          "disk": 7864320,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highstorage-48-kvm": {
           "short_name": "High Storage 48",
@@ -1258,7 +1306,11 @@
           "description": "High I/O 60.5 GB RAM 8 vCPUs 1452 GB Disk",
           "price": "3.067",
           "price_month": "2,238.91",
-          "vcpus": "8"
+          "vcpus": "8",
+          "memory": 61952,
+          "disk": 1486848,
+          "default": "false",
+          "createdBySupport": true
       },
       "g3-highio-96-kvm": {
           "short_name": "High I/O 96",
