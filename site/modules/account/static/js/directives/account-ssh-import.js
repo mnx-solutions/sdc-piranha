@@ -25,32 +25,105 @@
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function(question, callback) {
                         $rootScope.loading = true;
+
+                        var addKeyCtrl = function ($scope, dialog) {
+                            $scope.data = {};
+                            $scope.filePath = '';
+                            $scope.close = function (res) {
+                                if (res === 'cancel') {
+                                    dialog.close({
+                                        value: res
+                                    });
+                                    return;
+                                }
+                                dialog.close({
+                                    value: 'add',
+                                    data: {
+                                        keyName: $scope.data.keyName,
+                                        keyData: $scope.data.keyData
+                                    }
+                                });
+                            };
+
+                            $scope.buttons = [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
+
+                            $scope.uploadFile = function (elem) {
+                                function uploadFiles(files) {
+                                    var data = new FormData();
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.onreadystatechange = function () {
+                                        if (xhr.readyState !== 4) {
+                                            return;
+                                        }
+
+                                        $scope.$apply(function () {
+                                            $scope.keyLoading = false;
+                                        });
+
+                                        var response = JSON.parse(xhr.responseText);
+
+                                        if (response.success === true) {
+                                            return dialog.close({
+                                                keyUploaded: true
+                                            });
+                                        }
+                                        if (response.error) {
+                                            return PopupDialog.error(
+                                                localization.translate(
+                                                    $scope,
+                                                    null,
+                                                    'Error'
+                                                ),
+                                                localization.translate(
+                                                    $scope,
+                                                    null,
+                                                    response.error
+                                                ),
+                                                function () {}
+                                            );
+                                        }
+                                    };
+
+                                    for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+                                        data.append('uploadInput', files[fileIndex]);
+                                    }
+                                    data.append('path', elem.value);
+                                    $scope.$apply(function () {
+                                        $scope.keyLoading = true;
+                                    });
+
+                                    xhr.open('POST', 'account/upload');
+                                    xhr.send(data);
+                                }
+
+                                uploadFiles(elem.files);
+                            };
+
+                        };
+
                         var opts = {
                             title: 'Add new ssh key',
-                            btns: [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}],
-                            templateUrl: 'account/static/template/dialog/message.html'
+                            templateUrl: 'account/static/template/dialog/message.html',
+                            openCtrl: addKeyCtrl
                         };
 
                         PopupDialog.custom(
                             opts,
                             function (result) {
-                                if (result && result.value === 'add') {
+                                if (result && result.value === 'add' && result.data.keyData) {
                                     if (!result.data.keyName) {
                                         var keyParts = result.data.keyData.split(' ');
                                         if (keyParts[2]) {
                                             result.data.keyName = keyParts[2];
                                         }
                                     }
-                                    $scope.createNewKey({
+                                    return $scope.createNewKey({
                                         name: result.data.keyName,
                                         data: result.data.keyData
                                     });
-                                } else {
+                                } else if (result && result.value === 'add' && !result.data.keyData) {
                                     $rootScope.loading = false;
-                                }
-
-                                if (result === 'add') {
-                                    PopupDialog.error(
+                                    return PopupDialog.error(
                                         localization.translate(
                                             $scope,
                                             null,
@@ -63,6 +136,8 @@
                                         ),
                                         function () {}
                                     );
+                                } else if (result && result.keyUploaded) {
+                                    $scope.updateKeys();
                                 }
                             }
                         );

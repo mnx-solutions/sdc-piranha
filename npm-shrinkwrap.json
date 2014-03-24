@@ -1161,7 +1161,7 @@
     "ursa": {
       "version": "0.8.0",
       "from": "ursa@git+ssh://git@github.com:13W/ursa.git",
-      "resolved": "git+ssh://git@github.com:13W/ursa.git#57bf663e6519c4e198e885dd393969d03e74bc22"
+      "resolved": "git+ssh://git@github.com:13W/ursa.git#48888cd06bf9cd3c740ff03967a656abcc77af0b"
     },
     "manta": {
       "version": "1.2.6",

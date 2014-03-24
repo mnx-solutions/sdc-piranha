@@ -10,6 +10,7 @@ var os = require('os');
 var uuid = require('../../static/vendor/uuid/uuid.js');
 var ursa = require('ursa');
 var jobs = {};
+var express = require('express');
 
 /**
  * @ngdoc service
@@ -107,6 +108,46 @@ module.exports = function execute(scope, app) {
         res.set('Content-type', 'application/x-pem-file');
         res.set('Content-Disposition', 'attachment; filename="' + fileName + '"');
         res.send(key.privateKey);
+    });
+
+    app.post('/upload', [express.multipart()], function (req, res, next) {
+        var files = req.files && req.files.uploadInput;
+
+        if (files && !Array.isArray(files)) {
+            files = [files];
+        }
+
+        var keyPath = files[0].path;
+        fs.readFile(keyPath, 'utf8', function (err, data) {
+            if (err) {
+                req.log.error(err);
+                res.json({success: false, err: err});
+                return;
+            }
+
+            try {
+                var publicKey = ursa.openSshPublicKey(data);
+                if (publicKey) {
+                    var name = '';
+                    var keyParts = data.split(' ');
+
+                    if (keyParts[2]) {
+                        name = keyParts[2];
+                    }
+
+                    SignupProgress.addSshKey(req, name, data, function (err) {
+                        if (err) {
+                            req.log.error(err);
+                            res.json({success: false, err: err});
+                            return;
+                        }
+                        res.json({success: true});
+                    });
+                }
+            } catch (error) {
+                res.json({error: 'The file you are uploaded is not a public key.'});
+            }
+        });
     });
 
     app.post('/log/error', function (req, res) {
