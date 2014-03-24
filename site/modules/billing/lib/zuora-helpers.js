@@ -134,7 +134,7 @@ function composeBillToContact(call, acc, cb) {
             firstName: call.data.firstName,
             lastName: call.data.lastName,
             country: call.data.cardHolderInfo.country || data.country || null,
-            workEmail: data.email,
+            workEmail: data.email.trim(),
             workPhone: call.data.workPhone
         };
 
