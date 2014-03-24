@@ -1911,17 +1911,17 @@ label.checkbox {
     background-color: #afd46c !important;
     color: #000 !important;
 }
-.btn.grey_new {
+.btn.grey-new {
     background-color: #999999;
     color: white;
     text-shadow: none;
 }
-.btn.grey_new:hover,
-.btn.grey_new:focus,
-.btn.grey_new:active,
-.btn.grey_new.active,
-.btn.grey_new.disabled,
-.btn.grey_new[disabled] {
+.btn.grey-new:hover,
+.btn.grey-new:focus,
+.btn.grey-new:active,
+.btn.grey-new.active,
+.btn.grey-new.disabled,
+.btn.grey-new[disabled] {
     background-color: #999999 !important;
     color: #ffffff !important;
 }
