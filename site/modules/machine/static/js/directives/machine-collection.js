@@ -20,7 +20,8 @@
                         edit: true,
                         isNew: true,
                         dirtyKey: '',
-                        dirtyVal: ''
+                        dirtyVal: '',
+                        saving: false
                     });
                 };
                 scope.loadCollection = function () {
@@ -32,7 +33,8 @@
                                     key: key,
                                     val: scope.collection[key],
                                     dirtyKey: key,
-                                    dirtyVal: scope.collection[key]
+                                    dirtyVal: scope.collection[key],
+                                    saving: false
                                 });
                             }
                         }
@@ -48,15 +50,23 @@
                     }
                 };
                 scope.loadCollection();
-                scope.saveCollection = function (obj) {
+                scope.saveCollection = function (collection, obj) {
                     var newCollection = {};
                     var hasDuplicates = false;
+                    if (!collection) {
+                        return;
+                    }
                     obj = obj || {};
-                    scope.internalCollection.forEach(function (item) {
+                    var progressOn = angular.noop;
+
+                    collection.forEach(function (item) {
                         if (item.dirtyKey && item.dirtyVal) {
-                            if (obj.isNew || (item.key === obj.key && item.val === obj.val)) {
-                                obj.key = obj.dirtyKey;
-                                obj.val = obj.dirtyVal;
+                            if (item.isNew || (item.key === obj.key && item.val === obj.val)) {
+                                item.key = obj.key = obj.dirtyKey;
+                                item.val = obj.val = obj.dirtyVal;
+                                progressOn = function () {
+                                    obj.saving = true;
+                                };
                             }
                         }
                         hasDuplicates = hasDuplicates || newCollection[item.key];
@@ -86,29 +96,46 @@
                                     name: scope.collectionName.replace(/s$/, '')
                                 }
                             ),
-                            persistCollection
+                            function () {
+                                progressOn();
+                                persistCollection();
+                            }
                         );
                     } else {
+                        progressOn();
                         persistCollection();
                     }
-
                 };
                 scope.addItem = function (item) {
-                    scope.saveCollection(item);
+                    if (scope.saving) {
+                        return;
+                    }
+
+                    var collection = angular.copy(scope.internalCollection);
+
+                    var lastItem = collection[collection.length - 1];
+                    if (lastItem.isNew && lastItem.key !== item.key) {
+                        collection.splice(collection.length - 1, 1);
+                    }
+                    scope.saveCollection(collection, item);
                 };
                 scope.editItem = function (item) {
-                    item.edit = true;
+                    item.edit = item.isNew || !scope.saving;
                 };
+
                 scope.removeItem = function (item) {
-                    var collection = scope.internalCollection;
-                    var itemIndex = collection.indexOf(item);
-
+                    if (scope.saving) {
+                        return;
+                    }
+                    item.saving = true;
+                    var internalCollection = scope.internalCollection;
+                    var itemIndex = internalCollection.indexOf(item);
+                    var collection = angular.copy(internalCollection);
                     collection.splice(itemIndex, 1);
-
                     if (collection[collection.length - 1].isNew) {
                         collection.splice(collection.length - 1, 1);
                     }
-                    scope.saveCollection();
+                    scope.saveCollection(collection);
                 };
                 scope.$watch('collection', function () {
                     scope.loadCollection();

@@ -6,7 +6,7 @@
 
         var factory = {};
 
-        factory.confirm = function (title, question, callback) {
+        factory.confirm = function (title, question, callbackOk, callbackCancel) {
             // TODO: Translate
             title = title || 'Confirm';
             var btns = [
@@ -26,12 +26,15 @@
                 }
             ];
 
-            callback = callback || angular.noop;
+            callbackOk = callbackOk || angular.noop;
+            callbackCancel = callbackCancel || angular.noop;
             return $dialog.messageBox(title, question, btns, 'dialog/static/partials/confirmationDialog.html')
                 .open()
                 .then(function (result) {
                     if (result === 'ok') {
-                        callback();
+                        callbackOk();
+                    } else if (result === 'cancel') {
+                        callbackCancel();
                     }
                 });
         };

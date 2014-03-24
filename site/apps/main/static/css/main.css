@@ -918,6 +918,24 @@ div .disabled {
     min-width: 50px;
 }
 
+.loading-medium.item {
+    margin-top: -4px;
+    margin-right: -7px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+}
+
+.loading-medium.item-button {
+    margin-top: 0;
+    margin-right: 7px;
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+}
+
 .loading-medium-tr {
     background-image: url('../img/icon-loading-medium-tr.gif');
     background-position: 50% 50%;
