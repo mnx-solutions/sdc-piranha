@@ -752,14 +752,16 @@
             };
 
             $scope.reviewPage = function () {
+                var props = ng.copy($rootScope.zenboxParams);
+
                 if ($scope.selectedPackageInfo.createdBySupport) {
                     var el = $scope.selectedPackageInfo;
-                    var contactSupportParams = ng.copy(window.zenbox_params);
-                    contactSupportParams.request_subject = 'I want to order ' + el.description + ' compute instance';
-                    contactSupportParams.request_description = 'API Name: ' + el.name;
-                    contactSupportParams.requester_name = $scope.account.firstName;
-                    contactSupportParams.requester_email = $scope.account.email;
-                    Zenbox.show(null, contactSupportParams);
+                    props.dropboxID = props.dropboxOrderPackageId || props.dropboxID;
+                    props.request_subject = 'I want to order ' + el.description + ' compute instance';
+                    props.request_description = 'API Name: ' + el.name;
+                    props.requester_name = $scope.account.firstName;
+                    props.requester_email = $scope.account.email;
+                    Zenbox.show(null, props);
                 } else {
                     $scope.slideCarousel();
                     $scope.setCurrentStep(2);
