@@ -33,7 +33,7 @@
              data-tab-filter-field="'datacenter'">
         </div>
     </div>
-    <button class="btn orange pull-right add-rule-btn" data-ng-class="{'no-rules' : !rules.length}" data-ng-hide="openRuleForm" data-ng-click="toggleOpenRuleForm()" data-ng-disabled="machinesLoading">+ Add New Rule</button>
+    <button class="btn orange pull-right add-rule-btn" data-ng-class="{'no-rules' : !rules.length}" data-ng-hide="openRuleForm || machinesLoading" data-ng-click="toggleOpenRuleForm()">+ Add New Rule</button>
     <div class="form-horizontal" data-ng-hide="loading" data-ng-model="data">
         <div class="item-list-container">
             <hr />
