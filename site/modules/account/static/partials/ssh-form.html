@@ -3,10 +3,10 @@
         <span class="key-name">Key Name</span>
         <span class="key-hash"> / UUID</span>
     </div>
-    <div class="accordion" id="accordion3">
+    <div class="accordion" id="accordion-ssh-keys">
         <div class="accordion-group" data-ng-repeat="key in keys | reverse">
             <div class="accordion-heading">
-                <span class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion3"
+                <span class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion-ssh-keys"
                    href="#collapse_{{$index}}">
                     <i class=""></i>
                     <span class="key-name">{{ getKeyName(key) }}</span>

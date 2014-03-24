@@ -1,9 +1,12 @@
-input.error, select.error, textarea.error {
+input.error,
+select.error,
+textarea.error {
     -webkit-box-shadow: 0 0 6px #f8b9b7;
     -moz-box-shadow: 0 0 6px #f8b9b7;
     box-shadow: 0 0 6px #f8b9b7;
 }
-select.date-month, select.date-year {
+select.date-month,
+select.date-year {
     width: 70px;
 }
 
@@ -122,11 +125,11 @@ select.date-month, select.date-year {
     float:left;
     margin-top: 20px;
 }
-.container-account{
+.container-account {
     padding-left: 48px;
     width: 1000px;
 }
-.account legend{
+.account legend {
     border-bottom: 0;
     font-size: 19px;
     line-height: 18px;
@@ -136,20 +139,22 @@ select.date-month, select.date-year {
     margin-left: -2px;
     padding-top: 5px;
 }
-.account fieldset{
+.account fieldset {
     padding-left: 5px;
 }
-.account .line, .account.line{
+.account .line,
+.account.line {
     border-bottom: 1px solid #cccccc;
     width: 725px;
     margin-left: -2px;
     padding-bottom: 2px;
 }
-.account .fieldset-spacer, .fieldset-spacer{
+
+.fieldset-spacer {
     padding-top: 25px;
 }
 
-.accordion-package-title{
+.accordion-package-title {
     height: 40px;
     width: 681px;
     border: 1px solid #dadcdd;
@@ -158,18 +163,18 @@ select.date-month, select.date-year {
     padding-left: 40px;
 }
 
-.accordion-package-title span{
+.accordion-package-title span {
     padding-top: 10px;
 }
 
-#accordion3{
+#accordion-ssh-keys {
     margin-left: -11px;
     width: 732px;
 }
-#accordion3 .accordion-group {
+#accordion-ssh-keys .accordion-group {
     min-height: 50px;
 }
-#accordion3 .accordion-inner{
+#accordion-ssh-keys .accordion-inner {
     padding: 0;
     padding-bottom: 25px;
     border: 1px solid #dadcdd;
@@ -179,11 +184,10 @@ select.date-month, select.date-year {
     background-color: #f3f7fb;
 }
 
-#accordion3 .accordion-inner span{
+#accordion-ssh-keys .accordion-inner span {
     font-size: 15px;
     color: #333;
     font-weight: 300;
-    height: 50px;
     width: 100px;
     display: inline-block;
     padding-right: 10px;
@@ -191,7 +195,7 @@ select.date-month, select.date-year {
     vertical-align: middle;
 }
 
-#accordion3 .accordion-inner span p{
+#accordion-ssh-keys .accordion-inner span p {
     display: inline-block;
     font-size: 15px;
     color: #333333;
@@ -199,58 +203,58 @@ select.date-month, select.date-year {
     vertical-align: top;
 }
 
-#accordion3 .accordion-heading{
+#accordion-ssh-keys .accordion-heading {
     height: 50px;
     background-color: white;
     border: 1px solid #dadcdd;
     margin-left: 9px;
 }
-#accordion3 .accordion-heading .accordion-toggle {
+#accordion-ssh-keys .accordion-heading .accordion-toggle {
     background-color: #f3f7fb !important;
     border-bottom: 0;
 }
 
-#accordion3 .accordion-heading .accordion-toggle.collapsed {
+#accordion-ssh-keys .accordion-heading .accordion-toggle.collapsed {
     background-color: white !important;
     border-bottom: 1px solid #dadcdd;
 }
 
-#accordion3 .accordion-toggle .small-btn {
+#accordion-ssh-keys .accordion-toggle .small-btn {
     display: block !important;
 }
-#accordion3 .accordion-toggle.collapsed .small-btn {
+#accordion-ssh-keys .accordion-toggle.collapsed .small-btn {
     display: none !important;
 }
 
-#accordion3 .accordion-heading .accordion-toggle {
+#accordion-ssh-keys .accordion-heading .accordion-toggle {
     padding: 0;
     padding-left: 10px;
 }
-#accordion3 .accordion-group {
+#accordion-ssh-keys .accordion-group {
     border: 0 none;
     margin-bottom: 0 !important;
     margin-top: -1px;
 }
-#accordion3 .accordion-body{
+#accordion-ssh-keys .accordion-body {
     margin-top: -11px;
     margin-left: -9px;
 }
-#accordion3 .accordion-heading .accordion-toggle {
+#accordion-ssh-keys .accordion-heading .accordion-toggle {
     color: #333333;
     font-size: 15px;
     text-decoration: none;
     line-height: 50px;
     font-weight: 500;
 }
-#accordion3 .key-info{
+#accordion-ssh-keys .key-info {
     margin-left: 3px;
 }
-.key-name{
+.key-name {
     font-size: 16px;
     font-weight: 500;
     display: inline-block;
 }
-.key-hash{
+.key-hash {
     font-weight: 300;
     display: inline-block;
 }
@@ -259,11 +263,16 @@ select.date-month, select.date-year {
     padding-left: 33px;
     padding-top: 15px;
 }
-.txt-name span{
+
+.key-info-content .row-fluid:first-child {
+    margin-bottom: 20px;
+}
+
+.txt-name span {
     font-weight: 500 !important;
     font-size: 16px !important;
 }
-.txt-value{
+.txt-value {
     font-weight: 300 !important;
     font-size: 16px !important;
     border: 1px solid #e7ebee !important;
@@ -274,21 +283,20 @@ select.date-month, select.date-year {
     vertical-align: top !important;
     margin-top: -6px !important;
 }
-.ssh-key-container{
+.ssh-key-container {
     padding-bottom: 20px !important;
 }
-.ssh-key-value{
+.ssh-key-value {
     font-size: 16px !important;
     border: 1px solid #bac7cd !important;
     background-color: #fafcfd !important;
     padding: 7px 15px !important;
-    height: 170px !important;
     width: 515px !important;
     vertical-align: top !important;
     word-wrap: break-word !important;
 }
 
-.inline-pos{
+.inline-pos {
     display: inline-block;
 
 }
@@ -297,7 +305,7 @@ select.date-month, select.date-year {
     color: #375675;
 }
 
-.edit-name{
+.edit-name {
     display: inline-block;
     width: 120px;
     text-align: right;
@@ -307,11 +315,11 @@ select.date-month, select.date-year {
     font-size: 16px;
     color: #7d7d7d;
 }
-.edit-value{
+.edit-value {
     width: 459px;
     display: inline-block;
 }
-.edit-value input{
+.edit-value input {
     padding: 0;
     width: 445px;
     border-radius: 0;
@@ -322,16 +330,19 @@ select.date-month, select.date-year {
     font-weight: 300;
     padding-left: 10px;
 }
-.edit-value-two select, .edit-value select, .edit-value-double{
+.edit-value-two select,
+.edit-value select,
+.edit-value-double {
     display: inline-block;
     height: 30px;
     border-radius: 0;
 }
 
-.edit-value select, .edit-value-double{
+.edit-value select,
+.edit-value-double {
     width: 205px !important;
 }
-.edit-value-two select{
+.edit-value-two select {
     width: 222px !important;
 }
 .edit-value-one select {
@@ -340,7 +351,7 @@ select.date-month, select.date-year {
 .edit-value-double {
     width: 457px !important;
 }
-.edit-value-double select{
+.edit-value-double select {
     width: 200px !important;
 }
 
@@ -348,7 +359,9 @@ select.date-month, select.date-year {
     width:155px !important;
 }
 
-.input-prepend .add-on:first-child, .input-prepend .btn:first-child, .add-on{
+.input-prepend .add-on:first-child,
+.input-prepend .btn:first-child,
+.add-on {
     width: 50px;
     border-radius: 0;
     float: left;
@@ -357,7 +370,7 @@ select.date-month, select.date-year {
     color: #555555;
 }
 
-.edit-error{
+.edit-error {
     width: 110px;
     display: inline-block;
     vertical-align: top;
@@ -365,23 +378,24 @@ select.date-month, select.date-year {
     position: absolute;
     line-height: 14px;
 }
-.edit-error .error span{
+.edit-error .error span {
     margin-left: 20px;
     vertical-align: middle;
 }
-.edit-phone{
+.edit-phone {
     width: 242px !important;
     padding: 0;
 }
-.edit-country{
+.edit-country {
     width: 205px !important;
     padding: 0;
 }
-.input-prepend{
+.input-prepend {
     margin-bottom: 0;
     height: 40px;
 }
-.input-prepend .add-on, .input-prepend .btn {
+.input-prepend .add-on,
+.input-prepend .btn {
     border-radius: 0;
     width:50px;
     text-align:center;
@@ -390,37 +404,38 @@ select.date-month, select.date-year {
 legend + .control-group {
     margin-top: 0 !important;
 }
-.content-p, .content-li{
+.content-p,
+.content-li {
     font-size: 16px;
     color: #3d3d3d;
     line-height: 24px;
     font-weight: 300;
 }
-.content-p{
+.content-p {
     padding-bottom: 15px;
 }
-.content-p.or{
+.content-p.or {
     padding-left: 10px;
     padding-right: 10px;
 }
-.edit-form form{
+.edit-form form {
     margin: 0;
 }
-.orange-asterix{
+.orange-asterix {
     font-size: 20px;
     vertical-align: bottom;
 }
-.selects-spacer{
+.selects-spacer {
     padding-right: 5px;
     display: inline-block;
 }
-.required-txt{
+.required-txt {
     display: inline-block;
     vertical-align: middle;
     float: right;
     margin-right: 20px;
 }
-.message-box{
+.message-box {
     width: 253px;
     height: 400px;
     background-color: #e8f0f7;
@@ -429,11 +444,12 @@ legend + .control-group {
     margin-top: 10px;
     margin-left: 20px;
 }
-.first-block{
+.first-block {
     width: 725px;
     display: inline-block;
 }
-.modal-header.message, .modal-header.confirm {
+.modal-header.message,
+.modal-header.confirm {
     background-color: #ff6600;
 }
 .modal-header.error {
@@ -458,7 +474,7 @@ legend + .control-group {
     -moz-box-shadow: inset 0 1px 0 #ffffff;
     box-shadow: inset 0 1px 0 #ffffff;
 }
-.alert-icon{
+.alert-icon {
     background-image: url("../img/alert-icon.png");
     background-repeat: no-repeat;
     background-position: 0 0;
@@ -470,7 +486,7 @@ legend + .control-group {
     margin-top: 20px;
     margin-bottom: 10px!important;
 }
-#phone{
+#phone {
     width: 150px;
     font-size: 16px;
 }
