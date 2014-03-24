@@ -371,9 +371,14 @@
                 $scope.currentSlidePageIndex = index;
             };
 
-            $scope.getDefaultPackageId = function () {
+            $scope.processPackages = function () {
                 var packageId = '';
                 var sortPackage = '';
+                var filterValues = {
+                    vcpus: [],
+                    memory: [],
+                    disk: []
+                };
 
                 $scope.packages.forEach(function (pkg) {
                     if ($scope.filterPackages()(pkg)) {
@@ -381,9 +386,24 @@
                             sortPackage = parseInt(pkg.memory, 10);
                             packageId = pkg.id;
                         }
+                        if (pkg.price) {
+                            var cpu = Number(pkg.vcpus);
+                            if (filterValues.vcpus.indexOf(cpu) === -1) {
+                                filterValues.vcpus.push(cpu);
+                            }
+                            if (filterValues.memory.indexOf(pkg.memory) === -1) {
+                                filterValues.memory.push(pkg.memory);
+                            }
+                            if (filterValues.disk.indexOf(pkg.disk) === -1) {
+                                filterValues.disk.push(pkg.disk);
+                            }
+                        }
                     }
                 });
-                return packageId;
+                return {
+                    minimalPackage: packageId,
+                    filterValues: filterValues
+                };
             };
 
             $scope.selectDataset = function (id, changeDataset) {
@@ -447,10 +467,22 @@
                     }
 
                     if ($scope.packages) {
-                        var packageId = $scope.getDefaultPackageId();
+                        var processedPackages = $scope.processPackages();
+                        var packageId = processedPackages.minimalPackage;
+                        $scope.filterValues = processedPackages.filterValues;
+
                         if (packageId) {
                             $scope.selectPackage(packageId);
                         }
+
+                        $scope.filterProps.forEach(function (prop) {
+                            $scope.filterValues[prop].sort(function (a, b) {
+                                return a - b;
+                            });
+                        });
+
+                        $scope.filterProperty = $scope.filterProps[0];
+                        $scope.onFilterChange($scope.filterProperty);
                     }
 
                     var expandLastSection = function () {
@@ -652,29 +684,7 @@
                             var priceMonth = getNr(p.price_month);
                             p.price = (price || price === 0) && price.toFixed(3) || undefined;
                             p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
-
-                            if (p.price) {
-                                var cpu = Number(p.vcpus);
-                                if ($scope.filterValues.vcpus.indexOf(cpu) === -1) {
-                                    $scope.filterValues.vcpus.push(cpu);
-                                }
-                                if ($scope.filterValues.memory.indexOf(p.memory) === -1) {
-                                    $scope.filterValues.memory.push(p.memory);
-                                }
-                                if ($scope.filterValues.disk.indexOf(p.disk) === -1) {
-                                    $scope.filterValues.disk.push(p.disk);
-                                }
-                            }
                         });
-
-                        $scope.filterProps.forEach(function (prop) {
-                            $scope.filterValues[prop].sort(function (a, b) {
-                                return a - b;
-                            });
-                        });
-
-                        $scope.filterProperty = $scope.filterProps[0];
-                        $scope.onFilterChange($scope.filterProperty);
 
                         var standardIndex = packageTypes.indexOf('Standard');
                         if (standardIndex !== -1) {
