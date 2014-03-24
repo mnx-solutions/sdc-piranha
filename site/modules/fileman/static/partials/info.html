@@ -22,7 +22,7 @@
             </tr>
             <tr>
                 <td>Last Modified At</td>
-                <td>{{info.headers['last-modified']}}</td>
+                <td>{{info.headers['last-modified'] || info.headers.date | date:'yyyy-MM-dd HH:mm'}}</td>
             </tr>
         </table>
     </div>
