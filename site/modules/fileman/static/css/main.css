@@ -261,6 +261,18 @@
 .upload-icon {
     background-image: url("../img/upload-icon.png");
 }
+.effect-orange-button:hover .delete-icon {
+    background-image: url("../img/delete-icon-white.png");
+}
+.effect-orange-button:hover .download-icon {
+    background-image: url("../img/download-icon-white.png");
+}
+.effect-orange-button:hover .info-icon {
+    background-image: url("../img/info-icon-white.png");
+}
+.effect-orange-button:hover .plus-icon {
+    background-image: url("../img/plus-icon-white.png");
+}
 .upload-icon-grey {
     background: url("../img/upload-icon-grey.png") no-repeat 50% 50%;
     background-size: 14px 14px;

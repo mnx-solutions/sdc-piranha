@@ -21,15 +21,15 @@
             <input type="file" id="uploadInput" name="uploadInput" style="display: none" multiple
                    data-fileman-upload="currentPath">
             <input type="hidden" name="path" value="{{ currentPath }}"/>
-            <label type="button" for="uploadInput" class="btn light pull-left"><i class="plus-icon"></i>Add
+            <label type="button" for="uploadInput" class="btn light pull-left effect-orange-button"><i class="plus-icon"></i>Add
                 files</label>
         </div>
-        <button class="btn light" data-ng-click="createFolder()"><i class="plus-icon"></i>New Folder</button>
-        <button class="btn light" data-ng-click="downloadFile()"><i class="download-icon"></i>Download</button>
-        <button class="btn light" data-ng-click="getInfo()"><i class="info-icon"></i>Get Info</button>
+        <button class="btn light effect-orange-button" data-ng-click="createFolder()"><i class="plus-icon"></i>New Folder</button>
+        <button class="btn light effect-orange-button" data-ng-click="downloadFile()"><i class="download-icon"></i>Download</button>
+        <button class="btn light effect-orange-button" data-ng-click="getInfo()"><i class="info-icon"></i>Get Info</button>
         <!--<button class="btn light" data-ng-click="construction()"><i class="share-icon"></i>Share</button>
         <button class="btn light" data-ng-click="construction()"><i class="key-icon"></i>mLogin</button>-->
-        <button class="btn light" data-ng-click="deleteFile()"><i class="delete-icon"></i>Delete</button>
+        <button class="btn light effect-orange-button" data-ng-click="deleteFile()"><i class="delete-icon"></i>Delete</button>
     </div>
 
     <div id="folder" class="folder-container" data-path="{{ currentPath }}" data-ng-hide="loading">
