@@ -160,6 +160,16 @@
                 $scope.selectNetwork(id);
             };
 
+            var filterSelectedNetworks = function (selectedNetworks, callback) {
+                Network.network($scope.data.datacenter).then(function (dcNetworks) {
+                    callback(selectedNetworks.filter(function (selectedNetwork) {
+                        return dcNetworks.some(function (dcNetwork) {
+                            return dcNetwork.id === selectedNetwork;
+                        });
+                    }));
+                });
+            };
+
             function provision(machine) {
                 var finalProvision = function () {
                     if (machine && !machine.dataset) {
@@ -184,7 +194,10 @@
                     $location.path('/compute');
                 };
                 if (machine && machine.freetier) {
-                    finalProvision();
+                    filterSelectedNetworks(machine.networks || [], function (filteredNetworks) {
+                        machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';
+                        finalProvision();
+                    });
                     return;
                 }
 
