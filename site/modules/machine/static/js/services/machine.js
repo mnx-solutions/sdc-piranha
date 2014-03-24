@@ -248,6 +248,9 @@
                 function start() {
                     var stateChanged = true;
                     switch (opts.name) {
+                        case 'MachineResize' :
+                            machine.state = 'resizing';
+                            break;
                         case 'MachineStart' :
                             machine.state = 'starting';
                             break;
