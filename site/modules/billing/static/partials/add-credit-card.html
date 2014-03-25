@@ -18,17 +18,17 @@
                                data-ng-required="true">
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                              data-translate
                              data-ng-show="isError('creditCard.creditCardNumber', 'maxlength')">
                              Credit card number is too long
                         </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                              data-translate
                             data-ng-show="invalidCCNumber">
                             Invalid credit card number
                         </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                              data-translate
                              data-ng-show="missingCCNumber">
                             Missing credit card number
@@ -60,17 +60,17 @@
                             </select>
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate')">
                                 Invalid credit card expiration date (in past)
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.expirationYear') || isError('creditCard.expirationMonth')">
                                 Invalid credit card expiration date
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.expirationYear', 'required') || isError('expirationYear', 'submitRequired') || isError('creditCard.expirationMonth', 'required') || isError('expirationMonth', 'submitRequired')">
                                 Missing expiration info
@@ -89,12 +89,12 @@
                                    data-ng-required="true" />
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.securityCode')">
                                 Invalid security code
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.securityCode', 'required') || isError('securityCode', 'submitRequired')">
                                 Missing security code
@@ -114,17 +114,17 @@
                                data-ng-required="true">
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                              data-translate
                              data-ng-show="isError('billToContact.firstName', 'maxlength')">
                             First name is too long
                         </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                              data-translate
                              data-ng-show="isError('billToContact.firstName')">
                             Invalid first name
                         </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                              data-translate
                              data-ng-show="isError('billToContact.firstName', 'required') || isError('firstName', 'submitRequired')">
                             Missing first name
@@ -144,17 +144,17 @@
                                    data-ng-required="true" />
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('billToContact.lastName', 'maxlength')">
                                 Last name is too long
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('billToContact.lastName')">
                                 Invalid last name
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('billToContact.lastName', 'required') || isError('lastName', 'submitRequired')">
                                 Missing last name
@@ -176,16 +176,16 @@
                                data-ng-required="true"/>
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
-                                 data-translate
-                                 data-ng-show="isError('addressLine1')">
-                                Invalid address 1 line
-                            </div>
-                            <div class="error alert-icon"
-                                 data-translate
-                                 data-ng-show="isError('addressLine1', 'required') || isError('addressLine1', 'submitRequired')">
-                                Missing address 1 line
-                            </div>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('addressLine1')">
+                            Invalid address 1 line
+                        </div>
+                        <div class="error"
+                             data-translate
+                             data-ng-show="isError('addressLine1', 'required') || isError('addressLine1', 'submitRequired')">
+                            Missing address 1 line
+                        </div>
                     </span>
                         </div>
         <div class="control-group">
@@ -199,12 +199,12 @@
                                size="255">
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('addressLine2')">
                                 Invalid address 2 line
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('addressLine2', 'required')">
                                 Missing address 2 line
@@ -223,12 +223,12 @@
                             </select>
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('country') || (formSubmitted && paymentForm.country.$invalid && !paymentForm.country.$error.required)">
                                 Invalid country
                             </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('country', 'required') || isError('country', 'submitRequired')">
                                 Missing country
@@ -248,17 +248,17 @@
                                data-ng-maxlength="40">
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('city', 'maxlength')">
                                 City is too long
                             </div>
-                            <div class="error alert-icon"
+                            <div class="error"
                                  data-translate
                                  data-ng-show="isError('city') || (formSubmitted && paymentForm.city.$invalid && !paymentForm.city.$error.required)">
                                 Invalid city
                             </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('city', 'required') || isError('city', 'submitRequired')">
                                 Missing city
@@ -277,12 +277,12 @@
                                        data-ng-model="form.cardHolderInfo.state">
                             </span>
                              <span class="edit-error">
-                                <div class="error alert-icon"
+                                <div class="error"
                                      data-translate
                                      data-ng-show="isError('state')">
                                     Invalid state
                                 </div>
-                                <div class="error alert-icon"
+                                <div class="error"
                                      data-translate
                                      data-ng-show="isError('state', 'required')">
                                     Missing state
@@ -300,12 +300,12 @@
                                 </select>
                             </span>
                             <span class="edit-error">
-                                <div class="error alert-icon"
+                                <div class="error"
                                      data-translate
                                      data-ng-show="isError('state') || (formSubmitted && paymentForm.state.$invalid && !paymentForm.state.$error.required)">
                                     Invalid state
                                 </div>
-                                <div class="error alert-icon"
+                                <div class="error"
                                      data-translate
                                      data-ng-show="isError('state', 'required') || isError('state', 'submitRequired')">
                                     Missing state
@@ -326,17 +326,17 @@
                                data-ng-maxlength="20">
                     </span>
                     <span class="edit-error">
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('zipCode', 'maxlength')">
                                 Zip code is too long
                             </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('zipCode') || (formSubmitted && paymentForm.zipCode.$invalid && !paymentForm.zipCode.$error.required)">
                                 Invalid zip code
                             </div>
-                        <div class="error alert-icon"
+                        <div class="error"
                                  data-translate
                                  data-ng-show="isError('zipCode', 'required') || isError('zipCode', 'submitRequired')">
                                 Missing zip code

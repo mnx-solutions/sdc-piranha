@@ -383,8 +383,8 @@ select.date-year {
     position: absolute;
     line-height: 14px;
 }
+
 .edit-error .error span {
-    margin-left: 20px;
     vertical-align: middle;
 }
 .edit-phone {

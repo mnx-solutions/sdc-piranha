@@ -318,7 +318,6 @@ body{
     color: #f60;
     font-size: 14px;
     font-weight: 300;
-    margin-left: 15px;
 }
 .info span{
     color: #3cc051;
@@ -339,9 +338,6 @@ body{
     background-position: left;
     /*width: 18px;*/
     /*height: 16px;*/
-}
-.table td.error-message{
-    width: 40px;
 }
 .table td .alert-icon{
     position: relative;
