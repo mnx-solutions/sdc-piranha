@@ -97,6 +97,7 @@
                                 }
                             ),
                             function () {
+                                obj.edit = obj.isNew;
                                 progressOn();
                                 persistCollection();
                             }
