@@ -209,7 +209,7 @@
                     if (rootPath !== $scope.currentPath && userAction) {
                         $scope.userConfig.$load(function (err, config) {
                             config.path = fullPath;
-                            config.dirty = true;
+                            config.dirty(true);
                             config.$save();
                         });
                     }

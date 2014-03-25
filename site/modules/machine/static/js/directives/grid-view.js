@@ -298,7 +298,7 @@
                             $scope.$watch('tabFilter', function (filter) {
                                 if (filter && $scope.userConfig[$scope.tabFilterField] && $scope.userConfig[$scope.tabFilterField] !== filter && filter !== 'all') {
                                     $scope.userConfig[$scope.tabFilterField] = filter;
-                                    $scope.userConfig.dirty = true;
+                                    $scope.userConfig.dirty(true);
                                     $scope.userConfig.$save();
                                 }
                             });
