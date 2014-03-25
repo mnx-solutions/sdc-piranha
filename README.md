@@ -36,10 +36,11 @@ Development regularly occurs on Linux until it is ready for staging. Lloyd encou
 
 1. `ssh git@git.joyent.com` Confirms access to the private repositories. Connection will immediately close.
 2. `git clone git@github.com:joyent/piranha.git`  
-3. `npm install` 
-4. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below.
+3. `npm install` (if you get errors, try `npm i --production`)
+4. Create environment configuration file including uploading a private ssh key of a 'developer' user for SDC. See Configuration section below. Better yet, get someone else's working config file and use that as the `{environment}` when starting the server.
 5. Make sure portal user has rights to write var/error.json `chown -R portal var/`
-6. `node index.js -env={environment}`
+6. If Redis isn't installed and running, [install](http://redis.io/download) and [run](http://reistiago.wordpress.com/2011/07/23/installing-on-redis-mac-os-x/) it
+7. `node index.js -env={environment}`
 
 ### Staged Development
 
