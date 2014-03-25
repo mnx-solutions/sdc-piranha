@@ -47,10 +47,52 @@
                 $scope.loading = false;
             });
 
-            $scope.exportIframe = '';
-            $scope.download = function (invoice) {
-                $scope.exportIframe = '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
+            if (!$scope.invoices.length) {
+                $scope.invoices = [];
+            }
+            $scope.gridOrder = ['-invoiceDate'];
+            $scope.exportFields = {
+                ignore: ["IntegrationId__NS", "IntegrationStatus__NS", "SyncDate__NS", "accountId", "accountNumber","accountName", "balance", "createdBy", "dueDate", "id", "invoiceTargetDate", "status", "invoiceItems"]
             };
 
+            $scope.gridProps = [
+                {
+                    id: 'invoiceDate',
+                    name: 'Date',
+                    active: true,
+                    sequence: 1
+                },
+                {
+                    id: 'invoiceNumber',
+                    name: 'Invoice Number',
+                    active: true,
+                    sequence: 2
+                },
+                {
+                    id: 'amount',
+                    name: 'Total (USD)',
+                    active: true,
+                    sequence: 3
+                },
+                {
+                    id: 'label',
+                    name: 'Download',
+                    type: 'button',
+                    sequence: 4,
+                    active: true,
+                    btn: {
+                        label: 'PDF',
+                        action: function (invoice) {
+                            $scope.exportIframe = '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>'
+                        },
+                        getClass: function () {
+                            return 'cell-link';
+                        }
+                    }
+                }
+
+            ];
+            $scope.gridActionButtons = [];
+            $scope.exportIframe = '';
         }]);
 }(window.JP.getModule('Account')));

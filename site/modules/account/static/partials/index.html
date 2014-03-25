@@ -71,30 +71,24 @@
                 </fieldset>
                 <fieldset data-ng-controller="Account.InvoicesController" ng-show="isInvocesEnabled">
                     <legend><span>Invoices</span></legend>
-                        <div class="row-fluid">
+                    <div class="row-fluid">
                         <div data-ng-hide="invoices.length">
                             <div>You don't have any invoices yet</div>
-                                    </div>
-                        <table class="table table-striped table-bordered table-hover table-full-width"
-                               data-ng-show="!loading && !error && invoices.length">
-                            <thead>
-                                <tr>
-                                    <th data-translate>Date</th>
-                                    <th data-translate>Invoice Number</th>
-                                    <th data-translate>Total (USD)</th>
-                                    <th data-translate>Download</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr data-ng-repeat="invoice in invoices | hideNotPosted | orderBy:invoice.invoiceDate">
-                                    <td>{{invoice.invoiceDate | date:'MMMM, yyyy'}}</td>
-                                    <td>{{invoice.invoiceNumber}}</td>
-                                    <td>{{invoice.amount | number:2}}</td>
-                                    <td><span class="cell-link" data-ng-click="download(invoice)" data-translate>PDF</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                                    </div>
+                        </div>
+                        <div data-ng-show="invoices.length">
+                            <div data-grid-view
+                                 data-user-config="gridUserConfig"
+                                 data-props="gridProps"
+                                 data-columns-button="false"
+                                 data-image-button-show="false"
+                                 data-objects="invoices"
+                                 data-multisort="false"
+                                 data-order="gridOrder"
+                                 data-export-fields="exportFields"
+                                 data-paginated="false">
+                            </div>
+                        </div>
+                    </div>
                     <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
                 </fieldset>
                                         </span>
