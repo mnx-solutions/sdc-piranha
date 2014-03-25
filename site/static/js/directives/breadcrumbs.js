@@ -14,7 +14,7 @@ window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext', '$rootScope
                               '{{item.title}}' +
                             '</a>' +
                           '</span>' +
-                          '<span data-ng-show="!$last || !$last && item.showLatest" class="divider">/</span>' +
+                          '<span data-ng-show="!$last || $last && item.showLatest" class="divider">/</span>' +
                         '</li>' +
                       '</ul>',
 

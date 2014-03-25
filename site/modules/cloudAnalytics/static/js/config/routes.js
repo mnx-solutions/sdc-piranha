@@ -3,7 +3,7 @@
 window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
         .when('/cloudAnalytics/:machineid', {
-            title: 'Instance Analytics',
+            title: 'Cloud Analytics',
             action: 'cloudAnalytics.index',
             parent: 'machine.details'
         })
