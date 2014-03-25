@@ -16,11 +16,7 @@
                 <td>Size</td>
                 <td>{{info.size}}</td>
             </tr>
-            <tr>
-                <td>Creation Date</td>
-                <td>{{info.headers.date | date:'yyyy-MM-dd HH:mm'}}</td>
-            </tr>
-            <tr>
+            <tr data-ng-show="info.headers['last-modified']">
                 <td>Last Modified At</td>
                 <td>{{info.headers['last-modified']}}</td>
             </tr>
