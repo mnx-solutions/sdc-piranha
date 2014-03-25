@@ -5,6 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.matchText;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 public abstract class AbstractPageObject {
@@ -67,11 +68,33 @@ public abstract class AbstractPageObject {
         $(".loading-medium[style=\"\"]").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
 
-    public SelenideElement getErrorLabel(){
+    public void waitForLargeSpinnerDisappear() {
+        $(".loading-large[style=\"\"]").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+    }
+
+    public SelenideElement getErrorLabel() {
         return $(".alert.alert-error");
     }
 
-    public SelenideElement getInfoLabel(){
+    public SelenideElement getInfoLabel() {
         return $(".alert.alert-info");
     }
+
+    public void clickButtonInModal(String buttonName) {
+        $(".modal").shouldBe(visible);
+        $(".modal-header").exists();
+        $(".modal-footer").find(byText(buttonName)).click();
+    }
+
+    public void performAction(String action) {
+        clickActionsButton();
+        SelenideElement actionsList = $("#option-list-actions");
+        actionsList.waitUntil(visible, baseTimeout);
+        actionsList.$(byText(action)).click();
+    }
+
+    public void clickActionsButton() {
+        $("#button-actions").click();
+    }
+
 }
