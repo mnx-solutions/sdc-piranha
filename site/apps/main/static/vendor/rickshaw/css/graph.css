@@ -120,13 +120,13 @@
 	shape-rendering: crisp-edges;
 	pointer-events: none;
 }
-.rickshaw_graph .y_grid .tick {
+.rickshaw_graph .y-grid .tick {
 	z-index: -1;
 	stroke: rgba(0, 0, 0, 0.20);
 	stroke-width: 1px;
 	stroke-dasharray: 1 1;
 }
-.rickshaw_graph .y_grid path {
+.rickshaw_graph .y-grid path {
 	fill: none;
 	stroke: none;
 }
@@ -143,7 +143,7 @@
 .rickshaw_graph .y_ticks.glow text {
 	fill: black;
 	color: black;
-	text-shadow: 
+	text-shadow:
 		-1px 1px 0 rgba(255, 255, 255, 0.1),
 		1px -1px 0 rgba(255, 255, 255, 0.1),
 		1px 1px 0 rgba(255, 255, 255, 0.1),
@@ -157,7 +157,7 @@
 .rickshaw_graph .y_ticks.inverse text {
 	fill: white;
 	color: white;
-	text-shadow: 
+	text-shadow:
 		-1px 1px 0 rgba(0, 0, 0, 0.8),
 		1px -1px 0 rgba(0, 0, 0, 0.8),
 		1px 1px 0 rgba(0, 0, 0, 0.8),
@@ -166,4 +166,7 @@
 		1px 0px 0 rgba(0, 0, 0, 0.8),
 		-1px 0px 0 rgba(0, 0, 0, 0.8),
 		-1px -1px 0 rgba(0, 0, 0, 0.8);
+}
+.y-grid text {
+    display: none;
 }

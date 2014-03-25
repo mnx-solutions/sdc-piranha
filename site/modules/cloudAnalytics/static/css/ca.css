@@ -157,6 +157,8 @@
     padding-left: 10px;
 }
 .graf-radio-group {
+    padding-bottom: 44px;
+    position: relative;
     float: right;
     margin-top: -44px;
     padding-right: 75px;
