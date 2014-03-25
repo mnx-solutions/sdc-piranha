@@ -2,10 +2,8 @@
     "index": {
         "menuButton": "Joyent Support",
         "title": "JPC Support",
-        "description": "Included as part of Subscription",
         "link": "",
         "url": "http://www.joyent.com/developers/support-levels",
-        "icon": "standard-icon",
         "packageHolders": [
             {
                 "title" : "Basic",
@@ -112,10 +110,8 @@
     "nodeCloud": {
         "menuButton": "Joyent Cloud Node.js Support",
         "title": "Joyent Cloud Node.js Support",
-        "description": "Provides a direct line to the Node.js Core engineering team at Joyent. Node.js Core Support is available to virtually any user of Node.js for production time debugging of crashing bugs.",
         "link": "/cloud",
         "url": "http://www.joyent.com/products/support-nodejs",
-        "icon": "node-cloud-icon",
         "packageHolders": [
             {
                 "title" : "Production",
@@ -130,8 +126,8 @@
                 "costText": " or",
                 "fees": "10% of monthly fees",
                 "costSign": "$",
-                "info": "false",
-                "url": "",
+                "info": "true",
+                "url": "http://www.joyent.com/products/support-nodejs",
                 "ratePlanId": "2c92c0f8439770a401439c13026648ef",
                 "levelSupport": "0",
                 "active": false,

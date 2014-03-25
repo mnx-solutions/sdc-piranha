@@ -8,6 +8,6 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
         })
         .when('/support/:link', {
             title: 'Cloud Node.js',
-            action: 'support.more'
+            action: 'support.index'
         });
 }]);
