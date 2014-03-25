@@ -24,7 +24,7 @@
                     return datacenter.name;
                 });
                 $scope.tabFilters.push('all');
-                $scope.tabFilter = $scope.tabFilter || $scope.tabFilters[0];
+                $scope.tabFilter = $scope.tabFilterDefault || $scope.tabFilter || $scope.tabFilters[0];
             });
         } else {
             $scope.tabFilters = ['all'];
@@ -256,6 +256,7 @@
         };
 
         $scope.unSelectAllCheckbox = function () {
+            $scope.$parent.$emit('gridViewChangeTab', $scope.tabFilter);
             $scope.checkedCheckBox = false;
             $scope.objects.forEach(function (el) {
                 el.checked = false;
@@ -306,6 +307,7 @@
                             $scope.tabFilter = $scope.tabFilters[0];
                         }
                     }
+                    $scope.$parent.$emit('gridViewChangeTab', $scope.tabFilter || 'all');
                 }
             }
         }, true);
@@ -387,7 +389,8 @@
                 placeHolderText: '=',
                 multisort: '@',
                 userConfig: '=',
-                tabFilterField: '='
+                tabFilterField: '=',
+                tabFilterDefault: '='
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
