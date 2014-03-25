@@ -253,6 +253,11 @@ select.date-year {
     font-size: 16px;
     font-weight: 500;
     display: inline-block;
+    max-width: 250px;
+    vertical-align: top;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 .key-hash {
     font-weight: 300;
