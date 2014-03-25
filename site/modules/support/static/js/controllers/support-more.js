@@ -9,6 +9,7 @@
             $scope.subscribingInProgress = true;
             var headLink = '/support';
             $scope.getPageData = function () {
+                $scope.levelSupport = 0;
                 var supportPackages = $scope.supportPackages;
                 for (var packageName in supportPackages ) {
                     if (headLink + supportPackages[packageName].link === $location.path()) {
@@ -28,6 +29,9 @@
                                 for (var holder in $scope.packageHolders) {
                                     if (el.productRatePlanId === $scope.packageHolders[holder].ratePlanId) {
                                         $scope.packageHolders[holder].active = true;
+                                        if ($scope.levelSupport <= $scope.packageHolders[holder].levelSupport) {
+                                            $scope.levelSupport = $scope.packageHolders[holder].levelSupport;
+                                        }
                                         $scope.packageHolders[holder].subscriptionId = filteredSubscription.id;
                                     }
                                 }
@@ -49,6 +53,7 @@
                 if (next.$$route.controller === last.$$route.controller) {
                     e.preventDefault();
                     $route.current = last.$$route;
+                    $scope.loading = true;
                     $scope.getPageData();
                 }
             });
@@ -58,37 +63,22 @@
                     return;
                 }
 
-                var opts = {
-                    title: holder.popUpTitle,
-                    question: holder.popUpQuestion,
-                    btns: [
-                        {
-                            result: 'cancel',
-                            label: 'Cancel',
-                            cssClass: 'btn light',
-                            setFocus: false
-                        },
-                        {
-                            result: 'ok',
-                            label: 'OK',
-                            cssClass: 'btn orange',
-                            setFocus: true
-                        }
-                    ],
-                    templateUrl: 'support/static/templates/confirm.html'
-                };
-
-                PopupDialog.custom(
-                    opts,
-                    function (result) {
-                        if (result === 'ok') {
-                            $scope.subscribingInProgress = true;
-                            BillingService.createSupportSubscription(holder.ratePlanId, function () {
-                                $scope.getPageData();
-                            });
-                        }
-                    }
-                );
+                PopupDialog.confirm(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Confirm: ' + holder.popUpTitle
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Are you sure you want to sign up for ' + holder.popUpTitle + '?'
+                    ), function () {
+                        $scope.subscribingInProgress = true;
+                        BillingService.createSupportSubscription(holder.ratePlanId, function () {
+                            $scope.getPageData();
+                        });
+                    });
             };
 
             $scope.clickUnsubscribe = function (holder) {
@@ -115,6 +105,21 @@
                     });
 
             };
+
+            $scope.clickCallSales = function () {
+                PopupDialog.message(
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Info: Call Sales'
+                    ),
+                    localization.translate(
+                        $scope,
+                        null,
+                        'Contact a Joyent representative at +1 855 4'
+                    ), function () {}
+                );
+            }
 
         }]);
 }(window.JP.getModule('support')));
