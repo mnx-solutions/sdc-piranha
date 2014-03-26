@@ -34,18 +34,26 @@
     margin-top: 0 !important;
     margin-bottom: 0 !important;
 }
-.name-input input{
-    /*width: 265px;*/
-    /*margin-left: 14px;*/
+
+.name-input input {
     width: 242px;
-    margin-left: 37px;
+    margin-left: 35px;
 }
+
 .short-input {
     width: 24px;
-    margin-left: 37px;
+    margin-left: 35px;
 }
-.group-checkable{
+
+.group-checkable {
     margin: 0;
+}
+
+.slb-select {
+    background-color: white !important;
+    border: 1px solid #c5c5c5 !important;
+    height: 32px;
+    padding-top: 5px;
 }
 .lb-edit{
     border: 2px solid #ececec;
