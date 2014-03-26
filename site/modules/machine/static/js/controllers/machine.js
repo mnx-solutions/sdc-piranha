@@ -260,12 +260,14 @@
                         $$track.event('machine', 'resize');
                         $scope.retinfo = Machine.resizeMachine(machineid, selected);
                         var job = $scope.retinfo.getJob();
-                        job.done(function () {
+                        job.done(function (error) {
                             $scope.isResizing = false;
-                            $scope.currentPackageName = selected.name;
-                            $scope.currentPackage = selected;
-                            $scope.machine.freetier = false;
-                            $scope.selectedPackageName = $scope.getSelectedPackageName();
+                            if (!error) {
+                                $scope.currentPackageName = selected.name;
+                                $scope.currentPackage = selected;
+                                $scope.machine.freetier = false;
+                                $scope.selectedPackageName = $scope.getSelectedPackageName();
+                            }
                         });
                     });
             };
