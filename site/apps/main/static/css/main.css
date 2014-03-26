@@ -1692,6 +1692,7 @@ label.checkbox {
 .margin-btn-dashboard {
     padding-bottom: 10px;
     padding-top: 10px;
+    padding-right: 5px;
 }
 
 .hide {
@@ -2016,6 +2017,9 @@ label.checkbox {
 .create-key-btn {
     margin: 2px 0 0 20px;
 }
+.btn-key-delete {
+    margin: 15px 25px 0 0;
+}
 
 /* Dashboards */
 .btn-browse {
@@ -2099,7 +2103,6 @@ label.checkbox {
     -o-transition: background-position 0.1s linear;
     transition: background-position 0.1s linear;
 }
-
 .select2-drop {
     width: 100%;
     margin-top: -1px;
@@ -2232,4 +2235,10 @@ label.checkbox {
 }
 .grid-no-entries hr {
     margin-top: 0;
+}
+/* Machine */
+
+.btn-back-quick {
+    color: #ff6600;
+    margin-right: 20px;
 }

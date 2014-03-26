@@ -18,7 +18,7 @@
             </div>
             <div class="row-fluid carousel-container">
                 <div class="span8 provisioning-carousel-span">
-                    <div id="provisionCarousel" class="carousel slide">
+                    <div id="provisionCarousel" class="carousel slide dpl-inline">
                         <div class="carousel-inner provisioning-carousel-inner-box advanced-table" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
                                 <div class="container-min-width advanced-ci-step1">
@@ -128,7 +128,7 @@
                                                     <p>EST. MONTHLY COST:</p>
                                                     <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
                                                 </div>
-                                                <div class="pull-left">
+                                                <div class="pull-right">
                                                     <button type="button" id="button-review" class="btn orange review-btn" data-ng-click="reviewPage()">Review</button>
                                                 </div>
                                             </div>
@@ -290,7 +290,7 @@
                                                                  data-review="true">
                                                             </div>
                                                         </div>
-                                                        <button id="button-create" class="btn orange create-instance-btn-pos"
+                                                        <button id="button-create" class="btn orange create-instance-btn-pos pull-right"
                                                                 data-ng-disabled="provisionForm.$invalid"
                                                                 data-ng-click="clickProvision()"
                                                                 data-translate>Create instance
@@ -303,7 +303,9 @@
                                 </div>
                             </div>
                         </div>
-                        <span class="btn grey effect-orange-button" data-ng-click="clickBackToQuickStart()"><b>Back to Quick Start</b></span>
+                        <div class="dpl-inline pull-right">
+                            <button class="btn grey effect-orange-button btn-back-quick" data-ng-click="clickBackToQuickStart()"><b>Back to Quick Start</b></button>
+                        </div>
                     </div>
                 </div>
             </div>

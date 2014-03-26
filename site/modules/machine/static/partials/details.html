@@ -215,7 +215,7 @@
                                         <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
                         </div>
                         </div>
-                                <div data-ng-show="selectedPackageName" class="pull-left resize-block">
+                                <div data-ng-show="selectedPackageName" class="resize-block">
                                     <p class="control-label" data-translate><b>Resize Instance type</b></p>
                                     <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName">
                                         <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
@@ -226,7 +226,7 @@
                                         </option>
                                     </select>
                                     <div class="control-group resize-button">
-                                        <button class="btn light effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
+                                        <button class="btn light pull-right effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
                         </div>
                                 <div data-ng-hide="selectedPackageName" class="pull-left resize-block">
@@ -293,13 +293,15 @@
                                     </div>
 
                                     </div>
-                                    <button class="btn light dpl-inline margin-top-10 effect-orange-button"
+                        <div class="pull-right">
+                            <button class="btn light dpl-inline margin-top-10 effect-orange-button"
                                 data-ng-click="clickCreateImage()"
                                 data-translate
                                 data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
-                            Create Image
-                        </button>
-                                    <div class="dpl-inline"><a class="btn light margin-top-10 effect-orange-button" href="#!/images">My Images List</a></div>
+                                Create Image
+                            </button>
+                            <div class="dpl-inline"><a class="btn light margin-top-10 effect-orange-button" href="#!/images">My Images List</a></div>
+                        </div>
                     </form>
                     <br />
                 </div>
@@ -389,7 +391,7 @@
                                         <div data-ng-show="firewallRules.length < 1"><br/>
                                             <div data-translate>You have no firewall rules that would apply to this machine</div>
                                         </div>
-                                        <div class="pull-left">
+                                        <div class="pull-right">
                                             <a class="btn light margin-top-10 effect-orange-button" href="#!/firewall">Edit</a>
                                             <button class="btn light margin-top-10 effect-orange-button"
                                                     data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
