@@ -10,7 +10,9 @@
                 <div class="value value-width crop">{{item.val}}</div>
                 <div class="remove-icon delete pull-right tags-delete-pos"
                      data-ng-click="removeItem(item)"
-                     data-ng-show="!saving">
+                     data-ng-show="!item.saving">
+                </div>
+                <div class="pull-right loading-medium item" data-ng-show="item.saving">
                 </div>
             </div>
         </div>
@@ -27,33 +29,34 @@
                     data-ng-model="item.dirtyKey"
                     data-ng-required="!review"
                     data-ng-pattern="/^[a-zA-Z0-9\._\-]+$/"
-                    data-ng-disabled="saving"
+                    data-ng-disabled="item.saving || saving"
                     class="key-width">
             </span>
-            <button class="btn light tag-add-btn pull-right effect-orange-button"
-                    data-ng-click="addItem(item)"
-                    data-translate
-                    data-ng-disabled="!item.dirtyVal || !item.dirtyKey || saving">{{item.isNew && 'Add' || 'Save'}}</button>
+
             <span class="value-container">
                 <input type="text"
                     placeholder="Value"
                     data-translate="placeholder"
                     data-ng-model="item.dirtyVal"
                     data-ng-required="!review"
-                    data-ng-disabled="saving"
+                    data-ng-disabled="item.saving || saving"
                     class="value-width"/>
                 <textarea type="text"
                      placeholder="Value"
                      data-translate="placeholder"
                      data-ng-model="item.dirtyVal"
                      data-ng-required="!review"
-                     data-ng-disabled="saving"
+                     data-ng-disabled="item.saving || saving"
                      class="value-width"
                      rows="8"></textarea>
             </span>
+            <button class="btn light tag-add-btn effect-orange-button" style="width: inherit"
+                    data-ng-click="addItem(item)"
+                    data-translate
+                    data-ng-disabled="saving || !item.dirtyVal || !item.dirtyKey || item.saving">{{item.isNew && 'Add' || 'Save'}}</button>
+            <div class="dpl-inline pull-right">
+                <div class="pull-right loading-medium item-button" data-ng-show="item.saving"></div>
+            </div>
         </div>
-    </div>
-    <div class="tags row-fluid">
-        <div class="pull-right loading-small" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="saving"></div>
     </div>
 </div>
