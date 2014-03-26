@@ -26,4 +26,10 @@ public class SideBarMenu extends AbstractPageObject {
         $(byText(title)).click();
 
     }
+
+    public FirewallRules openFirewallPage() {
+        clickMenu(COMPUTE_MENU_TITLE);
+        $(byText("Firewall")).click();
+        return page(FirewallRules.class);
+    }
 }
