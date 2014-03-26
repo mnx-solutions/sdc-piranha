@@ -153,6 +153,7 @@
   , "invoices": "enabled"
   , "imageUse": "enabled"
   , "imageCreate": "enabled"
+  , "phoneVerification": "disabled"
   , "firewall": "yes"
   , "freetier": "no"
   , "slb": "no"
@@ -160,9 +161,8 @@
   , "promoBillingConfirmation": "no"
   , "useBrandingOrange": "no"
   , "manta": "no"
-  , "phoneVerification": "yes"
+  , "mantaJobs": "no"
   , "usageData": "no"
   , "support": "no"
-  , "mantaJobs": "no"
   }
 }
