@@ -1,5 +1,5 @@
 {
-    "index": {
+    "jpc": {
         "menuButton": "Joyent Support",
         "title": "JPC Support",
         "link": "",
@@ -107,7 +107,7 @@
         "template": "Joyent offers multiple tiers of expert support so you can choose the right combination of services and response times to meet your business requirements"
     },
 
-    "nodeCloud": {
+    "node.js": {
         "menuButton": "Joyent Cloud Node.js Support",
         "title": "Joyent Cloud Node.js Support",
         "link": "/cloud",

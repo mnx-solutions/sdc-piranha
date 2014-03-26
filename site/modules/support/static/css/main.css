@@ -4,7 +4,7 @@
 
 .package-holder {
     padding: 20px 20px 20px 0;
-    width: 240px;
+    min-width: 240px;
     height: 520px;
     display: table-cell;
 }
