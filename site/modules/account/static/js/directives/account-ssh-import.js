@@ -68,6 +68,12 @@
                                             });
                                         }
                                         if (response.error) {
+                                            var message = response.error.message;
+
+                                            if (response.error.statusCode && response.error.statusCode === 409) {
+                                                message = 'Uploaded key is already exists.';
+                                            }
+
                                             return PopupDialog.error(
                                                 localization.translate(
                                                     $scope,
@@ -77,7 +83,7 @@
                                                 localization.translate(
                                                     $scope,
                                                     null,
-                                                    response.error
+                                                    message
                                                 ),
                                                 function () {}
                                             );

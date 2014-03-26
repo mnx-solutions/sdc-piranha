@@ -138,14 +138,19 @@ module.exports = function execute(scope, app) {
                     SignupProgress.addSshKey(req, name, data, function (err) {
                         if (err) {
                             req.log.error(err);
-                            res.json({success: false, err: err});
+                            res.json({success: false, error: err});
                             return;
                         }
                         res.json({success: true});
                     });
                 }
             } catch (error) {
-                res.json({error: 'The file you are uploaded is not a public key.'});
+                res.json({
+                    success: false,
+                    error: {
+                        message: 'The file you are uploaded is not a public key.'
+                    }
+                });
             }
         });
     });
