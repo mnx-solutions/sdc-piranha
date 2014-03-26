@@ -497,10 +497,6 @@ portlet.box.light-grey > .portlet-title .caption > i {
 .machines{
     min-height: 650px;
 }
-.modulizer-module-storage {
-    padding-left: 20px;
-    margin-top: -3px;
-}
 .details_page{
     padding-left: 48px;
     margin-top: -3px;
@@ -510,6 +506,6 @@ portlet.box.light-grey > .portlet-title .caption > i {
     padding-top: 55px;
 }
 .dash-container-position{
-    padding-top: 30px;
+    padding-top: 10px;
 }
 
