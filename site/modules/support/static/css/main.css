@@ -17,7 +17,9 @@
 }
 
 .package-holder.active .header,
-.package-holder.active .desc {
+.package-holder:hover.active .header,
+.package-holder.active .desc,
+.package-holder:hover.active .desc {
     background-color: #CFFAE5;
 }
 
@@ -37,7 +39,8 @@
     background-color: #bbc9d2;
 }
 
-.package-holder.active .control {
+.package-holder.active .control,
+.package-holder:hover.active .control {
     background-color: #92EBB5;
 }
 
@@ -53,7 +56,8 @@
     margin-top: 10px;
 }
 
-.package-holder.active .control .btn {
+.package-holder.active .control .btn,
+.package-holder:hover.active .control .btn {
     background-color: #28AA66;
 }
 
