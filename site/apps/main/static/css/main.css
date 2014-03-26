@@ -2219,7 +2219,8 @@ label.checkbox {
     background: #EBEBEB;
     border: 1px solid #cccccc;
 }
-.grid-tab-radio {
+.grid-tab-radio,
+.filter-radio {
     position: absolute;
     left: -1000px;
     visibility: hidden;
@@ -2236,9 +2237,29 @@ label.checkbox {
 .grid-no-entries hr {
     margin-top: 0;
 }
+
 /* Machine */
 
 .btn-back-quick {
     color: #ff6600;
     margin-right: 20px;
+}
+.filter-container {
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.filter-value {
+    padding: 6px 0 6px 13px;
+    margin-bottom: 0;
+}
+.filter-value:hover {
+    background-color: #d8d8d8;
+}
+.btn-group-filter {
+    margin-right: 15px;
+}
+.btn-group-filter .filter-select {
+    min-width: 110px;
+    text-align: left;
+    text-transform: none;
 }

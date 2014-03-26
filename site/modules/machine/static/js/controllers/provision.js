@@ -59,6 +59,14 @@
 
             $scope.simpleImages = [];
 
+            $scope.filterValues = {
+                'vcpus': [],
+                'memory': [],
+                'disk': []
+            };
+
+            $scope.filterProps = Object.keys($scope.filterValues);
+
             Machine.getSimpleImgList(function (err, data) {
                 if (err) {
                     console.error(err);
@@ -363,9 +371,14 @@
                 $scope.currentSlidePageIndex = index;
             };
 
-            $scope.getDefaultPackageId = function () {
+            $scope.processPackages = function () {
                 var packageId = '';
                 var sortPackage = '';
+                var filterValues = {
+                    vcpus: [],
+                    memory: [],
+                    disk: []
+                };
 
                 $scope.packages.forEach(function (pkg) {
                     if ($scope.filterPackages()(pkg)) {
@@ -373,9 +386,24 @@
                             sortPackage = parseInt(pkg.memory, 10);
                             packageId = pkg.id;
                         }
+                        if (pkg.price) {
+                            var cpu = Number(pkg.vcpus);
+                            if (filterValues.vcpus.indexOf(cpu) === -1) {
+                                filterValues.vcpus.push(cpu);
+                            }
+                            if (filterValues.memory.indexOf(pkg.memory) === -1) {
+                                filterValues.memory.push(pkg.memory);
+                            }
+                            if (filterValues.disk.indexOf(pkg.disk) === -1) {
+                                filterValues.disk.push(pkg.disk);
+                            }
+                        }
                     }
                 });
-                return packageId;
+                return {
+                    minimalPackage: packageId,
+                    filterValues: filterValues
+                };
             };
 
             $scope.selectDataset = function (id, changeDataset) {
@@ -439,10 +467,22 @@
                     }
 
                     if ($scope.packages) {
-                        var packageId = $scope.getDefaultPackageId();
+                        var processedPackages = $scope.processPackages();
+                        var packageId = processedPackages.minimalPackage;
+                        $scope.filterValues = processedPackages.filterValues;
+
                         if (packageId) {
                             $scope.selectPackage(packageId);
                         }
+
+                        $scope.filterProps.forEach(function (prop) {
+                            $scope.filterValues[prop].sort(function (a, b) {
+                                return a - b;
+                            });
+                        });
+
+                        $scope.filterProperty = $scope.filterProps[0];
+                        $scope.onFilterChange($scope.filterProperty);
                     }
 
                     var expandLastSection = function () {
@@ -540,6 +580,26 @@
                 return function (packageType) {
                     return $scope.indexPackageTypes[packageType].indexOf(datasetType) > -1;
                 };
+            };
+
+            $scope.filterPackagesByProp = function (obj) {
+                if (!$scope.filterProperty || !$scope.filterPropertyValue) {
+                    return obj;
+                }
+                return String(obj[$scope.filterProperty]) === String($scope.filterPropertyValue);
+            };
+
+            $scope.formatFilterValue = function (value) {
+                if ($scope.filterProperty === 'vcpus') {
+                    return value + ' vCPUs';
+                }
+                return $filter('sizeFormat')(value);
+            };
+
+            $scope.onFilterChange = function (newVal) {
+                if (newVal) {
+                    $scope.filterPropertyValue = $scope.filterValues[newVal][0];
+                }
             };
 
             // Watch datacenter change
