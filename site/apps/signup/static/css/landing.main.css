@@ -579,3 +579,6 @@ select::-ms-expand {
     color: white !important;
     text-decoration: none;
 }
+.error {
+    color: #f60;
+}

@@ -12,7 +12,7 @@
                 <div class="controls">
                     <form name="keyNameForm">
                         <input name="keyName" type="text" class="span5" data-ng-model="keyName" data-ng-pattern="/^[a-zA-Z0-9\_\-\s]*$/" placeholder="optional" />
-                        <p data-ng-show="keyNameForm.keyName.$invalid" class="error">Invalid key name.</p>
+                        <p data-ng-show="keyNameForm.keyName.$invalid" class="error">SSH key name can contain only letters, digits and signs like '_' and '-'.</p>
                     </form>
                 </div>
             </div>

@@ -117,6 +117,7 @@
                             $scope.form.expirationMonth = prev.expirationMonth < 10 ? '0' + prev.expirationMonth : prev.expirationMonth.toString();
                             $scope.form.expirationYear = prev.expirationYear;
                             $scope.form.creditCardNumber = prev.cardNumber;
+                            $scope.form.securityCode = prev.securityCode;
                             var nameSpaceIndex = prev.cardHolderInfo.cardHolderName.indexOf(' ');
                             if (nameSpaceIndex > 0) {
                                 $scope.form.firstName = prev.cardHolderInfo.cardHolderName.substring(0, nameSpaceIndex);
@@ -290,7 +291,6 @@
                     $scope.submitForm = function() {
                         $scope.loading = true;
                         $scope.formSubmitted = true;
-
                         if ($scope.paymentForm.$invalid || !isCCNumberValid()) {
                             validateCCNumber();
                             $scope.loading = false;
@@ -432,6 +432,7 @@
                             window.scrollTo(0,0);
                         }
                     }
+
                 },
                 templateUrl: 'billing/static/partials/add-credit-card.html'
             };
