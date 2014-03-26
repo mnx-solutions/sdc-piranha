@@ -6,15 +6,15 @@
             return {
                 require: 'ngModel',
                 link: function (scope, elm, attrs, ctrl) {
+                    if (attrs.machineName === 'instanceRename') {
+                        elm.on('focus', function () {
+                            scope.changingName = true;
+                        });
 
-                    elm.on('focus', function () {
-                        scope.changingName = true;
-                    });
-
-                    elm.on('blur', function () {
-                        scope.changingName = false;
-                    });
-
+                        elm.on('blur', function () {
+                            scope.changingName = false;
+                        });
+                    }
                     ctrl.$parsers.unshift(function (viewValue) {
                         if (viewValue.length > 0 && !/^([a-z0-9\.-]*)$/i.test(viewValue)) {
                             ctrl.$setValidity('machineName', false);
