@@ -1469,7 +1469,7 @@ Rickshaw.Graph.Axis.Y = function(args) {
 
 		this.graph.vis
 			.append("svg:g")
-			.attr("class", "y_grid")
+			.attr("class", "y-grid")
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
 
 		this._renderHeight = this.graph.height;
