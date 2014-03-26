@@ -296,6 +296,7 @@
             $scope.changeInstance = function () {
                 CloudAnalytics.stopPolling({datacenter: $scope.datacenter, zoneId: $scope.machineid}, function () {
                     $q.when(Machine.machine($scope.selectedInstance)).then(createDefaultVariables);
+                    $location.path('/cloudAnalytics/' + $scope.selectedInstance);
                 });
             };
 
