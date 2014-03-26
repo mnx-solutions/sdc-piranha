@@ -4,10 +4,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
         .when('/support', {
             title: 'Support',
-            action: 'support.more'
+            action: 'support.index'
         })
         .when('/support/:link', {
             title: 'Cloud Node.js',
-            action: 'support.more'
+            action: 'support.index'
         });
 }]);

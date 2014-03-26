@@ -55,6 +55,10 @@
 .utilization-icon {
     background: url("../img/utilization_bg.png") no-repeat right center;
 }
+.support-icon {
+    background: url("../img/support-bg.png") no-repeat 162px 24px;
+    background-size: 87px;
+}
 .warn-dash-icon{
     background-image: url("../img/warn.png");
     background-repeat: no-repeat;
@@ -110,9 +114,13 @@
 }
 
 .widget .details .number {
-    text-align: left;
     font-size: 30px;
     letter-spacing: -1px;
+}
+
+.widget .details .number,
+.widget .details .desc-title {
+    text-align: left;
     font-weight: 600;
     color: #fff;
     line-height: 28px;
@@ -123,6 +131,11 @@
     font-size: 14px;
     line-height: 17px;
     color: #fff;
+}
+
+.widget .details .desc-title {
+    font-size: 21px;
+    letter-spacing: 0px;
 }
 
 .details-subinfo {

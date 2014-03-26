@@ -15,8 +15,9 @@
         '$cookies',
         'slb.Service',
         '$rootScope',
+        'Support',
 
-        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope) {
+        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -33,6 +34,10 @@
                     $scope.slbControllerCreated = isEnabled;
                 });
             }
+            if ($rootScope.features.support === 'enabled') {
+                // TODO Suppotr tile
+            }
+
 
 //                $scope.forums      = Zendesk.getForumsList();
             $scope.forums = {

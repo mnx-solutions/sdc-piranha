@@ -1,60 +1,12 @@
-.support-holder {
-    width: 750px;
-    height: 108px;
-    background-color: #f5f5f5;
-    margin-top: 20px;
-    cursor: pointer;
-}
-.support-holder:hover {
-    background-color: #fef1d2;
-}
-.support-holder .title,
-.support-holder .desc {
-    width: 480px;
-    margin-left: 238px;
-    padding-left: 20px;
-    overflow: hidden;
-}
-.support-holder .title {
-    font-weight: 300;
-    font-size: 24px;
-    height: 25px;
-    padding-top: 12px;
-    padding-bottom: 3px;
-}
-.support-holder .desc {
-    height: 58px;
-}
-.support-holder i {
-    width: 238px;
-    height: 108px;
-    float: left;
-}
-
-.standard-icon {
-    background-image: url("../img/standard.png");
-}
-.enhanced-icon {
-    background-image: url("../img/enhanced.png");
-}
-.node-core-icon {
-    background-image: url("../img/node-core.png");
-}
-.node-cloud-icon {
-    background-image: url("../img/node-cloud.png");
-}
-.standard-icon,
-.enhanced-icon,
-.node-core-icon,
-.node-cloud-icon {
-    background-size: 238px 108px;
+.holders-container {
+    margin-bottom: 10px;
 }
 
 .package-holder {
     padding: 20px 20px 20px 0;
-    width: 240px;
+    min-width: 240px;
     height: 520px;
-    float: left;
+    display: table-cell;
 }
 
 .package-holder .header,
@@ -65,7 +17,9 @@
 }
 
 .package-holder.active .header,
-.package-holder.active .desc {
+.package-holder:hover.active .header,
+.package-holder.active .desc,
+.package-holder:hover.active .desc {
     background-color: #CFFAE5;
 }
 
@@ -85,7 +39,8 @@
     background-color: #bbc9d2;
 }
 
-.package-holder.active .control {
+.package-holder.active .control,
+.package-holder:hover.active .control {
     background-color: #92EBB5;
 }
 
@@ -101,7 +56,8 @@
     margin-top: 10px;
 }
 
-.package-holder.active .control .btn {
+.package-holder.active .control .btn,
+.package-holder:hover.active .control .btn {
     background-color: #28AA66;
 }
 
@@ -168,20 +124,12 @@
     overflow: hidden;
 }
 
-.arrow-right,
-.arrow-down {
+.arrow-right {
+    background: url("../img/arrow-right.png") no-repeat;
     background-size: 15px 15px !important;
     margin-left: 10px;
     padding-right: 15px;
     vertical-align: middle;
-}
-
-.arrow-right {
-    background: url("../img/arrow-right.png") no-repeat;
-}
-
-.arrow-down {
-    background: url("../img/arrow-down.png") no-repeat;
 }
 
 .package-holder .info {
@@ -200,6 +148,7 @@
     display: inline-block;
     margin-left: 10px;
     text-decoration: none;
+    vertical-align: top;
 }
 
 .package-holder:hover .info {
