@@ -2237,6 +2237,7 @@ label.checkbox {
 }
 .upload-key-label {
     margin-bottom: 0;
+    text-transform: capitalize;
 }
 .modal-footer-text {
     display: inline-block;

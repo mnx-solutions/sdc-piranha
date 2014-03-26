@@ -74,6 +74,8 @@
                                                 message = 'Uploaded key is already exists.';
                                             }
 
+                                            dialog.close({});
+
                                             return PopupDialog.error(
                                                 localization.translate(
                                                     $scope,
@@ -143,7 +145,11 @@
                                         function () {}
                                     );
                                 } else if (result && result.keyUploaded) {
-                                    $scope.updateKeys();
+                                    if ($scope.nextStep) {
+                                        $scope.skipSsh();
+                                    } else {
+                                        $scope.updateKeys();
+                                    }
                                 }
                             }
                         );

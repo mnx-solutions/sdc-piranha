@@ -565,3 +565,11 @@ select::-ms-expand {
 .hide {
     display: none !important;
 }
+.upload-key-label {
+    margin-bottom: 0;
+    text-transform: capitalize;
+}
+.modal-footer-text {
+    display: inline-block;
+    padding: 0 10px;
+}
