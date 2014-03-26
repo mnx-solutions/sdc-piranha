@@ -57,7 +57,7 @@ public class InstanceDetails extends AbstractPageObject {
         getInstanceNameField().setValue(name);
         $("[data-ng-click=\"clickRename()\"]").click();
         Common.clickButtonInModal("Yes");
-        $(".loading-medium.wait-rename").waitWhile(visible, baseTimeout);
+        waitForMediumSpinnerDisappear();
     }
 }
 

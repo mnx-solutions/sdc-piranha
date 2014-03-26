@@ -2,9 +2,13 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
 import com.joyent.piranha.vo.CreateInstanceObject;
 import org.openqa.selenium.By;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.internal.Locatable;
 
 import static com.codeborne.selenide.Condition.cssClass;
 import static com.codeborne.selenide.Condition.hasClass;
@@ -112,8 +116,12 @@ public class CreateInstance extends AbstractPageObject {
         assertTrue(texts[1].equals(d));
     }
 
-    public ElementsCollection getNetworks() {
-        return $$(".checker");
+    public void selectNetwork(int networkNumber) {
+        ElementsCollection networks = $$(".checker");
+        SelenideElement network = networks.get(networkNumber);
+        Mouse mouse = ((HasInputDevices) WebDriverRunner.getWebDriver()).getMouse();
+        mouse.mouseMove(network.getCoordinates());
+        network.click();
     }
 
     public void clickCreateInstanceButton() {

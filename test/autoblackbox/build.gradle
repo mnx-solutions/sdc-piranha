@@ -28,7 +28,7 @@ tasks.withType(Test) {
 }
 
 task smokeTests(type: Test) {
-    include '**/SmokeTests.class'
+    include '**/SmokeTest.class'
 }
 
 task InstanceRenameTests(type: Test) {
