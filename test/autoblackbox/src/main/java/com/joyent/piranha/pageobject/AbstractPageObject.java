@@ -38,22 +38,21 @@ public abstract class AbstractPageObject {
         $("ul.breadcrumb li", 1).shouldHave(matchText("(.*)" + right));
     }
 
-    public void checkHeadingText(String headingText) {
+    public void checkTitle(String headingText) {
         getPageTitle().shouldHave(matchText("(.*)" + headingText + "(.*)"));
-    }
-
-    public SelenideElement getPageTitle() {
-        return $(".page-title");
     }
 
     public void checkTitle() {
         getPageTitle().shouldHave(matchText("(.*)" + getTitle() + "(.*)"));
     }
 
+    public SelenideElement getPageTitle() {
+        return $(".page-title");
+    }
+
     String getTitle() {
         throw new NullPointerException();
     }
-
 
     public void waitingLoading() {
         $(".loading-large").waitUntil(disappear, baseTimeout);
@@ -97,4 +96,12 @@ public abstract class AbstractPageObject {
         $("#button-actions").click();
     }
 
+    public boolean isErrorDisplayed(String errorText) {
+        return $(byText(errorText)).isDisplayed();
+    }
+
+    public void setValue(SelenideElement fieldSelector, String value) {
+        fieldSelector.clear();
+        fieldSelector.sendKeys(value);
+    }
 }

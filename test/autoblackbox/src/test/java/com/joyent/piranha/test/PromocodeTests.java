@@ -1,8 +1,8 @@
 package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
-import com.joyent.piranha.pageobjects.SignupBillingInformationPage;
-import com.joyent.piranha.pageobjects.SignupPhoneConfirmationPage;
+import com.joyent.piranha.pageobjects.SignupBillingInformationPageold;
+import com.joyent.piranha.pageobjects.SignupPhoneConfirmationPageold;
 import com.joyent.piranha.util.TestWrapper;
 import org.json.JSONException;
 import org.junit.After;
@@ -33,14 +33,14 @@ public class PromocodeTests extends TestWrapper {
     @Before
     public void beginTest() {
         $(byText("Create an Account")).click();
-        SignupPhoneConfirmationPage.goToBillingPage();
-        SignupBillingInformationPage.setCreditCardNumber("4111111111111111");
-        SignupBillingInformationPage.setExpireDate("5", "3");
-        SignupBillingInformationPage.setCCVCode("123");
-        SignupBillingInformationPage.setAddressLine1("st. testStreet");
-        SignupBillingInformationPage.setCity("Anchorage");
-        SignupBillingInformationPage.setState("Alaska");
-        SignupBillingInformationPage.setZipCode("99599");
+        SignupPhoneConfirmationPageold.goToBillingPage();
+        SignupBillingInformationPageold.setCreditCardNumber("4111111111111111");
+        SignupBillingInformationPageold.setExpireDate("5", "3");
+        SignupBillingInformationPageold.setCCVCode("123");
+        SignupBillingInformationPageold.setAddressLine1("st. testStreet");
+        SignupBillingInformationPageold.setCity("Anchorage");
+        SignupBillingInformationPageold.setState("Alaska");
+        SignupBillingInformationPageold.setZipCode("99599");
     }
 
     @After
@@ -52,17 +52,17 @@ public class PromocodeTests extends TestWrapper {
 
     @Test
     public void ValidPromocode() throws IOException, JSONException {
-        SignupBillingInformationPage.setPromotionalCode("NODE.JS CORE SUPPORT");
-        SignupBillingInformationPage.clickNextButton();
+        SignupBillingInformationPageold.setPromotionalCode("NODE.JS CORE SUPPORT");
+        SignupBillingInformationPageold.clickNextButton();
         $("button[data-ng-click=\"addNewKey()\"]").waitUntil(visible, 30000);
-        SignupBillingInformationPage.AssertPromocode();
+        SignupBillingInformationPageold.AssertPromocode();
     }
 
     @Test
     public void InvalidPromocode() {
         String promoCode = "invalid Promocode";
-        SignupBillingInformationPage.setPromotionalCode(promoCode);
-        SignupBillingInformationPage.clickNextButton();
+        SignupBillingInformationPageold.setPromotionalCode(promoCode);
+        SignupBillingInformationPageold.clickNextButton();
         $("[data-ng-repeat=\"notification in group\"]").shouldHave(text("Billing information not updated: " + promoCode + " is not a valid promotional code"));
         $(byText("is not a valid promotional code")).shouldBe(visible);
     }

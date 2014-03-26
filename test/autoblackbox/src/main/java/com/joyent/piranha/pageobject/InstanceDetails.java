@@ -24,7 +24,7 @@ public class InstanceDetails extends AbstractPageObject {
 
 
     public void checkTitle() {
-        checkHeadingText(name);
+        checkTitle(name);
     }
 
     public ElementsCollection getChartElements() {

@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
-public class SignupPhoneConfirmationPage {
+public class SignupPhoneConfirmationPageold {
 
     public static void clickVerifyButton() {
         $(byText("Verify")).click();
