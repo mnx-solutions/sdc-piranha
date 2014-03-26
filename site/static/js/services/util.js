@@ -36,6 +36,18 @@ window.JP.main.service('util', [
             return ret;
         };
 
+        service.getReadableFileSizeString = function (bytes) {
+            if (bytes === 0) {
+                return '0 Bytes';
+            }
+            var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            return {
+                value: Math.round(bytes / Math.pow(1024, i), 2) || 0,
+                measure: sizes[i]
+            };
+        };
+
         return service;
     }]
 );

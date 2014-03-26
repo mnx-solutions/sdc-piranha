@@ -89,7 +89,7 @@
                 </th>
             </thead>
             <tbody id="grid-instances">
-                <tr data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index)" style="font-weight: 400;">
+                <tr data-ng-repeat="object in pageObjects" style="font-weight: 400;">
                     <td width="10" data-ng-show="enabledCheckboxes">
                         <label class="checkbox">
                             <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
@@ -142,8 +142,6 @@
         <div class="grid-no-entries" data-ng-hide="pageNumSum"><hr />No entries found.</div>
     </div>
 
-    <div data-ng-repeat="object in objects | orderBy:order | filter:matchesFilter" data-ng-show="isOnPage($index) && pageNumSum" class="item row-fluid">
-    </div>
     <div class="row-fluid" data-ng-show="paginated && pageNumSum">
         <div class="pull-left select_position grid-small-font">
             <select ui-select2="{minimumResultsForSearch: -1}" data-ng-model="perPage" value="25" class="no-search-box" style="width: 65px !important;">

@@ -9,9 +9,9 @@
         </div>
     </div>
 
-    <div class="utilization">
-        <div class="dpl-inline tile orange" data-ng-click="clickUtilization('spend')">
-            <h4 class="title">Current Spend</h4>
+    <!--div class="utilization">
+        <div class="dpl-inline tile orange" data-ng-click="clickutilization('spend')">
+            <h4 class="title">current spend</h4>
             <div class="left-block">
                 <div class="num">
                     $2847
@@ -31,7 +31,7 @@
         </div>
         <div class="dpl-inline chart">
             <div class="top-line">
-                <div class="text">Projected for month</div>
+                <div class="text">projected for month</div>
             </div>
             <svg class="rickshaw_graph y_axis">
                 <g class="y_ticks plain" transform="translate(40, 10)">
@@ -60,188 +60,20 @@
                 <div class="chart-nums" data-ng-repeat="day in days">{{day}}</div>
             </div>
          </div>
+    </div-->
+
+    <div data-utilization-chart
+         data-usage="dramChartData"
+         data-name="'dram'"
+         data-caption="'DRAM'"
+         data-unit="'GB Hours'">
+     </div>
+
+    <div data-utilization-chart
+         data-usage="bandwidthChartData"
+         data-name="'bandwidth'"
+         data-caption="'Bandwidth'"
+         data-unit="''">
     </div>
 
-    <div class="utilization">
-        <div class="dpl-inline tile blue" data-ng-click="clickUtilization('cpu')">
-            <h4 class="title">CPU Hours Utilized</h4>
-            <div class="left-block">
-                <div class="num">
-                    674
-                </div>
-                <div class="desc">
-                    <span class="num small">hours</span>
-                    <div>this month</div>
-                </div>
-            </div>
-            <div class="right-block sub-line">
-                <div class="desc small">
-                    12 month range
-                </div>
-                <div class="num">
-                    877
-                    <span class="num small">Hrs</span>
-                    <span class="desc">max</span>
-                </div>
-                <div class="num">
-                    202
-                    <span class="num small">Hrs</span>
-                    <span class="desc">min</span>
-                </div>
-            </div>
-        </div>
-        <div class="dpl-inline chart">
-            <div class="top-line">
-                <div class="text">Projected for month</div>
-            </div>
-            <svg class="rickshaw_graph y_axis">
-                <g class="y_ticks plain" transform="translate(40, 10)">
-                    <g transform="translate(0,217)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">0</text>
-                    </g>
-                    <g transform="translate(0,180)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">200</text>
-                    </g>
-                    <g transform="translate(0,140)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">400</text>
-                    </g>
-                    <g transform="translate(0,100)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">600</text>
-                    </g>
-                    <g transform="translate(0,60)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">800</text>
-                    </g>
-                    <g transform="translate(0,20)">
-                        <text x="-7" y="0" dy=".32em" text-anchor="end">1000</text>
-                    </g>
-                </g>
-            </svg>
-            <div class="blue-chart"></div>
-            <div class="days">
-                <div class="chart-nums" data-ng-repeat="day in days">{{day}}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="utilization">
-        <div class="dpl-inline tile blue" data-ng-click="clickUtilization('manta')">
-            <h4 class="title">Manta Utilized</h4>
-            <div class="left-block">
-                <div class="num">
-                    1031
-                </div>
-                <div class="desc">
-                    <span class="num small">GB</span>
-                    <div>this month</div>
-                </div>
-            </div>
-            <div class="right-block sub-line">
-                <div class="desc small">
-                    12 month range
-                </div>
-                <div class="num">
-                    877
-                    <span class="num small">Hrs</span>
-                    <span class="desc">max</span>
-                </div>
-                <div class="num">
-                    202
-                    <span class="num small">Hrs</span>
-                    <span class="desc">min</span>
-                </div>
-            </div>
-        </div>
-        <div class="dpl-inline chart">
-            <div class="top-line">
-                <div class="text">Projected for month</div>
-            </div>
-            <svg class="rickshaw_graph y_axis">
-                <g class="y_ticks plain" transform="translate(40, 10)">
-                    <g transform="translate(0,217)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">0</text>
-                    </g>
-                    <g transform="translate(0,180)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">200</text>
-                    </g>
-                    <g transform="translate(0,140)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">400</text>
-                    </g>
-                    <g transform="translate(0,100)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">600</text>
-                    </g>
-                    <g transform="translate(0,60)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">800</text>
-                    </g>
-                    <g transform="translate(0,20)">
-                        <text x="-7" y="0" dy=".32em" text-anchor="end">1000</text>
-                    </g>
-                </g>
-            </svg>
-            <div class="blue-chart"></div>
-            <div class="days">
-                <div class="chart-nums" data-ng-repeat="day in days">{{day}}</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="utilization">
-        <div class="dpl-inline tile blue" data-ng-click="clickUtilization('bandwidth')">
-            <h4 class="title">Bandwidth Utilized</h4>
-            <div class="left-block">
-                <div class="num">
-                    276
-                </div>
-                <div class="desc">
-                    <span class="num small">GB</span>
-                    <div>this month</div>
-                </div>
-            </div>
-            <div class="right-block sub-line">
-                <div class="desc small">
-                    12 month range
-                </div>
-                <div class="num">
-                    877
-                    <span class="num small">Hrs</span>
-                    <span class="desc">max</span>
-                </div>
-                <div class="num">
-                    202
-                    <span class="num small">Hrs</span>
-                    <span class="desc">min</span>
-                </div>
-            </div>
-        </div>
-        <div class="dpl-inline chart">
-            <div class="top-line">
-                <div class="text">Projected for month</div>
-            </div>
-            <svg class="rickshaw_graph y_axis">
-                <g class="y_ticks plain" transform="translate(40, 10)">
-                    <g transform="translate(0,217)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">0</text>
-                    </g>
-                    <g transform="translate(0,180)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">200</text>
-                    </g>
-                    <g transform="translate(0,140)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">400</text>
-                    </g>
-                    <g transform="translate(0,100)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">600</text>
-                    </g>
-                    <g transform="translate(0,60)">
-                        <text x="-7" y="0" dy="1em" text-anchor="end">800</text>
-                    </g>
-                    <g transform="translate(0,20)">
-                        <text x="-7" y="0" dy=".32em" text-anchor="end">1000</text>
-                    </g>
-                </g>
-            </svg>
-            <div class="blue-chart"></div>
-            <div class="days">
-                <div class="chart-nums" data-ng-repeat="day in days">{{day}}</div>
-            </div>
-        </div>
-    </div>
 </div>

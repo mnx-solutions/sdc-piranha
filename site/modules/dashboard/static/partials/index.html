@@ -63,7 +63,7 @@
                         <h4>Manta Storage</h4>
                         <div class="details">
                             <div data-ng-show="mantaEnabled">
-                                <span class="number bignumber">{{mantaMemory.value || 0}}</span>
+                                <span class="number bignumber">{{mantaMemory.value}}</span>
                                 <span class="number measure">{{mantaMemory.measure}}</span>
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                 <a href="#!/utilization">
                     <div class="widget grey links2 utilization-icon">
                         <h4>Month to date Utilization</h4>
-                        <div class="details">
+                        <!--div class="details">
                             <div class="desc">
                                 $999999
                             </div>
@@ -91,17 +91,17 @@
                             <div class="desc">
                                 spend
                             </div>
-                        </div>
-                        <div class="details details-subinfo">
+                        </div-->
+                        <div class="details details-subinfo" data-ng-show="utilization">
                             <div class="desc">
-                                675 DRAM inst Hrs.
+                                {{utilization.dram.amount.format(utilization.dram.total)}} DRAM Gb hours
                             </div>
                             <div class="desc">
-                                78.4 o/b bandwith
+                                {{utilization.bandwidth.amount.format(utilization.bandwidth.total)}} bandwith
                             </div>
-                            <div class="desc">
+                            <!--div class="desc">
                                 2.4 GB storage
-                            </div>
+                            </div-->
                         </div>
                     </div>
                 </a>

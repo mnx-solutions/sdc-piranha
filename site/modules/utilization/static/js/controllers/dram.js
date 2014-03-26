@@ -2,17 +2,16 @@
 
 (function (app) {
     app.controller(
-        'Utilization.BandwidthController',
+        'Utilization.DramController',
         ['$scope', '$location', 'Utilization', function ($scope, $location, Utilization) {
             $scope.gridData = [];
             $scope.chartData = {};
 
             Utilization.utilization(function (error, utilizationData) {
-                $scope.gridData = utilizationData.bandwidth.usage;
-                $scope.chartData = utilizationData.bandwidth.amount;
+                $scope.gridData = utilizationData.dram.usage;
+                $scope.chartData = utilizationData.dram.amount;
                 $scope.gridData.forEach(function (entry) {
-                    entry.in = $scope.chartData.format(entry.in);
-                    entry.out = $scope.chartData.format(entry.out);
+                    entry.hours = $scope.chartData.format(entry.hours);
                 });
             });
 
@@ -43,14 +42,14 @@
                     active: true
                 },
                 {
-                    id: 'in',
-                    name: 'In',
+                    id: 'ram',
+                    name: 'RAM',
                     sequence: 5,
                     active: true
                 },
                 {
-                    id: 'out',
-                    name: 'Out',
+                    id: 'hours',
+                    name: 'Hours',
                     sequence: 6,
                     active: true
                 }
