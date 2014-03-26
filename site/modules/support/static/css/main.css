@@ -1,12 +1,12 @@
 .holders-container {
-    margin-bottom: 50px;
+    margin-bottom: 10px;
 }
 
 .package-holder {
     padding: 20px 20px 20px 0;
     width: 240px;
     height: 520px;
-    float: left;
+    display: table-cell;
 }
 
 .package-holder .header,
