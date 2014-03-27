@@ -250,10 +250,12 @@
                         this.dirty(false);
                     }
                 };
-
+                UserConfig.prototype.loaded = function () {
+                    return this._parent._loaded;
+                };
                 UserConfig.prototype.$load = function (callback) {
                     var self = this;
-                    if (this._parent._loaded) {
+                    if (this.loaded()) {
                         callback(null, this);
                     } else {
                         load(function (err, cfg) {
