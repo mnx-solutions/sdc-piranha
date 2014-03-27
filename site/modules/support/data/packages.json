@@ -4,6 +4,7 @@
         "title": "JPC Support",
         "link": "",
         "url": "http://www.joyent.com/developers/support-levels",
+        "templateUrl": "support/static/partials/jpc-template.html",
         "packageHolders": [
             {
                 "title" : "Basic",
@@ -30,12 +31,13 @@
                 ],
                 "description" : "Email Support",
                 "cost": "49",
+                "costText": " per month",
                 "costSign": "$",
                 "info": "true",
                 "url": "http://www.joyent.com/developers/support-levels",
                 "ratePlanId": "2c92c0f9409f47780140ac3516ed33c3",
                 "levelSupport": "1",
-                "timePeriod": "monthly",
+                "timePeriod": "",
                 "active": false,
                 "popUpTitle": "Developer Support",
                 "popUpQuestion": "Are you sure you want to sign up for Developer Support"
@@ -43,8 +45,9 @@
             {
                 "title" : "Production",
                 "services" : [
-                    "24/7 Phone Escalation",
-                    "Includes Node.js support"
+                    "< 12 Hr Response SLA",
+                    "24/7 Sev1 Phone Escalation",
+                    "Cloud Node.js Support"
                 ],
                 "description" : "Phone Support",
                 "timePeriod": "Greater of",
@@ -63,9 +66,12 @@
             {
                 "title" : "Business Critical",
                 "services" : [
+                    "1 Hr Response SLA",
                     "3rd Party Application and DB support",
                     "Priority Case Handling",
-                    "Named Joyent Technical Contact"
+                    "Named Joyent Technical Contact",
+                    "Node.js Core Support",
+                    "Application Performance Analysis"
                 ],
                 "description" : "Full Stack Support",
                 "timePeriod": "Greater of",
@@ -103,8 +109,7 @@
                 "popUpTitle": "Mission Critical Production Support",
                 "popUpQuestion": "Are you sure you want to sign up for Mission Critical Production Support"
             }
-        ],
-        "template": "Joyent offers multiple tiers of expert support so you can choose the right combination of services and response times to meet your business requirements"
+        ]
     },
 
     "node.js": {
@@ -112,13 +117,14 @@
         "title": "Joyent Cloud Node.js Support",
         "link": "/cloud",
         "url": "http://www.joyent.com/products/support-nodejs",
+        "templateUrl": "support/static/partials/node-template.html",
         "packageHolders": [
             {
                 "title" : "Production",
                 "services" : [
                     "Production time debugging",
                     "General design/deploy questions",
-                    "Available for Linux and SunOS operating systems in virtually any hosting environment"
+                    "Available for Linux and SunOS operating systems in virtually any environment"
                 ],
                 "description" : "Business hours access to node.js core engineering team at Joyent",
                 "timePeriod": "Monthly",
@@ -137,6 +143,9 @@
             {
                 "title" : "Business Critical",
                 "services" : [
+                    "Production time debugging",
+                    "General design/deploy questions",
+                    "Available for Linux and SunOS operating systems in virtually any environment",
                     "Target response SLA:",
                     "Severity 1 - 1 hour",
                     "Severity 2 - 5 hours",
@@ -159,6 +168,9 @@
             {
                 "title" : "Mission Critical",
                 "services" : [
+                    "Production time debugging",
+                    "General design/deploy questions",
+                    "Available for Linux and SunOS operating systems in virtually any environment",
                     "Target response SLA:",
                     "Severity 1 - 30 minutes",
                     "Severity 2 - 3 hours",
@@ -179,7 +191,6 @@
                 "popUpTitle": "Joyent Node.js Enterprise Support",
                 "popUpQuestion": "Provides summary Q&A technical support guidance when using Node.js, including consultative summary Q&A and recommendations on how to run in production, how to architect, develop, and package customer applications. Joyent Cloud Node.js Support is available only as a bundled feature of the broader support services for the Joyent Compute Service in the public cloud and Joyent SmartDataCenter private cloud software. It is bundled at no additional cost if you have purchased either the Production, Business Critical or Mission Critical Support Tiers. View our support levels for more details on these offerings. Joyent SmartDataCenter private cloud software. It is bundled at no additional cost if you have purchased either the Prodaction, Business Critical or Mosiion Critical Support Tiers. View our support levels for more details on these offerings."
             }
-        ],
-        "template": "Joyent provides expert support services for Node.js to help enterprises adopt this powerful application and API stack. These support services are available in several ways to meet the needs of your business."
+        ]
     }
 }

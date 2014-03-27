@@ -1,51 +1,64 @@
 .holders-container {
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    min-height: 350px;
+    max-height: 100%;
+    overflow: hidden;
+    padding-left: 2px;
+    position: relative;
 }
 
 .package-holder {
-    padding: 20px 20px 20px 0;
-    min-width: 240px;
-    height: 520px;
+    background-color: #e9eff3;
+    border-right: 20px solid #FFFFFF;
     display: table-cell;
+    min-width: 240px;
+    padding: 20px 0 5px;
+    position: relative;
 }
 
 .package-holder .header,
 .package-holder .desc {
     width: 236px;
     margin-left: 2px;
-    background-color: #e9eff3;
 }
 
-.package-holder.active .header,
-.package-holder:hover.active .header,
-.package-holder.active .desc,
-.package-holder:hover.active .desc {
+.package-holder.active,
+.package-holder:hover.active {
     background-color: #CFFAE5;
 }
 
-.package-holder:hover .header,
-.package-holder:hover .desc {
+.package-holder:hover {
     background-color: #fef1d2;
 }
 
 .package-holder .header {
-    height: 145px;
     font-weight: 300;
+    height: 145px;
+    position: absolute;
+    top: 0;
+    z-index: 1;
 }
 
 .package-holder .control {
-    width: 100%;
+    background-color: #BBC9D2;
     height: 125px;
-    background-color: #bbc9d2;
+    margin-left: 2px;
+    outline: 4px solid #BBC9D2;
+    position: absolute;
+    top: 150px;
+    width: 236px;
 }
 
 .package-holder.active .control,
 .package-holder:hover.active .control {
     background-color: #92EBB5;
+    outline: 4px solid #92EBB5;
 }
 
 .package-holder:hover .control {
     background-color: #ffb848;
+    outline: 4px solid #ffb848;
 }
 
 .package-holder .control .btn {
@@ -70,8 +83,10 @@
 }
 
 .package-holder .desc {
-    height: 245px;
-    padding-top: 20px;
+    box-sizing:border-box;
+    -moz-box-sizing: border-box;
+    height: 100%;
+    padding-top: 280px;
 }
 
 .package-holder .control p {
@@ -120,7 +135,7 @@
 }
 
 .brim {
-    padding: 1px 15px 15px 15px;
+    padding: 1px 15px 5px 15px;
     overflow: hidden;
 }
 

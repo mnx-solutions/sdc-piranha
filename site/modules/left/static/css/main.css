@@ -197,13 +197,11 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
     list-style: none;
     background-color: #3d3d3d;
 }
-.sub-menu > li a{
+.sub-menu > li a {
     display: block;
     position: relative;
     border: 0;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    padding-left: 47px;
+    padding: 7px 10px 7px 47px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 300;
