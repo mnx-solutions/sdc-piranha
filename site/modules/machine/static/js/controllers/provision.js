@@ -279,6 +279,7 @@
                     $scope.$watch('data.datacenter', function (dc) {
                         if (config.datacenter !== dc) {
                             config.datacenter = dc;
+                            config.dirty(true);
                             config.$save();
                         }
                     });

@@ -18,16 +18,47 @@
 
         $scope.tabFilter = '';
 
-        if ($scope.tabFilterField === 'datacenter') {
-            Datacenter.datacenter().then(function (datacenters) {
-                $scope.tabFilters = datacenters.map(function (datacenter) {
-                    return datacenter.name;
-                });
-                $scope.tabFilters.push('all');
+        if ($scope.tabFilterField) {
+            var setCurrentTabFilter = function () {
                 $scope.tabFilter = $scope.tabFilterDefault || $scope.tabFilter || $scope.tabFilters[0];
-            });
-        } else {
-            $scope.tabFilters = ['all'];
+            };
+
+            var tabFilterUserConfig = null;
+            if ($rootScope.features.manta === 'enabled') {
+                tabFilterUserConfig = Account.getUserConfig().$child($scope.tabFilterField);
+            }
+
+            var loadCurrentTabFilter = function () {
+                if (tabFilterUserConfig) {
+                    tabFilterUserConfig.$load(function (error, config) {
+                        $scope.tabFilter = config.value;
+                        setCurrentTabFilter();
+
+                        $scope.$watch('tabFilter', function (filter) {
+                            if (filter) {
+                                config.value = filter;
+                                config.dirty(true);
+                                config.$save();
+                            }
+                        });
+                    });
+                } else {
+                    setCurrentTabFilter();
+                }
+            };
+
+            if ($scope.tabFilterField === 'datacenter') {
+                Datacenter.datacenter().then(function (datacenters) {
+                    $scope.tabFilters = datacenters.map(function (datacenter) {
+                        return datacenter.name;
+                    });
+                    $scope.tabFilters.push('all');
+                    loadCurrentTabFilter();
+                });
+            } else {
+                $scope.tabFilters = ['all'];
+                loadCurrentTabFilter();
+            }
         }
 
         $scope.$watch('objects + props + perPage + filterAll + tabFilter', $scope.getLastPage.bind($scope, true), true);
@@ -98,13 +129,15 @@
         $scope.orderGridMachinesBy = function (prop, reverse) {
             if ($scope.multisort !== 'false') {
                 var existed = null;
-                if ($scope.order.indexOf(prop.order) !== -1) {
+                var orderIndex = $scope.order.indexOf(prop.order);
+                if (orderIndex !== -1) {
                     existed = 'order';
-                    delete $scope.order[$scope.order.indexOf(prop.order)];
+                    $scope.order.splice(orderIndex, 1);
                 }
-                if ($scope.order.indexOf(prop.rorder) !== -1) {
+                var rOrderIndex = $scope.order.indexOf(prop.rorder);
+                if (rOrderIndex !== -1) {
                     existed = 'rorder';
-                    delete $scope.order[$scope.order.indexOf(prop.rorder)];
+                    $scope.order.splice(rOrderIndex, 1);
                 }
                 if (reverse === undefined) {
                     if (!existed) {
@@ -125,17 +158,23 @@
                 }
             }
 
+            var orderConfigMap = {};
             $scope.props.forEach(function (el) {
                 if (el.name === prop.name) {
                     el.columnActive = true;
                 } else {
                     el.columnActive = false;
                 }
+                if ($scope.order.indexOf(el.order) !== -1) {
+                    orderConfigMap[el.name] = true;
+                } else if ($scope.order.indexOf(el.rorder) !== -1) {
+                    orderConfigMap[el.name] = false;
+                }
             });
 
-            if ($scope.userConfig._loaded) {
+            if ($scope.userConfig.loaded()) {
                 var userConfig = $scope.gridUserConfig.config;
-                userConfig.order = {name: prop.name, ord: $scope.order[0] === prop.order};
+                userConfig.order = orderConfigMap;
                 userConfig.dirty(true);
                 userConfig.$save();
             }
@@ -289,24 +328,6 @@
                             }
                         });
                     }
-
-                    if (!$scope.tabFilter && $scope.tabFilters) {
-                        if ($rootScope.features.manta === 'enabled') {
-                            $scope.userConfig = Account.getUserConfig().$child($scope.tabFilterField);
-                            $scope.userConfig.$load(function (error, config) {
-                                $scope.tabFilter = config[$scope.tabFilterField] || 'all';
-                            });
-                            $scope.$watch('tabFilter', function (filter) {
-                                if (filter && $scope.userConfig[$scope.tabFilterField] && $scope.userConfig[$scope.tabFilterField] !== filter && filter !== 'all') {
-                                    $scope.userConfig[$scope.tabFilterField] = filter;
-                                    $scope.userConfig.dirty(true);
-                                    $scope.userConfig.$save();
-                                }
-                            });
-                        } else {
-                            $scope.tabFilter = $scope.tabFilters[0];
-                        }
-                    }
                     $scope.$parent.$emit('gridViewChangeTab', $scope.tabFilter || 'all');
                 }
             }
@@ -338,7 +359,7 @@
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
                     el.active = (el.active) ? false : true;
-                    if ($scope.userConfig._loaded) {
+                    if ($scope.userConfig.loaded()) {
                         $scope.gridUserConfig.propKeys[id].active = el.active;
                         $scope.gridUserConfig.config.dirty(true);
                     }
@@ -444,11 +465,12 @@
 
                 if (!$scope.userConfig) {
                     $scope.userConfig = {
-                        $load: function (callback) { this._loaded = true;callback(null, $scope.userConfig); },
+                        $load: function (callback) { this._loaded = true; callback(null, $scope.userConfig); },
                         $save: function () {},
                         $child: function () { return $scope.userConfig; },
                         dirty: function () {},
-                        _loaded: false
+                        _loaded: false,
+                        loaded: function () { return this._loaded; }
                     };
                 }
 
@@ -489,6 +511,9 @@
                             config.$save();
                         }
                     });
+                    if (ng.isDefined(config.order)) {
+                        $scope.order.splice(0);
+                    }
                     $scope.props.forEach(function (el) {
                         if (propKeys[el.id]) {
                             el.active = propKeys[el.id].active;
@@ -505,12 +530,8 @@
                             config.props.push(el);
                             config.dirty(true);
                         }
-
-                        if (!ng.isDefined(config.order)) {
-                            config.dirty(true);
-                            config.order = $scope.order;
-                        } else if (el.name === config.order.name) {
-                            $scope.order = [config.order.ord ? el.order : el.rorder];
+                        if (ng.isDefined(config.order) && ng.isDefined(config.order[el.name])) {
+                            $scope.order.push(config.order[el.name] ? el.order : el.rorder);
                         }
                     });
                     config.$save();
