@@ -38,7 +38,13 @@ var fileman = function execute(scope) {
             });
         });
     });
-    server.onCall('FileManDelete', function (call) {
+    server.onCall('FileManDeleteTree', function (call) {
+        var client = Manta.createClient(call);
+        client.rmr(call.data.path, function (error) {
+            call.done(error, true);
+        });
+    });
+    server.onCall('FileManDeleteFile', function (call) {
         var client = Manta.createClient(call);
         client.unlink(call.data.path, function (error) {
             call.done(error, true);
