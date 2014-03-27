@@ -509,7 +509,7 @@
                 $$track.event('machine', 'delete');
                 Machine.deleteMachine(el.id).getJob().done(function () {
                     if (!$scope.machines.length) {
-                        $location.path("compute/create");
+                        $location.path("compute/create/simple");
                     }
                     el.checked = false;
                 });
