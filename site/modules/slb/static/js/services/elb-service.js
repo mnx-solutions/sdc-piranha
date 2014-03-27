@@ -214,19 +214,7 @@
                 function handleMessage(message) {
                     if (message.status !== 'error') {
                         if ($rootScope.operationLog) {
-                            PopupDialog.message(
-                                localization.translate(
-                                    null,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    null,
-                                    'slb',
-                                    message
-                                ),
-                                function () {}
-                            );
+                            $rootScope.operationLog.add(message);
                         }
                     }
                 }
