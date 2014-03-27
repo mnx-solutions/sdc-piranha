@@ -20,9 +20,9 @@
                     }
                 };
             },
-            template: '<ul data-ng-repeat="message in messages">' +
-                '<li>{{message}}</li>' +
-                '</ul>'
+            template: '<div class="operation-box" data-ng-show="messages.length > 0">' +
+                '<p data-ng-repeat="message in messages">{{message}}</p>' +
+                '</div>'
         };
     }]);
 }(window.JP.getModule('slb')));
