@@ -16,8 +16,9 @@
         'slb.Service',
         '$rootScope',
         'Support',
+        'fileman',
 
-        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support) {
+        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support, fileman) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -93,6 +94,26 @@
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
             }, true);
+
+            function getReadableFileSizeString (bytes) {
+                if (bytes === 0) {
+                    return '0 Bytes';
+                }
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                return {value: Math.round(bytes / Math.pow(1024, i), 2),
+                        measure: sizes[i]};
+            }
+
+            fileman.storageReport('latest', function (err, res) {
+                var file = JSON.parse(res.__read());
+                var memory = 0;
+                ng.forEach(file.storage, function (storage) {
+                    memory += parseInt(storage.bytes, 10);
+                });
+
+                $scope.mantaMemory = getReadableFileSizeString(memory);
+            });
 
             $scope.runningcount = 0;
             $scope.othercount = 0;

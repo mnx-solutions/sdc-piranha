@@ -38,35 +38,60 @@ var fileman = function execute(scope) {
             });
         });
     });
+
     server.onCall('FileManDeleteTree', function (call) {
         var client = Manta.createClient(call);
         client.rmr(call.data.path, function (error) {
             call.done(error, true);
         });
     });
+
     server.onCall('FileManDeleteFile', function (call) {
         var client = Manta.createClient(call);
         client.unlink(call.data.path, function (error) {
             call.done(error, true);
         });
     });
+
     server.onCall('FileManPut', function (call) {
         var fileStream = new MemoryStream(call.data.fileBody);
         var client = Manta.createClient(call);
         client.put(call.data.path, fileStream, {}, call.done.bind(call));
     });
+
     server.onCall('FileManGet', function (call) {
         var client = Manta.createClient(call);
         client.get(call.data.path, call.done.bind(call));
     });
+
     server.onCall('FileManInfo', function (call) {
         var client = Manta.createClient(call);
         client.info(call.data.path, call.done.bind(call));
     });
+
     server.onCall('FileManCreateFolder', function (call) {
         var client = Manta.createClient(call);
         client.mkdir(call.data.path, function (error) {
             call.done(error, true);
+        });
+    });
+
+    server.onCall('FileManStorageReport', function (call) {
+        var client = Manta.createClient(call);
+        var reportPath = '/' + client.user + '/reports/usage/storage/' + call.data.originPath;
+        client.get(reportPath, function (err, stream) {
+            if (err) {
+                call.done(err);
+                return;
+            }
+            var data;
+            stream.setEncoding('utf8');
+            stream.on('data', function (chunk) {
+                data = chunk;
+            });
+            stream.on('end', function () {
+                call.done(null, data);
+            });
         });
     });
 };
