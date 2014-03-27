@@ -573,3 +573,8 @@ select::-ms-expand {
     display: inline-block;
     padding: 0 10px;
 }
+.effect-orange-button:not([disabled="disabled"]):hover {
+    background-color: #f60 !important;
+    color: white !important;
+    text-decoration: none;
+}
