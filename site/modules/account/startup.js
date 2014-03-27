@@ -3,6 +3,7 @@
 var config = require('easy-config');
 var metadata = require('./lib/metadata');
 var MemoryStream = require('memorystream');
+var ursa = require('ursa');
 
 module.exports = function execute(scope) {
     var server = scope.api('Server');
@@ -146,6 +147,17 @@ module.exports = function execute(scope) {
     server.onCall('createKey', function(call) {
 
         // create new ssh key for this account
+        if (!call.data.name) {
+            try {
+                var pubKey = ursa.openSshPublicKey(call.data.key);
+                var fingerprintHex = pubKey.toPublicSshFingerprint('hex');
+                call.data.name = fingerprintHex.slice(-10);
+            } catch (e) {
+                call.done({message: 'key is invalid'});
+                return;
+            }
+
+        }
         call.cloud.createKey({name: call.data.name, key: call.data.key}, function (err, resp) {
             if(err) {
                 call.done(err);
