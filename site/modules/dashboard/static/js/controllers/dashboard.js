@@ -27,6 +27,7 @@
             $scope.account     = Account.getAccount();
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
+            $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
             if ($scope.slbFeatureEnabled) {
 
                 $scope.balancers = slbService.getBalancers();
@@ -105,15 +106,21 @@
                         measure: sizes[i]};
             }
 
-            fileman.storageReport('latest', function (err, res) {
-                var file = JSON.parse(res.__read());
-                var memory = 0;
-                ng.forEach(file.storage, function (storage) {
-                    memory += parseInt(storage.bytes, 10);
-                });
+            if ($scope.mantaEnabled) {
+                fileman.storageReport('latest', function (err, res) {
+                    if (err || !res.__read()) {
+                        $scope.mantaEnabled = false;
+                        return false;
+                    }
+                    var file = JSON.parse(res.__read());
+                    var memory = 0;
+                    ng.forEach(file.storage, function (storage) {
+                        memory += parseInt(storage.bytes, 10);
+                    });
 
-                $scope.mantaMemory = getReadableFileSizeString(memory);
-            });
+                    $scope.mantaMemory = getReadableFileSizeString(memory);
+                });
+            }
 
             $scope.runningcount = 0;
             $scope.othercount = 0;
