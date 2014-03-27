@@ -523,10 +523,11 @@
 
             $scope.contactSupport = function (obj) {
                 $q.when($scope.account).then(function (account) {
-                    var contactSupportParams = ng.copy(window.zenbox_params);
+                    var contactSupportParams = ng.copy($scope.zenboxParams);
                     if (obj) {
                         contactSupportParams.request_description = 'API Name: ' + obj.name;
                     }
+                    contactSupportParams.dropboxID = contactSupportParams.dropboxOrderPackageId || contactSupportParams.dropboxID;
                     contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
                     contactSupportParams.requester_name = account.firstName;
                     contactSupportParams.requester_email = account.email;
