@@ -115,7 +115,7 @@
 
                 var file = lastSelectedFile[0];
                 var path = getObjectPath(file);
-
+                var method = (file.type === 'object') ? 'unlink' : 'rmr';
                 PopupDialog.confirm(
                     null,
                     localization.translate(
@@ -128,7 +128,7 @@
                     ),
                     function () {
                         $scope.refreshingFolder = true;
-                        fileman.rm(path, function (error) {
+                        fileman[method](path, function (error) {
                             if (error) {
                                 return PopupDialog.error(
                                     localization.translate(

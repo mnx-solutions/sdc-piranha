@@ -39,7 +39,9 @@
                 location.href = 'fileman/download?path=' + '/' + username + '/' + path;
             };
 
-            fileman.rm = createMethod('FileManDelete');
+            fileman.rmr = createMethod('FileManDeleteTree');
+
+            fileman.unlink = createMethod('FileManDeleteFile');
 
             fileman.info = createMethod('FileManInfo');
 
