@@ -1,0 +1,13 @@
+<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="modal-header confirm">
+        <h5><i class="icon-question-sign"></i><b>Confirm: {{ title }}</b></h5>
+    </div>
+    <div class="modal-body">
+        By clicking “OK”, you are agreeing to the <a href="http://www.joyent.com/company/policies/support-services-policy" target="_blank">Terms of Service</a> <br/>
+        Are you sure you want to sign up for {{ title }} ?
+    </div>
+    <div class="modal-footer">
+        <button data-ng-click="close()" data-button-focus="false" data-label="Cancel" class="btn grey-new">Cancel</button>
+        <button data-ng-click="clickOk()" data-button-focus="true" data-label="Ok" class="btn orange">Ok</button>
+    </div>
+</div>
