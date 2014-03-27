@@ -31,6 +31,7 @@
                 element.change(function (e) {
                     if (e.target.files && e.target.files.length) {
                         uploadFiles(e.target.files);
+                        e.target.value = '';
                         scope.$parent.$emit('uploadStart', true);
                     }
                 });
