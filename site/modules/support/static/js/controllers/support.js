@@ -58,52 +58,54 @@
                 }
             });
 
-            $scope.clickSignUp = function (holder) {
+            var subscribe = function (holder) {
+                $scope.subscribingInProgress = true;
+                BillingService.createSupportSubscription(holder.ratePlanId, function () {
+                    $scope.getPageData();
+                });
+            }
+
+            $scope.clickSignUp = function (holder, signup) {
                 if (holder.ratePlanId === '' || $scope.subscribingInProgress) {
                     return;
                 }
 
-                PopupDialog.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: ' + holder.popUpTitle
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Are you sure you want to sign up for ' + holder.popUpTitle + '?'
-                    ), function () {
-                        $scope.subscribingInProgress = true;
-                        BillingService.createSupportSubscription(holder.ratePlanId, function () {
-                            $scope.getPageData();
-                        });
-                    });
-            };
+                if (signup) {
+                    var confirmSignUp = function ($scope, dialog) {
+                        $scope.title = holder.popUpTitle;
+                        $scope.close = function (res) {
+                            dialog.close(res);
+                        };
+                        $scope.clickOk = function (res) {
+                            subscribe(holder);
+                            dialog.close(res);
+                        }
+                    };
 
-            $scope.clickUnsubscribe = function (holder) {
-                if ($scope.subscribingInProgress) {
-                    return;
+                    var opts = {
+                        templateUrl: 'support/static/partials/popup.html',
+                        openCtrl: confirmSignUp
+                    };
+                    PopupDialog.custom(
+                        opts,
+                        function () {}
+                    );
+                } else {
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Confirm: ' + holder.popUpTitle
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Are you sure you want to upgrade for ' + holder.popUpTitle + '?'
+                        ), function () {
+                            subscribe(holder);
+                        }
+                    );
                 }
-
-                PopupDialog.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Cancel Subscription'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Are you sure you want to cancel subscription'
-                    ), function () {
-                        $scope.subscribingInProgress = true;
-                        BillingService.cancelSupportSubscription(holder.subscriptionId, function () {
-                            holder.active = false;
-                            $scope.getPageData();
-                        });
-                    });
-
             };
 
             $scope.clickCallSales = function () {
