@@ -61,7 +61,8 @@
 
                     <div class="btn-group tooltip-hover span4 dd-margin protocol-pos"
                          data-toggle="tooltip"
-                         data-placement="bottom">
+                         data-placement="bottom"
+                         data-ng-hide="balancerId">
 
                         <button class="btn slb-select">{{datacenterSelected.name}}</button>
                         <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
@@ -73,6 +74,9 @@
                             </li>
                         </ul>
                     </div>
+                    <span data-ng-show="balancerId" class="span8 datacenter-name">
+                        {{datacenterSelected.name}}
+                    </span>
                 </div>
                 <div class="clearfix"></div>
                 <div style="margin-top: 10px;" class="lb-line"></div>

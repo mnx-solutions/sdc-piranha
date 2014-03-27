@@ -337,3 +337,7 @@ legend {
     width: 850px;
     vertical-align: top;
 }
+.datacenter-name {
+    padding-left: 5px;
+    padding-top: 5px;
+}
