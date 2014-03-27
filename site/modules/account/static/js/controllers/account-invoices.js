@@ -27,29 +27,26 @@
 
             $scope.loading = true;
             $scope.isInvocesEnabled = true;
-            $scope.invoices = BillingService.getInvoices();
+            $scope.invoices = [];
             $scope.subscriptions = BillingService.getSubscriptions();
 
-            $scope.invoices.then(function () {}, function (err) {
-                $scope.error = err;
-                if(err === "Not Implemented") {
-                    $scope.isInvocesEnabled = false;
-                }
-            });
             $scope.subscriptions.then(function () {}, function (err) {
                 $scope.error = err;
             });
 
             $q.all([
-                $q.when($scope.invoices),
+                $q.when(BillingService.getInvoices()),
                 $q.when($scope.subscriptions)
-            ]).then(function () {
+            ]).then(function (results) {
+                $scope.invoices = results[0];
                 $scope.loading = false;
+            }, function (err) {
+                $scope.error = err;
+                if(err === "Not Implemented") {
+                    $scope.isInvocesEnabled = false;
+                }
             });
 
-            if (!$scope.invoices.length) {
-                $scope.invoices = [];
-            }
             $scope.gridOrder = ['-invoiceDate'];
             $scope.exportFields = {
                 ignore: ["IntegrationId__NS", "IntegrationStatus__NS", "SyncDate__NS", "accountId", "accountNumber","accountName", "balance", "createdBy", "dueDate", "id", "invoiceTargetDate", "status", "invoiceItems"]
