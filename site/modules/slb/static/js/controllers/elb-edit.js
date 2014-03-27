@@ -100,7 +100,44 @@
                     });
                 };
 
+                $scope.validate = function () {
+                    var validationMessage = null;
+                    $scope.validateSelected();
+                    if (!$scope.hasMachineSelected) {
+                        validationMessage = 'You must select at least one machine.';
+                    }
+                    var formElements = {
+                        failThreshold: 'Failure threshold',
+                        toPort: 'Instances port',
+                        fromPort: 'Load balancer port',
+                        name: 'Load balancer name'
+                    };
+                    for (var formElementName in formElements) {
+                        if ($scope.editForm[formElementName].$invalid) {
+                            validationMessage = formElements[formElementName] + ' is invalid.';
+                        }
+                    }
+                    return validationMessage;
+                };
+
                 $scope.save = function () {
+                    var validationMessage = $scope.validate();
+                    if (validationMessage) {
+                        PopupDialog.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                validationMessage
+                            ),
+                            function () {}
+                        );
+                        return;
+                    }
                     $scope.saving = true;
                     $scope.server.protocol = $scope.protocolSelected.value;
                     $scope.server.datacenter = $scope.datacenterSelected.name;

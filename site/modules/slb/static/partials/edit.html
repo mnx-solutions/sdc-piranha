@@ -12,7 +12,7 @@
                 <div>
                     <span class="span2 lb-label" data-translate>Name</span>
                     <span class="span9 name-input">
-                        <input type="text" required data-ng-model="server.name"/>
+                        <input name="name" type="text" required data-ng-model="server.name"/>
                     </span>
                 </div>
                 <div class="clearfix"></div>
@@ -184,7 +184,7 @@
 
     <span class="span12" data-ng-show="allLoading">
         <p class="logo-riverbed pull-left" data-translate>Powered by</p>
-        <button data-ng-disabled="!editForm.$valid || !hasMachineSelected || saving" data-ng-click="save()"
+        <button data-ng-disabled="saving" data-ng-click="save()"
                 class="btn orange pull-right edit-btn-pos">
             <span data-ng-show="balancerId" class="ng-scope" data-translate>Update</span>
             <span data-ng-hide="balancerId" class="ng-scope" data-translate>Create</span>
