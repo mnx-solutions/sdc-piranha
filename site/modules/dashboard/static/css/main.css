@@ -126,6 +126,17 @@
     line-height: 28px;
 }
 
+.widget .details .bignumber {
+    font-size: 42px;
+    font-weight: 800;
+    line-height: 40px;
+    margin-right: 5px;
+}
+
+.widget .details .measure {
+    font-size: 26px;
+}
+
 .widget .details .desc {
     text-align: left;
     font-size: 14px;

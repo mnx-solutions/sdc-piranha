@@ -20,6 +20,7 @@
                         data = {};
                     }
                     data.path = '/' + username + '/' + path;
+                    data.originPath = path;
 
                     serverTab.call({
                         name: name,
@@ -48,6 +49,8 @@
             fileman.put = createMethod('FileManPut');
 
             fileman.mkdir = createMethod('FileManCreateFolder');
+
+            fileman.storageReport = createMethod('FileManStorageReport');
 
             return fileman;
         }
