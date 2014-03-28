@@ -16,13 +16,20 @@
                 $scope.timeouts = [1, 2, 5, 10, 20];
                 $scope.allLoading = false;
 
+                function nextPort(port) {
+                    while (service.reservedPorts.indexOf(port) !== -1) {
+                        port += 1;
+                    }
+                    return port;
+                }
+
                 $q.all([service.getBalancer($scope.balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
                     var server = results[0];
                     var balancers = results[1];
                     var machines = results[2];
 
                     // Set defaults
-                    server.fromPort = server.fromPort || 80;
+                    server.fromPort = server.fromPort || nextPort(80);
                     server.toPort = server.toPort || 80;
                     server.health = server.health || {};
                     server.health.timeout = server.health.timeout || 2;
@@ -196,7 +203,7 @@
                     min = min || 1;
                     max = max || 65535; // max tcp port value
                     var isInteger = (value % 1) === 0;
-                    input.$setValidity('port', isInteger && value >= min && value <= max && (reservedPorts.indexOf(value) === -1));
+                    input.$setValidity('port', isInteger && service.reservedPorts.indexOf(+value) === -1 && value >= min && value <= max && (reservedPorts.indexOf(value) === -1));
                 };
 
                 $scope.delete = function () {
