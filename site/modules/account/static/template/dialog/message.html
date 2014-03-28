@@ -24,17 +24,16 @@
         <div class="modal-footer">
             <!--<button data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn orange" data-ng-class="btn.cssClass">{{ btn.label }}</button>-->
             <button data-ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" data-ng-click="close(btn.result)" class="btn orange effect-orange-button" data-ng-class="{'grey-new': btn.label == 'Cancel'}">{{ btn.label }}</button>
-            <span class="modal-footer-text">or</span>
-            <button data-button-focus="false"
-                    class="btn orange effect-orange-button">
+            <span data-ng-show="isUploadSshEnabled">
+                <span class="modal-footer-text">or</span>
+                <label type="button" class="btn orange effect-orange-button upload-key-label" for="uploadInput">upload</label>
                 <input type="file"
                        id="uploadInput"
                        name="uploadInput"
                        style="display: none"
                        data-ng-model="filePath"
                        onchange="angular.element(this).scope().uploadFile(uploadInput)">
-                <label type="button" class="upload-key-label" for="uploadInput">upload</label>
-            </button>
+            </span>
         </div>
     </div>
 </div>
