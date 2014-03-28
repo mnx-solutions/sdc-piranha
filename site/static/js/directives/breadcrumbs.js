@@ -9,10 +9,13 @@ window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext', '$rootScope
             template: '<ul class="breadcrumb">' +
                         '<li data-ng-class="{active: $last}" ' +
                              'data-ng-repeat="item in navigationPath">' +
-                          '<span data-ng-show="!$last || $last && item.showLatest">' +
+                          '<span data-ng-show="!item.showText && (!$last || $last && item.showLatest)">' +
                             '<a href="#!{{item.path}}" data-translate data-translate-expression="true">' +
                               '{{item.title}}' +
                             '</a>' +
+                          '</span>' +
+                          '<span data-ng-show="item.showText && (!$last || $last && item.showLatest)" data-translate data-translate-expression="true">' +
+                          ' {{item.title}}' +
                           '</span>' +
                           '<span data-ng-show="!$last || $last && item.showLatest" class="divider">/</span>' +
                         '</li>' +
