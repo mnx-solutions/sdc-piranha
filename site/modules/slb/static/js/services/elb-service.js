@@ -144,7 +144,7 @@
                             return;
                         }
                         var balancers = job.__read().map(function (balancer) {
-                            service.reservedPorts.push(balancer.port);
+                            service.reservedPorts.push(+balancer.port);
                             return filterBalancer(balancer);
                         });
                         d.resolve(balancers);
