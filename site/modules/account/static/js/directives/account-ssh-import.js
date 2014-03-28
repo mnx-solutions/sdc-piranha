@@ -21,12 +21,12 @@
                     localization.bind('account', $scope);
                 },
                 link: function ($scope) {
-
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function(question, callback) {
                         $rootScope.loading = true;
 
                         var addKeyCtrl = function ($scope, dialog) {
+                            $scope.isUploadSshEnabled = $rootScope.features.uploadSshKey === 'enabled';
                             $scope.data = {};
                             $scope.filePath = '';
                             $scope.close = function (res) {

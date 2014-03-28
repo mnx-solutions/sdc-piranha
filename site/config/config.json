@@ -164,5 +164,6 @@
   , "mantaJobs": "no"
   , "usageData": "no"
   , "support": "no"
+  , "uploadSshKey": "no"
   }
 }
