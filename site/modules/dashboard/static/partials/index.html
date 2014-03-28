@@ -58,7 +58,7 @@
         </div>
                     </div>
             <div class="pull-left widget-margin">
-                <a href="#!/manta/files">
+                <a data-ng-href="{{(mantaEnabled && '#!/manta/files') || '#!/manta/intro'}}">
                     <div class="widget grey links2 manta-icon">
                         <h4>Manta Storage</h4>
                         <div class="details">
@@ -66,10 +66,6 @@
                                 <span class="number bignumber">{{mantaMemory.value || 0}}</span>
                                 <span class="number measure">{{mantaMemory.measure}}</span>
                             </div>
-                            <div data-ng-hide="mantaEnabled">
-                                <p class="desc">not available</p>
-                            </div>
-
                         </div>
                         <div class="more">
                            manage storage <i class="m-icon-white-arrow"></i>
