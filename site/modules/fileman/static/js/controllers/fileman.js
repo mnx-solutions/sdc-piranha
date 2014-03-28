@@ -253,7 +253,7 @@
                     $scope.currentPath += $scope.currentPath.substr(-1) !== '/' ? '/' + fullPath : fullPath;
                 }
 
-                $scope.splittedCurrentPath = $scope.currentPath.split(/\/([^/]+)/)
+                $scope.splittedCurrentPath = $scope.currentPath.split(/\/(\/?[\w\\.\-]+)/)
                     .filter(function (e) {
                         return !!e;
                     });
