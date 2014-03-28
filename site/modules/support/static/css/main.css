@@ -176,7 +176,11 @@
     color: #CFFAE5;
 }
 
-.header-text a {
+.header-text-section {
+    margin-bottom: 0;
+}
+
+.support-link {
+    color: #f60;
     text-decoration: none;
-    color: #333333;
 }
