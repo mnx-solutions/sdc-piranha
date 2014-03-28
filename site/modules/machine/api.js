@@ -375,12 +375,15 @@ module.exports = function execute(scope, register) {
         });
     };
     var supportPackages = [];
-    for (var name in info.packages.data.all) {
-        if (info.packages.data.all.hasOwnProperty(name) && info.packages.data.all[name].createdBySupport) {
-            info.packages.data.all[name].name = info.packages.data.all[name].id = info.packages.data.all[name].id || name;
-            supportPackages.push(info.packages.data.all[name]);
+    if (config.features.createdBySupportPackages === 'enabled') {
+        for (var name in info.packages.data.all) {
+            if (info.packages.data.all.hasOwnProperty(name) && info.packages.data.all[name].createdBySupport) {
+                info.packages.data.all[name].name = info.packages.data.all[name].id = info.packages.data.all[name].id || name;
+                supportPackages.push(info.packages.data.all[name]);
+            }
         }
     }
+
 
     api.PackageList = function (call, options, callback) {
         call.log.info('Handling list packages event');

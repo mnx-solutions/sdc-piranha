@@ -229,7 +229,7 @@
                                         <button class="btn light pull-right effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
                         </div>
-                                <div data-ng-hide="selectedPackageName" class="pull-left resize-block">
+                                <div data-ng-hide="selectedPackageName || features.createdBySupportPackages != 'enabled'" class="pull-left resize-block">
                                     You currently have maximum possible size of the instance. <a data-href="#" data-ng-click="contactSupport()">Click here</a> to contact support.
                                 </div>
                                 <div class="clearfix"></div>

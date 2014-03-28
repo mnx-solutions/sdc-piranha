@@ -165,5 +165,6 @@
   , "usageData": "no"
   , "support": "no"
   , "uploadSshKey": "no"
+  , "createdBySupportPackages": "no"
   }
 }
