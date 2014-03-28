@@ -9,45 +9,26 @@
             $scope.subscribingInProgress = true;
             var headLink = '/support';
             $scope.getPageData = function () {
+                $scope.subscribingInProgress = true;
                 $scope.levelSupport = 0;
                 var supportPackages = $scope.supportPackages;
                 for (var packageName in supportPackages ) {
                     if (headLink + supportPackages[packageName].link === $location.path()) {
                         $scope.package = supportPackages[packageName];
+                        $scope.levelSupport = $scope.package.currentlevelSupport;
                         $scope.packageHolders = supportPackages[packageName].packageHolders;
                     }
                 }
-
-                BillingService.getSubscriptions().then(function (subscriptions) {
-                    var filteredSubscriptions = subscriptions.filter(function (subscription) {
-                        return subscription.status === "Active";
-                    });
-
-                    filteredSubscriptions.forEach(function (filteredSubscription) {
-                        if (filteredSubscription.ratePlans.length) {
-                            filteredSubscription.ratePlans.forEach (function (el) {
-                                for (var holder in $scope.packageHolders) {
-                                    if (el.productRatePlanId === $scope.packageHolders[holder].ratePlanId) {
-                                        $scope.packageHolders[holder].active = true;
-                                        if ($scope.levelSupport <= $scope.packageHolders[holder].levelSupport) {
-                                            $scope.levelSupport = $scope.packageHolders[holder].levelSupport;
-                                        }
-                                        $scope.packageHolders[holder].subscriptionId = filteredSubscription.id;
-                                    }
-                                }
-                            });
-                        }
-                    });
-                    $scope.loading = false;
-                    $scope.subscribingInProgress = false;
-                });
-
+                $scope.loading = false;
+                $scope.subscribingInProgress = false;
             };
 
-            Support.support(function (error, supportPackages) {
-                $scope.supportPackages = supportPackages;
-                $scope.getPageData();
-            });
+            var getSupportData = function () {
+                Support.support(function (error, supportPackages) {
+                    $scope.supportPackages = supportPackages;
+                    $scope.getPageData();
+                });
+            }
 
             $scope.$on('$routeChangeStart', function(e, next, last) {
                 if (next.$$route.controller === last.$$route.controller) {
@@ -61,7 +42,7 @@
             var subscribe = function (holder) {
                 $scope.subscribingInProgress = true;
                 BillingService.createSupportSubscription(holder.ratePlanId, function () {
-                    $scope.getPageData();
+                    getSupportData();
                 });
             }
 
@@ -122,6 +103,9 @@
                     ), function () {}
                 );
             }
+
+            getSupportData();
+
 
         }]);
 }(window.JP.getModule('support')));

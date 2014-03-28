@@ -3,15 +3,11 @@
 (function (app) {
     var cache = null;
     app.factory('Support', [
-        'serverTab',
-        function (serverTab) {
+        'serverTab', 'BillingService',
+        function (serverTab, BillingService) {
             var service = {};
 
             service.support = function (callback) {
-                if (cache) {
-                    callback(null, cache);
-                    return;
-                }
                 serverTab.call({
                     name: 'SupportListPackages',
                     done: function (err, job) {
@@ -20,9 +16,34 @@
                             return;
                         }
                         cache = job.__read();
-                        callback(null, cache);
+
+                        BillingService.getSubscriptions().then(function (subscriptions) {
+                            var filteredSubscriptionsId = [];
+                            subscriptions.forEach(function (subscription) {
+                                if (subscription.status === "Active") {
+                                    subscription.ratePlans.forEach(function (ratePlan) {
+                                        filteredSubscriptionsId.push(ratePlan.productRatePlanId);
+                                    });
+                                }
+                            });
+                            for (var name in cache) {
+                                cache[name].packageHolders.forEach(function (holder) {
+                                    for (var id in filteredSubscriptionsId) {
+                                        if (holder.ratePlanId === filteredSubscriptionsId[id]) {
+                                            holder.active = true;
+                                            if (cache[name].currentlevelSupport <= holder.levelSupport) {
+                                                cache[name].currentlevelSupport = holder.levelSupport;
+                                                cache[name].currentShortName = holder.shortName;
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                            callback(null, cache);
+                        });
                     }
                 });
+
             };
             return service;
         }]);
