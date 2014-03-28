@@ -26,11 +26,6 @@ public class InstancePage {
                 CHANGE_STATUS_TIMEOUT);
     }
 
-    public void start() {
-        $(byText("Start")).click();
-        Common.clickButtonInModal("Yes");
-    }
-
     public void stop() {
         $(byText("Stop")).click();
         Common.clickButtonInModal("Yes");
@@ -41,12 +36,7 @@ public class InstancePage {
         Common.clickButtonInModal("Yes");
     }
 
-    public void delete() {
-        $(byText("Delete")).click();
-        Common.clickButtonInModal("Yes");
-    }
-
-    //TODO: remove method
+    @Deprecated
     public static void rename(String name) {
         clickRenameInstanceIcon();
         getInstanceNameField().clear();
@@ -82,19 +72,6 @@ public class InstancePage {
         Common.clickButtonInModal("Yes");
     }
 
-    public void validateInstanceSize(String ram, String cpu, String disk) {
-        $(byAttribute("data-ng-show", "currentPackage")).should(
-                matchText("Memory: " + ram));
-        $(byAttribute("data-ng-show", "currentPackage")).should(
-                matchText("vCPUs: " + cpu));
-        $(byAttribute("data-ng-show", "currentPackage")).should(
-                matchText("Disk: " + disk));
-    }
-
-    public static void openImagesSection() {
-        $("#accordion1 a[href=\"#collapse_images\"]").click();
-    }
-
     public boolean validateIP(String ipRange) {
         SelenideElement div = $(byAttribute("data-ng-show", "machine.ips"));
         SelenideElement ips = div.find("span.value.span8.pull-right");
@@ -105,12 +82,7 @@ public class InstancePage {
         return false;
     }
 
-    //TODO: remove method
-    public static void gotoInstanceDetails(String instanceName) {
-        $(byText(instanceName)).click();
-    }
-
-    //TODO: remove method
+    @Deprecated
     public static SelenideElement getInstanceNameField() {
         if (!$("#instanceRename").isDisplayed()) {
             return $(".page-title");
@@ -118,7 +90,7 @@ public class InstancePage {
         return $("#instanceRename");
     }
 
-    //TODO: remove method
+    @Deprecated
     public static void clickRenameInstanceIcon() {
         JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
         executor.executeScript("$('.edit-text-icon').click()");

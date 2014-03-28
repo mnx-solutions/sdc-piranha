@@ -27,7 +27,7 @@ import static junit.framework.Assert.assertTrue;
  * with given pages.
  */
 public class CreateInstance extends AbstractPageObject {
-    public static final String TITLE = "Quick Start: Create Instance";
+    public static final String TITLE = "Create Instance";
 
     @Override
     String getTitle() {
@@ -53,7 +53,6 @@ public class CreateInstance extends AbstractPageObject {
         SelenideElement toClick = dropList.$("ul.dropdown-menu").$(byText(os));
         toClick.click();
     }
-
 
     public void waitForListingUpdate() {
         $(".provisioning-carousel-inner-box").waitUntil(hasNotClass("loading-medium"), baseTimeout);
@@ -197,10 +196,6 @@ public class CreateInstance extends AbstractPageObject {
         $(byText("Create instance")).click();
         createInstanceCarousel.confirmInstanceCreation();
         return instanceName;
-    }
-
-    public void clickViewMoreImages() {
-        $("#link-more-images").click();
     }
 
     public void filterPackages(String parameter, String value) {

@@ -38,8 +38,8 @@ public class HighPerformPackageTest extends TestWrapper {
 
     @Test
     public void selectHighPerformancePackage() {
-        CreateInstance createInstance = sideBarMenu.clickDashboard().clickCreateComputeInstance();
-        createInstance.clickViewMoreImages();
+        CreateInstanceQuickStart createInstanceQuickStart = sideBarMenu.clickDashboard().clickCreateComputeInstance();
+        CreateInstance createInstance = createInstanceQuickStart.clickViewMoreImages();
         createInstance.waitForMediumSpinnerDisappear();
         createInstance.selectOsFilter("smartos");
         createInstance.selectOsImage("base");
