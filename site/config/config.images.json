@@ -43,7 +43,7 @@
             "className": "centos-logo",
             "imageData": {
                 "datacenter": "us-west-1",
-                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+                "dataset": "df81f45e-8f9f-11e3-a819-93fab527c81e",
                 "name": "",
                 "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
@@ -157,7 +157,7 @@
             "className": "centos-logo",
             "imageData": {
                 "datacenter": "us-east-1",
-                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+                "dataset": "df81f45e-8f9f-11e3-a819-93fab527c81e",
                 "name": "",
                 "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
                 "opsys": "All",
@@ -271,7 +271,7 @@
             "className": "centos-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
-                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+                "dataset": "df81f45e-8f9f-11e3-a819-93fab527c81e",
                 "name": "",
                 "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
@@ -385,7 +385,7 @@
             "className": "centos-logo",
             "imageData": {
                 "datacenter": "us-ams-1",
-                "dataset": "325dbc5e-2b90-11e3-8a3e-bfdcb1582a8d",
+                "dataset": "df81f45e-8f9f-11e3-a819-93fab527c81e",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
                 "opsys": "All",
