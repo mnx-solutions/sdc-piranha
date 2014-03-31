@@ -144,6 +144,9 @@
 , "skinChange": {
     "url": "https://betaportal.joyent.com"
 }
+, "manta": {
+    "url": "https://us-east.manta.joyent.com"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
