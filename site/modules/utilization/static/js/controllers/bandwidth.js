@@ -8,11 +8,11 @@
             $scope.chartData = {};
 
             Utilization.utilization(function (error, utilizationData) {
-                $scope.gridData = utilizationData.bandwidth.usage;
                 $scope.chartData = utilizationData.bandwidth.amount;
-                $scope.gridData.forEach(function (entry) {
+                $scope.gridData = utilizationData.bandwidth.usage.map(function (entry) {
                     entry.in = $scope.chartData.format(entry.in);
                     entry.out = $scope.chartData.format(entry.out);
+                    return entry;
                 });
             });
 

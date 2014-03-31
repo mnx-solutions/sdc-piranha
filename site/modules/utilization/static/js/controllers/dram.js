@@ -8,10 +8,10 @@
             $scope.chartData = {};
 
             Utilization.utilization(function (error, utilizationData) {
-                $scope.gridData = utilizationData.dram.usage;
                 $scope.chartData = utilizationData.dram.amount;
-                $scope.gridData.forEach(function (entry) {
+                $scope.gridData = utilizationData.dram.usage.map(function (entry) {
                     entry.hours = $scope.chartData.format(entry.hours);
+                    return entry;
                 });
             });
 

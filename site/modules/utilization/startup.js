@@ -127,6 +127,24 @@ module.exports = function execute(scope) {
                 }
                 overallResult.dram.total += overallResult.dram.amount[result.date];
                 overallResult.bandwidth.total += overallResult.bandwidth.amount[result.date];
+                // grouping by machine as separate pass, cause it's a temporary functionality for old format data
+                var groupByMachineAndSumFields = function (arr, fields) {
+                    return arr.sort(function (a, b) {
+                        return a.uuid.localeCompare(b.uuid);
+                    }).reduce(function (accumulated, newUsage) {
+                        var lastElement = accumulated[accumulated.length - 1];
+                        if (lastElement && lastElement.uuid === newUsage.uuid) {
+                            fields.forEach(function (field) {
+                                lastElement[field] += newUsage[field];
+                            })
+                        } else {
+                            accumulated.push(newUsage);
+                        }
+                        return accumulated;
+                    }, []);
+                };
+                overallResult.dram.usage = groupByMachineAndSumFields(overallResult.dram.usage, ['hours']);
+                overallResult.bandwidth.usage = groupByMachineAndSumFields(overallResult.bandwidth.usage, ['in', 'out']);
             });
             call.done(null, overallResult);
         });
