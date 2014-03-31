@@ -4,27 +4,27 @@
         "dataset": "ffed3d9e-2c2f-11e3-9a12-bf5267821b0b",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
-        "package": "fde4b736-af9f-e89d-c0f6-eff3d122c610"
+        "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
     },
     {
         "name": "CentOS",
         "dataset": "30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
-        "package": "28eaf433-a8ed-ef54-ac8e-d6a997f4198c"
+        "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     },
     {
         "name": "SmartOS",
         "dataset": "2b683a82-a066-11e3-97ab-2faa44701c5a",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
-        "package": "fde4b736-af9f-e89d-c0f6-eff3d122c610"
+        "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
     },
     {
         "name": "Ubuntu",
         "dataset": "64e1b2ee-52c8-11e2-bedd-7f919cc63ab9",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
-        "package": "28eaf433-a8ed-ef54-ac8e-d6a997f4198c"
+        "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     }
 ]
