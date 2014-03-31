@@ -23,8 +23,6 @@
                 link: function ($scope) {
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function(question, callback) {
-                        $rootScope.loading = true;
-
                         var addKeyCtrl = function ($scope, dialog) {
                             $scope.isUploadSshEnabled = $rootScope.features.uploadSshKey === 'enabled';
                             $scope.data = {};
@@ -43,12 +41,14 @@
                                         keyData: $scope.data.keyData
                                     }
                                 });
+                                $rootScope.loading = true;
                             };
 
                             $scope.buttons = [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
 
                             $scope.uploadFile = function (elem) {
                                 function uploadFiles(files) {
+                                    $rootScope.loading = true;
                                     var data = new FormData();
                                     var xhr = new XMLHttpRequest();
                                     xhr.onreadystatechange = function () {
@@ -75,6 +75,8 @@
                                             }
 
                                             dialog.close({});
+
+                                            $rootScope.loading = false;
 
                                             return PopupDialog.error(
                                                 localization.translate(
