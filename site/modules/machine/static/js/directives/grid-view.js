@@ -20,7 +20,7 @@
 
         if ($scope.tabFilterField) {
             var setCurrentTabFilter = function () {
-                $scope.tabFilter = $scope.tabFilterDefault || $scope.tabFilter || $scope.tabFilters[0];
+                $scope.tabFilter = $scope.tabFilterDefault || $scope.tabFilter || $scope.tabFilters.slice(-1)[0];
             };
 
             var tabFilterUserConfig = null;
