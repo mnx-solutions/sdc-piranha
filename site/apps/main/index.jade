@@ -17,7 +17,7 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     div(data-main-menu, class='modulizer-module-menu header navbar navbar-inverse navbar-fixed-top')
     div(data-main-left, id='leftPanel', ng-class="{'expanded': sideBarMin}")
     //div(data-notification, class='JoyentPortal-module-notification')
-    div(data-ng-switch='subview', class='pull-left container-fluid ng-cloak', ng-cloak,ng-class="{'leftpanel-small': sideBarMin}")
+    div(data-ng-switch='subview', class='container-fluid ng-cloak', ng-cloak,ng-class="{'leftpanel-small': sideBarMin}")
 
       each layout in layouts
         div(data-ng-switch-when='#{layout.module}',class='modulizer-module-#{layout.module}',data-ng-controller='#{layout.module}.LayoutController')!= layout.data

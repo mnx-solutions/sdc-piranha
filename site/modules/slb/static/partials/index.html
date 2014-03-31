@@ -1,4 +1,4 @@
-<div class="container container-elb container-position">
+<div class="container-fluid container-position">
     <div data-breadcrumbs></div>
     <span data-ng-show="creating">Provisioning load balancer infrastructure. Go get a coffee. Joyent Simple Load Balancer will be ready when you return.</span>
     <div class="loading-large" data-ng-show="!loaded || creating"></div>
@@ -22,7 +22,7 @@
             </span>
             </div>
 
-            <span class="load-balancers">
+            <span class="float-right">
             <button data-ng-click="enableSlb()" data-ng-disabled="!licenseAcceptCheck"
                     class="btn light btn-medium effect-orange-button"><span class="ng-scope" data-translate>Install Load Balancer</span>
             </button>
