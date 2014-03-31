@@ -30,7 +30,7 @@
                                 return formatted.value + ' ' + formatted.measure;
                             }
                             return formatted;
-                        }
+                        };
                         callback(null, cache);
                     }
                 });

@@ -9,11 +9,7 @@
 
             Utilization.utilization(function (error, utilizationData) {
                 $scope.chartData = utilizationData.bandwidth.amount;
-                $scope.gridData = utilizationData.bandwidth.usage.map(function (entry) {
-                    entry.in = $scope.chartData.format(entry.in);
-                    entry.out = $scope.chartData.format(entry.out);
-                    return entry;
-                });
+                $scope.gridData = utilizationData.bandwidth.usage;
             });
 
             $scope.gridOrder = [];
@@ -45,12 +41,18 @@
                 {
                     id: 'in',
                     name: 'In',
+                    _getter: function (object) {
+                        return $scope.chartData.format(object.in);
+                    },
                     sequence: 5,
                     active: true
                 },
                 {
                     id: 'out',
                     name: 'Out',
+                    _getter: function (object) {
+                        return $scope.chartData.format(object.out);
+                    },
                     sequence: 6,
                     active: true
                 }
