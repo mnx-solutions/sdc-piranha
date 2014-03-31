@@ -9,10 +9,7 @@
 
             Utilization.utilization(function (error, utilizationData) {
                 $scope.chartData = utilizationData.dram.amount;
-                $scope.gridData = utilizationData.dram.usage.map(function (entry) {
-                    entry.hours = $scope.chartData.format(entry.hours);
-                    return entry;
-                });
+                $scope.gridData = utilizationData.dram.usage;
             });
 
             $scope.gridOrder = [];
@@ -50,6 +47,9 @@
                 {
                     id: 'hours',
                     name: 'Hours',
+                    _getter: function (object) {
+                        return $scope.chartData.format(object.hours);
+                    },
                     sequence: 6,
                     active: true
                 }
