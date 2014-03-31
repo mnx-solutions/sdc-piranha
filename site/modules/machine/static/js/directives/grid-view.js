@@ -3,16 +3,15 @@
 (function (ng, app) {
     app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', '$q', 'Datacenter', function ($scope, $filter, $http, $location, Account, $rootScope, $q, Datacenter) {
         $scope.location = $location;
-        $scope.getLastPage = function (update) {
+        $scope.refreshPager = function () {
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
                 var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
-                if (update && lastPage >= 0) {
+                if (lastPage >= 0) {
                     $scope.lastPage = lastPage === 0 ? 1 : lastPage;
                 }
-
-                return lastPage;
-
+                $scope.pageNumFirst = ($scope.page - 1) * $scope.perPage + 1;
+                $scope.pageNumLast = Math.min($scope.page * $scope.perPage, $scope.pageNumSum);
             }
         };
 
@@ -61,16 +60,14 @@
             }
         }
 
-        $scope.$watch('objects + props + perPage + filterAll + tabFilter', $scope.getLastPage.bind($scope, true), true);
-
-        $scope.calcPageLimits = function calcPageLimits() {
-            $scope.pageNumFirst = ($scope.page - 1) * $scope.perPage + 1;
-            $scope.pageNumLast = Math.min($scope.page * $scope.perPage, $scope.pageNumSum);
-        };
-
-        $scope.$watch('page', $scope.calcPageLimits);
-        $scope.$watch('perPage', $scope.calcPageLimits);
-        $scope.$watch('pageNumSum', $scope.calcPageLimits);
+        $scope.$watch('objects + props + page + order + filterAll + tabFilter + perPage', function () {
+            $scope.refreshPager();
+            var filteredObjects = $filter('filter')($scope.objects, $scope.matchesFilter);
+            var orderedObjects = $filter('orderBy')(filteredObjects, $scope.order);
+            $scope.pageObjects = orderedObjects.filter(function (item, index) {
+                return $scope.isOnPage(index);
+            });
+        }, true);
         var rightMargin = 100;
         var rightMarginDetails = 15;
         var gridWidthFullPage = 1000;
@@ -101,12 +98,11 @@
         window.onresize = calcWidth;
         calcWidth();
 
-        $scope.getLastPage(true);
-        $scope.calcPageLimits();
-
         $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
+
+        $scope.refreshPager();
 
         $scope.showAll = function () {
             $scope.perPage = 10000;
@@ -334,6 +330,9 @@
         }, true);
 
         $scope.selectCheckbox = function (obj) {
+            if (!$scope.enabledCheckboxes) {
+                return;
+            }
             var id = obj && (obj.id || obj.uuid);
 
             var selectedItemsCount = 0;

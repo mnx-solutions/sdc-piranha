@@ -209,6 +209,11 @@ You can also define configuration options using command line. ex: `$ node index.
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
+- `usageData.userId` Test east-1 user for getting usage statistics, used if running in dev environment
+- `usageData.key` Key used to access usage data in centralized manta account
+- `usageData.keyId` Fingerprint of the key used to access usage data in centralized manta account
+- `usageData.user` Username of manta user accessing centralized usage data
+- `usageData.url` Url of manta holding centralized usage data
 - `zendesḱ.account` Zendesk account with trailing `/token`
 - `zendesk.token` Zendesk token
 - `zendesk.host` Zendesk host

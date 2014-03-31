@@ -5,17 +5,14 @@
         'Utilization.CpuController',
         ['$scope', '$location', 'Utilization', function ($scope, $location, Utilization) {
             $scope.cpu = [];
+            $scope.days = [];
 
             Utilization.utilization(function (error, utilizationData) {
-                $scope.utilizationData = utilizationData;
-                for (name in $scope.utilizationData) {
-                    if ($scope[name]) {
-                        $scope[name].push($scope.utilizationData[name]);
-                    }
-                }
+                $scope.cpu.push(utilizationData.cpu);
+                $scope.daily = utilizationData.cpu.daily;
             });
 
-            $scope.days = [];
+
             for (var i = 1; i <= 30; i++) {
                 $scope.days.push(i);
             };

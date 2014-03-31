@@ -4,7 +4,8 @@
     var cache = null;
     app.factory('Utilization', [
         'serverTab',
-        function (serverTab) {
+        'util',
+        function (serverTab, util) {
             var service = {};
 
             service.utilization = function (callback) {
@@ -20,6 +21,16 @@
                             return;
                         }
                         cache = job.__read();
+                        cache.dram.amount.format = function (num) {
+                            return Math.round(num);
+                        };
+                        cache.bandwidth.amount.format = function (num) {
+                            var formatted = util.getReadableFileSizeString(num);
+                            if (formatted.value > 0) {
+                                return formatted.value + ' ' + formatted.measure;
+                            }
+                            return formatted;
+                        }
                         callback(null, cache);
                     }
                 });

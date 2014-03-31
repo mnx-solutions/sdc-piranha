@@ -9,18 +9,13 @@
             requestContext.setUpRenderContext('utilization.index', $scope);
 
             Utilization.utilization(function (error, utilizationData) {
-                $scope.utilizationData = utilizationData;
+                $scope.dramChartData = utilizationData.dram.amount;
+                $scope.bandwidthChartData = utilizationData.bandwidth.amount;
                 $scope.loading = false;
             });
 
             $scope.clickUtilization = function (name) {
                 $location.path('/utilization/' + name);
             };
-
-            $scope.days = [];
-            for (var i = 1; i <= 30; i++) {
-                $scope.days.push(i);
-            };
-
         }]);
 }(window.JP.getModule('utilization')));
