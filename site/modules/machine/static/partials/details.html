@@ -199,27 +199,27 @@
                             </p>
 
                             <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="row-fluid " data-ng-class="{'loading-medium': isResizing}">
-                                <div class="pull-left row-fluid" data-ng-show="currentPackage">
+                                <div class="pull-left row-fluid" data-ng-show="package">
                                     <div>
                                         <p data-translate><b>Current Instance type</b></p>
-                                        <span data-ng-show="currentPackage.group">
-                                            <span  data-ng-show="currentPackage.description">{{currentPackage.description}}</span><br />
+                                        <span data-ng-show="package.group">
+                                            <span  data-ng-show="package.description">{{package.description}}</span><br />
                                             <span data-translate>Type</span>:
-                                            <span>{{currentPackage.group}}</span>
+                                            <span>{{package.group}}</span>
                                         </span><br />
                                         <span data-translate>Memory</span>:
-                                        <span>{{currentPackage.memory | sizeFormat}}</span><br />
+                                        <span>{{package.memory | sizeFormat}}</span><br />
                                         <span data-translate>Disk</span>:
-                                        <span>{{currentPackage.disk | sizeFormat}}</span><br />
-                                        <span data-ng-show="currentPackage.vcpus" data-translate>vCPUs</span>:
-                                        <span data-ng-show="currentPackage.vcpus">{{currentPackage.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
+                                        <span>{{package.disk | sizeFormat}}</span><br />
+                                        <span data-ng-show="package.vcpus" data-translate>vCPUs</span>:
+                                        <span data-ng-show="package.vcpus">{{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
                         </div>
                         </div>
-                                <div data-ng-show="selectedPackageName" class="resize-block">
+                                <div data-ng-hide="packages.length == 0 || package.selectedMaxPackage" class="resize-block">
                                     <p class="control-label" data-translate><b>Resize Instance type</b></p>
-                                    <select name="resize" ui-select2="{ width: 375}" data-ng-model="selectedPackageName">
-                                        <option data-ng-show="machine" data-ng-repeat="package in packages | orderBy:sortPackages | filter:filterPackages"
-                                                value="{{package.name}}" class="text-medium">
+                                    <select name="resize" ui-select2="{width: 375}" data-ng-model="selectedPackage">
+                                        <option data-ng-show="machine" data-ng-repeat="package in packages"
+                                                value="{{package}}" class="text-medium">
                                             Mem: {{package.memory | sizeFormat}}
                                             Disk: {{package.disk | sizeFormat}}
                                             <span data-ng-show="package.vcpus">VCPU: {{package.vcpus}}</span><span data-ng-show="datasetType == 'smartos'"> and bursting</span>
@@ -229,8 +229,11 @@
                                         <button class="btn light pull-right effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
                         </div>
                         </div>
-                                <div data-ng-hide="selectedPackageName || features.createdBySupportPackages != 'enabled'" class="pull-left resize-block">
-                                    You currently have maximum possible size of the instance. <a data-href="#" data-ng-click="contactSupport()">Click here</a> to contact support.
+                                <div
+                                        data-ng-show="(package.selectedMaxAutomaticPackage || package.selectedMaxPackage)"
+                                        class="pull-left resize-block">You currently have maximum possible size of the instance<!--
+                                 --><span data-ng-show="package.selectedMaxAutomaticPackage && !package.selectedMaxPackage"> which can be handled automatically</span>.<!--
+                                 --></span><span data-ng-show="package.selectedMaxPackage || (package.selectedMaxAutomaticPackage && features.createdBySupportPackages == 'disabled')">&nbsp;<a data-href="#" data-ng-click="contactSupport()">Click here</a> to contact support if you want larger instance.</span>
                                 </div>
                                 <div class="clearfix"></div>
                         </div>

@@ -36,7 +36,7 @@
 
             $scope.machineid = machineid;
             $scope.machine = Machine.machine(machineid);
-            $scope.packages = Package.package();
+            $scope.packages = [];
             $scope.loading = true;
             $scope.changingName = false;
             $scope.loadingNewName = false;
@@ -44,6 +44,42 @@
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
             $scope.incorrectNameMessage = "name can contain only letters, digits and signs like '.' and '-'.";
+
+            var reloadPackages = function (currentPackageName) {
+                $q.all([Package.package(), Package.package(currentPackageName)]).then(function (results) {
+                    $scope.package = results[1];
+                    $scope.packages = results[0].filter(function (item) {
+                        if ($scope.package && item.type && item.type === 'smartos' && item.memory > $scope.package.memory) {
+                            //Old images don't have currentPackage.type
+                            return (!$scope.package.type && item.group === 'High CPU') || (item.group === $scope.package.group);
+                        }
+                        return false;
+                    }).sort(function (a, b) {
+                        return parseInt(a.memory, 10) - parseInt(b.memory, 10);
+                    });
+
+                    $scope.selectedPackage = $scope.packages[0];
+
+                    var maxPackages = {
+                        automatic: null,
+                        createdBySupport: null
+                    };
+
+                    $scope.packages.forEach(function (pkg) {
+                        if (pkg.createdBySupport) {
+                            maxPackages.createdBySupport = pkg;
+                        } else {
+                            maxPackages.automatic = pkg;
+                        }
+                    });
+
+                    if (!$scope.package.createdBySupport && !maxPackages.automatic) {
+                        $scope.package.selectedMaxAutomaticPackage = true;
+                    } else if ($scope.package.createdBySupport && !maxPackages.createdBySupport) {
+                        $scope.package.selectedMaxPackage = true;
+                    }
+                });
+            };
 
             if ($scope.features.freetier === 'enabled') {
                 $scope.freetier = FreeTier.freetier();
@@ -120,7 +156,8 @@
                 $scope.dataset = Dataset.dataset({datacenter: m.datacenter}).then(function () {
                     return Dataset.dataset({datacenter: m.datacenter, id: m.image});
                 });
-                $scope.package = Package.package(m.package);
+
+                reloadPackages(m.package);
 
                 $scope.dataset.then(function(ds){
                     $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
@@ -146,30 +183,12 @@
 
                     $scope.datasetType = type;
                 });
-
-                $scope.package.then(function (pkg) {
-                    $scope.currentPackageName = pkg.name;
-                    $scope.currentPackage = pkg;
-                    if (!$scope.selectedPackageName) {
-                       $scope.selectedPackageName = [$scope.getSelectedPackageName()];
-                    }
-                });
             });
 
             $scope.$watch('machine.networks', function (networks) {
                 if (networks) {
                     $scope.networks = networks.map(function (networkId) {
                         return Network.getNetwork($scope.machine.datacenter, networkId);
-                    });
-                }
-            });
-
-            $scope.$watch('selectedPackageName', function (pkgName) {
-                if(pkgName) {
-                    pkgName = ng.isArray(pkgName) ? pkgName[0] : pkgName;
-                    Package.package(pkgName).then(function (pkg) {
-                        $scope.selectedPackageName = pkg.name;
-                        $scope.selectedPackage = pkg;
                     });
                 }
             });
@@ -240,10 +259,16 @@
             };
 
             $scope.clickResize = function () {
-                var selected = $scope.selectedPackage;
-                if(!selected) {
+                var selected = JSON.parse($scope.selectedPackage);
+
+                if (!selected) {
                     return;
                 }
+                if (selected.createdBySupport) {
+                    $scope.contactSupport(selected);
+                    return;
+                }
+
                 PopupDialog.confirm(
                     localization.translate(
                         $scope,
@@ -263,10 +288,8 @@
                         job.done(function (error) {
                             $scope.isResizing = false;
                             if (!error) {
-                                $scope.currentPackageName = selected.name;
-                                $scope.currentPackage = selected;
                                 $scope.machine.freetier = false;
-                                $scope.selectedPackageName = $scope.getSelectedPackageName();
+                                reloadPackages(selected.name);
                             }
                         });
                     });
@@ -346,7 +369,7 @@
                     function() {}
                 );
             };
-            
+
             $scope.enableRename = function(name) {
                 if($scope.features.instanceRename === 'enabled') {
                     $scope.changingName = true;
@@ -468,18 +491,6 @@
                     $scope.visiblePasswords[id];
             };
 
-            $scope.sortPackages = function(pkg) {
-                return parseInt(pkg.memory, 10);
-            };
-
-            $scope.filterPackages = function (item) {
-                if($scope.currentPackage && item.type && item.type === 'smartos' && item.memory > $scope.currentPackage.memory) {
-                    //Old images don't have currentPackage.type
-                    return (!$scope.currentPackage.type && item.group === 'High CPU') || (item.group === $scope.currentPackage.group);
-                }
-                return false;
-            };
-
             $scope.getSelectedPackageName = function () {
                 var packageName = '';
                 var sortPackage = '';
@@ -495,12 +506,17 @@
                 return packageName;
             };
 
-            $scope.contactSupport = function () {
-                var contactSupportParams = ng.copy(window.zenbox_params);
-                contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
-                contactSupportParams.requester_name = $scope.account.firstName;
-                contactSupportParams.requester_email = $scope.account.email;
-                Zenbox.show(null, contactSupportParams);
+            $scope.contactSupport = function (obj) {
+                $q.when($scope.account).then(function (account) {
+                    var contactSupportParams = ng.copy(window.zenbox_params);
+                    if (obj) {
+                        contactSupportParams.request_description = 'API Name: ' + obj.name;
+                    }
+                    contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
+                    contactSupportParams.requester_name = account.firstName;
+                    contactSupportParams.requester_email = account.email;
+                    Zenbox.show(null, contactSupportParams);
+                });
             }
 
             $scope.tagsArray = [];
