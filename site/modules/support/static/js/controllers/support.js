@@ -118,7 +118,7 @@
                     localization.translate(
                         $scope,
                         null,
-                        'Contact a Joyent representative at +1 855 4'
+                        'Contact a Joyent representative at +1 855 4 JOYENT (+1 855 456-9368)'
                     ), function () {}
                 );
             }
