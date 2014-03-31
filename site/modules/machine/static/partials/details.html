@@ -12,7 +12,7 @@
                     <div class="error"
                          data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
                          data-translate>
-                        Machine&nbsp;{{incorrectNameMessage}}
+                        Machine name&nbsp;{{incorrectNameMessage}}
                     </div>
 
                     <div class="error"
@@ -269,38 +269,60 @@
                         <div class="error"
                              data-ng-show="imageForm.imageName.$error.machineName"
                              data-translate>
-                            Image&nbsp;{{incorrectNameMessage}}
+                            Image name&nbsp;{{incorrectNameMessage}}
                         </div>
-                        <div>
-                                        <div class="dpl-inline">
-                            <input type="text"
-                                placeholder="Image name"
-                                name="imageName"
-                                data-ng-model="imageName"
-                                data-ng-disabled="imageJob && !imageJob.finished"
-                                data-machine-name
-                                data-image-unique
-                                                   value=""
-                                                   class="key-width img-name"/>
-                                        </div>
-                                        <div class="dpl-inline">
-                            <input type="text" placeholder="Image description (optional)"
-                                name="imageDescription"
-                                data-ng-model="imageDescription"
-                                data-ng-disabled="imageJob && !imageJob.finished"
-                                                   value=""
-                                                   class="value-width img-desk"/>
+                        <div class="error"
+                             data-ng-show="imageForm.imageVersion.$error.machineName"
+                             data-translate>
+                            Image version&nbsp;{{incorrectNameMessage}}
                         </div>
-                                        <div class="dpl-inline">
-                                            <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
-                                    </div>
+                        <div class="accordion-inner">
+                            <table>
+                                <tr>
+                                    <td style="width:150px">Name</td>
+                                    <td>
+                                        <input type="text"
+                                            name="imageName"
+                                            data-ng-model="imageName"
+                                            data-ng-disabled="imageJob && !imageJob.finished"
+                                            data-machine-name
+                                            value=""
+                                            class="key-width image-name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Version</td>
+                                    <td>
+                                        <input type="text"
+                                            name="imageVersion"
+                                            data-ng-model="imageVersion"
+                                            data-ng-disabled="imageJob && !imageJob.finished"
+                                            data-machine-name
+                                            value=""
+                                            class="key-width image-version"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Description (optional)</td>
+                                    <td>
+                                        <input type="text"
+                                            name="imageDescription"
+                                            data-ng-model="imageDescription"
+                                            data-ng-disabled="imageJob && !imageJob.finished"
+                                            value=""
+                                            class="value-width image-desk"/>
+                                    </td>
+                                </tr>
 
-                                    </div>
+                            </table>
+                            <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
+                        </div>
+
                         <div class="pull-right">
                             <button class="btn light dpl-inline margin-top-10 effect-orange-button"
                                 data-ng-click="clickCreateImage()"
                                 data-translate
-                                data-ng-disabled="(imageJob && !imageJob.finished) || imageForm.$invalid">
+                                data-ng-disabled="(imageJob && !imageJob.finished)">
                                 Create Image
                             </button>
                             <div class="dpl-inline"><a class="btn light margin-top-10 effect-orange-button" href="#!/images">My Images List</a></div>

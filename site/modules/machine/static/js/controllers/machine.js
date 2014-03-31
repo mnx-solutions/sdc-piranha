@@ -43,7 +43,7 @@
             $scope.newInstanceName = null;
             $scope.networks = [];
             $scope.defaultSshUser = 'root';
-            $scope.incorrectNameMessage = "name can contain only letters, digits and signs like '.' and '-'.";
+            $scope.incorrectNameMessage = "can contain only letters, digits and signs like '.' and '-'.";
 
             var reloadPackages = function (currentPackageName) {
                 $q.all([Package.package(), Package.package(currentPackageName)]).then(function (results) {
@@ -296,11 +296,26 @@
             };
 
             $scope.clickCreateImage = function () {
+                if ($scope.imageForm.$invalid) {
+                    PopupDialog.message(
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Message'
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                            'Please validate your input.'
+                        )
+                    );
+                    return;
+                }
                 function createImage() {
                     $scope.imageName = $scope.imageName || (Math.random() + 1).toString(36).substr(2, 7);
-                    $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription);
+                    $scope.imageJob = Image.createImage($scope.machineid, $scope.machine.datacenter, $scope.imageName, $scope.imageDescription, $scope.imageVersion);
                     $scope.imageJob.done(function () {
-                        $scope.imageName = $scope.imageDescription = '';
+                        $scope.imageName = $scope.imageDescription = $scope.imageVersion = '';
                         $scope.imageForm.$pristine = true;
                         $scope.imageForm.$dirty = false;
                     });

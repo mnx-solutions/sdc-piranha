@@ -118,14 +118,15 @@
             };
 
 
-            service.createImage = function(machineId, datacenter, name, description) {
+            service.createImage = function(machineId, datacenter, name, description, version) {
                 var newImage = serverTab.call({
                     name: 'ImageCreate',
                     data: {
                         machineId: machineId,
                         name: name,
                         description: description,
-                        datacenter: datacenter
+                        datacenter: datacenter,
+                        version: version
                     },
                     done: function(err, image) {
                         if (!err) {

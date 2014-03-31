@@ -645,6 +645,10 @@
                         $scope.manyVersions = manyVersions;
                         $scope.selectedVersions = selectedVersions;
                         $scope.reloading = (--count > 0);
+
+                        if ($scope.preSelectedImage) {
+                            $scope.selectedVersions[$scope.preSelectedImage.name] = $scope.preSelectedImage;
+                        }
                     });
 
                     Network.network(newVal).then(function(networks) {
@@ -690,8 +694,9 @@
                         $scope.packages = packages;
                         $scope.reloading = (--count > 0);
 
-                        if ($scope.preSelectedImageId)
+                        if ($scope.preSelectedImageId) {
                             $scope.selectDataset($scope.preSelectedImageId);
+                        }
                     });
 
                 }
