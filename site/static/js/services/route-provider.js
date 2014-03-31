@@ -94,7 +94,8 @@ window.JP.main.provider('route', [
                         title: context.title,
                         path: context.path,
                         params: params,
-                        showLatest: context.showLatest
+                        showLatest: context.showLatest,
+                        showText: context.showText
                     });
                 }
 
@@ -128,6 +129,7 @@ window.JP.main.provider('route', [
                 context.children = [];
                 context.parent = route.parent;
                 context.showLatest = route.showLatest;
+                context.showText = route.showText;
 
                 if (this._navigation.length === 0) {
                     this._navigation.push(context);

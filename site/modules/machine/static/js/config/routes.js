@@ -10,6 +10,7 @@ window.JP.main.config([
             title: 'Instance Details',
             action: 'machine.details',
             showLatest: true,
+            showText: true,
             resolve: {
                 data: ['$route', '$location', function ($route, $location) {
                     if (!$route.current.params.machineid) {
