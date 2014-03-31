@@ -90,6 +90,7 @@
 
             ];
             $scope.gridActionButtons = [];
+            $scope.columnsButton = false;
             $scope.exportIframe = '';
         }]);
 }(window.JP.getModule('Account')));

@@ -68,7 +68,7 @@
                 return $scope.isOnPage(index);
             });
         }, true);
-           
+
         $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
@@ -248,6 +248,9 @@
             });
         };
 
+        $scope.areColumnsEnabled = function () {
+            return $scope.columnsButton !== false;
+        };
 
         $scope.selectAllCheckbox = function () {
             if ($scope.checkedCheckBoxDisable) {return; }
