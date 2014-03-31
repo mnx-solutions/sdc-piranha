@@ -48,11 +48,11 @@
                         <div class="loading-medium"></div>
                     </div>
                 </div>
-                <div class="new-key-button pull-right" data-ng-hide="loading || pollingJob">
+                <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download {{sshKeyName}} key</a></span>
+                <div class="new-key-button pull-right" data-ng-hide="loading">
                     <div data-account-ssh-create></div>
                     <div data-account-ssh-import></div>
                 </div>
-                <div data-ng-show="(pollingJob && downloadLink)" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></div>
                 <div class="new-key-button pull-right" data-ng-show="loading">
                     <div class="row">
                         <div class="loading-medium span4"></div>
