@@ -1,7 +1,6 @@
 'use strict';
 
 (function (app) {
-    // filters out invoices with != "Posted" state
     app.filter('hideNotPosted', function() {
         return function(invoices) {
             if(invoices) {
@@ -14,7 +13,6 @@
             return invoices;
         };
     });
-
     app.controller(
         'Account.InvoicesController', [
             '$scope',
@@ -27,30 +25,70 @@
 
             $scope.loading = true;
             $scope.isInvocesEnabled = true;
-            $scope.invoices = BillingService.getInvoices();
+            $scope.invoices = [];
             $scope.subscriptions = BillingService.getSubscriptions();
 
-            $scope.invoices.then(function () {}, function (err) {
-                $scope.error = err;
-                if(err === "Not Implemented") {
-                    $scope.isInvocesEnabled = false;
-                }
-            });
             $scope.subscriptions.then(function () {}, function (err) {
                 $scope.error = err;
             });
 
             $q.all([
-                $q.when($scope.invoices),
+                $q.when(BillingService.getInvoices()),
                 $q.when($scope.subscriptions)
-            ]).then(function () {
+            ]).then(function (results) {
+                $scope.invoices = results[0];
                 $scope.loading = false;
+            }, function (err) {
+                $scope.error = err;
+                if(err === "Not Implemented") {
+                    $scope.isInvocesEnabled = false;
+                }
             });
 
-            $scope.exportIframe = '';
-            $scope.download = function (invoice) {
-                $scope.exportIframe = '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>';
+            $scope.gridOrder = ['-invoiceDate'];
+            $scope.exportFields = {
+                ignore: ["IntegrationId__NS", "IntegrationStatus__NS", "SyncDate__NS", "accountId", "accountNumber","accountName", "balance", "createdBy", "dueDate", "id", "invoiceTargetDate", "status", "invoiceItems"]
             };
 
+            $scope.gridProps = [
+                {
+                    id: 'invoiceDate',
+                    name: 'Date',
+                    active: true,
+                    sequence: 1
+                },
+                {
+                    id: 'invoiceNumber',
+                    name: 'Invoice Number',
+                    active: true,
+                    sequence: 2
+                },
+                {
+                    id: 'amount',
+                    name: 'Total (USD)',
+                    active: true,
+                    sequence: 3
+                },
+                {
+                    id: 'label',
+                    name: 'Download',
+                    type: 'button',
+                    sequence: 4,
+                    active: true,
+                    btn: {
+                        label: 'PDF',
+                        action: function (invoice) {
+                            location.href = 'billing/invoice/' + invoice.accountId + '/' + invoice.id;
+                        },
+                        getClass: function () {
+                            return 'cell-link';
+                        }
+                    }
+                }
+
+            ];
+            $scope.gridActionButtons = [];
+            $scope.columnsButton = false;
+            $scope.exportIframe = '';
         }]);
 }(window.JP.getModule('Account')));

@@ -306,6 +306,9 @@ select.date-year {
 
 }
 .cell-link {
+    border: 0;
+    padding: 0;
+    background: none;
     cursor: pointer;
     color: #375675;
 }
