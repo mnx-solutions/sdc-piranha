@@ -68,36 +68,7 @@
                 return $scope.isOnPage(index);
             });
         }, true);
-        var rightMargin = 100;
-        var rightMarginDetails = 15;
-        var gridWidthFullPage = 1000;
-        var gridWidthDetails = 500;
-
-        function calcWidth() {
-            var gridWidth = 0;
-            var bodyWidth = ng.element('body').width();
-            var leftMenuWidth = ng.element('.page-sidebar').width();
-            var analyticsWidth = ng.element('.right-part').width();
-            var rightSpacerWidth = ng.element('.right-spacer').width();
-
-            if ($scope.specialWidth && $scope.specialWidth === "detailsPage") {
-                gridWidth = bodyWidth - leftMenuWidth - analyticsWidth - rightSpacerWidth - rightMargin - rightMarginDetails;
-                if (gridWidth < gridWidthDetails) {
-                    gridWidth = gridWidthDetails;
-                }
-            } else {
-                gridWidth = bodyWidth - leftMenuWidth - rightMargin;
-                if (gridWidth < gridWidthFullPage) {
-                    gridWidth = gridWidthFullPage;
-                }
-            }
-            ng.element('.item-list-container').width(gridWidth);
-        }
-
-        ng.element('.sidebar-toggler').on('click', calcWidth);
-        window.onresize = calcWidth;
-        calcWidth();
-
+           
         $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
