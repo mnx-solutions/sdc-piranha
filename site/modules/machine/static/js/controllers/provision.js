@@ -57,8 +57,6 @@
             $scope.currentStep = '';
             $scope.datasetsLoading = false;
 
-            $scope.simpleImages = [];
-
             $scope.filterValues = {
                 'vcpus': [],
                 'memory': [],
@@ -67,18 +65,20 @@
 
             $scope.filterProps = Object.keys($scope.filterValues);
 
-            Machine.getSimpleImgList(function (err, data) {
-                if (err) {
-                    console.error(err);
-                    return;
-                }
-
-                $scope.simpleImages = $scope.simpleImages.concat(data);
-            });
-
             if ($scope.features.freetier === 'enabled') {
                 $scope.freeTierOptions = FreeTier.freetier();
-                $scope.freeTierOptions.then(function (freeImages) {
+            }
+
+            $q.all([
+                $q.when($scope.keys),
+                $q.when($scope.datacenters),
+                $q.when($scope.preSelectedImage),
+                $q.when(Machine.getSimpleImgList()),
+                $q.when($scope.freeTierOptions)
+            ]).then(function (result) {
+                $scope.simpleImages = result[3]['images'];
+                if ($scope.features.freetier === 'enabled') {
+                    var freeImages = result[4];
                     var convertedFreeImages = [];
                     if (freeImages.valid) {
                         freeImages.forEach(function (freeImage) {
@@ -106,16 +106,9 @@
                         });
                     }
                     $scope.simpleImages = convertedFreeImages.concat($scope.simpleImages);
-                });
-            }
-
-            $q.all([
-                    $q.when($scope.keys),
-                    $q.when($scope.datacenters),
-                    $q.when($scope.preSelectedImage)
-                ]).then(function () {
-                    $scope.loading = false;
-                });
+                }
+                $scope.loading = false;
+            });
 
             $scope.data = {};
             $scope.selectedDataset = null;

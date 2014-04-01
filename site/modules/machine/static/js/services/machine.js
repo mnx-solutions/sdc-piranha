@@ -91,8 +91,8 @@
             }
         }
 
-        service.getSimpleImgList = function(cb) {
-            serverTab.call({
+        service.getSimpleImgList = function() {
+            var job = serverTab.call({
                 name: 'ImagesSimpleList',
                 done: function (err, job) {
                     if (err) {
@@ -100,9 +100,10 @@
                         return;
                     }
 
-                    cb(null, job.__read()['images']);
+                    return job;
                 }
             });
+            return job.deferred;
         };
 
         service.updateMachines = function () {
