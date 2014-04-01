@@ -29,10 +29,16 @@
                 traffic.inbound.slice(-16).forEach(function (i) {
                     data.inbound.push(i);
                 });
+                if (data.inbound.length < 1) {
+                    data.inbound.push({x: new Date() / 1000, y: 0});
+                }
 
                 traffic.outbound.slice(-16).forEach(function (i) {
                     data.outbound.push(i);
                 });
+                if (data.outbound.length < 1) {
+                    data.outbound.push({x: new Date() / 1000, y: 0});
+                }
             }
 
             setTraffic(traffic);

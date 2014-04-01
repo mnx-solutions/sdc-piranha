@@ -17,21 +17,24 @@
                 $scope.detailLoaded = false;
                 $scope.server = {};
 
-                function prepareTrafficData(data, key, collector) {
-                    collector.splice(0);
-
-                    data.forEach(function (day) {
-                        var date = new Date(day.date);
-                        if (Array.isArray(day.key)) {
-                            day[key].forEach(function (value, hour) {
-                                collector.push({
-                                    x: date.setHours(hour) / 1000,
-                                    y: value
+                function prepareTrafficData(data) {
+                    var trafficMap = {
+                        bytesin: 'inbound',
+                        bytesout: 'outbound'
+                    };
+                    for (var key in trafficMap) {
+                        data.forEach(function (day) {
+                            var date = new Date(day.date);
+                            if (Array.isArray(day[key])) {
+                                day[key].forEach(function (value, hour) {
+                                    traffic[trafficMap[key]].push({
+                                        x: date.setHours(hour) / 1000,
+                                        y: value
+                                    });
                                 });
-                            });
-                        }
-                    });
-                    return collector;
+                            }
+                        });
+                    }
                 }
 
                 $q.all([service.getBalancer(balancerId), service.getMachines(),
@@ -39,9 +42,10 @@
                     $scope.server = results[0];
                     var machines = results[1];
                     var usage = results[2];
-
-                    prepareTrafficData(usage[0].slice(-1), 'bytesin', traffic.inbound);
-                    prepareTrafficData(usage[1].slice(-1), 'bytesout', traffic.outbound);
+                    traffic.inbound.splice(0);
+                    traffic.outbound.splice(0);
+                    prepareTrafficData(usage[0].slice(-1));
+                    prepareTrafficData(usage[1].slice(-1));
                     $scope.traffic = traffic;
 
                     var hostDetails = {};
