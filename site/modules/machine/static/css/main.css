@@ -859,21 +859,9 @@
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
     box-shadow: none !important;
-    padding-right: 30px;
-    padding-left: 10px;
+    padding-right: 10px;
+    padding-left: 30px;
     width: 155px;
-}
-.btn-search-images {
-    border: 0 none;
-    padding: 0;
-    background-image: url(../img/search-image-icon.png);
-    background-repeat: no-repeat;
-    width: 23px !important;
-    height: 22px;
-    right: 40px;
-    position: relative;
-    background-color: transparent;
-    background-position: center center;
 }
 
 .item-scrolling div.item:nth-child(odd){
