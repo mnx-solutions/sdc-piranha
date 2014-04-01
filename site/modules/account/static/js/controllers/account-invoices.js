@@ -1,7 +1,6 @@
 'use strict';
 
 (function (app) {
-    // filters out invoices with != "Posted" state
     app.filter('hideNotPosted', function() {
         return function(invoices) {
             if(invoices) {
@@ -14,7 +13,6 @@
             return invoices;
         };
     });
-
     app.controller(
         'Account.InvoicesController', [
             '$scope',
@@ -80,7 +78,7 @@
                     btn: {
                         label: 'PDF',
                         action: function (invoice) {
-                            $scope.exportIframe = '<iframe src="billing/invoice/' + invoice.accountId + '/' + invoice.id + '"></iframe>'
+                            location.href = 'billing/invoice/' + invoice.accountId + '/' + invoice.id;
                         },
                         getClass: function () {
                             return 'cell-link';
