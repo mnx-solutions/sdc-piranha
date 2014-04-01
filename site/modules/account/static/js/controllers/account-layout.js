@@ -24,8 +24,9 @@
         'PopupDialog',
         '$q',
         '$http',
+        '$rootScope',
 
-        function ($scope, requestContext, localization, notification, Account, BillingService, PopupDialog, $q, $http) {
+        function ($scope, requestContext, localization, notification, Account, BillingService, PopupDialog, $q, $http, $rootScope) {
             requestContext.setUpRenderContext('account', $scope, {
                 title: localization.translate(null, 'account', 'Manage My Joyent Account')
             });
@@ -83,6 +84,9 @@
                             $scope.updateKeys(function () {
                                 $scope.loading = false;
                                 $scope.openKeyDetails = null;
+                                if ($rootScope.downloadLink && $rootScope.downloadLink.indexOf(fingerprint) !== -1) {
+                                    $rootScope.downloadLink = null;
+                                }
 
                                 PopupDialog.message(
                                     localization.translate(

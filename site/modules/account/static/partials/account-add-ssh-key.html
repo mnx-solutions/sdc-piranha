@@ -8,8 +8,9 @@
 
     <div class="clearfix"></div>
     <hr />
+    <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
     <div class="pull-right">
-        <div data-ng-hide="loading || pollingJob" class="dpl-inline">
+        <div data-ng-hide="loading" class="dpl-inline">
             <div data-account-ssh-create></div>
             <div data-account-ssh-import></div>
         </div>
@@ -17,7 +18,6 @@
             <button class="grey-btn effect-orange-button" data-ng-click="skipSsh()" data-ng-hide="loading">Skip</button>
         </div>
     </div>
-    <span data-ng-show="(loading && downloadLink) || (pollingJob && downloadLink)" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here if your download doesn't start</a></span>
     <div data-ng-show="loading" class="loading-medium pull-right"></div>
 
 </fieldset>

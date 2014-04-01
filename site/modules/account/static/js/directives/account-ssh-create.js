@@ -20,7 +20,7 @@
                 controller: function ($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
 
-                    $rootScope.downloadLink = false;
+                    $rootScope.downloadLink = null;
                 },
                 link: function ($scope) {
                     /* SSH Key generation popup */
@@ -61,16 +61,15 @@
                                             if (data.success === true) {
 
                                                 var downloadLink = 'account/ssh/download/' + keyId;
-
                                                 // as this is directive, we need to use rootScope here
-                                                $rootScope.pollingJob = true;
                                                 $rootScope.loading = false;
+                                                $rootScope.downloadLink = downloadLink;
+                                                $rootScope.sshKeyName = data.name;
 
                                                 if ($scope.updateKeys) {
                                                     $scope.updateKeys(function () {
                                                         // if we are in signup, show the download right away
                                                         $scope.iframe = '<iframe src="' + downloadLink + '"></iframe>';
-                                                        $rootScope.downloadLink = downloadLink;
 
                                                         PopupDialog.message(
                                                             localization.translate(
@@ -89,7 +88,6 @@
                                                 } else {
                                                     // if we are in signup, show the download right away
                                                     $scope.iframe = '<iframe src="' + downloadLink + '"></iframe>';
-                                                    $rootScope.downloadLink = downloadLink;
                                                     if ($scope.nextStep) {
                                                         $http.get('/signup/account/signup/passSsh').success(function (data) {
                                                             // marked ssh step as passed
@@ -100,7 +98,6 @@
                                             } else {
                                                 // error
                                                 $rootScope.loading = false;
-                                                $rootScope.pollingJob = false;
                                                 PopupDialog.error(
                                                     localization.translate(
                                                         $scope,
