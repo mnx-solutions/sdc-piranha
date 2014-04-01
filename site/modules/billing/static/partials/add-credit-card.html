@@ -26,7 +26,7 @@
                         <div class="error"
                              data-translate
                             data-ng-show="invalidCCNumber">
-                            Invalid credit card number
+                            Please provide valid 16-digit card number
                         </div>
                         <div class="error"
                              data-translate
@@ -63,7 +63,7 @@
                         <div class="error"
                                  data-translate
                                  data-ng-show="isError('creditCard.expirationYear', 'invalidExpirationDate') || isError('creditCard.expirationMonth', 'invalidExpirationDate')">
-                                Invalid credit card expiration date (in past)
+                            Please provide the date in the future
                             </div>
                             <div class="error"
                                  data-translate
@@ -84,6 +84,7 @@
                                    id="securityCode"
                                    name="securityCode"
                                    maxlength="4"
+                                   data-ng-minlength="3"
                                    data-ng-class="{error: isError('creditCard.securityCode')}"
                                    data-ng-model="form.securityCode"
                                    data-ng-required="true" />
@@ -91,8 +92,8 @@
                     <span class="edit-error">
                         <div class="error"
                                  data-translate
-                                 data-ng-show="isError('creditCard.securityCode')">
-                                Invalid security code
+                                 data-ng-show="isError('creditCard.securityCode', 'minlength')">
+                            Please provide valid 3 or 4-digit security code
                             </div>
                             <div class="error"
                                  data-translate

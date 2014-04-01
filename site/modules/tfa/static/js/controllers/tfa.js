@@ -23,7 +23,7 @@
                     $scope.success = true;
                 }, function (err) {
                     if (err) {
-                        $scope.error = 'Invalid one time password';
+                        $scope.error = 'One time password is incorrect.';
                     } else {
                         $scope.error = 'Redirecting to login';
                     }
