@@ -12,6 +12,7 @@
                 review: '='
             },
             link: function (scope, element, attrs) {
+                var lastEditItem = null;
                 scope.internalCollection = [];
                 scope.addNew = function () {
                     scope.internalCollection.push({
@@ -57,20 +58,27 @@
                         return;
                     }
                     obj = obj || {};
-                    var progressOn = angular.noop;
+                    var prepareInternalCollection = angular.noop;
 
                     collection.forEach(function (item) {
-                        if (item.dirtyKey && item.dirtyVal) {
-                            if (item.isNew || (item.key === obj.key && item.val === obj.val)) {
-                                item.key = obj.key = obj.dirtyKey;
-                                item.val = obj.val = obj.dirtyVal;
-                                progressOn = function () {
-                                    obj.saving = true;
-                                };
-                            }
-                        }
-                        hasDuplicates = hasDuplicates || newCollection[item.key];
-                        if (item.key && item.val) {
+                        hasDuplicates = hasDuplicates || newCollection[item.dirtyKey];
+                        if (item.isNew || (item.key === obj.key && item.val === obj.val)) {
+                            item.key = obj.dirtyKey;
+                            item.val = obj.dirtyVal;
+                            prepareInternalCollection = function () {
+                                scope.internalCollection.some(function (element, index, array) {
+                                    var keyEquals = element !== obj && element.key === obj.dirtyKey;
+                                    if (keyEquals) {
+                                        array.splice(index, 1);
+                                    }
+                                    return keyEquals;
+                                });
+                                obj.key = obj.dirtyKey;
+                                obj.val = obj.dirtyVal;
+                                obj.saving = true;
+                            };
+                            newCollection[item.key] = item.val;
+                        } else if (!newCollection[item.key]) {
                             newCollection[item.key] = item.val;
                         }
                     });
@@ -98,18 +106,21 @@
                             ),
                             function () {
                                 obj.edit = obj.isNew;
-                                progressOn();
+                                prepareInternalCollection();
                                 persistCollection();
                             }
                         );
                     } else {
-                        progressOn();
+                        prepareInternalCollection();
                         persistCollection();
                     }
                 };
                 scope.addItem = function (item) {
                     if (scope.saving) {
                         return;
+                    }
+                    if (lastEditItem && lastEditItem !== item && !lastEditItem.isNew) {
+                        scope.revertItem(lastEditItem);
                     }
 
                     var collection = angular.copy(scope.internalCollection);
@@ -121,12 +132,19 @@
                     scope.saveCollection(collection, item);
                 };
                 scope.editItem = function (item) {
+                    if (lastEditItem && lastEditItem !== item && !lastEditItem.isNew) {
+                        scope.revertItem(lastEditItem);
+                    }
                     item.edit = item.isNew || !scope.saving;
+                    lastEditItem = item;
                 };
 
                 scope.removeItem = function (item) {
                     if (scope.saving) {
                         return;
+                    }
+                    if (lastEditItem && !lastEditItem.isNew) {
+                        scope.revertItem(lastEditItem);
                     }
                     item.saving = true;
                     var internalCollection = scope.internalCollection;
@@ -137,6 +155,11 @@
                         collection.splice(collection.length - 1, 1);
                     }
                     scope.saveCollection(collection);
+                };
+                scope.revertItem = function (item) {
+                    item.dirtyKey = item.key;
+                    item.dirtyVal = item.val;
+                    item.edit = false;
                 };
                 scope.$watch('collection', function () {
                     scope.loadCollection();
