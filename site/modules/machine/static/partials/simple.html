@@ -53,10 +53,11 @@
                             <span class="price">${{ image.description.price }}</span>
                             <span class="hour">per hour</span>
                         </span>
-                        <span class="price" data-ng-show="image.imageData.freetier">FREE TIER</span>
                         <button type="button"
                                 class="btn select-btn small"
-                                ng-click="createSimple(image.imageData)"><b>Select</b>
+                                ng-click="createSimple(image.imageData)">
+                            <b data-ng-show="image.imageData.freetier">Free Dev Tier</b>
+                            <b data-ng-hide="image.imageData.freetier">Select</b>
                         </button>
                     </div>
                 </div>

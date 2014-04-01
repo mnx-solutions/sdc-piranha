@@ -794,14 +794,14 @@
     margin-top: 18px;
 }
 .simple-image .btn-block .select-btn {
-    width: 65px !important;
+    min-width: 65px;
     height: 24px;
-    margin-left: 12px;
     color: #f60;
     background-color: #f7f8f9;
-    padding: 0;
+    padding: 0 10px 0 10px;
     margin-right: 20px;
     margin-top: 15px;
+    text-shadow: none;
 }
 .simple-image:hover .btn-block .select-btn {
     background-color: #FF6600;
