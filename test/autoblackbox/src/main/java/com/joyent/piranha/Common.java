@@ -112,7 +112,7 @@ public class Common {
     }
 
     public static String[] instanceProperties() {
-        if (System.getProperty("datacenter").equals("us-west-x") || System.getProperty("datacenter").equals("local-x")) {
+        if (System.getProperty("datacenter").equals("us-west-b") || System.getProperty("datacenter").equals("local-x")) {
             return new String[]{
                     "base",
                     "13.3.0",

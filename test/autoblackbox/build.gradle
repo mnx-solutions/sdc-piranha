@@ -18,13 +18,29 @@ dependencies {
 }
 
 tasks.withType(Test) {
+    def env = ''
+    if (hasProperty('lx')) {
+        env = '.lx'
+    } else if (project.hasProperty('wb')) {
+        env = '.wb'
+    } else if (project.hasProperty('wa')) {
+        env = '.wa'
+    }
     systemProperties = System.getProperties()
-    systemProperties loadConf()
+    systemProperties loadConf("build${env}.properties")
     def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['endpoint'])
     systemProperties['endpoint'] = appEndpoint
     systemProperties['file.encoding'] = 'UTF-8'
     reports.html.enabled false
     reports.junitXml.destination = "$buildDir/test-results/" + systemProperties['browser']
+}
+
+def loadConf(String s) {
+    file(s).withReader { reader ->
+        def buildProps = new Properties()
+        buildProps.load(reader)
+        return buildProps
+    }
 }
 
 task smokeTests(type: Test) {
@@ -65,12 +81,4 @@ task ImageTests(type: Test) {
 
 task ProductionFeatures(type: Test) {
     include '**/productionFeatures.class'
-}
-
-def loadConf() {
-    file("build.properties").withReader { reader ->
-        def buildProps = new Properties()
-        buildProps.load(reader)
-        return buildProps
-    }
 }
