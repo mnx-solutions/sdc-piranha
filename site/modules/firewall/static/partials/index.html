@@ -56,8 +56,8 @@
                             </div>
                         </td>
                         <td class="column padding-10">
-                            <label class="fw-control-label name-field">Data Center</label>
-                            <div class="value-field">
+                            <label class="fw-control-label name-field">Data Center<span data-ng-show="data.uuid">: {{data.datacenter}}</span></label>
+                            <div class="value-field" data-ng-hide="data.uuid">
                                 <input type="hidden" id="dcSelect">
                             </div>
                         </td>
