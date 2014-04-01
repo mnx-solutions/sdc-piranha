@@ -39,7 +39,12 @@
                 });
             }
             if ($rootScope.features.support === 'enabled') {
-                // TODO Suppotr tile
+                $scope.supportTile = [];
+                Support.support(function (error, supportPackages) {
+                    for (var name in supportPackages) {
+                        $scope.supportTile.push(supportPackages[name].currentShortName);
+                    }
+                });
             }
 
 
