@@ -1538,7 +1538,9 @@
 .margin-top-10 {
     margin-top: 10px;
 }
-
+.margin-bottom-5 {
+    margin-bottom: 5px;
+}
 .img-name{
     max-width: 175px !important;
 }
