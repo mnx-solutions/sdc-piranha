@@ -60,6 +60,7 @@
                 }
             ];
 
+            $scope.searchForm = true;
             $scope.exportFields = {
                 ignore: []
             };
