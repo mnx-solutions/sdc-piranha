@@ -3,6 +3,11 @@
 (function (ng, app) {
     app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', '$q', 'Datacenter', function ($scope, $filter, $http, $location, Account, $rootScope, $q, Datacenter) {
         $scope.location = $location;
+
+        $scope.isOnPage = function (index) {
+            return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
+        };
+
         $scope.refreshPager = function () {
             if ($scope.objects) {
                 $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
@@ -68,10 +73,6 @@
                 return $scope.isOnPage(index);
             });
         }, true);
-
-        $scope.isOnPage = function (index) {
-            return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
-        };
 
         $scope.refreshPager();
 
