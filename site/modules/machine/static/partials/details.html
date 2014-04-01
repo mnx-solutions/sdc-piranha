@@ -327,20 +327,20 @@
                                         <td style="width:140px">System</td>
                                         <td >{{credential.system}}</td>
                                     </tr>
-                        <tr>
+                                    <tr>
                                         <td>Username</td>
                                         <td>{{credential.username}}</td>
-                        </tr>
+                                    </tr>
                                     <tr>
                                         <td>Password</td>
                                         <td style="min-width: 260px;"><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span></td>
                                         <td nowrap>
-                                            <a class="btn light show-hide" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
-                                            <a class="btn light show-hide" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
+                                            <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
+                                            <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
                                         </td>
-                        </tr>
-                    </table>
-                </div>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                         <div class="accordion-inner" data-ng-hide="machine.metadata.credentials">
                             <p>There is no credentials for this instance.</p>
