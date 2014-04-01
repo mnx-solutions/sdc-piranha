@@ -20,7 +20,7 @@
                 controller: function ($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
 
-                    $rootScope.downloadLink = false;
+                    $rootScope.downloadLink = null;
                 },
                 link: function ($scope) {
                     /* SSH Key generation popup */
