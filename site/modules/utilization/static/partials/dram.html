@@ -1,13 +1,13 @@
 <div class="container-fluid container-position">
     <div class="row-fluid">
         <ul class="breadcrumb">
-            <li>Utilization&nbsp;/&nbsp;</li>
-            <li>DRAM Utilization Overview</li>
+            <li><a href="#!/compute">Compute</a>&nbsp;/</li>
+            <li><a href="{{backLink}}">Utilization</a>&nbsp;/</li>
         </ul>
         <div class="page-header row-fluid">
             <h3 class="page-title">DRAM Utilization Overview</h3>
         </div>
-
+        <div data-month-navigation></div>
         <div data-utilization-chart
              data-usage="chartData"
              data-caption="'DRAM Hours'"
@@ -16,20 +16,18 @@
 
         <div class="grid-holder">
             <div class="grid-title">DRAM</div>
-            <div data-ng-show="gridData.length">
-                <div data-grid-view
-                     data-user-config="gridUserConfig"
-                     data-props="gridProps"
-                     data-multisort="false"
-                     data-objects="gridData"
-                     data-order="gridOrder"
-                     data-search-form="false"
-                     data-export-fields="exportFields"
-                     data-objects-type="'utilization'"
-                     data-enabled-checkboxes="false">
-                </div>
+            <div data-grid-view
+                 data-user-config="gridUserConfig"
+                 data-props="gridProps"
+                 data-multisort="false"
+                 data-objects="gridData"
+                 data-order="gridOrder"
+                 data-search-form="false"
+                 data-export-fields="exportFields"
+                 data-objects-type="'utilization'"
+                 data-enabled-checkboxes="false">
             </div>
         </div>
     </div>
-    <a href="#!/utilization" class="btn light back-btn">Back to Utilization</a>
+    <a data-ng-href="{{backLink}}" class="btn light back-btn">Back to Utilization</a>
 </div>

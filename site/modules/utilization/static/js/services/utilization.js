@@ -8,30 +8,36 @@
         function (serverTab, util) {
             var service = {};
 
-            service.utilization = function (callback) {
-                if (cache) {
-                    callback(null, cache);
+            var utilizationCache = {};
+
+            service.utilization = function (year, month, callback) {
+                if (utilizationCache[month]) {
+                    callback(null, utilizationCache[month]);
                     return;
                 }
                 serverTab.call({
                     name: 'UtilizationData',
+                    data: {
+                        year: year,
+                        month: month
+                    },
                     done: function (err, job) {
                         if (err) {
                             callback(err);
                             return;
                         }
-                        cache = job.__read();
-                        cache.dram.amount.format = function (num) {
+                        utilizationCache[month] = job.__read();
+                        utilizationCache[month].dram.format = function (num) {
                             return Math.round(num);
                         };
-                        cache.bandwidth.amount.format = function (num) {
+                        utilizationCache[month].bandwidth.format = function (num) {
                             var formatted = util.getReadableFileSizeString(num);
                             if (formatted.value > 0) {
                                 return formatted.value + ' ' + formatted.measure;
                             }
                             return formatted;
                         };
-                        callback(null, cache);
+                        callback(null, utilizationCache[month]);
                     }
                 });
             };

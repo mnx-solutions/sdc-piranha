@@ -3,11 +3,11 @@
         <h4 class="title">{{caption}} Utilized</h4>
         <div class="left-block">
             <div class="num">
-                {{format(totalAmount)}} {{unit}}
+                {{format(total)}} {{unit}}
             </div>
             <div class="desc">
                 <span class="num small"></span>
-                <div>this month</div>
+                <div>{{getMonthDesc()}}</div>
             </div>
         </div>
         <!--div class="right-block sub-line">
