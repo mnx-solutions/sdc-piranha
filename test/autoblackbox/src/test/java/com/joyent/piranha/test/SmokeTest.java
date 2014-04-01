@@ -5,6 +5,12 @@ import com.joyent.piranha.Common;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.HasInputDevices;
+import org.openqa.selenium.interactions.Mouse;
+import org.openqa.selenium.interactions.MoveMouseAction;
+import org.openqa.selenium.interactions.internal.MouseAction;
+import org.openqa.selenium.internal.Locatable;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -22,7 +28,7 @@ import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.DevCe
 import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.MyAccount;
 import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.Support;
 
-public class SmokeTests extends TestWrapper {
+public class SmokeTest extends TestWrapper {
     public static final String USER_NAME = System.getProperty("loginusr");
     public static final String PASSWORD = System.getProperty("loginpw");
     public static final String DATACENTER = System.getProperty("datacenter");
@@ -138,8 +144,8 @@ public class SmokeTests extends TestWrapper {
         final CreateInstance createInstance = dashboard.clickCreateComputeInstance();
         createInstance.checkTitle();
 
-        createInstance.selectDataCenter(DATACENTER);
         createInstance.clickViewMoreImages();
+        createInstance.selectDataCenter(DATACENTER);
         createInstance.waitUntilPageIsActive(0);
         createInstance.selectOsFilter("smartos");
         createInstance.selectOsImage(inst[0]);
@@ -150,7 +156,7 @@ public class SmokeTests extends TestWrapper {
         createInstance.checkPackageInfo(inst[5], inst[6], inst[7], inst[3]);
         createInstance.checkPaymentInfo(inst[8], inst[9]);
         createInstance.setInstanceNameValue(instanceName);
-        createInstance.getNetworks().get(0).click();
+        createInstance.selectNetwork(0);
         createInstance.clickCreateInstanceButton();
         createInstance.cancelInstanceCreation();
     }

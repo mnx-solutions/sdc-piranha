@@ -62,5 +62,6 @@ public class InstanceRenameTests extends TestWrapper {
         instanceDetails.getInstanceNameField().shouldHave(text(instName));
         sideBarMenu.clickCompute().getList().openInstanceDetails(instName);
         instanceDetails.rename(Common.getTestInstanceName());
+        instanceDetails.getInstanceNameField().shouldHave(text(Common.getTestInstanceName()));
     }
 }
