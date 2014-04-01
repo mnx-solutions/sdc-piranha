@@ -122,13 +122,15 @@
             $scope.runningcount = 0;
             $scope.othercount = 0;
 
-            var now = new Date();
-            var year = now.getFullYear();
-            var month = now.getMonth() + 1;
-            Utilization.utilization(year, month, function (error, utilizationData) {
-                $scope.utilization = utilizationData;
-                $scope.utilization.url = '#!/utilization/' + year + '/' + month;
-            });
+            if ($scope.features.usageData === 'enabled') {
+                var now = new Date();
+                var year = now.getFullYear();
+                var month = now.getMonth() + 1;
+                Utilization.utilization(year, month, function (error, utilizationData) {
+                    $scope.utilization = utilizationData;
+                    $scope.utilization.url = '#!/utilization/' + year + '/' + month;
+                });
+            }
         }
     ]);
 }(window.angular, window.JP.getModule('Dashboard')));
