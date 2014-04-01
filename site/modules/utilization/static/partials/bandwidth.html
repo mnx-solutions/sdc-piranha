@@ -16,18 +16,19 @@
 
         <div class="grid-holder">
             <div class="grid-title">Bandwidth</div>
-            <div data-grid-view
-                 data-user-config="gridUserConfig"
-                 data-props="gridProps"
-                 data-multisort="false"
-                 data-objects="gridData"
-                 data-order="gridOrder"
-                 data-search-form="false"
-                 data-export-fields="exportFields"
-                 data-objects-type="'utilization'"
-                 data-enabled-checkboxes="false">
+                <div data-grid-view
+                     data-user-config="gridUserConfig"
+                     data-props="gridProps"
+                     data-multisort="false"
+                     data-filter-all="{{query}}"
+                     data-objects="gridData"
+                     data-order="gridOrder"
+                     data-search-form="searchForm"
+                     data-export-fields="exportFields"
+                     data-objects-type="'utilization'"
+                     data-enabled-checkboxes="false">
+                </div>
             </div>
         </div>
-    </div>
     <a data-ng-href="{{backLink}}" class="btn light back-btn">Back to Utilization</a>
-</div>
+    </div>
