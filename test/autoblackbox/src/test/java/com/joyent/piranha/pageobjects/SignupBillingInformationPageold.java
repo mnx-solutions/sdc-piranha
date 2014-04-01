@@ -16,7 +16,7 @@ import java.net.URL;
 import static com.codeborne.selenide.Selenide.$;
 import static org.junit.Assert.assertTrue;
 
-public class SignupBillingInformationPage {
+public class SignupBillingInformationPageold {
     public static void clickNextButton() {
         $("[data-ng-click=\"submitForm()\"]").click();
     }

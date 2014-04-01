@@ -44,7 +44,7 @@ task InstanceCRUDTests(type: Test) {
 }
 
 task UserSignupTests(type: Test) {
-    include '**/UserSignupTests.class'
+    include '**/UserSignupTest.class'
 }
 
 task PromocodeTests(type: Test) {

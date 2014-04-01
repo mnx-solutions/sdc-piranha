@@ -11,7 +11,7 @@ public class Dashboard extends AbstractPageObject {
     }
 
     public void checkHeadingDashboard() {
-        checkHeadingText(DASHBOARD_MENU_TITLE);
+        checkTitle(DASHBOARD_MENU_TITLE);
     }
 
     public CreateInstance clickCreateComputeInstance() {
