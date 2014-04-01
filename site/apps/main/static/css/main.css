@@ -2206,6 +2206,9 @@ label.checkbox {
     position: relative;
     top: 38px;
 }
+.grid-no-entries {
+    padding-bottom: 20px;
+}
 .grid-no-entries hr {
     margin-top: 0;
 }

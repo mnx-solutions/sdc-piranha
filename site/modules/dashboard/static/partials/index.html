@@ -75,7 +75,7 @@
                 <div class="widget-btn"></div>
             </div>
             <div class="pull-left widget-margin" data-ng-show="usageDataFeatureEnabled">
-                <a href="#!/utilization">
+                <a data-ng-href="{{utilization.url}}">
                     <div class="widget grey links2 utilization-icon">
                         <h4>Month to date Utilization</h4>
                         <!--div class="details">
@@ -94,10 +94,10 @@
                         </div-->
                         <div class="details details-subinfo" data-ng-show="utilization">
                             <div class="desc">
-                                {{utilization.dram.amount.format(utilization.dram.total)}} DRAM Gb hours
+                                {{utilization.dram.format(utilization.dram.total)}} DRAM Gb hours
                             </div>
                             <div class="desc">
-                                {{utilization.bandwidth.amount.format(utilization.bandwidth.total)}} bandwith
+                                {{utilization.bandwidth.format(utilization.bandwidth.total)}} bandwith
                             </div>
                             <!--div class="desc">
                                 2.4 GB storage
@@ -106,7 +106,7 @@
                     </div>
                 </a>
                 <div class="widget-btn">
-                    <a class="more" href="#!/utilization"><button type="button" class="btn btn-stat orange align-text-btn"><i class="chart-btn-icon"></i>&nbsp;&nbsp;
+                    <a class="more" data-ng-href="{{utilization.url}}"><button type="button" class="btn btn-stat orange align-text-btn"><i class="chart-btn-icon"></i>&nbsp;&nbsp;
                         Explore Utilization</button>
                     </a>
                 </div>

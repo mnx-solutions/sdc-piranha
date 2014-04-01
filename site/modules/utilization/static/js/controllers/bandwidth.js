@@ -3,14 +3,19 @@
 (function (app) {
     app.controller(
         'Utilization.BandwidthController',
-        ['$scope', '$location', 'Utilization', function ($scope, $location, Utilization) {
-            $scope.gridData = [];
-            $scope.chartData = {};
-
-            Utilization.utilization(function (error, utilizationData) {
-                $scope.chartData = utilizationData.bandwidth.amount;
-                $scope.gridData = utilizationData.bandwidth.usage;
-            });
+        ['$scope', '$location', 'Utilization', 'requestContext', function ($scope, $location, Utilization, requestContext) {
+            requestContext.setUpRenderContext('utilization.bandwidth', $scope);
+            var loadData = function () {
+                var year = requestContext.getParam('year');
+                var month = requestContext.getParam('month');
+                Utilization.utilization(year, month, function (error, utilizationData) {
+                    $scope.chartData = utilizationData.bandwidth;
+                    $scope.gridData = utilizationData.bandwidth.usage;
+                });
+                $scope.backLink = '#!/utilization/' + year + '/' + month;
+            };
+            $scope.$on('requestContextChanged', loadData);
+            loadData();
 
             $scope.gridOrder = [];
             $scope.gridProps = [

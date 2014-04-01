@@ -2,7 +2,7 @@
 
 window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
-        .when('/utilization', {
+        .when('/utilization/:year/:month', {
             title: 'Utilization',
             action: 'utilization.index'
         })
@@ -14,7 +14,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Utilization Details CPU',
             action: 'utilization.cpu'
         })
-        .when('/utilization/dram', {
+        .when('/utilization/dram/:year/:month', {
             title: 'Utilization Details DRAM',
             action: 'utilization.dram'
         })
@@ -22,7 +22,7 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Utilization Details Storage',
             action: 'utilization.manta'
         })
-        .when('/utilization/bandwidth', {
+        .when('/utilization/bandwidth/:year/:month', {
             title: 'Utilization Details Bandwidth',
             action: 'utilization.bandwidth'
         });

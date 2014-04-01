@@ -7,12 +7,15 @@
             $scope.loading = true;
             localization.bind('utilization', $scope);
             requestContext.setUpRenderContext('utilization.index', $scope);
-
-            Utilization.utilization(function (error, utilizationData) {
-                $scope.dramChartData = utilizationData.dram.amount;
-                $scope.bandwidthChartData = utilizationData.bandwidth.amount;
-                $scope.loading = false;
-            });
+            var loadData = function () {
+                Utilization.utilization(requestContext.getParam('year'), requestContext.getParam('month'), function (error, utilizationData) {
+                    $scope.dramChartData = utilizationData.dram;
+                    $scope.bandwidthChartData = utilizationData.bandwidth;
+                    $scope.loading = false;
+                });
+            };
+            $scope.$on('requestContextChanged', loadData);
+            loadData();
 
             $scope.clickUtilization = function (name) {
                 $location.path('/utilization/' + name);

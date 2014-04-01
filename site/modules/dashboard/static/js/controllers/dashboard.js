@@ -122,8 +122,12 @@
             $scope.runningcount = 0;
             $scope.othercount = 0;
 
-            Utilization.utilization(function (error, utilizationData) {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            Utilization.utilization(year, month, function (error, utilizationData) {
                 $scope.utilization = utilizationData;
+                $scope.utilization.url = '#!/utilization/' + year + '/' + month;
             });
         }
     ]);

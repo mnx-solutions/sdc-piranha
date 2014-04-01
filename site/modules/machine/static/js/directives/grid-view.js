@@ -64,7 +64,7 @@
             $scope.refreshPager();
             var filteredObjects = $filter('filter')($scope.objects, $scope.matchesFilter);
             var orderedObjects = $filter('orderBy')(filteredObjects, $scope.order);
-            $scope.pageObjects = orderedObjects.filter(function (item, index) {
+            $scope.pageObjects = orderedObjects && orderedObjects.filter(function (item, index) {
                 return $scope.isOnPage(index);
             });
         }, true);
