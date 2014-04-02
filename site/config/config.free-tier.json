@@ -1,28 +1,28 @@
 [
     {
-        "name": "SmartOS with Node.js & MongoDB",
-        "dataset": "ffed3d9e-2c2f-11e3-9a12-bf5267821b0b",
+        "name": "Node.js",
+        "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
         "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
     },
     {
-        "name": "CentOS",
-        "dataset": "30e9e4c8-bbf2-11e2-ac3b-3b598ee13393",
+        "name": "SmartOS 64",
+        "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
+        "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
+            "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
+        "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
+    },
+    {
+        "name": "CentOS 6.5",
+        "dataset": "df81f45e-8f9f-11e3-a819-93fab527c81e",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"
     },
     {
-        "name": "SmartOS",
-        "dataset": "2b683a82-a066-11e3-97ab-2faa44701c5a",
-        "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
-            "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
-        "package": "9fcd9ab7-bd07-cb3c-9f9a-ac7ec3aa934e"
-    },
-    {
-        "name": "Ubuntu",
-        "dataset": "64e1b2ee-52c8-11e2-bedd-7f919cc63ab9",
+        "name": "Ubuntu Certified 13.10",
+        "dataset": "049dfe64-6c37-4b88-8e89-4b8aa0f129f2",
         "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc", "f7ed95d3-faaf-43ef-9346-15644403b963",
             "9ec60129-9034-47b4-b111-3026f9b1a10f", "1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
         "package": "4dad8aa6-2c7c-e20a-be26-c7f4f1925a9a"

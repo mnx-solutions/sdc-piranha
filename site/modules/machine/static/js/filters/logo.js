@@ -45,6 +45,7 @@
                 "centos-5.7": "centos",
                 "centos-node.js": "node",
                 "nodejs": "node",
+                "node.js": "node",
                 freebsd: "freebsd",
                 fedora: "fedora",
                 ssc: "ubuntu",
