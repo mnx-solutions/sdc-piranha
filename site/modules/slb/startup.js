@@ -249,7 +249,7 @@ var slb = function execute(scope) {
                 if (err && err.statusCode >= 500) {
                     setTimeout(waitForManta.bind(this, startTime), 1000);
                 } else if (err && err.statusCode === 403) {
-                    callback(new Error('Manta user not found'));
+                    callback('Manta user "' + data['metadata.account_name'] + '" does not exist');
                 } else {
                     callback();
                 }
