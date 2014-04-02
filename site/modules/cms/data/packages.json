@@ -1,5 +1,15 @@
 {
-  "all":{
+  "all": {
+      "g3-devtier-0.25-smartos": {
+          "price": "0",
+          "price_month": "0",
+          "vcpus": "0.125"
+      },
+      "g3-devtier-0.25-kvm": {
+          "price": "0",
+          "price_month": "0",
+          "vcpus": "0.125"
+      },
       "g3-standard-0.25-smartos": {
           "short_name": "Standard 0.25",
           "type": "smartos",
