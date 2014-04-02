@@ -21,42 +21,49 @@
             $scope.refreshingFolder = false;
             $scope.loading = true;
             $scope.filesTree = {};
+            $scope.userConfig = Account.getUserConfig().$child('fileman');
+
             var rootPath = '/';
             var defaultPath = {path: 'public', parent: '/'};
             var previousFullPath;
-            var fullPath;
-            var lastSelectedFile = [];
-
-            var clearSelectedFiles = function () {
-                lastSelectedFile[0].active = false;
-                lastSelectedFile = [];
-            };
+            var lastSelectedFile = null;
 
             var getObjectPath = function (obj) {
-                return '/' + obj.parent.split('/').splice(2).join('/') + '/' + obj.path;
+                return typeof (obj) === 'string' ? obj : ('/' + obj.parent.split('/').splice(2).join('/') + '/' + obj.path).replace(/\/+/g, '/');
             };
 
             $scope.getColumnClass = function (index) {
                 return index === 0 ? 'general-column' : 'finder-column';
             };
 
+            function showPopupDialog(level, title, message, callback) {
+                return PopupDialog[level](
+                    title ? localization.translate(
+                        $scope,
+                        null,
+                        title
+                    ) : null,
+                    message ? localization.translate(
+                        $scope,
+                        null,
+                        message
+                    ) : null,
+                    callback
+                );
+            }
+
+            function getCurrentDirectory() {
+                if (!lastSelectedFile) {
+                    return '/public';
+                }
+                return getObjectPath({parent: lastSelectedFile.parent, path: lastSelectedFile.type === 'directory' ? lastSelectedFile.path : ''});
+            }
+
             $scope.downloadFile = function () {
-                if (lastSelectedFile.length && lastSelectedFile[0].active && lastSelectedFile[0].type === 'object') {
+                if (lastSelectedFile && lastSelectedFile.active && lastSelectedFile.type === 'object') {
                     fileman.get($scope.currentPath);
                 } else {
-                    PopupDialog.message(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Message'
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'No file selected.'
-                        ),
-                        function () {}
-                    );
+                    showPopupDialog('message', 'Message', 'No file selected.');
                 }
             };
 
@@ -84,21 +91,9 @@
                     opts,
                     function (data) {
                         if (data) {
-                            fileman.mkdir(fullPath + '/' + data.folderName, function (error) {
+                            fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
                                 if (error) {
-                                    return PopupDialog.error(
-                                        localization.translate(
-                                            null,
-                                            null,
-                                            'Error'
-                                        ),
-                                        localization.translate(
-                                            null,
-                                            null,
-                                            error.message
-                                        ),
-                                        function () {}
-                                    );
+                                    return showPopupDialog('error', 'Error', error.message);
                                 }
                                 $scope.refreshingFolder = true;
                                 $scope.createFilesTree();
@@ -109,11 +104,12 @@
             };
 
             $scope.deleteFile = function () {
-                if (!lastSelectedFile.length) {
+                if (!lastSelectedFile) {
                     return false;
                 }
 
-                var file = lastSelectedFile[0];
+                var file = lastSelectedFile;
+                lastSelectedFile = null;
                 var path = getObjectPath(file);
                 var method = (file.type === 'object') ? 'unlink' : 'rmr';
                 PopupDialog.confirm(
@@ -130,48 +126,37 @@
                         $scope.refreshingFolder = true;
                         fileman[method](path, function (error) {
                             if (error) {
-                                return PopupDialog.error(
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        'Message'
-                                    ),
-                                    localization.translate(
-                                        null,
-                                        null,
-                                        error.message
-                                    ),
-                                    function () {
-                                        $scope.refreshingFolder = false;
-                                    }
-                                );
+                                return showPopupDialog('error', 'Message', error.message, function () {
+                                    $scope.refreshingFolder = false;
+                                });
                             }
-                            delete $scope.filesTree[$scope.currentPath];
-                            $scope.currentPath = fullPath = $scope.currentPath.slice(0, $scope.currentPath.lastIndexOf('/'));
-                            $scope.createFilesTree(true);
+                            var opennedDirs = Object.keys($scope.filesTree);
+                            var dirIndex;
+                            for (dirIndex = 0; dirIndex < opennedDirs.length; dirIndex += 1) {
+                                if (opennedDirs[dirIndex] === path) {
+                                    break;
+                                }
+                            }
+                            opennedDirs.slice(0, dirIndex).forEach(function (dir) {
+                                delete $scope.filesTree[dir];
+                            });
+                            $scope.currentPath = file.parent;
+                            $scope.drawFileMan();
                         });
                     }
                 );
             };
             $scope.getInfo = function () {
-                if (!lastSelectedFile.length) {
+                if (!lastSelectedFile) {
                     return false;
                 }
 
-                var file = lastSelectedFile[0];
+                var file = lastSelectedFile;
                 var path = getObjectPath(file);
 
                 fileman.info(path, function (error, info) {
                     if (error) {
-                        PopupDialog.error(
-                            localization.translate(
-                                $scope,
-                                null,
-                                'Error'
-                            ),
-                            error,
-                            function () {}
-                        );
+                        return showPopupDialog('error', 'Error', error);
                     }
 
                     var infoModalCtrl = function ($scope, dialog) {
@@ -183,14 +168,10 @@
                         };
                     };
 
-                    var opts = {
+                    PopupDialog.custom({
                         templateUrl: 'fileman/static/partials/info.html',
                         openCtrl: infoModalCtrl
-                    };
-                    PopupDialog.custom(
-                        opts,
-                        function () {}
-                    );
+                    });
                 });
             };
 
@@ -206,36 +187,39 @@
                     if (callback) {
                         callback(error, result);
                     }
-                    if (rootPath !== $scope.currentPath && userAction) {
-                        $scope.userConfig.$load(function (err, config) {
-                            config.path = fullPath;
-                            config.dirty(true);
-                            config.$save();
-                        });
+                    if (rootPath !== $scope.currentPath && userAction && $scope.userConfig.loaded()) {
+                        var config = $scope.userConfig.$child('fileman');
+                        config.path = $scope.currentPath;
+                        config.dirty(true);
+                        config.$save();
                     }
                 });
             };
 
             $scope.setCurrentPath = function setCurrentPath(obj, userAction, callback) {
-                fullPath = obj === rootPath ? obj : ('/' + obj.parent.split('/').slice(2).join('/') + '/' + obj.path);
+                var fullPath = obj === rootPath ? obj : getObjectPath(obj);
 
                 var scrollContent = ng.element('.folder-container-sub');
                 var fileBoxWidth = ng.element('.finder-column .files-box').width() + 1;
                 $timeout(function () {
                     scrollContent.scrollLeft(scrollContent.scrollLeft() + fileBoxWidth);
-                })
+                });
 
                 if ($scope.loadingFolder) {
                     return;
                 }
-                if (lastSelectedFile.length) {
-                    clearSelectedFiles();
+                if (lastSelectedFile) {
+                    lastSelectedFile.active = false;
                 }
 
-                lastSelectedFile.push(obj);
+                lastSelectedFile = obj;
                 obj.active = true;
 
-                if (fullPath === previousFullPath && userAction) {
+                var pathExists = $scope.splittedCurrentPath && $scope.splittedCurrentPath.some(function (el) {
+                    return el.full === fullPath;
+                });
+
+                if (pathExists || (fullPath === previousFullPath && userAction)) {
                     return;
                 }
                 previousFullPath = fullPath;
@@ -253,7 +237,7 @@
                     $scope.currentPath += $scope.currentPath.substr(-1) !== '/' ? '/' + fullPath : fullPath;
                 }
 
-                $scope.splittedCurrentPath = $scope.currentPath.split(/\/(\/?[\w\\.\-]+)/)
+                $scope.splittedCurrentPath = $scope.currentPath.split(/\//)
                     .filter(function (e) {
                         return !!e;
                     });
@@ -270,37 +254,41 @@
                 });
 
                 var tmpFilesTree = {};
-                var i;
+
+                function setActiveElementInPath(index) {
+                    return function (el) {
+                        el.active = $scope.splittedCurrentPath.some(function (item) {
+                            return (index + '/' + el.name).replace(/\/+/, '/') === item.full;
+                        });
+                    };
+                }
 
                 for (var index in $scope.filesTree) {
                     if ($scope.filesTree.hasOwnProperty(index)) {
-                        $scope.filesTree[index].forEach(function (el) {
-                            el.active = false;
-                            for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                                if ((index + '/' + el.name).replace(/\/+/, '/') === $scope.splittedCurrentPath[i].full.replace(/\/+/, '/')) {
-                                    el.active = true;
-                                }
+                        $scope.filesTree[index].forEach(setActiveElementInPath(index));
+
+                        for (var i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
+                            var splitFullPath = $scope.splittedCurrentPath[i].full;
+                            if (index === '/' + splitFullPath || index === splitFullPath) {
+                                tmpFilesTree[splitFullPath] = $scope.filesTree[index];
                             }
-                        });
-                    }
-                    for (i = 0; i < $scope.splittedCurrentPath.length; i += 1) {
-                        var splitFullPath = $scope.splittedCurrentPath[i].full;
-                        if (index === '/' + splitFullPath || index === splitFullPath) {
-                            tmpFilesTree[splitFullPath] = $scope.filesTree[index];
                         }
                     }
                 }
                 $scope.filesTree = tmpFilesTree;
-                $scope.createFilesTree(userAction, callback);
-            };
-
-            $scope.addFile = function () {
-                //TODO: Check if implementation needed
-                return false;
+                if (typeof (obj) === 'string' || obj.type === 'directory') {
+                    $scope.createFilesTree(userAction, callback);
+                } else {
+                    if (rootPath !== $scope.currentPath && userAction && $scope.userConfig.loaded()) {
+                        var config = $scope.userConfig.$child('fileman');
+                        config.path = $scope.currentPath;
+                        config.dirty(true);
+                        config.$save();
+                    }
+                }
             };
 
             $scope.drawFileMan = function () {
-                $scope.userConfig = Account.getUserConfig().$child('fileman');
                 $scope.userConfig.$load(function (err, config) {
                     var obj;
                     var loadedPath;
@@ -309,7 +297,7 @@
 
                     if (config && config.path) {
                         obj = config.path;
-                        loadedPath = obj.split(/\/([^/]+)/);
+                        loadedPath = obj.split(/\//);
                         for (var i = 0; i < loadedPath.length; i++) {
                             if (loadedPath[i] !== "") {
                                 if (loadedPath[i] !== "/") {
@@ -325,31 +313,33 @@
                     }
 
                     var setCurrentPathPromise = $qe.denodeify($scope.setCurrentPath);
+                    var notResolvedPath = false;
                     // Navigate up to saved path from root
+                    
                     $qe.series(filteredPath.map(function (newPath) {
-                        return function () { return setCurrentPathPromise(newPath, false); };
+                        return function (args) {
+                            var result = args[0].__read();
+                            var item = Array.isArray(result) && result.filter(function (el) {
+                                return el.path === newPath.path;
+                            })[0];
+                            if (notResolvedPath || !item) {
+                                notResolvedPath = true;
+                                var defer = $qe.defer();
+                                defer.resolve(args);
+                                return defer.promise;
+                            }
+                            return setCurrentPathPromise(item || newPath, false);
+                        };
                     }), setCurrentPathPromise(rootPath, false));
                 });
-            }
+            };
 
             if (!$scope.currentPath) {
                 $scope.drawFileMan();
             }
 
             $scope.construction = function () {
-                PopupDialog.message(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Message'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Construction works.'
-                    ),
-                    function () {}
-                );
+                showPopupDialog('message', 'Message', 'Construction works.');
             };
 
             $scope.$on('uploadReady', function () {
