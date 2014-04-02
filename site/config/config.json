@@ -93,8 +93,8 @@
   , "zenboxInit": {
       "dropboxID":   "20078915"
     , "url":         "https://joyentcloud.zendesk.com"
-    , "tabTooltip":  "Support"
-    , "tabImageURL": "https://assets.zendesk.com/external/zenbox/images/tab_support.png"
+    , "tabTooltip":  "Contact Support"
+    , "tabImageURL": "/main/static/img/tab_support.png"
     , "tabColor":    "#999"
     , "tabPosition": "Right"
     , "dropboxOrderPackageId": ""

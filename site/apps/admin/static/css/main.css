@@ -660,9 +660,6 @@ div .disabled{
 	position:fixed;
 }
 #zenbox_tab {
-	transform:rotate(180deg);
-	-ms-transform:rotate(180deg);
-	-webkit-transform:rotate(180deg);
 	width:42px;
 	border:none;
 }
