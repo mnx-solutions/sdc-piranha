@@ -76,10 +76,11 @@
                     });
                     var account = results[3];
 
-                    freeTierOptions.validUntil = new Date(account.created);
-                    freeTierOptions.validUntil.setFullYear(freeTierOptions.validUntil.getFullYear() + 1);
-                    freeTierOptions.valid = new Date() < freeTierOptions.validUntil;
-
+                    // from Mar 1, 2014
+                    var freeTierAvailableDate = new Date(2014, 2, 1);
+                    var createdDate = new Date(account.created);
+                    freeTierOptions.validUntil = new Date(createdDate.getFullYear() + 1, createdDate.getMonth(), createdDate.getDate());
+                    freeTierOptions.valid = createdDate > freeTierAvailableDate && new Date() < freeTierOptions.validUntil;
                     var packageRequests = datacenters.map(function (datacenter) {
                         return Package.package({datacenter: datacenter});
                     });
