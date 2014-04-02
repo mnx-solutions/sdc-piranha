@@ -188,13 +188,14 @@
 }
 
 .y-axis {
-    width: 70px;
+    max-width: 70px;
     display: table-cell;
     vertical-align: top;
 }
 
 .y-axis svg {
     height: 230px;
+    width: 70px;
 }
 
 .x-axis {
