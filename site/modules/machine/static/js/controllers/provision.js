@@ -194,7 +194,7 @@
 
                     $location.path('/compute');
                 };
-                if (machine && machine.freetier) {
+                if (machine) {
                     filterSelectedNetworks(machine.networks || [], function (filteredNetworks) {
                         machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';
                         finalProvision();
