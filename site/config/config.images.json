@@ -50,7 +50,7 @@
                 "package": "bb3fc5de-6e65-49ad-ab54-e8dcc62d3360"
             },
             "description": {
-                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "text": "CentOS 6.5 64-bit image with just essential packages installed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -164,7 +164,7 @@
                 "package": "43e0444f-a065-4ea7-ba96-e941abc0b08f"
             },
             "description": {
-                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "text": "CentOS 6.5 64-bit image with just essential packages installed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -278,7 +278,7 @@
                 "package": "cd594f6e-b22d-4d32-baa0-0361e0d91a53"
             },
             "description": {
-                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "text": "CentOS 6.5 64-bit image with just essential packages installed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
@@ -392,7 +392,7 @@
                 "package": "23a17de8-1796-44fd-b772-992b5949ba66"
             },
             "description": {
-                "text": "CentOS 6.4 64-bit image with just essential packages installed.",
+                "text": "CentOS 6.5 64-bit image with just essential packages installed.",
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
