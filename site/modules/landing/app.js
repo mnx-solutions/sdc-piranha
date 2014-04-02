@@ -32,7 +32,9 @@ module.exports = function execute(scope, app, callback) {
         var phoneVerificationDisabled = scope.config.features.phoneVerification !== 'enabled';
 
         // build the query string
+        campaignId = campaignId || req.cookies.campaignId;
         var querystring = (brandingEnabled ? 'branding=orange&' : '') +
+            (campaignId ? 'cid=' + campaignId + '&' : '') +
             (brandingEnabled && phoneVerificationDisabled ? 'hideVerify=true&' : '') +
             'keyid=' + encodeURIComponent(config.keyId) + '&' +
             'nonce=' + encodeURIComponent(nonce) + '&' +
@@ -45,34 +47,7 @@ module.exports = function execute(scope, app, callback) {
         var signature = signer.sign(privateKey, 'base64');
         querystring += '&sig=' + encodeURIComponent(signature);
 
-        // do we have campaign id?
-        var campaignUrl = '';
-        if (campaignId || req.cookies.campaignId) {
-           campaignUrl = '&cid='+ (campaignId || req.cookies.campaignId);
-        }
-
-        var url = ssoUrl + '?';
-        // with signup mehtod, the url looks somewhat different
-        if (req.body.method === 'signup') {
-            var queryObj = {
-                'keyid': config.keyId,
-                'nonce': nonce,
-                'now': date,
-                'permissions': JSON.stringify({'cloudapi': ['/my/*']}),
-                'returnto': returnUrl,
-                'sig': signature
-            };
-            if (brandingEnabled) {
-                url = url + 'branding=orange&';
-                if (phoneVerificationDisabled) {
-                    url = url + 'hideVerify=true&';
-                }
-            }
-            url = url + 'verifystring=' + encodeURIComponent(JSON.stringify(queryObj)) + campaignUrl;
-        } else {
-            url = url + querystring;
-        }
-
+        var url = ssoUrl + '?' + querystring;
         if (redirect) {
             res.redirect(url);
             return;
@@ -81,7 +56,7 @@ module.exports = function execute(scope, app, callback) {
         res.json({url: url});
     }
 
-	app.post('/ssourl', function (req, res, next) {
+    app.post('/ssourl', function (req, res, next) {
         sendToSSO(req, res, req.body.method, req.body.redirectUrl);
     });
 
