@@ -5,7 +5,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-west-1",
-                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
+                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
                 "name": "",
                 "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
@@ -119,7 +119,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-east-1",
-                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
+                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
                 "name": "",
                 "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
                 "opsys": "All",
@@ -233,7 +233,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
-                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
+                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
                 "name": "",
                 "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
@@ -346,8 +346,8 @@
             "name": "SmartOS 64",
             "className": "smart-logo",
             "imageData": {
-                "datacenter": "us-ams-1",
-                "dataset": "c353c568-69ad-11e3-a248-db288786ea63",
+                "datacenter": "eu-ams-1",
+                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
                 "opsys": "All",
@@ -365,7 +365,7 @@
             "name": "Standard Node.js",
             "className": "node-logo",
             "imageData": {
-                "datacenter": "us-ams-1",
+                "datacenter": "eu-ams-1",
                 "dataset": "81223438-7874-11e3-9edf-8f1e15269924",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
@@ -384,7 +384,7 @@
             "name": "CentOS",
             "className": "centos-logo",
             "imageData": {
-                "datacenter": "us-ams-1",
+                "datacenter": "eu-ams-1",
                 "dataset": "df81f45e-8f9f-11e3-a819-93fab527c81e",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
@@ -403,7 +403,7 @@
             "name": "Ubuntu Certified 13.10",
             "className": "ubuntu-logo",
             "imageData": {
-                "datacenter": "us-ams-1",
+                "datacenter": "eu-ams-1",
                 "dataset": "049dfe64-6c37-4b88-8e89-4b8aa0f129f2",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
@@ -422,7 +422,7 @@
             "name": "Windows Server",
             "className": "windows-logo",
             "imageData": {
-                "datacenter": "us-ams-1",
+                "datacenter": "eu-ams-1",
                 "dataset": "5f101d16-90ac-11e2-b9c2-877979ff6041",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
@@ -441,7 +441,7 @@
             "name": "MongoDB",
             "className": "mongodb-logo",
             "imageData": {
-                "datacenter": "us-ams-1",
+                "datacenter": "eu-ams-1",
                 "dataset": "649e0c72-89ec-11e3-a7c2-97e6a67823b0",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
