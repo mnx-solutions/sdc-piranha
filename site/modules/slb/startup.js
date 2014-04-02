@@ -203,7 +203,6 @@ var slb = function execute(scope) {
                         })[0];
                         if (!neededKey) {
                             call.cloud.createKey(account.id, slbmKey, function (err) {
-                                console.log(arguments, slbmKey);
                                 cb(err);
                             });
                         } else {
@@ -232,9 +231,9 @@ var slb = function execute(scope) {
             sign: manta.privateKeySigner({
                 key: data['metadata.ssc_private_key'],
                 keyId: fingerprint,
-                user: data['metadata.manta_account']
+                user: data['metadata.account_name']
             }),
-            user: data['metadata.manta_account'],
+            user: data['metadata.account_name'],
             // TODO: manta configuration
             url: 'https://us-east.manta.joyent.com',
             rejectUnauthorized: false
@@ -246,9 +245,11 @@ var slb = function execute(scope) {
                 callback(new Error('Timeout while removing slb config'));
                 return;
             }
-            client.unlink('/' + data['metadata.manta_account'] + '/stor/slb.private/slb.conf', function (err) {
-                if (err && err.statusCode !== 404) {
+            client.unlink('/' + data['metadata.account_name'] + '/stor/slb.private/slb.conf', function (err) {
+                if (err && err.statusCode >= 500) {
                     setTimeout(waitForManta.bind(this, startTime), 1000);
+                } else if (err && err.statusCode === 403) {
+                    callback(new Error('Manta user not found'));
                 } else {
                     callback();
                 }
@@ -291,7 +292,7 @@ var slb = function execute(scope) {
                     'metadata.ssc_public_key': sscKeyPair.publicSsh,
                     'metadata.portal_public_key': (new Buffer(portalKeyPair.publicSsh).toString('base64')),
                     'metadata.account_name': call.req.session.userName,
-                    'metadata.manta_account': config.slb.account || call.req.session.userName,
+                    'metadata.manta_account': call.req.session.userName,
                     'metadata.datacenter_name': datacenter,
                     'metadata.slb_code_url': config.slb.slb_code_url,
                     // TODO: remove this line after renaming code in image
@@ -305,8 +306,10 @@ var slb = function execute(scope) {
                 }
 
                 if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
-                    data['metadata.ssc_private_key'] = config.slb.ssc_private_key;
-                    data['metadata.ssc_public_key'] = config.slb.ssc_public_key;
+                    data['metadata.ssc_private_key'] = portalKeyPair.privateKey = config.slb.ssc_private_key;
+                    data['metadata.ssc_public_key'] = portalKeyPair.publicKey = config.slb.ssc_public_key;
+                    portalKeyPair.fingerprint = ursa.openSshPublicKey(config.slb.ssc_public_key)
+                        .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
                 }
 
                 var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
