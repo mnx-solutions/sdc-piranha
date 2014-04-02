@@ -151,7 +151,7 @@
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
   , "instanceTagging": "enabled"
-  , "instanceMetadata": "disabled"
+  , "instanceMetadata": "enabled"
   , "promocode": "enabled"
   , "invoices": "enabled"
   , "imageUse": "enabled"
