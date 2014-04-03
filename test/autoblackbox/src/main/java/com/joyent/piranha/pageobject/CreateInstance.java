@@ -8,7 +8,6 @@ import com.joyent.piranha.vo.CreateInstanceObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.interactions.HasInputDevices;
 import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.internal.Locatable;
 
 import static com.codeborne.selenide.Condition.cssClass;
 import static com.codeborne.selenide.Condition.hasClass;
@@ -69,7 +68,7 @@ public class CreateInstance extends AbstractPageObject {
     }
 
     public void selectPackage(String name) {
-        $(byText(name)).click();
+        $("#packagesAccordion").$(byText(name)).click();
     }
 
     public void setOsVersion(String os, String version) {
@@ -88,6 +87,14 @@ public class CreateInstance extends AbstractPageObject {
 
     public void clickReviewBtn() {
         $("#button-review").click();
+    }
+
+    public Zenbox clickReviewBtn(String isFakePackages) {
+        clickReviewBtn();
+        if (isFakePackages.equals("fakePackage")) {
+            WebDriverRunner.getWebDriver().switchTo().frame("zenbox_body");
+        }
+        return page(Zenbox.class);
     }
 
     public void selectOsImage(String os) {
@@ -131,6 +138,7 @@ public class CreateInstance extends AbstractPageObject {
     /**
      * If instance with desired name exists, add a number at the end of the
      * name.
+     *
      * @param name desired name of the instance
      * @return actual name of instance
      */
@@ -167,6 +175,7 @@ public class CreateInstance extends AbstractPageObject {
 
     /**
      * Provision a machine from a CreateInstanceObject.
+     *
      * @param i  CreateInstanceObject
      * @param dc DataCenter
      * @return Image name
@@ -194,4 +203,16 @@ public class CreateInstance extends AbstractPageObject {
         $("#link-more-images").click();
     }
 
+    public void filterPackages(String parameter, String value) {
+        String dropDownButton = ".dropdown-toggle span";
+        ElementsCollection dropList = $$(".filter-container .btn-group");
+        dropList.get(0).$(dropDownButton).click();
+        $(byText(parameter)).click();
+        dropList.get(1).$(dropDownButton).click();
+        $(byText(value)).click();
+    }
+
+    public void openSection(String sectionName) {
+        $("#packagesAccordion").$(byText(sectionName)).click();
+    }
 }

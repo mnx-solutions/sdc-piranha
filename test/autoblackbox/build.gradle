@@ -82,3 +82,7 @@ task ImageTests(type: Test) {
 task ProductionFeatures(type: Test) {
     include '**/productionFeatures.class'
 }
+
+task HighPerformPackageTest(type: Test) {
+    include '**/HighPerformPackageTest.class'
+}

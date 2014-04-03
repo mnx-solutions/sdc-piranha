@@ -73,6 +73,7 @@ public class InstancePage {
         c.should(matchText("Login\n" + login));
     }
 
+    //TODO: remove method
     public void resize(String size) {
         Common.checkSubHeadingText("Resize Instance");
         $(byText("Resize Instance type")).shouldBe(visible);

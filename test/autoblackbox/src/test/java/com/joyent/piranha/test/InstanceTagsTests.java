@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 public class InstanceTagsTests extends TestWrapper {
     private static SideBarMenu sideBarMenu;
+
     @BeforeClass
     public static void openDashboard() {
         timeout = BASE_TIMEOUT;
@@ -36,7 +37,7 @@ public class InstanceTagsTests extends TestWrapper {
     public void tagOpetationTests() {
         Instances instances = sideBarMenu.clickCompute();
         instances.checkTitle();
-        InstanceList instanceList = instances.getList();
+        InstanceList instanceList = instances.getInstanceList();
         instanceList.waitForInstanceList();
         String instanceName = Common.getTestInstanceName();
         InstanceDetails instanceDetails = instanceList.openInstanceDetails(instanceName);

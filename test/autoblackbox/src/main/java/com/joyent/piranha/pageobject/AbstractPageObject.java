@@ -1,6 +1,9 @@
 package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
@@ -94,6 +97,10 @@ public abstract class AbstractPageObject {
         $("#button-actions").click();
     }
 
+    public void clickColumnsButton() {
+        $("#button-columns").click();
+    }
+
     public boolean isErrorDisplayed(String errorText) {
         return $(byText(errorText)).isDisplayed();
     }
@@ -101,5 +108,12 @@ public abstract class AbstractPageObject {
     public void setValue(SelenideElement fieldSelector, String value) {
         fieldSelector.clear();
         fieldSelector.sendKeys(value);
+    }
+
+    public void addGridColumn(String columnName) {
+        clickColumnsButton();
+        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
+        executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
+        $(By.xpath("//th[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains(.,'" + columnName + "')]")).waitUntil(visible, baseTimeout);
     }
 }
