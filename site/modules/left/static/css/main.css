@@ -114,6 +114,12 @@ ul.page-sidebar-menu > li > a:hover, ul.page-sidebar-menu > li:hover > a {
 .storage-icon.active i {
     background-image: url("../img/storage_i_orange.png") ! important;
 }
+.usage-icon i {
+    background-image: url("../img/utilization_i_white.png");
+}
+.usage-icon.active i {
+    background-image: url("../img/utilization_i_orange.png") ! important;
+}
 .support-icon i {
     background-image: url("../img/support_i_white.png");
 }

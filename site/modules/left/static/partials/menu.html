@@ -62,6 +62,27 @@
                 </li>
             </ul>
         </li>
+        <li class="nested usage-icon" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('utilization') == 1, over: usage && sideBarMin}" data-ng-mouseenter="usage=true" ng-mouseleave="usage=false">
+            <a data-ng-href="{{usageUrl}}">
+                <i class=""></i>
+                <span class="title" data-ng-show="!sideBarMin || usage">Usage</span>
+                <span class="selected"></span>
+            </a>
+            <ul class="sub-menu">
+                <li class="sub" data-ng-class="{active: location.path().search('utilization/dram') == 1}">
+                    <a data-ng-href="{{usageDramUrl}}">
+                        <span class="titles" data-ng-show="!sideBarMin || usage">DRAM</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li class="sub" data-ng-class="{active: location.path().search('utilization/bandwidth') == 1}">
+                    <a data-ng-href="{{usageBandwidthUrl}}">
+                        <span class="titles" data-ng-show="!sideBarMin || usage" data-translate>Bandwidth</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+            </ul>
+        </li>
         <li class="nested support-icon" data-ng-show="features.support == 'enabled'" data-ng-class="{active: location.path().search('support') == 1 ||
                                                   location.path().search('support.cloud') == 1, over: support && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="support=true" ng-mouseleave="support=false">
             <a data-ng-click="clickSupportMenu('')">
