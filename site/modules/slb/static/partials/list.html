@@ -32,7 +32,7 @@
                 </th>
             </tr>
             </thead>
-            <tbody id="load-balancer-table">
+            <tbody>
             <tr data-ng-repeat="server in servers" data-ng-class="{'load-balancer-highlight': server.machinesUp.length != server.machines.length}">
                 <td><a href="#!/slb/detail/{{server.id}}" class="slb-name">{{server.name}}</a></td>
                 <td>{{server.host}}</td>
