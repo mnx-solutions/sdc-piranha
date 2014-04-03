@@ -39,10 +39,16 @@
                     <i class="icon-drop-down"></i>
                 </a>
                 <div id="checkbox-list-columns" class="dropdown-menu hold-on-click dropdown-checkboxes pull-right">
-                    <label class="grid-small-font" data-ng-repeat="prop in props | orderBy:'sequence'"><div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
-                                    <span data-ng-class="{checked: prop.active}">
-                                        <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop"></span>{{prop.name}}
-                    </div></label>
+                    <div data-ng-repeat="prop in props | orderBy:'sequence'">
+                        <label class="dpl-inline">
+                            <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                            <span data-ng-class="{checked: prop.active}">
+                                <input data-ng-click="selectColumnsCheckbox(prop.id)" type="checkbox" checked="" data-column="prop">
+                            </span>
+                            </div>
+                        </label>
+                        <div class="grid-small-font dpl-inline">{{prop.name}}</div>
+                    </div>
                 </div>
             </div>
         </div>

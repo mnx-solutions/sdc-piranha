@@ -19,37 +19,6 @@
     padding-right: 30px;
     padding-left: 20px;
 }
-.dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-    display: none;
-    float: left;
-    list-style: none;
-    text-shadow: none;
-    padding: 0px;
-    margin: 0px;
-    -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
-    font-family: "Segoe UI",Helvetica, Arial, sans-serif;
-    border: 1px solid #ddd;
-}
-.open>.dropdown-menu {
-    display: block;
-}
-.dropdown-menu li > a {
-    padding: 6px 0 6px 13px;
-    color: #333333;
-    text-decoration: none;
-    display: block;
-    clear: both;
-    font-weight: normal;
-    line-height: 18px;
-    white-space: nowrap;
-}
 .icon-signout{
     display: inline-block;
     width: 14px;
