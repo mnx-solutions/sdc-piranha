@@ -1411,16 +1411,16 @@ select::-ms-expand {
 
 .page-row-info input:first-child{
     margin: 0 !important;
-    background-color: #f5f5f5 !important;
-    color: #666 !important;
-    border-radius: 18px !important;
+    padding-right: 10px;
+    padding-left: 30px;
     height: 16px !important;
     border: 0 none !important;
+    border-radius: 18px !important;
+    background-color: #f5f5f5 !important;
     -webkit-box-shadow: none !important;
     -moz-box-shadow: none !important;
     box-shadow: none !important;
-    padding-right: 30px;
-    padding-left: 10px;
+    color: #666 !important;
     font-size: 12px;
 }
 
@@ -1629,21 +1629,23 @@ label.checkbox {
 .grid-disable-text {
     color: #000000;
 }
-
-.grid-search-icon {
-    border: 0 none;
-    box-shadow: none;
-    padding: 0;
-    background-image: url(../img/table_i_search.png);
-    background-repeat: no-repeat;
-    width: 24px !important;
-    height: 24px;
-    right: 0;
+.grid-filter-icon {
     position: absolute;
     top: 0;
-    background-color: #dedede;
-    border-radius: 50px;
-    background-position: center center;
+    left: 0;
+    padding: 0;
+    width: 24px !important;
+    height: 23px;
+    border: 0 none;
+    border-radius: 58px;
+    background:
+        #dedede
+        url(../img/filter-icon.png)
+        no-repeat
+        center center;
+    background-size: 55%;
+    box-shadow: none;
+    cursor: default !important;
 }
 .plus-btn-icon,
 .chart-btn-icon {
@@ -1958,11 +1960,23 @@ label.checkbox {
 .btn-mini {
     padding: 0 6px !important;
 }
-.btn:focus,
-.btn-search-images,
-.btn-search-images:focus,
-.grid-search-icon,
-.grid-search-icon:focus {
+.btn:focus {
+    outline: none;
+}
+.btn-filter-images {
+    position: relative;
+    right: 190px;
+    padding: 0;
+    width: 23px !important;
+    height: 22px;
+    border: 0 none;
+    background:
+        transparent
+        url(../img/filter-icon.png)
+        no-repeat
+        center center;
+    background-size: 80%;
+    cursor: default !important;
     outline: none;
 }
 /* Account */
