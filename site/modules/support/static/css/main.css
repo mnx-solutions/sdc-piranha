@@ -3,7 +3,7 @@
     margin-top: 20px;
     min-height: 350px;
     max-height: 100%;
-    overflow: hidden;
+    overflow: auto;
     padding-left: 2px;
     position: relative;
 }
@@ -117,13 +117,13 @@
 }
 
 .package-holder h4 {
-    font-size: 24px;
+    font-size: 23px;
     font-weight: 300;
 }
 
 .package-holder h3 {
     color: #333;
-    font-size: 30px;
+    font-size: 29px;
     font-weight: 200;
 }
 
