@@ -35,12 +35,17 @@ window.JP.main.directive('breadcrumbs', [ 'route', 'requestContext', '$rootScope
                     return path;
                 };
 
-                $scope.navigationPath = route.resolveNavigation($routeParams);
-                $rootScope.pageTitle = route.$route.current.$$route.title;
+                function setBreadcrumbs () {
+                    $scope.navigationPath = route.resolveNavigation($routeParams);
+                    $scope.navigationPath.forEach(function (item) {
+                        item.path = resolveLink(item.path);
+                    });
+                }
 
-                $scope.navigationPath.forEach(function (item) {
-                    item.path = resolveLink(item.path);
-                });
+                $scope.$on('$routeChangeSuccess', setBreadcrumbs);
+
+                $rootScope.pageTitle = route.$route.current.$$route.title;
+                setBreadcrumbs();
             }
         };
     }]);
