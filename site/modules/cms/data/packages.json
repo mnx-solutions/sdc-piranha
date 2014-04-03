@@ -8,7 +8,8 @@
       "g3-devtier-0.25-kvm": {
           "price": "0",
           "price_month": "0",
-          "vcpus": "0.125"
+          "vcpus": "0.125",
+          "description": "DevTier - Micro 0.25 GB RAM 0.125 vCPU 16 GB Disk"
       },
       "g3-standard-0.25-smartos": {
           "short_name": "Standard 0.25",
