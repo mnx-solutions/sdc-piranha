@@ -66,9 +66,6 @@
 /*.navbar-inner .top-menu span a {*/
 	/*color:#375775;*/
 /*}*/
-.signup-progress-container {
-    width: 1005px;
-}
 /*h1 {*/
 	/*font-weight:normal;*/
 /*}*/
@@ -207,14 +204,11 @@ body{
 .main{
     padding-left: 203px;
     padding-top: 75px;
-    /*width: 1005px;*/
-
     top: 0;
     bottom: 60px;
     position: fixed;
     overflow-y: auto;
     overflow-x: hidden;
-    width: 100%;
 }
 .login-form{
     font-size: 16px;
