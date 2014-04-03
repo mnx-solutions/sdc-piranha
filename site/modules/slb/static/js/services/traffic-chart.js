@@ -86,10 +86,11 @@
             var hoverDetail = new Rickshaw.Graph.HoverDetail({
                 graph: graph
             });
-
+            var legendElement = document.createElement('div');
+            $element.append(legendElement);
             var legend = new Rickshaw.Graph.Legend({
                 graph: graph,
-                element: document.createElement('div')
+                element: legendElement
             });
 
             var toggle = new Rickshaw.Graph.Behavior.Series.Toggle({
