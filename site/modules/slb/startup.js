@@ -283,6 +283,13 @@ var slb = function execute(scope) {
                 var sscKeyPair = createKeyPairs();
                 var portalKeyPair = createKeyPairs();
 
+                if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
+                    sscKeyPair.privateKey = config.slb.ssc_private_key;
+                    sscKeyPair.publicSsh = config.slb.ssc_public_key;
+                    sscKeyPair.fingerprint = ursa.openSshPublicKey(config.slb.ssc_public_key)
+                        .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
+                }
+
                 var data = {
                     datacenter: datacenter,
                     dataset: config.slb.ssc_image,
@@ -303,13 +310,6 @@ var slb = function execute(scope) {
 
                 if (config.slb.ssc_networks) {
                     data.networks = config.slb.ssc_networks;
-                }
-
-                if (config.slb.ssc_private_key && config.slb.ssc_public_key) {
-                    data['metadata.ssc_private_key'] = portalKeyPair.privateKey = config.slb.ssc_private_key;
-                    data['metadata.ssc_public_key'] = portalKeyPair.publicKey = config.slb.ssc_public_key;
-                    portalKeyPair.fingerprint = ursa.openSshPublicKey(config.slb.ssc_public_key)
-                        .toPublicSshFingerprint('hex').replace(/([a-f0-9]{2})/gi, '$1:').slice(0, -1);
                 }
 
                 var portalFingerprint = '/' + call.req.session.userName + '/keys/' + portalKeyPair.fingerprint;
