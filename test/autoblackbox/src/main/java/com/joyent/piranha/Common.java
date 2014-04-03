@@ -142,16 +142,16 @@ public class Common {
     }
 
     public static String getTestInstanceName() {
-        final String instName;
+        final String instanceName;
         switch (System.getProperty("datacenter")) {
             case "us-west-b":
             case "local-x":
-                instName = "dnd-forImageAutoTests";
+                instanceName = "dnd-forImageAutoTests";
                 break;
             default:
-                instName = " ";
+                instanceName = " ";
         }
-        return instName;
+        return instanceName;
     }
 
     public static String getValueFromLog(String key) {
