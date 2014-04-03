@@ -39,7 +39,7 @@ public class InstanceTagsTests extends TestWrapper {
         InstanceList instanceList = instances.getList();
         instanceList.waitForInstanceList();
         String instanceName = Common.getTestInstanceName();
-        InstanceDetails instanceDetails = instanceList.clickFirstInstance();
+        InstanceDetails instanceDetails = instanceList.openInstanceDetails(instanceName);
         instanceDetails.getPageTitle().shouldHave(text(instanceName));
         String key1 = "tagName1";
         String value1 = "tagValue1";
