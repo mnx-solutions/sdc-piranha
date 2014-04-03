@@ -7,7 +7,7 @@
     <div class="loading-large" data-ng-hide="detailLoaded"></div>
 
     <div class="row-fluid lb-edit" data-ng-show="detailLoaded">
-        <div class="span12 edit-info-bar">
+        <div class="span12 edit-info-bar" data-ng-class="{'edit-info-bar-highlight': server.machinesUp.length != server.machines.length}">
             <div class="span3">
                 <span class="lb-label" data-translate>Protocol: </span>
                 <span><b class="eula-space">{{server.protocol | uppercase}}</b></span>
