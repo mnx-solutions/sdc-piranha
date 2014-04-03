@@ -41,7 +41,7 @@
                     $scope.machines = Machine.machine();
                 }
             );
-            
+
             $scope.$watch('machines', function (machines) {
                 machines.forEach(function (machine) {
                     machine.label = machine.name || machine.id;
@@ -182,6 +182,16 @@
                 return statuses[object.state];
             };
 
+            var ipToInt = function (object) {
+                var octets = object.primaryIp.split('.');
+                var buffer = new ArrayBuffer(4);
+                var dataView = new DataView(buffer);
+                for (var i = 0; i < 4; i++) {
+                    dataView.setUint8(i, octets[i]);
+                }
+                return dataView.getUint32(0);
+            };
+
             $scope.gridOrder = [stateOrder, '-created'];
             $scope.gridProps = [
                 {
@@ -230,6 +240,7 @@
                 {
                     id: 'primaryIp',
                     name: 'IP',
+                    _order: ipToInt,
                     sequence: 6,
                     active: true
                 },

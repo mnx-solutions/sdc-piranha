@@ -17,6 +17,7 @@
             $scope.$on('requestContextChanged', loadData);
             loadData();
 
+
             $scope.gridOrder = [];
             $scope.gridProps = [
                 {
@@ -46,6 +47,7 @@
                 {
                     id: 'in',
                     name: 'In',
+                    _order: 'in',
                     _getter: function (object) {
                         return $scope.chartData.format(object.in);
                     },
@@ -55,6 +57,7 @@
                 {
                     id: 'out',
                     name: 'Out',
+                    _order: 'out',
                     _getter: function (object) {
                         return $scope.chartData.format(object.out);
                     },

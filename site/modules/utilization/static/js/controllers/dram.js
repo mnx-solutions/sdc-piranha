@@ -52,8 +52,9 @@
                 {
                     id: 'hours',
                     name: 'Hours',
+                    _order: 'hours',
                     _getter: function (object) {
-                        return $scope.chartData.format(object.hours);
+                        return  $scope.chartData.format(object.hours);
                     },
                     sequence: 6,
                     active: true
