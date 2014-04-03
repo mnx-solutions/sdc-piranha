@@ -30,6 +30,12 @@
                         ng.element('.footer').removeClass('leftpanel-small');
                     }
                 };
+                var now = new Date();
+                var year = now.getFullYear();
+                var month = now.getMonth() + 1;
+                $scope.usageUrl = '#!/utilization/' + year + '/' + month;
+                $scope.usageDramUrl = '#!/utilization/dram/' + year + '/' + month;
+                $scope.usageBandwidthUrl = '#!/utilization/bandwidth/' + year + '/' + month;
             }
         };
     }]);
