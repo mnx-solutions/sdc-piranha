@@ -252,6 +252,7 @@
                             CloudAnalytics.createInstrumentations({
                                 zoneId: $scope.machineid,
                                 datacenter: $scope.datacenter,
+                                range: $scope.instrumentationRange,
                                 configs: createDefaultInstrumentationConfigs(true, short)
                             }, function (error, newInstrumentations, instrumentations) {
                                 buildGraphData(instrumentations, createDefaultInstrumentationConfigs(false, short));
@@ -275,6 +276,7 @@
                     CloudAnalytics.createInstrumentations({
                         datacenter: $scope.datacenter,
                         zoneId: $scope.machineid,
+                        range: $scope.instrumentationRange,
                         configs: [config]
                     }, function (error, instrumentations) {
                         buildGraphData(instrumentations, [config], true);
@@ -337,7 +339,7 @@
                     var index = CloudAnalytics.ranges.indexOf(instrumentation.range);
                     var range = CloudAnalytics.ranges[index + inc];
                     if (range) {
-                        instrumentation.range = range;
+                        $scope.instrumentationRange = instrumentation.range = range;
                     }
 
                     $scope.zoomOutDisable = (index + inc === 0);

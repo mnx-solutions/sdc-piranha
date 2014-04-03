@@ -125,7 +125,7 @@
                 this.machineId = options.zoneId;
                 this.timer = null;
                 this.data = new DataSet({startTime: options.config.crtime});
-                this.range = 60;
+                this.range = options.range || 60;
                 this._title = null;
                 this.type = null;
                 this.init();
@@ -325,6 +325,7 @@
                         instrumentation = new Instrumentation({
                             datacenter: options.datacenter,
                             zoneId: options.zoneId,
+                            range: options.range,
                             config: instrumentation
                         });
                         cache[instrumentation.key] = instrumentation;
