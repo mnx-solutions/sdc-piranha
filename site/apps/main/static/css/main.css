@@ -1610,12 +1610,16 @@ label.checkbox {
 }
 
 .grid-action-btn {
-    min-width: 0 !important;
+    width: 100% !important;
     text-align: left;
 }
 
 .grid-action-btn button {
-    width: 100px;
+    outline: none;
+    border: 0;
+    border-radius: 0;
+    background-color: #e5e5e5;
+    color: #6d6d6d;
 }
 
 .grid-action-btn button:hover {
