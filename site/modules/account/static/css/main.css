@@ -125,10 +125,7 @@ select.date-year {
     margin-top: 28px;
     width:380px;
 }
-.container-account {
-    padding-left: 48px;
-    width: 1000px;
-}
+
 .account legend {
     border-bottom: 0;
     font-size: 19px;
@@ -155,12 +152,12 @@ select.date-year {
 }
 
 .accordion-package-title {
-    height: 40px;
-    width: 681px;
-    border: 1px solid #dadcdd;
-    border-bottom: none;
     margin-left: -2px;
     padding-left: 40px;
+    min-width: 681px;
+    height: 40px;
+    border: 1px solid #dadcdd;
+    border-bottom: none;
 }
 
 .accordion-package-title span {
@@ -169,7 +166,7 @@ select.date-year {
 
 #accordion-ssh-keys {
     margin-left: -11px;
-    width: 732px;
+    min-width: 732px;
 }
 #accordion-ssh-keys .accordion-group {
     min-height: 50px;

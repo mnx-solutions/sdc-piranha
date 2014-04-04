@@ -1,84 +1,68 @@
-<div class="container-fluid content-container">
-    <div class="container content-container-inner">
-        <div class="container_details">
-
-		<div data-ng-switch="subview">
-			
-		    <div data-ng-switch-when="index" data-ng-controller="cloudController">
-                <div data-breadcrumbs></div>
-                <h3 class="page-title">{{ pageTitle }}</h3>
-                <div ng-show="machineExists" class="row-fluid">
-                    <div class="chart-info" data-ng-show="selectedInstance">
-                        <span class="name-chart">UUID</span>
-                        <span class="value-chart">{{selectedInstance}}</span>
-                    </div>
-                    <div class="chart-info" data-ng-show="zoneName">
-                        <span class="name-chart">Instance name</span>
-                        <span class="value-chart-in">{{zoneName}}</span>
-                    </div>
+<div class="container-fluid container-position container-min-width">
+    <div data-ng-switch="subview">
+        <div data-ng-switch-when="index" data-ng-controller="cloudController">
+            <div data-breadcrumbs></div>
+            <h3 class="page-title">{{ pageTitle }}</h3>
+            <div ng-show="machineExists" class="row-fluid">
+                <div class="chart-info" data-ng-show="selectedInstance">
+                    <span class="name-chart">UUID</span>
+                    <span class="value-chart">{{selectedInstance}}</span>
                 </div>
-                <div ng-hide="machineExists" style="height: 60px">
-                    Selected instance does not exist.
+                <div class="chart-info" data-ng-show="zoneName">
+                    <span class="name-chart">Instance name</span>
+                    <span class="value-chart-in">{{zoneName}}</span>
+                </div>
+            </div>
+            <div ng-hide="machineExists">
+                Selected instance does not exist.
+            </div>
+
+            <div class="charts-container text-medium pull-left">
+                <div data-ng-show="help[current.metric.module]" class="alert alert-info text-small">
+                    <span data-ng-show="help[current.metric.module].generic">
+                        <h6>{{current.metric.labelHtml.split(':')[0]}}</h6>
+                        <p data-ng-class="{true:'crop crop-long', false:''}[croppedModule]" class="margin-mini pointer" data-ng-click="expandModule()">{{help[current.metric.module].generic}}</p>
+                    </span>
+                    <span data-ng-show="help[current.metric.module][current.metric.module + '.' +current.metric.stat]">
+                        <h6>{{ current.metric.labelHtml }}</h6>
+                        <p data-ng-class="{true:'crop crop-long', false:''}[croppedMetric]" class="margin-mini pointer" data-ng-click="expandMetric()">{{help[current.metric.module][current.metric.module + '.' +current.metric.stat]}}</p>
+                    </span>
                 </div>
 
-				<div class="container_details span9 listing text-medium" style="margin: 0;">
-                    <div data-ng-show="help[current.metric.module]" class="alert alert-info text-small">
-                        <span data-ng-show="help[current.metric.module].generic">
-							<h6>{{current.metric.labelHtml.split(':')[0]}}</h6> 
-							<p data-ng-class="{true:'crop crop-long', false:''}[croppedModule]" class="margin-mini pointer" data-ng-click="expandModule()">{{help[current.metric.module].generic}}</p>
-                        </span>
-                        <span data-ng-show="help[current.metric.module][current.metric.module + '.' +current.metric.stat]">
-                            <h6>{{ current.metric.labelHtml }}</h6>
-                            <p data-ng-class="{true:'crop crop-long', false:''}[croppedMetric]" class="margin-mini pointer" data-ng-click="expandMetric()">{{help[current.metric.module][current.metric.module + '.' +current.metric.stat]}}</p>
-                        </span>
-                    </div>
+                <graph data-ng-repeat="i in graphs" options="i"></graph>
+                <div class="separator-line"></div>
+                <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey effect-orange-button pull-right">
+                    <b>{{ machineExists && 'Back to Instance Details' || 'Back to Instances' }}</b>
+                </a>
 
-		            <graph data-ng-repeat="i in graphs" options="i"></graph>
-                    <div class="clearfix"></div>
-                    <a href="#!/compute{{ machineExists && '/instance/' + selectedInstance || '' }}" class="btn grey effect-orange-button pull-right">
-                        <b>{{ machineExists && 'Back to Instance Details' || 'Back to Instances' }}</b>
-                    </a>
-					
-				</div>
-				<div class="pull-right alert alert-info span3">
-					<h5>Select Instance:</h5>
+            </div>
+            <div class="pull-right alert alert-info">
+                <h5>Select Instance:</h5>
 
-					<select data-ng-show="zones.final" data-ng-model="selectedInstance" data-ng-options="item.id as item.name for item in zones" data-ng-change="changeInstance()">
-	                    <option value="">-- Choose Instance --</option>
-	                </select>
-					<div class="clearfix"></div>
-			        <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="resetMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
-			            <option value="">-- Choose Metric --</option>
-			        </select>
-					<div class="clearfix"></div>
-			        <span class="nullable">
-			            <select data-ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
-			                <option value="">-- None --</option>
-			            </select>
-						<div class="clearfix"></div>
-			        </span>
-					<div class="clearfix"></div>
-			        <span class="nullable">
-			            <select data-ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
-			                <option value="">-- None --</option>
-			            </select>
-			        </span>
-	                <div class="clearfix"></div>
-                    <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
-                    <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!selectedInstance">Start Analysis</button>
-
-
-
-
-                    <p class="p-padding">Analytics Options:</p>
-
-                    <button class="btn icon-zoom-in options-ctrl effect-orange-button" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
-                    <button class="btn icon-zoom-out options-ctrl effect-orange-button" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
-                    <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
-                    <button class="btn options-ctrl effect-orange-button" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
-				</div>
-		    </div>
-		</div>
-	</div>
-	</div>
+                <select data-ng-show="zones.final" data-ng-model="selectedInstance" data-ng-options="item.id as item.name for item in zones" data-ng-change="changeInstance()">
+                    <option value="">-- Choose Instance --</option>
+                </select>
+                <select data-ng-show="metrics" data-ng-model="current.metric" data-ng-change="resetMetric()" ng-required data-ng-options="metric.labelHtml for metric in metrics">
+                    <option value="">-- Choose Metric --</option>
+                </select>
+                <span class="nullable">
+                    <select data-ng-show="current.metric" data-ng-model="current.decomposition.primary" data-ng-change="changeDecomposition()" data-ng-options="key as val for (key, val) in current.metric.fields">
+                        <option value="">-- None --</option>
+                    </select>
+                </span>
+                <span class="nullable">
+                    <select data-ng-show="current.decomposition.primary" data-ng-model="current.decomposition.secondary" data-ng-options="key as val for (key, val) in current.decomposition.secondaryF">
+                        <option value="">-- None --</option>
+                    </select>
+                </span>
+                <p>Detailed analytics use pre-defined metrics to measure perfomance</p>
+                <button id="button-start" class="btn orange start-analytics-btn" data-ng-click="createDefaultInstrumentations()" data-ng-disabled="!selectedInstance">Start Analysis</button>
+                <p class="opt-title">Analytics Options:</p>
+                <button class="btn icon-zoom-in options-ctrl effect-orange-button" data-ng-click="zoom(1)" data-ng-disabled="!graphs.length || zoomInDisable"></button>
+                <button class="btn icon-zoom-out options-ctrl effect-orange-button" data-ng-click="zoom(-1)" data-ng-disabled="!graphs.length || zoomOutDisable"></button>
+                <button class="btn options-ctrl effect-orange-button" data-ng-click="deleteAllInstrumentations()" data-ng-disabled="!graphs.length">Delete All</button>
+                <button class="btn options-ctrl effect-orange-button" data-ng-click="createInstrumentation()" data-ng-disabled="!canCreate()">Create</button>
+            </div>
+        </div>
+    </div>
 </div>

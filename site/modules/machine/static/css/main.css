@@ -558,17 +558,6 @@
     height: 8px !important;
     vertical-align: top;
 }
-.container_details{
-    width: 1005px;
-    padding-left: 45px;
-    padding-bottom: 55px;
-    padding-top: 10px;
-    float: left;
-}
-
-.container_details .error{
-    padding-bottom: 15px;
-}
 .wait-rename{
     background-position: 0 0;
     position: relative;

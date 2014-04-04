@@ -33,9 +33,8 @@
     text-shadow: none;
 }
 
-.alert-info select{
+.alert-info select {
     width: 210px;
-    height: 28px;
 }
 .alert-info p{
     font-size: 14px;
@@ -57,17 +56,17 @@
     margin-bottom: 25px;
     margin-top: 5px;
 }
-.p-padding{
+.opt-title {
     padding-top: 20px;
     border-top: 1px solid #cbc1a8;
 }
 
-.icon-zoom-in, .icon-zoom-out{
-    background-repeat: no-repeat;
-    background-size: 24px;
-    background-position: center center;
+.icon-zoom-in,
+.icon-zoom-out {
     width: 34px;
     height: 34px;
+    background: no-repeat center center;
+    background-size: 24px;
 }
 .icon-zoom-in:hover {
     background-image: url(../img/zoomin-white.png);
@@ -166,10 +165,18 @@
 .chart-padding{
     padding-bottom: 7px;
 }
-.btn.grey{
+.btn.grey {
+    margin-top: 20px;
     background-color: #ebebeb;
     color: #f60;
-    margin-top: 20px;
-    font-size: 15px;
     text-shadow: none;
+    font-size: 15px;
+}
+
+.charts-container {
+    width: 700px;
+}
+
+.separator-line {
+    border-bottom: 1px solid #ccc;
 }

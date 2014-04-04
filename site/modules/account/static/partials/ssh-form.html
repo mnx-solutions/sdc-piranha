@@ -1,4 +1,4 @@
-<div class="line span6 ssh-key-container">
+<div class="line ssh-key-container">
     <div class="accordion-package-title" data-ng-hide="keys.length < 1">
         <span class="key-name">Key Name</span>
         <span class="key-hash"> / UUID</span>
@@ -36,30 +36,26 @@
             </div>
         </div>
     </div>
-    <div class="span12">
-        <div class="row-fluid">
-            <!-- Part shown when user has keys -->
-            <div class="row-fluid" style="margin-left: -18px;">
-                <div class="item-list-container">
-                    <div data-ng-show="keys.length < 1 && !loadingKeys">
-                        <div>You don't have any SSH keys</div>
-                    </div>
-                    <div data-ng-show="loadingKeys">
-                        <div class="loading-medium"></div>
-                    </div>
-                </div>
-                <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
-                <div class="new-key-button pull-right" data-ng-hide="loading">
-                    <div data-account-ssh-create></div>
-                    <div data-account-ssh-import></div>
-                </div>
-                <div class="new-key-button pull-right" data-ng-show="loading">
-                    <div class="row">
-                        <div class="loading-medium span4"></div>
-                    </div>
-                </div>
+        <!-- Part shown when user has keys -->
+    <div class="row-fluid">
+        <div class="item-list-container">
+            <div data-ng-show="keys.length < 1 && !loadingKeys">
+                <div>You don't have any SSH keys</div>
             </div>
-            <!-- End of > 0 keys part -->
+            <div data-ng-show="loadingKeys">
+                <div class="loading-medium"></div>
+            </div>
+        </div>
+        <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
+        <div class="new-key-button pull-right" data-ng-hide="loading">
+            <div data-account-ssh-create></div>
+            <div data-account-ssh-import></div>
+        </div>
+        <div class="new-key-button pull-right" data-ng-show="loading">
+            <div class="row">
+                <div class="loading-medium span4"></div>
+            </div>
         </div>
     </div>
+    <!-- End of > 0 keys part -->
 </div>
