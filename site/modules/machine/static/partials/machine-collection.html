@@ -33,6 +33,15 @@
                     class="key-width">
             </span>
 
+            <div class="pull-right">
+                <button class="btn light tag-add-btn effect-orange-button"
+                        data-ng-click="addItem(item)"
+                        data-translate
+                        data-ng-disabled="saving || !item.dirtyVal || !item.dirtyKey || item.saving">{{item.isNew &&
+                    'Add' || 'Save'}}
+                </button>
+                <div class="loading-medium item-button" ng-style="{visibility: item.saving && 'visible' || 'hidden'}"></div>
+            </div>
             <span class="value-container">
                 <input type="text"
                     placeholder="Value"
@@ -50,13 +59,6 @@
                      class="value-width"
                      rows="8"></textarea>
             </span>
-            <button class="btn light tag-add-btn effect-orange-button" style="width: inherit"
-                    data-ng-click="addItem(item)"
-                    data-translate
-                    data-ng-disabled="saving || !item.dirtyVal || !item.dirtyKey || item.saving">{{item.isNew && 'Add' || 'Save'}}</button>
-            <div class="dpl-inline pull-right">
-                <div class="pull-right loading-medium item-button" data-ng-show="item.saving"></div>
-            </div>
         </div>
     </div>
 </div>

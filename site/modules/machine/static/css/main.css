@@ -619,7 +619,9 @@
 .detail-tags .value-container textarea,
 .create-tags .value-container textarea,
 .detail-mdata .value-container input,
-.create-mdata .value-container input {
+.create-mdata .value-container input,
+.create-mdata .loading-medium.item-button,
+.create-tags .loading-medium.item-button {
     display: none;
 }
 .create-tags .value-width {
@@ -1602,7 +1604,7 @@
     min-height: 34px;
 }
 .accordion-max-width{
-    min-width: 515px;
+    min-width: 507px;
     max-width: 465px;
 }
 .loading-small-firewall {

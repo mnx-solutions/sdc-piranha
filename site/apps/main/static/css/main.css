@@ -933,6 +933,7 @@ div .disabled {
 .loading-medium.item-button {
     margin-top: 0;
     margin-right: 7px;
+    display: inline-block;
     width: 30px;
     height: 30px;
     min-width: 30px;
