@@ -46,11 +46,12 @@ app.use(function (req, res, next) {
     // Don't save session on res.end, only explicitly
     var end = res.end;
     res.end = function (data, encoding) {
+        res.end = end;
         if (!req.session) {
-            return end(data, encoding);
+            return res.end(data, encoding);
         }
         req.session.reload(function () {
-            end(data, encoding);
+            res.end(data, encoding);
         });
     };
     next();
