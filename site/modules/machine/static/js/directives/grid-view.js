@@ -74,6 +74,12 @@
             });
         }, true);
 
+        $scope.$watch('tabFilter', function() {
+            if ($scope.tabFilter.length > 0) {
+                $scope.loading = false;
+            }
+        });
+
         $scope.refreshPager();
 
         $scope.showAll = function () {
@@ -399,6 +405,7 @@
                 $scope.propOn = ng.isDefined(attrs.propOn) ? $scope.$eval(attrs.propOn) : gridConfig.propOn;
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
                 $scope.controls = ng.isDefined(attrs.controls) ? $scope.$eval(attrs.controls) : gridConfig.controls;
+                $scope.loading = true;
 
                 $scope.props.forEach(function (el) {
 
