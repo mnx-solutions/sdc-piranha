@@ -520,9 +520,11 @@ div.error {
 .first-block{
     width: 725px;
     display: inline-block;
+    float: left;
 }
 .billing-promo {
-    float: right;
+    float: left;
+    padding-left: 27px;
 }
 .billing-promo iframe {
     width: 253px;
