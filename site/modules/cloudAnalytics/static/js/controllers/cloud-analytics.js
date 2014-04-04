@@ -48,27 +48,12 @@
                 }
             };
 
-            CloudAnalytics.describeAnalytics(function (error, ca) {
+            $q.when(CloudAnalytics.describeAnalytics).then(function () {
+                var ca = CloudAnalytics.ca;
                 $scope.conf = ca;
                 $scope.help = ca.help;
                 $scope.metrics = ca.metrics;
                 $scope.fields = ca.fields;
-                function createLabels(metric) {
-                    var fields = {};
-                    var k;
-                    for (k = 0; k < metric.fields.length; k += 1) {
-                        var field = metric.fields[k];
-                        if (ca.fields[field]) {
-                            fields[field] = ca.fields[field].label;
-                        }
-                    }
-
-                    var moduleName = $scope.conf.modules[metric.module].label;
-                    metric.fields = fields;
-                    metric.labelHtml = moduleName + ': ' + metric.label;
-                }
-
-                $scope.metrics.forEach(createLabels);
             });
 
             var displayGraphsTimeout = {};

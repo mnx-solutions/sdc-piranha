@@ -33,9 +33,9 @@
     var instrumentationCache = new InstrumentationCache();
 
     app.factory('CloudAnalytics', [
-        'ca.dataset', 'ca.http',
+        'ca.dataset', 'ca.http', '$q', 'localization', 'PopupDialog',
 
-        function (DataSet, http) {
+        function (DataSet, http, $q, localization, PopupDialog) {
             http.config({
                 url: 'cloudAnalytics/ca/:datacenter/:zoneId/:action'
             });
@@ -286,16 +286,17 @@
 
             CloudAnalytics.prototype.ranges = [ 10, 31, 60, 90, 120, 150, 180 ];
             CloudAnalytics.prototype.ca = {};
-            CloudAnalytics.prototype.describeAnalytics = function (callback) {
+            CloudAnalytics.prototype.describeAnalytics = function () {
                 var self = this;
-                if (self.ca.loaded) {
-                    callback(null, self.ca);
-                } else {
-                    service.describeAnalytics(function (error, response) {
-                        if (error) {
-                            console.error(error);
-                        }
-
+                var d = $q.defer();
+                service.describeAnalytics(function (error, response) {
+                    if (error) {
+                        PopupDialog.error(
+                            localization.translate(null, null, 'Error'),
+                            localization.translate(null, null, error)
+                        );
+                        d.reject(error);
+                    } else {
                         var result = response.res;
                         var k;
                         for (k in result) {
@@ -303,10 +304,25 @@
                                 self.ca[k] = result[k];
                             }
                         }
-                        self.ca.loaded = true;
-                        callback(error, self.ca);
-                    });
-                }
+                        var createLabels = function createLabels(metric) {
+                            var fields = {};
+                            var k;
+                            for (k = 0; k < metric.fields.length; k += 1) {
+                                var field = metric.fields[k];
+                                if (self.ca.fields[field]) {
+                                    fields[field] = self.ca.fields[field].label;
+                                }
+                            }
+
+                            var moduleName = self.ca.modules[metric.module].label;
+                            metric.fields = fields;
+                            metric.labelHtml = moduleName + ': ' + metric.label;
+                        }
+                        self.ca.metrics.forEach(createLabels);
+                        d.resolve(self.ca);
+                    }
+                });
+                return d.promise;
             };
             
             CloudAnalytics.prototype.createInstrumentations = function (options, callback) {
@@ -429,6 +445,7 @@
                 callback();
             };
             ca = new CloudAnalytics();
+            ca.describeAnalytics();
             return ca;
         }]);
 }(window.JP.getModule('cloudAnalytics'), window.angular));
