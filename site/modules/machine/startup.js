@@ -423,7 +423,7 @@ module.exports = function execute(scope) {
                 var options = {
                     machine: call.data.machineId,
                     name: (call.data.name || 'My Image'),
-                    version: '1.0.0', // We default to version 1.0.0
+                    version: (call.data.version || '1.0.0'), // We default to version 1.0.0
                     description: (call.data.description || ''),
                     datacenter: call.data.datacenter
                 };
