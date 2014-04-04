@@ -112,6 +112,14 @@
                 lastSelectedFile = null;
                 var path = getObjectPath(file);
                 var method = (file.type === 'object') ? 'unlink' : 'rmr';
+
+                $scope.refreshingFolder = true;
+
+                if (path === '/public' && file.name === 'public') {
+                    return showPopupDialog('error', 'Message', 'You can not delete public folder', function () {
+                        $scope.refreshingFolder = false;
+                    });
+                }
                 PopupDialog.confirm(
                     null,
                     localization.translate(
@@ -123,7 +131,6 @@
                         }
                     ),
                     function () {
-                        $scope.refreshingFolder = true;
                         fileman[method](path, function (error) {
                             if (error) {
                                 return showPopupDialog('error', 'Message', error.message, function () {
