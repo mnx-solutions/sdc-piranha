@@ -78,30 +78,13 @@
                 <a data-ng-href="{{utilization.url}}">
                     <div class="widget grey links2 utilization-icon">
                         <h4>Month to date Utilization</h4>
-                        <!--div class="details">
-                            <div class="desc">
-                                $999999
-                            </div>
-                            <div class="desc">
-                                est. list
-                            </div>
-                            <div class="desc">
-                                price
-                            </div>
-                            <div class="desc">
-                                spend
-                            </div>
-                        </div-->
                         <div class="details details-subinfo" data-ng-show="utilization">
                             <div class="desc">
                                 {{utilization.dram.format(utilization.dram.total)}} DRAM GB hours
                             </div>
                             <div class="desc">
-                                {{utilization.bandwidth.format(utilization.bandwidth.total)}} bandwith
+                                {{utilization.bandwidth.format(utilization.bandwidth.total)}} bandwidth
                             </div>
-                            <!--div class="desc">
-                                2.4 GB storage
-                            </div-->
                         </div>
                     </div>
                 </a>
