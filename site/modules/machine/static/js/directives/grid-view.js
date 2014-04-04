@@ -417,18 +417,28 @@
                             el.active = false;
                         }
                     }
+                    var initOrder = function (customOrder, el) {
+                        el.order = customOrder;
+                        if (typeof ( customOrder) === 'string') {
+                            el.rorder = '-' + customOrder;
+                        } else if (typeof (customOrder) === 'function') {
+                            el.rorder = function (obj) {
+                                var elem = String(customOrder(obj));
+                                var next = '';
+                                var i;
+                                for (i = 0; i < elem.length; i += 1) {
+                                    next += String.fromCharCode(255 - elem.charCodeAt(i));
+                                }
+                                return next;
+                            };
+                        }
 
-                    if (el._getter) {
-                        el.order = el._getter;
-                        el.rorder = function (obj) {
-                            var elem = String(el._getter(obj));
-                            var next = '';
-                            var i;
-                            for (i = 0; i < elem.length; i += 1) {
-                                next += String.fromCharCode(255 - elem.charCodeAt(i));
-                            }
-                            return next;
-                        };
+                    };
+
+                    if (el._order) {
+                        initOrder(el._order, el);
+                    } else if (el._getter) {
+                        initOrder(el._getter, el);
                     } else if (!el.id2) {
                         if (el.reverseSort) {
                             el.rorder = el.id;
