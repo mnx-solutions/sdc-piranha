@@ -261,6 +261,11 @@ table.table {
     line-height: 35px;
     padding-left: 15px;
 }
+.edit-info-bar-highlight .eula-space,
+.load-balancer-highlight td,
+.load-balancer-highlight .slb-name {
+    color: #f60;
+}
 .edit-name{
     display: inline-block;
     width: 125px;
