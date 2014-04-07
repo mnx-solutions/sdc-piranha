@@ -336,17 +336,26 @@ var slb = function execute(scope) {
                                     call.done(configError);
                                     return;
                                 }
-                                machine.Create(call, data, function (createError, result) {
-                                    if (createError) {
-                                        call.done(createError);
+                                call.cloud.listNetworks(function (networksError, networks) {
+                                    if (networksError) {
+                                        call.done(networksError);
                                         return;
                                     }
-                                    getSscClient(call, function (clientErr) {
-                                        if (clientErr) {
-                                            call.done(clientErr);
+                                    data.networks = networks.map(function (network) {
+                                        return network.id;
+                                    });
+                                    machine.Create(call, data, function (createError, result) {
+                                        if (createError) {
+                                            call.done(createError);
                                             return;
                                         }
-                                        call.done(null, result);
+                                        getSscClient(call, function (clientErr) {
+                                            if (clientErr) {
+                                                call.done(clientErr);
+                                                return;
+                                            }
+                                            call.done(null, result);
+                                        });
                                     });
                                 });
                             });
