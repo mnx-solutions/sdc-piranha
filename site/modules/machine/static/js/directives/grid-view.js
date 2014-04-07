@@ -75,7 +75,7 @@
         }, true);
 
         $scope.$watch('tabFilter', function() {
-            if ($scope.tabFilter.length > 0) {
+            if ($scope.tabFilter.length > 0 || $scope.tabFilterField !== 'datacenter') {
                 $scope.loading = false;
             }
         });
