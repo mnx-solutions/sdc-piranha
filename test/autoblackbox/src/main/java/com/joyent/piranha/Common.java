@@ -11,6 +11,7 @@ import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -141,12 +142,16 @@ public class Common {
     }
 
     public static String getTestInstanceName() {
-        if (System.getProperty("datacenter").equals("us-west-x")) {
-            return "selenide-created-instance-a";
-        } else if (System.getProperty("datacenter").equals("local-x")) {
-            return "forImageAutoTests";
+        final String instanceName;
+        switch (System.getProperty("datacenter")) {
+            case "us-west-b":
+            case "local-x":
+                instanceName = "dnd-forImageAutoTests";
+                break;
+            default:
+                instanceName = " ";
         }
-        return " ";
+        return instanceName;
     }
 
     public static String getValueFromLog(String key) {

@@ -2,9 +2,7 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.disappear;
-import static com.codeborne.selenide.Condition.matchText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -60,15 +58,15 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForSmallSpinnerDisappear() {
-        $(".pull-right.loading-small").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+        $(".pull-right.loading-small").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForMediumSpinnerDisappear() {
-        $(".loading-medium[style=\"\"]").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+        $(".loading-medium[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForLargeSpinnerDisappear() {
-        $(".loading-large[style=\"\"]").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
+        $(".loading-large[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public SelenideElement getErrorLabel() {

@@ -87,7 +87,7 @@ public class FirewallTests extends TestWrapper {
         firewallRuleDetails.selectTargetValue("To", "All my VMs in DC", "");
         firewallRuleDetails.getCreateRuleButton().click();
         firewallRules.waitForLargeSpinnerDisappear();
-        firewallRules.checkRuleParametersByTag(tag, "Disabled", "allow", "udp", tag, "All my VMs in DC");
+        firewallRules.checkRuleParametersByTag(tag, "Disabled", "allow", "udp all", tag, "All my VMs in DC");
         firewallRules.removeFirstRule();
     }
 
@@ -95,7 +95,7 @@ public class FirewallTests extends TestWrapper {
     public void createRule() {
         FirewallRuleDetails firewallRuleDetails = firewallRules.clickAddNewButton();
         firewallRuleDetails.clickUseAllButton();
-        firewallRuleDetails.selectTargetValue("From", "Instance", "forFIre\n");
+        firewallRuleDetails.selectTargetValue("From", "Instance", "dnd-forFIre\n");
         String instanceTag = "notAnInstance";
         firewallRuleDetails.selectTargetValue("To", "Tag", instanceTag);
         firewallRuleDetails.getCreateRuleButton().click();

@@ -51,7 +51,7 @@ public class InstanceRenameTests extends TestWrapper {
         instanceDetails.waitForMediumSpinnerDisappear();
         $(byText("Machine name can contain only letters, digits and signs like '.' and '-'.")).shouldBe(visible);
         instanceDetails.getInstanceNameField().clear();
-        instanceDetails.getInstanceNameField().sendKeys("forFIrewallAutoTests");
+        instanceDetails.getInstanceNameField().sendKeys("dnd-forFIrewallAutoTests");
         $(byText("Machine name is already in use")).shouldBe(visible);
     }
 

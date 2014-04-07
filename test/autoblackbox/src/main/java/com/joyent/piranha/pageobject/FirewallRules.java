@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FirewallRules extends AbstractPageObject {
 
-    public static final String GRID_ROW_REPEATER = "[data-ng-repeat=\"object in objects | orderBy:order | filter:matchesFilter\"]";
+    public static final String GRID_ROW_REPEATER = "[data-ng-repeat=\"object in pageObjects\"]";
 
     public FirewallRuleDetails clickAddNewButton() {
         $(byText("+ Add New Rule")).click();
