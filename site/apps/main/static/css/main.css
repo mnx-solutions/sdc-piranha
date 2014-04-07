@@ -2269,3 +2269,47 @@ label.checkbox {
     display: inline-block;
     padding: 0 10px;
 }
+
+/* Tooltips */
+
+.tooltip {
+    position: fixed;
+}
+.tooltip.left {
+    margin-left: -12px;
+}
+.tooltip-inner {
+    color: #020001;
+    background-color: #fff2d2;
+    border-radius: 0;
+    border: 1px solid #ff6600;
+}
+
+.tooltip.top .tooltip-inner {
+    border-bottom-width: 3px;
+}
+.tooltip.left .tooltip-inner {
+    border-right-width: 3px;
+}
+.tooltip.right .tooltip-inner {
+    border-left-width: 3px;
+}
+.tooltip.bottom .tooltip-inner {
+    border-top-width: 3px;
+}
+
+.tooltip.top .tooltip-arrow {
+    border-top-color: #ff6600;
+    border-width: 5px 5px 1px;
+}
+.tooltip.right .tooltip-arrow {
+    border-right-color: #ff6600;
+    border-width: 5px 5px 5px 1px;
+}
+.tooltip.left .tooltip-arrow {
+    border-left-color: #ff6600;
+}
+.tooltip.bottom .tooltip-arrow {
+    border-bottom-color: #ff6600;
+    border-width: 1px 5px 5px;
+}
