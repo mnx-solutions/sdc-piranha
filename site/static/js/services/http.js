@@ -1,7 +1,7 @@
 'use strict';
 
-(function (app) {
-    app.service('ca.http', [
+(function (angular, app) {
+    app.service('http', [
         '$http',
         function ($http) {
             var Config = {
@@ -80,12 +80,18 @@
                     if (config.timeout) {
                         options.timeout = config.timeout;
                     }
+                    if (config.headers) {
+                        options.headers = config.headers;
+                    }
+                    if (config.transformRequest) {
+                        options.transformRequest = config.transformRequest;
+                    }
                     function cb(status) {
                         return function () {
                             var args = [].slice.call(arguments),
                                 error = null;
                             if (status === 'error') {
-                                error = new Error(args[1]);
+                                error = args.splice(0, 1)[0];
                             }
                             args.unshift(error);
                             callback.apply(this, args);
@@ -109,14 +115,43 @@
                 return service;
             }
 
+            function uploadFiles(url, path, files, cb) {
+                angular.extend(Config, {
+                    url: url
+                });
+
+                var data = new FormData();
+
+                for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
+                    data.append('uploadInput', files[fileIndex]);
+                }
+
+                data.append('path', path);
+
+                var service = createService({
+                    uploadFile: {
+                        method: 'POST',
+                        data: data,
+                        transformRequest: angular.identity,
+                        headers: {
+                            'Content-Type': undefined
+                        },
+                        params: {}
+                    }
+                });
+
+                service.uploadFile({}, data, cb);
+            }
+
             return {
                 createMethod: createMethod,
                 config: function (config) {
                     angular.extend(Config, config);
                 },
-                createService: createService
+                createService: createService,
+                uploadFiles: uploadFiles
             };
         }
     ]);
-})(window.JP.getModule('cloudAnalytics'));
+})(window.angular, window.JP.main);
 

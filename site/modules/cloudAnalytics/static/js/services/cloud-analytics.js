@@ -33,8 +33,7 @@
     var instrumentationCache = new InstrumentationCache();
 
     app.factory('CloudAnalytics', [
-        'ca.dataset', 'ca.http', '$q', 'localization', 'PopupDialog',
-
+        'ca.dataset', 'http', '$q', 'localization', 'PopupDialog',
         function (DataSet, http, $q, localization, PopupDialog) {
             http.config({
                 url: 'cloudAnalytics/ca/:datacenter/:zoneId/:action'
@@ -347,7 +346,7 @@
                         cache[instrumentation.key] = instrumentation;
                         newInstrumentations[instrumentation.key] = instrumentation;
                     });
-                    callback(response.error, newInstrumentations, cache);
+                    callback(error, newInstrumentations, cache);
                 });
             };
 
@@ -361,7 +360,7 @@
                 
                 service.getValues(options, function (error, response) {
                     var values = response.res || [];
-                    if (!error && !response.error && !values.length) {
+                    if (!error && !values.length) {
                         // instrumentations were lost
                         self.stopPolling(options);
                         return;
