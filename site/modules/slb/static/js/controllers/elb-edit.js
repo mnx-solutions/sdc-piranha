@@ -148,31 +148,15 @@
                     $scope.saving = true;
                     $scope.server.protocol = $scope.protocolSelected.value;
                     $scope.server.datacenter = $scope.datacenterSelected.name;
-                    var selectedMachines = $scope.machines.filter(function (machine) {
+                    $scope.server.machines = $scope.machines.filter(function (machine) {
                         return machine.selected;
                     }).map(function (machine) {
                         return machine.primaryIp;
                     });
                     var operations = [];
                     if ($scope.balancerId) {
-                        var existingMachines = $scope.server.machines.map(function (machine) {
-                            return machine.host;
-                        });
-                        var machinesToAdd = selectedMachines.filter(function (machine) {
-                            return existingMachines.indexOf(machine) === -1;
-                        });
-                        var machinesToDelete = existingMachines.filter(function (machine) {
-                            return selectedMachines.indexOf(machine) === -1;
-                        });
-                        machinesToAdd.forEach(function (machine) {
-                            operations.push(service.addMachine($scope.balancerId, machine));
-                        });
-                        machinesToDelete.forEach(function (machine) {
-                            operations.push(service.deleteMachine($scope.balancerId, machine));
-                        });
                         operations.push(service.updateBalancer($scope.balancerId, $scope.server));
                     } else {
-                        $scope.server.machines = selectedMachines;
                         operations.push(service.addBalancer($scope.server));
                     }
                     $q.all(operations).then(function () {
