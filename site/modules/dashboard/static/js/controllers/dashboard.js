@@ -19,8 +19,10 @@
         'fileman',
         'Utilization',
         'util',
+        'Datacenter',
+        'FreeTier',
 
-        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util) {
+        function ($scope, $$track, $q, requestContext, Account, Zendesk, Machine, localization, BillingService, $http, $cookies, slbService, $rootScope, Support, fileman, Utilization, util, Datacenter, FreeTier) {
             localization.bind('dashboard', $scope);
             requestContext.setUpRenderContext('dashboard.index', $scope);
             $scope.loading = true;
@@ -101,6 +103,10 @@
 
                 $scope.runningcount = runningcount;
                 $scope.othercount = othercount;
+
+                if ($scope.features.freetier === 'enabled') {
+                    freeTierTileStatus();
+                }
             }, true);
 
             if ($scope.mantaEnabled) {
@@ -129,7 +135,43 @@
                 Utilization.utilization(year, month, function (error, utilizationData) {
                     $scope.utilization = utilizationData;
                     $scope.utilization.url = '#!/utilization/' + year + '/' + month;
+                })
+            }
+
+            var freeTierTileStatus = function () {
+                $scope.showAddFreeTier = false;
+                $scope.freeTierOptions = FreeTier.freetier();
+                $scope.freeTierOptions.then(function (freeImages) {
+                    Datacenter.datacenter().then(function (datacenters) {
+                        $scope.datacenters = ng.copy(datacenters);
+                        if (freeImages.valid) {
+                            $scope.validUntil = freeImages.validUntil;
+                            $scope.datacenters.forEach(function (datacenter) {
+                                datacenter.lightbulb = freeImages.some(function (freeImage) {
+                                    return freeImage.datacenters.indexOf(datacenter.name) !== -1;
+                                });
+                                if (datacenter.lightbulb) {
+                                    datacenter.tooltip = 'No free dev tier instances in this data center';
+                                    $scope.showAddFreeTier = true;
+                                } else {
+                                    $scope.machines.forEach(function (machine) {
+                                        if (machine.freetier && datacenter.name === machine.datacenter) {
+                                            datacenter.tooltip = 'Instance '+ machine.name + ' is ' + machine.state;
+                                        }
+                                    });
+                                }
+                            });
+
+                        }
+                        if ($scope.datacenters.length < 4) {
+                            $scope.datacenters.length = 4;
+                        }
+                    });
                 });
+            }
+
+            if ($scope.features.freetier === 'enabled') {
+                freeTierTileStatus();
             }
         }
     ]);

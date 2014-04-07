@@ -120,6 +120,44 @@
                 <div class="widget-btn"></div>
             </div>
 
+            <div class="pull-left widget-margin" data-ng-show="features.freetier == 'enabled'">
+                    <div class="widget grey links2 host">
+                        <h4>Free Dev Tier</h4>
+                        <table class="details">
+                            <tr>
+                                <td class="desc"><a>SmartOS</a></td>
+                                <td class="desc"><a>CentOS</a></td>
+                            </tr>
+                            <tr>
+                                <td class="desc"><a>Ubuntu</a></td>
+                                <td class="desc"><a>Node.js</a></td>
+                            </tr>
+                        </table>
+                        <table class="servers-bg">
+                            <tr>
+                                <td>
+                                    <div class="server" data-ng-repeat="datacenter in datacenters">
+                                        <p data-ng-show="datacenter.name"
+                                           class="pull-left tooltip-hover"
+                                           data-toggle="tooltip"
+                                           data-placement="top"
+                                           data-html="true"
+                                           data-original-title="{{datacenter.tooltip}}">
+                                            {{datacenter.name}}
+                                        </p>
+                                        <div class="lightbulb" data-ng-class="{'lightbulb-enable': !datacenter.lightbulb && datacenter.name}"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="more cursor-arrow">valid until {{validUntil | date:'yyyy-MM-dd'}}</div>
+                    </div>
+                <div class="widget-btn">
+                    <a class="more" href="#!/compute/create/simple" data-ng-show="showAddFreeTier"><button type="button" class="btn btn-stat orange align-text-btn"><i class="plus-btn-icon"></i>&nbsp;&nbsp;
+                        Create Free Dev Tier
+                    </button></a>
+                </div>
+            </div>
 
             <div class="pull-left widget-margin">
                 <div class="widget warn-dash-icon">

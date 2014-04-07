@@ -2313,3 +2313,6 @@ label.checkbox {
     border-bottom-color: #ff6600;
     border-width: 1px 5px 5px;
 }
+.cursor-arrow {
+    cursor: default;
+}
