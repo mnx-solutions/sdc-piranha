@@ -6,9 +6,13 @@
     border: none !important;
 }
 .navbar .nav.pull-right {
-    float: right;
     margin-right: 20px;
     padding: 8px;
+}
+@media screen and (max-width: 775px) {
+    .navbar .nav.pull-right {
+        margin-right: 0;
+    }
 }
 .container-fluid {
     min-width: 600px;
