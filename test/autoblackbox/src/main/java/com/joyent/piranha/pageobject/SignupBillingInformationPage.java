@@ -1,6 +1,5 @@
 package com.joyent.piranha.pageobject;
 
-import com.codeborne.selenide.SelenideElement;
 import com.joyent.piranha.Common;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,13 +12,20 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertTrue;
 
 public class SignupBillingInformationPage extends AbstractPageObject {
+
+    public static final String TITLE = "Billing Information";
+
+    @Override
+    String getTitle() {
+        return TITLE;
+    }
 
     public SignupSshPage clickNextButton() {
         $("[data-ng-click=\"submitForm()\"]").click();
@@ -68,8 +74,9 @@ public class SignupBillingInformationPage extends AbstractPageObject {
     }
 
     public void waitForPageLoading() {
-        //slowest element on the page
-        $(By.xpath("//span[contains(.,\"State\")]/span[contains(.,\"*\")]")).waitUntil(visible, timeout);
+        //slowest elements on the page
+        $("#firstName").waitWhile(empty, timeout);
+        $("#lastName").waitWhile(empty, timeout);
     }
 
     public void setPromotionalCode(String promoCode) {
