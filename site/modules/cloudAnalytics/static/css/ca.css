@@ -172,6 +172,9 @@
     text-shadow: none;
     font-size: 15px;
 }
+.btn.pull-right {
+    clear: right;
+}
 
 .charts-container {
     width: 700px;
