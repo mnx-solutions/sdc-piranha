@@ -138,6 +138,7 @@
                 })
             }
 
+            $scope.validFreeTier = false;
             var freeTierTileStatus = function () {
                 $scope.showAddFreeTier = false;
                 $scope.freeTierOptions = FreeTier.freetier();
@@ -146,6 +147,7 @@
                         $scope.datacenters = ng.copy(datacenters);
                         if (freeImages.valid) {
                             $scope.validUntil = freeImages.validUntil;
+                            $scope.validFreeTier = true;
                             $scope.datacenters.forEach(function (datacenter) {
                                 datacenter.lightbulb = freeImages.some(function (freeImage) {
                                     return freeImage.datacenters.indexOf(datacenter.name) !== -1;
