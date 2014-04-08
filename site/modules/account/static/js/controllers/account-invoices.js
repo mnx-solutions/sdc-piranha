@@ -47,7 +47,7 @@
 
             $scope.gridOrder = ['-invoiceDate'];
             $scope.exportFields = {
-                ignore: ['invoiceItems']
+                ignore: ['invoiceItems', 'IntegrationId__NS', 'IntegrationStatus__NS', 'SyncDate__NS', 'accountId', 'accountNumber', 'createdBy']
             };
 
             $scope.gridProps = [
@@ -92,70 +92,34 @@
                     }
                 },
                 {
-                    id: 'IntegrationId__NS',
-                    name: 'Integration ID',
-                    active: false,
-                    sequence: 6
-                },
-                {
-                    id: 'IntegrationStatus__NS',
-                    name: 'Integration Status',
-                    active: false,
-                    sequence: 7
-                },
-                {
-                    id: 'SyncDate__NS',
-                    name: 'Sync Date',
-                    active: false,
-                    sequence: 8
-                },
-                {
-                    id: 'accountId',
-                    name: 'Account ID',
-                    active: false,
-                    sequence: 9
-                },
-                {
-                    id: 'accountNumber',
-                    name: 'Account Number',
-                    active: false,
-                    sequence: 10
-                },
-                {
                     id: 'accountName',
                     name: 'Account Name',
                     active: false,
-                    sequence: 11
+                    sequence: 6
                 },
                 {
                     id: 'balance',
                     name: 'Balance',
                     active: false,
-                    sequence: 12
-                },
-                {
-                    id: 'createdBy',
-                    name: 'Created By',
-                    active: false,
-                    sequence: 13
+                    sequence: 7
                 },
                 {
                     id: 'dueDate',
                     name: 'Due Date',
                     active: false,
-                    sequence: 14
+                    sequence: 8
                 },
                 {
                     id: 'invoiceTargetDate',
                     name: 'Invoice Target Date',
                     active: false,
-                    sequence: 15
+                    sequence: 9
                 },
                 {
                     id: 'status',
                     name: 'Status',
                     active: false,
-                    sequence: 16
+                    sequence: 10
                 }
             ];
             $scope.gridActionButtons = [];
