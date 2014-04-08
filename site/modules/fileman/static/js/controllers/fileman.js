@@ -169,6 +169,7 @@
                     var infoModalCtrl = function ($scope, dialog) {
                         $scope.info = info.__read();
                         $scope.title = $scope.info.name + " description";
+                        $scope.info.type = ($scope.info.extension === 'directory') ? 'directory' : $scope.info.type;
 
                         $scope.close = function (res) {
                             dialog.close(res);
