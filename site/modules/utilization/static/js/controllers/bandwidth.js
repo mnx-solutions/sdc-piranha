@@ -3,15 +3,19 @@
 (function (app) {
     app.controller(
         'Utilization.BandwidthController',
-        ['$scope', '$location', 'Utilization', 'requestContext', function ($scope, $location, Utilization, requestContext) {
+        ['$scope', '$location', 'Utilization', 'requestContext', 'loggingService', function ($scope, $location, Utilization, requestContext, loggingService) {
             requestContext.setUpRenderContext('utilization.bandwidth', $scope);
-            var loadData = function () {
+            var loadData = function (event, context) {
+                if (context && !context.startsWith('utilization.bandwidth')) {
+                    return;
+                }
                 var year = requestContext.getParam('year');
                 var month = requestContext.getParam('month');
                 Utilization.utilization(year, month, function (error, utilizationData) {
                     $scope.chartData = utilizationData.bandwidth;
                     $scope.gridData = utilizationData.bandwidth.usage;
                 });
+                loggingService.log('info', 'User navigated to ' + $location.$$path);
                 $scope.backLink = '#!/utilization/' + year + '/' + month;
             };
             $scope.$on('requestContextChanged', loadData);

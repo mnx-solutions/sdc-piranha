@@ -24,7 +24,7 @@ window.JP.main.factory(
 
             // add some additional information about the user to the log
             var userInfo = {
-                errorUrl: window.location.href,
+                url: window.location.href,
                 userAgent: window.navigator.userAgent,
                 platform: window.navigator.platform
             };
