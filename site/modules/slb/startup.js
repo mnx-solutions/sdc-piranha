@@ -378,13 +378,13 @@ var slb = function execute(scope) {
                 datacenter: sscMachine.datacenter
             };
             ssc.clearCache(call);
-            call.update(null, 'Removing load balancer infrastructure');
+            call.update(null, 'Removing load balancer infrastructure.');
             machine.Stop(call, data, function (stopError) {
                 if (stopError) {
                     callback(stopError);
                     return;
                 }
-                call.update(null, 'You will not occur any future charges for Joyent Simple Load Balancer');
+                call.update(null, 'You will not incur any future charges for Joyent Simple Load Balancer.');
                 machine.Delete(call, data, function (delError, result) {
                     if (delError) {
                         callback(delError);
@@ -403,7 +403,7 @@ var slb = function execute(scope) {
                 deleteSscMachine(call, call.done);
                 return;
             }
-            call.update(null, 'Deleting load balancers');
+            call.update(null, 'Deleting load balancers.');
             client.del('/loadbalancers', function (delError, creq, cres, obj) {
                 if (delError) {
                     call.log.warn('Cannot disable STMs');
