@@ -355,7 +355,7 @@
                 data-el-width="220"></span>
         </div>
     </fieldset>
-    <fieldset class="line" data-ng-show="currentStep && features.promocode != 'disabled'">
+    <fieldset class="line" data-ng-show="currentStep && features.promocode != 'disabled' && !form.disablePromoCode">
         <legend data-translate>Promotional Code</legend>
         <div class="control-group">
             <span class="edit-name" data-translate>Enter Code

@@ -59,7 +59,8 @@
 
                     $http.get('billing/promocode').then(function (code) {
                         if(!$scope.form.promoCode && code.data) {
-                            $scope.form.promoCode = code.data;
+                            $scope.form.promoCode = code.data.code;
+                            $scope.form.disablePromoCode = code.data.disablePromoCode;
                         }
                     });
 

@@ -1,96 +1,78 @@
 {
     "FREEJOY12": {
         "expirationDate": "2013-11-13",
-        "startDate": "2012-11-19",
-        "campaignId": "70180000000aarN"
+        "startDate": "2012-11-19"
     },
     "NODEVOPS": {
         "expirationDate": "2013-11-13",
-        "startDate": "2012-12-14",
-        "campaignId": "70180000000afnr"
+        "startDate": "2012-12-14"
     },
     "HOLIDAYJOY": {
         "expirationDate": "2013-11-13",
-        "startDate": "2012-12-18",
-        "campaignId": "70180000000ag8G"
+        "startDate": "2012-12-18"
     },
     "FREEJOY": {
         "startDate": "2013-11-02",
         "defaultDate": "2013-11-02",
-        "campaignId": "70180000000ag8G",
         "ratePlanName": "Free Trial",
         "sku": "SKU-00000014"
     },
     "INTELJOY": {
         "expirationDate": "2013-11-13",
-        "startDate": "2013-04-01",
-        "campaignId": "70180000000atKm"
+        "startDate": "2013-04-01"
     },
     "NKO2013TEAM1": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yrJ"
+        "startDate": "2013-11-19"
     },
     "NKO2013SOLO1": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yrO"
+        "startDate": "2013-11-19"
     },
     "NKO2013INO": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yrY"
+        "startDate": "2013-11-19"
     },
     "NKO2013DES": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yrd"
+        "startDate": "2013-11-19"
     },
     "NKO2013UTI": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yre"
+        "startDate": "2013-11-19"
     },
     "NKO2013COM": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yri"
+        "startDate": "2013-11-19"
     },
     "NKO2013POP": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yrn"
+        "startDate": "2013-11-19"
     },
     "NKO2013TOP100": {
         "expirationDate": "2013-12-31",
-        "startDate": "2013-11-19",
-        "campaignId": "701800000014yrs"
+        "startDate": "2013-11-19"
     },
     "NS13OW6K": {
         "expirationDate": "2014-01-31",
-        "startDate": "2013-12-10",
-        "campaignId": "7018000000153Ja"
+        "startDate": "2013-12-10"
     },
     "NS13W12K": {
         "expirationDate": "2014-01-31",
-        "startDate": "2013-12-10",
-        "campaignId": "7018000000153Jf"
+        "startDate": "2013-12-10"
     },
     "NS13P61K": {
         "expirationDate": "2014-01-31",
-        "startDate": "2013-12-10",
-        "campaignId": "7018000000153Jk"
+        "startDate": "2013-12-10"
     },
     "NODE.JS CORE SUPPORT": {
         "expirationDate": "2020-12-31",
         "startDate": "2014-01-01",
-        "campaignId": "701800000015696",
         "amount": 990,
         "ratePlanName": "Free Trial"
     },
     "JTB214964!": {
-       "expirationDate": "2014-04-01",
-       "startDate": "2014-02-14",
-       "campaignId": "701800000015EwB"
+        "expirationDate": "2014-04-01",
+        "startDate": "2014-02-14"
     }
 }
