@@ -8,12 +8,12 @@ module.exports = function execute(scope, app) {
     var campaignPromoMap = {};
     var defaultPromos = [];
     if (config.features.promocode !== 'disabled' && config.ns['promo-codes']) {
-        Object.keys(config.ns['promo-codes']).forEach(function (promoKey) {
-            var promo = config.ns['promo-codes'][promoKey];
-            if (promo.campaignId) {
-                promo.code = promoKey;
-                campaignPromoMap[promo.campaignId] = promo;
-            }
+        Object.keys(config.ns['campaigns']).forEach(function (campaignId) {
+            var campaign = config.ns['campaigns'][campaignId];
+            var promo = config.ns['promo-codes'][campaign.promoCode];
+            promo.code = campaign.promoCode;
+            promo.disablePromoCode = campaign.disablePromoCode;
+            campaignPromoMap[campaignId] = promo;
         });
         defaultPromos = Object.keys(config.ns['promo-codes'])
             .map(function (promoKey) {
@@ -62,14 +62,19 @@ module.exports = function execute(scope, app) {
             i += 1;
             defPromo = defaultPromos[i];
         }
+        defPromo.disablePromoCode = true;
         return defPromo;
     }
 
     app.get('/promocode', function (req, res, next) {
         var promo = getPromoDetail(req.cookies.campaignId);
-        var code = promo && promo.code ? promo.code : '';
-        req.log.debug({campaignId: req.cookies.campaignId, promocode: code}, 'Requested default promocode');
-        res.send(code);
+        var result = {code: '', disablePromoCode: false};
+        if (promo) {
+            result.code = promo.code ? promo.code : '';
+            result.disablePromoCode = promo.disablePromoCode === true;
+        }
+        req.log.debug({campaignId: req.cookies.campaignId, promocode: result}, 'Requested default promocode');
+        res.json(result);
     });
 
     app.get('/promoamount', function (req, res) {
