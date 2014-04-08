@@ -5,12 +5,6 @@ import com.joyent.piranha.Common;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
-import org.openqa.selenium.interactions.Action;
-import org.openqa.selenium.interactions.HasInputDevices;
-import org.openqa.selenium.interactions.Mouse;
-import org.openqa.selenium.interactions.MoveMouseAction;
-import org.openqa.selenium.interactions.internal.MouseAction;
-import org.openqa.selenium.internal.Locatable;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -48,7 +42,7 @@ public class SmokeTest extends TestWrapper {
     }
 
     @Before
-    public void goToDashboard(){
+    public void goToDashboard() {
         sideBarMenu.clickDashboard();
     }
 
@@ -94,7 +88,7 @@ public class SmokeTest extends TestWrapper {
         instances.checkTitle();
         instances.errorNotPresent();
 
-        InstanceDetails instanceDetails = instances.getList().clickFirstInstance();
+        InstanceDetails instanceDetails = instances.getInstanceList().clickFirstInstance();
 
         instanceDetails.checkTitle();
         instanceDetails.getChartElements().shouldHaveSize(3);
@@ -103,6 +97,7 @@ public class SmokeTest extends TestWrapper {
         analytics.getSelectInstanceLabel().shouldBe(visible);
         analytics.getStartAnalyticsButton().shouldBe(visible);
     }
+
     @Ignore//manta doesn't work for now
     @Test
     public void storagePageIsVisible() {

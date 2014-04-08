@@ -36,7 +36,7 @@ public class InstanceRenameTests extends TestWrapper {
         loginPage.login(USER_NAME, PASSWORD);
         navBarMenu = page(NavBarMenu.class);
         sideBarMenu = page(SideBarMenu.class);
-        instanceDetails = sideBarMenu.clickCompute().getList().openInstanceDetails(TEST_INSTANCE_NAME);
+        instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(TEST_INSTANCE_NAME);
     }
 
     @AfterClass
@@ -60,7 +60,7 @@ public class InstanceRenameTests extends TestWrapper {
         String instName = "NewInstName";
         instanceDetails.rename(instName);
         instanceDetails.getInstanceNameField().shouldHave(text(instName));
-        sideBarMenu.clickCompute().getList().openInstanceDetails(instName);
+        sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(instName);
         instanceDetails.rename(Common.getTestInstanceName());
         instanceDetails.getInstanceNameField().shouldHave(text(Common.getTestInstanceName()));
     }
