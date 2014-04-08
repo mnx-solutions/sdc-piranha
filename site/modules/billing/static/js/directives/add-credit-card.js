@@ -76,12 +76,14 @@
                                         {
                                             result: 'cancel',
                                             label: 'Take me out',
-                                            cssClass: 'pull-left'
+                                            cssClass: 'btn pull-left grey-new effect-orange-button',
+                                            setFocus: false
                                         },
                                         {
                                             result: 'ok',
                                             label: 'I\'m ready',
-                                            cssClass: 'btn-joyent-blue'
+                                            cssClass: 'btn orange',
+                                            setFocus: true
                                         }
                                     ]
                                 };
