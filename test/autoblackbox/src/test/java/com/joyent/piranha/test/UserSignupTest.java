@@ -76,7 +76,7 @@ public class UserSignupTest extends TestWrapper {
         assertTrue(signupBillInfoPage.isErrorDisplayed("Missing phone number"));
         signupBillInfoPage.setCreditCardNumber("!!!");
         signupBillInfoPage.clickNextButton();
-        assertTrue(signupBillInfoPage.isErrorDisplayed("Invalid credit card number"));
+        assertTrue(signupBillInfoPage.isErrorDisplayed("Please provide valid 16-digit card number"));
     }
 
     @Test
@@ -84,6 +84,7 @@ public class UserSignupTest extends TestWrapper {
         CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
         loginPage.createTestAccount(createAccountPage);
         SignupBillingInformationPage signupBillInfoPage = createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
+        signupBillInfoPage.waitForPageLoading();
         signupBillInfoPage.fillStepToPassCorrectly();
         SignupSshPage signupSshPage = signupBillInfoPage.clickNextButton();
         signupSshPage.checkTitle();
