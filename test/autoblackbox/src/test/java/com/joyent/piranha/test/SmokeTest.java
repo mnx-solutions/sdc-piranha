@@ -98,12 +98,11 @@ public class SmokeTest extends TestWrapper {
         analytics.getStartAnalyticsButton().shouldBe(visible);
     }
 
-    @Ignore//manta doesn't work for now
     @Test
     public void storagePageIsVisible() {
         final Storage storage = sideBarMenu.clickStorage();
         storage.errorNotPresent();
-        storage.getIntroductionLabel().shouldBe(visible);
+        storage.checkTitle();
     }
 
     @Test
@@ -118,14 +117,12 @@ public class SmokeTest extends TestWrapper {
         account.getSSHContainer().getKeyNameLabel().shouldHave(text("Key Name / UUID"));
         final EditProfile editProfile = account.clickEditProfile();
         editProfile.checkTitle();
-//till PIRANHA-1441 is done
-//        editProfile.checkBreadcrumb("Account", "Edit account");
+        editProfile.checkBreadcrumb("Account", "");
 
         navBarMenu.clickAccountMenu().clickAccount();
         final EditBillingInformation editBillingInformation = account.clickEditBilling();
         editBillingInformation.checkTitle();
-//till PIRANHA-1441 is done
-//        editBillingInformation.checkBreadcrumb("Account", "Billing information");
+        editBillingInformation.checkBreadcrumb("Account", "");
 
         navBarMenu.clickAccountMenu().clickAccount();
         account.getSSHContainer().clickELBApi().getFingerprintLabel().shouldBe(visible);
@@ -164,12 +161,12 @@ public class SmokeTest extends TestWrapper {
         $(byText("New to Joyent?")).shouldBe(visible);
         loginPage.clickSignInOnLandingPage();
         loginPage.login(USER_NAME, "lol");
-        loginPage.getErrorLabel().shouldHave(text("Invalid username or password"));
+        loginPage.getErrorLabel().shouldHave(text("The username or password is incorrect"));
         loginPage.getInfoLabel().shouldHave(text("Reminder: username and password are case sensitive"));
         loginPage.login(USER_NAME, PASSWORD);
         sideBarMenu.clickDashboard().getCountInstancesRunning().shouldNotHave(text("0"));
     }
-
+    @Ignore //until SSO is not fixed
     @Test
     public void changePassword() {
         ChangePassword changePassword = navBarMenu.clickAccountMenu().clickChangePassword();

@@ -39,7 +39,7 @@ public class UserSignupTest extends TestWrapper {
     public static void logout() {
         Common.forceLogout();
     }
-
+@Ignore
     @Test
     public void createAccountValidation() {
         CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
@@ -58,7 +58,7 @@ public class UserSignupTest extends TestWrapper {
         createAccountPage.getPassError().shouldBe(visible);
         createAccountPage.getPassError().shouldHave(text("Passwords do not match. Password should have at least 7 characters. Password should have at least 1 alpha character. Password should have at least 1 numeric character."));
     }
-
+@Ignore
     @Test
     public void paymentInformationValidation() {
         CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
@@ -78,7 +78,7 @@ public class UserSignupTest extends TestWrapper {
         signupBillInfoPage.clickNextButton();
         assertTrue(signupBillInfoPage.isErrorDisplayed("Please provide valid 16-digit card number"));
     }
-
+@Ignore
     @Test
     public void passBillingStep() {
         CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
@@ -95,8 +95,9 @@ public class UserSignupTest extends TestWrapper {
         CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
         loginPage.createTestAccount(createAccountPage);
         SignupBillingInformationPage signupBillInfoPage = createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
+        signupBillInfoPage.waitForPageLoading();
         signupBillInfoPage.fillStepToPassCorrectly();
-        signupBillInfoPage.setCountry("47");
+        signupBillInfoPage.setCountry("China");
         signupBillInfoPage.clickNextButton();
         $(byText("Failed")).shouldBe(visible);
     }
