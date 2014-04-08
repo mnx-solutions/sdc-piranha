@@ -16,14 +16,14 @@
                                                    location.path().search('slb') == 1 ||
                                                    location.path().search('firewall') == 1 ||
                                                    location.path().search('images') == 1, over: compute && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="compute=true" ng-mouseleave="compute=false">
-                <a href="#!/compute/">
+                <a href="#!/compute">
                 <i class=""></i>
                 <span class="title" data-ng-show="!sideBarMin || compute">Compute</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
                 <li class="sub" data-ng-class="{active: location.path().search('compute') == 1}">
-                    <a href="#!/compute/">
+                    <a href="#!/compute">
                         <span class="titles" data-ng-show="!sideBarMin || compute">Instances</span>
                         <span class="selected-sub"></span>
                     </a>
