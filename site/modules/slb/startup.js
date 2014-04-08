@@ -333,8 +333,9 @@ var slb = function execute(scope) {
                             }
                             removeSscConfig(data, function (configError) {
                                 if (configError) {
-                                    call.done(configError);
-                                    return;
+//                                    call.done(configError);
+//                                    return;
+                                    call.req.log.warn('Cannot remove user slb config from manta.');
                                 }
                                 call.cloud.listNetworks(function (networksError, networks) {
                                     if (networksError) {
