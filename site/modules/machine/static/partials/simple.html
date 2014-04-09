@@ -5,10 +5,10 @@
         <div class="container-min-width" data-ng-show="keys.length">
             <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Quick Start: Create Instance</h3>
             <div class="ci-desc">Get started with Joyent by selecting an instance below and start computing.</div>
-            <div style="padding-bottom: 30px;">
-                <span>Data Center:</span>
-                <div class="provisioning-header-left-button btn-group">
-                    <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+            <div class="wizard-first-step row-fluid">
+                <span class="select-name">Data Center:</span>
+                <div class="btn-group">
+                    <button class="btn datacenter-select" data-ng-show="data.datacenter" data-toggle="dropdown">{{data.datacenter}}</button>
                     <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                         <span class="caret"></span>
                     </button>

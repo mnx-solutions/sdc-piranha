@@ -29,7 +29,7 @@
                     <div class="btn-group tooltip-hover span3 dd-margin protocol-pos"
                          data-toggle="tooltip"
                          data-placement="bottom">
-                        <button class="btn slb-select">{{protocolSelected.name}}</button>
+                        <button class="btn slb-select" data-toggle="dropdown">{{protocolSelected.name}}</button>
 
                         <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
                             <span class="caret"></span>
@@ -64,7 +64,7 @@
                          data-placement="bottom"
                          data-ng-hide="balancerId">
 
-                        <button class="btn slb-select">{{datacenterSelected.name}}</button>
+                        <button class="btn slb-select" data-toggle="dropdown">{{datacenterSelected.name}}</button>
                         <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>
@@ -98,7 +98,7 @@
                          data-toggle="tooltip"
                          data-placement="bottom">
 
-                        <button class="btn slb-select">{{server.health.timeout}} sec</button>
+                        <button class="btn slb-select" data-toggle="dropdown">{{server.health.timeout}} sec</button>
                         <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>
@@ -117,7 +117,7 @@
                          data-toggle="tooltip"
                          data-placement="bottom">
 
-                        <button class="btn slb-select">{{server.health.delay}} mins</button>
+                        <button class="btn slb-select" data-toggle="dropdown">{{server.health.delay}} mins</button>
                         <button class="btn dropdown-toggle slb-select" data-toggle="dropdown">
                             <span class="caret"></span>
                         </button>

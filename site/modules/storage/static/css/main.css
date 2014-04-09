@@ -193,45 +193,6 @@
 .icon-sort-both {
     background-image: url("../img/sort_both.png");
 }
-.dropdown-menu {
-    min-width: 135px;
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-}
-.dropdown-checkboxes label {
-    color: #333;
-    margin-bottom: 4px;
-    margin-top: 4px;
-}
-.btn-group + .btn-group {
-    margin-left: 0;
-}
-.btn-group>.btn, .btn-group>.dropdown-menu, .btn-group>.popover {
-    font-size: 14px;
-}
-.open>.dropdown-menu {
-    display: block;
-}
-.dropdown-menu.pull-right {
-    right: 0;
-    left: auto;
-}
-.dropdown-checkboxes {
-    padding: 5px;
-}
-.dropdown-menu > li{
-    background-color: white;
-}
-.dropdown-menu > li > a{
-    text-align: left;
-}
-.dropdown-menu > li > a:hover{
-    background-image: none;
-    background-color: #d8d8d8;
-    color: #333333;
-}
-
 .page_row_info {
     float: left;
 }

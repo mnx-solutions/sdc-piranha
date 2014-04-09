@@ -21,38 +21,36 @@
                     <div id="provisionCarousel" class="carousel slide dpl-inline">
                         <div class="carousel-inner provisioning-carousel-inner-box advanced-table" data-ng-class="{'loading-medium':reloading}">
                             <div class="active item outer-provisioning-item">
-                                <div class="container-min-width advanced-ci-step1">
+                                <div class="container-min-width wizard-first-step">
                                     <div class="" style="display: inline-block;">
                                         <input type="text" class="search-images" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
                                         <input value="" class="btn-filter-images" type="submit">
                                     </div>
-                                    <div class="btn-group">
-                                        <span class="btn-control-pos">
+                                    <span class="select-name">
                                             Data Center:
                                         </span>
-                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                                    <div class="btn-group">
+                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.datacenter" data-toggle="dropdown">{{data.datacenter}}</button>
                                         <button id="button-select-datacenter" class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu dd-datacenter" style="margin-left: 87px !important;">
+                                        <ul class="dropdown-menu">
                                             <li data-ng-repeat="datacenter in datacenters">
                                                 <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
                                             </li>
                                         </ul>
                                     </div>
-                                    <div class="btn-group hidden-phone"
-                                         data-html="true"
-
-                                         data-original-title="Filter by operating system"
-                                         style="padding-left: 20px;">
-                                        <span class="btn-control-pos">
+                                    <span class="select-name">
                                             OS:
                                         </span>
-                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.opsys">{{data.opsys}}</button>
+                                    <div class="btn-group hidden-phone"
+                                         data-html="true"
+                                         data-original-title="Filter by operating system">
+                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.opsys" data-toggle="dropdown">{{data.opsys}}</button>
                                         <button id="button-select-os" class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
                                             <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu dd-datacenter" style="margin-left: 50px !important;">
+                                        <ul class="dropdown-menu">
                                             <li data-ng-repeat="opsys in operating_systems">
                                                 <a data-ng-click="selectOpsys(opsys) | orderBy:'toString()'">{{opsys}}</a>
                                             </li>
@@ -109,7 +107,7 @@
                                                 <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
                                                 <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
                                                     <div class="btn-group pull-left">
-                                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]">
+                                                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]" data-toggle="dropdown">
                                                             {{selectedVersions[selectedDataset.name].version}}
                                                         </button>
 
@@ -117,7 +115,7 @@
                                                                 <span class="caret"></span>
                                                         </button>
 
-                                                        <ul class="dropdown-menu dd-image-versions">
+                                                        <ul class="dropdown-menu dd-fixed-width">
                                                             <li data-ng-repeat="version in versions[selectedDataset.name]">
                                                                 <a data-ng-click="selectVersion(selectedDataset.name, version)">{{version.version}}</a>
                                                             </li>
@@ -136,7 +134,7 @@
                                     <div class="filter-container">
                                         Filter:
                                         <div class="btn-group btn-group-filter">
-                                            <button class="btn datacenter-select filter-select">
+                                            <button class="btn datacenter-select filter-select" data-toggle="dropdown">
                                                 {{filterProperty | uppercase}}
                                             </button>
 
@@ -144,7 +142,7 @@
                                                 <span class="caret"></span>
                                             </button>
 
-                                            <ul class="dropdown-menu dd-image-versions">
+                                            <ul class="dropdown-menu dd-fixed-width">
                                                 <li data-ng-repeat="prop in filterProps">
                                                     <label class="filter-value">
                                                         {{prop}}
@@ -159,7 +157,7 @@
                                             </ul>
                                         </div>
                                         <div class="btn-group btn-group-filter">
-                                            <button class="btn datacenter-select filter-select">
+                                            <button class="btn datacenter-select filter-select" data-toggle="dropdown">
                                                 {{ formatFilterValue(filterPropertyValue) }}
                                             </button>
 
@@ -167,7 +165,7 @@
                                                 <span class="caret"></span>
                                             </button>
 
-                                            <ul class="dropdown-menu dd-image-versions">
+                                            <ul class="dropdown-menu dd-fixed-width">
                                                 <li data-ng-repeat="prop in filterValues[filterProperty]">
                                                     <label class="filter-value">
                                                         {{ formatFilterValue(prop) }}
@@ -229,7 +227,7 @@
                                                     <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
                                                     <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
                                                         <div class="btn-group pull-left">
-                                                            <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]">
+                                                            <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]" data-toggle="dropdown">
                                                                 {{selectedVersions[selectedDataset.name].version}}
                                                             </button>
 
@@ -237,7 +235,7 @@
                                                                 <span class="caret"></span>
                                                             </button>
 
-                                                            <ul class="dropdown-menu dd-image-versions">
+                                                            <ul class="dropdown-menu dd-fixed-width">
                                                                 <li data-ng-repeat="version in versions[selectedDataset.name]">
                                                                     <a data-ng-click="selectVersion(selectedDataset.name, version)">
                                                                         {{version.version}}

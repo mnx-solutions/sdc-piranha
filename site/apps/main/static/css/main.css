@@ -1459,7 +1459,6 @@ div.checker {
 div.checker, div.checker span, div.checker input {
     width: 19px;
     height: 19px;
-    margin-right: 5px;
 }
 
 div.checker span[disabled] {
@@ -1487,14 +1486,9 @@ div.checker span.checked {
 
 div.checker input {
     opacity: 0;
-    filter: alpha(opacity=0);
-    -moz-opacity: 0;
     border: none;
     background: none;
-    display: -moz-inline-box;
     display: inline-block;
-    *display: inline;
-    zoom: 1;
 }
 
 div.checker.active span {
@@ -1534,11 +1528,13 @@ label.checkbox {
 }
 
 .dropdown-menu input[type="checkbox"] {
-    margin: 0 10px;
+    margin: 0;
 }
 
 .dropdown-menu {
-    min-width: 135px;
+    margin-top: 0;
+    padding: 0;
+    min-width: 98% !important;
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
@@ -1560,7 +1556,7 @@ label.checkbox {
 }
 
 .dropdown-checkboxes {
-    padding: 5px;
+    padding: 5px 9px 5px 5px;
 }
 
 .dropdown-menu > li {
@@ -1568,7 +1564,14 @@ label.checkbox {
 }
 
 .dropdown-menu > li > a {
+    display: block;
+    clear: both;
+    padding: 2px 10px;
+    color: #333333;
     text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+    font-weight: normal;
 }
 
 .dropdown-menu > li > a:hover {
@@ -1610,7 +1613,6 @@ label.checkbox {
 }
 
 .grid-action-btn {
-    width: 100% !important;
     text-align: left;
 }
 
