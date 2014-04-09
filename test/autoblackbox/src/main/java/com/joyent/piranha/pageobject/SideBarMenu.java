@@ -21,15 +21,19 @@ public class SideBarMenu extends AbstractPageObject {
         return page(Instances.class);
     }
 
-
     public void clickMenu(final String title) {
         $(byText(title)).click();
-
     }
 
     public FirewallRules openFirewallPage() {
         clickMenu(COMPUTE_MENU_TITLE);
-        $(byText("Firewall")).click();
+        clickMenu(FIREWALL_MENU_TITLE);
         return page(FirewallRules.class);
+    }
+
+    public ImageList clickImages() {
+        clickMenu(COMPUTE_MENU_TITLE);
+        clickMenu(IMAGES_MENU_TITLE);
+        return page(ImageList.class);
     }
 }

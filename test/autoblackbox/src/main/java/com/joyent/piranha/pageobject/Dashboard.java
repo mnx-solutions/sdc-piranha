@@ -14,9 +14,9 @@ public class Dashboard extends AbstractPageObject {
         checkTitle(DASHBOARD_MENU_TITLE);
     }
 
-    public CreateInstance clickCreateComputeInstance() {
+    public CreateInstanceQuickStart clickCreateComputeInstance() {
         $("#button-create-instance").click();
-        return page(CreateInstance.class);
+        return page(CreateInstanceQuickStart.class);
     }
 
 }

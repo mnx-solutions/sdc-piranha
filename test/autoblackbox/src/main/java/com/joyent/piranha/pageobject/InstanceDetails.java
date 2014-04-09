@@ -44,6 +44,11 @@ public class InstanceDetails extends AbstractPageObject {
         return page(TagSection.class);
     }
 
+    public ImagesSection openImagesSection() {
+        $("#accordion1 a[href=\"#collapse_images\"]").click();
+        return page(ImagesSection.class);
+    }
+
     public void clickRenameInstanceIcon() {
         //need this crutch because clickable element is always invisible
         JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();

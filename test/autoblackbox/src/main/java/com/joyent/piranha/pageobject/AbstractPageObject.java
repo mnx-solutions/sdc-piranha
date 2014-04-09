@@ -17,6 +17,8 @@ public abstract class AbstractPageObject {
     static final String DASHBOARD_MENU_TITLE = "Dashboard";
     static final String COMPUTE_MENU_TITLE = "Compute";
     static final String STORAGE_MENU_TITLE = "Storage";
+    static final String FIREWALL_MENU_TITLE = "Firewall";
+    static final String IMAGES_MENU_TITLE = "Images";
 
     static int baseTimeout;
 
@@ -108,6 +110,10 @@ public abstract class AbstractPageObject {
     public void setValue(SelenideElement fieldSelector, String value) {
         fieldSelector.clear();
         fieldSelector.sendKeys(value);
+    }
+
+    public SelenideElement getRowByText(String dataNgRepeat, String textContains) {
+        return $(By.xpath("//tr[@data-ng-repeat='"+dataNgRepeat+"']/td[contains(., \'"+textContains+"\')]/.."));
     }
 
     public void addGridColumn(String columnName) {

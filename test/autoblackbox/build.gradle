@@ -19,7 +19,7 @@ dependencies {
 
 tasks.withType(Test) {
     def env = ''
-    if (hasProperty('lx')) {
+    if (project.hasProperty('lx')) {
         env = '.lx'
     } else if (project.hasProperty('wb')) {
         env = '.wb'
@@ -76,7 +76,7 @@ task FirewallTests(type: Test) {
 }
 
 task ImageTests(type: Test) {
-    include '**/ImageTests.class'
+    include '**/ImageTest.class'
 }
 
 task ProductionFeatures(type: Test) {

@@ -11,7 +11,6 @@ import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -51,6 +50,7 @@ public class Common {
         Common.getRowByText(headingTextContainer, headingText).$(byText("Edit")).click();
     }
 
+    @Deprecated
     public static SelenideElement getRowByText(ElementsCollection col, String filter) {
         for (SelenideElement element : col) {
             if (element.findAll(byText(filter)).size() > 0) {
