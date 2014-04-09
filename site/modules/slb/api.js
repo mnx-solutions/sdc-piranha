@@ -111,6 +111,33 @@ module.exports = function execute(scope, register) {
             });
         }
 
+        function restartSscMachine(call, cb) {
+            getSscMachine(call, function (error, sscMachine) {
+                if (error) {
+                    cb('Failed to get load balancer machine.');
+                    return;
+                }
+                var now = new Date().getTime();
+                var updated = new Date(sscMachine.updated).getTime();
+                if (sscMachine.state === 'running' && now - updated > 5 * 60 * 1000) {
+                    var machineApi = scope.api('Machine');
+                    var options = {
+                        uuid: sscMachine.id,
+                        datacenter: sscMachine.datacenter
+                    };
+                    machineApi.Reboot(call, options, function (err) {
+                        if (err) {
+                            cb('Load balancer not responding, failed to restart');
+                            return;
+                        }
+                        cb('Load balancer was not responding, restarted. Try refreshing the page.');
+                    });
+                } else {
+                    cb('Connection Timeout. Try refreshing the page.');
+                }
+            });
+        }
+
         function checkSscClient(checkClient, checkTimeout, checkCallback) {
             var timer;
             var called = false;
@@ -130,8 +157,8 @@ module.exports = function execute(scope, register) {
                         wrappedCallback(null, checkClient);
                     } else if (new Date().getTime() > pingUntil) {
                         clearInterval(timer);
+                        restartSscMachine(call, wrappedCallback);
                         clearCache(call);
-                        wrappedCallback('Connection Timeout. Try refreshing the page');
                     }
                 });
             }

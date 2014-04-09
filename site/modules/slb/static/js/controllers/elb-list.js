@@ -57,6 +57,7 @@
                                 function () {}
                             );
                         }
+                        $scope.listLoaded = true;
                     });
                 }, function () {
                     $location.path('/slb');
