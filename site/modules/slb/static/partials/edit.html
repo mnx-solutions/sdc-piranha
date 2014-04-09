@@ -84,7 +84,7 @@
                 <legend data-translate>Health Check</legend>
 
                 <div class="clearfix"></div>
-                <div>
+                <div data-ng-show="protocolSelected.name == 'HTTP' || protocolSelected.name == 'HTTPS'">
                     <span class="span2 lb-label" data-translate>URL</span>
                     <span class="span9 name-input">
                         <input type="text" data-ng-model="server.health.url" class="url-input"/>
