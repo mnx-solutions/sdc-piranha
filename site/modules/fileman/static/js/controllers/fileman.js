@@ -91,13 +91,20 @@
                     opts,
                     function (data) {
                         if (data) {
-                            fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
-                                if (error) {
-                                    return showPopupDialog('error', 'Error', error.message);
-                                }
-                                $scope.refreshingFolder = true;
-                                $scope.createFilesTree();
+                            var folderExists = $scope.files.some(function (item) {
+                                return (item.type === 'directory' && item.name === data.folderName);
                             });
+                            if (folderExists) {
+                                showPopupDialog('error', 'Message', 'Folder named "' + data.folderName + '" already exists.');
+                            } else {
+                                fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
+                                    if (error) {
+                                        return showPopupDialog('error', 'Error', error.message);
+                                    }
+                                    $scope.refreshingFolder = true;
+                                    $scope.createFilesTree();
+                                });
+                            }
                         }
                     }
                 );
