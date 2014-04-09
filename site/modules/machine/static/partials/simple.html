@@ -49,8 +49,8 @@
                     </div>
 
                     <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier}">
-                        <span class="price">{{ image.imageData.freetier && 'Free' || '$' + image.description.price }}</span>
-                        <span class="hour">{{ image.imageData.freetier && 'Dev Tier' || 'per hour' }}</span>
+                        <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
+                        <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
                         <button type="button"
                                 class="btn select-btn small"
                                 ng-click="createSimple(image.imageData)">
