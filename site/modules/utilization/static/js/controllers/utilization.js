@@ -8,7 +8,7 @@
             localization.bind('utilization', $scope);
             requestContext.setUpRenderContext('utilization.index', $scope);
             var loadData = function (event, context) {
-                if (context && !context.startsWith('utilization.index')) {
+                if (context && context.hasActionChanged()) {
                     return;
                 }
                 Utilization.utilization(requestContext.getParam('year'), requestContext.getParam('month'), function (error, utilizationData) {

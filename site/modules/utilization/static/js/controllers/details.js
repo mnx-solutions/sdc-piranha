@@ -15,7 +15,7 @@
                 'dram': 'GB Hours'
             }[$scope.type];
             var loadData = function (event, context) {
-                if (context && !context.startsWith('utilization.details')) {
+                if (context && context.hasActionChanged()) {
                     return;
                 }
                 var year = requestContext.getParam('year');
