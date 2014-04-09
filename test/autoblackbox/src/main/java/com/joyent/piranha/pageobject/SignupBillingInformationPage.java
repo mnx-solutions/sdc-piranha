@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import static com.codeborne.selenide.Condition.empty;
+import static com.codeborne.selenide.Condition.not;
 import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
@@ -53,7 +54,7 @@ public class SignupBillingInformationPage extends AbstractPageObject {
 
     public void setCountry(String countryValue) {
         Select country = new Select($(By.id("country")));
-        country.selectByValue(countryValue);
+        country.selectByVisibleText(countryValue);
     }
 
     public void setCity(String city) {
@@ -75,8 +76,8 @@ public class SignupBillingInformationPage extends AbstractPageObject {
 
     public void waitForPageLoading() {
         //slowest elements on the page
-        $("#firstName").waitWhile(empty, timeout);
-        $("#lastName").waitWhile(empty, timeout);
+        $("#firstName").waitUntil(not(empty), timeout);
+        $("#lastName").waitUntil(not(empty), timeout);
     }
 
     public void setPromotionalCode(String promoCode) {
