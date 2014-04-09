@@ -345,7 +345,10 @@ var slb = function execute(scope) {
                                     data.networks = networks.map(function (network) {
                                         return network.id;
                                     });
+                                    call.req.log.info("Creating SSC machine", data);
                                     machine.Create(call, data, function (createError, result) {
+                                        call.req.log.info("SSC machine creation result", result);
+                                        call.req.log.info("SSC machine creation error", createError);
                                         if (createError) {
                                             call.done(createError);
                                             return;
