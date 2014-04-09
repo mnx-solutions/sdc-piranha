@@ -355,7 +355,7 @@ var slb = function execute(scope) {
                                                 call.done(clientErr);
                                                 return;
                                             }
-                                            call.done(null, result);
+                                            call.done(null, 'Load balancer controller is up');
                                         });
                                     });
                                 });
