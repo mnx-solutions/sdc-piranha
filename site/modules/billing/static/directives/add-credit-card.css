@@ -1,3 +1,6 @@
 .fixed-width-td {
     width: 105px;
 }
+.btn:focus {
+    outline: none;
+}
