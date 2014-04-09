@@ -37,6 +37,9 @@
                     server.health.failThreshold = server.health.failThreshold || 5;
                     server.machines = server.machines || [];
 
+                    // temporary limitation
+                    server.datacenter = 'us-west-1';
+
                     var slbMachines = server.machines.map(function (machine) {
                         return machine.host;
                     });
