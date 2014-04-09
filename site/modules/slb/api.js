@@ -7,7 +7,7 @@ var config = require('easy-config');
 var sscName = (config.slb && config.slb.sscName) || 'slb-ssc';
 var metadata = null;
 
-var sscInitialPingTimeout = 60 * 1000;
+var sscInitialPingTimeout = 90 * 1000;
 var sscRegularPingTimeout = 20 * 1000;
 var sscOperationTimeout = 5 * 60 * 1000;
 
