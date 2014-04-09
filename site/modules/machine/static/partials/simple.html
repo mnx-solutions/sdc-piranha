@@ -49,15 +49,12 @@
                     </div>
 
                     <div class="btn-block" data-ng-class="{'freetier-btn-block': image.imageData.freetier}">
-                        <span data-ng-hide="image.imageData.freetier">
-                            <span class="price">${{ image.description.price }}</span>
-                            <span class="hour">per hour</span>
-                        </span>
+                        <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
+                        <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
                         <button type="button"
                                 class="btn select-btn small"
                                 ng-click="createSimple(image.imageData)">
-                            <b data-ng-show="image.imageData.freetier">Free Dev Tier</b>
-                            <b data-ng-hide="image.imageData.freetier">Select</b>
+                                <b>Launch</b>
                         </button>
                     </div>
                 </div>
