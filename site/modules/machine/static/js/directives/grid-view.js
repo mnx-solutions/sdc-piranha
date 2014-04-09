@@ -4,6 +4,15 @@
     app.controller('GridViewController', ['$scope', '$filter', '$http', '$location', 'Account', '$rootScope', '$q', 'Datacenter', function ($scope, $filter, $http, $location, Account, $rootScope, $q, Datacenter) {
         $scope.location = $location;
 
+        function refreshGrid() {
+            $scope.refreshPager();
+            var filteredObjects = $filter('filter')($scope.objects, $scope.matchesFilter);
+            var orderedObjects = $filter('orderBy')(filteredObjects, $scope.order);
+            $scope.pageObjects = orderedObjects && orderedObjects.filter(function (item, index) {
+                return $scope.isOnPage(index);
+            });
+        }
+
         $scope.isOnPage = function (index) {
             return (index >= $scope.perPage * ($scope.page - 1)) && (index < ($scope.perPage * $scope.page));
         };
@@ -65,14 +74,7 @@
             }
         }
 
-        $scope.$watch('objects + props + page + order + filterAll + tabFilter + perPage', function () {
-            $scope.refreshPager();
-            var filteredObjects = $filter('filter')($scope.objects, $scope.matchesFilter);
-            var orderedObjects = $filter('orderBy')(filteredObjects, $scope.order);
-            $scope.pageObjects = orderedObjects && orderedObjects.filter(function (item, index) {
-                return $scope.isOnPage(index);
-            });
-        }, true);
+        $scope.$watch('props + page + order + filterAll + tabFilter + perPage', refreshGrid, true);
 
         $scope.$watch('tabFilter', function() {
             if ($scope.tabFilter.length > 0 || $scope.tabFilterField !== 'datacenter') {
@@ -296,6 +298,7 @@
             if (objects) {
                 $scope.selectCheckbox();
                 $scope.disableSelectAllCheckbox();
+                refreshGrid();
 
                 if ($scope.tabFilterField) {
                     if ($scope.tabFilterField !== 'datacenter') {
