@@ -5,19 +5,19 @@
         'Utilization.DetailsController',
         ['$scope', '$location', 'Utilization', 'requestContext', 'loggingService', function ($scope, $location, Utilization, requestContext, loggingService) {
             requestContext.setUpRenderContext('utilization.details', $scope);
-            $scope.type = requestContext.getParam('type');
-            $scope.caption = {
-                'bandwidth': 'Bandwidth',
-                'dram': 'DRAM'
-            }[$scope.type];
-            $scope.unit = {
-                'bandwidth': '',
-                'dram': 'GB Hours'
-            }[$scope.type];
             var loadData = function (event, context) {
                 if (context && context.hasActionChanged()) {
                     return;
                 }
+                $scope.type = requestContext.getParam('type');
+                $scope.caption = {
+                    'bandwidth': 'Bandwidth',
+                    'dram': 'DRAM'
+                }[$scope.type];
+                $scope.unit = {
+                    'bandwidth': '',
+                    'dram': 'GB Hours'
+                }[$scope.type];
                 var year = requestContext.getParam('year');
                 var month = requestContext.getParam('month');
                 Utilization.utilization(year, month, function (error, utilizationData) {
