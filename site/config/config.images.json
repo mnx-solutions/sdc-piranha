@@ -24,7 +24,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-west-1",
-                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
+                "dataset": "c3321aac-a07c-11e3-9430-fbb1cc12d1df",
                 "name": "",
                 "networks": ["42325ea0-eb62-44c1-8eb6-0af3e2f83abc"],
                 "opsys": "All",
@@ -138,7 +138,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-east-1",
-                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
+                "dataset": "c3321aac-a07c-11e3-9430-fbb1cc12d1df",
                 "name": "",
                 "networks": ["9ec60129-9034-47b4-b111-3026f9b1a10f"],
                 "opsys": "All",
@@ -252,7 +252,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "us-sw-1",
-                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
+                "dataset": "c3321aac-a07c-11e3-9430-fbb1cc12d1df",
                 "name": "",
                 "networks": ["f7ed95d3-faaf-43ef-9346-15644403b963"],
                 "opsys": "All",
@@ -366,7 +366,7 @@
             "className": "smart-logo",
             "imageData": {
                 "datacenter": "eu-ams-1",
-                "dataset": "ff86eb8a-a069-11e3-ae0e-4f3c8983a91c",
+                "dataset": "c3321aac-a07c-11e3-9430-fbb1cc12d1df",
                 "name": "",
                 "networks": ["1e7bb0e1-25a9-43b6-bb19-f79ae9540b39"],
                 "opsys": "All",
