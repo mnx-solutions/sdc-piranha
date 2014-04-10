@@ -33,6 +33,10 @@
     margin-left: 35px;
 }
 
+.short-input-port {
+    width: 40px;
+}
+
 .group-checkable {
     margin: 0;
 }
