@@ -422,7 +422,7 @@
                     };
 
                     function isCCNumberValid() {
-                        return (/^[0-9\*]{16}$/gi).test($scope.form.creditCardNumber);
+                        return (/^[0-9\*]{15,16}$/gi).test($scope.form.creditCardNumber);
                     }
 
                     function validateCCNumber() {
