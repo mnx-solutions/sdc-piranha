@@ -111,14 +111,14 @@
             return call.deferred;
         };
 
-        service.createSupportSubscription = function (ratePlanId, callback) {
+        service.getProductRatePlans = function (sku, callback) {
             var call = serverTab.call({
-                name: 'BillingSubscriptionCreate',
+                name: 'getProductRatePlans',
                 data: {
-                    ratePlanId: ratePlanId
+                    sku: sku
                 },
-                done: callback || function (err) {
-                    if (err) {
+                done: callback || function (err, job) {
+                    if(err && err !== 'Not Implemented') {
                         PopupDialog.error(
                             localization.translate(
                                 null,
@@ -128,7 +128,7 @@
                             localization.translate(
                                 null,
                                 'billing',
-                                'Unable to retrieve subscriptions'
+                                'Unable to retrieve subscriptions.'
                             ),
                             function(){}
                         );
@@ -138,31 +138,25 @@
             return call.deferred;
         };
 
-        service.cancelSupportSubscription = function (subscriptionId, callback) {
-            var call = serverTab.call({
-                name: 'BillingSubscriptionCancel',
+        service.createSupportSubscription = function (ratePlanId, callback) {
+            serverTab.call({
+                name: 'BillingSubscriptionCreate',
                 data: {
-                    id: subscriptionId
+                    ratePlanId: ratePlanId
                 },
-                done: callback || function (err) {
+                done: function (err, job) {
                     if (err) {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'billing',
-                                'Unable to unsubscribe'
-                            ),
-                            function(){}
-                        );
+                        callback(err);
+                        return;
+                    }
+                    callback(null, job.__read());
+                },
+                error: function (err) {
+                    if (err) {
+                        callback(err);
                     }
                 }
             });
-            return call.deferred;
         };
 
         service.getLastInvoice = function (callback) {

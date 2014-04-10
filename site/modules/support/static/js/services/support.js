@@ -1,10 +1,10 @@
 'use strict';
 
 (function (app) {
-    var cache = null;
+    var supportGroups = null;
     app.factory('Support', [
-        'serverTab', 'BillingService',
-        function (serverTab, BillingService) {
+        'serverTab', 'BillingService', '$q',
+        function (serverTab, BillingService, $q) {
             var service = {};
 
             service.support = function (callback) {
@@ -15,31 +15,62 @@
                             callback(err);
                             return;
                         }
-                        cache = job.__read();
+                        supportGroups = job.__read();
+
+                        var supportGroupsArr = []
+                        for (var supportGroupName in supportGroups) {
+                            var supportGroup = supportGroups[supportGroupName];
+                            supportGroup.name = supportGroupName;
+                            supportGroupsArr.push(supportGroup);
+                        }
+
+                        var supportGroupSkuRequests = supportGroupsArr.map(function (supportGroup) {
+                            return supportGroup.sku;
+                        }).filter(function (value, index, arr) {
+                            return arr.indexOf(value) === index;
+                        }).map(function (sku) {
+                            return BillingService.getProductRatePlans(sku);
+                        });
+
+                        var getRatePlanId = function (skuResults, ratePlanName) {
+                            var result = null;
+                            skuResults.forEach(function (products) {
+                                products.forEach(function (product) {
+                                    var matchingRatePlans = product.productRatePlans.filter(function (ratePlan) {
+                                        return ratePlan.name === ratePlanName;
+                                    });
+                                    if (matchingRatePlans.length > 0) {
+                                        result = matchingRatePlans[0].id;
+                                    }
+                                });
+                            });
+                            return result;
+                        };
 
                         BillingService.getSubscriptions().then(function (subscriptions) {
-                            var filteredSubscriptionsId = [];
+                            var subscribedRatePlanIds = [];
                             subscriptions.forEach(function (subscription) {
-                                if (subscription.status === "Active") {
+                                if (subscription.status === 'Active') {
                                     subscription.ratePlans.forEach(function (ratePlan) {
-                                        filteredSubscriptionsId.push(ratePlan.productRatePlanId);
+                                        subscribedRatePlanIds.push(ratePlan.productRatePlanId);
                                     });
                                 }
                             });
-                            for (var name in cache) {
-                                cache[name].packageHolders.forEach(function (holder) {
-                                    for (var id in filteredSubscriptionsId) {
-                                        if (holder.ratePlanId === filteredSubscriptionsId[id]) {
-                                            holder.active = true;
-                                            if (cache[name].currentlevelSupport <= holder.levelSupport) {
-                                                cache[name].currentlevelSupport = holder.levelSupport;
-                                                cache[name].currentShortName = holder.shortName;
+                            $q.all(supportGroupSkuRequests).then(function (skuResults) {
+                                supportGroupsArr.forEach(function (supportGroup) {
+                                    supportGroup.packageHolders.forEach(function (packageHolder) {
+                                        packageHolder.ratePlanId = getRatePlanId(skuResults, packageHolder.ratePlanName);
+                                        if (packageHolder.ratePlanId && subscribedRatePlanIds.indexOf(packageHolder.ratePlanId) !== -1) {
+                                            packageHolder.active = true;
+                                            if (supportGroup.currentlevelSupport <= packageHolder.levelSupport) {
+                                                supportGroup.currentlevelSupport = packageHolder.levelSupport;
+                                                supportGroup.currentShortName = packageHolder.shortName;
                                             }
                                         }
-                                    }
+                                    });
                                 });
-                            }
-                            callback(null, cache);
+                                callback(null, supportGroupsArr);
+                            });
                         });
                     }
                 });

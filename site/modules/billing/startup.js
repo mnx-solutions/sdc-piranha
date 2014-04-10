@@ -372,6 +372,21 @@ module.exports = function execute(scope, callback) {
             });
         });
 
+        server.onCall('getProductRatePlans', function (call) {
+            zuora.catalog.query({sku: call.data.sku}, function (err, arr) {
+                if (err) {
+                    // changing zuoras errorCode from 401's to 500
+                    if(err.statusCode === 401) {
+                        err.statusCode = 500;
+                    }
+
+                    call.done(err);
+                    return;
+                }
+                call.done(null, arr);
+            });
+        });
+
         server.onCall('BillingSubscriptionCreate', {
             verify: function (data) {
                 return data && data.hasOwnProperty('ratePlanId');
@@ -394,7 +409,7 @@ module.exports = function execute(scope, callback) {
                             err.statusCode = 500;
                         }
 
-                        call.done(err);
+                        call.error(err);
                         return;
                     }
 
