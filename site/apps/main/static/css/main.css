@@ -637,6 +637,21 @@ th {
     text-shadow: 1px 1px 1px #fff;
 }
 
+/* Makes word wrapping in a proper way */
+.text-wrap {
+    -ms-word-break: break-all;
+    word-break: break-all;
+
+    /* Only for webkit */
+    word-break: break-word;
+
+    /* Non supported by Chrome now */
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
 p.margin-mini {
     margin-top: -10px;
 }

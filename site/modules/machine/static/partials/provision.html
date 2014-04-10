@@ -102,7 +102,7 @@
                                                  data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
                                                 <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
                                                 <span><h2>{{selectedDataset.name}}</h2></span>
-                                                <div class="dataset-desc crop">{{selectedDataset.description}}</div>
+                                                <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
                                                 <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
                                                 <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
@@ -222,7 +222,7 @@
                                                      data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
                                                     <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</button>
                                                     <span><h2>{{selectedDataset.name}}</h2></span>
-                                                    <div class="dataset-desc crop">{{selectedDataset.description}}</div>
+                                                    <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
 
                                                     <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
                                                     <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
