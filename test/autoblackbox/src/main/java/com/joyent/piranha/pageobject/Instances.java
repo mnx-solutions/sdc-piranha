@@ -22,23 +22,12 @@ public class Instances extends AbstractPageObject {
         return page(InstanceList.class);
     }
 
-    public void clickColumnsButton() {
-        $("#button-columns").click();
-    }
-
     public SelenideElement getListActions() {
         return $("#option-list-actions");
     }
 
     public SelenideElement getCheckboxListColumns() {
         return $("#checkbox-list-columns");
-    }
-
-    public void addGridColumn(String columnName) {
-        clickColumnsButton();
-        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-        executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
-        $(By.xpath("//th[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains(.,'" + columnName + "')]")).waitUntil(visible, baseTimeout);
     }
 
     public boolean isTagDisplayed(String key, String value) {

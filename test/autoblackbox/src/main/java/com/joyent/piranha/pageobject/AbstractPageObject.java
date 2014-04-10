@@ -1,9 +1,7 @@
 package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
@@ -63,7 +61,7 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForSmallSpinnerDisappear() {
-        $(".pull-right.loading-small").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(".loading-small[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForMediumSpinnerDisappear() {
@@ -113,13 +111,11 @@ public abstract class AbstractPageObject {
     }
 
     public SelenideElement getRowByText(String dataNgRepeat, String textContains) {
-        return $(By.xpath("//tr[@data-ng-repeat='"+dataNgRepeat+"']/td[contains(., \'"+textContains+"\')]/.."));
+        return $(By.xpath("//tr[@data-ng-repeat='" + dataNgRepeat + "']/td[contains(., \'" + textContains + "\')]/.."));
     }
 
     public void addGridColumn(String columnName) {
         clickColumnsButton();
-        JavascriptExecutor executor = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-        executor.executeScript("$('#checkbox-list-columns label:contains(" + columnName + ") input').click();");
-        $(By.xpath("//th[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains(.,'" + columnName + "')]")).waitUntil(visible, baseTimeout);
+        $(By.xpath("//div[@data-ng-repeat=\"prop in props | orderBy:'sequence'\" and contains (.,\"" + columnName + "\")]//div")).click();
     }
 }
