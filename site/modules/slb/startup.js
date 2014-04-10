@@ -333,11 +333,9 @@ var slb = function execute(scope) {
                             }
                             removeSscConfig(data, function (configError) {
                                 if (configError) {
-//                                    call.done(configError);
-//                                    return;
                                     call.req.log.warn('Cannot remove user slb config from manta.');
                                 }
-                                call.cloud.listNetworks(function (networksError, networks) {
+                                call.cloud.separate(datacenter).listNetworks(function (networksError, networks) {
                                     if (networksError) {
                                         call.done(networksError);
                                         return;
@@ -347,8 +345,6 @@ var slb = function execute(scope) {
                                     });
                                     call.req.log.info("Creating SSC machine", data);
                                     machine.Create(call, data, function (createError, result) {
-                                        call.req.log.info("SSC machine creation result", result);
-                                        call.req.log.info("SSC machine creation error", createError);
                                         if (createError) {
                                             call.done(createError);
                                             return;
