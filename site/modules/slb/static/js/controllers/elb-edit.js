@@ -104,7 +104,22 @@
                     $scope.server.health.timeout = name;
                 };
 
-                $scope.validateSelected = function () {
+                $scope.validateSelected = function (machine) {
+                    if (machine && !machine.primaryIp) {
+                        PopupDialog.error(
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                $scope,
+                                null,
+                                'Cannot select instance without IP address. Is it still provisioning?'
+                            )
+                        );
+                        machine.selected = false;
+                    }
                     $scope.hasMachineSelected = $scope.machines.some(function (machine) {
                         return machine.selected;
                     });
