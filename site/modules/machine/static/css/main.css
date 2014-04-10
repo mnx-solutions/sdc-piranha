@@ -635,13 +635,14 @@
     background-color: #e2e8ec !important;
 }
 .simple-image {
+    position: relative;
+    float: left;
+    margin: 0 10px 10px 0;
     width: 240px;
     height: 220px;
-    position: relative;
-    margin: 0 10px 10px 0;
     border-radius: 3px;
-    float: left;
     background-color: #eef0f2;
+    cursor: pointer;
 }
 .smart-logo,
 .ubuntu-logo,
@@ -866,14 +867,15 @@
     font-weight: 500;
     vertical-align: middle;
 }
-.advanced-instance-box{
+.advanced-instance-box {
+    float: left;
+    margin-top: 4px;
+    margin-right: 4px;
     width: 197px;
     height: 167px;
     border-radius: 3px;
-    float: left;
-    margin-right: 4px;
-    margin-top: 4px;
     background-color: #eef0f2;
+    cursor: pointer;
 }
 .advanced-instance-box:hover{
     background-color: #e2e8ec !important;

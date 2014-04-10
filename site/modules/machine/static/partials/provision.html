@@ -73,7 +73,8 @@
                                         <div class="advanced-instance-box small-icon"
                                              data-ng-class="selectedVersions[dataset.name].name || dataset.name | logo"
                                              data-toggle="tooltip"
-                                             data-tooltip-text="{{selectedVersions[dataset.name].description || dataset.description}}">
+                                             data-tooltip-text="{{selectedVersions[dataset.name].description || dataset.description}}"
+                                             data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
                                             <div class="advanced-instance-title">
                                                 <p>{{selectedVersions[dataset.name].name || dataset.name}}</p>
                                             </div>
@@ -86,7 +87,6 @@
                                                    name="dataset"
                                                    value="{{selectedVersions[dataset.name].id || dataset.id}}"
                                                    data-ng-checked="selectedDataset.id == dataset.id"
-                                                        data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))"
                                                         class="btn advaced-instance-btn pull-right"><b>Select</b>
                                                 </button>
                                             </div>

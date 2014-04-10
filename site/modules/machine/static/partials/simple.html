@@ -28,7 +28,7 @@
             </div>
 
             <div class="row-fluid">
-                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className">
+                <div class="simple-image" data-ng-repeat="image in simpleImages | filter: {imageData.datacenter: data.datacenter}" data-ng-class="image.className" ng-click="createSimple(image.imageData)">
                     <div class="name">
                         <p>{{image.name}}</p>
                     </div>
@@ -52,14 +52,13 @@
                         <span class="price">{{ image.imageData.freetier && 'FREE' || '$' + image.description.price }}</span>
                         <span class="hour">{{ image.imageData.freetier && 'dev tier' || 'per hour' }}</span>
                         <button type="button"
-                                class="btn select-btn small"
-                                ng-click="createSimple(image.imageData)">
+                                class="btn select-btn small">
                                 <b>Launch</b>
                         </button>
                     </div>
                 </div>
 
-                <div class="simple-image joyent-logo">
+                <div data-ng-click="selectInstanceType('Public')" class="simple-image joyent-logo">
                     <div class="browse">
                         <div class="title">
                             Browse our<br/>complete image<br/>library
@@ -69,7 +68,7 @@
                         </div>
                     </div>
                     <div class="btn-block">
-                        <button data-ng-click="selectInstanceType('Public')" class="btn orange btn-browse">View More Images</button>
+                        <button class="btn orange btn-browse">View More Images</button>
                     </div>
                 </div>
             </div>
