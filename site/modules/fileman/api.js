@@ -5,18 +5,22 @@ var manta = require('manta');
 var fs = require('fs');
 
 module.exports = function execute(scope, register) {
-    function createClient(call, admin) {
-        var cloud = call.req.cloud;
-        var sign = cloud.sign.bind(cloud);
-        var user = admin ? config.cloudapi.username : (config.manta.user || call.req.session.userName);
+    function createClient(call) {
+        var sign = manta.privateKeySigner({
+            key: fs.readFileSync(config.cloudapi.keyPath, 'utf8'),
+            keyId: config.cloudapi.keyId,
+            user: config.cloudapi.username
+        });
+        var user = call.req.session.userName;
+        call.req.log.info({sessionToken: !!call.req.session.token, cloudToken: !!call.req.cloud._token}, 'Manta client');
         var headers = {
-            'x-auth-token': cloud._token
+            'X-Auth-Token': call.req.session.token || call.req.cloud._token
         };
         if (config.manta.privateKey) {
             sign = manta.privateKeySigner({
-                key: fs.readFileSync(admin ? config.cloudapi.keyPath : config.manta.privateKey, 'utf8'),
-                keyId: admin ? config.cloudapi.keyId : config.manta.keyId,
-                user: user
+                key: fs.readFileSync(config.manta.privateKey, 'utf8'),
+                keyId: config.manta.keyId,
+                user: config.manta.user
             });
             headers = {};
         }
