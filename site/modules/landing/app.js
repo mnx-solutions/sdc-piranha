@@ -56,20 +56,31 @@ module.exports = function execute(scope, app, callback) {
         res.json({url: url});
     }
 
+    function getRedirectCampaignId(campaignId, deep) {
+        deep = deep || 0;
+        var campaign = scope.config.ns['campaigns'][campaignId];
+        if (campaign && campaign['redirect'] && deep < 10) {
+            deep += 1;
+            return getRedirectCampaignId(campaign['redirect'], deep);
+        }
+        return campaignId;
+    }
     app.post('/ssourl', function (req, res, next) {
         sendToSSO(req, res, req.body.method, req.body.redirectUrl);
     });
 
     app.get('/signup/:campaignId?', function (req, res, next) {
-        if(req.params.campaignId) {
+        var campaignId = req.params.campaignId;
+        if (campaignId) {
+            campaignId = getRedirectCampaignId(campaignId);
             // set campaign id to the cookie
-            req.log.debug({campaignId: req.params.campaignId}, 'campaignId cookie set for user');
-            res.cookie('campaignId', req.params.campaignId, { maxAge: 900000, httpOnly: false});
+            req.log.debug({campaignId: campaignId}, 'campaignId cookie set for user');
+            res.cookie('campaignId', campaignId, { maxAge: 900000, httpOnly: false});
             // faking signup button
             req.body.method = 'signup';
         }
-        req.log.info({campaignId: req.params.campaignId}, 'User landed on signup url');
-        sendToSSO(req, res, 'signup', '/main/', true, req.params.campaignId);
+        req.log.info({campaignId: campaignId}, 'User landed on signup url');
+        sendToSSO(req, res, 'signup', '/main/', true, campaignId);
     });
 
     app.get('/login', function (req, res, next) {
