@@ -755,6 +755,12 @@
                 }, $scope.disableLoading);
             };
 
+            $scope.$on('gridViewTabFilterUpdate', function (event, filter) {
+                if (!$scope.data.uuid && filter !== 'all') {
+                    $scope.datacenter = filter;
+                }
+            });
+
             $scope.openPopovers = [];
             $('body').on('click', function(e) {
                 if(!ng.element(e.target).hasClass('popover') && !ng.element(e.target).parent().hasClass('popover')) {

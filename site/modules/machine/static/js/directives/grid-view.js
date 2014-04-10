@@ -80,6 +80,7 @@
             if ($scope.tabFilter.length > 0 || $scope.tabFilterField !== 'datacenter') {
                 $scope.loading = false;
             }
+            $scope.$parent.$emit("gridViewTabFilterUpdate", $scope.tabFilter);
         });
 
         $scope.refreshPager();
