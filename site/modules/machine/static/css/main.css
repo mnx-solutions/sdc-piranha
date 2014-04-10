@@ -524,9 +524,6 @@
     padding-top: 20px;
     display: block;
 }
-.icon-info-sign, .icon-warning-sign, .icon-question-sign{
-    background-image: url(../../../../static/img/glyphicons-halflings-white.png) !important;
-}
 .details_btn_block p{
     display: inline-block;
     height: 8px !important;

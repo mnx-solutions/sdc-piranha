@@ -125,7 +125,7 @@
                         });
                     };
 
-                    window.jQuery('.icon-info-sign').tooltip();
+                    window.jQuery('.glyphicon.glyphicon-info-sign').tooltip();
                 },
                 templateUrl: 'account/static/partials/account-info-edit.html'
             };
