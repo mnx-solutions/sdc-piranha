@@ -16,9 +16,9 @@ window.JP.main.provider('route', [
 
                 // Resolve by module prefix
                 var p1 = this._navigation[i].action.split('.');
-                var p2 = action.split('.');
+                var p2 = action && action.split('.');
 
-                if (p1[0] === p2[0]) {
+                if (p2 && p1[0] === p2[0]) {
                     return this._navigation[i];
                 }
             }
