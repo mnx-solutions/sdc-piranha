@@ -43,7 +43,7 @@
                 $scope.account = account;
             });
             $scope.keys = Account.getKeys();
-            $scope.datacenters = Datacenter.datacenter();
+            $scope.datacenters = [];
             $scope.networks = [];
             $scope.indexPackageTypes = {};
             $scope.packageTypes = [];
@@ -72,12 +72,41 @@
 
             $q.all([
                 $q.when($scope.keys),
-                $q.when($scope.datacenters),
+                $q.when(Datacenter.datacenter()),
                 $q.when($scope.preSelectedImage),
                 $q.when(Machine.getSimpleImgList()),
                 $q.when($scope.freeTierOptions)
             ]).then(function (result) {
-                $scope.simpleImages = result[3]['images'];
+                $scope.datacenters = result[1];
+                $scope.simpleImages = [];
+                var simpleImages = result[3]['images'];
+                var networks = result[3]['networks'];
+                if (simpleImages && simpleImages.length > 0) {
+                    if ($scope.datacenters && $scope.datacenters.length > 0) {
+                        $scope.datacenters.forEach(function (datacenter) {
+                            Package.package({ datacenter: datacenter.name }).then(function (packages) {
+                                var packagesByName = {};
+                                $scope.packages.forEach(function (pkg) {
+                                    packagesByName[pkg.name] = pkg.id;
+                                });
+                                angular.copy(simpleImages).forEach(function (simpleImage) {
+                                    simpleImage.imageData = {};
+                                    simpleImage.imageData.dataset = simpleImage.dataset;
+                                    simpleImage.imageData.datacenter = datacenter.name;
+                                    simpleImage.imageData.name = '';
+                                    simpleImage.imageData.package = packagesByName[simpleImage.packageName];
+                                    simpleImage.imageData.networks = networks;
+                                    delete simpleImage.dataset;
+                                    delete simpleImage.packageName;
+                                    if (simpleImage.imageData.package) {
+                                        $scope.simpleImages.push(simpleImage);
+                                    }
+                                });
+                            });
+                        });
+
+                    }
+                }
                 if ($scope.features.freetier === 'enabled') {
                     var freeImages = result[4];
                     var convertedFreeImages = [];
