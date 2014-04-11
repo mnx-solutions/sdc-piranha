@@ -372,7 +372,7 @@ module.exports = function execute(scope, callback) {
             });
         });
 
-        server.onCall('getProductRatePlans', function (call) {
+        server.onCall('BillingProductRatePlans', function (call) {
             zuora.catalog.query({sku: call.data.sku}, function (err, arr) {
                 if (err) {
                     // changing zuoras errorCode from 401's to 500

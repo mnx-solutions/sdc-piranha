@@ -113,27 +113,11 @@
 
         service.getProductRatePlans = function (sku, callback) {
             var call = serverTab.call({
-                name: 'getProductRatePlans',
+                name: 'BillingProductRatePlans',
                 data: {
                     sku: sku
                 },
-                done: callback || function (err, job) {
-                    if(err && err !== 'Not Implemented') {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'billing',
-                                'Unable to retrieve subscriptions.'
-                            ),
-                            function(){}
-                        );
-                    }
-                }
+                done: callback || function (err, job) {}
             });
             return call.deferred;
         };
