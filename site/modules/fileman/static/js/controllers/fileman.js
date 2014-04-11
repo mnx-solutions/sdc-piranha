@@ -27,6 +27,7 @@
             var defaultPath = {path: 'public', parent: '/'};
             var previousFullPath;
             var lastSelectedFile = null;
+            var lastSelectedActive = false;
 
             var getObjectPath = function (obj) {
                 return typeof (obj) === 'string' ? obj : ('/' + obj.parent.split('/').splice(2).join('/') + '/' + obj.path).replace(/\/+/g, '/');
@@ -60,7 +61,7 @@
             }
 
             $scope.downloadFile = function () {
-                if (lastSelectedFile && lastSelectedFile.active && lastSelectedFile.type === 'object') {
+                if (lastSelectedFile && lastSelectedActive && lastSelectedFile.type === 'object') {
                     fileman.get($scope.currentPath);
                 } else {
                     showPopupDialog('message', 'Message', 'No file selected.');
@@ -224,11 +225,11 @@
                     return;
                 }
                 if (lastSelectedFile) {
-                    lastSelectedFile.active = false;
+                    lastSelectedActive = false;
                 }
 
                 lastSelectedFile = obj;
-                obj.active = true;
+                lastSelectedActive = true;
 
                 var pathExists = $scope.splittedCurrentPath && $scope.splittedCurrentPath.some(function (el) {
                     return el.full === fullPath;
