@@ -36,7 +36,7 @@
         <div class="folder-container-sub">
             <div data-ng-repeat="files in filesTree" class="{{getColumnClass($index)}}">
                 <div class="files-box">
-                    <div class="loading-medium-transparent" data-ng-show="refreshingFolder && $last" data-ng-class="{overlay: refreshingFolder && $last}"></div>
+                    <div class="loading-medium-transparent" data-ng-show="refreshingFolder && $last"></div>
                     <div data-ng-repeat="path in files"  class="finder-elements" data-ng-class="{active: path.active}">
                         <a href="JavaScript:{}" data-ng-click="setCurrentPath(path, true)">
                             <div class="{{path.type}} path-name"></div>
