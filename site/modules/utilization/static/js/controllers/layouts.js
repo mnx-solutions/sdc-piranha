@@ -8,7 +8,7 @@
 
         function ($scope, requestContext, localization) {
             requestContext.setUpRenderContext('utilization', $scope, {
-                title: localization.translate(null, 'utilization', 'Utilization')
+                title: localization.translate(null, 'utilization', 'Usage')
             });
         }
     ]);
