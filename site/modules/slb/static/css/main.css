@@ -342,3 +342,21 @@ legend {
     color: #000;
     font-weight: 600;
 }
+.documentation-icon {
+    position: relative;
+    top: -2px;
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    padding: 2px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #5d8096;
+    color: #e9eff3;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 14px;
+}
