@@ -3,11 +3,11 @@
 window.JP.main.config(['routeProvider', function (routeProvider) {
     routeProvider
         .when('/utilization/:year/:month', {
-            title: 'Utilization',
+            title: 'Usage',
             action: 'utilization.index'
         })
         .when('/utilization/:type/:year/:month', {
-            title: 'Utilization Details',
+            title: 'Usage Details',
             action: 'utilization.details'
         });
 }]);
