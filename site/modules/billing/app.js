@@ -11,9 +11,11 @@ module.exports = function execute(scope, app) {
         Object.keys(config.ns['campaigns']).forEach(function (campaignId) {
             var campaign = config.ns['campaigns'][campaignId];
             var promo = config.ns['promo-codes'][campaign.promoCode];
-            promo.code = campaign.promoCode;
-            promo.disablePromoCode = campaign.disablePromoCode;
-            campaignPromoMap[campaignId] = promo;
+            if (campaign.promoCode) {
+                promo.code = campaign.promoCode;
+                promo.disablePromoCode = campaign.disablePromoCode;
+                campaignPromoMap[campaignId] = promo;
+            }
         });
         defaultPromos = Object.keys(config.ns['promo-codes'])
             .map(function (promoKey) {

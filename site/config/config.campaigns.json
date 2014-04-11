@@ -35,6 +35,9 @@
     "701800000015696": {
         "promoCode": "NODE.JS CORE SUPPORT"
     },
+    "70180000expired": {
+        "redirect": "70180000000ag8G"
+    },
     "70180000000ag8G": {
         "promoCode": "FREEJOY",
         "disablePromoCode": true
