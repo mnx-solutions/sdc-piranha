@@ -248,7 +248,7 @@
                             Images
                         </a>
                 </div>
-                    <div id="collapse_images" class="accordion-body collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
+                    <div id="collapse_images" class="accordion-body create-images collapse" data-ng-show="machine && features.imageCreate == 'enabled'">
                         <div class="accordion-inner">
                             <div class="beta-sticker pull-right tab">beta</div>
                 <p>
@@ -276,56 +276,48 @@
                              data-translate>
                             Image version&nbsp;{{incorrectNameMessage}}
                         </div>
-                        <div class="accordion-inner">
-                            <table>
-                                <tr>
-                                    <td style="width:150px">Name</td>
-                                    <td>
-                                        <input type="text"
-                                            name="imageName"
-                                            data-ng-model="imageName"
-                                            data-ng-disabled="imageJob && !imageJob.finished"
-                                            data-machine-name
-                                            value=""
-                                            class="key-width image-name"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Version</td>
-                                    <td>
-                                        <input type="text"
-                                            name="imageVersion"
-                                            data-ng-model="imageVersion"
-                                            data-ng-disabled="imageJob && !imageJob.finished"
-                                            data-machine-name
-                                            value=""
-                                            class="key-width image-version"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Description (optional)</td>
-                                    <td>
-                                        <input type="text"
-                                            name="imageDescription"
-                                            data-ng-model="imageDescription"
-                                            data-ng-disabled="imageJob && !imageJob.finished"
-                                            value=""
-                                            class="value-width image-desk"/>
-                                    </td>
-                                </tr>
+                        <div>
+                            <div class="dbl-inline">
+                                <input type="text"
+                                       placeholder="Image name"
+                                       name="imageName"
+                                       data-ng-model="imageName"
+                                       data-ng-disabled="imageJob && !imageJob.finished"
+                                       data-machine-name
+                                       value=""
+                                       class="key-width"/>
+                            </div>
+                            <div>
+                                <input type="text"
+                                       placeholder="Image version"
+                                       name="imageVersion"
+                                       data-ng-model="imageVersion"
+                                       data-ng-disabled="imageJob && !imageJob.finished"
+                                       data-machine-name
+                                       value=""
+                                       class="key-width image-version"/>
 
-                            </table>
-                            <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
-                        </div>
+                            </div>
+                            <div>
+                            <textarea type="text"
+                                      placeholder="Description (optional)"
+                                      name="imageDescription"
+                                      data-ng-model="imageDescription"
+                                      data-ng-disabled="imageJob && !imageJob.finished"
+                                      class="value-width"></textarea>
+                            </div>
+                            <div class="pull-right">
 
-                        <div class="pull-right">
-                            <button class="btn light dpl-inline margin-top-10 effect-orange-button"
-                                data-ng-click="clickCreateImage()"
-                                data-translate
-                                data-ng-disabled="(imageJob && !imageJob.finished)">
-                                Create Image
-                            </button>
-                            <div class="dpl-inline"><a class="btn light margin-top-10 effect-orange-button" href="#!/images">My Images List</a></div>
+                                <div class="loading-medium spiner-height" data-ng-show="imageJob && !imageJob.finished"></div>
+
+                                <a class="btn light margin-top-10 dpl-inline effect-orange-button" href="#!/images">My Images List</a>
+                                <button class="btn orange dpl-inline margin-top-10"
+                                        data-ng-click="clickCreateImage()"
+                                        data-translate
+                                        data-ng-disabled="(imageJob && !imageJob.finished)">
+                                    Create Image
+                                </button>
+                            </div>
                         </div>
                     </form>
                     <br />

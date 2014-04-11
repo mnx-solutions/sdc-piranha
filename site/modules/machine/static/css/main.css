@@ -32,7 +32,20 @@
     margin-bottom: 20px;
     width: 100%;
 }
-
+.create-images .loading-medium {
+    display: inline-block;
+    vertical-align: middle;
+}
+.create-images input,
+.create-images textarea {
+    width: 380px;
+}
+.create-images textarea {
+    height: 180px;
+}
+.create-images button {
+    font-size: 16px;
+}
 .item label p.name {
     font-weight: bold;
     margin-bottom: 2px;
