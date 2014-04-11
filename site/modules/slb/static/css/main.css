@@ -360,3 +360,10 @@ legend {
     font-size: 14px;
     line-height: 14px;
 }
+.rickshaw_legend {
+    color: #000 !important;
+    background: inherit !important;
+    position: absolute;
+    top: 5px;
+    left: 300px;
+}

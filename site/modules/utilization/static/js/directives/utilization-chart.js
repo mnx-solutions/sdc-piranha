@@ -28,10 +28,12 @@
                             height: 200,
                             series: [
                                 {
+                                    name: 'Daily',
                                     color: '#274c5c',
                                     data: graphData.daily
                                 },
                                 {
+                                    name: 'Total',
                                     color: '#549dc0',
                                     data: graphData.cumulative
                                 }
@@ -51,6 +53,11 @@
                             },
                             graph: graph
                         });
+                        new Rickshaw.Graph.Legend({
+                            graph: graph,
+                            element: $element.find('#legend_' + $scope.$id)[0]
+                        });
+
                         graph.render();
                     };
                     var pad = function (num) {
