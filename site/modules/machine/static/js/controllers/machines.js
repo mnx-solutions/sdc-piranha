@@ -370,25 +370,6 @@
                     sequence: 4
                 }
             ];
-            function toggleSwitchFirewall(enable) {
-                return function () {
-                    var isFirewallNonSupported = $scope.machines.filter(function (machine) {
-                        var result = false;
-                        if (machine.checked) {
-                            machine.checked = false;
-                            if ("virtualmachine" === machine.type) {
-                                result = true;
-                            } else if (enable !== machine.firewall_enabled) {
-                                $scope.toggleFirewallEnabled(machine);
-                            }
-                        }
-                        return result;
-                    }).length;
-                    if (isFirewallNonSupported) {
-                        $scope.notSupportedFirewallMessage();
-                    }
-                };
-            }
 
             var gridMessages = {
                 start: {
@@ -434,14 +415,13 @@
                             message
                         ),
                         function () {
-                            checkedInstances.forEach(function (el) {
-                                var state = action === 'Enable' ? !el.firewall_enabled : el.firewall_enabled;
-                                if ("virtualmachine" !== el.type && state) {
-                                    $scope.toggleFirewallEnabled(el);
-                                } else {
+                            checkedInstances.forEach(function (machine) {
+                                if ("virtualmachine" === machine.type) {
                                     isFirewallNonSupported = true;
+                                } else if (action === 'Enable' !== machine.firewall_enabled) {
+                                    $scope.toggleFirewallEnabled(machine);
                                 }
-                                el.checked = false;
+                                machine.checked = false;
                             });
                             if (isFirewallNonSupported) {
                                 $scope.notSupportedFirewallMessage();
