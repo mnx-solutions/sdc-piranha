@@ -9,7 +9,8 @@ window.fn = [];
         'PopupDialog',
         'errorContext',
         '$rootScope',
-        function (serverTab, $q, localization, PopupDialog, errorContext, $rootScope) {
+        'util',
+        function (serverTab, $q, localization, PopupDialog, errorContext, $rootScope, util) {
 
         var service = {};
         var datasets = { job: {}, index: {}, list: {}, search: {}, os_index: {}};
@@ -152,18 +153,7 @@ window.fn = [];
 
                     if (listVersions[dataset.name].length > 1) {
                         listVersions[dataset.name].sort(function (a, b) {
-                            var i;
-                            var re = /(\.0)+[^\.]*$/;
-                            a = (a + '').replace(re, '').split('.');
-                            b = (b + '').replace(re, '').split('.');
-                            var len = Math.min(a.length, b.length);
-                            for (i = 0; i < len; i++) {
-                                var cmp = parseInt(a[i], 10) - parseInt(b[i], 10);
-                                if (cmp !== 0) {
-                                    return cmp;
-                                }
-                            }
-                            return a.length - b.length;
+                            return util.cmpVersion(a, b);
                         });
                     }
                 });

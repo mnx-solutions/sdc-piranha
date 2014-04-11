@@ -22,8 +22,9 @@
         'FreeTier',
         '$compile',
         'loggingService',
+        'util',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService, util) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -66,19 +67,46 @@
                 'disk': []
             };
 
+            $scope.isMantaEnabled = $scope.features.manta === 'enabled';
+            $scope.isRecentInstancesEnabled = $scope.features.recentInstances === 'enabled';
+
             $scope.filterProps = Object.keys($scope.filterValues);
 
+            $scope.freeTierOptions = [];
             if ($scope.features.freetier === 'enabled') {
                 $scope.freeTierOptions = FreeTier.freetier();
             }
             var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
+
+            function getCreatedMachines() {
+                var deferred = $q.defer();
+                if ($scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
+                    var createdMachines = Account.getUserConfig().$child('createdMachines');
+                    createdMachines.$load(function (error, config) {
+                        var recentInstances = config.createdMachines || [];
+                        if (recentInstances.length > 0) {
+                            recentInstances.sort(function (a, b) {
+                                // if provisionTimes are equal take the newer one
+                                return b.provisionTimes - a.provisionTimes || b.creationDate - a.creationDate;
+                            });
+                        }
+                        deferred.resolve(recentInstances);
+                    });
+                } else {
+                    deferred.resolve([]);
+                }
+                return deferred.promise;
+            }
+
+            var recentInstances = getCreatedMachines();
 
             $q.all([
                 $q.when($scope.keys),
                 $q.when(Datacenter.datacenter()),
                 $q.when($scope.preSelectedImage),
                 $q.when(Machine.getSimpleImgList()),
-                $q.when($scope.freeTierOptions)
+                $q.when($scope.freeTierOptions),
+                $q.when(recentInstances)
             ]).then(function (result) {
                 $scope.datacenters = result[1];
                 $scope.simpleImages = [];
@@ -218,9 +246,12 @@
                         });
                         return;
                     }
-                    Machine.provisionMachine(machine || $scope.data).done(function (err, job) {
+
+                    var machineData = machine || $scope.data;
+                    Machine.provisionMachine(machineData).done(function (err, job) {
                         var newMachine = job.__read();
                         if ($scope.features.freetier === 'enabled') {
+                            // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
                             $scope.freetier = FreeTier.freetier();
                         }
                         $q.when(Machine.machine(), function (listMachines) {
@@ -230,6 +261,38 @@
                                 $location.path('/compute/create/simple');
                             }
                         });
+
+                        if (!err && $scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
+                            $q.when($scope.freeTierOptions).then(function () {
+                                if (!machineData.freetier) {
+                                    $scope.createdMachines = Account.getUserConfig().$child('createdMachines');
+                                    $scope.createdMachines.$load(function (error, config) {
+                                        config.createdMachines = config.createdMachines || [];
+                                        var creationDate = new Date(newMachine.created).getTime();
+                                        var listedMachine = config.createdMachines.find(function (machine) {
+                                            return machine.dataset === machineData.dataset &&
+                                                machine.package === machineData.package;
+                                        });
+
+                                        if (listedMachine) {
+                                            listedMachine.provisionTimes += 1;
+                                            listedMachine.creationDate = creationDate;
+                                        } else {
+                                            var createdMachine = {
+                                                dataset: machineData.dataset,
+                                                package: machineData.package,
+                                                provisionTimes: 1,
+                                                creationDate: creationDate
+                                            };
+                                            config.createdMachines.push(createdMachine);
+                                        }
+
+                                        config.dirty(true);
+                                        config.$save();
+                                    });
+                                }
+                            });
+                        }
                     });
 
                     $location.path('/compute');
@@ -337,11 +400,20 @@
                 provision(data);
             };
 
-            if ($scope.features.manta === 'enabled' && !$scope.data.datacenter) {
+            $scope.createRecent = function (data) {
+                data.name = '';
+                data.datacenter = $scope.data.datacenter;
+                data.networks = $scope.networks.map(function (network) {
+                    return network.id;
+                });
+                provision(data);
+            };
+
+            if ($scope.isMantaEnabled && !$scope.data.datacenter) {
                 //TODO: Handle all other DC drop-downs
                 $scope.userConfig = Account.getUserConfig().$child('datacenter');
                 $scope.userConfig.$load(function (error, config) {
-                    if (config.value && !$scope.data.datacenter && !preSelectedImage) {
+                    if (config.value && !$scope.data.datacenter && !$scope.preSelectedImage) {
                         $scope.selectDatacenter(config.value);
                     }
                     $scope.$watch('data.datacenter', function (dc) {
@@ -738,60 +810,159 @@
                     selectMinimalPackage(true, true);
                 }
             };
+
+            function processDatasets(datasets) {
+                var unique_datasets = [];
+                var dataset_names = [];
+                var versions = {};
+                var selectedVersions = {};
+                var manyVersions = {};
+                var operating_systems = {'All': 1};
+
+                $scope.datasetsLoading = false;
+                datasets.forEach(function (dataset) {
+                    operating_systems[dataset.os] = 1;
+
+                    if (!dataset_names[dataset.name]) {
+                        dataset_names[dataset.name] = true;
+                        unique_datasets.push(dataset);
+                    }
+
+                    if (!versions[dataset.name]) {
+                        versions[dataset.name] = {};
+                        versions[dataset.name][dataset.version] = dataset;
+                        selectedVersions[dataset.name] = dataset;
+                    } else {
+                        if (!versions[dataset.name][dataset.version]) {
+                            manyVersions[dataset.name] = true;
+                            versions[dataset.name][dataset.version] = dataset;
+                        }
+
+                        if (isVersionHigher(dataset.version, selectedVersions[dataset.name].version)) {
+                            selectedVersions[dataset.name] = dataset;
+                        }
+                    }
+                });
+                $scope.operating_systems = Object.keys(operating_systems);
+                $scope.datasets = unique_datasets;
+                $scope.versions = versions;
+                $scope.manyVersions = manyVersions;
+                $scope.selectedVersions = selectedVersions;
+
+                if ($scope.preSelectedImage) {
+                    $scope.selectedVersions[$scope.preSelectedImage.name] = $scope.preSelectedImage;
+                }
+            }
+
+            function processPackages(newDatacenter, packages) {
+                if (newDatacenter !== $scope.data.datacenter) {
+                    return;
+                }
+                var indexPackageTypes = {};
+                var packageTypes = [];
+                packages.forEach(function (p) {
+                    if (p.group && p.price) {
+                        var indexPackageType = indexPackageTypes[p.group];
+                        if (!indexPackageType) {
+                            indexPackageTypes[p.group] = [p.type];
+                            packageTypes.push(p.group);
+                        } else if (!indexPackageType[p.type]) {
+                            indexPackageTypes[p.group].push(p.type);
+                        }
+                    }
+                    var price = getNr(p.price);
+                    var priceMonth = getNr(p.price_month);
+                    p.price = (price || price === 0) && price.toFixed(3) || undefined;
+                    p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
+                });
+
+                var standardIndex = packageTypes.indexOf('Standard');
+                if (standardIndex !== -1) {
+                    packageTypes.splice(standardIndex, 1);
+                    packageTypes.push('Standard');
+                }
+                $scope.indexPackageTypes = indexPackageTypes;
+                $scope.packageTypes = packageTypes;
+                $scope.packages = packages;
+
+                if ($scope.preSelectedImageId) {
+                    $scope.selectDataset($scope.preSelectedImageId);
+                }
+            }
+
+            function processRecentInstances(recentInstances, datasets) {
+                if (recentInstances.length > 0) {
+                    datasets.forEach(function (dataset) {
+                        recentInstances = recentInstances.map(function (instance) {
+                            if (instance && instance.dataset === dataset.id) {
+                                instance.datasetName = dataset.name;
+                                instance.description = dataset.description;
+                            }
+                            return instance;
+                        });
+                    });
+
+                    $scope.packages.forEach(function (pack) {
+                        recentInstances = recentInstances.map(function (instance) {
+                            if (instance && instance.package === pack.id) {
+                                instance.memory = pack.memory;
+                                instance.disk = pack.disk;
+                                instance.vcpus = pack.vcpus;
+                                instance.price = pack.price;
+                            }
+                            return instance;
+                        });
+                    });
+                }
+
+                var uniqueRecentInstances = [];
+                var unique = {};
+
+                recentInstances.forEach(function (instance) {
+                    if ($scope.manyVersions[instance.datasetName]) {
+                        var datasetId = null;
+                        var datasetDescription = '';
+                        var publishedAt = 0;
+                        var latestVersion = 0;
+                        var versions = $scope.versions[instance.datasetName];
+
+                        for (var version in versions) {
+                            if (versions[version].public) {
+                                var currentVersion = versions[version].version;
+                                if (util.cmpVersion(latestVersion, currentVersion) < 0) {
+                                    latestVersion = currentVersion;
+                                    datasetId = versions[version].id;
+                                    datasetDescription = versions[version].description;
+                                }
+                            } else {
+                                var convertedDate = new Date(versions[version].published_at).getTime();
+                                if (convertedDate > publishedAt) {
+                                    publishedAt = convertedDate;
+                                    datasetId = versions[version].id;
+                                    datasetDescription = versions[version].description;
+                                }
+                            }
+                        }
+                        instance.dataset = datasetId;
+                        instance.description = datasetDescription;
+                    }
+                    if (!unique[instance.dataset] || unique[instance.dataset].package !== instance.package) {
+                        uniqueRecentInstances.push(instance);
+                        unique[instance.dataset] = instance;
+                    }
+                });
+
+                $scope.recentInstances = uniqueRecentInstances.filter(function (instance) {
+                    return instance.memory !== undefined;
+                });
+            }
+
             // Watch datacenter change
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
                     $scope.networks = [];
-                    var count = 2;
-
-                    Dataset.dataset({ datacenter: newVal }).then(function (datasets) {
-                        var unique_datasets = [];
-                        var dataset_names = [];
-                        var versions = {};
-                        var selectedVersions = {};
-                        var manyVersions = {};
-                        var operating_systems = {'All': 1};
-
-                        $scope.datasetsLoading = false;
-                        datasets.forEach(function (dataset) {
-                            operating_systems[dataset.os] = 1;
-
-                            if (!dataset_names[dataset.name]) {
-                                dataset_names[dataset.name] = true;
-                                unique_datasets.push(dataset);
-                            }
-
-                            if (!versions[dataset.name]) {
-                                versions[dataset.name] = {};
-                                versions[dataset.name][dataset.version] = dataset;
-
-                                selectedVersions[dataset.name] = dataset;
-
-                            } else {
-                                if (!versions[dataset.name][dataset.version]) {
-                                    manyVersions[dataset.name] = true;
-                                    versions[dataset.name][dataset.version] = dataset;
-                                }
-
-                                if (isVersionHigher(dataset.version, selectedVersions[dataset.name].version)) {
-                                    selectedVersions[dataset.name] = dataset;
-                                }
-                            }
-                        });
-
-                        $scope.operating_systems = Object.keys(operating_systems);
-                        $scope.datasets = unique_datasets;
-                        $scope.versions = versions;
-                        $scope.manyVersions = manyVersions;
-                        $scope.selectedVersions = selectedVersions;
-                        $scope.reloading = (--count > 0);
-
-                        if ($scope.preSelectedImage) {
-                            $scope.selectedVersions[$scope.preSelectedImage.name] = $scope.preSelectedImage;
-                        }
-                    });
 
                     Network.network(newVal).then(function (networks) {
                         if (newVal === $scope.data.datacenter) {
@@ -803,48 +974,23 @@
                         }
                     });
 
-                    Package.package({ datacenter: newVal }).then(function (packages) {
-                        if (newVal !== $scope.data.datacenter) {
-                            return;
-                        }
-
-                        var indexPackageTypes = {};
-                        var packageTypes = [];
-                        packages.forEach(function (p) {
-                            if (p.group && p.price) {
-                                var indexPackageType = indexPackageTypes[p.group];
-                                if (!indexPackageType) {
-                                    indexPackageTypes[p.group] = [p.type];
-                                    packageTypes.push(p.group);
-                                } else if (!indexPackageType[p.type]) {
-                                    indexPackageTypes[p.group].push(p.type);
-                                }
-                            }
-                            var price = getNr(p.price);
-                            var priceMonth = getNr(p.price_month);
-                            p.price = (price || price === 0) && price.toFixed(3) || undefined;
-                            p.price_month = (priceMonth || priceMonth === 0) && priceMonth.toFixed(2) || undefined;
-                        });
-
-                        var standardIndex = packageTypes.indexOf('Standard');
-                        if (standardIndex !== -1) {
-                            packageTypes.splice(standardIndex, 1);
-                            packageTypes.push('Standard');
-                        }
-                        $scope.indexPackageTypes = indexPackageTypes;
-                        $scope.packageTypes = packageTypes;
-                        $scope.packages = packages;
-                        $scope.reloading = (--count > 0);
-
-                        if ($scope.preSelectedImageId) {
-                            $scope.selectDataset($scope.preSelectedImageId);
+                    $q.all([
+                        $q.when(Dataset.dataset({ datacenter: newVal })),
+                        $q.when(Package.package({ datacenter: newVal })),
+                        $q.when(getCreatedMachines())
+                    ]).then(function (result) {
+                        $scope.reloading = false;
+                        var datasets = result[0];
+                        processDatasets(datasets);
+                        processPackages(newVal, result[1]);
+                        if ($scope.isRecentInstancesEnabled) {
+                            processRecentInstances(result[2], datasets);
                         }
                     });
-
                 }
             });
 
-            function setDatacenter () {
+            function setDatacenter() {
                 if ($rootScope.commonConfig('datacenter')) {
                     $scope.data.datacenter = $rootScope.commonConfig('datacenter');
                 } else {

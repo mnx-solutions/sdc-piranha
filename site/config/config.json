@@ -181,5 +181,6 @@
   , "createdBySupportPackages": "no"
   , "systemStatusTile": "no"
   , "devCenterNewsTile": "enabled"
+  , "recentInstances": "disabled"
   }
 }

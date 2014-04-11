@@ -1388,6 +1388,9 @@
 .review .left.small-icon {
     background-position: 210px 25px;
 }
+.recent-image.small-icon {
+    background-position: 90% 13px;
+}
 .info.small-icon {
     background-position: 210px 50px;
 }
@@ -1589,4 +1592,10 @@
 .review td.separator {
     border-right: 1px solid #cbc1a8;
     border-left: 1px solid #cbc1a8;
+}
+.control-panel {
+    padding-bottom: 30px;
+}
+.ssh-button-container {
+    margin-top: 20px;
 }
