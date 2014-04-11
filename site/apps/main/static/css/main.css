@@ -954,12 +954,33 @@ div .disabled {
 }
 
 .loading-medium-tr {
+    margin-top: 2px;
+    width: 30px;
+    height: 30px;
     background-image: url('../img/icon-loading-medium-tr.gif');
     background-position: 50% 50%;
     background-repeat: no-repeat;
-    min-height: 60px;
-    max-width: 100%;
-    min-width: 50px;
+}
+
+.modal-ssh {
+    margin-left: -200px;
+    width: 410px;
+}
+
+.control-group-ssh {
+    margin-bottom: 0px;
+}
+
+textarea.ssharea {
+    margin-bottom: 0px;
+}
+
+.modal-footer-ssh {
+    height: 32px;
+}
+
+.modal-footer-ssh .btn {
+    margin-left: 5px;
 }
 
 .loading-large {

@@ -468,6 +468,30 @@ div.error {
     height: 400px;
     background-color: #e8f0f7;
 }
+.loading-medium-tr {
+    margin-top: 2px;
+    width: 30px;
+    height: 30px;
+    background-image: url('../img/icon-loading-medium-tr.gif');
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+.modal-ssh {
+    margin-left: -200px;
+    width: 410px;
+}
+.control-group-ssh {
+    margin-bottom: 0px;
+}
+textarea.ssharea {
+    margin-bottom: 0px;
+}
+.modal-footer-ssh {
+    height: 32px;
+}
+.modal-footer-ssh .btn {
+    margin-left: 5px;
+}
 .first-block{
     width: 725px;
     display: inline-block;
