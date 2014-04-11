@@ -52,7 +52,7 @@
                                 localization.translate(
                                     null,
                                     'slb',
-                                    err
+                                    err.message
                                 ),
                                 function () {}
                             );
