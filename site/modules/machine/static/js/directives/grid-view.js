@@ -15,9 +15,12 @@
         }
 
         function areAllPagedItemsChecked() {
-            return $scope.pagedItems.every(function (item) {
-                return item.checked;
-            });
+            if ($scope.pagedItems && $scope.pagedItems.length) {
+                return $scope.pagedItems.every(function (item) {
+                    return item.checked;
+                });
+            }
+            return false;
         }
 
         $scope.isOnPage = function (index) {
