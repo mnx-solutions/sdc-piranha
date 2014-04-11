@@ -119,9 +119,11 @@
                     var formElements = {
                         failThreshold: 'Failure threshold',
                         toPort: 'Instances port',
-                        fromPort: 'Load balancer port',
                         name: 'Load balancer name'
                     };
+                    if ($scope.editForm.fromPort.$invalid) {
+                        validationMessage = 'A current limitation is additional load balancers use the same IP as the first. Therefore, each one must be listening at a different port. We are working to resolve this.';
+                    }
                     for (var formElementName in formElements) {
                         if ($scope.editForm[formElementName].$invalid) {
                             validationMessage = formElements[formElementName] + ' is invalid.';
