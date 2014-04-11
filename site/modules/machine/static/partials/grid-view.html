@@ -13,7 +13,7 @@
                        placeholder="{{placeHolderText}}"
                        data-ng-model="filterAll"
                        data-translate="placeholder"
-                       data-ng-change="selectCheckbox()" />
+                       data-ng-change="resetFilteredItemsSelection()" />
                 <input value="" class="icon-filter grid-filter-icon" type="submit" disabled="disabled">
             </form>
         </div>
@@ -77,7 +77,7 @@
                     <th class="hidden-480" data-ng-show="enabledCheckboxes">
                         <label class="checkbox" >
                             <div class="checker" data-ng-class="{hover:shows}" data-ng-mouseenter="shows = true" data-ng-mouseleave="shows = false">
-                                    <span data-ng-click="selectAllCheckbox()" data-ng-class="{checked: checkedCheckBox}" data-ng-disabled="checkedCheckBoxDisable">
+                                    <span data-ng-click="selectAllCheckbox()" data-ng-class="{checked: checkedAllCheckBox}" data-ng-disabled="isCheckedAllCheckBoxDisabled">
                                         <input type="checkbox" class="group-checkable" data-set=".checkboxes" value="">
                                     </span>
                             </div>
@@ -97,7 +97,7 @@
                     </th>
                 </thead>
                 <tbody id="grid-instances">
-                    <tr data-ng-repeat="object in pageObjects" style="font-weight: 400;">
+                    <tr data-ng-repeat="object in pagedItems" style="font-weight: 400;">
                         <td width="10" data-ng-show="enabledCheckboxes">
                             <label class="checkbox">
                                 <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
@@ -114,7 +114,7 @@
                                 <a href="" data-ng-show="location.path().search('images')==1">{{object.name}}</a>
                             </div>
                             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
-                                <div data-object-state data-object="object" data-type="{{objectsType}}" class="grid-small-font"></div>
+                                <div data-object-state data-object="object" data-type="{{itemsType}}" class="grid-small-font"></div>
                             </span>
                             <span data-ng-switch-when="actionButtons">
                                 <div data-ng-show="getActionButtons(object).length && imageButtonShow">

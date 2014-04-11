@@ -6,11 +6,21 @@
 
         function refreshGrid() {
             $scope.refreshPager();
-            var filteredObjects = $filter('filter')($scope.objects, $scope.matchesFilter);
-            var orderedObjects = $filter('orderBy')(filteredObjects, $scope.order);
-            $scope.pageObjects = orderedObjects && orderedObjects.filter(function (item, index) {
+            var filteredItems = $filter('filter')($scope.items, $scope.matchesFilter);
+            var orderedItems = $filter('orderBy')(filteredItems, $scope.order);
+            $scope.pagedItems = orderedItems && orderedItems.filter(function (item, index) {
                 return $scope.isOnPage(index);
             });
+            $scope.checkedAllCheckBox = areAllPagedItemsChecked();
+        }
+
+        function areAllPagedItemsChecked() {
+            if ($scope.pagedItems && $scope.pagedItems.length) {
+                return $scope.pagedItems.every(function (item) {
+                    return item.checked;
+                });
+            }
+            return false;
         }
 
         $scope.isOnPage = function (index) {
@@ -18,9 +28,9 @@
         };
 
         $scope.refreshPager = function () {
-            if ($scope.objects) {
-                $scope.pageNumSum = $filter('filter')($scope.objects, $scope.matchesFilter).length;
-                var lastPage =  Math.ceil($scope.pageNumSum / $scope.perPage);
+            if ($scope.items) {
+                $scope.pageNumSum = $filter('filter')($scope.items, $scope.matchesFilter).length;
+                var lastPage = Math.ceil($scope.pageNumSum / $scope.perPage);
                 if (lastPage >= 0) {
                     $scope.lastPage = lastPage === 0 ? 1 : lastPage;
                 }
@@ -157,15 +167,15 @@
             }
         };
 
-        $scope.matchesFilter = function (obj) {
-            if ($scope.propertyFilter(obj)) {
+        $scope.matchesFilter = function (item) {
+            if ($scope.propertyFilter(item)) {
                 if ($scope.filterAll) {
                     return $scope.props.some(function (el) {
                         if (!el.active) {
                             return false;
                         }
 
-                        var subject = (el._getter && el._getter(obj)) || (el.id2 && obj[el.id][el.id2]) || obj[el.id] || '';
+                        var subject = (el._getter && el._getter(item)) || (el.id2 && item[el.id][el.id2]) || item[el.id] || '';
 
                         if (ng.isNumber(subject) || typeof subject === "boolean") {
                             subject = subject.toString();
@@ -193,13 +203,13 @@
             $scope.propOn = !$scope.propOn;
         };
         function getJSONData() {
-            var filtered = $filter('filter')($scope.objects, $scope.matchesFilter);
+            var filtered = $filter('filter')($scope.items, $scope.matchesFilter);
             var ordered = $filter('orderBy')(filtered, $scope.order);
 
-            // List all the different properties from all objects
+            // List all the different properties from all items
             var order = [];
-            $scope.objects.forEach(function (object) {
-                Object.keys(object).forEach(function (property) {
+            $scope.items.forEach(function (item) {
+                Object.keys(item).forEach(function (property) {
                     if (property.indexOf('$$') !== 0 && order.indexOf(property) === -1) {
                         order.push(property);
                     }
@@ -215,11 +225,11 @@
             }
 
             ordered.forEach(function (el) {
-                var obj = {};
+                var item = {};
                 order.forEach(function (id) {
-                    obj[id] = el[id] !== undefined ? el[id] : '';
+                    item[id] = el[id] !== undefined ? el[id] : '';
                 });
-                final.push(obj);
+                final.push(item);
             });
 
             return {
@@ -231,15 +241,15 @@
         $scope.export = function (format) {
             $http.post('machine/export', getJSONData())
                 .success(function (id) {
-                    $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '/' + $scope.objectsType + '"></iframe>';
+                    $scope.iframe = '<iframe src="machine/export/' + id + '/' + format + '/' + $scope.itemsType + '"></iframe>';
                 })
                 .error(function () {
                     console.log('err', arguments);
                 });
         };
 
-        $scope.getActionButtons = function (object) {
-            if (!object) {
+        $scope.getActionButtons = function (item) {
+            if (!item) {
                 return $scope.actionButtons;
             }
             if (!$scope.actionButtons) {
@@ -251,7 +261,7 @@
                     return true;
                 }
                 if (typeof btn.show === 'function') {
-                    return btn.show(object);
+                    return btn.show(item);
                 }
 
                 return !!btn.show;
@@ -263,49 +273,47 @@
         };
 
         $scope.selectAllCheckbox = function () {
-            if ($scope.checkedCheckBoxDisable) {return; }
-            $scope.checkedCheckBox = !$scope.checkedCheckBox;
-            $scope.objects.forEach(function (el) {
-                el.checked = false;
-            });
-            var objects = $filter('filter')($scope.objects, $scope.matchesFilter);
-            objects.forEach(function (el) {
-                el.checked = $scope.checkedCheckBox;
+            if ($scope.isCheckedAllCheckBoxDisabled) {
+                return;
+            }
+            $scope.checkedAllCheckBox = !$scope.checkedAllCheckBox;
+
+            $scope.pagedItems.forEach(function (el) {
+                el.checked = $scope.checkedAllCheckBox;
             });
         };
 
         $scope.unSelectAllCheckbox = function () {
             $scope.$parent.$emit('gridViewChangeTab', $scope.tabFilter);
-            $scope.checkedCheckBox = false;
-            $scope.objects.forEach(function (el) {
+            $scope.checkedAllCheckBox = false;
+            $scope.items.forEach(function (el) {
                 el.checked = false;
             });
         };
 
         $scope.disableSelectAllCheckbox = function () {
-            $scope.checkedCheckBoxDisable = $scope.objects.some(function (el) {
+            $scope.isCheckedAllCheckBoxDisabled = $scope.items.some(function (el) {
                 return (el.fireWallActionRunning) || (el.job && !el.job.finished);
             });
         };
 
-        $scope.propertyFilter = function (obj) {
+        $scope.propertyFilter = function (item) {
             if ($scope.tabFilter === 'all' || !$scope.tabFilter) {
                 return true;
             }
-            return obj[$scope.tabFilterField] === $scope.tabFilter;
+            return item[$scope.tabFilterField] === $scope.tabFilter;
         };
 
-        $scope.$watch('objects', function (objects) {
-            if (objects) {
-                $scope.selectCheckbox();
+        $scope.$watch('items', function (items) {
+            if (items) {
                 $scope.disableSelectAllCheckbox();
                 refreshGrid();
 
                 if ($scope.tabFilterField) {
                     if ($scope.tabFilterField !== 'datacenter') {
-                        objects.forEach(function (obj) {
-                            if ($scope.tabFilters.indexOf(obj[$scope.tabFilterField]) === -1) {
-                                $scope.tabFilters.unshift(obj[$scope.tabFilterField]);
+                        items.forEach(function (item) {
+                            if ($scope.tabFilters.indexOf(item[$scope.tabFilterField]) === -1) {
+                                $scope.tabFilters.unshift(item[$scope.tabFilterField]);
                             }
                         });
                     }
@@ -314,31 +322,29 @@
             }
         }, true);
 
-        $scope.selectCheckbox = function (obj) {
+        $scope.resetFilteredItemsSelection = function () {
+            $scope.items.filter(function (item) {
+                return $scope.pagedItems.indexOf(item) === -1;
+            }).forEach(function (item) {
+                item.checked = false;
+            });
+        };
+
+        $scope.selectCheckbox = function (item) {
             if (!$scope.enabledCheckboxes) {
                 return;
             }
-            var id = obj && (obj.id || obj.uuid);
+            var id = item && (item.id || item.uuid);
 
-            var selectedItemsCount = 0;
-            var objects = $filter('filter')($scope.objects, $scope.matchesFilter);
-            $scope.objects.forEach(function (el) {
-                if (objects.indexOf(el) === -1) {
-                    el.checked = false;
-                    return;
-                }
-
-                var objId = el.id || el.uuid;
-                if (objId === id && !el.fireWallActionRunning && (!el.job || el.job.finished)) {
+            $scope.pagedItems.forEach(function (el) {
+                var itemId = el.id || el.uuid;
+                if (itemId === id && !el.fireWallActionRunning && (!el.job || el.job.finished)) {
                     el.checked = !el.checked;
                 }
-                if (el.checked) {
-                    selectedItemsCount += 1;
-                }
             });
-
-            $scope.checkedCheckBox = objects.length && selectedItemsCount === objects.length;
+            $scope.checkedAllCheckBox = areAllPagedItemsChecked();
         };
+
         $scope.selectColumnsCheckbox = function (id) {
             $scope.props.forEach(function (el) {
                 if (el.id === id) {
@@ -358,8 +364,6 @@
             });
         };
 
-        $scope.selectCheckbox();
-
     }]).constant('gridConfig', {
         paginated: true,
         perPage: 25,
@@ -377,7 +381,7 @@
                 order: '=',
                 props: '=',
                 detailProps: '=',
-                objects: '=',
+                items: '=',
                 actionButtons:'=',
                 imageButtonShow:"=",
                 filterAll: '@',
@@ -390,7 +394,7 @@
                 instForm: '=',
                 imgForm: '=',
                 enabledCheckboxes: '=',
-                objectsType: '@',
+                itemsType: '@',
                 placeHolderText: '=',
                 multisort: '@',
                 userConfig: '=',
@@ -426,8 +430,8 @@
                         if (typeof ( customOrder) === 'string') {
                             el.rorder = '-' + customOrder;
                         } else if (typeof (customOrder) === 'function') {
-                            el.rorder = function (obj) {
-                                var elem = String(customOrder(obj));
+                            el.rorder = function (item) {
+                                var elem = String(customOrder(item));
                                 var next = '';
                                 var i;
                                 for (i = 0; i < elem.length; i += 1) {
