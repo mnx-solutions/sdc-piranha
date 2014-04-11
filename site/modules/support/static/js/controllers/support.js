@@ -12,13 +12,13 @@
                 $scope.subscribingInProgress = true;
                 $scope.levelSupport = 0;
                 var supportPackages = $scope.supportPackages;
-                for (var packageName in supportPackages ) {
-                    if (headLink + supportPackages[packageName].link === $location.path()) {
-                        $scope.package = supportPackages[packageName];
+                supportPackages.forEach(function (supportPackage) {
+                    if (headLink + supportPackage.link === $location.path()) {
+                        $scope.package = supportPackage;
                         $scope.levelSupport = $scope.package.currentlevelSupport;
-                        $scope.packageHolders = supportPackages[packageName].packageHolders;
+                        $scope.packageHolders = supportPackage.packageHolders;
                     }
-                }
+                });
                 $scope.loading = false;
                 $scope.subscribingInProgress = false;
             };
@@ -41,7 +41,24 @@
 
             var subscribe = function (holder) {
                 $scope.subscribingInProgress = true;
-                BillingService.createSupportSubscription(holder.ratePlanId, function () {
+                BillingService.createSupportSubscription(holder.ratePlanId, function (err) {
+                    if (err) {
+                        PopupDialog.error(
+                            localization.translate(
+                                null,
+                                null,
+                                'Error'
+                            ),
+                            localization.translate(
+                                null,
+                                'billing',
+                                'Unable to retrieve subscriptions'
+                            ),
+                            function () {
+                                $scope.subscribingInProgress = false;
+                            }
+                        );
+                    }
                     getSupportData();
                 });
             }

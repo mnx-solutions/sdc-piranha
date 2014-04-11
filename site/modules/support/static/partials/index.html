@@ -10,7 +10,7 @@
         </div>
         <div data-ng-show="package.templateUrl.length" data-ng-include="package.templateUrl">{{package.templateUrl}}</div>
         <div class="holders-container">
-           <div class="package-holder" data-ng-class="{active: packageHolder.active}" data-ng-repeat="packageHolder in packageHolders" data-ng-show="packageHolders">
+           <div class="package-holder" data-ng-class="{active: packageHolder.levelSupport < levelSupport || packageHolder.active}" data-ng-repeat="packageHolder in packageHolders" data-ng-show="packageHolders">
                 <div class="header">
                     <div class="brim">
                         <h4>{{packageHolder.title}}<a class="info" data-ng-show="packageHolder.info" href="{{packageHolder.url}}" target="_blank">i</a></h4>
@@ -24,11 +24,11 @@
                             <h3><p data-ng-show="packageHolder.costSign">{{packageHolder.costSign}}</p>{{packageHolder.cost}}<span>{{packageHolder.costText}}</span></h3>
                             <p class="fees">{{packageHolder.fees}}</p>
                         </div>
-                        <span data-ng-show="packageHolder.active && packageHolder.ratePlanId != '' && packageHolder.ratePlanId != 'phone' && (packageHolder.levelSupport == levelSupport)" class="btn pull-right">Current Level</span>
+                        <span data-ng-show="packageHolder.active && packageHolder.ratePlanId != 'phone' && (packageHolder.levelSupport == levelSupport)" class="btn pull-right">Current Level</span>
                         <span data-ng-show="packageHolder.ratePlanId != 'phone' && (packageHolder.levelSupport < levelSupport)" class="btn pull-right">Included</span>
-                        <button data-ng-show="!packageHolder.active && packageHolder.ratePlanId != 'phone' && levelSupport > 0" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickSignUp(packageHolder)">Upgrade<i class="arrow-right"></i></button>
-                        <button data-ng-show="!packageHolder.active && packageHolder.ratePlanId != 'phone' && levelSupport == 0" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickSignUp(packageHolder, true)">Sign Up<i class="arrow-right"></i></button>
-                        <button data-ng-show="packageHolder.ratePlanId == 'phone'" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickCallSales()">Call Sales<i class="arrow-right"></i></button>
+                        <button data-ng-show="!packageHolder.active && !packageHolder.phone && levelSupport > 0 && (packageHolder.levelSupport > levelSupport)" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickSignUp(packageHolder)">Upgrade<i class="arrow-right"></i></button>
+                        <button data-ng-show="!packageHolder.active && !packageHolder.phone && levelSupport == 0" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickSignUp(packageHolder, true)">Sign Up<i class="arrow-right"></i></button>
+                        <button data-ng-show="packageHolder.phone" data-ng-disabled="subscribingInProgress" class="btn pull-right" data-ng-click="clickCallSales()">Call Sales<i class="arrow-right"></i></button>
                     </div>
                 </div>
                 <div class="desc">
