@@ -50,7 +50,7 @@ public class UserSignupTest extends TestWrapper {
         createAccountPage.getLoginError().shouldBe(visible);
         createAccountPage.getFirstNameError().shouldHave(text("First name is a required field"));
         createAccountPage.getLastNameError().shouldHave(text("Last name is a required field"));
-        createAccountPage.getEmailError().shouldHave(text("Incorrect E-mail!"));
+        createAccountPage.getEmailError().shouldHave(text("Incorrect Email!"));
         createAccountPage.getLoginError().shouldHave(text("Username is a required field"));
         createAccountPage.setPassword("");
         createAccountPage.setConfirmPassword("notTheSamePass");
