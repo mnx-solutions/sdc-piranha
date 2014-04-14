@@ -165,21 +165,16 @@ public class SmokeTest extends TestWrapper {
         loginPage.login(USER_NAME, PASSWORD);
         sideBarMenu.clickDashboard().getCountInstancesRunning().shouldNotHave(text("0"));
     }
-    @Ignore //until SSO is not fixed
+
     @Test
     public void changePassword() {
+        page(Dashboard.class).getFreeTierWidget().waitUntil(visible, timeout);
         ChangePassword changePassword = navBarMenu.clickAccountMenu().clickChangePassword();
         Common.switchWindow($(byText("Current Password")));
-        changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().shouldHave(text("Must provide username and password"));
-
-        changePassword.setOldPassword("qqqq");
-        changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().shouldHave(text("The credentials provided are invalid"));
 
         changePassword.setOldPassword(PASSWORD);
         changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().shouldHave(text("Password is too short"));
+        changePassword.getErrorLabel().shouldHave(text("Please enter new password."));
 
         String testPass = "newTestPass";
         changePassword.fillForm(PASSWORD, testPass);

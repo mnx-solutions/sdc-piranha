@@ -51,8 +51,8 @@ task InstanceRenameTests(type: Test) {
     include '**/InstanceRenameTests.class'
 }
 
-task InstanceTagsTests(type: Test) {
-    include '**/InstanceTagsTests.class'
+task InstanceTagTest(type: Test) {
+    include '**/InstanceTagTest.class'
 }
 
 task InstanceCRUDTests(type: Test) {

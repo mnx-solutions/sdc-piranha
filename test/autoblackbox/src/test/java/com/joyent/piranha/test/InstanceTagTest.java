@@ -16,7 +16,7 @@ import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class InstanceTagsTests extends TestWrapper {
+public class InstanceTagTest extends TestWrapper {
     private static SideBarMenu sideBarMenu;
 
     @BeforeClass
@@ -34,7 +34,7 @@ public class InstanceTagsTests extends TestWrapper {
     }
 
     @Test
-    public void tagOpetationTests() {
+    public void tagOperationTest() {
         Instances instances = sideBarMenu.clickCompute();
         instances.checkTitle();
         InstanceList instanceList = instances.getInstanceList();
@@ -54,8 +54,7 @@ public class InstanceTagsTests extends TestWrapper {
         tagSection.addTag(key1, value1);
         sideBarMenu.errorNotPresent();
         sideBarMenu.clickCompute();
-        instances.clickColumnsButton();
-        instances.addGridColumn("Tag");
+        instances.addGridColumn("Tags");
         assertTrue(instances.isTagDisplayed(key1, value1));
         assertFalse(instances.isTagDisplayed("WrongKey", value1));
         assertFalse(instances.isTagDisplayed(key1, "WrongValue"));
