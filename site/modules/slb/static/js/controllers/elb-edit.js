@@ -202,8 +202,11 @@
                         $scope.saving = false;
                     });
                 };
+                $scope.validateInternalPort = function (name, min, max) {
+                    $scope.validatePort(name, min, max, true);
+                };
 
-                $scope.validatePort = function (name, min, max) {
+                $scope.validatePort = function (name, min, max, isInternal) {
                     var input = $scope.editForm[name];
                     var value = input.$viewValue;
                     var reservedPorts = ['0', '22', '9070', '9080', '9090'];
@@ -211,7 +214,8 @@
                     min = min || 1;
                     max = max || 65535; // max tcp port value
                     var isInteger = (value % 1) === 0;
-                    input.$setValidity('port', isInteger && service.reservedPorts.indexOf(+value) === -1 && value >= min && value <= max && (reservedPorts.indexOf(value) === -1));
+                    var isReservedPort = !isInternal && (service.reservedPorts.indexOf(+value) !== -1 || (reservedPorts.indexOf(value) !== -1));
+                    input.$setValidity('port', isInteger && !isReservedPort && value >= min && value <= max);
                 };
 
                 $scope.delete = function () {
