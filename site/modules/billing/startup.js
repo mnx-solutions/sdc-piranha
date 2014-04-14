@@ -363,7 +363,7 @@ module.exports = function execute(scope, callback) {
                     if(err.statusCode === 401) {
                         err.statusCode = 500;
                     }
-
+                    call.req.log.warn({err: err, resp: resp}, 'Got zuora error while getting user subscriptions');
                     call.done(err);
                     return;
                 }
@@ -408,7 +408,7 @@ module.exports = function execute(scope, callback) {
                         if (err.statusCode === 401) {
                             err.statusCode = 500;
                         }
-
+                        call.req.log.warn({err: err, resp: resp}, 'Got zuora error while subscribing to support plan');
                         call.error(err);
                         return;
                     }
