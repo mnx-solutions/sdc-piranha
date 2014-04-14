@@ -28,7 +28,7 @@
                         }
                         utilizationCache[month] = job.__read();
                         utilizationCache[month].dram.format = function (num) {
-                            return Math.round(num);
+                            return num.toFixed(2);
                         };
                         utilizationCache[month].bandwidth.format = function (num) {
                             var formatted = util.getReadableFileSizeString(num);
