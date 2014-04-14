@@ -206,42 +206,75 @@ module.exports = function execute(scope) {
         });
     });
 
-    var getConfigPath = function (call, client) {
-        return '/' + client.user + '/stor/portal/config.' + call.req.session.userName + '.json';
+    var getConfigPath = function (call, client, old) {
+        return '/' + client.user + '/stor' +  (old ? '' : '/.joyent') + '/portal/config.' +
+            call.req.session.userName + '.json';
+    };
+
+    var readFileContents = function (client, path, callback) {
+        client.get(path, function (err, stream) {
+            if (err) {
+                callback(err);
+                return;
+            }
+            var result = '';
+            stream.setEncoding('utf8');
+            stream.on('data', function (data) {
+                result += data;
+            });
+            stream.on('end', function () {
+                callback(null, result);
+            });
+            stream.on('error', function (error) {
+                callback(error);
+            });
+        });
+    };
+
+    var readOldOrNewFile = function (call, client, callback) {
+        var oldConfigPath = getConfigPath(call, client, true);
+        var newConfigPath = getConfigPath(call, client, false);
+        readFileContents(client, oldConfigPath, function (oldErr, oldResult) {
+            if (oldErr) {
+                if (oldErr.statusCode === 404) {
+                    readFileContents(client, newConfigPath, function (newErr, newResult) {
+                        if (newErr) {
+                            callback(newErr);
+                            return;
+                        }
+                        callback(null, newResult);
+                    });
+                }
+                return;
+            }
+            client.rmr('/' + client.user + '/stor/portal', function (rmErr) {
+                if (rmErr) {
+                    call.req.log.info('Cannot remove old user config');
+                }
+                callback(null, oldResult);
+            });
+        });
     };
 
     server.onCall('GetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
-        client.get(getConfigPath(call, client), function (error, stream) {
-            var jsonConfig = {};
-            if (error) {
-                if (error.statusCode === 404) {
+        readOldOrNewFile(call, client, function (err, result) {
+            if (err) {
+                if (err.statusCode === 404) {
                     call.req.log.info('Config for user not found');
                 } else {
-                    call.req.log.error({error: error}, 'Cannot read user config');
+                    call.req.log.error({error: err}, 'Cannot read user config');
                 }
                 call.done(null, {});
                 return;
             }
-            var configStream = new MemoryStream();
-            var config = '';
-
-            stream.pipe(configStream);
-            configStream.on('data', function (data) {
-                config += data;
-            });
-            configStream.on('end', function () {
-                try {
-                    jsonConfig = JSON.parse(config);
-                } catch (err) {
-                    call.req.log.error({error: err}, 'Error parsing config file');
-                }
-                call.done(null, jsonConfig);
-            });
-            configStream.on('error', function (error) {
-                call.req.log.error({error: error}, 'Error occured while reading user config');
-                call.done(null, {});
-            });
+            var jsonConfig = {};
+            try {
+                jsonConfig = JSON.parse(result);
+            } catch (ex) {
+                call.req.log.error({error: ex}, 'Error parsing config file');
+            }
+            call.done(null, jsonConfig);
         });
     });
 
