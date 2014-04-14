@@ -898,9 +898,6 @@ div .disabled {
 }
 
 #zenbox_tab {
-    transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -webkit-transform: rotate(180deg);
     width: 42px;
     border: none;
 }
@@ -1755,7 +1752,7 @@ label.checkbox {
     right: 0;
     width: 42px;
     height: 108px;
-    margin-top: 125px;
+    margin-top: 160px;
     background: #999 url('../img/feedback-tab.png') 0 0 no-repeat;
     z-index: 10000
 }
