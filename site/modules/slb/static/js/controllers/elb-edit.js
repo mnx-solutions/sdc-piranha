@@ -189,7 +189,7 @@
                             localization.translate(
                                 null,
                                 'slb',
-                                err.message
+                                err.message || err
                             ),
                             function () {}
                         );
