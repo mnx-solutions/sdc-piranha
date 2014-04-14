@@ -57,6 +57,9 @@
                         };
                     });
                     $scope.server.machines = ($scope.server.machines || []).map(function (machine) {
+                        machine.deleted = !machines.some(function (el) {
+                            return el.ips.indexOf(machine.host) !== -1;
+                        });
                         machine.details = hostDetails[machine.host];
                         return machine;
                     });

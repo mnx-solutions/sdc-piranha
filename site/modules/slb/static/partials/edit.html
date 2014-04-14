@@ -172,13 +172,20 @@
                         <td width="10"><input type="checkbox" class="group-checkable"
                                               data-ng-model="machine.selected" data-ng-change="validateSelected(machine)">
                         </td>
-                        <td title="{{machine.name}}"><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a>
+                        <td title="{{machine.name}}" data-ng-class="{active: machine.active}"><a href="#!/compute/instance/{{machine.id}}">{{machine.name}}</a>
                         </td>
                         <td title="{{machine.datacenter}}">{{machine.datacenter}}</td>
                         <td title="{{machine.id}}">{{machine.id}}</td>
                         <td>
                             <span class="slb-name" title="{{balancer.name}}"
                                   data-ng-repeat="balancer in machine.balancers">{{balancer.name}}{{{true: '', false: ', '}[$last]}}</span>
+                        </td>
+                    </tr>
+                    <tr data-ng-show="deletedCount">
+                        <td width="10"><input type="checkbox" class="group-checkable" disabled></td>
+                        <td colspan="3"><i style="color: red;">{{ deletedCount }} deleted</i></td>
+                        <td>
+                            <span class="slb-name" title="{{server.name}}">{{server.name}}</span>
                         </td>
                     </tr>
                     </tbody>

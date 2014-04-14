@@ -15,6 +15,7 @@
                 $scope.hcDelays = [1, 3, 5, 10];
                 $scope.timeouts = [1, 2, 5, 10, 20];
                 $scope.allLoading = false;
+                $scope.deletedCount = 0;
 
                 function nextPort(port) {
                     while (service.reservedPorts.indexOf(port) !== -1) {
@@ -24,6 +25,7 @@
                 }
 
                 $q.all([service.getBalancer($scope.balancerId), service.getBalancers(), service.getMachines()]).then(function (results) {
+                    $scope.deletedCount = 0;
                     var server = results[0];
                     var balancers = results[1];
                     var machines = results[2];
@@ -41,6 +43,10 @@
                     server.datacenter = 'us-west-1';
 
                     var slbMachines = server.machines.map(function (machine) {
+                        $scope.deletedCount += machine.deleted = !machines.some(function (el) {
+                            return el.ips.indexOf(machine.host) !== -1;
+                        });
+
                         return machine.host;
                     });
                     var hosts = {};
