@@ -1,23 +1,19 @@
 package com.joyent.piranha.pageobject;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import com.joyent.piranha.Common;
-import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 
 import java.util.Date;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertTrue;
 
 public class FirewallRules extends AbstractPageObject {
 
-    public static final String GRID_ROW_REPEATER = "[data-ng-repeat=\"object in pageObjects\"]";
+    public static final String GRID_ROW_REPEATER = "object in pagedItems";
 
     public FirewallRuleDetails clickAddNewButton() {
         $(byText("+ Add New Rule")).click();
@@ -37,13 +33,7 @@ public class FirewallRules extends AbstractPageObject {
     }
 
     public FirewallRuleDetails editRule(String tagName) {
-        ElementsCollection rows = ($$(GRID_ROW_REPEATER));
-        for (SelenideElement row : rows) {
-            if (row.$(By.xpath("/*[contains(.,\"" + tagName + "\")]")).exists()) {
-                row.$("[data-original-title=\"Edit the rule\"]").click();
-                break;
-            }
-        }
+        getRowByText(GRID_ROW_REPEATER, tagName).$(byText("Edit")).click();
         return page(FirewallRuleDetails.class);
     }
 
@@ -56,8 +46,7 @@ public class FirewallRules extends AbstractPageObject {
     }
 
     public void checkRuleParametersByTag(String tag, String status, String action, String protocol, String from, String to) {
-        ElementsCollection rows = ($$(GRID_ROW_REPEATER));
-        SelenideElement row = Common.getRowByText(rows, "tag: " + tag);
+        SelenideElement row = getRowByText(GRID_ROW_REPEATER, "tag: " + tag);
         assertTrue(row.getText().contains(status));
         assertTrue(row.getText().contains(action));
         assertTrue(row.getText().contains(protocol));

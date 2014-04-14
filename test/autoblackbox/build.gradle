@@ -71,8 +71,8 @@ task allTests(type: Test) {
     include '**/AllTests.class'
 }
 
-task FirewallTests(type: Test) {
-    include '**/FirewallTests.class'
+task FirewallTest(type: Test) {
+    include '**/FirewallTest.class'
 }
 
 task ImageTests(type: Test) {
