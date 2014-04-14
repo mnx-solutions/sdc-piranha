@@ -23,7 +23,7 @@
                 }
 
                 $scope.toggleSideBar = function () {
-                    $scope.sideBarMin = ($scope.sideBarMin == false) ? true : false;
+                    $scope.sideBarMin = !$scope.sideBarMin;
                     if ($scope.sideBarMin) {
                         ng.element('.footer').addClass('leftpanel-small');
                     } else {

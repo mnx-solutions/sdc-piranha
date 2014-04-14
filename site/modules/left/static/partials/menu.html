@@ -1,54 +1,67 @@
-<div class="modulizer-module-left" ng-class="{'sidebar-toggler-closed': sideBarMin}">
-    <div class="page-sidebar nav-collapse collapse" ng-class="{'sidebar-toggler-closed': sideBarMin}">
+<div class="modulizer-module-left" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
+    <div class="page-sidebar nav-collapse collapse" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
     <!-- BEGIN SIDEBAR MENU -->
-    <ul class="page-sidebar-menu">
+    <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}">
         <li>
             <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
         </li>
-        <li class="single dashboard-icon" ng-class="{active: location.path().search('dashboard') == 1, over: dashboard && sideBarMin}" data-ng-mouseenter="dashboard=true" ng-mouseleave="dashboard=false">
+
+        <li class="single dashboard-icon" ng-class="{active: location.path().search('dashboard') == 1}">
             <a href="#!/dashboard">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || dashboard">Dashboard</span>
+                <span class="title">Dashboard</span>
                 <span class="selected"></span>
             </a>
         </li>
-        <li class="nested compute-icon" data-ng-class="{active: location.path().search('compute') == 1 ||
-                                                   location.path().search('slb') == 1 ||
-                                                   location.path().search('firewall') == 1 ||
-                                                   location.path().search('images') == 1, over: compute && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="compute=true" ng-mouseleave="compute=false">
+        <li class="nested compute-icon" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1}">
                 <a href="#!/compute">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || compute">Compute</span>
+                <span class="title">Compute</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
                 <li class="sub" data-ng-class="{active: location.path().search('compute') == 1}">
                     <a href="#!/compute">
-                        <span class="titles" data-ng-show="!sideBarMin || compute">Instances</span>
+                        <span class="titles">Instances</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'"><a href="#!/slb"><span class="titles" data-ng-show="!sideBarMin || compute" data-translate>Load Balancers</span><span class="selected-sub"></span></a></li>
-                <li class="sub" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'"><a href="#!/firewall"><span class="titles" data-ng-show="!sideBarMin || compute" data-translate>Firewall</span><span class="selected-sub"></span></a></li>
-                <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'"><a href="#!/images"><span class="titles" data-ng-show="!sideBarMin || compute">Images</span><span class="selected-sub"></span></a></li>
+                <li class="sub" data-ng-class="{active: location.path().search('slb') == 1}" data-ng-show="features.slb != 'disabled'">
+                    <a href="#!/slb">
+                        <span class="titles" data-translate>Load Balancers</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li class="sub" data-ng-class="{active: location.path().search('firewall') == 1}" data-ng-show="features.firewall != 'disabled'">
+                    <a href="#!/firewall">
+                        <span class="titles" data-translate>Firewall</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
+                <li class="sub" data-ng-class="{active: location.path().search('images') == 1}" data-ng-show="features.imageUse != 'disabled'">
+                    <a href="#!/images">
+                        <span class="titles">Images</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
             </ul>
         </li>
-        <li class="nested storage-icon" data-ng-class="{active: location.path().search('manta/') == 1, over: storage && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="storage=true" ng-mouseleave="storage=false">
+        <li class="nested storage-icon" data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
             <a href="#!/manta/intro">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || storage">Storage</span>
+                <span class="title">Storage</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu" data-ng-show="features.manta == 'enabled'">
                 <li class="sub" data-ng-class="{active: location.path().search('manta/intro') == 1}">
                     <a href="#!/manta/intro">
-                        <span class="titles" data-ng-show="!sideBarMin || storage">Introduction</span>
+                        <span class="titles">Introduction</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
                 <li class="sub" data-ng-class="{active: location.path().search('manta/files') == 1}">
                     <a href="#!/manta/files">
-                        <span class="titles" data-ng-show="!sideBarMin || storage" data-translate>File Manager</span>
+                        <span class="titles" data-translate>File Manager</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
@@ -56,44 +69,43 @@
                     data-ng-class="{active: location.path().search('manta/jobs') == 1}"
                     data-ng-show="features.mantaJobs == 'enabled'">
                     <a href="#!/manta/jobs">
-                        <span class="titles" data-ng-show="!sideBarMin || storage" data-translate>Job History</span>
+                        <span class="titles" data-translate>Job History</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
             </ul>
         </li>
-        <li class="nested usage-icon" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('utilization') == 1, over: usage && sideBarMin}" data-ng-mouseenter="usage=true" ng-mouseleave="usage=false">
+        <li class="nested usage-icon" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('utilization') == 1, open: location.path().search('/dram') > 1 || location.path().search('/bandwidth') > 1}">
             <a data-ng-href="{{usageUrl}}">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || usage">Usage</span>
+                <span class="title">Usage</span>
                 <span class="selected"></span>
             </a>
-            <ul class="sub-menu">
-                <li class="sub" data-ng-class="{active: location.path().search('utilization/dram') == 1}">
+            <ul class="sub-menu" data-ng-show="features.usageData == 'enabled'">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('utilization/dram') == 1}">
                     <a data-ng-href="{{usageDramUrl}}">
-                        <span class="titles" data-ng-show="!sideBarMin || usage">DRAM</span>
+                        <span class="titles" data-translate>DRAM</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
-                <li class="sub" data-ng-class="{active: location.path().search('utilization/bandwidth') == 1}">
+                <li left-list-item class="sub" data-ng-class="{active: location.path().search('utilization/bandwidth') == 1}">
                     <a data-ng-href="{{usageBandwidthUrl}}">
-                        <span class="titles" data-ng-show="!sideBarMin || usage" data-translate>Bandwidth</span>
+                        <span class="titles" data-translate>Bandwidth</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
             </ul>
         </li>
-        <li class="nested support-icon" data-ng-show="features.support == 'enabled'" data-ng-class="{active: location.path().search('support') == 1 ||
-                                                  location.path().search('support.cloud') == 1, over: support && sideBarMin, collapses: sideBarMin}" data-ng-mouseenter="support=true" ng-mouseleave="support=false">
+        <li class="nested support-icon" data-ng-show="features.support == 'enabled'" data-ng-class="{'active open': location.path().search('support') == 1 || location.path().search('support.cloud') == 1}">
             <a data-ng-click="clickSupportMenu('')">
                 <i class=""></i>
-                <span class="title" data-ng-show="!sideBarMin || support">Support Plan</span>
+                <span class="title">Support Plan</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
                 <li class="sub" data-ng-class="{active: isActive(supportPackage.link)}" data-ng-repeat="supportPackage in supportPackages">
                     <a data-ng-click="clickSupportMenu(supportPackage.link)">
-                        <span class="titles" data-ng-show="!sideBarMin || support" data-translate>{{supportPackage.menuButton}}</span>
+                        <span class="titles" data-translate>{{supportPackage.menuButton}}</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
