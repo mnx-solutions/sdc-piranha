@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
 
-public class FirewallTests extends TestWrapper {
+public class FirewallTest extends TestWrapper {
 
     public static final String USER_NAME = System.getProperty("loginusr");
     public static final String PASSWORD = System.getProperty("loginpw");
@@ -103,5 +103,4 @@ public class FirewallTests extends TestWrapper {
         firewallRules.getTagFromGrid(instanceTag).shouldBe(visible);
         firewallRules.removeFirstRule();
     }
-
 }
