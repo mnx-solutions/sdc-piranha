@@ -90,7 +90,16 @@
   , "forumsPath": "/api/v2/categories/20066858/forums.json"
   , "systemStatusPath": "/api/v2/forums/20715782/topics.json"
   , "packageUpdatePath": "/api/v2/forums/21147498/topics.json"
-  }
+  , "zenboxInit": {
+      "dropboxID":   "20078915"
+    , "url":         "https://joyentcloud.zendesk.com"
+    , "tabTooltip":  "Support"
+    , "tabImageURL": "https://assets.zendesk.com/external/zenbox/images/tab_support.png"
+    , "tabColor":    "#999"
+    , "tabPosition": "Right"
+    , "dropboxOrderPackageId": ""
+    }
+   }
 , "marketo": {
     "apikey": "401aabe96a7ca81004e722db0ce7576753436fb8"
   , "accountId": "879-GQM-314"

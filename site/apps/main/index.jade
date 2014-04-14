@@ -51,20 +51,3 @@ html(lang='en',data-ng-app='JoyentPortal', id="ng-app", data-ng-controller='Main
     each partial in partials
         script(type='text/ng-template',id='#{partial._id}')!= partial._content
 
-    script(type='text/javascript').
-        if (typeof(Zenbox) !== "undefined") {
-          var zenbox_params = {
-            dropboxID:   "20078915",
-            url:         "https://joyentcloud.zendesk.com",
-            tabTooltip:  "Support",
-            tabImageURL: "https://assets.zendesk.com/external/zenbox/images/tab_support.png",
-            tabColor:    "#999",
-            tabPosition: "Right"
-          };
-          Zenbox.init(zenbox_params);
-          $("#zenbox_tab").click(function () {
-            if (typeof(_gaq) !== "undefined") {
-              _gaq.push(["_trackEvent", "Window Open", "Zenbox Support"]);
-            }
-          });
-        }
