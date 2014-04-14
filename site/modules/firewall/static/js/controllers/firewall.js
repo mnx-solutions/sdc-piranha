@@ -453,6 +453,7 @@
                 var dcRules = [];
                 Object.keys(rules).forEach(function (datacenter) {
                     rules[datacenter].forEach(function (rule) {
+                        rule.id = '';
                         rule.datacenter = datacenter;
                         dcRules.push(rule);
                     });
