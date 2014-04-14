@@ -814,18 +814,14 @@
     border: 1px solid #c5c5c5;
     background-color: white;
 }
-.search-images{
-    margin: 0!important;
-    background-color: #eef0f2 !important;
-    color: #666666 !important;
-    border-radius: 18px !important;
-    border: 0 none;
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
-    padding-right: 10px;
-    padding-left: 30px;
-    width: 155px;
+.filter-images {
+    height: 18px !important;
+    background-position: 7px 6px;
+    background-size: 16px;
+    font-size: 14px;
+}
+.search-images {
+    display: inline-block;
 }
 
 .item-scrolling div.item:nth-child(odd){
