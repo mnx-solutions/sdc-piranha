@@ -53,6 +53,7 @@
                                 });
 
                                 http.uploadFiles('account/upload', elem.value, elem.files, function (error, response) {
+                                    $rootScope.loading = false;
                                     $scope.keyLoading = false;
 
                                     if (error) {
@@ -63,8 +64,6 @@
                                         }
 
                                         dialog.close({});
-
-                                        $rootScope.loading = false;
 
                                         return PopupDialog.error(
                                             localization.translate(
