@@ -801,12 +801,11 @@
     "zuora": {
       "version": "0.1.7",
       "from": "zuora@git+ssh://git@github.com:joyent/node-zuora-rest.git",
-      "resolved": "git+ssh://git@github.com:joyent/node-zuora-rest.git#5829d0a34b4c384729df4122aed595e3b480c350",
+      "resolved": "git+ssh://git@github.com:joyent/node-zuora-rest.git#898e0ce465a5ed09cda098a0329d112ebb201256",
       "dependencies": {
         "validator": {
           "version": "2.0.0",
-          "from": "validator@2.0.0",
-          "resolved": "https://registry.npmjs.org/validator/-/validator-2.0.0.tgz"
+          "from": "validator@2.0.0"
         }
       }
     },

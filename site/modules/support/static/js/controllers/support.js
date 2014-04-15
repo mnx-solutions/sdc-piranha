@@ -52,7 +52,7 @@
                             localization.translate(
                                 null,
                                 'billing',
-                                'Unable to retrieve subscriptions'
+                                'Unable to subscribe to support plan, check your billing method.'
                             ),
                             function () {
                                 $scope.subscribingInProgress = false;
