@@ -231,15 +231,10 @@
                 lastSelectedFile = obj;
                 lastSelectedActive = true;
 
-                var pathExists = $scope.splittedCurrentPath && $scope.splittedCurrentPath.some(function (el) {
-                    return el.full === fullPath;
-                });
-
-                if (pathExists || (fullPath === previousFullPath && userAction)) {
-                    return;
-                }
                 previousFullPath = fullPath;
-
+                if ($scope.files) {
+                    $scope.switchLoaderPosition = $scope.files.indexOf(obj) === -1;
+                }
                 $scope.loadingFolder = !obj.type || obj.type === 'directory';
                 if (!userAction) {
                     fullPath = (obj && (obj.full || obj.name)) || fullPath || $scope.currentPath || '/';
