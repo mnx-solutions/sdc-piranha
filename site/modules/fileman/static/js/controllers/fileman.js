@@ -57,6 +57,9 @@
                 if (!lastSelectedFile) {
                     return '/public';
                 }
+                if (typeof lastSelectedFile === 'string') {
+                    return lastSelectedFile;
+                }
                 return getObjectPath({parent: lastSelectedFile.parent, path: lastSelectedFile.type === 'directory' ? lastSelectedFile.path : ''});
             }
 
@@ -145,18 +148,8 @@
                                     $scope.refreshingFolder = false;
                                 });
                             }
-                            var opennedDirs = Object.keys($scope.filesTree);
-                            var dirIndex;
-                            for (dirIndex = 0; dirIndex < opennedDirs.length; dirIndex += 1) {
-                                if (opennedDirs[dirIndex] === path) {
-                                    break;
-                                }
-                            }
-                            opennedDirs.slice(0, dirIndex).forEach(function (dir) {
-                                delete $scope.filesTree[dir];
-                            });
-                            $scope.currentPath = file.parent;
-                            $scope.drawFileMan();
+                            delete $scope.filesTree[path];
+                            $scope.setCurrentPath('/' + file.parent.split('/').slice(2).join('/'), true);
                         });
                     }
                 );
@@ -326,7 +319,7 @@
                     var setCurrentPathPromise = $qe.denodeify($scope.setCurrentPath);
                     var notResolvedPath = false;
                     // Navigate up to saved path from root
-                    
+
                     $qe.series(filteredPath.map(function (newPath) {
                         return function (args) {
                             var result = args[0].__read();
