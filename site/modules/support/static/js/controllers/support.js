@@ -12,7 +12,7 @@
                 $scope.subscribingInProgress = true;
                 $scope.levelSupport = 0;
                 var supportPackages = $scope.supportPackages;
-                supportPackages.forEach(function (supportPackage) {
+                supportPackages && supportPackages.forEach(function (supportPackage) {
                     if (headLink + supportPackage.link === $location.path()) {
                         $scope.package = supportPackage;
                         $scope.levelSupport = $scope.package.currentlevelSupport;
