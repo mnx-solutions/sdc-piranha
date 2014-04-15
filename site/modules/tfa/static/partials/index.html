@@ -2,7 +2,7 @@
 <form class="form-signin" data-ng-class="{branding: brandingEnabled}" data-ng-controller="TFAController">
     <h2 class="form-signin-heading" data-ng-class="{orange: brandingEnabled}" data-translate>Two Factor Authentication</h2>
 
-    <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password">
+    <input type="text" data-ng-model="otpass" class="input-block-level" placeholder="One time password" autofocus>
 
     <p class="alert alert-success" data-ng-show="success && !brandingEnabled" data-translate>Logging in successful. Redirecting...</p>
 
