@@ -40,6 +40,26 @@
             };
 
             /**
+             * Check if user from other tab was logged in with alternate login and if it is so, refresh the page
+             *
+             * Check is based on the fact that localStorage is shared for current domain between all browser tabs
+             * while lastAccountId variable is tied to current client application instance. If they become different,
+             * that means that new user logged in on other tab.
+             */
+            var lastAccountId = null;
+            service.setCurrentUserId = function (accountId) {
+                if (!lastAccountId) {
+                    lastAccountId = accountId;
+                    localStorage.lastAccountId = accountId;
+                    setInterval(function () {
+                        if (lastAccountId !== localStorage.lastAccountId) {
+                            location.reload();
+                        }
+                    }, 1000);
+                }
+            };
+
+            /**
              * @ngdoc
              * @name account.service:account#getAccount
              * @methodOf account.service:account
@@ -67,6 +87,7 @@
                                 return;
                             }
                             account = job.__read();
+                            service.setCurrentUserId(account.id);
                             deferred.resolve(account);
                             $$track.marketing_lead(account);
                         }

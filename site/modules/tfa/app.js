@@ -70,6 +70,12 @@ module.exports = function execute(scope, app) {
                     process.exit();
                 }
 
+                // clear session string properties (like signupStep)
+                for (var prop in req.session) {
+                    if (req.session.hasOwnProperty(prop) && typeof (req.session[prop]) === 'string') {
+                        delete req.session[prop];
+                    }
+                }
                 req.session.userId = user.id;
                 req.session.userName = user.login;
 
