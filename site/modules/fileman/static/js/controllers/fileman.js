@@ -232,7 +232,9 @@
                 lastSelectedActive = true;
 
                 previousFullPath = fullPath;
-
+                if ($scope.files) {
+                    $scope.switchLoaderPosition = $scope.files.indexOf(obj) === -1;
+                }
                 $scope.loadingFolder = !obj.type || obj.type === 'directory';
                 if (!userAction) {
                     fullPath = (obj && (obj.full || obj.name)) || fullPath || $scope.currentPath || '/';

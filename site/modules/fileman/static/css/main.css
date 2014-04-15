@@ -46,6 +46,14 @@
     overflow: auto;
     background-color: #fafafa;
 }
+.finder-column-loader {
+    position: relative;
+    overflow: visible;
+}
+.finder-column-loader .files-box {
+    position: absolute;
+    left: -226px;
+}
 .finder-column .finder-elements {
     display: block;
     margin-bottom: 5px;
