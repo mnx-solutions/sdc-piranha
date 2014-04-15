@@ -52,7 +52,7 @@
                     <span class="span3 lb-label e-port" data-translate>Port</span>
                     <span class="port-input port-m">
                         <input name="fromPort" type="text" required data-ng-model="server.fromPort"
-                               data-ng-change="validatePort('fromPort', 1, 65535)"/>
+                               data-ng-change="validatePort('fromPort', 1, 99999)"/>
                     </span>
                 </div>
                 <div class="clearfix"></div>
@@ -145,7 +145,7 @@
                     <span class="span3 lb-label" data-translate>Port</span>
                     <span class="span3">
                         <input class="short-input short-input-port" name="toPort" type="text" required data-ng-model="server.toPort"
-                               data-ng-change="validatePort('toPort', 1, 65535)"/>
+                               data-ng-change="validateInternalPort('toPort', 1, 99999)"/>
                     </span>
                 </div>
                 <div class="clearfix"></div>
