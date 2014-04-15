@@ -238,6 +238,9 @@
                             return;
                         }
                         d.resolve(job.__read());
+                        if ($rootScope.operationLog) {
+                            $rootScope.operationLog.clear();
+                        }
                     },
                     progress: reportProgress
                 });
