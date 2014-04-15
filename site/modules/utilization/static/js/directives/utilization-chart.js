@@ -79,6 +79,11 @@
                         $scope.total = data.total;
                         $scope.year = data.year;
                         $scope.month = data.month;
+                        var currentMonthDaysMax = daysMax;
+                        var now = new Date();
+                        if (now.getFullYear() === data.year && now.getMonth() + 1 === data.month) {
+                            currentMonthDaysMax = now.getDate();
+                        }
                         var amountData = data.amount;
                         graphData.daily.splice(0);
                         graphData.cumulative.splice(0);
@@ -86,7 +91,8 @@
                         ticksData.splice(0);
                         for (var day = 1; day <= daysMax; day++) {
                             var dayStr = data.year + '-' + pad(data.month) + '-' + pad(day);
-                            var amount = amountData[dayStr] || Number.MIN_VALUE;
+                            var zeroValue = day < currentMonthDaysMax ? Number.MIN_VALUE : 0;
+                            var amount = amountData[dayStr] || zeroValue;
                             ticksData.push(day);
                             graphData.daily.push({x: day, y: amount});
                             graphData.cumulative.push({x: day, y: amount ? cumulativeAmount : 0});
