@@ -1,5 +1,5 @@
 <div>
-    <div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="modal modal-ssh" tabindex="-1" data-backdrop="static" data-focus-on="button">
         <div class="modal-header message">
             <h5><i class="icon-info-sign"></i><b>Import SSH Public Key</b></h5>
         </div>
@@ -11,22 +11,19 @@
                             data-ng-disabled="keyLoading"/>
                 </div>
             </div>
-            <div class="control-group">
+            <div class="control-group control-group-ssh">
                 <label class="control-label">Public Key</label>
                 <div class="controls">
                     <textarea class="ssharea span5" rows="10"
                             data-ng-model="data.keyData"
-                            data-ng-disabled="keyLoading"></textarea><br />
+                            data-ng-disabled="keyLoading"></textarea>
                 </div>
             </div>
-            <div class="loading-medium" data-ng-show="keyLoading"></div>
         </div>
-        <div class="modal-footer">
-            <!--<button data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn orange" data-ng-class="btn.cssClass">{{ btn.label }}</button>-->
-            <button data-ng-repeat="btn in buttons" data-button-focus="{{ btn.setFocus }}" data-ng-click="close(btn.result)" class="btn orange effect-orange-button" data-ng-class="{'grey-new': btn.label == 'Cancel'}">{{ btn.label }}</button>
+        <div class="modal-footer modal-footer-ssh">
+            <button data-button-focus="true" data-ng-click="close('add')" class="btn orange effect-orange-button pull-right">Add</button>
             <span data-ng-show="isUploadSshEnabled">
-                <span class="modal-footer-text">or</span>
-                <label type="button" class="btn orange effect-orange-button upload-key-label" for="uploadInput">upload</label>
+                <label type="button" class="btn orange effect-orange-button grey-new upload-key-label pull-right" for="uploadInput">upload</label>
                 <input type="file"
                        id="uploadInput"
                        name="uploadInput"
@@ -34,6 +31,8 @@
                        data-ng-model="filePath"
                        onchange="angular.element(this).scope().uploadFile(uploadInput)">
             </span>
+            <button data-button-focus="false" data-ng-click="close('cancel')" class="btn orange effect-orange-button grey-new pull-right">Cancel</button>
+            <div class="loading-medium-tr pull-right" data-ng-show="keyLoading"></div>
         </div>
     </div>
 </div>
