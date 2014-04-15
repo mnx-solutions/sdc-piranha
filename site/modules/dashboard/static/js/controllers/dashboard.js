@@ -175,6 +175,11 @@
             if ($scope.features.freetier === 'enabled') {
                 freeTierTileStatus();
             }
+
+            $scope.recentTopics = function (item) {
+                var created = new Date(item.created_at).getTime();
+                return new Date().getTime() < (created + 2 * 24 * 3600 * 1000);
+            };
         }
     ]);
 }(window.angular, window.JP.getModule('Dashboard')));

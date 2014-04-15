@@ -48,9 +48,8 @@
     background-image: url("../img/instances_bg.png");
     background-repeat: no-repeat;
 }
-.balancer-icon{
-    background-image: url("../img/balancer_bg.png");
-    background-repeat: no-repeat;
+.balancer-icon {
+    background: url("../img/balancer-bg.png") no-repeat 140px 11px;
 }
 .utilization-icon {
     background: url("../img/utilization_bg.png") no-repeat right center;
@@ -62,6 +61,12 @@
 .host-icon {
     background: url("../img/host-bg.png") no-repeat 165px 34px;
     background-size: 70px;
+}
+.system-icon {
+    background: url("../img/system-bg.png") no-repeat 150px 14px;
+}
+.system-list-icon {
+    background: url("../img/system-bg2.png") no-repeat 157px 16px;
 }
 .warn-dash-icon{
     background-image: url("../img/warn.png");
@@ -82,27 +87,26 @@
 }
 
 .widget .more {
-    -moz-box-sizing:border-box;
-    -ms-box-sizing:border-box;
-    box-sizing:border-box;
-    float: left;
-    overflow: hidden;
     position: absolute;
+    bottom: 0;
+    display: block;
+    float: left;
+    clear: both;
+    overflow: hidden;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
+    padding: 5px 10px 5px 15px;
+    width: 100%;
+    background-color: #676767;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 100%;
-    bottom: 0;
-    text-decoration: none;
-    background-color: #676767;
-    clear: both;
-    display: block;
-    padding: 5px 10px 5px 10px;
-    text-transform: uppercase;
     font-weight: 500;
     font-size: 11px;
-    color: #fff;
     opacity: 0.7;
-    filter: alpha(opacity=70);
+    -ms-box-sizing:border-box;
 }
 
 .widget.links2 .more i {
@@ -143,11 +147,12 @@
 
 .widget .details .desc,
 .widget .details .desc a {
+    color: #fff;
     text-align: left;
+    text-decoration: none;
+    text-overflow: ellipsis;
     font-size: 14px;
     line-height: 17px;
-    color: #fff;
-    text-decoration: none;
 }
 
 .widget .details .desc-title {
@@ -160,12 +165,14 @@
 }
 
 .widget .details {
-    float: left;
-    padding-left: 15px;
-    padding-right: 10px;
     display: inline-block;
-    line-height: 14px;
+    float: left;
+    overflow: hidden;
     margin-top: 5px;
+    padding-right: 10px;
+    padding-left: 15px;
+    height: 88px;
+    line-height: 14px;
 }
 
 .m-icon-white-arrow {
