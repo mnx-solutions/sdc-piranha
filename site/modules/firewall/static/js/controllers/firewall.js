@@ -750,6 +750,7 @@
             $scope.updateRule = function() {
                 $scope.loading = true;
                 rule.updateRule($scope.data).then(function () {
+                    rule.clearRules();
                     $scope.refresh();
                 }, $scope.disableLoading);
             };
