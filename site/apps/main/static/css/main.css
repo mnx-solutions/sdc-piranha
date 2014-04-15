@@ -1710,13 +1710,14 @@ label.checkbox {
     color: #000000;
 }
 .plus-btn-icon,
-.chart-btn-icon {
-    width: 20px;
-    height: 20px;
-    float: left;
-    margin-top: 0;
+.chart-btn-icon,
+.view-btn-icon {
     position: relative;
     left: 3px;
+    float: left;
+    margin-top: 0;
+    width: 20px;
+    height: 20px;
 }
 .plus-btn-icon {
     background: url("../img/plus_icon.png") no-repeat;
@@ -1724,6 +1725,15 @@ label.checkbox {
 .chart-btn-icon {
     background: url("../img/chart-icon.png") no-repeat;
     background-size: 20px;
+}
+.view-btn-icon {
+    background: url("../img/view-btn-icon.png") no-repeat;
+    background-size: 20px;
+}
+.checked-icon {
+    padding-right: 20px;
+    background: url("../img/checked.png") no-repeat;
+    background-size: 17px 15px;
 }
 .margin-btn-dashboard {
     padding-bottom: 10px;
