@@ -506,8 +506,40 @@ textarea.ssharea {
     height: 400px;
     border: none;
 }
-.icon-info-sign, .icon-warning-sign, .icon-question-sign{
-    background-image: url(../img/glyphicons-halflings-white.png) !important;
+@font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('../fonts/glyphicons-halflings-regular.eot');
+    src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+}
+.glyphicon {
+    position: relative;
+    display: inline-block;
+    padding-right: 2px;
+    font-weight: normal;
+    font-style: normal;
+    font-family: 'Glyphicons Halflings';
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.glyphicon-question-sign:before {
+    content: "\e085";
+}
+.glyphicon-info-sign:before {
+    content: "\e086";
+}
+.glyphicon-warning-sign:before {
+    content: "\e107";
+}
+i.glyphicon-info-sign,
+i.glyphicon-warning-sign {
+    padding-right: 7px;
+}
+i.glyphicon-info-sign,
+i.glyphicon-warning-sign,
+i.glyphicon-question-sign {
+    height: 16px;
+    vertical-align: middle;
 }
 select {
     border-radius: 0;
