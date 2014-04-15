@@ -2,10 +2,6 @@
     <div class="page-sidebar nav-collapse collapse" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
     <!-- BEGIN SIDEBAR MENU -->
     <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}">
-        <li>
-            <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
-        </li>
-
         <li class="single dashboard-icon" ng-class="{active: location.path().search('dashboard') == 1}">
             <a href="#!/dashboard">
                 <i class=""></i>
@@ -110,6 +106,9 @@
                     </a>
                 </li>
             </ul>
+        </li>
+        <li>
+            <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
         </li>
     </ul>
     <!-- END SIDEBAR MENU -->

@@ -135,35 +135,17 @@ ul.page-sidebar-menu > li:hover > a {
     background-color: #242424;
 }
 .page-sidebar .sidebar-toggler {
-    visibility:visible;
-    margin-top: -9px;
+    visibility: visible;
+    margin-top: 9px;
     margin-left: 17px;
     width: 20px;
     height: 20px;
-    background: url("../img/sidebar-toggler.png") no-repeat;
+    background: url("../img/sidebar-toggler-icon.png") no-repeat;
     opacity: 0.4;
     cursor: pointer;
-    -webkit-transition: visibility 0s 0s, opacity 0.5s ease;
-    -moz-transition: visibility 0s 0s, opacity 0.5s ease;
-    -o-transition: visibility 0s 0s, opacity 0.5s ease;
-    transition: visibility 0s 0s, opacity 0.5s ease;
-}
-@media screen and (min-width:1100px) {
-    .page-sidebar .sidebar-toggler {
-        visibility: hidden;
-        opacity: 0;
-        -webkit-transition: visibility 0s 0.5s, opacity 0.5s ease;
-        -moz-transition: visibility 0s 0.5s, opacity 0.5s ease;
-        -o-transition: visibility 0s 0.5s, opacity 0.5s ease;
-        transition: visibility 0s 0.5s, opacity 0.5s linear;
-    }
-    .page-sidebar.sidebar-toggler-closed .sidebar-toggler {
-        visibility: visible;
-        opacity: 0.4;
-    }
 }
 .sidebar-toggler-back {
-    background-image: url("../img/sidebar-toggler.png") !important;
+    background-image: url("../img/sidebar-toggler-icon-back.png") !important;
 }
 .sidebar-toggler:hover {
     filter: alpha(opacity=100);
