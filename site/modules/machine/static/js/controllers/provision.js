@@ -266,12 +266,12 @@
                 //TODO: Handle all other DC drop-downs
                 $scope.userConfig = Account.getUserConfig().$child('datacenter');
                 $scope.userConfig.$load(function (error, config) {
-                    if (config.datacenter) {
-                        $scope.selectDatacenter(config.datacenter);
+                    if (config.value) {
+                        $scope.selectDatacenter(config.value);
                     }
                     $scope.$watch('data.datacenter', function (dc) {
-                        if (config.datacenter !== dc) {
-                            config.datacenter = dc;
+                        if (config.value !== dc) {
+                            config.value = dc;
                             config.dirty(true);
                             config.$save();
                         }
@@ -279,19 +279,23 @@
                 });
             }
             $scope.selectDatacenter = function (name) {
-                if (!name && !$scope.data.datacenter) {
-                    Datacenter.datacenter().then(function (datacenters) {
-                        if (datacenters.length > 0) {
-                            var datacenter = datacenters[0].name;
-                            $scope.data.datacenter = datacenter;
-                            $rootScope.commonConfig('datacenter', datacenter);
+                Datacenter.datacenter().then(function (datacenters) {
+                    var datacenterName = null;
+                    if (datacenters.length > 0) {
+                        var hasSpecifiedDatacenter = datacenters.some(function (datacenter) {
+                            return datacenter.name === name;
+                        });
+                        if (name && hasSpecifiedDatacenter) {
+                            datacenterName = name;
+                        } else {
+                            datacenterName = datacenters[0].name;
                         }
-                    });
-                } else if (name && (name !== $scope.data.datacenter)) {
-                    $scope.data.datacenter = name;
-                    $rootScope.commonConfig('datacenter', name);
-                }
-
+                    }
+                    if (datacenterName) {
+                        $scope.data.datacenter = datacenterName;
+                        $rootScope.commonConfig('datacenter', datacenterName);
+                    }
+                });
             };
 
             $scope.selectOpsys = function (name) {
