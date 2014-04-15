@@ -32,6 +32,7 @@
 
                     // Set defaults
                     server.fromPort = server.fromPort || nextPort(80);
+                    server.dirtyFromPort = server.fromPort;
                     server.toPort = server.toPort || 80;
                     server.health = server.health || {};
                     server.health.timeout = server.health.timeout || 2;
@@ -143,7 +144,8 @@
                         name: 'Load balancer name'
                     };
                     if ($scope.editForm.fromPort.$invalid) {
-                        if (($scope.editForm.fromPort.$viewValue % 1) === 0) {
+                        var viewValue = $scope.editForm.fromPort.$viewValue;
+                        if (viewValue && (viewValue % 1) === 0) {
                             validationMessage = 'A current limitation is additional load balancers use the same IP as the first. Therefore, each one must be listening at a different port. We are working to resolve this.';
                         } else {
                             validationMessage = 'Load balancer port is invalid.';
@@ -215,12 +217,17 @@
                 $scope.validatePort = function (name, min, max, isInternal) {
                     var input = $scope.editForm[name];
                     var value = input.$viewValue;
+                    var dirtyValue = null;
+                    if (name === 'fromPort') {
+                        dirtyValue = $scope.server.dirtyFromPort;
+                    }
+
                     var reservedPorts = ['0', '22', '9070', '9080', '9090'];
 
                     min = min || 1;
                     max = max || 65535; // max tcp port value
                     var isInteger = (value % 1) === 0;
-                    var isReservedPort = !isInternal && (service.reservedPorts.indexOf(+value) !== -1 || (reservedPorts.indexOf(value) !== -1));
+                    var isReservedPort = !isInternal && ((dirtyValue !== value && service.reservedPorts.indexOf(+value) !== -1) || (reservedPorts.indexOf(value) !== -1));
                     input.$setValidity('port', isInteger && !isReservedPort && value >= min && value <= max);
                 };
 
