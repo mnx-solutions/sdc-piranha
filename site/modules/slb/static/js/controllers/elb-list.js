@@ -42,7 +42,7 @@
                         $scope.servers = data;
                         $scope.listLoaded = true;
                     }, function (err) {
-                        if (!$scope.deleting) {
+                        if (!$scope.deleting || err) {
                             PopupDialog.error(
                                 localization.translate(
                                     null,
@@ -52,7 +52,7 @@
                                 localization.translate(
                                     null,
                                     'slb',
-                                    err.message
+                                    err.message || err
                                 ),
                                 function () {}
                             );
