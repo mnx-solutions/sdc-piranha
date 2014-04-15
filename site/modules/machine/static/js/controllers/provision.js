@@ -58,6 +58,7 @@
             $scope.datasetsLoading = false;
 
             $scope.filterValues = {
+                'No filter': [],
                 'vcpus': [],
                 'memory': [],
                 'disk': []
@@ -373,6 +374,7 @@
                 var packageId = '';
                 var sortPackage = '';
                 var filterValues = {
+                    'No filter': [],
                     vcpus: [],
                     memory: [],
                     disk: []
@@ -576,7 +578,7 @@
 
             $scope.filterPackageTypes = function (datasetType) {
                 return function (packageType) {
-                    return $scope.indexPackageTypes[packageType].indexOf(datasetType) > -1;
+                    return $scope.indexPackageTypes[packageType].indexOf(datasetType) > -1 && $scope.packages.filter($scope.filterPackagesByProp).some($scope.filterPackages(packageType));
                 };
             };
 
@@ -594,12 +596,33 @@
                 return $filter('sizeFormat')(value);
             };
 
+            function selectMinimalPackage(packageType) {
+                var minimalPkg;
+                $scope.packages.filter($scope.filterPackagesByProp).filter($scope.filterPackages(packageType)).forEach(function (pkg) {
+                    if (!minimalPkg || minimalPkg.memory > pkg.memory) {
+                        minimalPkg = pkg;
+                    }
+                });
+                if (minimalPkg) {
+                    $scope.selectPackage(minimalPkg.id);
+                }
+            }
+            
             $scope.onFilterChange = function (newVal) {
                 if (newVal) {
                     $scope.filterPropertyValue = $scope.filterValues[newVal][0];
                 }
+                selectMinimalPackage();
+                setTimeout(function () {
+                    ng.element('.accordion-group').has('div.active').find('a.collapsed').click();
+                }, 200);
             };
-
+            $scope.changeSelectedPackage = function (event, packageType) {
+                if (!event.target.classList.contains('collapsed')) {
+                    return;
+                }
+                selectMinimalPackage(packageType);
+            };
             // Watch datacenter change
             $scope.$watch('data.datacenter', function (newVal) {
                 if (newVal) {
