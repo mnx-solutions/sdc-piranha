@@ -44,7 +44,8 @@
                 </thead>
                 <tbody>
                 <tr data-ng-repeat="machine in server.machines">
-                    <td><a href="#!/compute/instance/{{machine.details.id}}">{{machine.details.name}}</a></td>
+                    <td data-ng-show="machine.deleted"><i style="color: red">deleted</i></td>
+                    <td data-ng-show="!machine.deleted"><a href="#!/compute/instance/{{machine.details.id}}">{{machine.details.name}}</a></td>
                     <td>{{machine.details.datacenter}}</td>
                     <td>{{machine.status}}</td>
                 </tr>
