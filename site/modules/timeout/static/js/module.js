@@ -41,7 +41,7 @@ window.JP.createModule('timeout', [ 'notification' ])
         //Create a dialog to show to the user allowing them to keep the session alive
         function showWarning() {
             listenClick(true); // Stop listening to clicks otherwise session continuing would be default
-
+            messageBox = true;
             var opts = {
                 title: localization.translate(
                     'timeout',
@@ -57,7 +57,7 @@ window.JP.createModule('timeout', [ 'notification' ])
                     {
                         result: 'cancel',
                         label: 'Log out',
-                        cssClass: 'btn orange grey-new',
+                        cssClass: 'btn orange grey-new effect-orange-button',
                         setFocus: false
                     },
                     {
@@ -71,17 +71,13 @@ window.JP.createModule('timeout', [ 'notification' ])
             PopupDialog.custom(
                 opts,
                 function (result) {
-                    switch (result) {
-                        case 'ok':
-                            //User opted to stay logged in so refresh server session and start listening to clicks
-                            updateTimeout();
-                            listenClick();
-                            messageBox = null;
-                            break;
-                        case 'cancel':
-                            logout();
-                            break;
+                    if (result === 'cancel') {
+                        logout();
                     }
+                    //User opted to stay logged in so refresh server session and start listening to clicks
+                    updateTimeout();
+                    listenClick();
+                    messageBox = null;
                 }
             );
         }
@@ -109,7 +105,6 @@ window.JP.createModule('timeout', [ 'notification' ])
             }
         }
         setInterval(checkTimeout, 1000);
-
 
         //Check if we need to update server session every minute
         setInterval(function () {
