@@ -57,10 +57,24 @@
                 if (!lastSelectedFile) {
                     return '/public';
                 }
-                if (typeof lastSelectedFile === 'string') {
-                    return lastSelectedFile;
-                }
                 return getObjectPath({parent: lastSelectedFile.parent, path: lastSelectedFile.type === 'directory' ? lastSelectedFile.path : ''});
+            }
+
+            function getLastSelectedObj(path) {
+                var rawPath = path.split('/');
+                var parentPath = rawPath.slice(0, -1).join('/');
+                var objName = rawPath[rawPath.length - 1];
+                var lastSelectedObject = null;
+
+                if ($scope.filesTree[parentPath]) {
+                    lastSelectedObject = $scope.filesTree[parentPath].filter(function (obj) {
+                        if (obj.name === objName) {
+                            return obj;
+                        }
+                    })[0];
+                }
+
+                return lastSelectedObject || path;
             }
 
             $scope.downloadFile = function () {
@@ -120,16 +134,11 @@
                 }
 
                 var file = lastSelectedFile;
-                lastSelectedFile = null;
                 var path = getObjectPath(file);
                 var method = (file.type === 'object') ? 'unlink' : 'rmr';
 
-                $scope.refreshingFolder = true;
-
                 if (path === '/public' && file.name === 'public') {
-                    return showPopupDialog('error', 'Message', 'You can not delete public folder', function () {
-                        $scope.refreshingFolder = false;
-                    });
+                    return showPopupDialog('error', 'Message', 'You can not delete public folder');
                 }
                 PopupDialog.confirm(
                     null,
@@ -142,6 +151,8 @@
                         }
                     ),
                     function () {
+                        $scope.refreshingFolder = true;
+                        lastSelectedFile = null;
                         fileman[method](path, function (error) {
                             if (error) {
                                 return showPopupDialog('error', 'Message', error.message, function () {
@@ -206,6 +217,9 @@
             };
 
             $scope.setCurrentPath = function setCurrentPath(obj, userAction, callback) {
+                if (typeof obj === 'string') {
+                    obj = getLastSelectedObj(obj);
+                }
                 var fullPath = obj === rootPath ? obj : getObjectPath(obj);
 
                 var scrollContent = ng.element('.folder-container-sub');
