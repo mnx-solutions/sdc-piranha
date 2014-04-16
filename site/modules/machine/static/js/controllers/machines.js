@@ -226,7 +226,10 @@
                         if (dataset) {
                             imageText = dataset.split(':').splice(2).join('/');
                         }
-
+                        if (imageText === '') {
+                            dataset = object._Dataset;
+                            imageText = dataset.name + '/' + dataset.version
+                        }
                         return imageText;
                     }
                 },
