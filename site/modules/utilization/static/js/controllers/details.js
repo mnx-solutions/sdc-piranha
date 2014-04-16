@@ -34,24 +34,13 @@
                     id: 'datacenter_name',
                     name: 'Data Center',
                     sequence: 5,
-                    active: false
-                },
-                {
-                    id: 'brand',
-                    name: 'Brand',
-                    sequence: 6,
-                    active: false
-                },
-                {
-                    id: 'running',
-                    name: 'Running',
-                    sequence: 7,
-                    active: false
+                    active: true
                 },
                 {
                     id: 'first',
                     name: 'First',
                     type: 'date',
+                    format: 'yyyy-MM-dd',
                     sequence: 8,
                     active: false
                 },
@@ -59,6 +48,7 @@
                     id: 'last',
                     name: 'Last',
                     type: 'date',
+                    format: 'yyyy-MM-dd',
                     sequence: 9,
                     active: false
                 }
@@ -76,7 +66,7 @@
                                 _getter: function (object) {
                                     return $scope.chartData.format(object.in);
                                 },
-                                sequence: 10,
+                                sequence: 6,
                                 active: true
                             },
                             {
@@ -86,7 +76,7 @@
                                 _getter: function (object) {
                                     return $scope.chartData.format(object.out);
                                 },
-                                sequence: 11,
+                                sequence: 7,
                                 active: true
                             }
                         ]
@@ -96,7 +86,7 @@
                         {
                             id: 'ram',
                             name: 'RAM',
-                            sequence: 10,
+                            sequence: 6,
                             active: true
                         },
                         {
@@ -106,10 +96,62 @@
                             _getter: function (object) {
                                 return $scope.chartData.format(object.hours);
                             },
-                            sequence: 11,
+                            sequence: 7,
                             active: true
                         }
                     ]);
+                } else if ($scope.type === 'currentspend') {
+                    $scope.gridProps = $scope.gridProps.concat([
+                        {
+                            id: 'cost',
+                            name: 'Cost',
+                            _order: 'cost',
+                            _getter: function (object) {
+                                return $scope.chartData.format(object.cost);
+                            },
+                            sequence: 6,
+                            active: true
+                        }
+                    ]);
+                } else if ($scope.type === 'manta') {
+                    $scope.gridProps = [
+                        {
+                            id: 'requests',
+                            name: 'Requests',
+                            sequence: 1,
+                            active: true
+                        },
+                        {
+                            id: 'bandwidthIn',
+                            name: 'In',
+                            sequence: 2,
+                            active: true
+                        },
+                        {
+                            id: 'bandwidthOut',
+                            name: 'Out',
+                            sequence: 3,
+                            active: true
+                        },
+                        {
+                            id: 'cost',
+                            name: 'Cost',
+                            _order: 'cost',
+                            _getter: function (object) {
+                                return $scope.chartData.format(object.cost);
+                            },
+                            sequence: 4,
+                            active: true
+                        },
+                        {
+                            id: 'date',
+                            name: 'Date',
+                            type: 'date',
+                            format: 'yyyy-MM-dd',
+                            sequence: 5,
+                            active: true
+                        }
+                    ];
                 }
                 $scope.$broadcast('propsChanged', $scope.gridProps);
             };
@@ -121,12 +163,22 @@
                 $scope.type = requestContext.getParam('type');
                 refreshProps();
                 $scope.caption = {
-                    'bandwidth': 'Bandwidth',
-                    'dram': 'DRAM'
+                    'bandwidth': 'Bandwidth Utilized',
+                    'dram': 'DRAM Utilized',
+                    'currentspend': 'Spend',
+                    'manta': 'Manta Utilized'
                 }[$scope.type];
-                $scope.unit = {
-                    'bandwidth': '',
-                    'dram': 'GB Hours'
+                $scope.pageTitle = {
+                    'bandwidth': 'Bandwidth Usage',
+                    'dram': 'DRAM Usage',
+                    'currentspend': 'Spend',
+                    'manta': 'Manta Usage'
+                }[$scope.type];
+                $scope.colorDaily = {
+                    'currentspend': '#7d2c21'
+                }[$scope.type];
+                $scope.colorTotal = {
+                    'currentspend': '#ed4f34'
                 }[$scope.type];
                 var year = requestContext.getParam('year');
                 var month = requestContext.getParam('month');

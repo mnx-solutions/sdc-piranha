@@ -123,6 +123,7 @@
                     });
 
                     $scope.mantaMemory = util.getReadableFileSizeString(memory);
+                    return true;
                 });
             }
 
@@ -136,7 +137,10 @@
                 Utilization.utilization(year, month, function (error, utilizationData) {
                     $scope.utilization = utilizationData;
                     $scope.utilization.url = '#!/usage/' + year + '/' + month;
-                })
+                    $scope.bandwidth = util.getReadableFileSizeString(utilizationData.bandwidth.total);
+                    var currentspendTotal = utilizationData.currentspend.total;
+                    $scope.currentspend = util.getReadableCurrencyString(currentspendTotal, 2);
+                });
             }
 
             $scope.validFreeTier = false;
@@ -171,7 +175,7 @@
                         }
                     });
                 });
-            }
+            };
 
             if ($scope.features.freetier === 'enabled') {
                 freeTierTileStatus();

@@ -32,7 +32,7 @@
                 </ul>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn grid-small-font btn-original-text" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
+                <button type="button" class="btn grid-small-font btn-original-text" data-ng-disabled="!pageNumSum" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
                 <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
             </div>
             <div class="btn-group" data-ng-show="areColumnsEnabled()">
@@ -137,7 +137,7 @@
                                         <span data-ng-show="(object.fireWallActionRunning) || (object.job && !object.job.finished)" class="loading-small loading-small-firewall pull-left"></span>
                                         <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
                                     </span>
-                                <span data-ng-switch-when="date">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
+                                <span data-ng-switch-when="date">{{object[prop.id] | date: prop.format || 'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-when="async">
                                     <span class="loading-small" data-ng-hide="!!object[prop.name + 'async'] || object[prop.name + 'async'] == 0"></span>
                                     {{object[prop.name + 'async']}}

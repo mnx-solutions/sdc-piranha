@@ -1,13 +1,11 @@
 'use strict';
 
 (function (app) {
-    var cache = null;
     app.factory('Utilization', [
         'serverTab',
         'util',
         function (serverTab, util) {
             var service = {};
-
             var utilizationCache = {};
 
             service.utilization = function (year, month, callback) {
@@ -27,17 +25,18 @@
                             return;
                         }
                         utilizationCache[month] = job.__read();
-                        utilizationCache[month].dram.format = function (num) {
-                            return num.toFixed(2);
+                        var utilizationCacheByMonth = utilizationCache[month];
+                        utilizationCacheByMonth.dram.format = function (num) {
+                            return num.toFixed(num > 1000 ? 0 : 2) * 1 + ' GB Hours';
                         };
-                        utilizationCache[month].bandwidth.format = function (num) {
+                        utilizationCacheByMonth.manta.format = utilizationCacheByMonth.currentspend.format = function (num) {
+                            return '$' + util.getReadableCurrencyString(num);
+                        };
+                        utilizationCacheByMonth.bandwidth.formatTotal = utilizationCacheByMonth.bandwidth.format = function (num) {
                             var formatted = util.getReadableFileSizeString(num);
-                            if (formatted.value > 0) {
-                                return formatted.value + ' ' + formatted.measure;
-                            }
-                            return formatted;
+                            return formatted.value + ' ' + formatted.measure;
                         };
-                        callback(null, utilizationCache[month]);
+                        callback(null, utilizationCacheByMonth);
                     }
                 });
             };

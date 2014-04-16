@@ -1,21 +1,23 @@
-<div class="container-fluid container-position">
+<div class="container-fluid container-position container-details">
     <div class="row-fluid">
         <ul class="breadcrumb">
             <li><a href="{{backLink}}">Usage</a>&nbsp;/</li>
         </ul>
         <div class="page-header row-fluid">
-            <h3 class="page-title">{{caption}} Usage Overview</h3>
+            <h3 class="page-title">{{pageTitle}} Overview</h3>
             <div class="beta-sticker">beta</div>
         </div>
         <div data-month-navigation></div>
         <div data-utilization-chart
              data-usage="chartData"
+             data-color-daily="colorDaily"
+             data-color-total="colorTotal"
              data-caption="caption"
-             data-unit="unit">
+             data-name="type">
         </div>
 
         <div class="grid-holder">
-            <div class="grid-title">{{caption}}</div>
+            <div class="grid-title">{{pageTitle}}</div>
             <div data-grid-view
                  data-user-config="gridUserConfig"
                  data-props="gridProps"

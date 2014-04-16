@@ -246,7 +246,7 @@
                 });
             });
 
-            var final = [];
+            var data = [];
             if ($scope.exportFields.ignore) {
                 order = order.filter(function (k) { return $scope.exportFields.ignore.indexOf(k) === -1; });
             }
@@ -259,11 +259,11 @@
                 order.forEach(function (id) {
                     item[id] = el[id] !== undefined ? el[id] : '';
                 });
-                final.push(item);
+                data.push(item);
             });
 
             return {
-                data: final,
+                data: data,
                 order: order
             };
         }
@@ -495,6 +495,7 @@
                                 el.active = false;
                             }
                         }
+                        
                         var initOrder = function (customOrder, initEl) {
                             initEl.order = customOrder;
                             if (typeof (customOrder) === 'string') {
@@ -506,10 +507,10 @@
                                     if (typeof (value) === 'number') {
                                         next = -value;
                                     } else {
-                                        var elem = String(value);
+                                        var elementValue = String(value);
                                         var i;
-                                        for (i = 0; i < elem.length; i += 1) {
-                                            next += String.fromCharCode(255 - elem.charCodeAt(i));
+                                        for (i = 0; i < elementValue.length; i += 1) {
+                                            next += String.fromCharCode(255 - elementValue.charCodeAt(i));
                                         }
                                     }
                                     return next;
@@ -536,17 +537,27 @@
 
                     });
                 };
+
                 $scope.$on('propsChanged', onPropsChanges);
                 onPropsChanges();
 
                 if (!$scope.userConfig) {
                     $scope.userConfig = {
-                        $load: function (callback) { this._loaded = true; callback(null, $scope.userConfig); },
-                        $save: function () {},
-                        $child: function () { return $scope.userConfig; },
-                        dirty: function () {},
+                        $load: function (callback) {
+                            this._loaded = true;
+                            callback(null, $scope.userConfig);
+                        },
+                        $save: function () {
+                        },
+                        $child: function () {
+                            return $scope.userConfig;
+                        },
+                        dirty: function () {
+                         },
                         _loaded: false,
-                        loaded: function () { return this._loaded; }
+                        loaded: function () {
+                            return this._loaded;
+                        }
                     };
                 }
 

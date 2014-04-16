@@ -7,14 +7,21 @@
                 scope: {
                     usage: '=',
                     name: '=',
-                    caption: '=',
-                    unit: '='
+                    colorTotal: '=',
+                    colorDaily: '=',
+                    caption: '='
                 },
                 restrict: 'EA',
 
                 link: function ($scope, $element, $attrs) {
                     var graph = null;
-                    var graphData = {daily: [{x: 0, y: 0}], cumulative: [{x: 0, y: 0}]};
+                    var legend = null;
+                    var now = new Date();
+                    var graphData = {daily: [
+                        {x: 0, y: 0}
+                    ], cumulative: [
+                        {x: 0, y: 0}
+                    ]};
                     var ticksData = [];
                     for (var i = 1; i <= 31; i++) {
                         ticksData.push(i);
@@ -30,12 +37,12 @@
                             series: [
                                 {
                                     name: 'Daily',
-                                    color: '#274c5c',
+                                    color: $scope.colorDaily || '#274c5c',
                                     data: graphData.daily
                                 },
                                 {
                                     name: 'Total',
-                                    color: '#549dc0',
+                                    color: $scope.colorTotal || '#549dc0',
                                     data: graphData.cumulative
                                 }
                             ]
@@ -49,12 +56,13 @@
                         new Rickshaw.Graph.Axis.Y({
                             element: $element.find('#y_axis_' + $scope.$id)[0],
                             orientation: 'left',
+                            width: 95,
                             tickFormat: function (num) {
                                 return $scope.format(num);
                             },
                             graph: graph
                         });
-                        new Rickshaw.Graph.Legend({
+                        legend = new Rickshaw.Graph.Legend({
                             graph: graph,
                             element: $element.find('#legend_' + $scope.$id)[0]
                         });
@@ -73,6 +81,9 @@
                         if (!graph) {
                             initGraph();
                         }
+                        graph.series[0].color = $scope.colorDaily || '#274c5c';
+                        graph.series[1].color = $scope.colorTotal || '#549dc0';
+                        legend.render();
                         var daysMax = data.days;
                         if (data.format) {
                             $scope.format = data.format;
@@ -81,7 +92,6 @@
                         $scope.year = data.year;
                         $scope.month = data.month;
                         var currentMonthDaysMax = daysMax;
-                        var now = new Date();
                         if (now.getFullYear() === data.year && now.getMonth() + 1 === data.month) {
                             currentMonthDaysMax = now.getDate() - 1;
                         }
@@ -112,15 +122,36 @@
                         }
                     };
 
-                    $scope.getMonthDesc = function () {
-                        var now = new Date();
-                        if (!$scope.year || $scope.year === now.getFullYear() && $scope.month === now.getMonth() + 1) {
-                            return 'this month';
+                    $scope.getMonthTitle = function () {
+                        var output = '';
+                        if ($scope.month !== now.getMonth() + 1 || $scope.year !== now.getFullYear()) {
+                            var monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June',
+                                'July', 'August', 'September', 'October', 'November', 'December'];
+                            output += monthNames[$scope.month] + ' ';
                         }
-                        var monthNames = ['', 'January', 'February', 'March', 'April', 'May', 'June',
-                            'July', 'August', 'September', 'October', 'November', 'December'];
-                        return 'in ' + monthNames[$scope.month] + ' ' + $scope.year;
+                        if ($scope.name === 'currentspend') {
+                            output += (output) ? 'Monthly ' : 'Current ';
+                        }
+                        return output;
+                    };
+
+                    $scope.getMonthDesc = function () {
+                        return ($scope.name === 'currentspend') ? 'month to date' : 'this month';
+                    };
+
+                    $scope.projected = function (num) {
+                        var days = daysInMonth(now.getFullYear(), now.getMonth() + 1);
+                        return $scope.format((num * days) / now.getDate());
+                    };
+
+                    $scope.showProjected = function () {
+                        return ($scope.total >= 0 && $scope.name === 'currentspend' && $scope.month === now.getMonth() + 1);
+                    };
+
+                    function daysInMonth(year, month) {
+                        return new Date(year, month, 0).getDate();
                     }
+
                 },
 
                 templateUrl: 'utilization/static/partials/utilization-chart.html'

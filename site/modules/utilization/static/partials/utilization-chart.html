@@ -1,13 +1,23 @@
 <div class="utilization" data-ng-click="navigateDetails()">
-    <div class="tile blue">
-        <h4 class="title">{{caption}} Utilized</h4>
-        <div class="left-block">
+
+    <div class="tile blue" data-ng-style="{'background-color': colorTotal}">
+        <h4 class="title">{{getMonthTitle()}}{{caption}}</h4>
+        <div class="left-block" data-ng-class="{'has-right-block': showProjected()}">
             <div class="num">
-                {{format(total)}} {{unit}}
+                {{format(total)}}
             </div>
             <div class="desc">
                 <span class="num small"></span>
                 <div>{{getMonthDesc()}}</div>
+            </div>
+        </div>
+        <div class="right-block sub-line" data-ng-show="showProjected()">
+            <div class="num">
+                {{projected(total)}}
+            </div>
+            <div class="desc">
+                <span class="num small"></span>
+                <div>projected spend this month</div>
             </div>
         </div>
         <!--div class="right-block sub-line">

@@ -37,15 +37,22 @@ window.JP.main.service('util', [
         };
 
         service.getReadableFileSizeString = function (bytes) {
-            if (bytes === 0) {
-                return '0 Bytes';
-            }
             var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+            var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10);
             return {
                 value: Math.round(bytes / Math.pow(1024, i), 2) || 0,
-                measure: sizes[i]
+                measure: sizes[i] || sizes[0]
             };
+        };
+
+        service.getReadableCurrencyString =  function (amount) {
+            if (!amount || isNaN(amount)) {
+                return '0.00';
+            } else if (amount < 100) {
+                return amount.toFixed(2);
+            } else {
+                return Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
         };
 
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find#Polyfill
@@ -55,7 +62,7 @@ window.JP.main.service('util', [
                 configurable: true,
                 writable: true,
                 value: function (predicate) {
-                    if (this == null) {
+                    if (this === null) {
                         throw new TypeError('Array.prototype.find called on null or undefined');
                     }
                     if (typeof predicate !== 'function') {
