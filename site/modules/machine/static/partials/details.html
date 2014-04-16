@@ -479,14 +479,14 @@
                     <p data-translate>Reboot</p>
                 </button>
 
-                <button data-ng-disabled="(machine.job && !machine.job.finished) || machine.state != 'stopped'"
+                <button data-ng-disabled="(machine.job && !machine.job.finished) || !isDeleteEnabled(machine.state)"
                         data-ng-click="clickDelete(machine.id)"
                         data-translate-attributes="data-original-title"
                         data-toggle="tooltip"
                         data-placement="top"
                         data-html="true"
                         data-original-title="{{buttonTooltipText.delete(machine)}}"
-                        data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || machine.state != 'stopped')}"
+                        data-ng-class="{'btn-danger': !((machine.job && !machine.job.finished) || !isDeleteEnabled(machine.state))}"
                         class="state btn orange font_size tooltip-hover btn-machine-ctrl">
                     <i class="delete-icon"></i>
                     <p data-translate>Delete</p>

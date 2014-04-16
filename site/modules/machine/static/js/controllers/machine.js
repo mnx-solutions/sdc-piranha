@@ -433,6 +433,10 @@
                 );
             };
 
+            $scope.isDeleteEnabled = function (state) {
+                return (state === 'stopped' || state === 'running');
+            };
+
             $scope.clickDelete = function () {
                 PopupDialog.confirm(
                     localization.translate(
