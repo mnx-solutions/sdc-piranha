@@ -181,7 +181,7 @@ module.exports = function execute(scope, register) {
             }
 
             if (!(result.primaryIp && result.privateKey && result.fingerprint)) {
-                callback('Something wrong, re-enabling load balancing required');
+                callback('Something wrong, reinstalling load balancing required');
                 return;
             }
 
