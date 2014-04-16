@@ -106,7 +106,8 @@
                 }
             };
 
-            $scope.clickCallSales = function () {
+            $scope.clickCallSales = function (holder) {
+                Support.callSalesLog(holder.title);
                 PopupDialog.message(
                     localization.translate(
                         $scope,
