@@ -76,6 +76,14 @@
                 });
 
             };
+
+            service.callSalesLog = function (supportPlanName) {
+                serverTab.call({
+                    name: 'SupportCallSales',
+                    data: supportPlanName
+                });
+            }
+
             return service;
         }]);
 }(window.JP.getModule('support')));

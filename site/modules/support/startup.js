@@ -9,4 +9,8 @@ module.exports = function execute(scope) {
     server.onCall('SupportListPackages', function (call) {
         call.done(null, pkg);
     });
+
+    server.onCall('SupportCallSales', function (call) {
+        call.req.log.info('Request Call Sales ' + call.data);
+    });
 }
