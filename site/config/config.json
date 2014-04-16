@@ -178,5 +178,6 @@
   , "support": "no"
   , "uploadSshKey": "no"
   , "createdBySupportPackages": "no"
+  , "systemStatusTile": "no"
   }
 }
