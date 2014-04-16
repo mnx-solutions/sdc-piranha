@@ -317,13 +317,16 @@ var slb = function execute(scope) {
                 call.req.log.info({fingerprint: portalFingerprint}, 'Storing key/fingerprint to metadata');
 
                 Metadata.set(call.req.session.userId, Metadata.PORTAL_PRIVATE_KEY, portalKeyPair.privateKey, function (pKeyError) {
+                    var setMetadataError = 'Something wrong, reinstalling load balancing required';
                     if (pKeyError) {
-                        call.done(pKeyError);
+                        call.req.log.error(pKeyError);
+                        call.done(setMetadataError);
                         return;
                     }
                     Metadata.set(call.req.session.userId, Metadata.PORTAL_FINGERPRINT, portalFingerprint, function (fPrintError) {
                         if (fPrintError) {
-                            call.done(fPrintError);
+                            call.req.log.error(fPrintError);
+                            call.done(setMetadataError);
                             return;
                         }
                         addSscKey(call, sscKeyPair.publicSsh, function (keyError) {
