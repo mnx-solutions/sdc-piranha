@@ -32,6 +32,8 @@
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
             $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
+            $scope.systemStatusTopics = [];
+
             if ($scope.slbFeatureEnabled) {
 
                 $scope.balancers = slbService.getBalancers();
@@ -60,7 +62,6 @@
                 'Running Node.js Application on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Using+Node.js',
                 'Images Available on Joyent': 'http://wiki.joyent.com/wiki/display/jpc2/Available+Joyent+Public+Cloud+Machine+Images'
             };
-            $scope.systemStatusTopics = Zendesk.getSystemStatusTopics();
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
             $scope.machines = Machine.machine();
 
@@ -78,7 +79,6 @@
             $q.all(
                 [$q.when($scope.machines),
                     $q.when($scope.forums),
-                    $q.when($scope.systemStatusTopics),
                     $q.when($scope.softwareUpdateTopics),
                     $q.when($scope.account),
                     $q.when($scope.rssentries),
@@ -176,10 +176,21 @@
                 freeTierTileStatus();
             }
 
-            $scope.recentTopics = function (item) {
-                var created = new Date(item.created_at).getTime();
-                return new Date().getTime() < (created + 2 * 24 * 3600 * 1000);
-            };
+
+            Zendesk.getSystemStatusTopics().then(function (topics) {
+                if ($scope.features.systemStatusTile === 'enabled') {
+                    $scope.systemStatusTopics = topics.filter(function (topic) {
+                        return new Date().getTime() < (new Date(topic.created_at).getTime() + 2 * 24 * 3600 * 1000);
+                    });
+                    if ($scope.systemStatusTopics.length > 1) {
+                        $scope.systemStatusTopics.length = 1;
+                    }
+                } else {
+                    $scope.systemStatusTopics = topics;
+                }
+            });
         }
+
+
     ]);
 }(window.angular, window.JP.getModule('Dashboard')));

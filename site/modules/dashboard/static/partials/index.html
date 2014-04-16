@@ -153,13 +153,19 @@
                 </div>
             </div>
 
-            <div class="pull-left widget-margin">
+            <div class="pull-left widget-margin" data-ng-show="features.systemStatusTile == 'enabled'">
                 <div class="widget grey links2 system-icon">
                     <h4>System Status</h4>
                     <div class="details details-subinfo">
-                        <div class="desc"><i class="checked-icon"></i>All services operating normally</div>
+                        <div class="desc" data-ng-hide="systemStatusTopics.length">
+                            <i class="checked-icon"></i>
+                            All services operating normally
+                        </div>
+                        <div class="desc" data-ng-show="systemStatusTopics.length">
+                            Visit <a class="orange" target="_blank" href="https://help.joyent.com">help.joyent.com</a> for current system status
+                        </div>
                         <div class="desc">&nbsp;</div>
-                        <div class="desc" data-ng-repeat="topic in systemStatusTopics | filter:recentTopics | limitTo:1">
+                        <div class="desc" data-ng-repeat="topic in systemStatusTopics">
                             <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.created_at | dateTime}} &nbsp;{{topic.title}}</a>
                         </div>
                     </div>
@@ -203,6 +209,20 @@
                 </div>
             </div>
             <div class="pull-left secont-colums">
+                <div class="span" data-ng-show="features.systemStatusTile != 'enabled'">
+                    <h5>SYSTEM STATUS</h5>
+                    <div class="separation-container separation-container-top">
+                        <div class="row-fluid" data-ng-repeat="topic in systemStatusTopics | limitTo:7">
+                            <span class="pull-left span12">{{topic.created_at | dateTime}} <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">&nbsp;{{topic.title}}</a></span>
+                        </div>
+                    </div>
+                    <div class="margin-btn-dashboard">
+                        <a class="btn light-small pull-right effect-orange-button" href="https://help.joyent.com/forums/20715782-current-system-status#recent" target="_blank">
+                            View all System Updates
+                        </a>
+                    </div>
+                    <div class="line-spacer dpl-inline"></div>
+                </div>
                     <div class="span">
                         <h5>JOYENT BLOG</h5>
                         <div class="separation-container separation-container-top">
