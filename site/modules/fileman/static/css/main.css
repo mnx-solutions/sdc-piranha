@@ -45,6 +45,7 @@
     height: 390px;
     overflow: auto;
     background-color: #fafafa;
+    vertical-align: top;
 }
 .finder-column-loader {
     position: relative;
