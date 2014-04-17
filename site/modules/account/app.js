@@ -141,7 +141,7 @@ module.exports = function execute(scope, app) {
                             res.json({
                                 error: err.message,
                                 status: err.statusCode
-                            }, err.statusCode);
+                            });
                             return;
                         }
                         res.json({success: true});
@@ -151,7 +151,7 @@ module.exports = function execute(scope, app) {
                 res.json({
                     error: "The file you've uploaded is not a public key.",
                     status: 422
-                }, 422);
+                });
             }
         });
     });

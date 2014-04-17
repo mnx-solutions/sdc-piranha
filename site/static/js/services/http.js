@@ -99,7 +99,10 @@
                     }
 
                     return $http(options)
-                        .success(cb('success'))
+                        .success(function (response) {
+                            var status = response.error ? 'error' : 'success';
+                            cb(status)(response);
+                        })
                         .error(cb('error'));
                 };
             }
