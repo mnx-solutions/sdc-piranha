@@ -115,6 +115,15 @@ th.protocol{
     padding-left: 20px;
     overflow: hidden;
 }
+.loading-small-firewall {
+    display: inline-block;
+    padding-right: 8px;
+    width: 16px;
+    height: 20px;
+}
+.status-column {
+    width: 126px;
+}
 
 .item {
     border: 0;
