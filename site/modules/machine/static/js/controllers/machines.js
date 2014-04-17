@@ -236,6 +236,7 @@
                 {
                     id: 'created',
                     name: 'Created',
+                    type: 'date',
                     sequence: 5,
                     active: true,
                     reverseSort: true
@@ -257,6 +258,7 @@
                 {
                     id: 'updated',
                     name: 'Updated',
+                    type: 'date',
                     sequence: 8,
                     active: true,
                     reverseSort: true
