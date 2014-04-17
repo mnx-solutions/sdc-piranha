@@ -1174,6 +1174,14 @@ iframe {
     content: "\e107";
 }
 
+.glyphicon-earphone:before {
+    content: "\e182";
+}
+
+i.glyphicon-earphone {
+    line-height: 21px;
+}
+
 i.glyphicon-info-sign,
 i.glyphicon-warning-sign {
     padding-right: 7px;
