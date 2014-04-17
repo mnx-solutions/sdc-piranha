@@ -161,11 +161,8 @@
                             <i class="checked-icon"></i>
                             All services operating normally
                         </div>
-                        <div class="desc" data-ng-show="systemStatusTopics.length">
-                            Visit <a class="orange" target="_blank" href="https://help.joyent.com">help.joyent.com</a> for current system status
-                        </div>
-                        <div class="desc">&nbsp;</div>
                         <div class="desc" data-ng-repeat="topic in systemStatusTopics">
+                            <i class="warning-icon"></i>
                             <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.created_at | dateTime}} &nbsp;{{topic.title}}</a>
                         </div>
                     </div>
