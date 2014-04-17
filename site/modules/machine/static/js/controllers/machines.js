@@ -226,7 +226,7 @@
                         if (dataset) {
                             imageText = dataset.split(':').splice(2).join('/');
                         }
-                        if (imageText === '') {
+                        if (imageText === '' && object._Dataset) {
                             dataset = object._Dataset;
                             imageText = dataset.name + '/' + dataset.version
                         }
