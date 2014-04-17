@@ -125,12 +125,14 @@
                                 files = $scope.files;
                             }
 
-                            var folderExists = files.some(function (item) {
-                                return (item.type === 'directory' && item.name === data.folderName);
+                            var itemExists = files.filter(function (item) {
+                                return item.name === data.folderName;
                             });
 
-                            if (folderExists) {
-                                showPopupDialog('error', 'Message', 'Folder named "' + data.folderName + '" already exists.');
+                            if (itemExists.length > 0) {
+                                itemExists = itemExists[0];
+                                var introText = itemExists.type === 'object' ? 'File' : 'Folder';
+                                showPopupDialog('error', 'Message', introText + ' "' + data.folderName + '" already exists.');
                                 $scope.refreshingFolder = false;
                             } else {
                                 fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {

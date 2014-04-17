@@ -13,7 +13,7 @@
                 function uploadFiles(files) {
                     http.uploadFiles('fileman/upload', scope.filemanUpload, files, function (error, response) {
                         if (!error) {
-                            scope.$parent.$emit('uploadReady', true);
+                            scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
                         }
                     });
                 }
@@ -21,15 +21,31 @@
                 element.change(function (e) {
                     var selectedFilesArr = [].slice.call(e.target.files);
                     var selectedFileNames = selectedFilesArr.map(function (file) { return file.name; });
-                    var existingFileNames = scope.existingFiles.filter(function (file) { return file.type !== 'directory'; }).map(function (file) { return file.path; });
+                    var existingFiles = [];
+                    var existingFolders = [];
+                    scope.existingFiles.forEach(function (file) {
+                        if (selectedFileNames.indexOf(file.path) !== -1) {
+                            if (file.type === 'directory') {
+                                existingFolders.push(file.path);
+                            } else {
+                                existingFiles.push(file.path);
+                            }
+                        }
+                    });
                     var finalUpload = function () {
-                        uploadFiles(e.target.files);
+                        uploadFiles(selectedFilesArr);
                         e.target.value = '';
                         scope.$parent.$emit('uploadStart', true);
                     };
-                    var intersectFiles = selectedFileNames.filter(function (name) { return existingFileNames.indexOf(name) !== -1; });
-                    if (intersectFiles.length > 0) {
-                        var message = 'Are you sure you want to overwrite ' + intersectFiles.join(', ') + ' ?';
+                    if (existingFolders.length > 0) {
+                        e.target.value = '';
+                        return PopupDialog.message(
+                            'Message',
+                            'Folder named ' + existingFolders.join(', ') + ' already exists.'
+                        );
+                    }
+                    if (existingFiles.length > 0) {
+                        var message = 'Are you sure you want to overwrite ' + existingFiles.join(', ') + '?';
                         PopupDialog.confirm(
                             'Confirm: Add files',
                             message,
@@ -41,7 +57,7 @@
                             });
                     } else {
                         finalUpload();
-                    };
+                    }
                 });
                 scope.upload = function () {
                     element.click();
