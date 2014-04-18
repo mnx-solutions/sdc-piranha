@@ -34,7 +34,8 @@
 }
 .create-images .loading-medium {
     display: inline-block;
-    vertical-align: middle;
+    margin-right: -10px;
+    vertical-align: -13px;
 }
 .create-images input,
 .create-images textarea {
