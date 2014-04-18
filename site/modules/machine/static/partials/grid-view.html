@@ -125,10 +125,6 @@
                                     </div>
                                 </div>
                             </span>
-                            <span data-ng-switch-when="created">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
-                            <span data-ng-switch-when="updated">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
-                            <span data-ng-switch-when="published_at">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
-                            <span data-ng-switch-when="mtime">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
                             <span data-ng-switch-when="ips">
                                 <span data-ng-repeat="ip in object.ips">{{ip}}{{{true: '', false: ', '}[$last]}}</span>
                             </span>
@@ -141,6 +137,7 @@
                                         <span data-ng-show="object.fireWallActionRunning" class="loading-small loading-small-firewall pull-left"></span>
                                         <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
                                     </span>
+                                <span data-ng-switch-when="date">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
                                 <span data-ng-switch-default>
                                     {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
                                 </span>

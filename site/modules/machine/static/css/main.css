@@ -638,9 +638,6 @@
     line-height: 20px;
 }
 
-.item-list-container{
-    overflow: auto;
-}
 .simple-image:hover {
     background-color: #e2e8ec !important;
 }

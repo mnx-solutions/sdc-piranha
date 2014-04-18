@@ -364,6 +364,7 @@ th {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+    overflow: auto;
 }
 
 .item-list-container .item.header {

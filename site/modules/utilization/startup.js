@@ -56,6 +56,25 @@ module.exports = function execute(scope) {
         return new Date(year, month, 0).getDate();
     };
 
+    var getUsageDataEntry = function (config, opts) {
+        var machine = config.config;
+        var usageData = {
+            uuid: machine.uuid,
+            datacenter_name: machine.datacenter_name,
+            brand: machine.brand,
+            alias: machine.alias,
+            package_uuid: machine.package.uuid,
+            package_name: machine.package.name,
+            running: machine.running,
+            first: new Date(config.first),
+            last: new Date(config.last)
+        };
+        for (var key in opts) {
+            usageData[key] = opts[key];
+        }
+        return usageData;
+    };
+
     server.onCall('UtilizationData', {
         verify: function (data) {
             return data
@@ -107,34 +126,21 @@ module.exports = function execute(scope) {
                             entry.configs.forEach(function (config) {
                                 var machine = config.config;
                                 machine.uuid = machineId;
-                                networksToMachine[machine.nics.net0] = machine;
+                                networksToMachine[machine.nics.net0] = config;
                                 var hours = (new Date(config.last).getTime() - new Date(config.first).getTime()) / 3600000;
-                                overallResult.dram.usage.push({
-                                    uuid: machine.uuid,
-                                    alias: machine.alias,
-                                    package_uuid: machine.package.uuid,
-                                    package_name: machine.package.name,
-                                    hours: hours,
-                                    ram: machine.live.ram
-                                });
+                                overallResult.dram.usage.push(getUsageDataEntry(config, {'hours': hours, 'ram' : machine.live.ram}));
                                 overallResult.dram.amount[result.date] += config.config.live.ram * hours / 1000;
                             });
                             for (var network in entry.network_usage) {
-                                var machine = networksToMachine[network];
-                                if (machine) {
+                                var config = networksToMachine[network];
+                                if (config) {
+                                    var machine = config.config;
                                     entry.network_usage[network].forEach(function (usage) {
                                         var bytesin = usage.last.recv - usage.first.recv;
                                         var bytesout = usage.last.sent - usage.first.sent;
                                         bytesin = bytesin < 0 ? 0 : bytesin;
                                         bytesout = bytesout < 0 ? 0 : bytesout;
-                                        overallResult.bandwidth.usage.push({
-                                            uuid: machine.uuid,
-                                            alias: machine.alias,
-                                            package_uuid: machine.package.uuid,
-                                            package_name: machine.package.name,
-                                            out: bytesout,
-                                            in: bytesin
-                                        });
+                                        overallResult.bandwidth.usage.push(getUsageDataEntry(config, {'out': bytesout, 'in': bytesin}));
                                         overallResult.bandwidth.amount[result.date] += (bytesin + bytesout);
                                     });
                                 }
@@ -152,13 +158,15 @@ module.exports = function execute(scope) {
                     // grouping by machine as separate pass, cause it's a temporary functionality for old format data
                     var groupByMachineAndSumFields = function (arr, fields) {
                         return arr.sort(function (a, b) {
-                            return a.uuid.localeCompare(b.uuid);
+                            var machineIdCompare = a.uuid.localeCompare(b.uuid);
+                            return machineIdCompare === 0 ? a.first.getTime() - b.first.getTime() : machineIdCompare;
                         }).reduce(function (accumulated, newUsage) {
                             var lastElement = accumulated[accumulated.length - 1];
                             if (lastElement && lastElement.uuid === newUsage.uuid) {
                                 fields.forEach(function (field) {
                                     lastElement[field] += newUsage[field];
-                                })
+                                });
+                                lastElement.last = newUsage.last;
                             } else {
                                 accumulated.push(newUsage);
                             }

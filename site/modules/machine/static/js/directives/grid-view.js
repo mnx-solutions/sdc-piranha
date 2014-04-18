@@ -415,52 +415,61 @@
                 $scope.controls = ng.isDefined(attrs.controls) ? $scope.$eval(attrs.controls) : gridConfig.controls;
                 $scope.loading = true;
 
-                $scope.props.forEach(function (el) {
+                var onPropsChanges = function (scope, props) {
+                    $scope.props = props || $scope.props;
+                    $scope.props.forEach(function (el) {
 
-                    if ($rootScope.features.firewall === 'enabled') {
-                        if (el.id === 'firewall_enabled') {
-                            el.active = true;
+                        if ($rootScope.features.firewall === 'enabled') {
+                            if (el.id === 'firewall_enabled') {
+                                el.active = true;
+                            }
+                            if (el.id === 'updated') {
+                                el.active = false;
+                            }
                         }
-                        if (el.id === 'updated') {
-                            el.active = false;
-                        }
-                    }
-                    var initOrder = function (customOrder, el) {
-                        el.order = customOrder;
-                        if (typeof ( customOrder) === 'string') {
-                            el.rorder = '-' + customOrder;
-                        } else if (typeof (customOrder) === 'function') {
-                            el.rorder = function (item) {
-                                var elem = String(customOrder(item));
-                                var next = '';
-                                var i;
-                                for (i = 0; i < elem.length; i += 1) {
-                                    next += String.fromCharCode(255 - elem.charCodeAt(i));
-                                }
-                                return next;
-                            };
-                        }
+                        var initOrder = function (customOrder, el) {
+                            el.order = customOrder;
+                            if (typeof (customOrder) === 'string') {
+                                el.rorder = '-' + customOrder;
+                            } else if (typeof (customOrder) === 'function') {
+                                el.rorder = function (obj) {
+                                    var next;
+                                    var value = customOrder(obj);
+                                    if (typeof (value) === 'number') {
+                                        next = -value;
+                                    } else {
+                                        var elem = String(value);
+                                        var i;
+                                        for (i = 0; i < elem.length; i += 1) {
+                                            next += String.fromCharCode(255 - elem.charCodeAt(i));
+                                        }
+                                    }
+                                    return next;
+                                };
+                            }
+                        };
 
-                    };
-
-                    if (el._order) {
-                        initOrder(el._order, el);
-                    } else if (el._getter) {
-                        initOrder(el._getter, el);
-                    } else if (!el.id2) {
-                        if (el.reverseSort) {
-                            el.rorder = el.id;
-                            el.order = '-' + el.id;
+                        if (el._order) {
+                            initOrder(el._order, el);
+                        } else if (el._getter) {
+                            initOrder(el._getter, el);
+                        } else if (!el.id2) {
+                            if (el.reverseSort) {
+                                el.rorder = el.id;
+                                el.order = '-' + el.id;
+                            } else {
+                                el.order = el.id;
+                                el.rorder = '-' + el.id;
+                            }
                         } else {
-                            el.order = el.id;
-                            el.rorder = '-' + el.id;
+                            el.order = el.id + '.' + el.id2;
+                            el.rorder = '-' + el.id + '.' + el.id2;
                         }
-                    } else {
-                        el.order = el.id + '.' + el.id2;
-                        el.rorder = '-' + el.id + '.' + el.id2;
-                    }
 
-                });
+                    })
+                };
+                $scope.$on('propsChanged', onPropsChanges);
+                onPropsChanges();
 
                 if (!$scope.userConfig) {
                     $scope.userConfig = {

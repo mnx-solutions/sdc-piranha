@@ -55,6 +55,7 @@
                     {
                         id: 'mtime',
                         name: 'Date',
+                        type: 'date',
                         sequence: 1,
                         active: true
                     },

@@ -84,6 +84,7 @@
                 {
                     id: 'published_at',
                     name: 'Published at',
+                    type: 'date',
                     sequence: 4,
                     active: true,
                     reverseSort: true
