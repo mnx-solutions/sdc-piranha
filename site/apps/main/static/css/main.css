@@ -1690,6 +1690,7 @@ label.checkbox {
 }
 
 .grid-action-btn button {
+    width: 100px;
     outline: none;
     border: 0;
     border-radius: 0;
