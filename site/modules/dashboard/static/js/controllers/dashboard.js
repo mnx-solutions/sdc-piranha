@@ -176,18 +176,31 @@
                 freeTierTileStatus();
             }
 
+            var updateSystemStatusTopics = setInterval(function () {
+                $scope.$apply(function() {
+                    getSystemStatusTopics();
+                });
+            }, 60000);
 
-            Zendesk.getSystemStatusTopics().then(function (topics) {
-                if ($scope.features.systemStatusTile === 'enabled') {
-                    $scope.systemStatusTopics = topics.filter(function (topic) {
-                        return new Date().getTime() < (new Date(topic.created_at).getTime() + 2 * 24 * 3600 * 1000);
-                    });
-                    if ($scope.systemStatusTopics.length > 1) {
-                        $scope.systemStatusTopics.length = 1;
+            function getSystemStatusTopics () {
+                Zendesk.getSystemStatusTopics().then(function (topics) {
+                    if ($scope.features.systemStatusTile === 'enabled') {
+                        $scope.systemStatusTopics = topics.filter(function (topic) {
+                            return new Date().getTime() < (new Date(topic.created_at).getTime() + 2 * 24 * 3600 * 1000);
+                        });
+                        if ($scope.systemStatusTopics.length > 1) {
+                            $scope.systemStatusTopics.length = 1;
+                        }
+                    } else {
+                        $scope.systemStatusTopics = topics;
                     }
-                } else {
-                    $scope.systemStatusTopics = topics;
-                }
+                });
+            }
+
+            getSystemStatusTopics();
+
+            $scope.$on('$destroy', function() {
+                clearInterval(updateSystemStatusTopics);
             });
         }
 
