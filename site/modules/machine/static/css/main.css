@@ -377,22 +377,6 @@
 .collapse.in {
     height: auto !important;
 }
-.left-part,.right-part,.right-spacer{
-    display: table-cell;
-    vertical-align: top;
-}
-.right-part{
-    width: 485px;
-}
-.right-spacer{
-    min-width: 20px;
-}
-
-.inl-table{
-    width: 100%;
-    display: inline-table;
-}
-
 .accordion-inner table td {
     font-size: 14px;
     color: #7d7d7d;
@@ -1362,10 +1346,6 @@
 .effect-orange-button:hover .chart-icon {
     background-image: url("../img/icon-chart-white.png");
 }
-.container-grid {
-    float: left;
-    width: 100%;
-}
 
 .pagination {
     margin-bottom: 5px;
@@ -1413,12 +1393,6 @@
 .small-icon.mongodb {background-image: url(../img/icons/mongodb.png);}
 .small-icon.arch {background-image: url(../img/icons/arch.png);}
 
-.btn.light {
-    color: #f60;
-    text-shadow: none;
-    background-color: #f3f3f3;
-    font-size: 16px;
-}
 .warn-yellow{
     background-image: url(../img/warn-yellow.png);
     background-repeat: no-repeat;

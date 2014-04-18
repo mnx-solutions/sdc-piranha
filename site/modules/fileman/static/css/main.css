@@ -228,70 +228,7 @@
     border: 1px solid #666;
     margin-left: -1px;
 }
-.cancel-icon, .delete-icon, .download-icon,
-.info-icon, .plus-icon, .share-icon, .upload-icon {
-    background: no-repeat 50%;
-    background-size: 18px;
-    width: 18px;
-    height: 18px;
-    float: left;
-    vertical-align: middle;
-    margin-right: 5px;
-    margin-top: 1px;
-}
-.key-icon {
-    background: url("../img/key-icon.png") no-repeat 50% 50%;
-    background-size: 26px 15px;
-    width: 26px;
-    height: 15px;
-    float: left;
-    vertical-align: middle;
-    margin-right: 5px;
-    margin-top: 3px;
-}
-.cancel-icon {
-    background-image: url("../img/cancel-icon.png");
-}
-.delete-icon {
-    background-image: url("../img/delete-icon.png");
-}
-.download-icon {
-    background-image: url("../img/download-icon.png");
-}
-.info-icon {
-    background-image: url("../img/info-icon.png");
-}
-.plus-icon {
-    background-image: url("../img/plus-icon.png");
-}
-.share-icon {
-    background-image: url("../img/share-icon.png");
-}
-.upload-icon {
-    background-image: url("../img/upload-icon.png");
-}
-.effect-orange-button:hover .delete-icon {
-    background-image: url("../img/delete-icon-white.png");
-}
-.effect-orange-button:hover .download-icon {
-    background-image: url("../img/download-icon-white.png");
-}
-.effect-orange-button:hover .info-icon {
-    background-image: url("../img/info-icon-white.png");
-}
-.effect-orange-button:hover .plus-icon {
-    background-image: url("../img/plus-icon-white.png");
-}
-.upload-icon-grey {
-    background: url("../img/upload-icon-grey.png") no-repeat 50% 50%;
-    background-size: 14px 14px;
-    position: relative;
-    width: 14px;
-    height: 35px;
-    margin-left: 14px;
-    margin-right: 14px;
-    display: inline-block;
-}
+
 .header-btn-panel {
     padding-bottom: 5px;
 }

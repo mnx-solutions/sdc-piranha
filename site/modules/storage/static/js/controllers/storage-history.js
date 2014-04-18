@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account',
-                function ($scope, requestContext, localization, Storage, PopupDialog, $dialog, Account) {
+        ['$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location',
+                function ($scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.history', $scope);
 
@@ -142,6 +142,10 @@
                 $scope.actionsButton = true;
                 $scope.instForm = true;
                 $scope.enabledCheckboxes = true;
+
+                $scope.addNewJob = function () {
+                    $location.path('/manta/builder');
+                };
         }]
     );
 }(window.JP.getModule('Storage')));

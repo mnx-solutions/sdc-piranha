@@ -287,8 +287,7 @@
                                 <button data-ng-click="toggleGraph()" id="control_{{$id}}"\
                                         data-ng-class="{disabled: !ready, btn: true}" \
                                         class="toggle-graf-btn toggle-btn-bg">\
-                                    <i class="toggle" data-ng-class="{collapsed: !showGraph}"></i>\
-                                    <p>{{ready && instrumentation.title || loadingText}}</p>\
+                                    <p class="toggle-icon" data-ng-class="{collapsed: !showGraph}">{{ready && instrumentation.title || loadingText}}</p>\
                                 </button>\
                                 <button data-ng-click="deleteGraph()" class="btn del-btn-graf toggle-btn-bg" title="delete graph">\
                                     <div class="pull-right remove-icon"></div>\

@@ -1,0 +1,92 @@
+<div class="container-fluid container-position" data-ng-controller="Storage.JobBuilderController">
+    <div data-breadcrumbs></div>
+
+    <h3 class="page-title">Job Builder</h3>
+
+    <div class="inl-table">
+        <div class="table-row">
+            <div class="left-part">
+                <div class="job-name">
+                    <div class="name">Name</div>
+                    <div class="field">
+                        <input type="text" name="jobName" data-ng-model="jobName"/>
+                    </div>
+                </div>
+                <div class="accordion" id="accordionBuilderGrids">
+
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordionBuilderGrids"
+                               href="#collapse_inputs">
+                                Inputs
+                            </a>
+                        </div>
+                        <div id="collapse_inputs" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div data-builder-grid data-objects="dataInputs"></div>
+                              </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordionBuilderGrids"
+                               href="#collapse_assets">
+                                Assets
+                            </a>
+                        </div>
+                        <div id="collapse_assets" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div data-builder-grid data-objects="dataAssets"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-part">
+                <div class="job-name row-fluid">
+                    <button class="btn orange pull-right">Run Job</button>
+                </div>
+                <div class="accordion" id="accordionBuilderPhases">
+
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordionBuilderPhases"
+                               href="#collapse_mapstep">
+                                Map Step
+                            </a>
+                        </div>
+                        <div id="collapse_mapstep" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div class="job-name row-fluid">
+                                    <div class="field">
+                                        <textarea type="text" name="mapStep" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#accordionBuilderPhases"
+                               href="#collapse_reducestep">
+                                Reduce Step
+                            </a>
+                        </div>
+                        <div id="collapse_reducestep" class="accordion-body collapse in">
+                            <div class="accordion-inner">
+                                <div class="job-name row-fluid">
+                                    <div class="field">
+                                        <textarea type="text" name="reduceStep" rows="4"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

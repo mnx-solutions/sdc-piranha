@@ -188,9 +188,8 @@
                                         <div class="accordion accordion-package-select" id="packagesAccordion">
                                             <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
                                                 <div class="accordion-heading">
-                                                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#packagesAccordion"
+                                                    <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
                                                        href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)">
-                                                        <i class=""></i>
                                                         {{packageType}}
                                                     </a>
                                                 </div>

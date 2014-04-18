@@ -4,6 +4,27 @@ body {
     cursor: default;
 }
 
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
 .content-container > div {
     min-height: 100%;
 }
@@ -361,9 +382,6 @@ th {
 
 .item-list-container {
     padding-right: 2px;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
     overflow: auto;
 }
 
@@ -1402,6 +1420,7 @@ select::-ms-expand {
 
 .toggle-btn-bg, .toggle-btn-bg:hover, .toggle-btn-bg:focus, .toggle-btn-bg.disabled {
     background-color: #e9eff4 !important;
+    padding-left: 0 !important;
 }
 
 .toggle-btn-bg.disabled {
@@ -1433,16 +1452,12 @@ select::-ms-expand {
     background-color: #ffffff !important;
 }
 
-.accordion-toggle i, .toggle {
-    width: 15px;
-    height: 15px;
-    background-repeat: no-repeat;
-    background-image: url("../img/accord_i_plus.png");
-    padding-right: 25px;
-    vertical-align: middle;
+.toggle-icon {
+    background: url("../img/accord_i_plus.png") no-repeat 15px center;
+    padding-left: 40px !important;
 }
 
-.accordion-toggle.collapsed i, .toggle.collapsed {
+.collapsed.toggle-icon {
     background-image: url("../img/accord_i_down.png");
 }
 
@@ -1893,10 +1908,10 @@ label.checkbox {
 }
 .btn.light {
     outline: none;
-    background-color: #f3f3f3;
-    color: #f60;
+    background-color: #f3f3f3 !important;
+    color: #f60 !important;
     text-shadow: none;
-    font-size: 16px;
+    font-size: 16px !important;
 }
 .btn.light-small {
     padding-right: 10px !important;
@@ -2379,7 +2394,104 @@ label.checkbox {
     border-bottom-color: #ff6600;
     border-width: 1px 5px 5px;
 }
+
 /* hack to remove weird line under the tab according to PIRANHA-1520 */
 #zenbox_tab img {
     max-width: inherit;
+}
+
+.left-part,
+.right-part {
+    display: table-cell;
+    vertical-align: top;
+}
+.left-part,
+.right-part {
+    min-width: 485px;
+}
+.left-part {
+    padding-right: 20px;
+}
+.inl-table {
+    display: inline-table;
+    width: 100%;
+}
+.table-row {
+    display: table-row;
+}
+.cancel-icon,
+.delete-icon,
+.download-icon,
+.info-icon,
+.plus-icon,
+.share-icon,
+.upload-icon {
+    float: left;
+    margin-top: 1px;
+    margin-right: 5px;
+    width: 18px;
+    height: 18px;
+    background: no-repeat 50%;
+    background-size: 18px;
+    vertical-align: middle;
+}
+.key-icon {
+    float: left;
+    margin-top: 3px;
+    margin-right: 5px;
+    width: 26px;
+    height: 15px;
+    background: url("../img/key-icon.png") no-repeat 50% 50%;
+    background-size: 26px 15px;
+    vertical-align: middle;
+}
+.cancel-icon {
+    background-image: url("../img/cancel-icon.png");
+}
+.delete-icon {
+    background-image: url("../img/delete-icon.png");
+}
+.download-icon {
+    background-image: url("../img/download-icon.png");
+}
+.info-icon {
+    background-image: url("../img/info-icon.png");
+}
+.plus-icon {
+    background-image: url("../img/plus-icon.png");
+}
+.share-icon {
+    background-image: url("../img/share-icon.png");
+}
+.upload-icon {
+    background-image: url("../img/upload-icon.png");
+}
+.effect-orange-button:hover .delete-icon {
+    background-image: url("../img/delete-icon-white.png");
+}
+.effect-orange-button:hover .download-icon {
+    background-image: url("../img/download-icon-white.png");
+}
+.effect-orange-button:hover .info-icon {
+    background-image: url("../img/info-icon-white.png");
+}
+.effect-orange-button:hover .plus-icon {
+    background-image: url("../img/plus-icon-white.png");
+}
+.upload-icon-grey {
+    position: relative;
+    display: inline-block;
+    margin-right: 14px;
+    margin-left: 14px;
+    width: 14px;
+    height: 35px;
+    background: url("../img/upload-icon-grey.png") no-repeat 50% 50%;
+    background-size: 14px 14px;
+}
+.popup-file-path {
+    width: 516px;
+}
+.container-grid {
+    float: left;
+    width: 100%;
 }

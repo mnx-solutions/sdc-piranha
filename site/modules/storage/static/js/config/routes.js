@@ -10,6 +10,10 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             title: 'Storage',
             action: 'storage.history'
         })
+        .when('/manta/builder', {
+            title: 'Job builder',
+            action: 'storage.builder'
+        })
         .when('/manta/jobs/:jobid', {
             title: 'Job details',
             action: 'storage.job'
