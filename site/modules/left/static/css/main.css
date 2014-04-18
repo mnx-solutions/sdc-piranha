@@ -117,12 +117,6 @@ ul.page-sidebar-menu > li:hover > a {
 .usage-icon.active i {
     background-image: url("../img/utilization_i_orange.png") ! important;
 }
-.support-icon i {
-    background-image: url("../img/support_i_white.png");
-}
-.support-icon.active i {
-    background-image: url("../img/support_i_orange.png") ! important;
-}
 .title {
     color: #ffffff;
     font-weight: 400;
