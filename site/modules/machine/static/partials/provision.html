@@ -144,7 +144,7 @@
                                             <ul class="dropdown-menu dd-fixed-width">
                                                 <li data-ng-repeat="prop in filterProps">
                                                     <label class="filter-value">
-                                                        {{prop}}
+                                                        {{prop | uppercase}}
                                                         <input type="radio"
                                                                class="filter-radio"
                                                                name="filterProperty"
@@ -155,7 +155,7 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        <div class="btn-group btn-group-filter">
+                                        <div class="btn-group btn-group-filter" data-ng-show="filterProperty != 'No filter'">
                                             <button class="btn datacenter-select filter-select" data-toggle="dropdown">
                                                 {{ formatFilterValue(filterPropertyValue) }}
                                             </button>
@@ -172,6 +172,7 @@
                                                                class="filter-radio"
                                                                name="filterPropertyValue"
                                                                data-ng-model="$parent.filterPropertyValue"
+                                                               data-ng-change="$parent.onFilterChange()"
                                                                value="{{prop}}" />
                                                     </label>
                                                 </li>
@@ -188,7 +189,7 @@
                                             <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#packagesAccordion"
-                                                       href="#collapse_{{$index}}">
+                                                       href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)">
                                                         <i class=""></i>
                                                         {{packageType}}
                                                     </a>
