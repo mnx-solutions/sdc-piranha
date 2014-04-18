@@ -91,7 +91,7 @@
                         ticksData.splice(0);
                         for (var day = 1; day <= daysMax; day++) {
                             var dayStr = data.year + '-' + pad(data.month) + '-' + pad(day);
-                            var zeroValue = day < currentMonthDaysMax ? Number.MIN_VALUE : 0;
+                            var zeroValue = day < currentMonthDaysMax ? 0.00000000000000001 : 0;
                             var amount = amountData[dayStr] || zeroValue;
                             ticksData.push(day);
                             graphData.daily.push({x: day, y: amount});
