@@ -9,10 +9,10 @@
         '$q',
         '$window',
         '$timeout',
-        '$http',
+        'http',
         '$rootScope',
         'PopupDialog',
-        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog) {
+        function (Account, localization, notification, $q, $window, $timeout, http, $rootScope, PopupDialog) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -22,7 +22,7 @@
                 },
                 link: function ($scope) {
                     /* ssh key creating popup with custom template */
-                    $scope.addNewKey = function(question, callback) {
+                    $scope.addNewKey = function (question, callback) {
                         var addKeyCtrl = function ($scope, dialog) {
                             $scope.isUploadSshEnabled = $rootScope.features.uploadSshKey === 'enabled';
                             $scope.data = {};
@@ -47,68 +47,43 @@
                             $scope.buttons = [{result: 'cancel', label: 'Cancel', cssClass: 'pull-left', setFocus: false}, {result: 'add', label: 'Add', cssClass: 'btn-joyent-blue', setFocus: true}];
 
                             $scope.uploadFile = function (elem) {
-                                function uploadFiles(files) {
+                                $scope.$apply(function () {
                                     $rootScope.loading = true;
-                                    var data = new FormData();
-                                    var xhr = new XMLHttpRequest();
-                                    xhr.onreadystatechange = function () {
-                                        if (xhr.readyState !== 4) {
-                                            return;
+                                    $scope.keyLoading = true;
+                                });
+
+                                http.uploadFiles('account/upload', elem.value, elem.files, function (error, response) {
+                                    $rootScope.loading = false;
+                                    $scope.keyLoading = false;
+
+                                    if (error) {
+                                        var message = error.error;
+
+                                        if (error.status && error.status === 409) {
+                                            message = 'Uploaded key already exists.';
                                         }
 
-                                        $scope.$apply(function () {
-                                            $scope.keyLoading = false;
-                                        });
+                                        dialog.close({});
 
-                                        var response = JSON.parse(xhr.responseText);
-
-                                        if (response.success === true) {
-                                            return dialog.close({
-                                                keyUploaded: true
-                                            });
-                                        }
-                                        if (response.error) {
-                                            var message = response.error.message;
-
-                                            if (response.error.statusCode && response.error.statusCode === 409) {
-                                                message = 'Uploaded key is already exists.';
-                                            }
-
-                                            dialog.close({});
-
-                                            $rootScope.loading = false;
-
-                                            return PopupDialog.error(
-                                                localization.translate(
-                                                    $scope,
-                                                    null,
-                                                    'Error'
-                                                ),
-                                                localization.translate(
-                                                    $scope,
-                                                    null,
-                                                    message
-                                                ),
-                                                function () {}
-                                            );
-                                        }
-                                    };
-
-                                    for (var fileIndex = 0; fileIndex < files.length; fileIndex += 1) {
-                                        data.append('uploadInput', files[fileIndex]);
+                                        return PopupDialog.error(
+                                            localization.translate(
+                                                $scope,
+                                                null,
+                                                'Error'
+                                            ),
+                                            localization.translate(
+                                                $scope,
+                                                null,
+                                                message
+                                            )
+                                        );
                                     }
-                                    data.append('path', elem.value);
-                                    $scope.$apply(function () {
-                                        $scope.keyLoading = true;
+
+                                    return dialog.close({
+                                        keyUploaded: true
                                     });
-
-                                    xhr.open('POST', 'account/upload');
-                                    xhr.send(data);
-                                }
-
-                                uploadFiles(elem.files);
+                                });
                             };
-
                         };
 
                         var opts = {

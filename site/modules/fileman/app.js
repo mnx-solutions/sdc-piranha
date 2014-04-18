@@ -32,7 +32,7 @@ module.exports = function (scope, app) {
             if (error) {
                 req.log.error({error: error}, 'Error while uploading files');
             }
-            res.json({success: true});
+            res.json({success: true, status: 200});
         });
     });
 
