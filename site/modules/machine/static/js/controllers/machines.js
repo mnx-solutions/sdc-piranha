@@ -45,6 +45,11 @@
             $scope.$watch('machines', function (machines) {
                 machines.forEach(function (machine) {
                     machine.label = machine.name || machine.id;
+                    if (machine.image) {
+                        Dataset.dataset({id: machine.image}).then(function (dataset){
+                            machine.datasetInfo = dataset.name + '/' + dataset.version;
+                        })
+                    }
                 });
             }, true);
 
@@ -215,23 +220,10 @@
                     active: false
                 },
                 {
-                    id: '',
+                    id: 'datasetInfo',
                     name: 'Image',
                     sequence: 3,
-                    active: true,
-                    _getter: function (object) {
-                        var imageText = '';
-                        var dataset = object.dataset;
-
-                        if (dataset) {
-                            imageText = dataset.split(':').splice(2).join('/');
-                        }
-                        if (imageText === '' && object._Dataset) {
-                            dataset = object._Dataset;
-                            imageText = dataset.name + '/' + dataset.version
-                        }
-                        return imageText;
-                    }
+                    active: true
                 },
                 {
                     id: 'created',
