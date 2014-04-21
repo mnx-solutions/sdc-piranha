@@ -5,7 +5,7 @@
         <div class="beta-sticker">beta</div>
     </div>
 
-    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="loading-large" data-ng-show="!images.length && loading"></div>
 
     <div data-ng-show="images.length">
         <div data-grid-view
