@@ -306,7 +306,7 @@
                         if ($scope.form.cardHolderInfo.state === '') {
                             delete $scope.form.cardHolderInfo.state;
                         }
-                        $scope.form.workPhone = $scope.selectedCountryCode + ' ' + $scope.phone.number;
+                        $scope.form.workPhone = $scope.phone.number;
                         BillingService.addPaymentMethod($scope.form, function (errs, job) {
                             if (!errs) {
                                 Account.updateAccount({
