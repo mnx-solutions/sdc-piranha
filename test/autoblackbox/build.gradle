@@ -83,8 +83,8 @@ task ProductionFeatures(type: Test) {
     include '**/productionFeatures.class'
 }
 
-task HighPerformPackageTest(type: Test) {
-    include '**/HighPerformPackageTest.class'
+task FakePackageTest(type: Test) {
+    include '**/FakePackageTest.class'
 }
 
 task SLBPerformance(type: Test) {
