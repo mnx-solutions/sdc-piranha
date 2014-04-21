@@ -15,7 +15,7 @@ module.exports = function execute(scope) {
         auth: config.zendesk.account + ':' + config.zendesk.token
     });
 
-    function zendDeskCall(call, path, objectName) {
+    function zendDeskCall(call, path, objectName, noCache) {
         if (cache[path] && ((Date.now() - cache[path].lastSuccess) < cacheTTL)) {
             call.log.debug("Returning Zendesk " + objectName + " from cache ");
             call.done(null, cache[path].data);
@@ -24,11 +24,12 @@ module.exports = function execute(scope) {
 
             client.get(path, function (err, req, res, obj) {
                 if (!err) {
-                    // update cache
-                    cache[path] = {};
-                    cache[path].data = obj[objectName]
-                    cache[path].lastSuccess = Date.now();
-
+                    if (!noCache) {
+                        // update cache
+                        cache[path] = {};
+                        cache[path].data = obj[objectName]
+                        cache[path].lastSuccess = Date.now();
+                    }
                     call.done(null, obj[objectName]);
                 } else {
                     call.log.error(err);
@@ -43,7 +44,7 @@ module.exports = function execute(scope) {
     });
 
     server.onCall('ZendeskSystemStatusTopics', function (call) {
-        zendDeskCall(call, config.zendesk.systemStatusPath, 'topics');
+        zendDeskCall(call, config.zendesk.systemStatusPath, 'topics', true);
     });
 
     server.onCall('ZendeskPackagesUpdateTopics', function (call) {
