@@ -86,3 +86,7 @@ task ProductionFeatures(type: Test) {
 task HighPerformPackageTest(type: Test) {
     include '**/HighPerformPackageTest.class'
 }
+
+task SLBPerformance(type: Test) {
+    include '**/SLBPerformance.class'
+}

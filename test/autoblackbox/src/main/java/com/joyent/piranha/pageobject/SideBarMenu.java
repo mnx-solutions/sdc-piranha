@@ -36,4 +36,11 @@ public class SideBarMenu extends AbstractPageObject {
         clickMenu(IMAGES_MENU_TITLE);
         return page(ImageList.class);
     }
+
+    public <T extends AbstractPageObject> T clickLoadBalancers(Class<T> aClass){
+        clickMenu(COMPUTE_MENU_TITLE);
+        clickMenu(SLB_MENU_TITLE);
+        waitForLargeSpinnerDisappear();
+        return page(aClass);
+    }
 }

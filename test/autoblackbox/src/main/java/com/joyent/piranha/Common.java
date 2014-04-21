@@ -154,6 +154,10 @@ public class Common {
         return instanceName;
     }
 
+    public static String getSLBTestInstance() {
+        return "dnd-forSLBTests";
+    }
+
     public static String getValueFromLog(String key) {
         File log = new File(System.getProperty("serverLogPath"));
         String result = null;
