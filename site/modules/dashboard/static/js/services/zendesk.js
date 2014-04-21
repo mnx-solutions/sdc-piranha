@@ -11,7 +11,6 @@
             var service = {};
 
             var forums = false;
-            var systemStatusTopics = false;
             var softwareUpdateTopics = false;
 
             service.getForumsList = function() {
@@ -37,17 +36,12 @@
             service.getSystemStatusTopics = function() {
                 var deferred = $q.defer();
 
-                if (!systemStatusTopics) {
-                    serverTab.call({
-                        name: 'ZendeskSystemStatusTopics',
-                        done: function(err, job) {
-                            systemStatusTopics = job.__read();
-                            deferred.resolve(systemStatusTopics);
-                        }
-                    });
-                } else {
-                    deferred.resolve(systemStatusTopics);
-                }
+                serverTab.call({
+                    name: 'ZendeskSystemStatusTopics',
+                    done: function(err, job) {
+                        deferred.resolve(job.__read());
+                    }
+                });
 
                 return deferred.promise;
             };
