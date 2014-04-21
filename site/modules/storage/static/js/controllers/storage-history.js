@@ -3,46 +3,42 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location',
-                function ($scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location) {
+        ['$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location', '$q',
+                function ($scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location, $q) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.history', $scope);
 
                 $scope.loading = true;
+                $scope.placeHolderText = 'filter jobs';
 
-                $scope.jobs = [];
+                $scope.jobs = getJobsList();
 
-                Storage.listJobs().then(function (jobs) {
-                    $scope.loading = false;
-                    $scope.jobs = jobs.map(function (job) {
-                        job.id = job.name;
-                        return job;
+                function getJobsList() {
+                    var deferred = $q.defer();
+                    Storage.listJobs().then(function (jobs) {
+                        $scope.loading = false;
+                        deferred.resolve(
+                            jobs.map(function (job) {
+                                job.id = job.name;
+                                return job;
+                            })
+                        );
                     });
-                });
+                    return deferred.promise;
+                }
 
-                $scope.actionButton = function () {
-                    var flag = false;
-                    $scope.jobs.$$v.forEach(function (el) {
-                        if (el.checked) {
-                            flag = true;
-                        }
-                    });
-                    return flag;
-                };
-
-                $scope.noCheckBoxChecked = function () {
-                    PopupDialog.error(
+                function showMessage(dialog, type, message) {
+                    PopupDialog[dialog](
                         localization.translate(
                             $scope,
                             null,
-                            'Error'
+                            type
                         ),
                         localization.translate(
                             $scope,
                             null,
-                            'No jobs selected for the action.'
-                        ), function () {
-                        }
+                            message
+                        )
                     );
                 };
 
@@ -50,7 +46,7 @@
                     $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
                 }
 
-                $scope.gridOrder = ['created'];
+                $scope.gridOrder = ['-mtime'];
                 $scope.gridProps = [
                     {
                         id: 'mtime',
@@ -60,80 +56,53 @@
                         active: true
                     },
                     {
-                        id: 'name',
-                        name: 'Name',
+                        id: 'id',
+                        name: 'ID',
                         sequence: 2,
                         active: true
                     },
                     {
-                        id: 'id',
-                        name: 'ID',
+                        id: 'edit',
+                        name: 'Action',
+                        type: 'button',
+                        btn: {
+                            label: 'Clone',
+                            getClass: function () {
+                                return 'btn-edit ci effect-orange-button';
+                            },
+                            disabled: function () {
+                                return $scope.loading;
+                            },
+                            action: function (object) {
+                                Storage.getJob(object.id).then(
+                                    function (result) {
+                                        var job = {
+                                            name: result.name,
+                                            phases: result.phases
+                                        };
+                                        Storage.cloneJob(job).then(
+                                            function (res) {
+                                                var jobs = getJobsList();
+                                                $q.when(jobs).then(function (jobs) {
+                                                    $scope.jobs = jobs;
+                                                    showMessage('message', 'Message', res);
+                                                });
+                                            },
+                                            function (err) {
+                                                showMessage('error', 'Error', err);
+                                            }
+                                        );
+                                    }
+                                );
+                            }
+                        },
                         sequence: 3,
-                        active: true
-                    },
-                    {
-                        id: 'tasks',
-                        name: '#Tasks',
-                        sequence: 4,
-                        active: true
-                    },
-                    {
-                        id: 'done',
-                        name: '#Done',
-                        sequence: 5,
-                        active: true
-                    },
-                    {
-                        id: 'error',
-                        name: '#Errors',
-                        sequence: 6,
-                        active: true
-                    },
-                    {
-                        id: 'outputs',
-                        name: '#Outputs',
-                        sequence: 7,
                         active: true
                     }
                 ];
                 $scope.gridDetailProps = [];
 
-                $scope.gridActionButtons = [
-                    {
-                        label: 'Clone',
-                        disabled: function (object) {
-                            return false;
-                        },
-                        action: function (object) {
-                            if ($scope.actionButton()) {
-                                PopupDialog.confirm(
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Confirm: Clone this task'
-                                    ),
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Clone this task'
-                                    ), function () {
-                                        $scope.jobs.$$v.forEach(function (el) {
-                                            if (el.checked) {
-                                                el.checked = false;
-                                            }
-                                        });
-                                    });
-                            } else {
-                                $scope.noCheckBoxChecked();
-                            }
-                        },
-                        show: function (object) {
-                            return true;
-                        },
-                        tooltip: 'Clone this task',
-                        sequence: 1
-                    }
-                ];
+                $scope.gridActionButtons = [];
 
                 $scope.exportFields = {
                     ignore: []

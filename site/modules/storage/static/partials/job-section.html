@@ -1,0 +1,15 @@
+<div class="job-section-container">
+    <div class="accordion-heading">
+        <a data-ng-click="toggleSection()"
+           data-ng-class="{collapsed: !showSection}"
+           class="accordion-toggle toggle-icon">
+            {{name}} {{objects.length}}
+        </a>
+    </div>
+
+    <div class="job-section-body" data-ng-show="showSection">
+        <div data-ng-show="objects.length">
+            <p data-ng-repeat="obj in objects">{{obj}}</p>
+        </div>
+    </div>
+</div>

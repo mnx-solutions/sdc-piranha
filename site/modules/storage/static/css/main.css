@@ -315,3 +315,79 @@
     resize: vertical;
 }
 
+.job-info-container {
+    padding-left: 20px;
+    padding-bottom: 50px;
+    white-space: nowrap;
+}
+.column {
+    display: inline-block;
+    vertical-align: top;
+}
+.job-common-container {
+    width: 460px;
+}
+.job-common {
+    width: 100%;
+}
+.job-common td {
+    padding-top: 12px;
+    padding-right: 20px;
+}
+.job-table td {
+    text-transform: capitalize;
+}
+.job-table tr:first-child td {
+    padding-top: 0;
+}
+.job-stats-container {
+    width: 113px;
+    padding: 0 25px;
+    border: #ccc 1px solid;
+    border-top: none;
+    border-bottom: none;
+}
+.job-stats {
+    width: 100%;
+}
+.job-stats-row td {
+    padding-top: 15px;
+    padding-right: 5px;
+}
+.job-stats-row td:first-child {
+    font-weight: bold;
+    text-align: right;
+}
+.job-date-container {
+    width: 350px;
+    padding-left: 25px;
+}
+.job-date {
+    color: #333;
+}
+.job-date-value {
+    color: #666;
+}
+.job-section-container {
+    padding-bottom: 20px;
+}
+.job-section-body {
+    padding: 10px;
+}
+.state-label {
+    display: inline-block;
+    padding: 0 10px;
+    color: #fff;
+    font-weight: bold;
+    text-transform: capitalize;
+    border-radius: 10px;
+}
+.state-label-state {
+    background-color: #669933;
+}
+.state-label-input {
+    background-color: #333333;
+}
+.state-label-cancelled {
+    background-color: #8E8E8E;
+}

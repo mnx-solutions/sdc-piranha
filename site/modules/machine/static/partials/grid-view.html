@@ -112,8 +112,10 @@
                         <td data-ng-repeat="prop in props | orderBy:'sequence' | filter:{active:true}" data-ng-switch="prop.id" data-ng-class="prop.columnClass">
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                             <div data-ng-switch-when="name"  style="min-width: 140px;">
-                                <a href="#!/manta/jobs/{{object.name}}" data-ng-show="location.path().search('manta/jobs')==1">{{object.name}}</a>
                                 <a href="" data-ng-show="location.path().search('images')==1">{{object.name}}</a>
+                            </div>
+                            <div data-ng-switch-when="id">
+                                <a href="#!/manta/jobs/{{object.name}}" data-ng-show="location.path().search('manta/jobs')==1">{{object.name}}</a>
                             </div>
                             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                                 <div data-object-state data-object="object" data-type="{{itemsType}}" class="grid-small-font"></div>

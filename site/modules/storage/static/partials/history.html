@@ -1,4 +1,4 @@
-<div class="container-fluid container-position" data-ng-controller="Storage.HistoryController">
+<div class="machines container-fluid container-position" data-ng-controller="Storage.HistoryController">
     <div class="page-header">
         <h3 class="page-title">Manta - Storage Job History</h3>
         <div class="header-btn-ci">
@@ -16,6 +16,8 @@
              data-items="jobs"
              data-order="gridOrder"
              data-filter-all="{{query}}"
+             data-search-form="true"
+             data-place-Holder-Text="placeHolderText"
              data-export-fields="exportFields"
              data-actions-button="actionsButton"
              data-enabled-checkboxes="enabledCheckboxes"
