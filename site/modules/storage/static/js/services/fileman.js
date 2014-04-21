@@ -2,16 +2,9 @@
     "use strict";
 
     app.factory('fileman', [
-        'serverTab',
-        function (serverTab) {
-            var $scope;
-            var username;
+        'serverTab', 'Account',
+        function (serverTab, Account) {
             var fileman = {};
-
-            fileman.setScope = function (scope) {
-                $scope = scope;
-                username = $scope.mantaUser;
-            };
 
             function createMethod(name) {
                 return function (path, data, callback) {
@@ -19,13 +12,15 @@
                         callback = data;
                         data = {};
                     }
-                    data.path = '/' + username + '/' + path;
-                    data.originPath = path;
-
-                    serverTab.call({
-                        name: name,
-                        data: data,
-                        done: callback
+                    Account.getAccount(true).then(function (account) {
+                        var username = account.login;
+                        data.path = '/' + username + '/' + path;
+                        data.originPath = path;
+                        serverTab.call({
+                            name: name,
+                            data: data,
+                            done: callback
+                        });
                     });
                 };
             }
@@ -37,7 +32,7 @@
             fileman.ls = createMethod('FileManList');
 
             fileman.get = function (path) {
-                location.href = 'fileman/download?path=' + '/' + username + '/' + path;
+                location.href = 'storage/download?path=' + '/' + username + '/' + path;
             };
 
             fileman.rmr = createMethod('FileManDeleteTree');
@@ -56,4 +51,4 @@
         }
     ]);
 
-})(window.JP.getModule('fileman'));
+})(window.JP.getModule('Storage'));

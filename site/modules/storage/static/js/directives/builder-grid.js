@@ -22,6 +22,7 @@
                             filePath: $scope.filePath
                         });
                     };
+                    $scope.filePath = '';
                     $scope.title = 'Specify file path';
                     $scope.buttons = [
                         {

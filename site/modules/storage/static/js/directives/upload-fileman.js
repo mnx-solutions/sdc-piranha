@@ -11,7 +11,7 @@
             },
             link: function (scope, element, attrs) {
                 function uploadFiles(files) {
-                    http.uploadFiles('fileman/upload', scope.filemanUpload, files, function (error, response) {
+                    http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, response) {
                         if (!error) {
                             scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
                         }
@@ -65,4 +65,4 @@
             }
         };
     }]);
-}(window.JP.getModule('fileman'), angular));
+}(window.JP.getModule('Storage'), angular));
