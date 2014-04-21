@@ -183,14 +183,13 @@
                         if ($scope.features.freetier === 'enabled') {
                             $scope.freetier = FreeTier.freetier();
                         }
-                        if(newMachine.id) {
-                            var listMachines = Machine.machine();
-                            $q.when(listMachines, function() {
-                                if(listMachines.length == 1) {
-                                    $$track.marketo_machine_provision($scope.account);
-                                }
-                            });
-                        }
+                        $q.when(Machine.machine(), function(listMachines) {
+                            if (newMachine.id && listMachines.length === 1) {
+                                $$track.marketo_machine_provision($scope.account);
+                            } else if (err && listMachines.length === 0) {
+                                $location.path('/compute/create/simple');
+                            }
+                        });
                     });
 
                     $location.path('/compute');
