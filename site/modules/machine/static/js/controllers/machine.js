@@ -421,7 +421,7 @@
                                 $location.replace();
                             }
                             if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {
-                                $location.path('/compute/create/simple')
+                                Machine.gotoCreatePage();
                             }
                         });
                     });

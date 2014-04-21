@@ -12,11 +12,39 @@
         'Dataset',
         'util',
         'PopupDialog',
+        'Account',
+        '$location',
 
-        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog) {
+        function (serverTab, $rootScope, $q, $timeout, localization, Package, Dataset, util, PopupDialog, Account, $location) {
 
         var service = {};
         var machines = {job: null, index: {}, list: [], search: {}};
+        var createInstancePageConfig = null;
+        if ($rootScope.features.manta === 'enabled') {
+            Account.getUserConfig().$child('createInstancePage').$load(function (error, config) {
+                createInstancePageConfig = config;
+            });
+        }
+        service.setCreateInstancePage = function (page) {
+            if (createInstancePageConfig && createInstancePageConfig.loaded()) {
+                createInstancePageConfig.page = page;
+                createInstancePageConfig.dirty(true);
+                createInstancePageConfig.$save();
+            }
+        };
+        service.gotoCreatePage = function () {
+            if (!(createInstancePageConfig && createInstancePageConfig.loaded())) {
+                $location.path('/compute/create/simple');
+                return;
+            }
+            if (createInstancePageConfig.page === undefined) {
+                createInstancePageConfig.page = 'simple';
+                createInstancePageConfig.dirty(true);
+                createInstancePageConfig.$save();
+            }
+            var page = createInstancePageConfig.page ? '/' + createInstancePageConfig.page : '';
+            $location.path('/compute/create' + page);
+        };
 
         function wrapMachine (machine) {
             var p = null;
@@ -429,6 +457,11 @@
                 datacenter: data.datacenter,
                 id: id
             };
+            var createPage = 'simple';
+            if ($location.$$path.indexOf('/compute/create') !== -1) {
+                createPage = $location.$$path.split('/').slice(3).join('/');
+            }
+            service.setCreateInstancePage(createPage);
 
             machines.list.push(machine);
             machines.index[id] = machine;

@@ -64,6 +64,7 @@
             };
             $scope.softwareUpdateTopics = Zendesk.getSoftwareUpdateTopics();
             $scope.machines = Machine.machine();
+            $scope.gotoCreatePage = Machine.gotoCreatePage;
 
 //                $scope.lastInvoice = BillingService.getLastInvoice();
 

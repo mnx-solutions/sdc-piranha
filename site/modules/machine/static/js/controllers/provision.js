@@ -1201,6 +1201,7 @@
             $scope.clickBackToQuickStart = function () {
                 $location.path('/compute/create/simple');
             };
+
         }
 
     ]);
