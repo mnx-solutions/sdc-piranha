@@ -503,8 +503,7 @@
                         $scope.machinesLoading = false;
                     }
                 });
-
-                $scope.datacenter = lists[2][0].name;
+                $scope.datacenter = $scope.tabFilterUpdate = lists[2][0].name;
                 $scope.$watch('datacenter', function(dc){
                     if(dc) {
                         $scope.resetCurrent('from');
@@ -756,12 +755,6 @@
                 }, $scope.disableLoading);
             };
 
-            $scope.$on('gridViewTabFilterUpdate', function (event, filter) {
-                if (!$scope.data.uuid && filter !== 'all') {
-                    $scope.datacenter = filter;
-                }
-            });
-
             $scope.openPopovers = [];
             $('body').on('click', function(e) {
                 if(!ng.element(e.target).hasClass('popover') && !ng.element(e.target).parent().hasClass('popover')) {
@@ -939,7 +932,11 @@
 
                             $scope.refreshSelects();
                             $('#dcSelect').select2('disable');
+
+                            $scope.tabFilterUpdate = $scope.changeTab = $scope.data.datacenter;
+
                             $scope.openRuleForm = true;
+
                             scrollTo('edit-rule');
 				        },
 				        tooltip: 'Edit the rule'
@@ -1065,6 +1062,30 @@
                     }
                 );
             };
+
+            $scope.changeTab = '';
+
+            $scope.$watch('tabFilterUpdate', function() {
+                if (!$scope.data.uuid && $scope.tabFilterUpdate !== 'all') {
+                    $scope.datacenter = $scope.tabFilterUpdate;
+                }
+            });
+
+            $scope.$watch('openRuleForm', function(){
+
+                if ($scope.openRuleForm === false) {
+
+                    if ($scope.changeTab) {
+                        $scope.datacenter = $scope.changeTab;
+                    }
+
+                    $scope.tabFilterUpdate = $scope.datacenter;
+
+                    $('#dcSelect').select2('enable');
+                    $scope.changeTab = '';
+                    $scope.data.uuid = '';
+                }
+            });
 
             $scope.cancelRule = function () {
                 $scope.resetData();

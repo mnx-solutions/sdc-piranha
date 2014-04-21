@@ -87,10 +87,18 @@
         $scope.$watch('props + page + order + filterAll + tabFilter + perPage', refreshGrid, true);
 
         $scope.$watch('tabFilter', function() {
-            if ($scope.tabFilter.length > 0 || $scope.tabFilterField !== 'datacenter') {
+            if ($scope.tabFilter && $scope.tabFilter.length > 0 || $scope.tabFilterField !== 'datacenter') {
                 $scope.loading = false;
             }
-            $scope.$parent.$emit("gridViewTabFilterUpdate", $scope.tabFilter);
+            if ($scope.tabFilterUpdate) {
+                $scope.tabFilterUpdate = $scope.tabFilter;
+            }
+        });
+
+        $scope.$watch('tabFilterUpdate', function() {
+            if ($scope.tabFilter !== $scope.tabFilterUpdate) {
+                $scope.tabFilter = $scope.tabFilterUpdate;
+            }
         });
 
         $scope.refreshPager();
@@ -399,7 +407,8 @@
                 multisort: '@',
                 userConfig: '=',
                 tabFilterField: '=',
-                tabFilterDefault: '='
+                tabFilterDefault: '=',
+                tabFilterUpdate: '='
             },
             controller: 'GridViewController',
             templateUrl: 'machine/static/partials/grid-view.html',
