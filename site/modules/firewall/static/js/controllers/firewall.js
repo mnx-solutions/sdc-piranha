@@ -841,7 +841,6 @@
             };
 
             $scope.refresh = function() {
-                $scope.loading = true;
                 rule.rule().then(function(r){
                     $scope.resetCurrent();
                     $scope.setRules(r);
@@ -951,7 +950,8 @@
                 {
                     id: 'enabled',
                     name: 'Status',
-                    type: 'html',
+                    columnClass: 'status-column',
+                    type: 'firewall_state',
                     _getter: function (object) {
                         return object.enabled ? '<span class="grid-enabled-text">Enabled</span>' : '<span class="grid-disabled-text">Disabled</span>';
                     },
@@ -990,7 +990,6 @@
                             message
                         ), function () {
                             var promises = [];
-                            $scope.loading = true;
                             checkedRules.forEach(function (el) {
                                 var deferred = $q.defer();
                                 promises.push(deferred.promise);
