@@ -267,7 +267,7 @@
                 //TODO: Handle all other DC drop-downs
                 $scope.userConfig = Account.getUserConfig().$child('datacenter');
                 $scope.userConfig.$load(function (error, config) {
-                    if (config.value) {
+                    if (config.value && !$scope.data.datacenter && !preSelectedImage) {
                         $scope.selectDatacenter(config.value);
                     }
                     $scope.$watch('data.datacenter', function (dc) {
@@ -728,7 +728,7 @@
 
                 }
             });
-
+            
             function setDatacenter () {
                 if ($rootScope.commonConfig('datacenter')) {
                     $scope.data.datacenter = $rootScope.commonConfig('datacenter');
