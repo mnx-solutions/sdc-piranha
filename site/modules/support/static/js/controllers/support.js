@@ -124,6 +124,5 @@
 
             getSupportData();
 
-
         }]);
 }(window.JP.getModule('support')));
