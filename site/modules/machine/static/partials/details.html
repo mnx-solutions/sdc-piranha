@@ -197,8 +197,7 @@
                             <p data-ng-show="datasetType != 'smartos' && machine.type != 'smartmachine' " data-translate>
                                 To resize Linux or Windows instances, you will need to create a instance, migrate and then stop the old instance.
                             </p>
-
-                            <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="row-fluid " data-ng-class="{'loading-medium': isResizing}">
+                            <div data-ng-show="datasetType == 'smartos' || machine.type == 'smartmachine' " class="row-fluid">
                                 <div class="pull-left row-fluid" data-ng-show="package">
                                     <div>
                                         <p data-translate><b>Current Instance type</b></p>
@@ -227,6 +226,7 @@
                                     </select>
                                     <div class="control-group resize-button">
                                         <button class="btn light pull-right effect-orange-button" type="submit" data-ng-click="clickResize()" data-ng-disabled="!selectedPackage || isResizing" data-translate>Resize</button>
+                                        <div class="loading-medium-tr pull-right" data-ng-show="isResizing"></div>
                         </div>
                         </div>
                                 <div
@@ -409,14 +409,14 @@
                                             <div data-translate>You have no firewall rules that would apply to this machine</div>
                                         </div>
                                         <div class="pull-right">
+                                            <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
                                             <a class="btn light margin-top-10 effect-orange-button" href="#!/firewall">Edit</a>
-                                            <button class="btn light margin-top-10 effect-orange-button"
+                                            <button class="btn orange margin-top-10"
                                                     data-ng-class="{'btn-success': !machine.firewall_enabled, 'btn-danger': machine.firewall_enabled}"
                                                     data-ng-disabled="fireWallActionRunning || machine.state == 'provisioning'"
                                                     data-ng-show="firewallChangeable()"
                                                     data-ng-click="toggleFirewallEnabled()"
                                                     data-translate-value>{{machine.firewall_enabled && 'Disable' || 'Enable'}}</button>
-                                            <div class="loading-medium loading-30 margin-top-10" data-ng-show="fireWallActionRunning"></div>
                                         </div>
                                     </fieldset>
                                 </span>
