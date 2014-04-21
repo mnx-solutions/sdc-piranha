@@ -27,7 +27,7 @@
                         }
 
                         var result = job.__read();
-                        console
+
                         result.forEach(function (datacenter) {
                             var old = null;
 

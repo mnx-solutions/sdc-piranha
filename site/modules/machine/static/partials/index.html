@@ -9,7 +9,7 @@
             </div>
         </div>
 
-        <div class="loading-large span12" data-ng-show="loading"></div>
+        <div class="loading-large span12" data-ng-show="!machines.length && loading"></div>
 
         <div data-grid-view
              data-user-config="gridUserConfig"
