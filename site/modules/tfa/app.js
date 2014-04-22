@@ -31,7 +31,7 @@ module.exports = function execute(scope, app) {
             campaignId: (req.cookies.campaignId || '')
         };
 
-        if (/\/signup\/$/.test(redirectUrl)) {
+        if (req.session.userIsNew) {
             req.log.info(info, 'New user logged in');
         } else {
             req.log.info(info, 'Existing user logged in');
@@ -78,6 +78,7 @@ module.exports = function execute(scope, app) {
                 }
                 req.session.userId = user.id;
                 req.session.userName = user.login;
+                req.session.userIsNew = user.created === user.updated;
 
                 if (!secret) {
                     logUserInformation(req, redirectUrl);
