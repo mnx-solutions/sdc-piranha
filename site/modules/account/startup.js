@@ -236,15 +236,17 @@ module.exports = function execute(scope) {
         var newConfigPath = getConfigPath(call, client, false);
         readFileContents(client, oldConfigPath, function (oldErr, oldResult) {
             if (oldErr) {
-                if (oldErr.statusCode === 404) {
-                    readFileContents(client, newConfigPath, function (newErr, newResult) {
-                        if (newErr) {
-                            callback(newErr);
-                            return;
-                        }
-                        callback(null, newResult);
-                    });
+                if (oldErr.statusCode !== 404) {
+                    callback(oldErr);
+                    return;
                 }
+                readFileContents(client, newConfigPath, function (newErr, newResult) {
+                    if (newErr) {
+                        callback(newErr);
+                        return;
+                    }
+                    callback(null, newResult);
+                });
                 return;
             }
             client.rmr('/' + client.user + '/stor/portal', function (rmErr) {
