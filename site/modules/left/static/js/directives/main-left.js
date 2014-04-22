@@ -33,9 +33,9 @@
                 var now = new Date();
                 var year = now.getFullYear();
                 var month = now.getMonth() + 1;
-                $scope.usageUrl = '#!/utilization/' + year + '/' + month;
-                $scope.usageDramUrl = '#!/utilization/dram/' + year + '/' + month;
-                $scope.usageBandwidthUrl = '#!/utilization/bandwidth/' + year + '/' + month;
+                $scope.usageUrl = '#!/usage/' + year + '/' + month;
+                $scope.usageDramUrl = '#!/usage/dram/' + year + '/' + month;
+                $scope.usageBandwidthUrl = '#!/usage/bandwidth/' + year + '/' + month;
             }
         };
     }]);
