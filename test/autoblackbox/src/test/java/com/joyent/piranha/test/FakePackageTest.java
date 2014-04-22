@@ -14,7 +14,7 @@ import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertTrue;
 
-public class HighPerformPackageTest extends TestWrapper {
+public class FakePackageTest extends TestWrapper {
     public static final String USER_NAME = System.getProperty("loginusr");
     private static NavBarMenu navBarMenu;
     public static SideBarMenu sideBarMenu;
@@ -57,7 +57,7 @@ public class HighPerformPackageTest extends TestWrapper {
     public void resizeInstanceHighPerformance() {
         InstanceDetails instanceDetails = sideBarMenu.clickCompute().getInstanceList().openInstanceDetails(Common.getTestInstanceName());
         String instanceId = instanceDetails.getInstanceId();
-        instanceDetails.selectPackageToResize(1);
+        instanceDetails.selectResizeOption("Mem: 128 GB Disk: 4200 GB VCPU: 32 and bursting");
         Zenbox zenbox = instanceDetails.clickResizeButton("fakePackage");
         assertTrue(zenbox.getQuestionInput().val().equals("I want to resize instance " + instanceId));
         assertTrue(zenbox.getNameInput().val().equals(USER_NAME));

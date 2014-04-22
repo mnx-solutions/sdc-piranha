@@ -68,12 +68,12 @@ public class InstanceDetails extends AbstractPageObject {
         waitForMediumSpinnerDisappear();
     }
 
-    public void selectPackageToResize(int index) {
+    public void selectResizeOption(String packageDescription) {
         $("[href=\"#collapse_resize\"]").click();
         SelenideElement dropDown = $("#collapse_resize");
         dropDown.$(".select2-container a").click();
         Select packages = new Select(dropDown.$("select[name=\"resize\"]"));
-        packages.selectByIndex(index);
+        packages.selectByVisibleText(packageDescription);
     }
 
     public void clickResizeButton() {
