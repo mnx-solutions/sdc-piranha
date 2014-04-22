@@ -2379,4 +2379,7 @@ label.checkbox {
     border-bottom-color: #ff6600;
     border-width: 1px 5px 5px;
 }
-
+/* hack to remove weird line under the tab according to PIRANHA-1520 */
+#zenbox_tab img {
+    max-width: inherit;
+}
