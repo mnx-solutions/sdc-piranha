@@ -991,24 +991,26 @@
                         ), function () {
                             var promises = [];
                             checkedRules.forEach(function (el) {
-                                var deferred = $q.defer();
-                                promises.push(deferred.promise);
-                                el.job = true;
-                                el.job.finished = false;
+                                if (((action === 'enableRule') !== el.enabled) || (action === 'deleteRule')) {
+                                    var deferred = $q.defer();
+                                    promises.push(deferred.promise);
+                                    el.job = true;
+                                    el.job.finished = false;
 
-                                rule[action](el)
-                                    .then(
-                                        function () {
-                                            deferred.resolve();
-                                            setRuleState(action, el);
-                                        },
-                                        function (err) {
-                                            $scope.disableLoading();
-                                            deferred.reject(err);
-                                            setRuleState(action, el);
-                                        }
-                                    )
-
+                                    rule[action](el)
+                                        .then(
+                                            function () {
+                                                deferred.resolve();
+                                                setRuleState(action, el);
+                                            },
+                                            function (err) {
+                                                $scope.disableLoading();
+                                                deferred.reject(err);
+                                                setRuleState(action, el);
+                                            }
+                                        )
+                                }
+                                el.checked = false;
                             });
                             $q.all(promises).then(function () {
                                 $scope.refresh();
