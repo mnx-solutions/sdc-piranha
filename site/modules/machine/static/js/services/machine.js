@@ -439,7 +439,8 @@
                 });
             }
 
-            function showError(id, instance, err) {
+            function showError(id, instance, err, callback) {
+                callback = callback || angular.noop;
                 PopupDialog.error(
                     localization.translate(
                         null,
@@ -454,8 +455,8 @@
                             name: (machine.name || ''),
                             uuid: (machine.id || '')
                         }
-                    ) +'. '+ ((err.message) ? err.message : ''),
-                    function () {}
+                    ) +'. '+ (err.message || err),
+                    callback
                 );
             }
 
@@ -501,8 +502,13 @@
                 },
 
                 error: function(err, job) {
-                    showError(id, machine, err);
-
+                    var callback;
+                    if (err.statusCode === 403) {
+                        callback = function () {
+                            location.href = '/#!/account/payment'
+                        };
+                    }
+                    showError(id, machine, err, callback);
                     machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];
                     return;

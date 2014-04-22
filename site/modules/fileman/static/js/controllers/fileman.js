@@ -54,6 +54,23 @@
                 );
             }
 
+            function showErrPopupDialog(error) {
+                var message;
+                var callback;
+                if (error.statusCode === 403) {
+                    callback = function () {
+                        location.href = '/#!/account/payment'
+                    };
+                    message = error.message || 'Payment Method Required: To be able to provision you must update your payment method';
+                } else if (error.code === 'ENETUNREACH' && !error.message) {
+                    message = 'Network is unreachable';
+                }
+                if (!message) {
+                    message = error.message || error;
+                }
+                return showPopupDialog('error', 'Error', message, callback || angular.noop);
+            }
+
             function getCurrentDirectory() {
                 if (!lastSelectedFile) {
                     return '/public';
@@ -137,7 +154,7 @@
                             } else {
                                 fileman.mkdir(getCurrentDirectory() + '/' + data.folderName, function (error) {
                                     if (error) {
-                                        return showPopupDialog('error', 'Error', error.message);
+                                        return showErrPopupDialog(error);
                                     }
                                     $scope.refreshingFolder = true;
                                     $scope.createFilesTree(true, parentPath);
@@ -373,7 +390,15 @@
                             }
                             return setCurrentPathPromise(item || newPath, false);
                         };
-                    }), setCurrentPathPromise(rootPath, false));
+                    }), setCurrentPathPromise(rootPath, false)).then(
+                            function () {
+                            },
+                            function (err) {
+                                if (err) {
+                                    return showErrPopupDialog(err);
+                                }
+
+                            });
                 });
             };
 
