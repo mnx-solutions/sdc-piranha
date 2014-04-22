@@ -32,12 +32,12 @@
                             return BillingService.getProductRatePlans(sku);
                         });
 
-                        var getRatePlanId = function (skuResults, ratePlanName) {
+                        var getRatePlanId = function (skuResults, billingTag) {
                             var result = null;
                             skuResults.forEach(function (products) {
                                 products.forEach(function (product) {
                                     var matchingRatePlans = product.productRatePlans.filter(function (ratePlan) {
-                                        return ratePlan.name === ratePlanName;
+                                        return ratePlan.BillingTag__c === billingTag;
                                     });
                                     if (matchingRatePlans.length > 0) {
                                         result = matchingRatePlans[0].id;
@@ -51,12 +51,14 @@
                             $q.all(supportGroupSkuRequests).then(function (skuResults) {
                                 supportGroupsArr.forEach(function (supportGroup) {
                                     supportGroup.packageHolders.forEach(function (packageHolder) {
-                                        packageHolder.ratePlanId = getRatePlanId(skuResults, packageHolder.ratePlanName);
-                                        if (packageHolder.ratePlanId && subscribedRatePlanIds.indexOf(packageHolder.ratePlanId) !== -1) {
-                                            packageHolder.active = true;
-                                            if (supportGroup.currentlevelSupport <= packageHolder.levelSupport) {
-                                                supportGroup.currentlevelSupport = packageHolder.levelSupport;
-                                                supportGroup.currentShortName = packageHolder.shortName;
+                                        if (packageHolder.billingTag) {
+                                            packageHolder.ratePlanId = getRatePlanId(skuResults, packageHolder.billingTag);
+                                            if (packageHolder.ratePlanId && subscribedRatePlanIds.indexOf(packageHolder.ratePlanId) !== -1) {
+                                                packageHolder.active = true;
+                                                if (supportGroup.currentlevelSupport <= packageHolder.levelSupport) {
+                                                    supportGroup.currentlevelSupport = packageHolder.levelSupport;
+                                                    supportGroup.currentShortName = packageHolder.shortName;
+                                                }
                                             }
                                         }
                                     });
