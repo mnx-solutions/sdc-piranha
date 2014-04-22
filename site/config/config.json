@@ -179,5 +179,6 @@
   , "uploadSshKey": "no"
   , "createdBySupportPackages": "no"
   , "systemStatusTile": "no"
+  , "devCenterNewsTile": "enabled"
   }
 }
