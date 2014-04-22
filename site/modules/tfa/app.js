@@ -1,6 +1,7 @@
 'use strict';
 
 var TFAProvider = require('./lib/TFAProvider');
+var metadata = require('../account/lib/metadata');
 
 module.exports = function execute(scope, app) {
     var smartCloud = scope.get('smartCloud');
@@ -78,25 +79,29 @@ module.exports = function execute(scope, app) {
                 }
                 req.session.userId = user.id;
                 req.session.userName = user.login;
-                req.session.userIsNew = user.created === user.updated;
 
-                if (!secret) {
-                    logUserInformation(req, redirectUrl);
+                metadata.get(req.session.userId, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
+                    // can safely ignore possible metadata error here
+                    req.session.userIsNew = !signupStep && user.created === user.updated;
 
-                    // as sso passes token using ?token=
-                    req.session.token = token;
-                    req.session.save();
+                    if (!secret) {
+                        logUserInformation(req, redirectUrl);
 
-                    res.redirect(redirectUrl);
-                } else {
-                    req.log.info({userId: user.id}, 'User redirected to TFA login');
-                    req.session._preToken = token;
-                    req.session._tfaSecret = secret;
-                    req.session._tfaRedirect = redirectUrl;
-                    req.session.save();
+                        // as sso passes token using ?token=
+                        req.session.token = token;
+                        req.session.save();
 
-                    res.redirect('/#!/tfa');
-                }
+                        res.redirect(redirectUrl);
+                    } else {
+                        req.log.info({userId: user.id}, 'User redirected to TFA login');
+                        req.session._preToken = token;
+                        req.session._tfaSecret = secret;
+                        req.session._tfaRedirect = redirectUrl;
+                        req.session.save();
+
+                        res.redirect('/#!/tfa');
+                    }
+                });
             });
         });
     });
