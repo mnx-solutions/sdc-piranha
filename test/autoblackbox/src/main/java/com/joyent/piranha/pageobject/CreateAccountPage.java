@@ -75,4 +75,8 @@ public class CreateAccountPage extends AbstractPageObject {
     public void setFirstName(String firstName) {
         setValue($(byAttribute("name", "firstName")), firstName);
     }
+
+    public SelenideElement getSigninLink(){
+        return $(By.xpath("//a[contains(.,'Sign in')]"));
+    }
 }

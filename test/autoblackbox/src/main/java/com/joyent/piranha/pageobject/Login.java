@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selectors.byAttribute;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
@@ -33,6 +34,11 @@ public class Login extends AbstractPageObject {
         $(LOGIN_SUBMIT_SELECTOR).click();
     }
 
+    public CreateAccountPage clickSignUp() {
+        $(byText("Create account")).click();
+        return page(CreateAccountPage.class);
+    }
+
     public void clickSignInOnLandingPage() {
         $(LP_SIGNIN_BUTTON_SELECTOR).click();
     }
@@ -46,7 +52,9 @@ public class Login extends AbstractPageObject {
     }
 
     public CreateAccountPage clickSignupOnLandingPage() {
-        $("[data-ng-click=\"signup();\"]").click();
+        if ($(SIGNIN_BUTTON_SELECTOR).isDisplayed()) {
+            clickSignInOnLandingPage();
+        }
         return page(CreateAccountPage.class);
     }
 
