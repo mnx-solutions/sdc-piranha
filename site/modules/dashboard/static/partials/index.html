@@ -157,12 +157,14 @@
                 <div class="widget grey links2 system-icon">
                     <h4>System Status</h4>
                     <div class="details details-subinfo">
-                        <div class="desc" data-ng-hide="systemStatusTopics.length">
+                        <div class="desc" data-ng-hide="loadedSystemStatusTopics">
+                            Getting system status...
+                        </div>
+                        <div class="desc" data-ng-show="loadedSystemStatusTopics && systemStatusTopics.length == 0">
                             <i class="checked-icon"></i>
                             All services operating normally
                         </div>
                         <div class="desc" data-ng-repeat="topic in systemStatusTopics">
-                            <i class="warning-icon"></i>
                             <a target="_blank" href="https://help.joyent.com/entries/{{topic.id}}">{{topic.created_at | dateTime}} &nbsp;{{topic.title}}</a>
                         </div>
                     </div>
