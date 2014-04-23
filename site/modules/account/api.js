@@ -204,7 +204,7 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
-            if (steps.indexOf(step) === (steps.length -1)) { // Last step
+            if (steps.indexOf(step) === (steps.length - 1)) { // Last step
                 step = 'completed';
             }
             api.setSignupStep(call, step, cb);

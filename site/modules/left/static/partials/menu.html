@@ -115,6 +115,13 @@
                 </li>
             </ul>
         </li>
+        <li class="nested" data-ng-show="features.provisioningLimits == 'enabled'" data-ng-class="{'active open': location.path().search('limits') == 1}">
+            <a href="#!/limits">
+                <i class="glyphicon glyphicon ax"></i>
+                <span class="title">User Limits</span>
+                <span class="selected"></span>
+            </a>
+        </li>
         <li>
             <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
         </li>

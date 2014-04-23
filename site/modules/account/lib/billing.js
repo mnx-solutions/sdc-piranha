@@ -17,7 +17,8 @@ if (config.billing.noUpdate) { // Create dummy for noUpdate
     };
 } else {
     jsonClient = restify.createJsonClient({
-        url: config.billing.url
+        url: config.billing.url,
+        rejectUnauthorized: config.billing.rejectUnauthorized
     });
 }
 
@@ -38,7 +39,7 @@ var BillingApi = (function () {
                 cb(null, 'completed'); // Can provision so we let through
                 return;
             }
-            self.scope.log.debug({obj: obj, method: method}, 'got error from zuora, handling it' );
+            self.scope.log.debug({obj: obj, method: method}, 'got error from zuora, handling it');
             if (obj.errors && obj.errors[0].code === 'U01' && method === 'provision') {
                 self.scope.log.debug('checking update method');
 
@@ -92,6 +93,9 @@ var BillingApi = (function () {
             //No error handling or nothing here, just let it pass.
             cb();
         });
+    };
+    BillingApi.prototype.getUserLimits = function (userId, callback) {
+        jsonClient.get('/limits/' + userId, callback);
     };
     return BillingApi;
 })();

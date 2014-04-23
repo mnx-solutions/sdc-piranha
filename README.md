@@ -152,6 +152,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `assets.*` [express-modulizer][3] magic.
 - `billing.url` [billing-server][4] url
 - `billing.noUpdate` Do not talk to billing server
+- `billing.rejectUnauthorized` Reject unauthorized SSL connection 
 - `capishim.username` Capishim username
 - `capishim.password` Capishim password
 - `capishim.url` Capishim url
