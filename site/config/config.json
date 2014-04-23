@@ -167,6 +167,7 @@
   , "imageCreate": "enabled"
   , "firewall": "enabled"
   , "phoneVerification": "disabled"
+  , "allowSkipBilling": "no"
   , "freetier": "no"
   , "slb": "no"
   , "skinChange": "no"

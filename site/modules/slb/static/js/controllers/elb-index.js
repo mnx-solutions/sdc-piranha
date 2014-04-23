@@ -36,22 +36,8 @@
             }
 
             function showErrPopupDialog(error) {
-                var message;
-                var callback;
-                if (error.statusCode === 403) {
-                    callback = function () {
-                        location.href = '/#!/account/payment'
-                    };
-                } else if (error.code === 'ECONNREFUSED' && !error.message) {
-                    message = 'Connection refused';
-                }
-
-                if (!message) {
-                    message = error.message || error;
-                }
-
                 $scope.creating = false;
-                return showPopupDialog('error', 'Error', message, callback || angular.noop);
+                return PopupDialog.errorObj(error);
             }
 
             $scope.enableSlb = function () {

@@ -43,12 +43,14 @@ module.exports = function execute(scope, app) {
         res.redirect('/signup/#!/' + req.params.step);
     });
 
-    app.get('/signup/skipBilling', function (req, res) {
-        SignupProgress.setMinProgress(req, 'billing', function () {
-            scope.log.info('User skipped Billing step');
-            res.json({success: true});
+    if (config.features.allowSkipBilling === 'enabled') {
+        app.get('/signup/skipBilling', function (req, res) {
+            SignupProgress.setMinProgress(req, 'billing', function () {
+                scope.log.info('User skipped Billing step');
+                res.json({success: true});
+            });
         });
-    });
+    }
     app.get('/signup/skipSsh', function (req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function () {
             scope.log.info('User skipped SSH step');

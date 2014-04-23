@@ -39,9 +39,7 @@
                 });
         };
 
-        factory.error = function (title, question, callback) {
-            // TODO: Translate
-            title = title || 'Error';
+        var messageBox = function (callback, title, question) {
             var btns = [
                 {
                     result: 'ok',
@@ -53,13 +51,40 @@
 
             callback = callback || angular.noop;
             return $dialog.messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html')
-                .open()
-                .then(function (result) {
-                    if (result === 'ok') {
-                        callback();
-                    }
-                });
+                    .open()
+                    .then(function (result) {
+                        if (result === 'ok') {
+                            callback();
+                        }
+                    });
         };
+
+        factory.error = function (title, question, callback) {
+            // TODO: Translate
+            title = title || 'Error';
+            return messageBox(callback, title, question);
+        };
+
+        factory.errorObj = function (error, callback, customMessage) {
+            var title = 'Error';
+
+            var message;
+            if (error.statusCode === 403) {
+                callback = function () {
+                    location.href = '/#!/account/payment';
+                };
+                message = error.message || 'Payment Method Required: To be able to provision you must update your payment method';
+            } else if (error.message) {
+                message = error.message;
+            } else if (typeof (error) === 'string') {
+                message = error;
+            }
+
+
+
+            return messageBox(callback, title, customMessage || message);
+        };
+
         factory.message = function (title, question, callback) {
             // TODO: Translate
             title = title || 'Message';

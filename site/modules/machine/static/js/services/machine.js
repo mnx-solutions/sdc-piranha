@@ -439,25 +439,16 @@
                 });
             }
 
-            function showError(id, instance, err, callback) {
-                callback = callback || angular.noop;
-                PopupDialog.error(
-                    localization.translate(
-                        null,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
+            function showError(instance, err, callback) {
+                return PopupDialog.errorObj(err, callback, localization.translate(
                         null,
                         'machine',
                         'Unable to create instance {{name}} ({{uuid}}).',
                         {
-                            name: (machine.name || ''),
-                            uuid: (machine.id || '')
+                            name: (instance.name || ''),
+                            uuid: (instance.id || '')
                         }
-                    ) +'. '+ (err.message || err),
-                    callback
-                );
+                ) + '. ' + (err.message || err));
             }
 
             var job = serverTab.call({
@@ -465,7 +456,7 @@
                 data: data,
                 initialized: function (err, job) {
                     if (err) {
-                        showError(id, machine, err);
+                        showError(machine, err);
                         return;
                     }
 
@@ -480,7 +471,7 @@
 
                 done: function (err, job) {
                     if (err) {
-                        showError(id, machine, err);
+                        showError(machine, err);
 
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         delete machines.index[id];
@@ -502,16 +493,9 @@
                 },
 
                 error: function(err, job) {
-                    var callback;
-                    if (err.statusCode === 403) {
-                        callback = function () {
-                            location.href = '/#!/account/payment'
-                        };
-                    }
-                    showError(id, machine, err, callback);
+                    showError(machine, err);
                     machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];
-                    return;
                 }
             });
 
