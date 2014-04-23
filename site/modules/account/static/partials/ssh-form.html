@@ -6,9 +6,8 @@
     <div class="accordion" id="accordion-ssh-keys">
         <div class="accordion-group" data-ng-repeat="key in keys | reverse">
             <div class="accordion-heading">
-                <span class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion-ssh-keys"
+                <span class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion-ssh-keys"
                    href="#collapse_{{$index}}">
-                    <i class=""></i>
                     <span class="key-name">{{ getKeyName(key) }}</span>
                     <span class="key-hash"> / {{key.fingerprint}}</span>
                                     <button class="small-btn effect-orange-button pull-right btn-key-delete"

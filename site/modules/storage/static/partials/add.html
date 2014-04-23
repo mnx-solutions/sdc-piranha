@@ -1,0 +1,20 @@
+<div class="modal" tabindex="-1" data-backdrop="static" data-focus-on="button">
+    <div class="modal-header message">
+        <h5><i class="glyphicon glyphicon-info-sign"></i><b>{{title}}</b></h5>
+    </div>
+    <div class="modal-body">
+        <form name="folderNameForm">
+            <p>File path</p>
+            <div class="row-fluid">
+                <input type="text"
+                       id="filePath"
+                       data-ng-model="filePath"
+                       class="popup-file-path"/>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <p data-ng-show="message.footer" data-ng-bind-html-unsafe="message.footer"></p>
+        <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
+    </div>
+</div>
