@@ -448,7 +448,7 @@
     "smartdc": {
       "version": "7.2.0",
       "from": "smartdc@git://github.com/joyent/node-smartdc.git",
-      "resolved": "git://github.com/joyent/node-smartdc.git#d6b8c1d7cdb99be1d7bb187f25d1e2f8fabd5d84",
+      "resolved": "git://github.com/joyent/node-smartdc.git#1c3173f63b3477e4fd98fbf77e700d4a91100480",
       "dependencies": {
         "assert-plus": {
           "version": "0.1.2",

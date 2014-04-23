@@ -187,5 +187,6 @@
   , "systemStatusTile": "no"
   , "devCenterNewsTile": "enabled"
   , "recentInstances": "disabled"
+  , "imageRename": "enabled"
   }
 }

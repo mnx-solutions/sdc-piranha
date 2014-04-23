@@ -459,4 +459,20 @@ module.exports = function execute(scope) {
     server.onCall('ImagesList', function(call) {
         machine.ImageList(call, call.done);
     });
+
+    /* RenameImage */
+    server.onCall('ImageRename', {
+        verify: function (data) {
+            return typeof data
+                && data.image.id
+                && data.image.name
+        },
+        handler: function (call) {
+            var options = {
+                uuid: call.data.image.id,
+                name: call.data.image.name
+            };
+            machine.ImageRename(call, options, call.done.bind(call));
+        }
+    });
 };

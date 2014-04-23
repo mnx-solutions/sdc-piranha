@@ -1,0 +1,61 @@
+<div class="container-fluid container-position" data-ng-controller="Machine.ImageDetailsController">
+
+    <div data-breadcrumbs></div>
+    <div data-ng-show="features.imageRename == 'enabled'">
+        <div data-rename data-object="currentImage" data-type="'image'"></div>
+    </div>
+    <h3 class="page-title" data-ng-hide="features.imageRename == 'enabled'">
+        {{ currentImage.name }}
+    </h3>
+
+    <div class="inl-table">
+        <div class="accordion" id="imageDetails">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle toggle-icon" data-toggle="collapse" data-parent="#imageDetails"
+                       href="#summary">
+                        Summary
+                    </a>
+                </div>
+                <div id="summary" class="accordion-body collapse in">
+                    <div class="accordion-inner">
+                        <table>
+                            <tr class="id-section">
+                                <td>UUID</td>
+                                <td>{{currentImage.id}}</td>
+                            </tr>
+                            <tr>
+                                <td>Image name</td>
+                                <td>{{currentImage.name}}</td>
+                            </tr>
+                            <tr>
+                                <td>Type</td>
+                                <td>{{currentImage.type}}</td>
+                            </tr>
+                            <tr>
+                                <td>Version</td>
+                                <td>{{currentImage.version}}</td>
+                            </tr>
+                            <tr>
+                                <td>Description</td>
+                                <td>{{currentImage.description}}</td>
+                            </tr>
+                            <tr>
+                                <td>Published</td>
+                                <td>{{currentImage.published_at | date:'yyyy-MM-dd HH:mm'}}</td>
+                            </tr>
+                            <tr>
+                                <td>Datacenter</td>
+                                <td>{{currentImage.datacenter}}</td>
+                            </tr>
+                            <tr>
+                                <td>State</td>
+                                <td>{{currentImage.state}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

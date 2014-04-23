@@ -1603,3 +1603,10 @@
 .ssh-button-container {
     margin-top: 20px;
 }
+.id-section td:first-child {
+    width: 140px;
+}
+.id-section td:last-child {
+    color: #333333 !important;
+    font-weight: bold;
+}
