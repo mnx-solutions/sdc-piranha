@@ -223,3 +223,8 @@
     margin-top: -250px;
     margin-left: 650px;
 }
+
+.loading-medium-transparent {
+    height: 230px;
+    min-width: 760px;
+}

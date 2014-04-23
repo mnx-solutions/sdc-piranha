@@ -19,6 +19,7 @@
                     for (var i = 1; i <= 31; i++) {
                         ticksData.push(i);
                     }
+                    $scope.chartLoading = true;
                     $scope.format = function (num) { return num; };
                     var initGraph = function () {
                         graph = new Rickshaw.Graph({
@@ -99,6 +100,11 @@
                             cumulativeAmount += amount;
                         }
                         graph.update();
+                        $scope.chartLoading = false;
+                    });
+
+                    $scope.$on('requestContextChanged', function() {
+                        $scope.chartLoading = true;
                     });
 
                     $scope.navigateDetails = function () {
