@@ -158,10 +158,9 @@ public class Common {
         return "dnd-forSLBTests";
     }
 
-    public static String getValueFromLog(String key) {
+    public static String getValueFromLog(String key) throws FileNotFoundException, JSONException {
         File log = new File(System.getProperty("serverLogPath"));
         String result = null;
-        try {
             Scanner scanner = new Scanner(log);
             while (scanner.hasNext()) {
                 String line = scanner.nextLine();
@@ -170,11 +169,6 @@ public class Common {
                     result = newJson.get(key).toString();
                 }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         return result;
     }
 
