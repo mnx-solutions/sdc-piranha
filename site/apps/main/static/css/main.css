@@ -1745,11 +1745,6 @@ label.checkbox {
     background: url("../img/checked.png") no-repeat;
     background-size: 16px 16px;
 }
-.warning-icon {
-    padding-right: 20px;
-    background: url("../img/warning.png") no-repeat;
-    background-size: 16px 16px;
-}
 .margin-btn-dashboard {
     padding-bottom: 10px;
     padding-top: 10px;

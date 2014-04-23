@@ -194,9 +194,11 @@
                     } else {
                         $scope.systemStatusTopics = topics;
                     }
+                    $scope.loadedSystemStatusTopics = true;
                 });
             }
 
+            $scope.loadedSystemStatusTopics = false;
             getSystemStatusTopics();
 
             $scope.$on('$destroy', function() {
