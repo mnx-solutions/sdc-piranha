@@ -134,7 +134,7 @@
                 var month = now.getMonth() + 1;
                 Utilization.utilization(year, month, function (error, utilizationData) {
                     $scope.utilization = utilizationData;
-                    $scope.utilization.url = '#!/utilization/' + year + '/' + month;
+                    $scope.utilization.url = '#!/usage/' + year + '/' + month;
                 })
             }
 

@@ -135,7 +135,7 @@
                     $scope.gridData = utilizationData[$scope.type].usage;
                 });
                 loggingService.log('info', 'User navigated to ' + $location.$$path);
-                $scope.backLink = '#!/utilization/' + year + '/' + month;
+                $scope.backLink = '#!/usage/' + year + '/' + month;
             };
             $scope.$on('requestContextChanged', loadData);
             loadData();

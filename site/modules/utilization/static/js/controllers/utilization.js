@@ -22,7 +22,7 @@
             loadData();
 
             $scope.clickUtilization = function (name) {
-                $location.path('/utilization/' + name);
+                $location.path('/usage/' + name);
             };
         }]);
 }(window.JP.getModule('utilization')));

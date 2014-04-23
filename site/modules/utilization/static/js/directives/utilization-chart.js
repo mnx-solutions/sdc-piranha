@@ -103,7 +103,7 @@
 
                     $scope.navigateDetails = function () {
                         if ($scope.name) {
-                            $location.path('/utilization/' + $scope.name + '/' + $scope.year + '/' + $scope.month);
+                            $location.path('/usage/' + $scope.name + '/' + $scope.year + '/' + $scope.month);
                         }
                     };
 
