@@ -63,8 +63,8 @@ task UserSignupTests(type: Test) {
     include '**/UserSignupTest.class'
 }
 
-task PromocodeTests(type: Test) {
-    include '**/PromocodeTests.class'
+task PromocodeTest(type: Test) {
+    include '**/PromocodeTest.class'
 }
 
 task allTests(type: Test) {

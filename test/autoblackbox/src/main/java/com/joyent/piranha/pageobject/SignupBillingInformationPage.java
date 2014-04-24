@@ -1,6 +1,8 @@
 package com.joyent.piranha.pageobject;
 
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -84,17 +86,18 @@ public class SignupBillingInformationPage extends AbstractPageObject {
         setValue($(By.id("promoCode")), promoCode);
     }
 
-    public static void assertPromocode() throws IOException, JSONException {
+    public void assertPromocode() throws IOException, JSONException {
         String userId = Common.getValueFromLog("userId");
-        String urlString = "https://apisandbox-api.zuora.com/rest/v1/accounts/" + userId + "/summary";
+        String urlString = getZuoraSummaryUrl(userId);
         URL u = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) u.openConnection();
         conn.setRequestMethod("GET");
-        conn.addRequestProperty("Authorization", " Basic cGlyYW5oYS1hcGlAam95ZW50LmNvbTo5MDRXZXVnTTZVdzZoUld2");
+        final String basicAuth = Base64.encodeBase64String((PropertyHolder.getZuoraUserName() + ":" + PropertyHolder.getZuoraUserPassword()).getBytes());
+        conn.addRequestProperty("Authorization", " Basic " + basicAuth);
         BufferedReader in = new BufferedReader(
                 new InputStreamReader(conn.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
@@ -105,14 +108,18 @@ public class SignupBillingInformationPage extends AbstractPageObject {
         assertTrue(ratePlanName.equals("Free Trial"));
     }
 
+    private String getZuoraSummaryUrl(String userId) {
+        return String.format("%s/rest/v1/accounts/%s/summary", PropertyHolder.getZuoraBaseUrl(), userId);
+    }
+
     public void fillStepToPassCorrectly() {
-        setCreditCardNumber("4111111111111111");
-        setExpireDate("5", "3");
-        setCCVCode("123");
-        setAddressLine1("st. testStreet");
-        setCity("Anchorage");
-        setState("Alaska");
-        setZipCode("99599");
-        setPhone("23456789098765");
+        setCreditCardNumber(PropertyHolder.getCorrectCardNumber());
+        setExpireDate(PropertyHolder.getExpirationMonth(), PropertyHolder.getExpirationYear());
+        setCCVCode(PropertyHolder.getCCVCode());
+        setAddressLine1(PropertyHolder.getAddressLine1());
+        setCity(PropertyHolder.getCity());
+        setState(PropertyHolder.getState());
+        setZipCode(PropertyHolder.getZipCode());
+        setPhone(PropertyHolder.getPhone());
     }
 }

@@ -1,12 +1,8 @@
 package com.joyent.piranha.pageobjects;
 
 import com.codeborne.selenide.SelenideElement;
-import com.joyent.piranha.Common;
 
-import static com.codeborne.selenide.Condition.enabled;
-import static com.codeborne.selenide.Condition.hasValue;
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
@@ -38,21 +34,5 @@ public class SignupPhoneConfirmationPageold {
 
     public static SelenideElement getError() {
         return $("[data-ng-repeat=\"notification in group\"]");
-    }
-
-    public static void goToBillingPage() {
-        CreateAccount.createTestAccount();
-        String phoneNumber = "6666666667";
-        setPhoneNumber(phoneNumber);
-        callMeNowBtn().waitUntil(enabled, 5000);
-        callMeNowBtn().click();
-        getError().shouldHave(text("Calling..."));
-        setPinCode("1234");
-        clickVerifyButton();
-        getError().waitUntil(visible, 5000);
-        getError().shouldHave(text("Phone verification failed. Incorrect PIN code. Please try again"));
-        setPinCode(Common.getValueFromLog("generatedPin"));
-        clickVerifyButton();
-        $("[data-ng-model=\"plainNumber\"]").waitUntil(hasValue(phoneNumber), 5000);
     }
 }

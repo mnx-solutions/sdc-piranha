@@ -4,6 +4,7 @@ import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Selectors.byAttribute;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
@@ -14,7 +15,7 @@ public class CreateAccountPage extends AbstractPageObject {
      * @return the same class as you pass
      */
     public <T extends AbstractPageObject> T clickCreateAcccount(Class<T> aClass) {
-        $(By.id("createAccount")).click();
+        $(byText("Create Account")).click();
         return page(aClass);
     }
 
