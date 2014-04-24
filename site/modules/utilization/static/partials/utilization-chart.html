@@ -28,10 +28,13 @@
     </div>
     <div class="separator-block"></div>
     <div class="chart-container" id="chart_container_{{$id}}">
-        <div class="y-axis" id="y_axis_{{$id}}"></div>
-        <div class="chart" id="chart_{{$id}}"></div>
-        <div class="x-axis" id="x_axis_{{$id}}"></div>
-        <div class="legend" id="legend_{{$id}}"></div>
+        <div class="loading-medium-transparent" data-ng-show="chartLoading"></div>
+        <div data-ng-hide="chartLoading">
+            <div class="y-axis" id="y_axis_{{$id}}"></div>
+            <div class="chart" id="chart_{{$id}}"></div>
+            <div class="x-axis" id="x_axis_{{$id}}"></div>
+            <div class="legend" id="legend_{{$id}}"></div>
+        </div>
     </div>
 </div>
 

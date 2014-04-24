@@ -953,6 +953,13 @@ div .disabled {
     min-width: 50px;
 }
 
+.loading-medium-transparent {
+    background: transparent url("../img/spiner-transparent.gif") no-repeat 50% 50%;
+    background-size: 24px 24px;
+    min-width: 30px;
+    min-height: 30px;
+}
+
 .loading-medium.item {
     margin-top: -4px;
     margin-right: -7px;

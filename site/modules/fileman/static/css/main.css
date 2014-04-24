@@ -278,9 +278,7 @@
     padding-right: 20px;
     color: #666;
 }
-.finder-column .loading-medium-transparent {
-    background: transparent url("../img/spiner-transparent.gif") no-repeat 50% 50%;
-    background-size: 24px 24px;
+.loading-medium-transparent {
     width: 225px;
     height: 390px;
 }
