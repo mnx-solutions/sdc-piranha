@@ -629,21 +629,18 @@
                 });
             };
 
-            $scope.filterPackages = function (packageType) {
+            $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {
                 return function (item) {
-                    if ($scope.datasetType !== item.type) {
+                    if ($scope.datasetType !== item.type || item.freeTierHidden
+                        || isPackageTypeCollapsed && packageType === item.group) {
                         return false;
                     }
-
-                    if (item.freeTierHidden) {
-                        return false;
+                    else if (packageType && packageType !== item.group) {
+                        return isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
                     }
-
-                    if (packageType && packageType !== item.group) {
-                        return false;
+                    else {
+                        return true;
                     }
-
-                    return true;
                 };
             };
 
@@ -667,15 +664,18 @@
                 return $filter('sizeFormat')(value);
             };
 
-            function selectMinimalPackage(packageType) {
-                var minimalPkg;
-                $scope.packages.filter($scope.filterPackagesByProp).filter($scope.filterPackages(packageType)).forEach(function (pkg) {
-                    if (!minimalPkg || minimalPkg.memory > pkg.memory) {
-                        minimalPkg = pkg;
-                    }
-                });
-                if (minimalPkg) {
-                    $scope.selectPackage(minimalPkg.id);
+            function selectMinimalPackage(packageType, isPackageCollapsed) {
+                var minimalPackage;
+                $scope.packages
+                    .filter($scope.filterPackagesByProp)
+                    .filter($scope.filterPackages(packageType, isPackageCollapsed))
+                    .forEach(function (pkg) {
+                        if (!minimalPackage || minimalPackage.memory > pkg.memory) {
+                            minimalPackage = pkg;
+                        }
+                    });
+                if (minimalPackage) {
+                    $scope.selectPackage(minimalPackage.id);
                 }
             }
 
@@ -684,15 +684,34 @@
                     $scope.filterPropertyValue = $scope.filterValues[newVal][0];
                 }
                 selectMinimalPackage();
+       
                 setTimeout(function () {
-                    ng.element('.accordion-group').has('div.active').find('a.collapsed').click();
+                    var accordionGroup = ng.element('.accordion-group');
+                    if ($scope.filterProperty === 'No filter') {
+                        accordionGroup.not('div.active').find('.collapse').removeClass('in').css('height', 0).end()
+                            .find('.accordion-toggle').addClass('collapsed').end()
+                            .has('div.active').find('a.collapsed').click();
+                    } else {
+                        $scope.collapsedPackageTypes = [];
+                        accordionGroup.find('a.collapsed').removeClass('collapsed').end()
+                            .find('.collapse').addClass('in');
+                    }
                 }, 200);
             };
             $scope.changeSelectedPackage = function (event, packageType) {
                 if (!event.target.classList.contains('collapsed')) {
+                    if ($scope.filterProperty !== 'No filter') {
+                        $scope.collapsedPackageTypes.push(packageType);
+                        selectMinimalPackage(packageType, true);
+                    }
                     return;
                 }
-                selectMinimalPackage(packageType);
+                if ($scope.filterProperty === 'No filter') {
+                    selectMinimalPackage(packageType);
+                } else {
+                    $scope.collapsedPackageTypes.splice($scope.collapsedPackageTypes.indexOf(packageType), 1);
+                    selectMinimalPackage(true, true);
+                }
             };
             // Watch datacenter change
             $scope.$watch('data.datacenter', function (newVal) {
