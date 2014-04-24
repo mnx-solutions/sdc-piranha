@@ -6,15 +6,22 @@
         <form name="folderNameForm">
             <p>File path</p>
             <div class="row-fluid">
+                <div class="error"
+                     data-ng-show="folderNameForm.filePath.$invalid && filePath.length"
+                     data-translate>
+                     File path is invalid.
+                </div>
                 <input type="text"
+                       name="filePath"
                        id="filePath"
                        data-ng-model="filePath"
+                       data-file-path
                        class="popup-file-path"/>
             </div>
         </form>
     </div>
     <div class="modal-footer">
         <p data-ng-show="message.footer" data-ng-bind-html-unsafe="message.footer"></p>
-        <button data-tabindex="{{btn.datatabindex}}" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
+        <button data-tabindex="{{btn.datatabindex}}" data-ng-disabled="folderNameForm.filePath.$invalid && btn.result != 'cancel'" data-button-focus="{{ btn.setFocus }}" data-ng-repeat="btn in buttons" data-ng-click="close(btn.result)" class="btn" data-ng-class="btn.cssClass">{{ btn.label }}</button>
     </div>
 </div>

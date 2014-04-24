@@ -45,7 +45,7 @@
             </div>
             <div class="right-part">
                 <div class="job-name row-fluid">
-                    <button class="btn orange pull-right">Run Job</button>
+                    <button class="btn orange pull-right" data-ng-click="createJob()">Run Job</button>
                 </div>
                 <div class="accordion" id="accordionBuilderPhases">
 
@@ -60,7 +60,7 @@
                             <div class="accordion-inner">
                                 <div class="job-name row-fluid">
                                     <div class="field">
-                                        <textarea type="text" name="mapStep" rows="4"></textarea>
+                                        <textarea type="text" name="mapStep" rows="4" data-ng-model="mapStep"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -78,7 +78,7 @@
                             <div class="accordion-inner">
                                 <div class="job-name row-fluid">
                                     <div class="field">
-                                        <textarea type="text" name="reduceStep" rows="4"></textarea>
+                                        <textarea type="text" name="reduceStep" rows="4" data-ng-model="reduceStep"></textarea>
                                     </div>
                                 </div>
                             </div>

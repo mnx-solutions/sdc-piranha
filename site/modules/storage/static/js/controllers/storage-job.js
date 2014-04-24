@@ -89,9 +89,7 @@
                             null,
                             message
                         ),
-                        function () {
-                            this.close();
-                        }
+                        function () {}
                     );
                 };
 
