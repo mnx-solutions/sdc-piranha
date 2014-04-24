@@ -102,6 +102,27 @@ public class UserSignupTest extends TestWrapper {
         $(byText("Failed")).shouldBe(visible);
     }
 
+    @Test
+    public void useExistingUsername(){
+        CreateAccountPage createAccountPage = loginPage.clickSignUp();
+        createAccountPage.setLogin(System.getProperty("loginusr"));
+        createAccountPage.getSigninLink().shouldBe(visible);
+        createAccountPage.getSigninLink().click();
+        loginPage.login(System.getProperty("loginusr"), System.getProperty("loginpw"));
+        page(Dashboard.class).checkTitle();
+    }
+
+    @Test
+    public void useExistingUsernameWithCampaignID(){
+        open("/landing/signup/701800000015696");
+        CreateAccountPage createAccountPage = page(CreateAccountPage.class);
+        createAccountPage.setLogin(System.getProperty("loginusr"));
+        createAccountPage.getSigninLink().shouldBe(visible);
+        createAccountPage.getSigninLink().click();
+        loginPage.login(System.getProperty("loginusr"), System.getProperty("loginpw"));
+        page(Dashboard.class).checkTitle();
+    }
+
     @Ignore //for now PhoneConfirmation feature is turned off on production
     @Test
     public void phoneConfirmationValidation() {
@@ -126,6 +147,5 @@ public class UserSignupTest extends TestWrapper {
         SignupPhoneConfirmationPageold.getError().shouldHave(text("Phone verification failed. Incorrect PIN code. PIN has been locked. Please use \"Call Me Now\" to get a new PIN."));
         SignupPhoneConfirmationPageold.clickVerifyButton();
         SignupPhoneConfirmationPageold.getError().shouldHave(text("Phone verification failed. Incorrect PIN code. Your account has been locked. Please contact support"));
-
     }
 }

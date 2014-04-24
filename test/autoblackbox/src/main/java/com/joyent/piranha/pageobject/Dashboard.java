@@ -8,6 +8,14 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
 public class Dashboard extends AbstractPageObject {
+
+    public static final String TITLE = "Dashboard";
+
+    @Override
+    String getTitle(){
+        return TITLE;
+    }
+
     public SelenideElement getCountInstancesRunning() {
         return $("#count-instances-running");
     }
