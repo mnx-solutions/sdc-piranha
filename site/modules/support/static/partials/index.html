@@ -6,7 +6,7 @@
         </div>
         <div data-ng-show="package.templateUrl.length" data-ng-include="package.templateUrl">{{package.templateUrl}}</div>
         <div class="holders-container">
-           <div class="package-holder" data-ng-class="{active: packageHolder.levelSupport < levelSupport || packageHolder.active}" data-ng-repeat="packageHolder in packageHolders" data-ng-show="packageHolders">
+           <div class="package-holder" data-ng-class="{active: packageHolder.levelSupport < levelSupport || packageHolder.active}" data-ng-repeat="packageHolder in packageHolders" data-ng-show="packageHolders" data-equal-height=".package-holder .header, .control">
                 <div class="header">
                     <div class="brim">
                         <h4>{{packageHolder.title}}<a class="info" data-ng-show="packageHolder.info" href="{{packageHolder.url}}" target="_blank">i</a></h4>

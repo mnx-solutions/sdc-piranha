@@ -12,8 +12,9 @@
     border-right: 20px solid #FFFFFF;
     display: table-cell;
     min-width: 240px;
-    padding: 20px 0 5px;
+    padding-bottom: 5px;
     position: relative;
+    word-wrap: break-word;
 }
 
 .package-holder .header,
@@ -33,39 +34,36 @@
 
 .package-holder .header {
     font-weight: 300;
-    height: 145px;
-    position: absolute;
-    top: 0;
     z-index: 1;
 }
 
 .package-holder .control {
+    position: relative;
+    margin: 15px 0 20px;
+    width: 240px;
+    outline: 2px solid #BBC9D2;
     background-color: #BBC9D2;
-    height: 125px;
-    margin-left: 2px;
-    outline: 4px solid #BBC9D2;
-    position: absolute;
-    top: 150px;
-    width: 236px;
 }
 
 .package-holder.active .control,
 .package-holder:hover.active .control {
     background-color: #92EBB5;
-    outline: 4px solid #92EBB5;
+    outline: 2px solid #92EBB5;
 }
 
 .package-holder:hover .control {
     background-color: #ffb848;
-    outline: 4px solid #ffb848;
+    outline: 2px solid #ffb848;
 }
 
 .package-holder .control .btn {
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
     background-color: #5d8096;
     color: white;
     text-shadow: none;
     font-size: 16px;
-    margin-top: 10px;
 }
 
 .package-holder.active .control .btn,
@@ -84,8 +82,6 @@
 .package-holder .desc {
     box-sizing:border-box;
     -moz-box-sizing: border-box;
-    height: 100%;
-    padding-top: 280px;
 }
 
 .package-holder .control p {
@@ -98,17 +94,16 @@
 }
 
 .control p.fees {
-    line-height: 0px;
-    margin-top: -5px;
+    float: none;
+    margin: -15px 0 45px;
+    min-height: 20px;
+    line-height: 19px;
 }
 
 .control span {
     font-size: 18px;
 }
 
-.control .cost-fixed {
-    height: 60px;
-}
 
 .package-holder p {
     font-weight: 300;
@@ -142,7 +137,7 @@
     background: url("../img/arrow-right.png") no-repeat;
     background-size: 15px 15px !important;
     margin-left: 10px;
-    padding-right: 15px;
+    padding-right: 16px;
     vertical-align: middle;
 }
 
