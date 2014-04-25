@@ -24,6 +24,8 @@
                 },
 
                 link: function ($scope, $element, $attrs) {
+                    $scope.showPhone = $scope.currentStep || $scope.features.allowSkipBilling === 'enabled';
+
                     function getCardType(number){
                         if (!number) {
                             return '';

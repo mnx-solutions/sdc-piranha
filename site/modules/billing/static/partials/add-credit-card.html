@@ -344,14 +344,13 @@
                             </div>
                     </span>
                         </div>
-        <div class="control-group" data-ng-show="currentStep">
-            <span class="edit-name">Phone Number<span class="orange-asterix"> *</span></span>
+        <div class="control-group" data-ng-show="showPhone">
+            <span class="edit-name">Phone<span class="orange-asterix"> *</span></span>
             <span data-phone-number
                                  data-number="phone.number"
                                  data-country="{{phone.country}}"
                                  data-is-error="isError(field, type)"
-                data-current-step="currentStep"
-                data-credit-card="true"
+                data-credit-card="!showPhone"
                 data-el-width="220"></span>
         </div>
     </fieldset>

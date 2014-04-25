@@ -12,7 +12,6 @@
                 restrict: 'A',
                 replace: true,
                 scope: {
-                    currentStep: '=',
                     creditCard: '=',
                     number: '=',
                     country: '@',
@@ -21,7 +20,7 @@
                 },
                 templateUrl: 'account/static/partials/phone-number.html',
                 link: function ($scope) {
-                    if (!$scope.currentStep && $scope.creditCard) {
+                    if ($scope.creditCard) {
                         return;
                     }
                     $scope.plainNumber = '';
