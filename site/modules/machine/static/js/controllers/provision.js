@@ -86,7 +86,7 @@
                         $scope.datacenters.forEach(function (datacenter) {
                             Package.package({ datacenter: datacenter.name }).then(function (packages) {
                                 var packagesByName = {};
-                                $scope.packages.forEach(function (pkg) {
+                                packages.forEach(function (pkg) {
                                     packagesByName[pkg.name] = pkg.id;
                                 });
                                 angular.copy(simpleImages).forEach(function (simpleImage) {
