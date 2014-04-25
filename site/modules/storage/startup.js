@@ -146,4 +146,59 @@ module.exports = function execute(scope) {
             call.done(null, jobId);
         });
     });
+
+    server.onCall('JobCreate', {
+        verify: function (data) {
+            return typeof data
+                && data.hasOwnProperty('mapStep')
+                && data.hasOwnProperty('inputs')
+                && data.inputs.every(function (input) {
+                    return input.charAt(0) === '/';
+                })
+                && data.assets.every(function (asset) {
+                    return asset.charAt(0) === '/';
+                })
+                && data.inputs.length > 0;
+        },
+        handler: function (call) {
+            var mapStep = call.data.mapStep;
+            var reduceStep = call.data.reduceStep;
+            var assets = call.data.assets;
+            var inputs = call.data.inputs;
+            var phases = [
+                {
+                    exec: mapStep,
+                    assets: assets
+                }
+            ];
+            if (reduceStep) {
+                phases.push({
+                    type: "reduce",
+                    exec: reduceStep,
+                    assets: assets
+                });
+            }
+            var job = {
+                name: call.data.name,
+                phases: phases
+            };
+
+            var client = Manta.createClient(call);
+            client.createJob(job, function (err, jobId) {
+                if (err) {
+                    call.done(err);
+                    return;
+                }
+                if (jobId) {
+                    client.addJobKey(jobId, inputs, {end: true}, function (err) {
+                        if (err) {
+                            call.done(err);
+                            return;
+                        }
+                        call.done(null, jobId);
+                    });
+                }
+            });
+        }
+    });
 };

@@ -141,6 +141,21 @@ window.fn = [];
                 return deferred.promise;
             };
 
+            service.createJob = function (data) {
+                var deferred = $q.defer();
+                serverTab.call({
+                    name: 'JobCreate',
+                    data: data,
+                    done: function (err, job) {
+                        if (err) {
+                            return deferred.reject(err);
+                        }
+                        deferred.resolve('Job ' + job.__read() + ' was successfully created');
+                    }
+                });
+                return deferred.promise;
+            };
+
             return service;
         }
     ]);
