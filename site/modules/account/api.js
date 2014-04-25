@@ -1,29 +1,13 @@
 'use strict';
 
 var config = require('easy-config');
-var restify = require('restify');
 var metadata = require('./lib/metadata');
-
-if (!config.billing.url && !config.billing.noUpdate) {
-    throw new Error('Billing.url must be defined in the config');
-}
-
-var jsonClient = null;
-
-if (config.billing.noUpdate) { // Create dummy for noUpdate
-    jsonClient = {
-        'get': function (p, cb) {
-            setImmediate(cb);
-        }
-    };
-} else {
-    jsonClient = restify.createJsonClient({
-        url: config.billing.url
-    });
-}
+var BillingApi = require('./lib/billing');
 
 module.exports = function execute(scope, register) {
     register('Metadata', metadata);
+    var Billing = new BillingApi(scope);
+    register('Billing', Billing);
 
     //Compatibility with old version
     var api = {};
@@ -34,44 +18,6 @@ module.exports = function execute(scope, register) {
 
     function _nextStep(step) {
         return (step === 'completed' || step === 'complete') ?  step : steps[steps.indexOf(step)+1];
-    }
-
-    function getFromBilling(method, userId, cb) {
-        jsonClient.get('/' + method + '/' + userId, function (err, req, res, obj) {
-            if (!err) {
-                scope.log.debug('zuora(%s) allows provision', method);
-                cb(null, 'completed'); // Can provision so we let through
-                return;
-            }
-
-            if (!obj || !obj.errors) {
-                scope.log.warn({err: err}, 'zuora didnt respond, allowing through');
-                cb(null, 'completed'); // Can provision so we let through
-                return;
-            }
-
-            scope.log.debug({obj: obj, method: method}, 'got error from zuora, handling it' );
-
-            if (obj.errors && obj.errors[0].code === 'U01' && method === 'provision') {
-                scope.log.debug('checking update method');
-
-                getFromBilling('update', userId, cb);
-                return;
-            }
-
-            var errs = obj.errors.filter(function (el) {
-                return el.code !== 'U01';
-            });
-
-            var state = 'start';
-            if (errs.length === 0) { // The only error was provisioning flag - letting through
-                state = 'completed';
-            } else if (errs.length === 1 && errs[0].code.charAt(0) === 'Z') { // There was only a billing error
-                state = 'phone'; // which means billing
-            }
-
-            cb(null, state);
-        });
     }
 
     function searchFromList(list, resp) {
@@ -106,7 +52,7 @@ module.exports = function execute(scope, register) {
     api.getAccountVal = function (req, cb) {
         var start = Date.now();
         if (req.session.userId) {
-            getFromBilling('provision', req.session.userId, function (err, state) {
+            Billing.getStep(req.session.userId, function (err, state) {
                 req.log.debug('Checking with billing server took ' + (Date.now() - start) +'ms');
                 cb(err, state);
             });
@@ -121,7 +67,7 @@ module.exports = function execute(scope, register) {
             }
 
             var now = Date.now();
-            getFromBilling('provision', account.id, function (err, state) {
+            Billing.getStep(account.id, function (err, state) {
                 req.log.debug('Checking with billing server took ' + (Date.now() - now) +'ms');
                 cb(err, state);
             });
@@ -184,6 +130,22 @@ module.exports = function execute(scope, register) {
     };
 
     api.setSignupStep = function (call, step, cb) {
+        function updateBilling(req) {
+            if (req.session.userId) {
+                Billing.update(req.session.userId, cb);
+                return;
+            }
+            req.cloud.getAccount(function (accErr, account) {
+                if (accErr) {
+                    req.log.error('Failed to get info from cloudApi', accErr);
+                    cb(accErr);
+                    return;
+                }
+
+                Billing.update(account.id, cb);
+            });
+        }
+
         function updateStep(req) {
             if (req.session) {
                 metadata.set(req.session.userId, metadata.SIGNUP_STEP, step, function (metaErr) {
@@ -203,50 +165,6 @@ module.exports = function execute(scope, register) {
             } else if (!req.session || step !== 'blocked') {
                 setImmediate(cb);
             }
-        }
-
-        function updateBilling(req) {
-            function update(userId) {
-                jsonClient.get('/update/' + userId, function (err) {
-                    if (err) {
-
-                        // error 402 is one of the expected results, don't log it.
-                        if (err.statusCode !== 402) {
-
-                            // build more clear error object so we wouldn't have errors: [object], [object] in the logs
-                            var zuoraErr = {
-                                code: err.code
-                            };
-
-                            if(err.body.errors) {
-                                zuoraErr.zuoraErrors = err.body.errors;
-                            }
-                            if(err.body.name) {
-                                zuoraErr.name = err.name;
-                            }
-
-                            call.log.error(zuoraErr,'Something went wrong with billing API');
-                        }
-                    }
-                    //No error handling or nothing here, just let it pass.
-                    cb();
-                });
-            }
-
-            if (req.session.userId) {
-                update(req.session.userId);
-                return;
-            }
-
-            req.cloud.getAccount(function (accErr, account) {
-                if (accErr) {
-                    req.log.error('Failed to get info from cloudApi', accErr);
-                    cb(accErr);
-                    return;
-                }
-
-                update(account.id);
-            });
         }
 
         if (!call.req && !call.done) { // Not a call, but request
@@ -269,11 +187,10 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
+            var isCompleted = oldStep === 'completed' || oldStep === 'complete';
             if (steps.indexOf(oldStep) === -1 && oldStep !== 'blocked') {
                 oldStep = 'start';
             }
-
-            var isCompleted = oldStep === 'completed' || oldStep === 'complete';
             var isAStepBackwards = steps.indexOf(step) <= steps.indexOf(oldStep);
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 

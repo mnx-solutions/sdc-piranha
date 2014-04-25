@@ -71,6 +71,8 @@
                                 });
                                 callback(null, supportGroupsArr);
                             });
+                        }, function (err) {
+                            callback(err);
                         });
                     }
                 });

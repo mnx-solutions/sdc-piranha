@@ -18,7 +18,8 @@
         '$q',
         'serverTab',
         '$$track',
-        function ($http, $q, serverTab, $$track) {
+        'PopupDialog',
+        function ($http, $q, serverTab, $$track, PopupDialog) {
             var service = {};
 
             var account = null;
@@ -97,6 +98,20 @@
                 }
 
                 return deferred.promise;
+            };
+
+            service.checkProvisioning = function (submitButtonTitle, cbEnabled, cbDisabled, locationCb) {
+                var defaultCb = angular.noop;
+                cbEnabled = cbEnabled || defaultCb;
+                cbDisabled = cbDisabled || defaultCb;
+                service.getAccount().then(function (account) {
+                    if (!account.provisionEnabled) {
+                        PopupDialog.errorProvision(submitButtonTitle, locationCb);
+                        cbDisabled();
+                    } else {
+                        cbEnabled();
+                    }
+                });
             };
 
             /**

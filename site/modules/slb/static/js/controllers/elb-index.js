@@ -3,49 +3,63 @@
 (function (app) {
     app.controller(
         'slb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog',
-                function ($scope, requestContext, localization, $location, service, Datacenter, PopupDialog) {
-                localization.bind('slb', $scope);
-                requestContext.setUpRenderContext('slb.index', $scope, {
-                    title: localization.translate(null, 'slb', 'Enable Load Balancing')
-                });
+        ['$rootScope', '$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog', 'Account',
+        function ($rootScope, $scope, requestContext, localization, $location, service, Datacenter, PopupDialog, Account) {
+            localization.bind('slb', $scope);
+            requestContext.setUpRenderContext('slb.index', $scope, {
+                title: localization.translate(null, 'slb', 'Enable Load Balancing')
+            });
 
-                $scope.loaded = false;
+            $scope.loaded = false;
+            $scope.creating = false;
+
+            service.getController().then(function () {
+                $location.path('/slb/list');
+            }, function () {
+                $scope.loaded = true;
+            });
+
+            function showPopupDialog(level, title, message, callback) {
+                return PopupDialog[level](
+                    title ? localization.translate(
+                        $scope,
+                        null,
+                        title
+                    ) : null,
+                    message ? localization.translate(
+                        $scope,
+                        null,
+                        message
+                    ) : null,
+                    callback
+                );
+            }
+
+            function showErrPopupDialog(error) {
                 $scope.creating = false;
+                return PopupDialog.errorObj(error);
+            }
 
-                service.getController().then(function () {
-                    $location.path('/slb/list');
-                }, function () {
-                    $scope.loaded = true;
-                });
-
-                $scope.enableSlb = function () {
+            $scope.enableSlb = function () {
+                Account.checkProvisioning('Submit and install load balancer', function () {
                     $scope.creating = true;
                     service.createController().then(function () {
                         $location.path('/slb/list');
-                    }, function (err) {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'slb',
-                                 err.message || err
-                            ),
-                            function () {}
-                        );
-                        $scope.creating = false;
-                    });
-                };
+                    }, showErrPopupDialog);
+                }, function () {
+                    $rootScope.commonConfig('licenseAcceptCheck', $scope.licenseAcceptCheck);
+                });
+            };
+            $scope.licenseAcceptCheck = $rootScope.commonConfig('licenseAcceptCheck') || false;
+            $rootScope.clearCommonConfig('licenseAcceptCheck');
+            if ($scope.licenseAcceptCheck) {
+                $scope.enableSlb();
+            }
 
-                $scope.licenseAcceptCheck = false;
-                $scope.licenseAccept = function () {
-                    $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
-                };
+            $scope.licenseAccept = function () {
+                $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
+            };
 
-            }]
+        }]
     );
 }(window.JP.getModule('slb')));

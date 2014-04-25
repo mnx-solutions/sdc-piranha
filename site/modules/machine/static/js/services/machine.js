@@ -439,24 +439,16 @@
                 });
             }
 
-            function showError(id, instance, err) {
-                PopupDialog.error(
-                    localization.translate(
-                        null,
-                        null,
-                        'Error'
-                    ),
-                    localization.translate(
+            function showError(instance, err, callback) {
+                return PopupDialog.errorObj(err, callback, localization.translate(
                         null,
                         'machine',
                         'Unable to create instance {{name}} ({{uuid}}).',
                         {
-                            name: (machine.name || ''),
-                            uuid: (machine.id || '')
+                            name: (instance.name || ''),
+                            uuid: (instance.id || '')
                         }
-                    ) +'. '+ ((err.message) ? err.message : ''),
-                    function () {}
-                );
+                ) + '. ' + (err.message || err));
             }
 
             var job = serverTab.call({
@@ -464,7 +456,7 @@
                 data: data,
                 initialized: function (err, job) {
                     if (err) {
-                        showError(id, machine, err);
+                        showError(machine, err);
                         return;
                     }
 
@@ -479,7 +471,7 @@
 
                 done: function (err, job) {
                     if (err) {
-                        showError(id, machine, err);
+                        showError(machine, err);
 
                         machines.list.splice(machines.list.indexOf(machine), 1);
                         delete machines.index[id];
@@ -501,11 +493,9 @@
                 },
 
                 error: function(err, job) {
-                    showError(id, machine, err);
-
+                    showError(machine, err);
                     machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];
-                    return;
                 }
             });
 

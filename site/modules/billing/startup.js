@@ -147,7 +147,8 @@ module.exports = function execute(scope, callback) {
                 req.session.zuoraServiceAttempt = 0;
                 req.session.save();
             });
-            if (call.req.session.signupStep && call.req.session.signupStep !== 'completed') {
+            var isInSignup = call.req.session.signupStep && call.req.session.signupStep !== 'completed';
+            if (isInSignup || config.features.allowSkipBilling === 'enabled') {
                 var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
                 performFraudValidation(call, email, function (err) {
                     if (err) {
@@ -321,8 +322,11 @@ module.exports = function execute(scope, callback) {
             zuora.transaction.getInvoices(call.req.session.userId, function (err, resp) {
                 if (err) {
                     // changing zuoras errorCode from 401's to 500
-                    if(err.statusCode === 401) {
+                    if (err.statusCode === 401) {
                         err.statusCode = 500;
+                    }
+                    if (!resp.success) {
+                        err = resp.reasons[0];
                     }
                     call.done(err);
                     return;
@@ -362,6 +366,9 @@ module.exports = function execute(scope, callback) {
                     // changing zuoras errorCode from 401's to 500
                     if(err.statusCode === 401) {
                         err.statusCode = 500;
+                    }
+                    if (!resp.success) {
+                        err = resp.reasons[0];
                     }
                     call.req.log.warn({err: err, resp: resp}, 'Got zuora error while getting user subscriptions');
                     call.done(err);

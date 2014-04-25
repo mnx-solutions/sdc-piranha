@@ -93,6 +93,13 @@
                     });
                     return false;
                 };
+                $scope.skipBilling = function () {
+                    $http.get('/signup/account/signup/skipBilling').success(function (data) {
+                        if (data.success === true) {
+                            window.location.href = '/main';
+                        }
+                    });
+                };
             }
         ]);
 }(window.JP.getModule('Signup'), window.jQuery));

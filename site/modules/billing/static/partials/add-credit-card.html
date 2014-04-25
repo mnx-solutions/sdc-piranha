@@ -344,14 +344,13 @@
                             </div>
                     </span>
                         </div>
-        <div class="control-group" data-ng-show="currentStep">
-            <span class="edit-name">Phone Number<span class="orange-asterix"> *</span></span>
+        <div class="control-group" data-ng-show="showPhone">
+            <span class="edit-name">Phone<span class="orange-asterix"> *</span></span>
             <span data-phone-number
                                  data-number="phone.number"
                                  data-country="{{phone.country}}"
                                  data-is-error="isError(field, type)"
-                data-current-step="currentStep"
-                data-credit-card="true"
+                data-skip="!showPhone"
                 data-el-width="220"></span>
         </div>
     </fieldset>
@@ -390,6 +389,7 @@
     <div data-ng-show="currentStep">
         <div class="pull-right">
             <a data-ng-show="currentStep" data-ng-click="signOut()" class="btn light effect-orange-button" data-translate>Cancel signup process</a>
+            <a data-ng-show="currentStep && features.allowSkipBilling != 'disabled'" data-ng-click="skipBilling()" class="btn light effect-orange-button" data-translate>Skip</a>
             <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Complete Account Setup</button>
         </div>
         <div class="loading-medium pull-right" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
@@ -404,8 +404,8 @@
             <span class="orange-asterix">*</span>&nbsp;required fields
         </div>
         <div class="pull-right">
-            <a class="btn light effect-orange-button" data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
-            <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
+            <button class="btn light effect-orange-button" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>
+            <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">{{submitTitle}}</button>
         </div>
         <div class="pull-right loading-medium loading-30" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>
