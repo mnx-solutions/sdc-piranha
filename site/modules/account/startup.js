@@ -8,6 +8,7 @@ var ursa = require('ursa');
 module.exports = function execute(scope) {
     var server = scope.api('Server');
     var TFA = scope.api('TFA');
+    var Billing = scope.api('Billing');
     var SignupProgress = scope.api('SignupProgress');
     var Marketo = scope.api('Marketo');
     var MantaClient = scope.api('MantaClient');
@@ -49,7 +50,10 @@ module.exports = function execute(scope) {
                     }
 
                     response.tfaEnabled = !!secret;
-                    call.done(null, response);
+                    Billing.isActive(data.id, function (err, isActive) {
+                        response.provisionEnabled = isActive;
+                        call.done(null, response);
+                    });
                 });
             });
         });
