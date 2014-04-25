@@ -6,10 +6,10 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class ChangePassword extends AbstractPageObject {
 
-    public void setOldPassword(String oldPassword){
-        SelenideElement oldPasswor = $("[name=\"oldPassword\"]");
-        oldPasswor.clear();
-        oldPasswor.sendKeys(oldPassword);
+    public void setOldPassword(String password){
+        SelenideElement oldPassword = $("[name=\"oldPassword\"]");
+        oldPassword.clear();
+        oldPassword.sendKeys(password);
     }
 
     public void setNewPassword(String testPass){
