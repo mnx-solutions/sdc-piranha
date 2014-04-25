@@ -147,7 +147,8 @@ module.exports = function execute(scope, callback) {
                 req.session.zuoraServiceAttempt = 0;
                 req.session.save();
             });
-            if (call.req.session.signupStep && call.req.session.signupStep !== 'completed') {
+            var isInSignup = call.req.session.signupStep && call.req.session.signupStep !== 'completed';
+            if (isInSignup || config.features.allowSkipBilling === 'enabled') {
                 var email = acc.billToContact.workEmail || acc.soldToContact.workEmail;
                 performFraudValidation(call, email, function (err) {
                     if (err) {
