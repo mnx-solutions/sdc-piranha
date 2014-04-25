@@ -25,6 +25,10 @@
 
             var getSupportData = function () {
                 Support.support(function (error, supportPackages) {
+                    if (error && error.message && error.message.indexOf('Cannot find entity') !== -1) {
+                        $location.path('/account/payment');
+                        return;
+                    }
                     $scope.supportPackages = supportPackages;
                     $scope.getPageData();
                 });
