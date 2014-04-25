@@ -6,9 +6,25 @@
 
         var factory = {};
 
+        var messageBox = function (title, question, btns, templateUrl, callbackOk, callbackCancel) {
+            callbackOk = callbackOk || angular.noop;
+            callbackCancel = callbackCancel || angular.noop;
+            return $dialog.messageBox(title, question, btns, templateUrl)
+                    .open()
+                    .then(function (result) {
+                        if (result === 'ok') {
+                            callbackOk();
+                        } else if (result === 'cancel') {
+                            callbackCancel();
+                        } else {
+                            callbackOk();
+                        }
+                    });
+        };
+
         factory.confirm = function (title, question, callbackOk, callbackCancel) {
             // TODO: Translate
-            title = title || 'Confirm';
+            title = title || 'Confirm';
             var btns = [
                 {
                     result: 'cancel',
@@ -25,21 +41,12 @@
                     setFocus: true
                 }
             ];
-
-            callbackOk = callbackOk || angular.noop;
-            callbackCancel = callbackCancel || angular.noop;
-            return $dialog.messageBox(title, question, btns, 'dialog/static/partials/confirmationDialog.html')
-                .open()
-                .then(function (result) {
-                    if (result === 'ok') {
-                        callbackOk();
-                    } else if (result === 'cancel') {
-                        callbackCancel();
-                    }
-                });
+            return messageBox(title, question, btns, 'dialog/static/partials/confirmationDialog.html', callbackOk, callbackCancel);
         };
 
-        var messageBox = function (callback, title, question) {
+        factory.error = function (title, question, callback) {
+            // TODO: Translate
+            title = title || 'Error';
             var btns = [
                 {
                     result: 'ok',
@@ -48,26 +55,10 @@
                     setFocus: true
                 }
             ];
-
-            callback = callback || angular.noop;
-            return $dialog.messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html')
-                    .open()
-                    .then(function (result) {
-                        if (result === 'ok') {
-                            callback();
-                        }
-                    });
-        };
-
-        factory.error = function (title, question, callback) {
-            // TODO: Translate
-            title = title || 'Error';
-            return messageBox(callback, title, question);
+            return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback);
         };
 
         factory.errorObj = function (error, callback, customMessage) {
-            var title = 'Error';
-
             var message;
             if (error.statusCode === 403) {
                 callback = function () {
@@ -79,15 +70,12 @@
             } else if (typeof (error) === 'string') {
                 message = error;
             }
-
-
-
-            return messageBox(callback, title, customMessage || message);
+            return factory.error('Error', customMessage || message, callback);
         };
 
         factory.message = function (title, question, callback) {
             // TODO: Translate
-            title = title || 'Message';
+            title = title || 'Message';
             var btns = [
                 {
                     result: 'ok',
@@ -96,13 +84,7 @@
                     setFocus: true
                 }
             ];
-
-            callback = callback || angular.noop;
-            return $dialog.messageBox(title, question, btns, 'dialog/static/partials/messageDialog.html')
-                .open()
-                .then(function (result) {
-                    callback();
-                });
+            return messageBox(title, question, btns, 'dialog/static/partials/messageDialog.html', callback);
         };
 
         factory.custom = function (opts, callback) {
@@ -114,10 +96,10 @@
 
             callback = callback || angular.noop;
             return $dialog.messageBox(title, question, btns, templateUrl)
-                .open('', openCtrl)
-                .then(function (data) {
-                    callback(data);
-                });
+                    .open('', openCtrl)
+                    .then(function (data) {
+                        callback(data);
+                    });
         };
 
         return factory;

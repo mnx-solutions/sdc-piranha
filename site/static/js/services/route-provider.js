@@ -8,7 +8,7 @@ window.JP.main.provider('route', [
         }
 
         Provider.prototype._findRootContext = function (action) {
-            if(!action) {
+            if (!action) {
                 return null;
             }
             for (var i = 0, c = this._navigation.length; i < c; i++) {

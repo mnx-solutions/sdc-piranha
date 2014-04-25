@@ -93,10 +93,10 @@
                     });
                     return false;
                 };
-                $scope.skipBilling = function() {
-                    $http.get('/signup/account/signup/skipBilling').success(function(data) {
-                        if(data.success === true) {
-                            window.top.location.href = '/main';
+                $scope.skipBilling = function () {
+                    $http.get('/signup/account/signup/skipBilling').success(function (data) {
+                        if (data.success === true) {
+                            window.location.href = '/main';
                         }
                     });
                 };
