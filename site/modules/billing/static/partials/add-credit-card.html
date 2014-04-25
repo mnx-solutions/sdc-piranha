@@ -404,8 +404,8 @@
             <span class="orange-asterix">*</span>&nbsp;required fields
         </div>
         <div class="pull-right">
-            <a class="btn light effect-orange-button" data-ng-disabled="loading || accountForm.$invalid" href="#!/account" data-translate>Cancel</a>
-            <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Save Changes</button>
+            <button class="btn light effect-orange-button" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>
+            <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">{{submitTitle}}</button>
         </div>
         <div class="pull-right loading-medium loading-30" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>

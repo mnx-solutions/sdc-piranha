@@ -2,7 +2,7 @@
 
 (function (app) {
 
-    app.factory('PopupDialog', ["$dialog", function ($dialog) {
+    app.factory('PopupDialog', ["$dialog", "$location", "$rootScope", function ($dialog, $location, $rootScope) {
 
         var factory = {};
 
@@ -58,11 +58,26 @@
             return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback);
         };
 
+        factory.errorProvision = function (submitButtonTitle, locationCb) {
+            var returnUrl = $location.path();
+            locationCb = locationCb || function (isSuccess) {
+                $location.path(returnUrl);
+            };
+            var callback = function () {
+                $rootScope.commonConfig('returnCb',  locationCb);
+                $rootScope.commonConfig('submitButtonTitle', submitButtonTitle);
+                $location.path('/account/payment');
+            };
+
+            return factory.error('Error', 'Please complete profile information before proceeding.', callback);
+        };
+
         factory.errorObj = function (error, callback, customMessage) {
             var message;
             if (error.statusCode === 403) {
                 callback = function () {
-                    location.href = '/#!/account/payment';
+                    $rootScope.commonConfig('returnUrl', '/compute/create');
+                    $location.path('/account/payment');
                 };
                 message = error.message || 'Payment Method Required: To be able to provision you must update your payment method';
             } else if (error.message) {

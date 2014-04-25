@@ -52,7 +52,7 @@
 
                     $scope.phone = {};
                     $scope.selectedCountryCode = '1'; // default to USA
-
+                    $scope.submitTitle = $rootScope.commonConfig('submitButtonTitle') || "Save Changes";
                     $scope.form = {
                         cardHolderInfo: {
                         },
@@ -293,6 +293,14 @@
                         $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                     });
 
+                    var returnCb = $rootScope.commonConfig('returnCb') || function () {
+                        $location.path('/account');
+                    };
+
+                    $scope.cancelForm = function() {
+                        returnCb(false);
+                    };
+
                     $scope.submitForm = function() {
                         $scope.loading = true;
                         $scope.formSubmitted = true;
@@ -328,8 +336,11 @@
                                                 'Billing information updated.'
                                             ),
                                             function () {
-                                                $location.url('/account');
-                                                $location.replace();
+                                                var provisionBundle = $rootScope.commonConfig('provisionBundle');
+                                                if (provisionBundle) {
+                                                    provisionBundle.allowCreate = true;
+                                                }
+                                                returnCb(true);
                                             }
                                         );
                                         window.scrollTo(0,0);

@@ -3,6 +3,7 @@
     "use strict";
     app.controller('Fileman.IndexController', [
         '$scope',
+        '$location',
         'localization',
         'requestContext',
         'fileman',
@@ -12,7 +13,7 @@
         '$qe',
         '$q',
 
-        function ($scope, localization, requestContext, fileman, $timeout, PopupDialog, Account, $qe, $q) {
+        function ($scope, $location,localization, requestContext, fileman, $timeout, PopupDialog, Account, $qe, $q) {
             //TODO: Move fileman to storage module
             localization.bind('fileman', $scope);
             requestContext.setUpRenderContext('fileman.index', $scope);
@@ -386,7 +387,9 @@
             };
 
             if (!$scope.currentPath) {
-                $scope.drawFileMan();
+                Account.checkProvisioning('Submit and access Manta', $scope.drawFileMan.bind($scope), angular.noop, function (isSuccess) {
+                    $location.path(isSuccess ? '/manta/files' : '/manta/intro');
+                });
             }
 
             $scope.construction = function () {

@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'slb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog',
-        function ($scope, requestContext, localization, $location, service, Datacenter, PopupDialog) {
+        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog', 'Account',
+        function ($scope, requestContext, localization, $location, service, Datacenter, PopupDialog, Account) {
             localization.bind('slb', $scope);
             requestContext.setUpRenderContext('slb.index', $scope, {
                 title: localization.translate(null, 'slb', 'Enable Load Balancing')
@@ -41,10 +41,12 @@
             }
 
             $scope.enableSlb = function () {
-                $scope.creating = true;
-                service.createController().then(function () {
-                    $location.path('/slb/list');
-                }, showErrPopupDialog);
+                Account.checkProvisioning('Submit and install load balancer', function () {
+                    $scope.creating = true;
+                    service.createController().then(function () {
+                        $location.path('/slb/list');
+                    }, showErrPopupDialog);
+                });
             };
 
             $scope.licenseAcceptCheck = false;
