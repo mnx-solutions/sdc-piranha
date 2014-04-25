@@ -187,11 +187,10 @@ module.exports = function execute(scope, register) {
                 return;
             }
 
+            var isCompleted = oldStep === 'completed' || oldStep === 'complete';
             if (steps.indexOf(oldStep) === -1 && oldStep !== 'blocked') {
                 oldStep = 'start';
             }
-
-            var isCompleted = oldStep === 'completed' || oldStep === 'complete';
             var isAStepBackwards = steps.indexOf(step) <= steps.indexOf(oldStep);
             var isALeap = steps.indexOf(step) - steps.indexOf(oldStep) > 1;
 
