@@ -12,7 +12,7 @@
                 restrict: 'A',
                 replace: true,
                 scope: {
-                    creditCard: '=',
+                    skip: '=',
                     number: '=',
                     country: '@',
                     isError: '&',
@@ -20,7 +20,7 @@
                 },
                 templateUrl: 'account/static/partials/phone-number.html',
                 link: function ($scope) {
-                    if ($scope.creditCard) {
+                    if ($scope.skip) {
                         return;
                     }
                     $scope.plainNumber = '';
