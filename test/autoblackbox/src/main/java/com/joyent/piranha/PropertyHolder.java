@@ -1,6 +1,15 @@
 package com.joyent.piranha;
 
 public final class PropertyHolder {
+
+    public static String getTestUserLogin(){
+        return System.getProperty("loginusr");
+    }
+
+    public static String getTestUserPassword(){
+        return System.getProperty("loginpw");
+    }
+
     public static String getCorrectCardNumber(){
         return System.getProperty("cardNumber");
     }
@@ -47,5 +56,9 @@ public final class PropertyHolder {
 
     public static String getZuoraBaseUrl() {
         return System.getProperty("zuora.baseurl");
+    }
+
+    public static String getDatacenter() {
+        return System.getProperty("datacenter");
     }
 }

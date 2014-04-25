@@ -2,6 +2,7 @@ package com.joyent.piranha.test;
 
 import com.codeborne.selenide.WebDriverRunner;
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
@@ -23,9 +24,9 @@ import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.MyAcc
 import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.Support;
 
 public class SmokeTest extends TestWrapper {
-    public static final String USER_NAME = System.getProperty("loginusr");
-    public static final String PASSWORD = System.getProperty("loginpw");
-    public static final String DATACENTER = System.getProperty("datacenter");
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
+    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
+    public static final String DATACENTER = PropertyHolder.getDatacenter();
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
 
@@ -156,12 +157,12 @@ public class SmokeTest extends TestWrapper {
     public void logoutAndLogIn() {
         Common.forceLogout();
         Login loginPage = page(Login.class);
-        $(byText("Already a customer?")).shouldBe(visible);
+        $(byText("Sign in to Joyent")).shouldBe(visible);
         $(byText("New to Joyent?")).shouldBe(visible);
-        loginPage.clickSignInOnLandingPage();
+        loginPage.clickSignIn();
         loginPage.login(USER_NAME, "lol");
-        loginPage.getErrorLabel().shouldHave(text("The username or password is incorrect"));
-        loginPage.getInfoLabel().shouldHave(text("Reminder: username and password are case sensitive"));
+        $(byText("The username or password is incorrect")).shouldBe(visible);
+        $(byText("Reminder: username and password are case sensitive")).shouldBe(visible);
         loginPage.login(USER_NAME, PASSWORD);
         sideBarMenu.clickDashboard().getCountInstancesRunning().shouldNotHave(text("0"));
     }
@@ -170,22 +171,22 @@ public class SmokeTest extends TestWrapper {
     public void changePassword() {
         page(Dashboard.class).getFreeTierWidget().waitUntil(visible, timeout);
         ChangePassword changePassword = navBarMenu.clickAccountMenu().clickChangePassword();
-        Common.switchWindow($(byText("Current Password")));
+        Common.switchWindow($(byText("Repeat password")));
 
         changePassword.setOldPassword(PASSWORD);
         changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().shouldHave(text("Please enter new password."));
+        changePassword.getErrorLabel().get(0).shouldHave(text("Please enter new password."));
 
         String testPass = "newTestPass";
         changePassword.fillForm(PASSWORD, testPass);
         changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().shouldHave(text("Sorry, please use a different password."));
-        changePassword.getInfoLabel().shouldHave(text("To change your password, enter the new password twice, please use a combination of letters, numbers and symbols."));
+        changePassword.getErrorLabel().get(0).shouldHave(text("To change your password, enter the new password twice, please use a combination of letters, numbers and symbols."));
+        changePassword.getErrorLabel().get(1).shouldHave(text("Sorry, please use a different password."));
 
         String previousPass = "qwerty1";
         changePassword.fillForm(PASSWORD, previousPass);
         changePassword.clickSubmitButton();
-        changePassword.getErrorLabel().shouldHave(text("You used this password recently. Please choose a new password."));
+        changePassword.getErrorLabel().get(1).shouldHave(text("You used this password recently. Please choose a new password."));
 
         WebDriverRunner.getWebDriver().close();
         Common.switchWindow(page(Dashboard.class).getCountInstancesRunning());

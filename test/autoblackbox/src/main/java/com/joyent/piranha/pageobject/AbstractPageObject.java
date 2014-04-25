@@ -1,11 +1,13 @@
 package com.joyent.piranha.pageobject;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.$$;
 
 public abstract class AbstractPageObject {
     private static final String GLOBAL_TIMEOUT_KEY = "globaltimeout";
@@ -73,8 +75,8 @@ public abstract class AbstractPageObject {
         $(".loading-large[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
-    public SelenideElement getErrorLabel() {
-        return $(".alert.alert-error");
+    public ElementsCollection getErrorLabel() {
+        return $$(".error");
     }
 
     public SelenideElement getInfoLabel() {

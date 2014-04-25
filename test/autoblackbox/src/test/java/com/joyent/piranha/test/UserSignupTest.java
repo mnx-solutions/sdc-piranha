@@ -42,26 +42,19 @@ public class UserSignupTest extends TestWrapper {
 
     @Test
     public void createAccountValidation() {
-        CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
+        CreateAccountPage createAccountPage = loginPage.clickSignUp();
         createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
-        createAccountPage.getFirstNameError().shouldBe(visible);
-        createAccountPage.getLastNameError().shouldBe(visible);
-        createAccountPage.getEmailError().shouldBe(visible);
-        createAccountPage.getLoginError().shouldBe(visible);
-        createAccountPage.getFirstNameError().shouldHave(text("First name is a required field"));
-        createAccountPage.getLastNameError().shouldHave(text("Last name is a required field"));
-        createAccountPage.getEmailError().shouldHave(text("Incorrect Email!"));
-        createAccountPage.getLoginError().shouldHave(text("Username is a required field"));
+        assertTrue(createAccountPage.getErrorLabel().size() == $$("tr").size());
+        assertTrue(createAccountPage.isErrorDisplayed("required field"));
         createAccountPage.setPassword("");
         createAccountPage.setConfirmPassword("notTheSamePass");
         createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
-        createAccountPage.getPassError().shouldBe(visible);
-        createAccountPage.getPassError().shouldHave(text("Passwords do not match. Password should have at least 7 characters. Password should have at least 1 alpha character. Password should have at least 1 numeric character."));
+        assertTrue(createAccountPage.isErrorDisplayed("Password mismatch"));
     }
 
     @Test
     public void paymentInformationValidation() {
-        CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
+        CreateAccountPage createAccountPage = loginPage.clickSignUp();
         loginPage.createTestAccount(createAccountPage);
         SignupBillingInformationPage signupBillInfoPage = createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
         signupBillInfoPage.clickNextButton();
@@ -81,7 +74,7 @@ public class UserSignupTest extends TestWrapper {
 
     @Test
     public void passBillingStep() {
-        CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
+        CreateAccountPage createAccountPage = loginPage.clickSignUp();
         loginPage.createTestAccount(createAccountPage);
         SignupBillingInformationPage signupBillInfoPage = createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
         signupBillInfoPage.waitForPageLoading();
@@ -92,7 +85,7 @@ public class UserSignupTest extends TestWrapper {
 
     @Test
     public void blockedByBlackList() {
-        CreateAccountPage createAccountPage = loginPage.clickSignupOnLandingPage();
+        CreateAccountPage createAccountPage = loginPage.clickSignUp();
         loginPage.createTestAccount(createAccountPage);
         SignupBillingInformationPage signupBillInfoPage = createAccountPage.clickCreateAcccount(SignupBillingInformationPage.class);
         signupBillInfoPage.waitForPageLoading();
