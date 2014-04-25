@@ -65,6 +65,11 @@ var BillingApi = (function () {
             cb(null, !err && step === 'completed');
         });
     };
+    BillingApi.prototype.updateActive = function (userId, cb) {
+        this.getStepWithMethod('update', userId, function (err, step) {
+            cb(null, !err && step === 'completed');
+        });
+    };
     BillingApi.prototype.update = function (userId, cb) {
         var self = this;
         jsonClient.get('/update/' + userId, function (err) {

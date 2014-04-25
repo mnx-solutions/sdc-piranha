@@ -116,7 +116,16 @@ module.exports = function execute(scope) {
                 }
                 call.log.debug(marketoData, 'Associate Marketo lead with SOAP API');
                 call.log.debug('Updating account with', data);
-                call.cloud.updateAccount(data, call.done.bind(call));
+                call.cloud.updateAccount(data, function (err, result) {
+                    if (err) {
+                        call.done(err);
+                        return;
+                    }
+                    Billing.updateActive(result.id, function (err, isActive) {
+                        result.provisionEnabled = isActive;
+                        call.done(null, result);
+                    });
+                });
             });
         });
 
