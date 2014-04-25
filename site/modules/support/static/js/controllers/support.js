@@ -3,7 +3,7 @@
 (function (app) {
     app.controller(
         'Support.IndexController',
-        ['$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', function ($scope, $location, Support, $route, PopupDialog, BillingService, localization) {
+        ['$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', function ($scope, $location, Support, $route, PopupDialog, BillingService, localization, Account) {
 
             $scope.loading = true;
             $scope.subscribingInProgress = true;
@@ -24,13 +24,13 @@
             };
 
             var getSupportData = function () {
-                Support.support(function (error, supportPackages) {
-                    if (error && error.message && error.message.indexOf('Cannot find entity') !== -1) {
-                        $location.path('/account/payment');
-                        return;
-                    }
-                    $scope.supportPackages = supportPackages;
-                    $scope.getPageData();
+                Account.checkProvisioning(null, function () {
+                    Support.support(function (error, supportPackages) {
+                        $scope.supportPackages = supportPackages;
+                        $scope.getPageData();
+                    });
+                }, function () {}, function (isSuccess) {
+                    $location.path(isSuccess ? '/support' : '/');
                 });
             }
 
