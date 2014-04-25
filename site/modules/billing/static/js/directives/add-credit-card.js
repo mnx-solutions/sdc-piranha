@@ -53,6 +53,7 @@
                     $scope.phone = {};
                     $scope.selectedCountryCode = '1'; // default to USA
                     $scope.submitTitle = $rootScope.commonConfig('submitButtonTitle') || "Save Changes";
+                    $rootScope.clearCommonConfig('submitButtonTitle');
                     $scope.form = {
                         cardHolderInfo: {
                         },

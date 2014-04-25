@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'slb.IndexController',
-        ['$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog', 'Account',
-        function ($scope, requestContext, localization, $location, service, Datacenter, PopupDialog, Account) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', '$location', 'slb.Service', 'Datacenter', 'PopupDialog', 'Account',
+        function ($rootScope, $scope, requestContext, localization, $location, service, Datacenter, PopupDialog, Account) {
             localization.bind('slb', $scope);
             requestContext.setUpRenderContext('slb.index', $scope, {
                 title: localization.translate(null, 'slb', 'Enable Load Balancing')
@@ -46,10 +46,16 @@
                     service.createController().then(function () {
                         $location.path('/slb/list');
                     }, showErrPopupDialog);
+                }, function () {
+                    $rootScope.commonConfig('licenseAcceptCheck', $scope.licenseAcceptCheck);
                 });
             };
+            $scope.licenseAcceptCheck = $rootScope.commonConfig('licenseAcceptCheck') || false;
+            $rootScope.clearCommonConfig('licenseAcceptCheck');
+            if ($scope.licenseAcceptCheck) {
+                $scope.enableSlb();
+            }
 
-            $scope.licenseAcceptCheck = false;
             $scope.licenseAccept = function () {
                 $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
             };
