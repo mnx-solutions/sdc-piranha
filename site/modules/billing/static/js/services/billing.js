@@ -61,26 +61,30 @@
             return call;
         };
 
+        var billingResponseHandler = function (err, errMessage) {
+            if (err && err !== 'Not Implemented' && err.message.indexOf('Cannot find entity by key') === -1) {
+                PopupDialog.error(
+                    localization.translate(
+                        null,
+                        null,
+                        'Error'
+                    ),
+                    localization.translate(
+                        null,
+                        'billing',
+                        errMessage
+                    ),
+                    function(){}
+                );
+            }
+        };
+
         service.getInvoices = function (callback) {
             var call = serverTab.call({
                 name: 'listInvoices',
                 data: {},
-                done: callback || function (err, job) {
-                    if(err && err !== 'Not Implemented') {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'billing',
-                                'Unable to retrieve invoices.'
-                            ),
-                            function(){}
-                        );
-                    }
+                done: callback || function (err) {
+                    billingResponseHandler(err, 'Unable to retrieve invoices.');
                 }
             });
             return call.deferred;
@@ -90,22 +94,8 @@
             var call = serverTab.call({
                 name: 'getSubscriptions',
                 data: {},
-                done: callback || function (err, job) {
-                    if(err && err !== 'Not Implemented') {
-                        PopupDialog.error(
-                            localization.translate(
-                                null,
-                                null,
-                                'Error'
-                            ),
-                            localization.translate(
-                                null,
-                                'billing',
-                                'Unable to retrieve subscriptions.'
-                            ),
-                            function(){}
-                        );
-                    }
+                done: callback || function (err) {
+                    billingResponseHandler(err, 'Unable to retrieve subscriptions.');
                 }
             });
             return call.deferred;
