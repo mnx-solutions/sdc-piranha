@@ -3,7 +3,7 @@
 (function (app) {
     app.controller(
         'Support.IndexController',
-        ['$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', function ($scope, $location, Support, $route, PopupDialog, BillingService, localization, Account) {
+        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', function ($rootScope, $scope, $location, Support, $route, PopupDialog, BillingService, localization, Account) {
 
             $scope.loading = true;
             $scope.subscribingInProgress = true;
@@ -24,15 +24,16 @@
             };
 
             var getSupportData = function () {
-                Account.checkProvisioning(null, function () {
+                Account.checkProvisioning('Submit and access Support', function () {
                     Support.support(function (error, supportPackages) {
+                        $rootScope.$broadcast('event:provisionChanged');
                         $scope.supportPackages = supportPackages;
                         $scope.getPageData();
                     });
                 }, function () {}, function (isSuccess) {
                     $location.path(isSuccess ? '/support' : '/');
                 });
-            }
+            };
 
             $scope.$on('$routeChangeStart', function(e, next, last) {
                 if (next.$$route.controller === last.$$route.controller) {
