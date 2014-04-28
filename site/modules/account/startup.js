@@ -51,7 +51,8 @@ module.exports = function execute(scope) {
 
                     response.tfaEnabled = !!secret;
                     Billing.isActive(data.id, function (err, isActive) {
-                        response.provisionEnabled = isActive;
+                        call.req.session.provisionEnabled = response.provisionEnabled = isActive;
+                        call.req.session.save();
                         call.done(null, response);
                     });
                 });
@@ -122,7 +123,8 @@ module.exports = function execute(scope) {
                         return;
                     }
                     Billing.updateActive(result.id, function (err, isActive) {
-                        result.provisionEnabled = isActive;
+                        call.req.session.provisionEnabled = result.provisionEnabled = isActive;
+                        call.req.session.save();
                         call.done(null, result);
                     });
                 });
@@ -273,10 +275,16 @@ module.exports = function execute(scope) {
 
     server.onCall('GetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
-        readOldOrNewFile(call, client, function (err, result) {
+        var attempt = 5;
+        var callback = function (err, result) {
             if (err) {
                 if (err.statusCode === 404) {
                     call.req.log.info('Config for user not found');
+                } else if (err.name === 'AccountBlockedError' && err.code === 'AccountBlocked' && attempt > 0 && call.req.session.provisionEnabled) {
+                    var client = MantaClient.createClient(call);
+                    attempt -= 1;
+                    setTimeout(function () {readOldOrNewFile(call, client, callback)}, 2000);
+                    return;
                 } else {
                     call.req.log.error({error: err}, 'Cannot read user config');
                 }
@@ -290,7 +298,8 @@ module.exports = function execute(scope) {
                 call.req.log.error({error: ex}, 'Error parsing config file');
             }
             call.done(null, jsonConfig);
-        });
+        };
+        readOldOrNewFile(call, client, callback);
     });
 
     server.onCall('SetUserConfig', function (call) {
