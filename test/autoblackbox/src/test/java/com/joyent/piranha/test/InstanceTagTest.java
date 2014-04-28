@@ -1,6 +1,7 @@
 package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.Before;
@@ -17,14 +18,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class InstanceTagTest extends TestWrapper {
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
+    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
     private static SideBarMenu sideBarMenu;
 
     @BeforeClass
     public static void openDashboard() {
         timeout = BASE_TIMEOUT;
         baseUrl = BASE_URL;
-        open("/");
-        Common.login();
+        Login loginPage = open("/", Login.class);
+        loginPage.login(USER_NAME, PASSWORD);
         sideBarMenu = page(SideBarMenu.class);
     }
 
