@@ -28,6 +28,9 @@ module.exports = function execute(scope, app) {
         req.userIp = req.userIp || req.ip;
 
         var info = {
+            userName: req.session.userName,
+            userId: req.session.userId,
+            userIp: req.userIp,
             userAgent: req.headers['user-agent'],
             campaignId: (req.cookies.campaignId || '')
         };
