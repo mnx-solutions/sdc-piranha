@@ -3,6 +3,10 @@
 <div class="account">
 
 <form name="paymentForm" novalidate="" id="paymentForm">
+    <div class="clearfix" data-ng-show="currentStep && features.allowSkipBilling != 'disabled'">
+        <a data-ng-click="skipBilling()" class="btn light effect-orange-button pull-right" data-translate>Skip</a>
+    </div>
+    <fieldset class="line"></fieldset>
     <fieldset class="line">
         <legend>Credit Card Details</legend>
         <div class="control-group">
