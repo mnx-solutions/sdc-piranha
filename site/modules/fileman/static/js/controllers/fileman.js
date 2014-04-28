@@ -216,12 +216,20 @@
                 });
             };
 
-            $scope.createFilesTree = function (userAction, path, callback) {
+            $scope.createFilesTree = function (userAction, path, callback, attempt) {
+                attempt = attempt || 10;
                 path = path || $scope.currentPath;
-                fileman.ls(path, function (error, result) {
+                var lsCallback = function (error, result) {
                     $scope.files = result.__read();
                     if (!error && ($scope.filesTree[path] !== $scope.files)) {
                         $scope.filesTree[path] = $scope.files;
+                    }
+                    if (error && attempt && attempt > 0) {
+                        $timeout(function () {
+                            attempt -= 1;
+                            fileman.ls(path, lsCallback);
+                        }, 5000);
+                        return;
                     }
                     $scope.loadingFolder = false;
                     $scope.loading = false;
@@ -235,7 +243,8 @@
                         config.dirty(true);
                         config.$save();
                     }
-                });
+                };
+                fileman.ls(path, lsCallback);
             };
 
             $scope.setCurrentPath = function setCurrentPath(obj, userAction, callback) {
@@ -382,7 +391,7 @@
                                     return PopupDialog.errorObj(err);
                                 }
 
-                            });
+                });
                 });
             };
 
