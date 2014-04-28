@@ -404,6 +404,8 @@
     padding-right: 5px;
 }
 .delete-icon {
+    margin-top: 1px;
+    height: 18px;
     background-image: url("../img/btn_i_delete.png");
 }
 .reboot-icon {
