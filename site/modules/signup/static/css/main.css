@@ -611,4 +611,6 @@ legend {
 }
 .legend-button {
     margin-top: -5px;
+    margin-right: -6px;
+    font-weight: normal;
 }
