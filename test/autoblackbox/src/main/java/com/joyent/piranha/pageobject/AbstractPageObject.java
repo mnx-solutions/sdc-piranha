@@ -64,7 +64,7 @@ public abstract class AbstractPageObject {
     }
 
     public void waitForSmallSpinnerDisappear() {
-        $(".loading-small[style=\"\"]").waitWhile(exist, CHANGE_STATUS_TIMEOUT);
+        $(By.xpath("//span[contains(@class,'loading-small') and not(@style=\"display: none;\")]")).waitWhile(exist, CHANGE_STATUS_TIMEOUT);
     }
 
     public void waitForMediumSpinnerDisappear() {

@@ -21,6 +21,7 @@ public class InstanceList extends AbstractPageObject {
 
     /**
      * Checks the state of a freshly created instance.
+     *
      * @param instance - instance name
      */
     public void checkForCreatedInstance(String instance) {
@@ -71,9 +72,9 @@ public class InstanceList extends AbstractPageObject {
     }
 
     public void deleteInstance(String instance) {
-        Common.getRowByText($$(".item-list-container .item"), instance)
-                .find(byText("Delete")).click();
-        Common.clickButtonInModal("Yes");
+        getRowByText("object in pagedItems", instance).$("label.checkbox").click();
+        performAction("Delete");
+        clickButtonInModal("Yes");
     }
 
     public String getFirstInstanceName() {

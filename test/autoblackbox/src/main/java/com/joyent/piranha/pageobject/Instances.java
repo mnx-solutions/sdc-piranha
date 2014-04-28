@@ -1,12 +1,8 @@
 package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
-import com.codeborne.selenide.WebDriverRunner;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 
-import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;
 
@@ -34,4 +30,12 @@ public class Instances extends AbstractPageObject {
         return $(By.xpath("//span[contains(.,'\"" + key + "\":\"" + value + "\')]")).isDisplayed();
     }
 
+    public String getFooterText() {
+        return $("[data-ng-show=\"freeTierFound()\"]").text();
+    }
+
+    public CreateInstanceQuickStart clickCreateButton() {
+        $("[href=\"#!/compute/create/simple\"]").click();
+        return page(CreateInstanceQuickStart.class);
+    }
 }

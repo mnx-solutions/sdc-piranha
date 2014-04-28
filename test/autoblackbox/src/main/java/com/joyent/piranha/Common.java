@@ -3,6 +3,7 @@ package com.joyent.piranha;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.openqa.selenium.By;
@@ -11,6 +12,10 @@ import org.openqa.selenium.NoSuchElementException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -214,4 +219,25 @@ public class Common {
     public static void waitForMediumLaoderDisappear() {
         $(".loading-medium.spiner-height").waitWhile(visible, CHANGE_STATUS_TIMEOUT);
     }
+
+    public static String addOneYearToDate(String date) throws ParseException, IOException, JSONException {
+        SimpleDateFormat userDate = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(userDate.parse(date));
+        calendar.add(Calendar.YEAR, 1);
+        return userDate.format(calendar.getTime());
+    }
+
+    public static String getUserCreateDate() throws IOException, JSONException {
+        String userName = PropertyHolder.getTestUserLogin();
+        ProcessBuilder processBuilder = new ProcessBuilder(PropertyHolder.getSdcPath() + "sdc-getaccount", "--" + userName + "");
+        processBuilder.environment().put("SDC_ACCOUNT", userName);
+        processBuilder.environment().put("SDC_KEY_ID", "ff:b2:02:d8:a9:3e:d1:4d:ef:ef:c3:39:20:e1:33:e3");
+        processBuilder.environment().put("SDC_URL", "https://192.168.115.56");
+        processBuilder.environment().put("SDC_TESTING", "true");
+        Process p = processBuilder.start();
+        JSONObject outJSON = new JSONObject(IOUtils.toString(p.getInputStream()));
+        return outJSON.get("created").toString().substring(0, 10);
+    }
+
 }

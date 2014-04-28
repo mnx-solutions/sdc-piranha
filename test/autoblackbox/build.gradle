@@ -90,3 +90,6 @@ task FakePackageTest(type: Test) {
 task SLBPerformance(type: Test) {
     include '**/SLBPerformance.class'
 }
+task FreeTierTest(type: Test) {
+    include '**/FreeTierTest.class'
+}
