@@ -609,3 +609,6 @@ legend {
 .cancel-signup-btn {
     margin-right: 15px;
 }
+.legend-button {
+    margin-top: -5px;
+}
