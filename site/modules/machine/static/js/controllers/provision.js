@@ -291,7 +291,7 @@
                         $rootScope.commonConfig('provisionBundle', {
                             manualCreate: false,
                             allowCreate: false,
-                            machine: $scope.data
+                            machine: machine
                         });
                     }
 
