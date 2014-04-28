@@ -297,6 +297,7 @@
                     var returnCb = $rootScope.commonConfig('returnCb') || function () {
                         $location.path('/account');
                     };
+                    $rootScope.clearCommonConfig('returnCb');
 
                     $scope.cancelForm = function() {
                         returnCb(false);
