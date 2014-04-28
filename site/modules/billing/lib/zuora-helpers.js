@@ -400,7 +400,7 @@ function createZuoraAccount(call, cb) {
             obj.creditCard[key] = call.data[k];
         });
         zuora.account.create(obj, function (accErr, accResp) {
-            if (accErr) {
+            if (accErr && accErr.message !== 'Zuora Internal error') {
                 accErr.zuora = accResp;
                 cb(accErr, accResp);
                 return;
