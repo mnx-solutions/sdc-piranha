@@ -302,6 +302,8 @@
                         returnCb(false);
                     };
 
+                    var addedMessageText = $rootScope.commonConfig('addedMessageText') || '';
+                    $rootScope.clearCommonConfig('addedMessageText');
                     $scope.submitForm = function() {
                         $scope.loading = true;
                         $scope.formSubmitted = true;
@@ -334,7 +336,7 @@
                                             localization.translate(
                                                 null,
                                                 'billing',
-                                                'Billing information updated.'
+                                                'Billing information updated.' + addedMessageText
                                             ),
                                             function () {
                                                 var provisionBundle = $rootScope.commonConfig('provisionBundle');
