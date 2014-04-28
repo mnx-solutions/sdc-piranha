@@ -122,7 +122,7 @@ module.exports = function execute(scope) {
                         return;
                     }
                     Billing.updateActive(result.id, function (err, isActive) {
-                        result.provisionEnabled = true;
+                        result.provisionEnabled = isActive;
                         call.done(null, result);
                     });
                 });
