@@ -41,6 +41,7 @@
             }
 
             $scope.enableSlb = function () {
+                $rootScope.commonConfig('addedMessageText', ' Load balancer will now be installed.');
                 Account.checkProvisioning('Submit and install load balancer', function () {
                     $scope.creating = true;
                     service.createController().then(function () {
