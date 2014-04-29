@@ -64,7 +64,8 @@
                 $location.path(returnUrl);
             };
             if (submitBillingInfo) {
-                submitBillingInfo.appendPopupMessage = submitBillingInfo.appendPopupMessage ? ' ' + submitBillingInfo.appendPopupMessage : '';
+                var message = submitBillingInfo.appendPopupMessage;
+                submitBillingInfo.appendPopupMessage = message ? ' ' + message : '';
             }
             var callback = function () {
                 $rootScope.commonConfig('returnCb',  locationCb);
