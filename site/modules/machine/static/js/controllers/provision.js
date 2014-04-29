@@ -21,8 +21,9 @@
         '$rootScope',
         'FreeTier',
         '$compile',
+        'loggingService',
 
-        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile) {
+        function ($scope, $filter, requestContext, $timeout, Machine, Dataset, Datacenter, Package, Account, Network, Image, $location, localization, $q, $$track, PopupDialog, $cookies, $rootScope, FreeTier, $compile, loggingService) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.provision', $scope, {
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
@@ -889,6 +890,7 @@
                     props.request_description = 'API Name: ' + el.name;
                     props.requester_name = $scope.account.firstName;
                     props.requester_email = $scope.account.email;
+                    loggingService.log('info', 'User is ordering instance package from support', el);
                     Zenbox.show(null, props);
                 } else {
                     $scope.slideCarousel();
