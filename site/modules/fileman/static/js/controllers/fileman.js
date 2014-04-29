@@ -396,7 +396,11 @@
             };
 
             if (!$scope.currentPath) {
-                Account.checkProvisioning({btnTitle: 'Submit and Access Manta'}, $scope.drawFileMan.bind($scope), angular.noop, function (isSuccess) {
+                var submitBillingInfo = {
+                    btnTitle: 'Submit and Access Manta',
+                    appendPopupMessage: 'Manta access will now be granted.'
+                };
+                Account.checkProvisioning(submitBillingInfo, $scope.drawFileMan.bind($scope), angular.noop, function (isSuccess) {
                     $location.path(isSuccess ? '/manta/files' : '/manta/intro');
                 });
             }
