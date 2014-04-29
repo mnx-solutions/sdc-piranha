@@ -1892,6 +1892,9 @@ label.checkbox {
     filter: alpha(opacity=35);
     cursor: default !important;
 }
+.btn.submit-payment {
+    text-transform: none;
+}
 .btn.red-stripe {
     border-left: 3px solid #d84a38;
 }

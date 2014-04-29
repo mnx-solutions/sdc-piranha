@@ -225,7 +225,7 @@
 
                     $location.path('/compute');
                 };
-                Account.checkProvisioning({btnTitle: 'Submit and create instance'}, function () {
+                Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
                     if (machine) {
                         filterSelectedNetworks(machine.networks || [], function (filteredNetworks) {
                             machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';

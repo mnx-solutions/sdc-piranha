@@ -25,7 +25,7 @@
 
             var getSupportData = function () {
                 var locationPath = $location.path();
-                Account.checkProvisioning({btnTitle: 'Submit and access Support'}, function () {
+                Account.checkProvisioning({btnTitle: 'Submit and Access Support'}, function () {
                     Support.support(function (error, supportPackages) {
                         $rootScope.$broadcast('event:provisionChanged');
                         $scope.supportPackages = supportPackages;
