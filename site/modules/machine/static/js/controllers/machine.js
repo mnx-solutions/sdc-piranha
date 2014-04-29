@@ -20,9 +20,10 @@
         'FreeTier',
         '$timeout',
         'Account',
+        'loggingService',
 
         function ($scope, requestContext, Dataset, Machine, Package, Network, rule, firewall, $filter, $$track,
-                  localization, $q, $location, PopupDialog, Image, FreeTier, $timeout, Account) {
+                  localization, $q, $location, PopupDialog, Image, FreeTier, $timeout, Account, loggingService) {
             localization.bind('machine', $scope);
             requestContext.setUpRenderContext('machine.details', $scope, {
                 title: localization.translate(null, 'machine', 'View Joyent Instance Details')
@@ -535,6 +536,7 @@
                     contactSupportParams.request_subject = 'I want to resize instance ' + $scope.machine.id;
                     contactSupportParams.requester_name = account.firstName;
                     contactSupportParams.requester_email = account.email;
+                    loggingService.log('info', 'User is ordering instance package from support', obj);
                     Zenbox.show(null, contactSupportParams);
                 });
             }
