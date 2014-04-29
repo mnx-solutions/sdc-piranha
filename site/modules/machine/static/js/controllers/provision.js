@@ -225,7 +225,7 @@
 
                     $location.path('/compute');
                 };
-                Account.checkProvisioning('Submit and create instance', function () {
+                Account.checkProvisioning({btnTitle: 'Submit and create instance'}, function () {
                     if (machine) {
                         filterSelectedNetworks(machine.networks || [], function (filteredNetworks) {
                             machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';
@@ -817,7 +817,7 @@
             } else {
                 setDatacenter();
             }
-            var provisionBundle = $rootScope.commonConfig('provisionBundle');
+            var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
             if (provisionBundle) {
                 if (provisionBundle.manualCreate) {
                     $scope.data = provisionBundle.machine;
@@ -851,7 +851,6 @@
                         provision(provisionBundle.machine);
                     }
                 }
-                $rootScope.clearCommonConfig('provisionBundle');
             } else {
                 if (!$scope.data.opsys) {
                     $scope.data.opsys = 'All';

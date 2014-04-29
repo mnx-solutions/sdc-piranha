@@ -137,6 +137,15 @@
                     commonConfig = {};
                 }
             };
+
+            $rootScope.popCommonConfig = function (name) {
+                var value;
+                if (name) {
+                    value = commonConfig[name];
+                    delete  commonConfig[name];
+                }
+                return value;
+            };
         }
     ]);
 }(window.JP.main));

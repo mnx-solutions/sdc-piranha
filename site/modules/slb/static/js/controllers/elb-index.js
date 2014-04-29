@@ -42,8 +42,11 @@
 
             $scope.enableSlb = function () {
                 var returnUrl = $location.path();
-                $rootScope.commonConfig('addedMessageText', ' Load balancer will now be installed.');
-                Account.checkProvisioning('Submit and install load balancer', function () {
+                var submitAdditionalText = {
+                    btnTitle: 'Submit and install load balancer',
+                    appendPopupMessage: ' Load balancer will now be installed.'
+                };
+                Account.checkProvisioning(submitAdditionalText, function () {
                     $scope.creating = true;
                     service.createController().then(function () {
                         $location.path('/slb/list');
@@ -57,8 +60,7 @@
                     }
                 });
             };
-            $scope.licenseAcceptCheck = $rootScope.commonConfig('licenseAcceptCheck') || false;
-            $rootScope.clearCommonConfig('licenseAcceptCheck');
+            $scope.licenseAcceptCheck = $rootScope.popCommonConfig('licenseAcceptCheck') || false;
 
             $scope.licenseAccept = function () {
                 $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;

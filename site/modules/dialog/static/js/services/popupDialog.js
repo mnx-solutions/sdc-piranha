@@ -58,14 +58,14 @@
             return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback);
         };
 
-        factory.errorProvision = function (submitButtonTitle, locationCb) {
+        factory.errorProvision = function (submitAdditionalText, locationCb) {
             var returnUrl = $location.path();
             locationCb = locationCb || function (isSuccess) {
                 $location.path(returnUrl);
             };
             var callback = function () {
                 $rootScope.commonConfig('returnCb',  locationCb);
-                $rootScope.commonConfig('submitButtonTitle', submitButtonTitle);
+                $rootScope.commonConfig('submitAdditionalText', submitAdditionalText);
                 $location.path('/account/payment');
             };
 
