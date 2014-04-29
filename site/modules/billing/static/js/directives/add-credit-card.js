@@ -52,9 +52,9 @@
 
                     $scope.phone = {};
                     $scope.selectedCountryCode = '1'; // default to USA
-                    var submitAdditionalText = $rootScope.popCommonConfig('submitAdditionalText');
-                    var addedMessageText = submitAdditionalText ? (submitAdditionalText.appendPopupMessage || '') : '';
-                    $scope.submitTitle = submitAdditionalText ? (submitAdditionalText.btnTitle || "Save Changes") : "Save Changes";
+                    var submitBillingInfo = $rootScope.popCommonConfig('submitBillingInfo') || {btnTitle: 'Save Changes', appendPopupMessage: ''};
+                    var addedMessageText = submitBillingInfo.appendPopupMessage;
+                    $scope.submitTitle = submitBillingInfo.btnTitle;
                     $scope.form = {
                         cardHolderInfo: {
                         },

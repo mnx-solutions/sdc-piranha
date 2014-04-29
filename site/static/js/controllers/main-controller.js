@@ -142,7 +142,7 @@
                 var value;
                 if (name) {
                     value = commonConfig[name];
-                    delete  commonConfig[name];
+                    delete commonConfig[name];
                 }
                 return value;
             };

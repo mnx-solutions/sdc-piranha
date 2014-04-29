@@ -58,14 +58,17 @@
             return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback);
         };
 
-        factory.errorProvision = function (submitAdditionalText, locationCb) {
+        factory.errorProvision = function (submitBillingInfo, locationCb) {
             var returnUrl = $location.path();
             locationCb = locationCb || function (isSuccess) {
                 $location.path(returnUrl);
             };
+            if (submitBillingInfo) {
+                submitBillingInfo.appendPopupMessage = submitBillingInfo.appendPopupMessage ? ' ' + submitBillingInfo.appendPopupMessage : '';
+            }
             var callback = function () {
                 $rootScope.commonConfig('returnCb',  locationCb);
-                $rootScope.commonConfig('submitAdditionalText', submitAdditionalText);
+                $rootScope.commonConfig('submitBillingInfo', submitBillingInfo);
                 $location.path('/account/payment');
             };
 

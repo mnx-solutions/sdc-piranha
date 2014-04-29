@@ -100,13 +100,13 @@
                 return deferred.promise;
             };
 
-            service.checkProvisioning = function (submitButtonTitle, cbEnabled, cbDisabled, locationCb) {
+            service.checkProvisioning = function (submitBillingInfo, cbEnabled, cbDisabled, locationCb) {
                 var defaultCb = angular.noop;
                 cbEnabled = cbEnabled || defaultCb;
                 cbDisabled = cbDisabled || defaultCb;
                 service.getAccount().then(function (account) {
                     if (!account.provisionEnabled) {
-                        PopupDialog.errorProvision(submitButtonTitle, locationCb);
+                        PopupDialog.errorProvision(submitBillingInfo, locationCb);
                         cbDisabled();
                     } else {
                         cbEnabled();

@@ -24,14 +24,16 @@
             };
 
             var getSupportData = function () {
+                var locationPath = $location.path();
                 Account.checkProvisioning({btnTitle: 'Submit and access Support'}, function () {
                     Support.support(function (error, supportPackages) {
                         $rootScope.$broadcast('event:provisionChanged');
                         $scope.supportPackages = supportPackages;
                         $scope.getPageData();
                     });
-                }, function () {}, function (isSuccess) {
-                    $location.path(isSuccess ? '/support/cloud' : '/');
+                }, function () {
+                }, function (isSuccess) {
+                    $location.path(isSuccess ? locationPath : '/');
                 });
             };
 

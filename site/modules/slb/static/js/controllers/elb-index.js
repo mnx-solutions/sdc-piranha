@@ -42,17 +42,16 @@
 
             $scope.enableSlb = function () {
                 var returnUrl = $location.path();
-                var submitAdditionalText = {
+                var submitBillingInfo = {
                     btnTitle: 'Submit and install load balancer',
-                    appendPopupMessage: ' Load balancer will now be installed.'
+                    appendPopupMessage: 'Load balancer will now be installed.'
                 };
-                Account.checkProvisioning(submitAdditionalText, function () {
+                Account.checkProvisioning(submitBillingInfo, function () {
                     $scope.creating = true;
                     service.createController().then(function () {
                         $location.path('/slb/list');
                     }, showErrPopupDialog);
                 }, function () {
-                    $rootScope.commonConfig('licenseAcceptCheck', $scope.licenseAcceptCheck);
                 }, function (isSuccess) {
                     $location.path(returnUrl);
                     if (isSuccess) {
@@ -60,7 +59,7 @@
                     }
                 });
             };
-            $scope.licenseAcceptCheck = $rootScope.popCommonConfig('licenseAcceptCheck') || false;
+            $scope.licenseAcceptCheck = false;
 
             $scope.licenseAccept = function () {
                 $scope.licenseAcceptCheck = ($scope.licenseAcceptCheck) ? false : true;
