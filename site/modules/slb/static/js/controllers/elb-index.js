@@ -43,7 +43,7 @@
             $scope.enableSlb = function () {
                 var returnUrl = $location.path();
                 var submitBillingInfo = {
-                    btnTitle: 'Submit and install load balancer',
+                    btnTitle: 'Submit and Install Load Balancer',
                     appendPopupMessage: 'Load balancer will now be installed.'
                 };
                 Account.checkProvisioning(submitBillingInfo, function () {
