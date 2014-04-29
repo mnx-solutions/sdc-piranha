@@ -52,8 +52,9 @@
 
                     $scope.phone = {};
                     $scope.selectedCountryCode = '1'; // default to USA
-                    $scope.submitTitle = $rootScope.commonConfig('submitButtonTitle') || "Save Changes";
-                    $rootScope.clearCommonConfig('submitButtonTitle');
+                    var submitBillingInfo = $rootScope.popCommonConfig('submitBillingInfo') || {btnTitle: 'Save Changes', appendPopupMessage: ''};
+                    var addedMessageText = submitBillingInfo.appendPopupMessage;
+                    $scope.submitTitle = submitBillingInfo.btnTitle;
                     $scope.form = {
                         cardHolderInfo: {
                         },
@@ -294,17 +295,15 @@
                         $scope.selectedCountryCode = (newVal && newVal.areaCode) || '1';
                     });
 
-                    var returnCb = $rootScope.commonConfig('returnCb') || function () {
+                    var returnCb = $rootScope.popCommonConfig('returnCb') || function () {
                         $location.path('/account');
                     };
-                    $rootScope.clearCommonConfig('returnCb');
 
                     $scope.cancelForm = function() {
                         returnCb(false);
                     };
 
-                    var addedMessageText = $rootScope.commonConfig('addedMessageText') || '';
-                    $rootScope.clearCommonConfig('addedMessageText');
+
                     $scope.submitForm = function() {
                         $scope.loading = true;
                         $scope.formSubmitted = true;
