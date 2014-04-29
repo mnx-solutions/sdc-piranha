@@ -51,8 +51,8 @@
                 <div>
                     <span class="span3 lb-label e-port" data-translate>Port</span>
                     <span class="port-input port-m">
-                        <input name="fromPort" type="text" required data-ng-model="server.fromPort"
-                               data-ng-change="validatePort('fromPort', 1, 99999)"/>
+                        <input name="fromPort" type="text" pattern="\d*" required data-ng-model="server.fromPort"
+                               data-ng-change="validatePort('fromPort')"/>
                     </span>
                 </div>
                 <div class="clearfix"></div>
@@ -134,7 +134,7 @@
                     <span class="span9">
                         <input name="failThreshold" type="text" class="short-input"
                                data-ng-model="server.health.failThreshold"
-                               data-ng-change="validatePort('failThreshold', 1)"/>
+                               data-ng-change="checkInteger('failThreshold')"/>
                     </span>
                 </div>
             </div>
@@ -144,8 +144,8 @@
                 <div>
                     <span class="span3 lb-label" data-translate>Port</span>
                     <span class="span3">
-                        <input class="short-input short-input-port" name="toPort" type="text" required data-ng-model="server.toPort"
-                               data-ng-change="validateInternalPort('toPort', 1, 99999)"/>
+                        <input class="short-input short-input-port" name="toPort" type="text" pattern="\d*" required data-ng-model="server.toPort"
+                               data-ng-change="validatePort('toPort', true)"/>
                     </span>
                 </div>
                 <div class="clearfix"></div>

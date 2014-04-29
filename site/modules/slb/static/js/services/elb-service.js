@@ -132,10 +132,10 @@
                 });
                 return d.promise;
             };
-            service.reservedPorts = [];
+            service.busyPorts = [];
             service.getBalancers = function getBalancers() {
                 var d = $q.defer();
-                service.reservedPorts = [];
+                service.busyPorts = [];
                 serverTab.call({
                     name: 'LoadBalancersList',
                     done: function (err, job) {
@@ -144,7 +144,7 @@
                             return;
                         }
                         var balancers = job.__read().map(function (balancer) {
-                            service.reservedPorts.push(+balancer.port);
+                            service.busyPorts.push(+balancer.port);
                             return filterBalancer(balancer);
                         });
                         d.resolve(balancers);

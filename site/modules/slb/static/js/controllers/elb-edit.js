@@ -18,7 +18,7 @@
                 $scope.deletedCount = 0;
 
                 function nextPort(port) {
-                    while (service.reservedPorts.indexOf(port) !== -1) {
+                    while (service.busyPorts.indexOf(port) !== -1) {
                         port += 1;
                     }
                     return port;
@@ -32,7 +32,7 @@
 
                     // Set defaults
                     server.fromPort = server.fromPort || nextPort(80);
-                    server.dirtyFromPort = server.fromPort;
+                    server.currentPort = +server.fromPort;
                     server.toPort = server.toPort || 80;
                     server.health = server.health || {};
                     server.health.timeout = server.health.timeout || 2;
@@ -132,6 +132,32 @@
                     });
                 };
 
+                function isInteger(value, min, max) {
+                    var parsedValue = parseInt(value, 10);
+                    if (parsedValue.toString() !== value.toString() || (parsedValue % 1)) {
+                        return false;
+                    }
+                    min = min || 1;
+                    max = max || Infinity;
+                    return parsedValue >= min && parsedValue <= max;
+                }
+
+                function isReservedPort(value) {
+                    return [0, 22, 9070, 9080, 9090].indexOf(value) !== -1;
+                }
+                function isPortAlreadyUsed(value) {
+                    return $scope.server.currentPort !== value && service.busyPorts.indexOf(value) !== -1;
+                }
+                function isPortValid(value, isInternal) {
+                    if (!isInteger(value, 1, 65535)) {
+                        return false;
+                    }
+                    value = parseInt(value, 10);
+                    var reservedPort = !isInternal && isReservedPort(value);
+                    var busyPort = !isInternal && isPortAlreadyUsed(value);
+                    return !reservedPort && !busyPort;
+                }
+
                 $scope.validate = function () {
                     var validationMessage = null;
                     $scope.validateSelected();
@@ -145,10 +171,13 @@
                     };
                     if ($scope.editForm.fromPort.$invalid) {
                         var viewValue = $scope.editForm.fromPort.$viewValue;
-                        if (viewValue && (viewValue % 1) === 0) {
-                            validationMessage = 'A current limitation is additional load balancers use the same IP as the first. Therefore, each one must be listening at a different port. We are working to resolve this.';
-                        } else {
+                        var parsedValue = parseInt(viewValue, 10);
+                        if (viewValue !== "0" && !isInteger(viewValue, 1, 65535)) {
                             validationMessage = 'Load balancer port is invalid.';
+                        } else if (isReservedPort(parsedValue)) {
+                            validationMessage = 'The port number is reserved.';
+                        } else if (isPortAlreadyUsed(parsedValue)) {
+                            validationMessage = 'A current limitation is additional load balancers use the same IP as the first. Therefore, each one must be listening at a different port. We are working to resolve this.';
                         }
                     }
                     for (var formElementName in formElements) {
@@ -210,25 +239,16 @@
                         $scope.saving = false;
                     });
                 };
-                $scope.validateInternalPort = function (name, min, max) {
-                    $scope.validatePort(name, min, max, true);
-                };
 
-                $scope.validatePort = function (name, min, max, isInternal) {
-                    var input = $scope.editForm[name];
+                $scope.checkInteger = function (controlName) {
+                    var input = $scope.editForm[controlName];
                     var value = input.$viewValue;
-                    var dirtyValue = null;
-                    if (name === 'fromPort') {
-                        dirtyValue = $scope.server.dirtyFromPort;
-                    }
-
-                    var reservedPorts = ['0', '22', '9070', '9080', '9090'];
-
-                    min = min || 1;
-                    max = max || 65535; // max tcp port value
-                    var isInteger = (value % 1) === 0;
-                    var isReservedPort = !isInternal && ((dirtyValue !== value && service.reservedPorts.indexOf(+value) !== -1) || (reservedPorts.indexOf(value) !== -1));
-                    input.$setValidity('port', isInteger && !isReservedPort && value >= min && value <= max);
+                    input.$setValidity('field', isInteger(value));
+                };
+                
+                $scope.validatePort = function (controlName, isInternal) {
+                    var input = $scope.editForm[controlName];
+                    input.$setValidity('field', isPortValid(input.$viewValue, isInternal));
                 };
 
                 $scope.delete = function () {
