@@ -11,7 +11,7 @@
             });
 
             $scope.loaded = false;
-            $scope.creating = false;
+            $scope.creating = service.creatingController;
 
             service.getController().then(function () {
                 $location.path('/slb/list');
