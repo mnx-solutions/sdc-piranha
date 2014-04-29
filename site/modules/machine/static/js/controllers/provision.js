@@ -226,7 +226,11 @@
 
                     $location.path('/compute');
                 };
-                Account.checkProvisioning({btnTitle: 'Submit and Create Instance'}, function () {
+                var submitBillingInfo = {
+                    btnTitle: 'Submit and Create Instance',
+                    appendPopupMessage: 'Provisioning will now commence.'
+                };
+                Account.checkProvisioning(submitBillingInfo, function () {
                     if (machine) {
                         filterSelectedNetworks(machine.networks || [], function (filteredNetworks) {
                             machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';
