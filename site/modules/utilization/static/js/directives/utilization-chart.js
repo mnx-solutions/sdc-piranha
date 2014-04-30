@@ -83,7 +83,7 @@
                         var currentMonthDaysMax = daysMax;
                         var now = new Date();
                         if (now.getFullYear() === data.year && now.getMonth() + 1 === data.month) {
-                            currentMonthDaysMax = now.getDate();
+                            currentMonthDaysMax = now.getDate() - 1;
                         }
                         var amountData = data.amount;
                         graphData.daily.splice(0);
@@ -92,11 +92,10 @@
                         ticksData.splice(0);
                         for (var day = 1; day <= daysMax; day++) {
                             var dayStr = data.year + '-' + pad(data.month) + '-' + pad(day);
-                            var zeroValue = (day < currentMonthDaysMax && typeof (amountData[dayStr]) !== "undefined") ? 0.00000000000000001 : 0;
-                            var amount = amountData[dayStr] || zeroValue;
+                            var amount = amountData[dayStr] || 0;
                             ticksData.push(day);
                             graphData.daily.push({x: day, y: amount});
-                            graphData.cumulative.push({x: day, y: amount ? cumulativeAmount : 0});
+                            graphData.cumulative.push({x: day, y: day <= currentMonthDaysMax ? cumulativeAmount : 0});
                             cumulativeAmount += amount;
                         }
                         graph.update();
