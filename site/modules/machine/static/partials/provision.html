@@ -62,6 +62,9 @@
                                             | <a href="#!/compute/create" data-ng-show="instanceType != 'Public'" data-ng-click="selectInstanceType('Public');">Public Images</a>
                                         <a href="#!/compute/create/custom" data-ng-show="instanceType != 'Saved'" data-ng-click="selectInstanceType('Saved');">Saved Images</a>
                                         </span>
+                                        <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
+                                            | <a href="#!/compute/create/recent">Recent Instances</a>
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="advanced-table tooltip-hover">
@@ -358,11 +361,5 @@
         </div>
     </div>
 
-    <div data-ng-show="keys.length == 0" class="container-min-width">
-        <h4>Hello there!</h4>
-        <div data-translate>I see you have no SSH keys configured.</div>
-        <div class="pull-left" style="margin-top: 20px">
-            <a href="#!/account/ssh" class="btn orange align-text-btn">Add a SSH key</a>
-        </div>
-    </div>
+    <div data-no-ssh-keys data-keys="keys"></div>
 </div>

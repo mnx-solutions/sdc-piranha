@@ -24,6 +24,9 @@ window.JP.main.config([
         }).when('/compute/create', {
             title: 'Create Instance',
             action: 'machine.provision'
+        }).when('/compute/create/recent', {
+            title: 'Create Instance',
+            action: 'machine.recent'
         }).when('/compute/create/:imageid', {
             title: 'Create Instance from custom image',
             action: 'machine.provision'

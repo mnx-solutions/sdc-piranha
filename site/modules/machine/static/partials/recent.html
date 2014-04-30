@@ -1,0 +1,70 @@
+<div class="container-fluid container-position" data-ng-controller="Machine.ProvisionController">
+    <div data-breadcrumbs></div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div data-ng-hide="loading">
+        <div class="container-min-width" data-ng-show="keys.length">
+            <h3 class="page-title no-breadcrumb-line container-min-width" data-translate>Recent Instances</h3>
+            <div class="ci-desc">Select one of image / package combinations you seem to be liking most.</div>
+            <div class="control-panel">
+                <span>Data Center:</span>
+                <div class="provisioning-header-left-button btn-group">
+                    <button class="btn datacenter-select" data-ng-show="data.datacenter">{{data.datacenter}}</button>
+                    <button class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dd-datacenter">
+                        <li data-ng-repeat="datacenter in datacenters">
+                            <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+                        </li>
+                    </ul>
+                    <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
+                </div>
+                <div class="hotlinks pull-right">
+                    <a href="#!/compute/create/simple" data-ng-click="clickBackToQuickStart()">Back to Quick Start</a>
+                    | <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">View More Images </a>
+                    <span data-ng-show="features.imageUse != 'disabled'">
+                        | <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved Images</a>
+                    </span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="simple-image recent-image small-icon"
+                     data-ng-repeat="instance in recentInstances | limitTo:8"
+                     data-ng-class="instance.datasetName | logo"
+                     data-ng-click="createRecent(instance)">
+                    <div class="name">
+                        <p>{{instance.datasetName}}</p>
+                    </div>
+                    <div class="description">
+                        <p>{{instance.description}}</p>
+                    </div>
+                    <div class="info">
+                        <p>MEMORY</p><span><p>{{ instance.memory | sizeFormat }}</p></span>
+                    </div>
+                    <div class="info">
+                        <p>vCPUs</p><span><p>{{ instance.vcpus }}</p></span>
+                    </div>
+                    <div class="info">
+                        <p>Disk</p><span><p>{{ instance.disk | sizeFormat }}</p></span>
+                    </div>
+
+                    <div class="btn-block">
+                        <span class="price">${{ instance.price }}</span>
+                        <span class="hour">per hour</span>
+                        <button type="button"
+                                class="btn select-btn small"
+                                data-ng-click="createRecent(instance)">
+                            <b>Select</b>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-show="recentInstances.length == 0" class="container-min-width">
+            No recent image / package combinations found.  You may need to provision some more instances.
+        </div>
+
+        <div data-no-ssh-keys data-keys="keys"></div>
+    </div>
+</div>
