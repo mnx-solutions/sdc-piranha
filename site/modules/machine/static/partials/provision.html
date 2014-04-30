@@ -189,8 +189,9 @@
                                             <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
                                                 <div class="accordion-heading">
                                                     <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
-                                                       href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)">
+                                                       href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)" data-ng-class="{'filter-on': filterProperty != 'No filter'}">
                                                         {{packageType}}
+                                                        <span class="accordion-package-count">{{(packages | filter:filterPackagesByProp | filter:filterPackages(packageType)).length}}</span>
                                                     </a>
                                                 </div>
                                                 <div id="collapse_{{$index}}" class="accordion-body collapse">

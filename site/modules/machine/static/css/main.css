@@ -354,6 +354,7 @@
     border-bottom: 0;
 }
 .accordion-heading .accordion-toggle {
+    position: relative;
     display: block;
     padding: 8px 15px;
     cursor: pointer;
@@ -1169,7 +1170,19 @@
     width: 80px;
     padding-left: 45px;
 }
-
+.accordion-package-count {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    width: 35px;
+    text-align: center;
+    line-height: 30px;
+    font-size: 15px;
+}
+.accordion-package-count,
+.accordion-toggle i {
+    pointer-events: none;
+}
 .preselected {
     width: 253px;
     min-height: 420px;
