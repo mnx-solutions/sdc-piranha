@@ -71,6 +71,7 @@
             if ($scope.features.freetier === 'enabled') {
                 $scope.freeTierOptions = FreeTier.freetier();
             }
+            var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
 
             $q.all([
                 $q.when($scope.keys),
@@ -146,7 +147,7 @@
                         });
                     }
                 }
-                $scope.loading = false;
+                $scope.loading = provisionBundle && provisionBundle.manualCreate === false && provisionBundle.allowCreate === true;
             });
 
             $scope.data = {};
@@ -829,7 +830,7 @@
             } else {
                 setDatacenter();
             }
-            var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
+
             if (provisionBundle) {
                 if (provisionBundle.manualCreate) {
                     $scope.data = provisionBundle.machine;
