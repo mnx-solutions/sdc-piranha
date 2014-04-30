@@ -125,6 +125,59 @@ window.fn = [];
             return ret.promise;
         };
 
+        service.datasetByName = function (params) {
+            if (typeof(params) === 'string') {
+                params = { name: params };
+            }
+
+            params = params || {};
+            if (!params.datacenter) {
+                params.datacenter = 'all';
+            }
+
+            var deferred = $q.defer();
+
+            service.updateDatasets(params.datacenter);
+            datasets.job[params.datacenter].deferred.then(function (data) {
+                var listDatasets = {};
+                var listVersions = [];
+
+                data.forEach(function (dataset) {
+                    if (!listDatasets[dataset.name]) {
+                        listDatasets[dataset.name] = {};
+                    }
+
+                    listDatasets[dataset.name][dataset.version] = dataset.id;
+                    listVersions[dataset.name] = Object.keys(listDatasets[dataset.name]);
+
+                    if (listVersions[dataset.name].length > 1) {
+                        listVersions[dataset.name].sort(function (a, b) {
+                            var i;
+                            var re = /(\.0)+[^\.]*$/;
+                            a = (a + '').replace(re, '').split('.');
+                            b = (b + '').replace(re, '').split('.');
+                            var len = Math.min(a.length, b.length);
+                            for (i = 0; i < len; i++) {
+                                var cmp = parseInt(a[i], 10) - parseInt(b[i], 10);
+                                if (cmp !== 0) {
+                                    return cmp;
+                                }
+                            }
+                            return a.length - b.length;
+                        });
+                    }
+                });
+
+                var resolve = '';
+                if (listVersions[params.name]) {
+                    resolve = listDatasets[params.name][listVersions[params.name].slice(-1)];
+                }
+                deferred.resolve(resolve);
+            });
+
+            return deferred.promise;
+        };
+
         if (!datasets.job.all) {
             // run updatePackages
             service.updateDatasets();
