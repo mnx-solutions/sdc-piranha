@@ -45,7 +45,7 @@
             Account.getAccount(true).then(function (account) {
                 $scope.account = account;
             });
-            $scope.keys = Account.getKeys();
+            $scope.keys = [];
             $scope.datacenters = [];
             $scope.networks = [];
             $scope.indexPackageTypes = {};
@@ -59,6 +59,7 @@
             $scope.currentSlidePageIndex = 0;
             $scope.currentStep = '';
             $scope.datasetsLoading = false;
+            var osByDatasets = {};
 
             $scope.filterValues = {
                 'No filter': [],
@@ -101,13 +102,14 @@
             var recentInstances = getCreatedMachines();
 
             $q.all([
-                $q.when($scope.keys),
+                $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
                 $q.when($scope.preSelectedImage),
                 $q.when(Machine.getSimpleImgList()),
                 $q.when($scope.freeTierOptions),
                 $q.when(recentInstances)
             ]).then(function (result) {
+                $scope.keys = result[0];
                 $scope.datacenters = result[1];
                 $scope.simpleImages = [];
                 var simpleImages = result[3]['images'];
@@ -246,9 +248,18 @@
                         });
                         return;
                     }
+                    var provisionMachineData = machine || $scope.data;
+                    if ((!$scope.keys || $scope.keys.length === 0) && osByDatasets[provisionMachineData.dataset] !== 'windows') {
+                        $rootScope.commonConfig('provisionBundle', {
+                            manualCreate: false,
+                            allowCreate: false,
+                            machine: provisionMachineData
+                        });
 
-                    var machineData = machine || $scope.data;
-                    Machine.provisionMachine(machineData).done(function (err, job) {
+                        $location.path('/compute/ssh');
+                        return;
+                    }
+                    Machine.provisionMachine(provisionMachineData).done(function (err, job) {
                         var newMachine = job.__read();
                         if ($scope.features.freetier === 'enabled') {
                             // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
@@ -822,7 +833,8 @@
                 $scope.datasetsLoading = false;
                 datasets.forEach(function (dataset) {
                     operating_systems[dataset.os] = 1;
-
+                    osByDatasets[dataset.id] = dataset.os;
+                    
                     if (!dataset_names[dataset.name]) {
                         dataset_names[dataset.name] = true;
                         unique_datasets.push(dataset);

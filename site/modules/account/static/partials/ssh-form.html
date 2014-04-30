@@ -1,5 +1,5 @@
 <div class="line ssh-key-container">
-    <div class="accordion-package-title" data-ng-hide="keys.length < 1">
+    <div class="accordion-ssh-package-title" data-ng-hide="keys.length < 1">
         <span class="key-name">Key Name</span>
         <span class="key-hash"> / UUID</span>
     </div>
@@ -39,16 +39,21 @@
     <div class="row-fluid">
         <div class="item-list-container">
             <div data-ng-show="keys.length < 1 && !loadingKeys">
-                <div>You don't have any SSH keys</div>
+                <div>{{noKeysMessage || 'You don\'t have any SSH keys'}}</div>
             </div>
             <div data-ng-show="loadingKeys">
                 <div class="loading-medium"></div>
             </div>
         </div>
         <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
-        <div class="new-key-button pull-right" data-ng-hide="loading">
+        <div class="new-key-button pull-right" data-ng-hide="loading || isCreateInstanceStep">
             <div data-account-ssh-create></div>
             <div data-account-ssh-import></div>
+        </div>
+        <div class="new-key-button pull-right" data-ng-show="isCreateInstanceStep">
+            <button class="btn light effect-orange-button"
+                    data-ng-click="createInstance()"
+                    data-translate>Create Instance</button>
         </div>
         <div class="new-key-button pull-right" data-ng-show="loading">
             <div class="row">
