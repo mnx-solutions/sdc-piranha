@@ -33,7 +33,9 @@ module.exports = function execute(scope, app, callback) {
 
         // build the query string
         campaignId = campaignId || req.cookies.campaignId;
-        var querystring = (brandingEnabled ? 'branding=orange&' : '') +
+        var querystring =
+            (brandingEnabled && scope.config.features.allowSkipBilling === 'enabled' ? 'allowSkipBilling=true&' : '') +
+            (brandingEnabled ? 'branding=orange&' : '') +
             (campaignId ? 'cid=' + campaignId + '&' : '') +
             (brandingEnabled && phoneVerificationDisabled ? 'hideVerify=true&' : '') +
             'keyid=' + encodeURIComponent(config.keyId) + '&' +

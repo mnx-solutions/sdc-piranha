@@ -46,8 +46,10 @@ module.exports = function execute(scope, app) {
     if (config.features.allowSkipBilling === 'enabled') {
         app.get('/signup/skipBilling', function (req, res) {
             SignupProgress.setMinProgress(req, 'billing', function () {
-                scope.log.info('User skipped Billing step');
-                res.json({success: true});
+                scope.log.info('User skipped Billing and SSH step');
+                SignupProgress.setMinProgress(req, 'ssh', function () {
+                    res.json({success: true});
+                });
             });
         });
     }
