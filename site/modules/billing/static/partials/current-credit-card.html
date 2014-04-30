@@ -17,7 +17,10 @@
             <span class="value">{{creditCard.cardHolderInfo.cardHolderName}}</span>
         </p>
     </div>
-    <div data-ng-show="!creditCard.cardNumber" class="name" data-translate>
+    <div data-ng-show="!provisionEnabled" class="name" data-translate>
+        Payment method is not yet provided
+    </div>
+    <div data-ng-show="provisionEnabled && !creditCard.cardNumber" class="name" data-translate>
         Alternative Payment Method on File
     </div>
     <!-- {{creditCardJSON}} -->
