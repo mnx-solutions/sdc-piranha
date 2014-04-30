@@ -73,7 +73,7 @@
                 $location.path('/account/payment');
             };
 
-            return factory.error('Error', 'Please complete profile information before proceeding.', callback);
+            return factory.message('Attention', 'Please complete profile information before proceeding.', callback);
         };
 
         factory.errorObj = function (error, callback, customMessage) {
