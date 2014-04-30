@@ -94,13 +94,49 @@
                                 </tr>
                                 <tr data-ng-show="machine.primaryIp">
                                     <td>Login</td>
-                                    <td data-ng-show="machine.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIp}}</td>
-                                    <td data-ng-show="machine.os == 'windows'">Use remote desktop to connect to {{machine.primaryIp}}</td>
+                                    <td data-ng-show="dataset.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIp}}</td>
+                                    <td data-ng-show="dataset.os == 'windows'">Use remote desktop to connect to {{machine.primaryIp}}</td>
                                 </tr>
                             </table>
             </div>
         </div>
     </div>
+
+                <div class="accordion-group" data-ng-show="machine.metadata.credentials">
+                    <div class="accordion-heading">
+                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
+                           href="#collapse_credentials">
+                            Credentials
+                        </a>
+                    </div>
+                    <div id="collapse_credentials" class="accordion-body collapse">
+                        <div class="accordion-inner" data-ng-show="machine.metadata.credentials">
+                            <div class="accordion-line">
+                                <table data-ng-repeat="(key,credential) in machine.metadata.credentials">
+                                    <tr>
+                                        <td style="width:140px">System</td>
+                                        <td class="credentials">{{credential.system}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Username</td>
+                                        <td class="credentials">{{credential.username}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Password</td>
+                                        <td style="min-width: 260px;"><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)" class="credentials">{{credential.password}}</span></td>
+                                        <td nowrap>
+                                            <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
+                                            <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="accordion-inner" data-ng-hide="machine.metadata.credentials">
+                            <p>There is no credentials for this instance.</p>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="accordion-group">
                     <div class="accordion-heading">
@@ -319,41 +355,6 @@
                             </div>
                         </div>
                     </div>
-                <div class="accordion-group" data-ng-show="machine.metadata.credentials">
-                    <div class="accordion-heading">
-                        <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
-                            href="#collapse_credentials">
-                            Credentials
-                        </a>
-                        </div>
-                    <div id="collapse_credentials" class="accordion-body collapse">
-                        <div class="accordion-inner" data-ng-show="machine.metadata.credentials">
-                            <div class="accordion-line">
-                                <table data-ng-repeat="(key,credential) in machine.metadata.credentials">
-                                    <tr>
-                                        <td style="width:140px">System</td>
-                                        <td >{{credential.system}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Username</td>
-                                        <td>{{credential.username}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Password</td>
-                                        <td style="min-width: 260px;"><span data-ng-show="isPasswordVisible(key)">************</span><span data-ng-hide="isPasswordVisible(key)">{{credential.password}}</span></td>
-                                        <td nowrap>
-                                            <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="isPasswordVisible(key)">Show</a>
-                                            <a class="btn light show-hide margin-bottom-5 effect-orange-button" data-translate data-ng-click="togglePassword(key)" data-ng-show="!isPasswordVisible(key)">Hide</a>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="accordion-inner" data-ng-hide="machine.metadata.credentials">
-                            <p>There is no credentials for this instance.</p>
-                        </div>
-                    </div>
-                </div>
                 <div class="accordion-group" data-ng-show="features.firewall != 'disabled' && machine">
                     <div class="accordion-heading">
                         <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion1"
