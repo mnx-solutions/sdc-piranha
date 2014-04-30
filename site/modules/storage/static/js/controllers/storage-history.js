@@ -12,7 +12,7 @@
                 $scope.placeHolderText = 'filter jobs';
 
                 if ($scope.features.manta === 'enabled') {
-                    Account.checkProvisioning({btnTitle: 'Submit and access Job History'}, function () {
+                    Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
                         Account.getUserConfig().$load(function (err, config) {
                             $scope.jobs = getJobsList();
                             $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
