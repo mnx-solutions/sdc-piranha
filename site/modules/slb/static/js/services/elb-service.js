@@ -228,11 +228,14 @@
                 }
             }
 
+            service.creatingController = false;
             service.createController = function createController() {
+                service.creatingController = true;
                 var d = $q.defer();
                 serverTab.call({
                     name: 'SscMachineCreate',
                     done: function (err, job) {
+                        service.creatingController = false;
                         if (err) {
                             d.reject(err);
                             return;
