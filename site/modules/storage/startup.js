@@ -13,6 +13,10 @@ module.exports = function execute(scope) {
         var jobPath = manta.jobPath(jobId, call.req.session.userName) + path;
 
         client.get(jobPath, function (err, stream) {
+            if (err) {
+                callback(err);
+                return;
+            }
             var body = '';
             stream.on('data', function (data) {
                 body += data;
