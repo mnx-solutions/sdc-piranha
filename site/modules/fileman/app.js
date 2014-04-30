@@ -26,7 +26,9 @@ module.exports = function (scope, app) {
                 filePath = filePath.replace(/\/+/g, '/');
 
                 req.log.info({filePath: filePath}, 'Uploading file');
-                client.put(filePath, rs, callback);
+                rs.pipe(client.createWriteStream(filePath));
+                rs.on('end', callback);
+                rs.on('error', callback);
             }
         }, function (error) {
             if (error) {
