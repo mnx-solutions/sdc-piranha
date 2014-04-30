@@ -639,6 +639,7 @@
 
             $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {
                 return function (item) {
+                    //TODO: improve to have one exit point
                     if ($scope.datasetType !== item.type || item.freeTierHidden
                         || isPackageTypeCollapsed && packageType === item.group) {
                         return false;
@@ -646,9 +647,25 @@
                     else if (packageType && packageType !== item.group) {
                         return isPackageTypeCollapsed && $scope.collapsedPackageTypes.indexOf(item.group) === -1;
                     }
-                    else {
-                        return true;
+
+                    if ($scope.selectedDataset && $scope.selectedDataset.requirements) {
+                        var memory = item.memory && parseInt(item.memory, 10);
+                        if (memory) {
+                            var requirements = $scope.selectedDataset.requirements;
+                            if (requirements.min_memory && memory < parseInt(requirements.min_memory, 10)) {
+                                return false;
+                            }
+                            if (requirements.max_memory && memory > parseInt(requirements.max_memory, 10)) {
+                                return false;
+                            }
+                        }
                     }
+
+                    if (packageType && packageType !== item.group) {
+                        return false;
+                    }
+
+                    return true;
                 };
             };
 
