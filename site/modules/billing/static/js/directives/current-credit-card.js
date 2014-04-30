@@ -5,8 +5,9 @@
     app.directive('currentCreditCard',[
         'BillingService',
         'localization',
+        'Account',
 
-        function (BillingService, localization) {
+        function (BillingService, localization, Account) {
 
             return {
                 restrict: 'A',
@@ -18,6 +19,9 @@
                 },
 
                 link: function ($scope) {
+                    Account.getAccount().then(function (account) {
+                        $scope.provisionEnabled = account.provisionEnabled;
+                    });
                     $scope.creditCard = $scope.creditCard || BillingService.getDefaultCreditCard();
                     $scope.$on('creditCardUpdate', function (event, cc) {
                         $scope.creditCard = cc;
