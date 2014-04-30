@@ -11,15 +11,23 @@
                 var jobId = requestContext.getParam('jobid');
 
                 $scope.job = null;
+                $scope.loading = true;
 
                 $scope.init = function () {
-                    $q.when(Storage.getJob(jobId)).then(
-                        function (result) {
-                            $scope.job = result;
-                            $scope.outputs = Storage.getOutput(jobId);
-                            $scope.inputs = Storage.getInput(jobId);
-                            $scope.errors = Storage.getErrors(jobId);
-                            $scope.failures = Storage.getFailures(jobId);
+                    $q.all([
+                        $q.when(Storage.getJob(jobId)),
+                        $q.when(Storage.getOutput(jobId)),
+                        $q.when(Storage.getInput(jobId)),
+                        $q.when(Storage.getErrors(jobId)),
+                        $q.when(Storage.getFailures(jobId))
+                    ]).then(
+                        function (results) {
+                            $scope.job = results[0];
+                            $scope.outputs = results[1];
+                            $scope.inputs = results[2];
+                            $scope.errors = results[3];
+                            $scope.failures = results[4];
+                            $scope.loading = false;
                         },
                         function () {
                             $location.url('/manta/jobs');

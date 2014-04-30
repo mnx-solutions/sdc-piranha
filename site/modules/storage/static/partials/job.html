@@ -1,102 +1,96 @@
 <div class="container-fluid container-position" data-ng-controller="Storage.JobDetailsController">
     <div data-breadcrumbs></div>
 
-    <h3 class="page-title">{{ job.name + ' - ' + job.id }}</h3>
+    <h3 class="page-title">Job Detail</h3>
 
-    <div class="row">
-        <div class="span6">
-            <div class="row">
-                <div class="span4">
-                    <div>
-                        <h4>Job status</h4>
-                        <table class="table table-full-width">
-                            <tr>
-                                <th>State:</th>
-                                <th>Cancelled:</th>
-                                <th>Input done:</th>
-                            </tr>
-                            <tr>
-                                <td>{{ job.state }}</td>
-                                <td>{{ job.cancelled }}</td>
-                                <td>{{ job.inputDone }}</td>
-                            </tr>
-                        </table>
-
-                        <div>Time Created: {{ job.timeCreated }}</div>
-                        <div data-ng-show="job.timeDone">Time Completed: {{ job.timeDone }}</div>
-                    </div>
-                </div>
-                <div class="span2">
-                    <h4>Stats</h4>
-                    <table class="table table-striped table-full-width">
-                        <tr>
-                            <td>errors</td>
-                            <td>{{ job.stats.errors }}</td>
-                        </tr>
-                        <tr>
-                            <td>outputs</td>
-                            <td>{{ job.stats.outputs }}</td>
-                        </tr>
-                        <tr>
-                            <td>retries</td>
-                            <td>{{ job.stats.retries }}</td>
-                        </tr>
-                        <tr>
-                            <td>tasks</td>
-                            <td>{{ job.stats.tasks }}</td>
-                        </tr>
-                        <tr>
-                            <td>tasks done</td>
-                            <td>{{ job.stats.tasksDone }}</td>
-                        </tr>
-                    </table>
-                </div>
+    <div class="loading-large" data-ng-show="loading"></div>
+    <div data-ng-show="!loading">
+        <div class="row job-info-container">
+            <div class="column job-common-container">
+                <table class="job-table job-common">
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ job.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>ID</td>
+                        <td><b>{{ job.id }}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Input Done</td>
+                        <td><span class="state-label state-label-input">{{ job.inputDone }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td><span class="state-label state-label-state">{{ job.state }}</span></td>
+                    </tr>
+                    <tr>
+                        <td>Cancelled</td>
+                        <td><span class="state-label state-label-cancelled">{{ job.cancelled }}</span></td>
+                    </tr>
+                </table>
             </div>
-
-            <div data-ng-show="inputs.length">
-                <h4>inputs <span>{{ inputs.length }}</span></h4>
-                <ul>
-                    <li data-ng-repeat="input in inputs">{{ input }}</li>
-                </ul>
+            <div class="column job-stats-container">
+                <table class="job-table job-stats">
+                    <tr class="job-stats-row">
+                        <td>{{ job.stats.errors }}</td>
+                        <td>Errors</td>
+                    </tr>
+                    <tr class="job-stats-row">
+                        <td>{{ job.stats.outputs }}</td>
+                        <td>Outputs</td>
+                    </tr>
+                    <tr class="job-stats-row">
+                        <td>{{ job.stats.retries }}</td>
+                        <td>Retries</td>
+                    </tr>
+                    <tr class="job-stats-row">
+                        <td>{{ job.stats.tasks }}</td>
+                        <td>Tasks</td>
+                    </tr>
+                    <tr class="job-stats-row">
+                        <td>{{ job.stats.tasksDone }}</td>
+                        <td>Tasks done</td>
+                    </tr>
+                </table>
             </div>
-            <div data-ng-show="job.phases.length">
-                <div ng-repeat="phase in job.phases">
-                    <h4>{{ phase.type }} step</h4>
-                    <code>{{ phase.exec }}</code>
+            <div class="column job-date-container">
+                <button data-ng-click="cloneJob()" class="btn orange effect-orange-button pull-right">Clone Job</button>
+                <div class="job-date">
+                    Time Created
+                    <p class="job-date-value">{{ job.timeCreated | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                </div>
+                <div class="job-date" data-ng-show="job.timeDone">
+                    Time Completed
+                    <p class="job-date-value">{{ job.timeDone | date:'yyyy-MM-dd HH:mm:ss'}}</p>
                 </div>
             </div>
         </div>
-        <div class="span6">
-            <h4>Assets will be here...</h4>
+        <div class="row">
+            <div class="span6">
+                <div data-job-section
+                     data-name="'Inputs'"
+                     data-objects="inputs"></div>
 
-            <div data-ng-show="outputs.length">
-                <h4>Outputs <span>{{ outputs.length }}</span></h4>
-                <ul>
-                    <li data-ng-repeat="out in outputs"><code>{{ out }}</code></li>
-                </ul>
+                <div data-job-section
+                     data-name="'Options'"></div>
+
+                <div data-job-section
+                     data-name="'Map Step'"></div>
             </div>
+            <div class="span6">
+                <div data-job-section
+                     data-name="'Outputs'"
+                     data-objects="outputs"></div>
 
-            <div data-ng-show="errors.length">
-                <h4>Errors <span>{{ errors.length }}</span></h4>
-                <ul>
-                    <li data-ng-repeat="error in errors">{{ error }}</li>
-                </ul>
+                <div data-job-section
+                     data-name="'Errors'"
+                     data-objects="errors"></div>
+
+                <div data-job-section
+                     data-name="'Failures'"
+                     data-objects="failures"></div>
             </div>
-
-            <div data-ng-show="failures.length">
-                <h4>Failures <span>{{ failures.length }}</span></h4>
-                <ul>
-                    <li data-ng-repeat="fail in failures">{{ fail }}</li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class="span4 offset8">
-            <button data-ng-click="cloneJob()" class="button">Clone Job</button>
-            <button data-ng-hide="job.state == 'done' || job.state == 'canceled'" data-ng-click="cancelJob()" class="button">Cancel</button>
         </div>
     </div>
-    <pre>{{ job | json }}</pre>
 </div>

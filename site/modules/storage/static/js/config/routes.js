@@ -15,7 +15,8 @@ window.JP.main.config(['routeProvider', function (routeProvider) {
             action: 'storage.builder'
         })
         .when('/manta/jobs/:jobid', {
-            title: 'Job details',
-            action: 'storage.job'
+            title: 'Job History',
+            action: 'storage.job',
+            showLatest: true
         });
 }]);
