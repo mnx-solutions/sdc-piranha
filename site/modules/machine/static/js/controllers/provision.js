@@ -248,65 +248,65 @@
                         });
                         return;
                     }
-                    var provisionMachineData = machine || $scope.data;
-                    if ((!$scope.keys || $scope.keys.length === 0) && osByDatasets[provisionMachineData.dataset] !== 'windows') {
+                    var machineData = machine || $scope.data;
+                    if ($scope.keys.length === 0 && osByDatasets[machineData.dataset] !== 'windows') {
                         $rootScope.commonConfig('provisionBundle', {
                             manualCreate: false,
                             allowCreate: false,
-                            machine: provisionMachineData
+                            machine: machineData
                         });
-
+                        $rootScope.commonConfig('datacenter', $scope.data.datacenter);
                         $location.path('/compute/ssh');
-                        return;
-                    }
-                    Machine.provisionMachine(provisionMachineData).done(function (err, job) {
-                        var newMachine = job.__read();
-                        if ($scope.features.freetier === 'enabled') {
-                            // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
-                            $scope.freetier = FreeTier.freetier();
-                        }
-                        $q.when(Machine.machine(), function (listMachines) {
-                            if (newMachine.id && listMachines.length === 1) {
-                                $$track.marketo_machine_provision($scope.account);
-                            } else if (err && listMachines.length === 0) {
-                                $location.path('/compute/create/simple');
+                    } else {
+                        Machine.provisionMachine(machineData).done(function (err, job) {
+                            var newMachine = job.__read();
+                            if ($scope.features.freetier === 'enabled') {
+                                // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
+                                $scope.freetier = FreeTier.freetier();
+                            }
+                            $q.when(Machine.machine(), function (listMachines) {
+                                if (newMachine.id && listMachines.length === 1) {
+                                    $$track.marketo_machine_provision($scope.account);
+                                } else if (err && listMachines.length === 0) {
+                                    $location.path('/compute/create/simple');
+                                }
+                            });
+
+                            if (!err && $scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
+                                $q.when($scope.freeTierOptions).then(function () {
+                                    if (!machineData.freetier) {
+                                        $scope.createdMachines = Account.getUserConfig().$child('createdMachines');
+                                        $scope.createdMachines.$load(function (error, config) {
+                                            config.createdMachines = config.createdMachines || [];
+                                            var creationDate = new Date(newMachine.created).getTime();
+                                            var listedMachine = config.createdMachines.find(function (machine) {
+                                                return machine.dataset === machineData.dataset &&
+                                                        machine.package === machineData.package;
+                                            });
+
+                                            if (listedMachine) {
+                                                listedMachine.provisionTimes += 1;
+                                                listedMachine.creationDate = creationDate;
+                                            } else {
+                                                var createdMachine = {
+                                                    dataset: machineData.dataset,
+                                                    package: machineData.package,
+                                                    provisionTimes: 1,
+                                                    creationDate: creationDate
+                                                };
+                                                config.createdMachines.push(createdMachine);
+                                            }
+
+                                            config.dirty(true);
+                                            config.$save();
+                                        });
+                                    }
+                                });
                             }
                         });
 
-                        if (!err && $scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
-                            $q.when($scope.freeTierOptions).then(function () {
-                                if (!machineData.freetier) {
-                                    $scope.createdMachines = Account.getUserConfig().$child('createdMachines');
-                                    $scope.createdMachines.$load(function (error, config) {
-                                        config.createdMachines = config.createdMachines || [];
-                                        var creationDate = new Date(newMachine.created).getTime();
-                                        var listedMachine = config.createdMachines.find(function (machine) {
-                                            return machine.dataset === machineData.dataset &&
-                                                machine.package === machineData.package;
-                                        });
-
-                                        if (listedMachine) {
-                                            listedMachine.provisionTimes += 1;
-                                            listedMachine.creationDate = creationDate;
-                                        } else {
-                                            var createdMachine = {
-                                                dataset: machineData.dataset,
-                                                package: machineData.package,
-                                                provisionTimes: 1,
-                                                creationDate: creationDate
-                                            };
-                                            config.createdMachines.push(createdMachine);
-                                        }
-
-                                        config.dirty(true);
-                                        config.$save();
-                                    });
-                                }
-                            });
-                        }
-                    });
-
-                    $location.path('/compute');
+                        $location.path('/compute');
+                    }
                 };
                 var submitBillingInfo = {
                     btnTitle: 'Submit and Create Instance',

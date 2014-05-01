@@ -38,7 +38,7 @@
         <!-- Part shown when user has keys -->
     <div class="row-fluid">
         <div class="item-list-container">
-            <div data-ng-show="keys.length < 1 && !loadingKeys">
+            <div data-ng-show="(!keys || keys.length < 1) && !loadingKeys">
                 <div>{{noKeysMessage || 'You don\'t have any SSH keys'}}</div>
             </div>
             <div data-ng-show="loadingKeys">
@@ -50,7 +50,7 @@
             <div data-account-ssh-create></div>
             <div data-account-ssh-import></div>
         </div>
-        <div class="new-key-button pull-right" data-ng-show="isCreateInstanceStep">
+        <div class="new-key-button pull-right" data-ng-show="isCreateInstanceStep" data-ng-disabled="loading">
             <button class="btn light effect-orange-button"
                     data-ng-click="createInstance()"
                     data-translate>Create Instance</button>
