@@ -308,10 +308,8 @@
                         $location.path('/compute');
                     }
                 };
-                var submitBillingInfo = {};
-                if ($scope.keys.length <= 0) {
-                    submitBillingInfo.btnTitle = 'Next';
-                } else {
+                var submitBillingInfo = {btnTitle: 'Next'};
+                if ($scope.keys.length > 0) {
                     submitBillingInfo.btnTitle = 'Submit and Create Instance';
                     submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.'
                 }

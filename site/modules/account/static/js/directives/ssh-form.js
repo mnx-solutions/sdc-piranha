@@ -19,6 +19,13 @@
                 },
 
                 link: function ($scope) {
+                    $scope.getKeyName = function (key) {
+                        if (key.name === key.fingerprint) {
+                            return key.name.split(':').splice(-5).join('');
+                        }
+                        return key.name || '';
+                    };
+
                     $scope.updateKeys = function (cb) {
                         $scope.loadingKeys = true;
 
