@@ -16,7 +16,7 @@
             requestContext.setUpRenderContext('machine.ssh', $scope);
             localization.bind('machine', $scope);
             $scope.keys = [];
-            $scope.noKeysMessage = 'In order to provision your instance, you will need an SSH key';
+            $scope.noKeysMessage = 'Last Step: In order to provision your instance, you will need an SSH key';
             $scope.key = {};
             $scope.isCreateInstanceStep = false;
 
