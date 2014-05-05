@@ -3,11 +3,13 @@
 (function (app) {
     app.controller(
         'Support.IndexController',
-        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', function ($rootScope, $scope, $location, Support, $route, PopupDialog, BillingService, localization, Account) {
+        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', '$timeout', function ($rootScope, $scope, $location, Support, $route, PopupDialog, BillingService, localization, Account, $timeout) {
 
             $scope.loading = true;
             $scope.subscribingInProgress = true;
+            var supportPlanSelected = $rootScope.popCommonConfig('supportPlanSelected');
             var headLink = '/support';
+
             $scope.getPageData = function () {
                 $scope.subscribingInProgress = true;
                 $scope.levelSupport = 0;
@@ -21,19 +23,17 @@
                 });
                 $scope.loading = false;
                 $scope.subscribingInProgress = false;
+
+                if (supportPlanSelected) {
+                    setupPackage(supportPlanSelected.package);
+                    supportPlanSelected = null;
+                }
             };
 
             var getSupportData = function () {
-                var locationPath = $location.path();
-                Account.checkProvisioning({btnTitle: 'Submit and Access Support'}, function () {
-                    Support.support(function (error, supportPackages) {
-                        $rootScope.$broadcast('event:provisionChanged');
-                        $scope.supportPackages = supportPackages;
-                        $scope.getPageData();
-                    });
-                }, function () {
-                }, function (isSuccess) {
-                    $location.path(isSuccess ? locationPath : '/');
+                Support.support(function (error, supportPackages) {
+                    $scope.supportPackages = supportPackages;
+                    $scope.getPageData();
                 });
             };
 
@@ -46,9 +46,9 @@
                 }
             });
 
-            var subscribe = function (holder) {
+            var subscribe = function (supportPackage) {
                 $scope.subscribingInProgress = true;
-                BillingService.createSupportSubscription(holder.ratePlanId, function (err) {
+                BillingService.createSupportSubscription(supportPackage.ratePlanId, function (err) {
                     if (err) {
                         PopupDialog.error(
                             localization.translate(
@@ -68,23 +68,38 @@
                     }
                     getSupportData();
                 });
-            }
+            };
 
-            $scope.clickSignUp = function (holder, signup) {
-                if (holder.ratePlanId === '' || $scope.subscribingInProgress) {
+            function setupPackage(supportPackage, isUpgrade) {
+                if (supportPackage.ratePlanId === '' || $scope.subscribingInProgress) {
                     return;
                 }
 
-                if (signup) {
+                if (isUpgrade) {
+                    PopupDialog.confirm(
+                        localization.translate(
+                            $scope,
+                            null,
+                                'Confirm: ' + supportPackage.popUpTitle
+                        ),
+                        localization.translate(
+                            $scope,
+                            null,
+                                'Are you sure you want to upgrade for ' + supportPackage.popUpTitle + '?'
+                        ), function () {
+                            subscribe(supportPackage);
+                        }
+                    );
+                } else {
                     var confirmSignUp = function ($scope, dialog) {
-                        $scope.title = holder.popUpTitle;
+                        $scope.title = supportPackage.popUpTitle;
                         $scope.close = function (res) {
                             dialog.close(res);
                         };
                         $scope.clickOk = function (res) {
-                            subscribe(holder);
+                            subscribe(supportPackage);
                             dialog.close(res);
-                        }
+                        };
                     };
 
                     var opts = {
@@ -95,26 +110,25 @@
                         opts,
                         function () {}
                     );
-                } else {
-                    PopupDialog.confirm(
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Confirm: ' + holder.popUpTitle
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            'Are you sure you want to upgrade for ' + holder.popUpTitle + '?'
-                        ), function () {
-                            subscribe(holder);
-                        }
-                    );
                 }
+            }
+
+            $scope.clickSignUp = function (supportPackage, isUpgrade) {
+                var returnUrl = $location.path();
+                Account.checkProvisioning({btnTitle: 'Submit and Upgrade Support'}, function () {
+                    setupPackage(supportPackage, isUpgrade);
+                }, angular.noop, function (isSuccess) {
+                    $location.path(returnUrl);
+                    if (isSuccess) {
+                        $rootScope.commonConfig('supportPlanSelected', {
+                            package: supportPackage
+                        });
+                    }
+                });
             };
 
-            $scope.clickCallSales = function (holder) {
-                Support.callSalesLog(holder.title);
+            $scope.clickCallSales = function (supportPackage) {
+                Support.callSalesLog(supportPackage.title);
                 PopupDialog.message(
                     localization.translate(
                         $scope,
@@ -127,9 +141,8 @@
                         'Contact a Joyent representative at +1 855 4 JOYENT (+1 855 456-9368)'
                     ), function () {}
                 );
-            }
+            };
 
             getSupportData();
-
         }]);
 }(window.JP.getModule('support')));

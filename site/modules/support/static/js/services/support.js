@@ -17,7 +17,7 @@
                         }
                         supportGroups = job.__read();
 
-                        var supportGroupsArr = []
+                        var supportGroupsArr = [];
                         for (var supportGroupName in supportGroups) {
                             var supportGroup = supportGroups[supportGroupName];
                             supportGroup.name = supportGroupName;
@@ -47,15 +47,7 @@
                             return result;
                         };
 
-                        BillingService.getSubscriptions().then(function (subscriptions) {
-                            var subscribedRatePlanIds = [];
-                            subscriptions.forEach(function (subscription) {
-                                if (subscription.status === 'Active') {
-                                    subscription.ratePlans.forEach(function (ratePlan) {
-                                        subscribedRatePlanIds.push(ratePlan.productRatePlanId);
-                                    });
-                                }
-                            });
+                        var fillRatePlans = function (subscribedRatePlanIds, fillCallback) {
                             $q.all(supportGroupSkuRequests).then(function (skuResults) {
                                 supportGroupsArr.forEach(function (supportGroup) {
                                     supportGroup.packageHolders.forEach(function (packageHolder) {
@@ -69,10 +61,24 @@
                                         }
                                     });
                                 });
-                                callback(null, supportGroupsArr);
+                                fillCallback(null, supportGroupsArr);
                             });
+                        };
+
+                        BillingService.getSubscriptions().then(function (subscriptions) {
+                            var subscribedRatePlanIds = [];
+                            subscriptions.forEach(function (subscription) {
+                                if (subscription.status === 'Active') {
+                                    subscription.ratePlans.forEach(function (ratePlan) {
+                                        subscribedRatePlanIds.push(ratePlan.productRatePlanId);
+                                    });
+                                }
+                            });
+                            fillRatePlans(subscribedRatePlanIds, callback);
                         }, function (err) {
-                            callback(err);
+                            fillRatePlans([], function (fillErr, fillResult) {
+                                callback(err, fillResult);
+                            });
                         });
                     }
                 });
