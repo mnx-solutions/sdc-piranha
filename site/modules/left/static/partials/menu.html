@@ -69,6 +69,14 @@
                         <span class="selected-sub"></span>
                     </a>
                 </li>
+                <li class="sub"
+                    data-ng-class="{active: location.path().search('manta/builder') == 1}"
+                    data-ng-show="features.mantaJobs == 'enabled'">
+                    <a href="#!/manta/builder">
+                        <span class="titles" data-translate>Job Builder</span>
+                        <span class="selected-sub"></span>
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="nested usage-icon" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/dram') > 1 || location.path().search('/bandwidth') > 1}">
