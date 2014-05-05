@@ -27,6 +27,13 @@
                             $scope.inputs = results[2];
                             $scope.errors = results[3];
                             $scope.failures = results[4];
+                            $scope.steps = {};
+                            $scope.job.phases.forEach(function(step) {
+                                if (!$scope.steps[step.type] ) {
+                                    $scope.steps[step.type] = [];
+                                }
+                                $scope.steps[step.type].push(step.exec);
+                            });
                             $scope.loading = false;
                         },
                         function () {
