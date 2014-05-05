@@ -46,7 +46,7 @@
     margin-left: 55px !important;
 }
 .navbar-inner .container-fluid {
-    min-width: 690px;
+    min-width: 960px;
 }
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container {
     padding-left: 28px;
@@ -54,9 +54,6 @@
     padding-top: 45px;
 }
 
-.ng-scope{
-
-}
 #leftPanel + div {
     padding-left: 147px;
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app) {
-    app.directive('mainMenu', ['Menu', '$$track', 'PopupDialog', function (Menu, $$track, PopupDialog) {
+    app.directive('mainMenu', ['Menu', '$$track', 'PopupDialog', '$location', function (Menu, $$track, PopupDialog, $location) {
         return {
             link: function (scope) {
                 scope.mainMenu = Menu.getMenu();
@@ -12,6 +12,7 @@
 
                 Account.getAccount(true).then(function (account) {
                     $scope.account = account;
+                    $scope.provisionEnabled = account.provisionEnabled;
                 });
 
                 $scope.$on('accountUpdated', function (event, account) {
@@ -41,6 +42,19 @@
                         item.active = requestContext.startsWith(item.link);
                     });
                 });
+
+                $scope.completeAccount = function () {
+                    var submitBillingInfo = {
+                        btnTitle: 'Save Changes'
+                    };
+                    Account.checkProvisioning(submitBillingInfo, null, angular.noop, function (isSuccess) {
+                        $location.path(isSuccess ? '/account' : '/account/payment');
+                        if (isSuccess) {
+                            $scope.provisionEnabled = true;
+                        }
+                    });
+                };
+
             },
 
             templateUrl: 'menu/static/partials/menu.html'
