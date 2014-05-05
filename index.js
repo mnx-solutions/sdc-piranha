@@ -79,8 +79,8 @@ app.get('/version', function (req, res, next) {
             }
         } else {
             ret = {
-                features: features,
-                git: gitInfo
+                git: gitInfo,
+                features: features
             }
         }
 
