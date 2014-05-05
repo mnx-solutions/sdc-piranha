@@ -150,7 +150,7 @@ module.exports = function execute(scope) {
     server.onCall('JobCreate', {
         verify: function (data) {
             return typeof data
-                && data.hasOwnProperty('mapStep')
+                && (data.hasOwnProperty('mapStep') || data.hasOwnProperty('reduceStep'))
                 && data.hasOwnProperty('inputs')
                 && data.inputs.every(function (input) {
                     return input.charAt(0) === '/';
@@ -165,12 +165,13 @@ module.exports = function execute(scope) {
             var reduceStep = call.data.reduceStep;
             var assets = call.data.assets;
             var inputs = call.data.inputs;
-            var phases = [
-                {
+            var phases = [];
+            if (mapStep) {
+                phases.push({
                     exec: mapStep,
                     assets: assets
-                }
-            ];
+                });
+            }
             if (reduceStep) {
                 phases.push({
                     type: "reduce",

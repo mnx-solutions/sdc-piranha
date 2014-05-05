@@ -47,6 +47,10 @@
                             );
                         },
                         function (err) {
+                            var message = err;
+                            if ($scope.mapStep.length === 0 && $scope.reduceStep.length === 0) {
+                                message = 'You must fill in Map Step and/or Reduce Step fields.'
+                            }
                             PopupDialog.error(
                                 localization.translate(
                                     $scope,
@@ -56,7 +60,7 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    err
+                                    message
                                 ),
                                 function () {}
                             );
