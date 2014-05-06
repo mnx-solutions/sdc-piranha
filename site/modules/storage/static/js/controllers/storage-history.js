@@ -60,6 +60,13 @@
                     );
                 };
 
+                var getJobDetails = function (object) {
+                    if (!object.details) {
+                        object.details = Storage.getJob(object.id);
+                    }
+                    return object.details;
+                };
+
                 $scope.gridOrder = ['-mtime'];
                 $scope.gridProps = [
                     {
@@ -70,15 +77,85 @@
                         active: true
                     },
                     {
-                        id: 'id',
                         name: 'ID',
                         sequence: 2,
-                        active: true
+                        active: true,
+                        hideSorter: true,
+                        type: 'html',
+                        _getter: function (object) {
+                            return '<a href="#!/manta/jobs/' + object.name + '">' + object.name + '</a>';
+                        }
+                    },
+                    {
+                        name: 'Name',
+                        sequence: 3,
+                        active: true,
+                        type: 'async',
+                        hideSorter: true,
+                        _getter: function (object) {
+                            getJobDetails(object).then(function (details) {
+                                object._name = details.name;
+                            });
+                            return object._name;
+                        }
+                    },
+                    {
+                        name: 'Tasks',
+                        sequence: 4,
+                        active: true,
+                        type: 'async',
+                        hideSorter: true,
+                        _getter: function (object) {
+                            getJobDetails(object).then(function (details) {
+                                object.tasks = details.stats.tasks;
+                            });
+                            return object.tasks;
+                        }
+                    },
+                    {
+                        name: 'State',
+                        sequence: 5,
+                        active: true,
+                        type: 'async',
+                        hideSorter: true,
+                        _getter: function (object) {
+                            getJobDetails(object).then(function (details) {
+                                object.state = details.state;
+                            });
+                            return object.state;
+                        }
+                    },
+                    {
+                        name: 'Errors',
+                        sequence: 6,
+                        active: true,
+                        type: 'async',
+                        hideSorter: true,
+                        _getter: function (object) {
+                            getJobDetails(object).then(function (details) {
+                                object.errors = details.stats.errors;
+                            });
+                            return object.errors;
+                        }
+                    },
+                    {
+                        name: 'Outputs',
+                        sequence: 7,
+                        active: true,
+                        type: 'async',
+                        hideSorter: true,
+                        _getter: function (object) {
+                            getJobDetails(object).then(function (details) {
+                                object.outputs = details.stats.outputs;
+                            });
+                            return object.outputs;
+                        }
                     },
                     {
                         id: 'edit',
                         name: 'Action',
                         type: 'button',
+                        hideSorter: true,
                         btn: {
                             label: 'Clone',
                             getClass: function () {
@@ -102,7 +179,7 @@
 
                             }
                         },
-                        sequence: 3,
+                        sequence: 8,
                         active: true
                     }
                 ];
@@ -111,12 +188,12 @@
                 $scope.gridActionButtons = [];
 
                 $scope.exportFields = {
-                    ignore: []
+                    ignore: 'all'
                 };
                 $scope.columnsButton = false;
                 $scope.actionsButton = true;
                 $scope.instForm = true;
-                $scope.enabledCheckboxes = true;
+                $scope.enabledCheckboxes = false;
 
                 $scope.addNewJob = function () {
                     $location.path('/manta/builder');
