@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location', '$q',
-                function ($scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location, $q) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location', '$q',
+                function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location, $q) {
             localization.bind('storage', $scope);
             requestContext.setUpRenderContext('storage.history', $scope);
 
@@ -88,26 +88,18 @@
                                 return $scope.loading;
                             },
                             action: function (object) {
-                                Storage.getJob(object.id).then(
-                                    function (result) {
-                                        var job = {
-                                            name: result.name,
-                                            phases: result.phases
-                                        };
-                                        Storage.cloneJob(job).then(
-                                            function (res) {
-                                                var jobs = getJobsList();
-                                                $q.when(jobs).then(function (jobs) {
-                                                    $scope.jobs = jobs;
-                                                    showMessage('message', 'Message', res);
-                                                });
-                                            },
-                                            function (err) {
-                                                showMessage('error', 'Error', err);
-                                            }
-                                        );
-                                    }
-                                );
+                                Storage.getJob(object.id).then(function (result) {
+                                    Storage.getInput(object.id).then(function (inputs) {
+                                            var job = {
+                                                name: result.name,
+                                                phases: result.phases,
+                                                inputs: inputs
+                                            };
+                                            $rootScope.commonConfig('cloneJob', job);
+                                            $location.path('/manta/builder');
+                                    });
+                                });
+
                             }
                         },
                         sequence: 3,

@@ -134,19 +134,6 @@ module.exports = function execute(scope) {
         });
     });
 
-    server.onCall('JobClone', function (call) {
-        var job = call.data;
-        var client = Manta.createClient(call);
-
-        client.createJob(job, function (err, jobId) {
-            if (err) {
-                call.done(err);
-                return;
-            }
-            call.done(null, jobId);
-        });
-    });
-
     server.onCall('JobCreate', {
         verify: function (data) {
             return typeof data

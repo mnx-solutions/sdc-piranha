@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.JobBuilderController',
-        ['$scope', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog',
-            function ($scope, requestContext, localization, $q, Storage, PopupDialog) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog',
+            function ($rootScope, $scope, requestContext, localization, $q, Storage, PopupDialog) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.builder', $scope);
 
@@ -14,6 +14,34 @@
                 $scope.filePath = '';
                 $scope.mapStep = '';
                 $scope.reduceStep = '';
+
+                var cloneJob = $rootScope.popCommonConfig('cloneJob');
+
+                if (cloneJob) {
+                    $scope.jobName = cloneJob.name;
+
+                    cloneJob.phases.forEach(function (data) {
+                        if (data.type === 'map') {
+                            $scope.mapStep = data.exec;
+                        }
+                        if (data.type === 'reduce') {
+                            $scope.reduceStep = data.exec;
+                        }
+                    });
+
+                    var assets = cloneJob.phases[0].assets;
+                    if (assets) {
+                        $scope.dataAssets = assets.map(function (asset) {
+                            return {'filePath': asset};
+                        });
+                    }
+                    var inputs = cloneJob.inputs;
+                    if (inputs) {
+                        $scope.dataInputs = inputs.map(function (input) {
+                            return {'filePath': input};
+                        });
+                    }
+                }
 
                 $scope.createJob = function () {
                     var dataAssets = $scope.dataAssets.map(function (dataAsset) {
