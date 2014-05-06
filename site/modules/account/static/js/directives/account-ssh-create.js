@@ -89,10 +89,12 @@
                                                     // if we are in signup, show the download right away
                                                     $scope.iframe = '<iframe src="' + downloadLink + '"></iframe>';
                                                     if ($scope.nextStep) {
-                                                        $http.get('/signup/account/signup/passSsh').success(function (data) {
-                                                            // marked ssh step as passed
-                                                            window.location.href = '/main/#!/account/ssh';
-                                                        });
+                                                        setTimeout(function () {
+                                                            $http.get('/signup/account/signup/passSsh').success(function () {
+                                                                // marked ssh step as passed
+                                                                window.location.href = '/main/#!/account/ssh';
+                                                            });
+                                                        }, 1000);
                                                     }
                                                 }
                                             } else {
