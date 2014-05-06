@@ -78,7 +78,9 @@
                 $scope.freeTierOptions = FreeTier.freetier();
             }
             var provisionBundle = $rootScope.popCommonConfig('provisionBundle');
-
+            if (provisionBundle) {
+                $rootScope.commonConfig('datacenter', provisionBundle.machine.datacenter);
+            }
             function getCreatedMachines() {
                 var deferred = $q.defer();
                 if ($scope.isMantaEnabled && $scope.isRecentInstancesEnabled) {
@@ -214,6 +216,10 @@
                 return false;
             };
 
+            $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
+                $scope.keys = keys;
+            });
+
             $scope.selectNetwork = function (id) {
                 if ($scope.selectedNetworks.indexOf(id) > -1) {
                     $scope.selectedNetworks.splice($scope.selectedNetworks.indexOf(id), 1);
@@ -255,7 +261,6 @@
                             allowCreate: false,
                             machine: machineData
                         });
-                        $rootScope.commonConfig('datacenter', $scope.data.datacenter);
                         $location.path('/compute/ssh');
                     } else {
                         Machine.provisionMachine(machineData).done(function (err, job) {
@@ -357,7 +362,6 @@
                     if (!machine) {
                         $rootScope.commonConfig('provisionBundle', {
                             datacenters: $scope.datacenters,
-                            datacenter: $scope.data.datacenter,
                             datasetType: $scope.datasetType,
                             selectedDataset: $scope.selectedDataset,
                             filterProperty: $scope.filterProperty,
