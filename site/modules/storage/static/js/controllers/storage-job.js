@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.JobDetailsController',
-        ['$scope', 'requestContext', 'localization', 'Storage', '$location', '$q', 'PopupDialog',
-            function ($scope, requestContext, localization, Storage, $location, $q, PopupDialog) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', '$location', '$q', 'PopupDialog',
+            function ($rootScope, $scope, requestContext, localization, Storage, $location, $q, PopupDialog) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.job', $scope);
 
@@ -78,18 +78,11 @@
                 $scope.cloneJob = function () {
                     var job = {
                         name: $scope.job.name,
-                        phases: $scope.job.phases
+                        phases: $scope.job.phases,
+                        inputs: $scope.inputs
                     };
-
-                    $q.when(Storage.cloneJob(job)).then(
-                        function (res) {
-                            $scope.showMessage('Message', res);
-                        },
-                        function (err) {
-                            $scope.showMessage('Error', err);
-                        }
-                    );
-
+                    $rootScope.commonConfig('cloneJob', job);
+                    $location.path('/manta/builder');
                 };
 
                 $scope.showMessage = function (type, message) {
