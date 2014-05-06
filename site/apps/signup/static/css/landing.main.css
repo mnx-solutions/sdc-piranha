@@ -401,21 +401,16 @@ div.error {
 .edit-value-two select{
     width: 107px !important;
 }
-.edit-value-one select,.edit-value-double select{
+.edit-value-one select,
+.edit-value-double select {
     width: 218px !important;
-    padding-right: 17px;
-    text-overflow: ellipsis;
-    overflow: hidden;
 }
 .edit-value-double{
     width: 455px !important;
 }
-.edit-value-double select{
+.edit-value-double select {
     display: inline-block;
     margin-right: 5px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    padding-right: 17px;
 }
 .edit-error{
     width: 285px;
@@ -539,19 +534,19 @@ i.glyphicon-question-sign {
     vertical-align: middle;
 }
 select {
+    overflow: hidden;
+    padding: 0 20px 0 10px;
+    border: 1px solid #ccc;
     border-radius: 0;
+    background: #fafcfd url(../img/select-arrow.png) no-repeat right;
+    /*Hack for hide button in FireFox*/
+    text-indent: 0.01px;
+    text-overflow: "";
+    /*End*/
+    font-size: 16px;
     -webkit-appearance: none;
     -moz-appearance: none !important;
     appearance: none;
-    overflow: hidden;
-    background: url(../img/select-arrow.png) no-repeat right #ddd;
-    border: 1px solid #ccc;
-    background-color: #fafcfd;
-    padding: 0 0 0 10px;
-    font-size: 16px;
-    text-indent: 0.01px;
-    text-overflow: "";
-    padding-right: 20px;
 }
 select option{
     background: white;
