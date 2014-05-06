@@ -78,6 +78,10 @@ module.exports = function execute(scope, register) {
         var req = (call.done && call.req) || call;
         req.log.trace('Getting signup step');
         function end(step) {
+            //TODO: Signup can be removed altogether once allowSkipBilling becomes permanently enabled
+            if (step !== 'blocked' && config.features.allowSkipBilling === 'enabled') {
+                step = 'completed';
+            }
             req.log.trace('User landing in step:', _nextStep(step));
             cb(null, step);
         }
