@@ -94,7 +94,14 @@ window.JP.main.service('util', [
                 }
             }
             return a.length - b.length;
-        }
+        };
+
+        service.parseBoolean = function (str) {
+            if (typeof (str) === 'boolean') {
+                return str;
+            }
+            return str === 'true';
+        };
 
         return service;
     }]

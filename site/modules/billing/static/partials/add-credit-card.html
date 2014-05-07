@@ -1,12 +1,12 @@
-<div class="{{currentStep}}">
-<!--<div class="{{currentStep && 'row-fluid' || 'container span9'}}">-->
+<div class="{{isSignUpForm}}">
+<!--<div class="{{isSignUpForm && 'row-fluid' || 'container span9'}}">-->
 <div class="account">
 
 <form name="paymentForm" novalidate="" id="paymentForm">
     <fieldset class="line">
         <legend>
-            <a data-ng-click="skipBilling()"
-               data-ng-show="currentStep && features.allowSkipBilling != 'disabled'"
+            <a data-ng-click="skipBillingFn()"
+               data-ng-show="isSignUpForm && skipBillingVisible"
                class="btn light effect-orange-button legend-button pull-right" data-translate>Skip</a>
             Credit Card Details
         </legend>
@@ -349,17 +349,18 @@
                             </div>
                     </span>
                         </div>
-        <div class="control-group" data-ng-show="showPhone">
+        <div class="control-group" data-ng-show="phoneVisible">
             <span class="edit-name">Phone<span class="orange-asterix"> *</span></span>
             <span data-phone-number
                                  data-number="phone.number"
+
                                  data-country="{{phone.country}}"
                                  data-is-error="isError(field, type)"
-                data-skip="!showPhone"
+                data-skip="!phoneVisible"
                 data-el-width="220"></span>
         </div>
     </fieldset>
-    <fieldset class="line" data-ng-show="currentStep && features.promocode != 'disabled' && !disablePromoCode">
+    <fieldset class="line" data-ng-show="isSignUpForm && promocodeVisible && !disablePromoCode">
         <legend data-translate>Promotional Code</legend>
         <div class="control-group">
             <span class="edit-name" data-translate>Enter Code
@@ -391,10 +392,10 @@
 
     </fieldset>
 
-    <div data-ng-show="currentStep">
+    <div data-ng-show="isSignUpForm">
         <div class="pull-right">
-            <a data-ng-show="currentStep" data-ng-click="signOut()" class="btn light effect-orange-button" data-translate>Cancel Signup Process</a>
-            <a data-ng-show="currentStep && features.allowSkipBilling != 'disabled'" data-ng-click="skipBilling()" class="btn light effect-orange-button" data-translate>Skip</a>
+            <a data-ng-show="isSignUpForm" data-ng-click="signOut()" class="btn light effect-orange-button" data-translate>Cancel Signup Process</a>
+            <a data-ng-show="isSignUpForm && skipBillingVisible" data-ng-click="skipBilling()" class="btn light effect-orange-button" data-translate>Skip</a>
             <button class="btn orange" data-ng-click="submitForm()" data-ng-disabled="loading">Complete Account Setup</button>
         </div>
         <div class="loading-medium pull-right" style="width:30px; height:30px;min-width:30px;min-height:30px;" data-ng-show="loading"></div>
@@ -404,13 +405,13 @@
         <div class="fieldset-spacer"></div>
         <br>
     </div>
-    <div data-ng-hide="currentStep">
+    <div data-ng-hide="isSignUpForm">
         <div data-ng-hide="loading" class="required-txt">
             <span class="orange-asterix">*</span>&nbsp;required fields
         </div>
         <div class="pull-right">
-            <button class="btn light effect-orange-button" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>
-            <button class="btn orange submit-payment" data-ng-click="submitForm()" data-ng-disabled="loading">{{submitTitle}}</button>
+            <button class="btn light effect-orange-button" data-ng-hide="!cancelVisible" data-ng-disabled="loading || accountForm.$invalid" data-ng-click="cancelForm()" data-ng-disabled="loading">Cancel</button>
+            <button class="btn orange submit-payment" data-ng-click="submitForm()" data-ng-disabled="loading">{{submitBtnTitle}}</button>
         </div>
         <div class="pull-right loading-medium loading-30" data-ng-show="loading"></div>
         <div class="fieldset-spacer"></div>

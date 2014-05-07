@@ -1,0 +1,74 @@
+<div class="container-min-width wizard-first-step">
+    <div class="dpl-inline">
+        <input type="text" class="filter-field filter-images" placeholder="Search image" data-ng-model="searchText" data-translate="placeholder" />
+    </div>
+    <span class="select-name">
+            Data Center:
+        </span>
+    <div class="btn-group">
+        <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.datacenter" data-toggle="dropdown">{{data.datacenter}}</button>
+        <button id="button-select-datacenter" class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li data-ng-repeat="datacenter in datacenters">
+                <a data-ng-click="selectDatacenter(datacenter.name)">{{datacenter.name}}</a>
+            </li>
+        </ul>
+    </div>
+    <span class="select-name">
+            OS:
+        </span>
+    <div class="btn-group hidden-phone"
+         data-html="true"
+         data-original-title="Filter by operating system">
+        <button class="btn datacenter-select dd-fixed-width" data-ng-show="data.opsys" data-toggle="dropdown">{{data.opsys}}</button>
+        <button id="button-select-os" class="btn dropdown-toggle datacenter-select" data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li data-ng-repeat="opsys in operating_systems">
+                <a data-ng-click="selectOpsys(opsys) | orderBy:'toString()'">{{opsys}}</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="hotlinks pull-right">
+        <a href="#!/compute/create/simple" data-ng-click="clickBackToQuickStart()">Back to Quick Start</a>
+        <span data-ng-show="features.imageUse != 'disabled'">
+            | <a href="#!/compute/create" data-ng-show="instanceType != 'Public'" data-ng-click="selectInstanceType('Public');">Public Images</a>
+        <a href="#!/compute/create/custom" data-ng-show="instanceType != 'Saved'" data-ng-click="selectInstanceType('Saved');">Saved Images</a>
+        </span>
+        <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
+            | <a href="#!/compute/create/recent">Recent Instances</a>
+        </span>
+    </div>
+</div>
+<div class="advanced-table tooltip-hover">
+    <div data-ng-show="(datasets | filter:filterDatasetsByVisibility).length == 0 && !reloading" class="font-size16">
+        No {{instanceType | lowercase}} images in this data center.
+    </div>
+    <div data-ng-hide="reloading" data-ng-repeat="dataset in (datasets | orderBy:['type','name']) | filter:filterDatasets | filter:filterDatasetsByOS | filter:filterDatasetsByVisibility">
+        <div class="advanced-instance-box small-icon"
+             data-ng-class="selectedVersions[dataset.name].name || dataset.name | logo"
+             data-toggle="tooltip"
+             data-tooltip-text="{{selectedVersions[dataset.name].description || dataset.description}}"
+             data-ng-click="selectDataset((selectedVersions[dataset.name].id || dataset.id))">
+            <div class="advanced-instance-title">
+                <p>{{selectedVersions[dataset.name].name || dataset.name}}</p>
+            </div>
+            <div class="advanced-instance-description">
+                <p>{{selectedVersions[dataset.name].description || dataset.description}}</p>
+            </div>
+            <div class="advanced-instance-btn-block">
+                <button type="button"
+                   id="dataset-{{dataset.id}}"
+                   name="dataset"
+                   value="{{selectedVersions[dataset.name].id || dataset.id}}"
+                   data-ng-checked="selectedDataset.id == dataset.id"
+                        class="btn advaced-instance-btn pull-right"><b>Select</b>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

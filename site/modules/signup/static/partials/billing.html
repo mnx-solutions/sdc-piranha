@@ -10,7 +10,13 @@
             <div><p>SSH Key (optional)</p></div>
             <div><p class="laststep"></p></div>
         </div>
-        <div data-add-credit-card class="first-block"></div>
+        <div class="first-block" data-add-credit-card
+             data-is-sign-up-form="true"
+             data-skip-billing-fn="skipBilling()"
+             data-skip-billing-visible="{{features.allowSkipBilling == 'enabled'}}"
+             data-promocode-visible="{{features.promocode != 'disabled'}}"
+             data-show-phone="{{features.showPhone != 'disabled'}}"
+             data-skip-promo-confirmation="{{$scope.features.promoBillingConfirmation != 'enabled'}}"></div>
         <div class="billing-promo">
             <iframe src="https://www.joyent.com/portal/beta-payment.html"></iframe>
         </div>
