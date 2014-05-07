@@ -883,6 +883,7 @@
 
             function processDatasets(datasets) {
                 var unique_datasets = [];
+                var customDatasets = [];
                 var dataset_names = [];
                 var versions = {};
                 var selectedVersions = {};
@@ -902,6 +903,10 @@
                         unique_datasets.push(dataset);
                     }
 
+                    if (!dataset.public) {
+                        customDatasets.push(dataset);
+                    }
+
                     if (!versions[datasetName]) {
                         versions[datasetName] = {};
                         versions[datasetName][datasetVersion] = dataset;
@@ -918,7 +923,7 @@
                     }
                 });
                 $scope.operating_systems = Object.keys(operating_systems);
-                $scope.datasets = unique_datasets;
+                $scope.datasets = unique_datasets.concat(customDatasets);
                 $scope.versions = versions;
                 $scope.manyVersions = manyVersions;
                 $scope.selectedVersions = selectedVersions;
