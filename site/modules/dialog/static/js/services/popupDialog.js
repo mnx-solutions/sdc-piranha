@@ -58,7 +58,7 @@
             return messageBox(title, question, btns, 'dialog/static/partials/errorDialog.html', callback);
         };
 
-        factory.errorProvision = function (submitBillingInfo, locationCb) {
+        factory.errorProvision = function (submitBillingInfo, locationCb, showPopUp) {
             var returnUrl = $location.path();
             locationCb = locationCb || function (isSuccess) {
                 $location.path(returnUrl);
@@ -73,7 +73,11 @@
                 $location.path('/account/payment');
             };
 
-            return factory.message('Attention', 'Please complete profile information before proceeding.', callback);
+            if (typeof (showPopUp) === 'boolean' && !showPopUp) {
+                callback();
+            } else {
+                return factory.message('Attention', 'Please complete profile information before proceeding.', callback);
+            }
         };
 
         factory.errorObj = function (error, callback, customMessage) {
