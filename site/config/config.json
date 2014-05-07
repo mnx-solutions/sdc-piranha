@@ -157,6 +157,9 @@
 , "manta": {
     "url": "https://us-east.manta.joyent.com"
 }
+, "twitter": {
+    "signupTag": "l4gtx"
+}
 , "features": {
     "fullVersion": "enabled"
   , "instanceRename": "enabled"
