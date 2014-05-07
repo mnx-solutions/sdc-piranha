@@ -48,10 +48,11 @@ module.exports = function execute(scope) {
             res.locals.jss.push(GAlink);
         }
 
-        if ((!scope.config.twitter || !scope.config.twitter.signupTag) && production) {
+        var signupTag = scope.config.twitter && scope.config.twitter.signupTag;
+        if (!signupTag && production) {
             req.log.warn('Twitter configuration missing');
-        } else if (req.session.userIsNew) {
-            var twitterTagCode = 'twttr.conversion.trackPid("' + scope.config.twitter.signupTag + '");';
+        } else if (signupTag && req.session.userIsNew) {
+            var twitterTagCode = 'twttr.conversion.trackPid("' + signupTagg + '");';
             res.locals.jss.push(twitterTagCode);
         }
 

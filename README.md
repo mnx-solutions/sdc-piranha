@@ -209,6 +209,7 @@ You can also define configuration options using command line. ex: `$ node index.
 - `sso.url` Signle Sign-on service url
 - `sso.keyIid` Your SSH key fingerprint in path format. ex: /{udrtnsmr}/keys/{fingerprint}
 - `sso.keyPath` Full local path to your private key file
+- `twitter.signupTag` Conversion tag to track user signups coming from Twitter Ads
 - `usageData.userId` Test east-1 user for getting usage statistics, used if running in dev environment
 - `usageData.key` Key used to access usage data in centralized manta account
 - `usageData.keyId` Fingerprint of the key used to access usage data in centralized manta account
