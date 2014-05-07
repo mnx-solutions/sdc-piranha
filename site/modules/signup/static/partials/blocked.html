@@ -1,8 +1,9 @@
-    <div style="margin-top: 11px;margin-left: 9px;line-height: 21px;">
+<div>
+    <div class="content-container-ssh">
         <div class="page-title">Failed</div>
-        <div style="width: 650px;">
-            <p style="font-size: 16px;line-height: 24px;" data-translate>Sorry, your registration to Joyent Cloud has been blocked because we cannot verify your identity.</p>
-            <p style="font-size: 16px;line-height: 24px;font-weight: 600;">Please contact <a href="mailto:support@joyent.com" style="color: #f60;text-decoration: none;">support@joyent.com</a> for assistance</p>
+        <div class="blocked-info">
+            <p data-translate>Sorry, your registration to Joyent Cloud has been blocked because we cannot verify your identity.</p>
+            <p><b>Please contact <a href="mailto:support@joyent.com">support@joyent.com</a> for assistance</b></p>
             {{ attemptId && 'Attempt ID: ' + attemptId }}
         </div>
     </div>
