@@ -2212,11 +2212,11 @@ label.checkbox {
 .btn.btn-joyent-orange[disabled],
 .btn-joyent-orange,
 .btn-joyent-orange:hover {
+    outline: none;
     border-bottom: 1px solid #28445e;
     background-color: #f60;
     color: #fff;
     text-shadow: 1px 1px 1px #375775;
-
 }
 .btn-old-style {
     margin-top: 5px;
