@@ -314,6 +314,12 @@
                     name: 'IPs',
                     sequence: 18,
                     active: false
+                },
+                {
+                    id: 'compute_node',
+                    name: 'CN UUID',
+                    sequence: 19,
+                    active: false
                 }
             ];
 
