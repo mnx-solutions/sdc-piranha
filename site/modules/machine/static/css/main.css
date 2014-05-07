@@ -1,3 +1,7 @@
+.first-block {
+    width: 725px;
+    display: inline-block;
+}
 #finish-configuration .error {
     margin: 10px 0 10px 0;
     color: red;

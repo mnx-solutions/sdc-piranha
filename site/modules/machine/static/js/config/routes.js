@@ -21,6 +21,9 @@ window.JP.main.config([
         }).when('/compute/create/simple', {
             title: 'Quick Start: Create Instance',
             action: 'machine.simple'
+        }).when('/compute/ssh', {
+            title: 'SSH keys',
+            action: 'machine.ssh'
         }).when('/compute/create', {
             title: 'Create Instance',
             action: 'machine.provision'
