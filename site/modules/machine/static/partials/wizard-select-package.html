@@ -1,0 +1,117 @@
+<div class="item provisioning-item header row-fluid">
+        <div data-ng-show="selectedPackageInfo" class="preselected pull-right">
+            <div class="info small-icon"
+                 data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
+                <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" id="prev" data-slide="prev">Change</button>
+                <span><h2>{{selectedDataset.name}}</h2></span>
+                <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
+
+                <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
+                <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
+                    <div class="btn-group pull-left">
+                        <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]" data-toggle="dropdown">
+                            {{selectedVersions[selectedDataset.name].version}}
+                        </button>
+
+                        <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                        </button>
+
+                        <ul class="dropdown-menu dd-fixed-width">
+                            <li data-ng-repeat="version in versions[selectedDataset.name]">
+                                <a data-ng-click="selectVersion(selectedDataset.name, version)">{{version.version}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="dataset-cost cost">
+                    <p>EST. MONTHLY COST:</p>
+                    <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
+                </div>
+                <div class="pull-right">
+                    <button type="button" id="button-review" class="btn orange review-btn" data-ng-click="reviewPage()">Review</button>
+                </div>
+            </div>
+        </div>
+    <div class="filter-container">
+        Filter:
+        <div class="btn-group btn-group-filter">
+            <button class="btn datacenter-select filter-select" data-toggle="dropdown">
+                {{filterProperty | uppercase}}
+            </button>
+
+            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu dd-fixed-width">
+                <li data-ng-repeat="prop in filterProps">
+                    <label class="filter-value">
+                        {{prop | uppercase}}
+                        <input type="radio"
+                               class="filter-radio"
+                               name="filterProperty"
+                               data-ng-model="$parent.filterProperty"
+                               data-ng-change="$parent.onFilterChange(prop)"
+                               value="{{prop}}" />
+                    </label>
+                </li>
+            </ul>
+        </div>
+        <div class="btn-group btn-group-filter" data-ng-show="filterProperty != 'No filter'">
+            <button class="btn datacenter-select filter-select" data-toggle="dropdown">
+                {{ formatFilterValue(filterPropertyValue) }}
+            </button>
+
+            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu dd-fixed-width">
+                <li data-ng-repeat="prop in filterValues[filterProperty]">
+                    <label class="filter-value">
+                        {{ formatFilterValue(prop) }}
+                        <input type="radio"
+                               class="filter-radio"
+                               name="filterPropertyValue"
+                               data-ng-model="$parent.filterPropertyValue"
+                               data-ng-change="$parent.onFilterChange()"
+                               value="{{prop}}" />
+                    </label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="">
+        <div class="accordion-package-title">
+            <span class="span-name">NAME</span>
+            <span class="span-specification">SPECIFICATION</span>
+            <span class="span-price">PRICE</span>
+        </div>
+        <div class="accordion accordion-package-select" id="packagesAccordion">
+            <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
+                       href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)" data-ng-class="{'filter-on': filterProperty != 'No filter'}">
+                        {{packageType}}
+                        <span class="accordion-package-count">{{(packages | filter:filterPackagesByProp | filter:filterPackages(packageType)).length}}</span>
+                    </a>
+                </div>
+                <div id="collapse_{{$index}}" class="accordion-body collapse">
+                    <div class="accordion-inner">
+                        <div class="package-info" data-ng-repeat="package in (packages | filter:filterPackagesByProp | orderBy:sortPackages) | filter:filterPackages(packageType)"
+                             data-ng-click="selectPackage(package.id)"
+                             data-ng-checked="selectedPackage == package.id"
+                             data-ng-class="{active: selectedPackage == package.id}">
+                            <div class="short-name">{{package.short_name}}</div>
+                            <div class="memory"><p data-ng-show="package.memory < 1024">Micro </p> {{package.memory | sizeFormat}} RAM</div>
+                            <div class="cpu">{{package.vcpus}} vCPUs</div>
+                            <div class="disk">{{package.disk | sizeFormat}} Disk</div>
+                            <div class="price">${{package.full_price || package.price}} <p data-translate>per hour</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

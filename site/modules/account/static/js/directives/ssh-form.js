@@ -7,18 +7,30 @@
         'PopupDialog',
         'localization',
         'notification',
+        'util',
         '$rootScope',
         '$q',
-        function (Account, PopupDialog,localization, notification, $rootScope, $q) {
+        function (Account, PopupDialog,localization, notification, util, $rootScope, $q) {
             return {
                 restrict: 'A',
                 replace: true,
-                scope: true,
+                scope: {
+                    singleKey: '@',
+                    noKeysMessage: '@',
+                    createInstanceFn: '&'
+                },
                 controller: function($scope, $element, $attrs, $transclude) {
                     localization.bind('account', $scope);
                 },
 
                 link: function ($scope) {
+                    $scope.keys = [];
+                    $scope.isCreateKeyEnabled = true;
+
+                    $scope.$watch('singleKey', function(data) {
+                        $scope.singleKey = util.parseBoolean($scope.singleKey);
+                    });
+
                     $scope.getKeyName = function (key) {
                         if (key.name === key.fingerprint) {
                             return key.name.split(':').splice(-5).join('');
@@ -32,6 +44,10 @@
                         $q.when(Account.getKeys(true)).then(function (result) {
                             $rootScope.$broadcast("ssh-form:onKeyUpdated", result);
                             $scope.keys = result;
+
+                            if ($scope.singleKey) {
+                                $scope.isCreateKeyEnabled = result.length === 0;
+                            }
                             $scope.loadingKeys = false;
 
                             if (typeof (cb) === 'function') {

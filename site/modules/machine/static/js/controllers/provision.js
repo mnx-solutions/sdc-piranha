@@ -30,6 +30,21 @@
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
 
+            $scope.provisionSteps = [
+                {
+                    name:'Choose Image',
+                    template:'machine/static/partials/wizard-choose-image.html'
+                },
+                {
+                    name:'Select Package',
+                    template:'machine/static/partials/wizard-select-package.html'
+                },
+                {
+                    name:'Review',
+                    template:'machine/static/partials/wizard-review.html'
+                }
+            ];
+            $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
 
             $scope.preSelectedImageId = requestContext.getParam('imageid');
@@ -41,9 +56,17 @@
             $scope.metadataArray = [
                 {key: '', val: '', edit: true, conflict: false}
             ];
-
+            $scope.key = {};
             Account.getAccount(true).then(function (account) {
                 $scope.account = account;
+                if (!account.provisionEnabled) {
+                    $scope.provisionSteps.push(
+                            {
+                                name:'Account Information',
+                                template:'machine/static/partials/wizard-account-info.html'
+                            }
+                    );
+                }
             });
             $scope.keys = [];
             $scope.datacenters = [];
@@ -112,6 +135,15 @@
                 $q.when(recentInstances)
             ]).then(function (result) {
                 $scope.keys = result[0];
+                if ($scope.keys.length <= 0) {
+                    $scope.provisionSteps.push(
+                            {
+                                name:'SSH Key',
+                                template:'machine/static/partials/wizard-ssh-key.html'
+                            }
+                    );
+                }
+                $scope.submitTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
                 $scope.datacenters = result[1];
                 $scope.simpleImages = [];
                 var simpleImages = result[3]['images'];
@@ -286,6 +318,12 @@
                 return false;
             };
 
+            $scope.$on('creditCardUpdate', function (event, cc) {
+                $scope.account.provisionEnabled = true;
+                $scope.setCurrentStep(4);
+                $scope.slideCarousel();
+            });
+
             $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
                 $scope.keys = keys;
             });
@@ -389,6 +427,7 @@
                     submitBillingInfo.appendPopupMessage = 'Provisioning will now commence.'
                 }
                 Account.checkProvisioning(submitBillingInfo, function () {
+                    $scope.account.provisionEnabled = true;
                     if (machine) {
                         filterSelectedNetworks(machine.networks || [], function (filteredNetworks) {
                             machine.networks = filteredNetworks.length > 0 ? filteredNetworks : '';
@@ -460,6 +499,11 @@
                 });
             }
 
+            var nextStep = function (step) {
+                $scope.setCurrentStep(step);
+                $scope.slideCarousel();
+            };
+
             $scope.clickProvision = function () {
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
@@ -471,12 +515,20 @@
                         var keys = Object.keys(datacenters);
                         if (keys.length > 0) {
                             $scope.data.datacenter = keys[0];
+                            if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
+                                nextStep(3);
+                                return;
+                            }
                             provision();
                         } else {
                             // TODO: Throw an error
                         }
                     });
                 } else {
+                    if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
+                        nextStep(3);
+                        return;
+                    }
                     provision();
                 }
 
@@ -551,9 +603,11 @@
                         $scope.metadata = [];
                         $scope.tags = [];
                     }
-                    $scope.provisionForm.machineName.$setValidity('machineName', true);
-                    $scope.provisionForm.machineName.$setValidity('machineUnique', true);
-
+                    var provisionForm = $scope.this.provisionForm;
+                    if (provisionForm) {
+                        provisionForm.machineName.$setValidity('machineName', true);
+                        provisionForm.machineName.$setValidity('machineUnique', true);
+                    }
                     var instancePackage = $scope.data.package;
 
                     $scope.data = {
@@ -576,6 +630,19 @@
                 }
                 ng.element('#network-configuration').fadeOut('fast');
                 ng.element('.carousel').carousel(goto);
+                if ($scope.keys.length > 0) {
+                    $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                        return item.name != 'SSH Key';
+                    });
+                }
+                if ($scope.account.provisionEnabled) {
+                    $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                        return item.name != 'Account Information';
+                    });
+                }
+                if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {
+                    $scope.createInstanceTitle = null;
+                }
             };
 
             function getNr(el) {
@@ -777,6 +844,9 @@
                         ng.element('#metadata-configuration').fadeIn('fast');
                     }
                 });
+                if (!$scope.account.provisionEnabled || $scope.keys.length <= 0) {
+                    $scope.createInstanceTitle = 'Next';
+                }
             };
 
             $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {

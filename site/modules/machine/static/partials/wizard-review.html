@@ -1,0 +1,132 @@
+<div class="item-scrolling">
+    <div class="review">
+        <table>
+            <td>
+                <div class="left small-icon"
+                     data-ng-class="selectedVersions[selectedDataset.name].name || selectedDataset.name | logo">
+                    <p>IMAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(0)" data-target="#provisionCarousel" data-slide-to="0">Change</button>
+                    <span><h2>{{selectedDataset.name}}</h2></span>
+                    <div class="dataset-desc crop text-wrap">{{selectedDataset.description}}</div>
+
+                    <p data-ng-show="manyVersions[selectedDataset.name]">INSTANCE VERSION:</p>
+                    <div class="text-small image-container" data-ng-show="manyVersions[selectedDataset.name]">
+                        <div class="btn-group pull-left">
+                            <button class="btn datacenter-select dd-fixed-width" data-ng-show="selectedVersions[selectedDataset.name]" data-toggle="dropdown">
+                                {{selectedVersions[selectedDataset.name].version}}
+                            </button>
+
+                            <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+
+                            <ul class="dropdown-menu dd-fixed-width">
+                                <li data-ng-repeat="version in versions[selectedDataset.name]">
+                                    <a data-ng-click="selectVersion(selectedDataset.name, version)">
+                                        {{version.version}}
+                                    </a>
+                                </li>
+                             </ul>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="separator">
+                <div class="center">
+                    <p>PACKAGE:</p><button class="btn small-btn effect-orange-button" data-ng-click="reconfigure(1)" data-slide="prev">Change</button>
+                    <div class="package">
+                        <div class="name">Configuration</div>
+                        <div class="value">{{selectedPackageInfo.short_name}}</div>
+                    </div>
+                    <div class="package">
+                        <div class="name">Memory</div>
+                        <div class="value">{{selectedPackageInfo.memory | sizeFormat}}</div>
+                    </div>
+                    <div class="package">
+                        <div class="name">Disk</div>
+                        <div class="value">{{selectedPackageInfo.disk | sizeFormat}}</div>
+                    </div>
+                    <div class="package">
+                        <div class="name">vCPUs</div>
+                        <div class="value">{{selectedPackageInfo.vcpus}} vCPUs</div>
+                    </div>
+                    <div class="package">
+                        <div class="name">DataCenter</div>
+                        <div class="value">{{data.datacenter}} </div>
+                    </div>
+                    <div class="cost">
+                        <p>COST:</p>
+                        <div class="dataset-cost">
+                            <h3>${{selectedPackageInfo.full_price || selectedPackageInfo.price}}</h3>
+                            <p class="small-text-info">per hour</p>
+                        </div>
+                        <div class="dataset-cost">
+                            <h3>${{selectedPackageInfo.full_price_month || selectedPackageInfo.price_month}}</h3>
+                            <p class="small-text-info">est. monthly</p>
+                        </div>
+                     </div>
+                </div>
+            </td>
+            <td>
+                <form name="provisionForm" id="provision-form">
+                    <div class="right">
+                        <p class="title-box-3">OPTIONAL SETTINGS:</p>
+                        <span><h2>Name Instance</h2><p> (Optional)</p></span>
+                        <input name="machineName"
+                               type="text"
+                               data-ng-model="data.name"
+                               data-machine-name
+                               data-machine-unique
+                               class="instance-name-input"/>
+                        <div class="error"
+                            data-ng-show="provisionForm.machineName.$error.machineName"
+                            data-translate>
+                            Machine name can contain only letters, digits and signs like '.' and '-'.
+                        </div>
+
+                        <div class="error"
+                             data-ng-show="provisionForm.machineName.$error.machineUnique"
+                             data-translate>
+                            Machine name is already in use
+                        </div>
+                        <div><h2>Networks</h2></div>
+                        <div class="networks-box-3">
+                            <label data-ng-repeat="network in networks">
+                                <div class="checker" data-ng-class="{hover:show}" data-ng-mouseenter="show = true" data-ng-mouseleave="show = false">
+                                    <span data-ng-class="{checked: network.active}">
+                                         <input data-ng-click="selectNetworkCheckbox(network.id)" type="checkbox"
+                                                value="{{network.id}}"
+                                                name="{{network.name}}"
+                                                data-ng-model="selectedNetworkId"
+                                                data-ng-disabled="selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1"/>
+                                    </span>
+                                </div>
+                                <span data-ng-class="{disabledNetworkSelection: (selectedNetworks.length == 2 && selectedNetworks.indexOf(network.id) == -1)}">{{network.name}}</span><br />
+                            </label>
+                         </div>
+                        <div><h2>Tags</h2></div>
+                        <p class="tags-text-p">Tags are metadata stored as key-value pairs to make it easier for you to find, sort, and identify your instances.</p>
+                        <div class="create-tags ci-tags"
+                             data-machine-collection
+                             data-collection="tags"
+                             data-collection-name="'tags'"
+                             data-review="true">
+                        </div>
+                        <div class="metadata-section" data-ng-show="instanceMetadataEnabled">
+                            <div><h2>Metadata</h2></div>
+                            <div class="create-mdata ci-tags"
+                                 data-machine-collection
+                                 data-collection="metadata"
+                                 data-collection-name="'metadata'"
+                                 data-review="true">
+                            </div>
+                        </div>
+                        <button id="button-create" class="btn orange create-instance-btn-pos pull-right"
+                                data-ng-disabled="provisionForm.$invalid"
+                                data-ng-click="clickProvision()"
+                                data-translate>{{createInstanceTitle || 'Create instance'}}</button>
+                    </div>
+                </form>
+            </td>
+        </table>
+    </div>
+</div>

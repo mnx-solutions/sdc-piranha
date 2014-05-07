@@ -7,7 +7,7 @@
         <div class="accordion-group" data-ng-repeat="key in keys | reverse">
             <div class="accordion-heading">
                 <span class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#accordion-ssh-keys"
-                   href="#collapse_{{$index}}">
+                   href="#collapse_{{$id}}">
                     <span class="key-name">{{ getKeyName(key) }}</span>
                     <span class="key-hash"> / {{key.fingerprint}}</span>
                                     <button class="small-btn effect-orange-button pull-right btn-key-delete"
@@ -16,7 +16,7 @@
 
                 </span>
             </div>
-            <div id="collapse_{{$index}}" class="accordion-body collapse">
+            <div id="collapse_{{$id}}" class="accordion-body collapse">
                 <div class="accordion-inner">
                     <div class="key-info">
                         <div class="key-info-content">
@@ -38,21 +38,21 @@
         <!-- Part shown when user has keys -->
     <div class="row-fluid">
         <div class="item-list-container">
-            <div data-ng-show="(!keys || keys.length < 1) && !loadingKeys">
-                <div>{{noKeysMessage || 'You don\'t have any SSH keys'}}</div>
+            <div data-ng-show="keys.length < 1 && !loadingKeys">
+                <div class="no-ssh-key-message">{{noKeysMessage || 'You don\'t have any SSH keys'}}</div>
             </div>
             <div data-ng-show="loadingKeys">
                 <div class="loading-medium"></div>
             </div>
         </div>
         <span data-ng-show="downloadLink" class="ssh-download-link"><a target="_blank" href="{{downloadLink}}">Click here to download "{{sshKeyName}}" key</a></span>
-        <div class="new-key-button pull-right" data-ng-hide="loading || isCreateInstanceStep">
+        <div class="new-key-button pull-right" data-ng-hide="loading || !isCreateKeyEnabled">
             <div data-account-ssh-create></div>
             <div data-account-ssh-import></div>
         </div>
-        <div class="new-key-button pull-right" data-ng-show="isCreateInstanceStep" data-ng-disabled="loading">
+        <div class="new-key-button pull-right" data-ng-show="!isCreateKeyEnabled" data-ng-disabled="loading">
             <button class="btn light effect-orange-button"
-                    data-ng-click="createInstance()"
+                    data-ng-click="createInstanceFn()"
                     data-translate>Create Instance</button>
         </div>
         <div class="new-key-button pull-right" data-ng-show="loading">

@@ -1,4 +1,3 @@
-
 body {
     background-color: #fff;
 }
@@ -377,6 +376,320 @@ th {
     background-color: #eee;
     border: 1px solid #949ca1;
 
+}
+
+input.error,
+select.error,
+textarea.error {
+    -webkit-box-shadow: 0 0 6px #f8b9b7;
+    -moz-box-shadow: 0 0 6px #f8b9b7;
+    box-shadow: 0 0 6px #f8b9b7;
+}
+select.date-month,
+select.date-year {
+    width: 70px;
+}
+
+.account fieldset {
+    padding-left: 5px;
+    margin-bottom: 20px;
+}
+
+.account .field {
+    margin-bottom: 2px;
+    font-size: 16px;
+    height: 34px;
+}
+
+.account .field .name {
+     width: 120px;
+     font-weight: 300;
+     display: inline-block;
+}
+
+.account .field .value {
+    padding: 0;
+    float: none;
+    text-decoration: none;
+    border: none;
+}
+
+.ssharea {
+    resize: none;
+}
+
+.page-header span.name {
+    font-size: 28px;
+    margin-left: 10px;
+    padding-top: 21px;
+}
+
+.ssh-key-span {
+    min-height:40px;
+    height:40px;
+}
+.ssh-add-button {
+    margin-bottom:10px;
+}
+.ssh-add-span {
+    margin-bottom:20px;
+}
+
+.sizebar-fix-right {
+    margin-left:10px;
+}
+
+.item-list-container-header {
+    padding: 10px;
+}
+
+.item-list-container .item .action-container {
+    margin-top:5px;
+}
+
+.item-list-container .item .action-container button {
+    display:block;
+    margin-top:3px;
+}
+
+.item-list-container .item .toolbox {
+    border-top:1px solid #ddd;
+    margin-bottom: 5px;
+}
+
+.orange-asterix {
+    color:#ff6600;
+}
+
+.required-text {
+    font-size: 14px;
+}
+
+#paymentForm tr td {
+    padding:10px;
+}
+
+#paymentForm .error {
+    color: #FF6600;
+}
+
+#paymentForm input[type="text"]:focus:invalid {
+    border-color: #FF6600;
+}
+
+.ssh-download-link {
+    float:left;
+    margin-top: 28px;
+    width:380px;
+}
+
+.account legend {
+    border-bottom: 0;
+    font-size: 19px;
+    line-height: 18px;
+    color: #333;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    margin-left: -2px;
+    padding-top: 5px;
+}
+
+.account .line,
+.account.line {
+    border-bottom: 1px solid #cccccc;
+    width: 725px;
+    margin-left: -2px;
+    padding-bottom: 2px;
+}
+
+.fieldset-spacer {
+    padding-top: 25px;
+}
+
+.inline-pos {
+    display: inline-block;
+
+}
+.cell-link {
+    border: 0;
+    padding: 0;
+    background: none;
+    cursor: pointer;
+    color: #375675;
+}
+
+.edit-name {
+    display: inline-block;
+    width: 120px;
+    text-align: right;
+    padding-right: 15px;
+    vertical-align: middle;
+    height: 30px;
+    font-size: 16px;
+    color: #7d7d7d;
+}
+.edit-value {
+    width: 459px;
+    display: inline-block;
+}
+.edit-value input {
+    padding: 0;
+    width: 445px;
+    border-radius: 0;
+    height: 28px;
+    border: 1px solid #ccc;
+    background-color: #fafcfd;
+    font-size: 16px;
+    font-weight: 300;
+    padding-left: 10px;
+}
+
+.edit-value-two select,
+.edit-value select,
+.edit-value-double {
+    display: inline-block;
+    height: 30px;
+    border-radius: 0;
+}
+
+.edit-value select,
+.edit-value-double {
+    width: 205px !important;
+}
+
+.edit-value-two select {
+    width: 222px !important;
+}
+
+.edit-value-one select {
+    width: 457px !important;
+}
+
+.edit-value-double {
+    width: 457px !important;
+}
+
+.edit-value-double select {
+    width: 200px !important;
+}
+
+.edit-value-double .input-prepend input {
+    width:168px !important;
+}
+
+.input-prepend .add-on:first-child,
+.input-prepend .btn:first-child,
+.add-on {
+    width: 50px;
+    border-radius: 0;
+    float: left;
+    text-shadow: none;
+    font-size: 16px;
+    color: #555555;
+}
+
+.edit-error {
+    width: 110px;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: 8px;
+    position: absolute;
+    line-height: 14px;
+}
+
+.edit-error .error span {
+    vertical-align: middle;
+}
+
+.edit-phone {
+    width: 242px !important;
+    padding: 0;
+}
+
+.edit-country {
+    width: 205px !important;
+    padding: 0;
+}
+
+.input-prepend {
+    margin-bottom: 0;
+    height: 40px;
+}
+
+.input-prepend .add-on,
+.input-prepend .btn {
+    border-radius: 0;
+    width:50px;
+    text-align:center;
+    margin-left: 10px;
+}
+
+legend + .control-group {
+    margin-top: 0 !important;
+}
+
+.content-p,
+.content-li {
+    font-size: 16px;
+    color: #3d3d3d;
+    line-height: 24px;
+    font-weight: 300;
+}
+
+.content-p {
+    padding-bottom: 15px;
+}
+
+.content-p.or {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.edit-form form {
+    margin: 0;
+}
+
+.orange-asterix {
+    font-size: 20px;
+    vertical-align: bottom;
+}
+
+.selects-spacer {
+    padding-right: 5px;
+    display: inline-block;
+}
+
+.required-txt {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 20px;
+}
+
+.message-box {
+    width: 253px;
+    height: 400px;
+    background-color: #e8f0f7;
+    display: inline-block;
+    float: right;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.first-block {
+    width: 725px;
+    display: inline-block;
+}
+
+.alert-icon {
+    background-image: url("../img/alert-icon.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    font-weight: normal;
+}
+
+#phone {
+    width: 150px;
+    font-size: 16px;
 }
 
 .item-list-container {
@@ -1088,6 +1401,7 @@ div .disabled {
 }
 
 .key-hash {
+    font-size: 14px;
     font-weight: 300;
     display: inline-block;
 }
