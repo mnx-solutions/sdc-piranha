@@ -953,6 +953,7 @@
 
             function processDatasets(datasets) {
                 var unique_datasets = [];
+                var customDatasets = [];
                 var dataset_names = [];
                 var versions = {};
                 var selectedVersions = {};
@@ -963,29 +964,36 @@
                 datasets.forEach(function (dataset) {
                     operating_systems[dataset.os] = 1;
                     osByDatasets[dataset.id] = dataset.os;
-                    
-                    if (!dataset_names[dataset.name]) {
-                        dataset_names[dataset.name] = true;
+
+                    var datasetName = dataset.name;
+                    var datasetVersion = dataset.version;
+
+                    if (!dataset_names[datasetName] && dataset.public) {
+                        dataset_names[datasetName] = true;
                         unique_datasets.push(dataset);
                     }
 
-                    if (!versions[dataset.name]) {
-                        versions[dataset.name] = {};
-                        versions[dataset.name][dataset.version] = dataset;
-                        selectedVersions[dataset.name] = dataset;
+                    if (!dataset.public) {
+                        customDatasets.push(dataset);
+                    }
+
+                    if (!versions[datasetName]) {
+                        versions[datasetName] = {};
+                        versions[datasetName][datasetVersion] = dataset;
+                        selectedVersions[datasetName] = dataset;
                     } else {
-                        if (!versions[dataset.name][dataset.version]) {
-                            manyVersions[dataset.name] = true;
-                            versions[dataset.name][dataset.version] = dataset;
+                        if (!versions[datasetName][datasetVersion]) {
+                            manyVersions[datasetName] = true;
+                            versions[datasetName][datasetVersion] = dataset;
                         }
 
-                        if (isVersionHigher(dataset.version, selectedVersions[dataset.name].version)) {
-                            selectedVersions[dataset.name] = dataset;
+                        if (isVersionHigher(datasetVersion, selectedVersions[datasetName].version)) {
+                            selectedVersions[datasetName] = dataset;
                         }
                     }
                 });
                 $scope.operating_systems = Object.keys(operating_systems);
-                $scope.datasets = unique_datasets;
+                $scope.datasets = unique_datasets.concat(customDatasets);
                 $scope.versions = versions;
                 $scope.manyVersions = manyVersions;
                 $scope.selectedVersions = selectedVersions;
