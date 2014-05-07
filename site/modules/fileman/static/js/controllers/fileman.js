@@ -387,7 +387,7 @@
                 });
             };
 
-            if (!$scope.currentPath) {
+            $scope.completeAccount = function () {
                 var submitBillingInfo = {
                     btnTitle: 'Submit and Access Manta',
                     appendPopupMessage: 'Manta access will now be granted.'
@@ -395,7 +395,16 @@
                 Account.checkProvisioning(submitBillingInfo, $scope.drawFileMan.bind($scope), angular.noop, function (isSuccess) {
                     $location.path(isSuccess ? '/manta/files' : '/manta/intro');
                 });
-            }
+            };
+
+            Account.getAccount().then(function (account) {
+                $scope.provisionEnabled = account.provisionEnabled;
+                if ($scope.provisionEnabled) {
+                    $scope.drawFileMan();
+                } else {
+                    $scope.loading = false;
+                }
+            });
 
             $scope.construction = function () {
                 showPopupDialog('message', 'Message', 'Construction works.');
