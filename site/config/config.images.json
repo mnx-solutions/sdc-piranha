@@ -18,7 +18,7 @@
             }
         },
         {
-            "name": "SmartOS 64",
+            "name": "SmartOS Base64",
             "className": "smart-logo",
             "datasetName": "base64",
             "packageName": "g3-standard-4-smartos",
