@@ -2996,7 +2996,6 @@ label.checkbox {
     float: left;
     width: 100%;
 }
-
 /*  FILEMAN  */
 #address ul li {
     list-style: none;
@@ -3281,4 +3280,12 @@ label.checkbox {
 .loading-medium-transparent {
     width: 225px;
     height: 390px;
+}
+.modal-body textarea {
+    max-width: 97%;
+    resize: vertical;
+}
+
+.modal form {
+    margin: 0;
 }
