@@ -81,19 +81,8 @@
         };
 
         factory.errorObj = function (error, callback, customMessage) {
-            var message;
-            if (error.statusCode === 403) {
-                callback = function () {
-                    $rootScope.commonConfig('returnUrl', '/compute/create');
-                    $location.path('/account/payment');
-                };
-                message = error.message || 'Payment Method Required: To be able to provision you must update your payment method';
-            } else if (error.message) {
-                message = error.message;
-            } else if (typeof (error) === 'string') {
-                message = error;
-            }
-            return factory.error('Error', customMessage || message, callback);
+            var message = customMessage || error.message || error;
+            return factory.error('Error', message, callback);
         };
 
         factory.message = function (title, question, callback) {
