@@ -1275,6 +1275,10 @@ div .disabled {
     text-overflow: ellipsis;
 }
 
+.no-ssh-key-message {
+    line-height: normal;
+    font-size: 14px;
+}
 
 .accordion-ssh-package-title {
     margin-left: -2px;
