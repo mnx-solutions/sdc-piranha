@@ -90,7 +90,14 @@
                     name: 'SupportCallSales',
                     data: supportPlanName
                 });
-            }
+            };
+
+            service.callTracking = function (data) {
+                serverTab.call({
+                    name: 'SupportTracking',
+                    data: data
+                });
+            };
 
             return service;
         }]);

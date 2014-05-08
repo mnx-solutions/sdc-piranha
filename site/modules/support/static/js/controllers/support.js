@@ -3,7 +3,7 @@
 (function (app) {
     app.controller(
         'Support.IndexController',
-        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', '$timeout', function ($rootScope, $scope, $location, Support, $route, PopupDialog, BillingService, localization, Account, $timeout) {
+        ['$rootScope', '$scope', '$location', 'Support', '$route', 'PopupDialog', 'BillingService', 'localization', 'Account', '$q', function ($rootScope, $scope, $location, Support, $route, PopupDialog, BillingService, localization, Account, $q) {
 
             $scope.loading = true;
             $scope.subscribingInProgress = true;
@@ -65,6 +65,8 @@
                                 $scope.subscribingInProgress = false;
                             }
                         );
+                    } else {
+                        supportTracking(supportPackage);
                     }
                     getSupportData();
                 });
@@ -128,20 +130,48 @@
             };
 
             $scope.clickCallSales = function (supportPackage) {
-                Support.callSalesLog(supportPackage.title);
-                PopupDialog.message(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Info: Call Sales'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Contact a Joyent representative at +1 855 4 JOYENT (+1 855 456-9368)'
-                    ), function () {}
-                );
+                var confirmContactForm = function ($scope, dialog) {
+
+                    $scope.popUpTitle = supportPackage.popUpTitle;
+                    $scope.comments = 'I want to subscribe to support plan: ' + supportPackage.title;
+
+                    $scope.close = function (res) {
+                        dialog.close(res);
+                    };
+
+                    $scope.submitForm = function (isValid) {
+                        if (isValid) {
+                            supportTracking(supportPackage, $scope.comments);
+                            dialog.close();
+                        }
+                    };
+                };
+
+                var opts = {
+                    templateUrl: 'support/static/partials/popup-contact.html',
+                    openCtrl: confirmContactForm
+                };
+                PopupDialog.custom(opts);
             };
+
+            function supportTracking(supportPackage, comment) {
+                var type = $scope.package.type;
+                $q.when(Account.getAccount(), function (account) {
+                    var data = {
+                        id: account.id,
+                        marketo: {}
+                    };
+                    var title = type === 'portal' ? 'Support__Title__c' : 'Support__Title__Nodejs__c';
+                    var comments = type === 'portal' ? 'Support__Comments__c' : 'Support__Comments__Nodejs__c';
+                    var billingTag = type === 'portal' ? 'Support__BillingTag__c' : 'Support__BillingTag__Nodejs__c';
+
+                    data.marketo[title] = supportPackage.ratePlanName || supportPackage.title;
+                    data.marketo[comments] = comment || 'I want to subscribe to support plan: ' + supportPackage.title;;
+                    data.marketo[billingTag] = supportPackage.billingTag || supportPackage.ratePlanId;
+
+                    Support.callTracking(data);
+                });
+            }
 
             getSupportData();
         }]);
