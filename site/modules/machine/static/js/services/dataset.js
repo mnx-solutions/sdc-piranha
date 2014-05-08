@@ -126,16 +126,7 @@ window.fn = [];
             return ret.promise;
         };
 
-        service.datasetByName = function (params) {
-            if (typeof(params) === 'string') {
-                params = { name: params };
-            }
-
-            params = params || {};
-            if (!params.datacenter) {
-                params.datacenter = 'all';
-            }
-
+        service.datasetBySimpleImage = function (params) {
             var deferred = $q.defer();
 
             service.updateDatasets(params.datacenter);
@@ -158,9 +149,38 @@ window.fn = [];
                     }
                 });
 
-                var resolve = '';
-                if (listVersions[params.name]) {
-                    resolve = listDatasets[params.name][listVersions[params.name].slice(-1)];
+                var resolve;
+                var datasetsByName = listDatasets[params.name];
+                if (datasetsByName) {
+                    var versions = {};
+                    var lastMajor = null;
+                    var selectedMajor = null;
+                    listVersions[params.name].forEach(function (version) {
+                        var re = /\w+/g;
+                        var versionType = version.match(re);
+                        if (versionType.length > 1) {
+                            var newMajor = versionType[0];
+                            if (!versions[newMajor]) {
+                                versions[newMajor] = [];
+                            }
+                            versions[newMajor].push(version);
+
+                            if (selectedMajor < lastMajor) {
+                                selectedMajor = newMajor;
+                            }
+                            lastMajor = newMajor;
+                        }
+                    });
+
+                    if (params.forceMajorVersion && versions[params.forceMajorVersion]) {
+                        resolve = datasetsByName[versions[params.forceMajorVersion].slice(-1)];
+                    }
+
+                    if (selectedMajor && !params.forceMajorVersion) {
+                        resolve = datasetsByName[versions[selectedMajor].slice(-1)];
+                    } else if (!params.forceMajorVersion) {
+                        resolve = datasetsByName[listVersions[params.name].slice(-1)];
+                    }
                 }
                 deferred.resolve(resolve);
             });
