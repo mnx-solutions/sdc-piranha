@@ -37,8 +37,6 @@
 
                 link: function ($scope, $element, $attrs) {
                     $scope.phoneVisible = true;
-                    $scope.billingUpdatePopup = true;
-
                     $scope.phone = {};
                     $scope.selectedCountryCode = '1'; // default to USA
                     var submitBillingInfo = $rootScope.popCommonConfig('submitBillingInfo') || {btnTitle: 'Save Changes', appendPopupMessage: ''};
@@ -111,7 +109,7 @@
                         $scope.isSignUpForm = util.parseBoolean(data);
                     });
                     $scope.$watch('showPhone', function (data) {
-                        $scope.showPhone = util.parseBoolean(data);
+                        $scope.showPhone = util.parseBoolean(data, true);
                     });
                     $scope.$watch('promocodeVisible', function (data) {
                         $scope.promocodeVisible = util.parseBoolean(data);
@@ -120,10 +118,10 @@
                         $scope.skipBillingVisible = util.parseBoolean(data);
                     });
                     $scope.$watch('cancelVisible', function (data) {
-                        $scope.cancelVisible = util.parseBoolean(data);
+                        $scope.cancelVisible = util.parseBoolean(data, true);
                     });
                     $scope.$watch('billingUpdatePopup', function (data) {
-                        $scope.billingUpdatePopup = util.parseBoolean(data);
+                        $scope.billingUpdatePopup = util.parseBoolean(data, true);
                     });
                     $scope.$watch('showPhone + skipBilling', function () {
                         $scope.phoneVisible = $scope.showPhone || $scope.skipBilling;

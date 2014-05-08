@@ -96,8 +96,12 @@ window.JP.main.service('util', [
             return a.length - b.length;
         };
 
-        service.parseBoolean = function (str) {
-            if (typeof (str) === 'boolean') {
+        service.parseBoolean = function (str, def) {
+            var type = typeof (str);
+            if (type === 'undefined' && typeof (def) === 'boolean') {
+                return def;
+            }
+            if (type === 'boolean') {
                 return str;
             }
             return str === 'true';

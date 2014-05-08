@@ -49,7 +49,9 @@
                 Account.checkProvisioning(submitBillingInfo, function () {
                     $scope.creating = true;
                     service.createController().then(function () {
-                        $location.path('/slb/list');
+                        if (returnUrl === $location.path()) {
+                            $location.path('/slb/list');
+                        }
                     }, showErrPopupDialog);
                 }, function () {
                 }, function (isSuccess) {
