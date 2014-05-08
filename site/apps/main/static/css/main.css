@@ -1162,6 +1162,10 @@ div .disabled {
     border-radius: 0;
 }
 
+.modal-body .span12 {
+    width: 100%;
+}
+
 [class^="icon-"],
 [class*=" icon-"] {
     background-image: url("../img/glyphicons-halflings.png");
@@ -2991,4 +2995,290 @@ label.checkbox {
 .container-grid {
     float: left;
     width: 100%;
+}
+
+/*  FILEMAN  */
+#address ul li {
+    list-style: none;
+    display: inline-block;
+}
+
+#address ul a {
+    white-space: nowrap;
+}
+
+#address ul li:before {
+    content: ' / ';
+    padding-left: 3px;
+}
+
+#address ul li:first-child:before {
+    content: '' !important;
+}
+
+#address ul li:first-child a:after {
+    content: 'root' !important;
+}
+
+.container-fileman {
+    padding-left: 48px;
+}
+
+.folder-container {
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 1000px;
+    padding-bottom: 30px;
+}
+.general-column {
+    position:relative;
+    vertical-align: top;
+    height:100%;
+    display: table-cell;
+    min-width: 90px;
+    max-width: 90px;
+    border-right: 1px solid #666;
+}
+.finder-column {
+    display: table-cell;
+    height: 390px;
+    overflow: auto;
+    background-color: #fafafa;
+    vertical-align: top;
+}
+.finder-column-loader {
+    position: relative;
+    overflow: visible;
+}
+.finder-column-loader .files-box {
+    position: absolute;
+    left: -226px;
+}
+.finder-column .finder-elements {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.general-column .finder-elements {
+    width: 80px;
+    height: 80px;
+    text-align: center;
+    background-color: #f7f7f7;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+.finder-elements a {
+    text-decoration: none;
+    margin-left: 5px;
+}
+.finder-elements.active {
+    background-color: #fef1d2;
+}
+.img-icon {
+    width: 25px;
+    height: 20px;
+}
+.blank,
+.compressed,
+.css,
+.developer,
+.excel,
+.fireworks,
+.flash,
+.html,
+.illustrator,
+.image,
+.keynote,
+.movie,
+.music,
+.numbers,
+.object,
+.pages,
+.pdf,
+.photoshop,
+.powerpoint,
+.text,
+.word {
+    background-repeat: no-repeat;
+    background-size: 25px;
+    width: 25px;
+    height: 25px;
+}
+.blank {
+    background-image: url("../img/fileman/blank.png");
+}
+.compressed {
+    background-image: url("../img/fileman/compressed.png");
+}
+.css {
+    background-image: url("../img/fileman/css.png");
+}
+.developer {
+    background-image: url("../img/fileman/developer.png");
+}
+.general-column .finder-elements .directory {
+    background: url("../img/fileman/folder.png") no-repeat 50%;
+    background-size: 43px 29px;
+    height: 29px;
+}
+.general-column .finder-elements.active .directory {
+    background: url("../img/fileman/folder-open.png") no-repeat 50% !important;
+    background-size: 43px 29px;
+    height: 29px;
+}
+.finder-column .finder-elements .directory {
+    background: url("../img/fileman/folder.png") no-repeat;
+    background-size: 29px 20px;
+    width: 25px;
+    height: 25px;
+}
+.excel {
+    background-image: url("../img/fileman/excel.png");
+}
+.fireworks {
+    background-image: url("../img/fileman/fireworks.png");
+}
+.flash {
+    background-image: url("../img/fileman/flash.png");
+}
+.html {
+    background-image: url("../img/fileman/html.png");
+}
+.illustrator {
+    background-image: url("../img/fileman/illustrator.png");
+}
+.image {
+    background-image: url("../img/fileman/image.png");
+}
+.keynote {
+    background-image: url("../img/fileman/keynote.png");
+}
+.movie {
+    background-image: url("../img/fileman/movie.png");
+}
+.music {
+    background-image: url("../img/fileman/music.png");
+}
+.numbers {
+    background-image: url("../img/fileman/numbers.png");
+}
+.object {
+    background-image: url("../img/fileman/object.png");
+}
+.pages {
+    background-image: url("../img/fileman/pages.png");
+}
+.pdf {
+    background-image: url("../img/fileman/pdf.png");
+}
+.photoshop {
+    background-image: url("../img/fileman/photoshop.png");
+}
+.powerpoint {
+    background-image: url("../img/fileman/powerpoint.png");
+}
+.text {
+    background-image: url("../img/fileman/text.png");
+}
+.word {
+    background-image: url("../img/fileman/word.png");
+}
+.path-name {
+    vertical-align: middle;
+    max-width: 190px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: #969696;
+}
+.general-column .finder-elements .path-name {
+    display: block;
+    width: 80px;
+    font-size: 16px;
+    color: #333;
+}
+.finder-column .finder-elements .path-name {
+    display: inline-block;
+}
+.finder-elements.active .path-name {
+    color: #333;
+}
+.folder-container-sub {
+    height: 392px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+}
+.files-box {
+    height: 390px;
+    overflow-x:hidden;
+    overflow-y:auto;
+    display: inline-block;
+}
+.general-column .files-box {
+    width: 100px;
+}
+.finder-column .files-box {
+    width: 225px;
+    border: 1px solid #666;
+    margin-left: -1px;
+}
+
+.header-btn-panel {
+    padding-bottom: 5px;
+}
+.header-btn-panel form {
+    margin-right: 30px;
+    margin-bottom: 0;
+}
+.header-btn-panel input:first-child {
+    margin-top: 3px;
+    color: #333333;
+    border-radius: 18px;
+    border: 0 none;
+    -webkit-box-shadow: none!important;
+    -moz-box-shadow: none!important;
+    box-shadow: none!important;
+    padding-right: 30px;
+    padding-left: 15px;
+    background: #f5f5f5 url("../img/fileman/table_i_search.png") no-repeat center right;
+    width: 150px;
+}
+.line-bg {
+    background: url("../img/fileman/line-bg.png") repeat-x;
+    width: 100%;
+    height: 35px;
+    vertical-align: top;
+    line-height: 35px;
+    text-align: center;
+    color: #666;
+    font-weight: 200;
+}
+.drag-files {
+    padding-left: 90px;
+    padding-top: 5px;
+}
+.upload-btn {
+    display: inline-block;
+    vertical-align: middle;
+}
+.bottom-btn-panel {
+    margin-left: 90px;
+    padding-top: 15px;
+    padding-bottom: 20px;
+}
+.bottom-btn-panel span {
+    font-weight: 500;
+    font-size: 16px;
+    padding-right: 20px;
+    color: #666;
+}
+.loading-medium-transparent {
+    width: 225px;
+    height: 390px;
 }

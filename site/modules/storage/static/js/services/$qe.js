@@ -48,4 +48,4 @@
         }
     ]);
 
-})(window.JP.getModule('fileman'));
+})(window.JP.getModule('Storage'));
