@@ -52,7 +52,7 @@ module.exports = function execute(scope) {
         if (!signupTag && production) {
             req.log.warn('Twitter configuration missing');
         } else if (signupTag && req.session.userIsNew) {
-            var twitterTagCode = 'twttr.conversion.trackPid("' + signupTagg + '");';
+            var twitterTagCode = 'window.twttr && twttr.conversion.trackPid("' + signupTag + '");';
             res.locals.jss.push(twitterTagCode);
         }
 
