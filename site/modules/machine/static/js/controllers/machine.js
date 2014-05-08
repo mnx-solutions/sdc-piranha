@@ -46,8 +46,8 @@
             $scope.defaultSshUser = 'root';
             $scope.incorrectNameMessage = "can contain only letters, digits and signs like '.' and '-'.";
 
-            var reloadPackages = function (currentPackageName) {
-                $q.all([Package.package(), Package.package(currentPackageName)]).then(function (results) {
+            var reloadPackages = function (currentPackageName, datacenter) {
+                $q.all([Package.package({datacenter: datacenter}), Package.package(currentPackageName)]).then(function (results) {
                     $scope.package = results[1];
                     $scope.packages = results[0].filter(function (item) {
                         if ($scope.package && item.type && item.type === 'smartos' && item.memory > $scope.package.memory) {
@@ -158,7 +158,7 @@
                     return Dataset.dataset({datacenter: m.datacenter, id: m.image});
                 });
 
-                reloadPackages(m.package);
+                reloadPackages(m.package, m.datacenter);
 
                 $scope.dataset.then(function(ds){
                     $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
@@ -290,7 +290,7 @@
                             $scope.isResizing = false;
                             if (!error) {
                                 $scope.machine.freetier = false;
-                                reloadPackages(selected.name);
+                                reloadPackages(selected.name, $scope.machine.datacenter);
                             }
                         });
                     });
