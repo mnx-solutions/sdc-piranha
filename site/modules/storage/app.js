@@ -36,17 +36,36 @@ module.exports = function (scope, app) {
         });
     });
 
-    app.get('/download', function (req, res, next) {
+    var getFile = function (req, res, action) {
+        var messageError;
+        var headerType;
+        if (action === 'download') {
+            messageError = 'Error while downloading file';
+            headerType = 'application/octet-stream';
+        } else {
+            messageError = 'Error while showing file';
+            headerType = 'text/plain';
+        }
         var client = Manta.createClient({req: req});
         client.get(req.query.path, function (err, stream) {
             if (err) {
-                req.log.error({error: err}, 'Error while downloading file');
+                req.log.error({error: err}, messageError);
                 return;
             }
-            var filename = path.basename(req.query.path);
-            res.setHeader('Content-Type', 'application/octet-stream');
-            res.setHeader('Content-Disposition', 'attachment; filename=\"' + filename + '\";"');
+            res.setHeader('Content-Type', headerType);
+            if (action === 'download') {
+                var filename = path.basename(req.query.path);
+                res.setHeader('Content-Disposition', 'attachment; filename=\"' + filename + '\";"');
+            }
             stream.pipe(res);
         });
+    };
+
+    app.get('/download', function (req, res) {
+        getFile(req, res, 'download');
+    });
+
+    app.get('/show', function (req, res) {
+        getFile(req, res, 'show');
     });
 };

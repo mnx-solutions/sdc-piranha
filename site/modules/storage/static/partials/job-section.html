@@ -9,7 +9,8 @@
 
     <div class="job-section-body" data-ng-show="showSection">
         <div data-ng-show="objects.length">
-            <p data-ng-repeat="obj in objects">{{obj}}</p>
+            <p data-ng-repeat="obj in objects" data-ng-hide="obj[0] == '/'">{{obj}}</p>
+            <p data-ng-repeat="obj in objects" data-ng-show="obj[0] == '/'" ><a data-ng-click="getFile(obj)">{{obj}}</a></p>
         </div>
     </div>
 </div>
