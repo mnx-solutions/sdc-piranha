@@ -46,7 +46,7 @@
                     if(++i < $scope.steps.length) {
                         $scope.setStep($scope.steps[i]);
                     } else {
-                        window.location.href = '/main';
+                        window.location.href = $cookies.signupRedirectUrl || '/main';
                     }
                 };
 
@@ -60,10 +60,10 @@
                 };
 
 
-                $scope.skipSsh = function() {
-                    $http.get('/signup/account/signup/skipSsh').success(function(data) {
-                        if(data.success === true) {
-                            window.top.location.href = '/main';
+                $scope.skipSsh = function () {
+                    $http.get('/signup/account/signup/skipSsh').success(function (data) {
+                        if (data.success === true) {
+                            window.top.location.href = $cookies.signupRedirectUrl || '/main';
                         }
                     });
                 };
