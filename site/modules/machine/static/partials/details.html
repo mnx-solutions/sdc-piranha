@@ -76,11 +76,11 @@
                                 </tr>
                                 <tr>
                                     <td>Memory</td>
-                                    <td>{{machine.memory | sizeFormat}}</td>
+                                    <td>{{machine.memory && (machine.memory | sizeFormat)}}</td>
                                 </tr>
                                 <tr>
                                     <td>Disk</td>
-                                    <td>{{machine.disk | sizeFormat}}</td>
+                                    <td>{{machine.disk && (machine.disk | sizeFormat)}}</td>
                                 </tr>
                                 <tr>
                                     <td>IP addresses</td>
