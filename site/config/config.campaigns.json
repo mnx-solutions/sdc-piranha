@@ -40,7 +40,7 @@
     },
     "70180000000ag8G": {
         "promoCode": "FREEJOY",
-        "disablePromoCode": true
+        "hideCode": true
     },
     "70180000000aarN": {
         "promoCode": "FREEJOY12"

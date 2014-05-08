@@ -13,7 +13,7 @@ module.exports = function execute(scope, app) {
             var promo = config.ns['promo-codes'][campaign.promoCode];
             if (campaign.promoCode) {
                 promo.code = campaign.promoCode;
-                promo.disablePromoCode = campaign.disablePromoCode;
+                promo.hideCode = campaign.hideCode;
                 campaignPromoMap[campaignId] = promo;
             }
         });
@@ -64,16 +64,16 @@ module.exports = function execute(scope, app) {
             i += 1;
             defPromo = defaultPromos[i];
         }
-        defPromo.disablePromoCode = true;
+        defPromo.hideCode = true;
         return defPromo;
     }
 
     app.get('/promocode', function (req, res, next) {
         var promo = getPromoDetail(req.cookies.campaignId);
-        var result = {code: '', disablePromoCode: false};
+        var result = {code: '', hideCode: false};
         if (promo) {
             result.code = promo.code ? promo.code : '';
-            result.disablePromoCode = promo.disablePromoCode === true;
+            result.hideCode = promo.hideCode;
         }
         req.log.debug({campaignId: req.cookies.campaignId, promocode: result}, 'Requested default promocode');
         res.json(result);

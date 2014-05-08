@@ -44,6 +44,7 @@
                     var submitBillingInfo = $rootScope.popCommonConfig('submitBillingInfo') || {btnTitle: 'Save Changes', appendPopupMessage: ''};
                     var addedMessageText = submitBillingInfo.appendPopupMessage;
 
+                    $scope.promoCodeValue = '';
                     $scope.form = {
                         cardHolderInfo: {
                         },
@@ -52,8 +53,10 @@
 
                     $http.get('billing/promocode').then(function (code) {
                         if (!$scope.form.promoCode && code.data) {
-                            $scope.form.promoCode = code.data.code;
-                            $scope.disablePromoCode = code.data.disablePromoCode;
+                            $scope.promoCodeValue = code.data.code;
+                            if (!code.data.hideCode) {
+                                $scope.form.promoCode = $scope.promoCodeValue;
+                            }
                         }
                     });
 
@@ -352,7 +355,9 @@
                             delete $scope.form.cardHolderInfo.state;
                         }
                         $scope.form.workPhone = $scope.phone.number;
-                        BillingService.addPaymentMethod($scope.form, function (errs, job) {
+                        var formData = angular.copy($scope.form);
+                        formData.promoCode = formData.promoCode || $scope.promoCodeValue;
+                        BillingService.addPaymentMethod(formData, function (errs, job) {
                             if (!errs) {
                                 Account.updateAccount({
                                     country: $scope.phone.country.iso3,
