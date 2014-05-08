@@ -122,6 +122,10 @@
         };
 
         $scope.orderGridMachinesBy = function (prop, reverse) {
+            if (prop.hideSorter) {
+                return;
+            }
+
             if ($scope.multisort !== 'false') {
                 var existed = null;
                 var orderIndex = $scope.order.indexOf(prop.order);
@@ -423,6 +427,12 @@
                 $scope.multisort = ng.isDefined(attrs.multisort) ? $scope.$eval(attrs.multisort) : gridConfig.multisort;
                 $scope.controls = ng.isDefined(attrs.controls) ? $scope.$eval(attrs.controls) : gridConfig.controls;
                 $scope.loading = true;
+
+                var ignore = $scope.exportFields.ignore;
+
+                if (ignore && ignore === 'all') {
+                    $scope.hideExport = true;
+                }
 
                 var onPropsChanges = function (scope, props) {
                     $scope.props = props || $scope.props;

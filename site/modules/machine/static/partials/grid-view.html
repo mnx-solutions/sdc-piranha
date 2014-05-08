@@ -32,7 +32,7 @@
                 </ul>
             </div>
             <div class="btn-group">
-                <button type="button" class="btn grid-small-font btn-original-text" data-ng-click="export('csv')">Export.csv</button>
+                <button type="button" class="btn grid-small-font btn-original-text" data-ng-hide="hideExport" data-ng-click="export('csv')">Export.csv</button>
                 <div style="display:none;" data-ng-bind-html-unsafe="exportIframe"></div>
             </div>
             <div class="btn-group" data-ng-show="areColumnsEnabled()">
@@ -90,7 +90,7 @@
                         data-ng-class="{active: prop.columnActive}"
                         data-ng-click="orderGridMachinesBy(prop)"
                         data-ng-show="prop.active">
-                        <div>
+                        <div data-ng-show="!prop.hideSorter">
                             <i class="icon-sort-up" data-ng-show="order.indexOf(prop.rorder) != -1"></i>
                             <i class="icon-sort-down" data-ng-show="order.indexOf(prop.order) != -1"></i>
                             <i class="icon-sort-both" data-ng-show="order.indexOf(prop.order) == -1 && order.indexOf(prop.rorder) == -1"></i>
@@ -113,9 +113,6 @@
                             <span data-ng-show="object.maintenanceStartTime && !object.compute_node" class="tooltip-hover warn-sign" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="This instance has been scheduled for <br />maintenance on <b>{{object.maintenanceStartTime}}</b>"><i class="warn-yellow"></i></span>
                             <div data-ng-switch-when="name"  style="min-width: 140px;">
                                 <a href="" data-ng-show="location.path().search('images')==1">{{object.name}}</a>
-                            </div>
-                            <div data-ng-switch-when="id">
-                                <a href="#!/manta/jobs/{{object.name}}" data-ng-show="location.path().search('manta/jobs')==1">{{object.name}}</a>
                             </div>
                             <span data-ng-switch-when="state" data-ng-click="toggleDetails(object.id)">
                                 <div data-object-state data-object="object" data-type="{{itemsType}}" class="grid-small-font"></div>
@@ -140,6 +137,10 @@
                                         <span data-ng-bind-html-unsafe="prop._getter(object)"></span>
                                     </span>
                                 <span data-ng-switch-when="date">{{object[prop.id] | date:'yyyy-MM-dd HH:mm'}}</span>
+                                <span data-ng-switch-when="async">
+                                    <span class="loading-small" data-ng-hide="prop._getter(object) || prop._getter(object) == 0"></span>
+                                    {{prop._getter && prop._getter(object)}}
+                                </span>
                                 <span data-ng-switch-default>
                                     {{prop._getter && prop._getter(object) || prop.id2 && object[prop.id][prop.id2] || object[prop.id]}}
                                 </span>
