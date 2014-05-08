@@ -473,6 +473,11 @@
                         });
                     };
 
+                    $scope.isPromoVisible = function () {
+                        return ($scope.isSignUpForm || $rootScope.features.allowSkipBilling === 'enabled' && !$scope.form.creditCardNumber) &&
+                            $scope.promocodeVisible;
+                    };
+
                     function isCCNumberValid() {
                         return (/^[0-9\*]{15,16}$/gi).test($scope.form.creditCardNumber);
                     }

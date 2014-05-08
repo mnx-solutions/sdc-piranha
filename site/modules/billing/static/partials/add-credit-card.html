@@ -360,7 +360,7 @@
                 data-el-width="220"></span>
         </div>
     </fieldset>
-    <fieldset class="line" data-ng-show="(isSignUpForm || features.allowSkipBilling == 'enabled' && !form.creditCardNumber) && promocodeVisible">
+    <fieldset class="line" data-ng-show="isPromoVisible()">
         <legend data-translate>Promotional Code</legend>
         <div class="control-group">
             <span class="edit-name" data-translate>Enter Code
