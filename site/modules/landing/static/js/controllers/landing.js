@@ -13,12 +13,6 @@ window.JP.set('urlHashbang', window.location.hash);
         function ($scope, $window, Landing, localization) {
             localization.bind('landing', $scope);
 
-            if ($scope.features.useBrandingOrange === 'enabled') {
-                $window.location.href = '/landing/login';
-            } else {
-                $scope.loaded = true;
-            }
-
             var oldHashbang = window.JP.get('urlHashbang');
             if(oldHashbang === '#!/' || !oldHashbang || oldHashbang === '') {
                 oldHashbang = '#!/dashboard';
@@ -60,5 +54,11 @@ window.JP.set('urlHashbang', window.location.hash);
                     $window.location.href = data.url;
                 });
             };
+
+            if ($scope.features.useBrandingOrange === 'enabled') {
+                $scope.login();
+            } else {
+                $scope.loaded = true;
+            }
         }]);
 }(window.JP.getModule('Landing')));
