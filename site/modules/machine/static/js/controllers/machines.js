@@ -216,10 +216,11 @@
                    }
                 },
                 {
-                    id: 'datacenter',
-                    name: 'Data Center',
+                    id: 'primaryIp',
+                    name: 'IP',
+                    _order: ipToInt,
                     sequence: 2,
-                    active: false
+                    active: true
                 },
                 {
                     id: '',
@@ -241,11 +242,10 @@
                     reverseSort: true
                 },
                 {
-                    id: 'primaryIp',
-                    name: 'IP',
-                    _order: ipToInt,
+                    id: 'datacenter',
+                    name: 'Data Center',
                     sequence: 6,
-                    active: true
+                    active: false
                 },
                 {
                     id: 'state',
