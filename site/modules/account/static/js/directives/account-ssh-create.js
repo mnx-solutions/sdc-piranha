@@ -12,7 +12,8 @@
         '$http',
         '$rootScope',
         'PopupDialog',
-        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog) {
+        '$cookies',
+        function (Account, localization, notification, $q, $window, $timeout, $http, $rootScope, PopupDialog, $cookies) {
             return {
                 restrict: 'EA',
                 replace: true,
@@ -92,7 +93,7 @@
                                                         setTimeout(function () {
                                                             $http.get('/signup/account/signup/passSsh').success(function () {
                                                                 // marked ssh step as passed
-                                                                window.location.href = '/main/#!/account/ssh';
+                                                                window.location.href = $cookies.signupRedirectUrl || '/main/#!/account/ssh';
                                                             });
                                                         }, 1000);
                                                     }

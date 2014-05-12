@@ -33,7 +33,9 @@
         "promoCode": "NKO2013DES"
     },
     "701800000015696": {
-        "promoCode": "NODE.JS CORE SUPPORT"
+        "promoCode": "NODE.JS CORE SUPPORT",
+        "signupRedirectUrl": "/main/#!/support/cloud",
+        "redirect": ""
     },
     "70180000000ShEu": {
         "redirect": "701800000015696"

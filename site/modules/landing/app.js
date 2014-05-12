@@ -21,7 +21,7 @@ module.exports = function execute(scope, app, callback) {
             protocol = req.protocol;
         }
 
-        var baseUrl = new Buffer(protocol + '://' + req.headers.host + (req.body.method === 'signup' ? '/' : redirectUrl)).toString('base64');
+        var baseUrl = new Buffer(protocol + '://' + req.headers.host + redirectUrl).toString('base64');
         var returnUrl = protocol + '://' + req.headers.host + '/tfa/saveToken/' + baseUrl + '/';
         var ssoUrl = config.url + '/' + method;
 
@@ -32,7 +32,7 @@ module.exports = function execute(scope, app, callback) {
         var phoneVerificationDisabled = scope.config.features.phoneVerification !== 'enabled';
 
         // build the query string
-        campaignId = campaignId || req.cookies.campaignId;
+        campaignId = typeof (campaignId) !== 'undefined' ? campaignId : req.cookies.campaignId;
         var querystring =
             (brandingEnabled && scope.config.features.allowSkipBilling === 'enabled' ? 'allowSkipBilling=true&' : '') +
             (brandingEnabled ? 'branding=orange&' : '') +
@@ -61,7 +61,7 @@ module.exports = function execute(scope, app, callback) {
     function getRedirectCampaignId(campaignId, deep) {
         deep = deep || 0;
         var campaign = scope.config.ns['campaigns'][campaignId];
-        if (campaign && campaign['redirect'] && deep < 10) {
+        if (campaign && typeof (campaign['redirect']) !== 'undefined' && deep < 10) {
             deep += 1;
             return getRedirectCampaignId(campaign['redirect'], deep);
         }
@@ -73,16 +73,31 @@ module.exports = function execute(scope, app, callback) {
 
     app.get('/signup/:campaignId?', function (req, res, next) {
         var campaignId = req.params.campaignId;
+        var redirectUrl = '/main/';
+
         if (campaignId) {
+            var campaignDetails =  scope.config.ns['campaigns'][campaignId];
+            if (campaignDetails.signupRedirectUrl) {
+                redirectUrl = campaignDetails.signupRedirectUrl;
+                res.cookie('signupRedirectUrl', redirectUrl);
+            } else {
+                res.clearCookie('signupRedirectUrl');
+            }
             campaignId = getRedirectCampaignId(campaignId);
             // set campaign id to the cookie
             req.log.debug({campaignId: campaignId}, 'campaignId cookie set for user');
-            res.cookie('campaignId', campaignId, { maxAge: 900000, httpOnly: false});
+            if (campaignId) {
+                res.cookie('campaignId', campaignId, { maxAge: 900000, httpOnly: false});
+            } else {
+                res.clearCookie('campaignId');
+            }
             // faking signup button
             req.body.method = 'signup';
+        } else {
+            res.clearCookie('signupRedirectUrl');
         }
         req.log.info({campaignId: campaignId}, 'User landed on signup url');
-        sendToSSO(req, res, 'signup', '/main/', true, campaignId);
+        sendToSSO(req, res, 'signup', redirectUrl, true, campaignId);
     });
 
     app.get('/login', function (req, res, next) {
