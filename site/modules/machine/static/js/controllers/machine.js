@@ -30,7 +30,7 @@
             });
 
             var machineid = requestContext.getParam('machineid');
-
+            var currentLocation = $location.path();
             Account.getAccount(true).then(function (account) {
                 $scope.account = account;
             });
@@ -455,26 +455,28 @@
                         // Redirect if complete
                         Machine.deleteMachine(machineid).getJob().done(function () {
                             PopupDialog.message(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Message'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Your instance "{{name}}" has been successfully deleted.',
-                                    {
-                                        name: $scope.machine['name']
+                                    localization.translate(
+                                            $scope,
+                                            null,
+                                            'Message'
+                                    ),
+                                    localization.translate(
+                                            $scope,
+                                            null,
+                                            'Your instance "{{name}}" has been successfully deleted.',
+                                            {
+                                                name: $scope.machine['name']
+                                            }
+                                    ),
+                                    function () {
                                     }
-                                ),
-                                function () {}
                             );
-                            if($location.url() === '/compute/instance/'+ machineid) {
+
+                            if ($location.url() === '/compute/instance/' + machineid) {
                                 $location.url('/compute');
                                 $location.replace();
                             }
-                            if(!$scope.machines.length) {
+                            if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {
                                 $location.path('/compute/create/simple')
                             }
                         });

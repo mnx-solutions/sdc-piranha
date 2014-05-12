@@ -320,8 +320,19 @@
 
             $scope.$on('creditCardUpdate', function (event, cc) {
                 $scope.account.provisionEnabled = true;
-                $scope.setCurrentStep(4);
-                $scope.slideCarousel();
+                if ($scope.keys.length > 0) {
+                    $scope.clickProvision();
+                } else {
+                    $scope.setCurrentStep(4);
+                    $scope.slideCarousel();
+                    $timeout(function () {
+                        $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                            return item.name != 'Account Information';
+                        });
+                        $scope.setCurrentStep(3);
+                    }, 600);
+                }
+
             });
 
             $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
@@ -465,7 +476,17 @@
                                     title
                             ),
                             popupContent,
-                            finalProvision
+                            finalProvision,
+                            function () {
+                                var stepsSize = $scope.provisionSteps.length;
+                                $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                                    return item.name != 'Account Information';
+                                });
+                                if (stepsSize !== $scope.provisionSteps.length) {
+                                    $scope.reconfigure($scope.currentSlidePageIndex - 1);
+                                    $scope.createInstanceTitle = null;
+                                }
+                            }
                     );
                 }, function () {
                     if (!machine) {
@@ -635,11 +656,6 @@
                         return item.name != 'SSH Key';
                     });
                 }
-                if ($scope.account.provisionEnabled) {
-                    $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                        return item.name != 'Account Information';
-                    });
-                }
                 if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {
                     $scope.createInstanceTitle = null;
                 }
@@ -654,12 +670,6 @@
             }
 
             $scope.setCurrentStep = function (index) {
-                ng.element('.wizard-steps')
-                        .children('div')
-                        .removeClass('active-step')
-                        .eq(index).
-                        addClass('active-step');
-
                 $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
                 $scope.currentSlidePageIndex = index;
             };

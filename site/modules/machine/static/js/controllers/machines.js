@@ -24,7 +24,7 @@
             requestContext.setUpRenderContext('machine.index', $scope, {
                 title: localization.translate(null, 'machine', 'See my Joyent Instances')
             });
-
+            var currentLocation = $location.path();
             $scope.loading = true;
 
             // Pagination
@@ -509,7 +509,7 @@
             $scope.deleteInstance = function(el) {
                 $$track.event('machine', 'delete');
                 Machine.deleteMachine(el.id).getJob().done(function () {
-                    if (!$scope.machines.length) {
+                    if (!$scope.machines.length && currentLocation === $location.path()) {
                         $location.path("compute/create/simple");
                     }
                     el.checked = false;

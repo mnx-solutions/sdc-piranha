@@ -12,11 +12,14 @@
 
                 Account.getAccount(true).then(function (account) {
                     $scope.account = account;
-                    $scope.provisionEnabled = account.provisionEnabled;
                 });
 
                 $scope.$on('accountUpdated', function (event, account) {
                     $scope.account = account;
+                });
+
+                $scope.$on('creditCardUpdate', function (event, credit) {
+                    $scope.account.provisionEnabled = true;
                 });
 
                 $scope.skinChange = function () {
@@ -51,7 +54,7 @@
                     Account.checkProvisioning(submitBillingInfo, null, angular.noop, function (isSuccess) {
                         $location.path(isSuccess ? '/account' : currentPath);
                         if (isSuccess) {
-                            $scope.provisionEnabled = true;
+                            $scope.account.provisionEnabled = true;
                         }
                     }, false);
                 };
