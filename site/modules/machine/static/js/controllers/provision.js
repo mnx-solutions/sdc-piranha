@@ -327,10 +327,10 @@
                     $scope.slideCarousel();
                     $timeout(function () {
                         $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                            $scope.currentSlidePageIndex -= 1;
                             return item.name != 'Account Information';
                         });
-                    }, 400);
+                        $scope.setCurrentStep(3);
+                    }, 600);
                 }
 
             });
@@ -476,7 +476,17 @@
                                     title
                             ),
                             popupContent,
-                            finalProvision
+                            finalProvision,
+                            function () {
+                                var stepsSize = $scope.provisionSteps.length;
+                                $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                                    return item.name != 'Account Information';
+                                });
+                                if (stepsSize !== $scope.provisionSteps.length) {
+                                    $scope.reconfigure($scope.currentSlidePageIndex - 1);
+                                    $scope.createInstanceTitle = null;
+                                }
+                            }
                     );
                 }, function () {
                     if (!machine) {
@@ -660,12 +670,6 @@
             }
 
             $scope.setCurrentStep = function (index) {
-                ng.element('.wizard-steps')
-                        .children('div')
-                        .removeClass('active-step')
-                        .eq(index).
-                        addClass('active-step');
-
                 $scope.currentStep = ng.element('.active-step').find('.current-step').eq(0).text();
                 $scope.currentSlidePageIndex = index;
             };
