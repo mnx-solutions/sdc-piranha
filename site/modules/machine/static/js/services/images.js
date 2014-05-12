@@ -219,6 +219,49 @@
                 return image;
             };
 
+            service.renameImage = function (image, callback) {
+                image.state = 'renaming'; // Override state manually
+                image.job = serverTab.call({
+                    name: 'ImageRename',
+                    data: { image: image },
+                    done: function(err, job) {
+                        if (!err) {
+                            PopupDialog.message(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Message'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'image',
+                                    'Image "{{name}}" renamed',
+                                    { name: image.name }
+                                ),
+                                callback
+                            );
+                        } else {
+                            PopupDialog.error(
+                                localization.translate(
+                                    null,
+                                    null,
+                                    'Error'
+                                ),
+                                localization.translate(
+                                    null,
+                                    'image',
+                                    'Unable to rename image "{{name}}".',
+                                    { name: image.name }
+                                ),
+                                function () {}
+                            );
+                        }
+                    }
+                });
+
+                return image;
+            };
+
             return service;
         }]);
 }(window.angular, window.JP.getModule('Machine')));

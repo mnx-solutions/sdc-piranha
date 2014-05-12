@@ -1,33 +1,12 @@
 <div class="container-fluid container-position" data-ng-controller="Machine.DetailsController">
 
     <div data-breadcrumbs></div>
-
-    <h3 class="page-title" data-ng-show="!changingName" data-ng-click="enableRename(machine.name)">
-        <div class="loading-medium wait_rename" data-ng-show="loadingNewName"></div>
-        {{machine.name}}
-        <div class="edit-text-icon"></div>
+    <div data-ng-show="features.instanceRename == 'enabled'">
+        <div data-rename data-object="machine" data-type="'machine'"></div>
+    </div>
+    <h3 class="page-title" data-ng-hide="features.instanceRename == 'enabled'">
+        {{ newInstanceName }}
     </h3>
-
-                <form name="instanceRename" class="machine-edit-form">
-                    <div class="error"
-                         data-ng-show="instanceRename.instanceRename.$error.machineName && changingName && newInstanceName != machine.name"
-                         data-translate>
-                        Machine name&nbsp;{{incorrectNameMessage}}
-                    </div>
-
-                    <div class="error"
-                         data-ng-show="instanceRename.instanceRename.$error.machineUnique && changingName && newInstanceName != machine.name"
-                         data-translate>
-                        Machine name is already in use
-                    </div>
-                    <div class="pull-left machine-edit" data-ng-show="changingName">
-            <input class="span2 machine-name-edit" id="instanceRename" name="instanceRename" data-ng-model="newInstanceName" type="text" data-machine-name="instanceRename" data-machine-unique />
-                        <div class="btn-group machine-edit-buttons">
-                <button class="btn btn-height" data-ng-click="clickRename()" data-ng-disabled="instanceRename.$invalid || newInstanceName.length <= 0 || newInstanceName==machine.name" type="button"><i class="icon-ok"/></button>
-                <button class="btn" data-ng-click="cancelRename()" type="button"><i class="icon-remove"/></button>
-                        </div>
-                    </div>
-                </form>
 
     <div class="inl-table">
         <div class="left-part">
@@ -42,9 +21,9 @@
                     <div id="collapse_summary" class="accordion-body collapse in">
                         <div class="accordion-inner">
                             <table>
-                                <tr>
-                                    <td style="width:140px">UUID</td>
-                                    <td style="color:#333333;font-weight: bold;">{{machine.id}}</td>
+                                <tr class="id-section">
+                                    <td>UUID</td>
+                                    <td>{{machine.id}}</td>
                                 </tr>
                                 <tr>
                                     <td>Type</td>

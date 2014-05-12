@@ -419,6 +419,19 @@ module.exports = function execute(scope, register) {
         });
     };
 
+    api.ImageRename = function (call, options, callback) {
+        var cloud = call.cloud.separate(options.datacenter);
+        cloud.updateImage(options.uuid, { name: options.name }, function (err) {
+            if (!err) {
+                // poll for image name change (rename)
+                pollForObjectStateChange(cloud, call, 'name', options.name, (60 * 60 * 1000), 'Image', options.uuid, callback);
+            } else {
+                call.log.error(err);
+                call.done(err);
+            }
+        });
+    };
+
     api.ImageDelete = function (call, options, callback) {
         call.log.info('Deleting image %s', options.imageId);
 

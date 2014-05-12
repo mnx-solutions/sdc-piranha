@@ -362,14 +362,6 @@
                 }
             };
 
-            $scope.renameClass = function() {
-                if($scope.features.instanceRename === 'enabled') {
-                    return 'machine-name-rename';
-                } else {
-                    return '';
-                }
-            };
-
             $scope.messageDialog = function () {
                 PopupDialog.message(
                     localization.translate(
@@ -383,54 +375,6 @@
                         'Sorry, this is not implemented yet.'
                     ),
                     function() {}
-                );
-            };
-
-            $scope.enableRename = function(name) {
-                if($scope.features.instanceRename === 'enabled') {
-                    $scope.changingName = true;
-                    $scope.newInstanceName = name;
-                    $timeout(function () {
-                        angular.element('#instanceRename').focus();
-                    });
-                }
-            };
-
-            $scope.cancelRename = function() {
-                $scope.changingName = false;
-            };
-
-            $scope.clickRename = function() {
-                if ($scope.machine.name === $scope.newInstanceName) {
-                    return;
-                }
-                var currentMachineName = $scope.machine.name;
-                $scope.machine.name = $scope.newInstanceName;
-                PopupDialog.confirm(
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Confirm: Rename instance'
-                    ),
-                    localization.translate(
-                        $scope,
-                        null,
-                        'Rename this instance'
-                    ), function () {
-                        $scope.loadingNewName = true;
-                        $scope.changingName = false;
-                        $$track.event('machine', 'rename');
-		                $scope.renaming = true;
-                        var job = Machine.renameMachine($scope.machineid, $scope.newInstanceName);
-
-                        job.getJob().done(function() {
-                            $scope.changingName = false;
-	                        $scope.renaming = false;
-                            $scope.loadingNewName = false;
-                        })
-                    }, function () {
-                        $scope.machine.name = currentMachineName;
-                    }
                 );
             };
 

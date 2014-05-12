@@ -36,6 +36,18 @@ window.JP.main.config([
         }).when('/images', {
             title: 'Images',
             action: 'machine.images'
+        }).when('/images/:currentImage', {
+            title: 'Image Details',
+            action: 'machine.image-details',
+            showLatest: true,
+            showText: true,
+            resolve: {
+                data: ['$route', '$location', function ($route, $location) {
+                    if (!$route.current.params.currentImage) {
+                        $location.path('/dashboard');
+                    }
+                }]
+            }
         });
     }
 ]);
