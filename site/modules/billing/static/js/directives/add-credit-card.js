@@ -387,6 +387,7 @@
                                     }
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
+                                        $scope.prev = credit;
                                         $scope.loading = false;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
@@ -474,7 +475,7 @@
                     };
 
                     $scope.isPromoVisible = function () {
-                        return ($scope.isSignUpForm || $rootScope.features.allowSkipBilling === 'enabled' && !$scope.form.creditCardNumber) &&
+                        return ($scope.isSignUpForm || $rootScope.features.allowSkipBilling === 'enabled' && !$scope.prev.cardNumber) &&
                             $scope.promocodeVisible;
                     };
 
