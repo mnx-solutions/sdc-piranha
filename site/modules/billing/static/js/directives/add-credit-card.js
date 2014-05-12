@@ -51,7 +51,7 @@
                         promoCode: ''
                     };
 
-                    $http.get('billing/promocode').then(function (code) {
+                    $http.get('billing/campaign').then(function (code) {
                         if (!$scope.form.promoCode && code.data) {
                             $scope.promoCodeValue = code.data.code;
                             if (!code.data.hideCode) {
