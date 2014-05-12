@@ -21,6 +21,21 @@
                     localization.bind('account', $scope);
                 },
                 link: function ($scope) {
+                    function showPopupDialog(level, title, message, callback) {
+                        return PopupDialog[level](
+                            title ? localization.translate(
+                                $scope,
+                                null,
+                                title
+                            ) : null,
+                            message ? localization.translate(
+                                $scope,
+                                null,
+                                message
+                            ) : null,
+                            callback
+                        );
+                    }
                     /* ssh key creating popup with custom template */
                     $scope.addNewKey = function (question, callback) {
                         var addKeyCtrl = function ($scope, dialog) {
@@ -52,37 +67,38 @@
                                     $scope.keyLoading = true;
                                 });
 
-                                http.uploadFiles('account/upload', elem.value, elem.files, function (error, response) {
+                                var files = elem.files;
+                                var file = files[0];
+
+                                if (file.size > 512) {
                                     $rootScope.loading = false;
                                     $scope.keyLoading = false;
 
-                                    if (error) {
-                                        var message = error.error;
+                                    dialog.close({});
+                                    
+                                    return showPopupDialog('error', 'Error', "The file you've uploaded is not a public key.");
+                                } else {
+                                    http.uploadFiles('account/upload', elem.value, files, function (error, response) {
+                                        $rootScope.loading = false;
+                                        $scope.keyLoading = false;
 
-                                        if (error.status && error.status === 409) {
-                                            message = 'Uploaded key already exists.';
+                                        if (error) {
+                                            var message = error.error;
+
+                                            if (error.status && error.status === 409) {
+                                                message = 'Uploaded key already exists.';
+                                            }
+
+                                            dialog.close({});
+
+                                            return showPopupDialog('error', 'Error', message);
                                         }
 
-                                        dialog.close({});
-
-                                        return PopupDialog.error(
-                                            localization.translate(
-                                                $scope,
-                                                null,
-                                                'Error'
-                                            ),
-                                            localization.translate(
-                                                $scope,
-                                                null,
-                                                message
-                                            )
-                                        );
-                                    }
-
-                                    return dialog.close({
-                                        keyUploaded: true
+                                        return dialog.close({
+                                            keyUploaded: true
+                                        });
                                     });
-                                });
+                                }
                             };
                         };
 
@@ -108,19 +124,7 @@
                                     });
                                 } else if (result && result.value === 'add' && !result.data.keyData) {
                                     $rootScope.loading = false;
-                                    return PopupDialog.error(
-                                        localization.translate(
-                                            $scope,
-                                            null,
-                                            'Error'
-                                        ),
-                                        localization.translate(
-                                            $scope,
-                                            null,
-                                            'Please enter a SSH key.'
-                                        ),
-                                        function () {}
-                                    );
+                                    return showPopupDialog('error', 'Error', 'Please enter a SSH key.');
                                 } else if (result && result.keyUploaded) {
                                     if ($scope.nextStep) {
                                         $scope.skipSsh();
@@ -145,74 +149,22 @@
                             if (key.name && key.fingerprint && key.key) {
                                 $scope.key = null;
 
-                                if($scope.nextStep) {
-                                    PopupDialog.message(
-                                        localization.translate(
-                                            $scope,
-                                            null,
-                                            'Message'
-                                        ),
-                                        localization.translate(
-                                            $scope,
-                                            null,
-                                            'SSH Key successfully added to your account.'
-                                        ),
-                                        function () {}
-                                    );
+                                if ($scope.nextStep) {
+                                    showPopupDialog('message', 'Message', 'SSH Key successfully added to your account.');
                                     $scope.nextStep();
                                 } else {
-                                    $scope.updateKeys(function() {
-                                        PopupDialog.message(
-                                            localization.translate(
-                                                $scope,
-                                                null,
-                                                'Message'
-                                            ),
-                                            localization.translate(
-                                                $scope,
-                                                null,
-                                                'New key successfully added.'
-                                            ),
-                                            function () {}
-                                        );
+                                    $scope.updateKeys(function () {
+                                        showPopupDialog('message', 'Message', 'New key successfully added.');
                                     });
                                 }
                             } else {
-                                PopupDialog.error(
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Error'
-                                    ),
-                                    localization.translate(
-                                        $scope,
-                                        null,
-                                        'Failed to add new key: {{message}}.',
-                                        {
-                                            message: (key.message || '') + ' ' + (key.code || '')
-                                        }
-                                    ),
-                                    function () {}
-                                );
+                                var message = 'Failed to add new key: ' + (key.message || '') + ' ' + (key.code || '') + '.';
+                                showPopupDialog('error', 'Error', message);
                             }
-                        }, function(key) {
+                        }, function (key) {
                             $rootScope.loading = false;
-                            PopupDialog.error(
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Error'
-                                ),
-                                localization.translate(
-                                    $scope,
-                                    null,
-                                    'Failed to add new key: {{message}}.',
-                                    {
-                                        message: (key.message || '') + ' ' + (key.code || '')
-                                    }
-                                ),
-                                function () {}
-                            );
+                            var message = 'Failed to add new key: ' + (key.message || '') + ' ' + (key.code || '') + '.';
+                            showPopupDialog('error', 'Error', message);
                         });
                     };
                 },
