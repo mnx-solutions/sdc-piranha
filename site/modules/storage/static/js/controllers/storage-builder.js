@@ -3,8 +3,8 @@
 (function (app) {
     app.controller(
         'Storage.JobBuilderController',
-        ['$rootScope', '$scope', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog',
-            function ($rootScope, $scope, requestContext, localization, $q, Storage, PopupDialog) {
+        ['$rootScope', '$scope', 'requestContext', 'localization', '$q', 'Storage', 'PopupDialog', '$location',
+            function ($rootScope, $scope, requestContext, localization, $q, Storage, PopupDialog, $location) {
                 localization.bind('storage', $scope);
                 requestContext.setUpRenderContext('storage.builder', $scope);
 
@@ -16,6 +16,10 @@
                 $scope.reduceStep = '';
 
                 var cloneJob = $rootScope.popCommonConfig('cloneJob');
+                Storage.ping().then(angular.noop, function () {
+                    $location.url('/manta/intro');
+                    $location.replace();
+                });
 
                 if (cloneJob) {
                     $scope.jobName = cloneJob.name;
@@ -58,7 +62,7 @@
                         inputs: inputs
                     };
 
-                    $q.when(Storage.createJob(job)).then(
+                    $q.when(Storage.createJob(job, true)).then(
                         function (res) {
                             PopupDialog.message(
                                 localization.translate(
@@ -70,14 +74,13 @@
                                     $scope,
                                     null,
                                     res
-                                ),
-                                function () {}
+                                )
                             );
                         },
                         function (err) {
                             var message = err;
                             if ($scope.mapStep.length === 0 && $scope.reduceStep.length === 0) {
-                                message = 'You must fill in Map Step and/or Reduce Step fields.'
+                                message = 'You must fill in Map Step and/or Reduce Step fields.';
                             }
                             PopupDialog.error(
                                 localization.translate(
@@ -89,14 +92,12 @@
                                     $scope,
                                     null,
                                     message
-                                ),
-                                function () {}
+                                )
                             );
                         }
                     );
 
                 };
-
             }]
     );
 }(window.JP.getModule('Storage')));

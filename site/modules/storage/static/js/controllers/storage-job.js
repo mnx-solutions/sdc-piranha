@@ -28,8 +28,8 @@
                             $scope.errors = results[3];
                             $scope.failures = results[4];
                             $scope.steps = {};
-                            $scope.job.phases.forEach(function(step) {
-                                if (!$scope.steps[step.type] ) {
+                            $scope.job.phases.forEach(function (step) {
+                                if (!$scope.steps[step.type]) {
                                     $scope.steps[step.type] = [];
                                 }
                                 $scope.steps[step.type].push(step.exec);
@@ -42,8 +42,10 @@
                         }
                     );
                 };
-
-                $scope.init();
+                Storage.ping().then($scope.init, function () {
+                    $location.url('/manta/jobs');
+                    $location.replace();
+                });
 
                 $scope.cancelJob = function () {
                     var state = $scope.job.state;
@@ -65,9 +67,6 @@
                                     function (message) {
                                         $scope.init();
                                         $scope.showMessage('Message', message);
-                                    },
-                                    function (err) {
-                                        $scope.showMessage('Error', err);
                                     }
                                 );
                             }
@@ -96,8 +95,7 @@
                             $scope,
                             null,
                             message
-                        ),
-                        function () {}
+                        )
                     );
                 };
 

@@ -3,21 +3,23 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location', '$q',
-                function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location, $q) {
-            localization.bind('storage', $scope);
-            requestContext.setUpRenderContext('storage.history', $scope);
+        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', 'Account', '$location', '$q',
+            function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, Account, $location, $q) {
+                localization.bind('storage', $scope);
+                requestContext.setUpRenderContext('storage.history', $scope);
 
                 $scope.loading = true;
                 $scope.placeHolderText = 'filter jobs';
 
                 if ($scope.features.manta === 'enabled') {
                     Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
-                        Account.getUserConfig().$load(function (err, config) {
+                        $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                        Storage.ping().then(function () {
                             $scope.jobs = getJobsList();
-                            $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
+                        }, function () {
+                            $location.url('/manta/intro');
+                            $location.replace();
                         });
-
                         }, function () {
                         }, function (isSuccess) {
                             if (isSuccess) {
@@ -44,21 +46,6 @@
                     });
                     return deferred.promise;
                 }
-
-                function showMessage(dialog, type, message) {
-                    PopupDialog[dialog](
-                        localization.translate(
-                            $scope,
-                            null,
-                            type
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            message
-                        )
-                    );
-                };
 
                 var getJobDetails = function (object) {
                     if (!object.details) {

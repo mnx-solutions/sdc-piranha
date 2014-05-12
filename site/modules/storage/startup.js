@@ -5,10 +5,31 @@ var path = require('path');
 var config = require('easy-config');
 var manta = require('manta');
 var MemoryStream = require('memorystream');
-
+var mantaNotAvailable = 'Manta service is not available.';
 module.exports = function execute(scope) {
     var Manta = scope.api('MantaClient');
     var server = scope.api('Server');
+
+    function sendError(call, error) {
+        function done(error) {
+            call.done(error.message || mantaNotAvailable);
+        }
+        if (error) {
+            done(error);
+            return;
+        }
+        return done;
+    }
+
+    function checkResponse(call) {
+        return function (error, result) {
+            if (error) {
+                sendError(call, error);
+                return;
+            }
+            call.done(null, result);
+        };
+    }
 
     function getArchivedJobFile(call, jobId, path, callback) {
         var client = Manta.createClient(call);
@@ -16,7 +37,7 @@ module.exports = function execute(scope) {
 
         client.get(jobPath, function (err, stream) {
             if (err) {
-                callback(err);
+                sendError(call, err);
                 return;
             }
             var body = '';
@@ -32,9 +53,7 @@ module.exports = function execute(scope) {
                     callback(null, [body]);
                 }
             });
-            stream.on('error', function (error) {
-                callback(error);
-            });
+            stream.on('error', sendError(call));
         });
 
     }
@@ -42,7 +61,7 @@ module.exports = function execute(scope) {
     function processJobRequest(call, dataKey, jobId, fallbackPath) {
         return function (error, res) {
             if (error) {
-                call.done(error);
+                sendError(call, error);
                 return;
             }
             var result = [];
@@ -54,10 +73,10 @@ module.exports = function execute(scope) {
             });
             res.once('error', function (error) {
                 if (fallbackPath && jobId && error.statusCode === 404) {
-                    getArchivedJobFile(call, jobId, fallbackPath, call.done.bind(call));
+                    getArchivedJobFile(call, jobId, fallbackPath, checkResponse(call));
                     return;
                 }
-                call.done(error);
+                sendError(call, error);
             });
         };
     }
@@ -74,11 +93,15 @@ module.exports = function execute(scope) {
         client.job(jobId, function (jobsErr, res) {
             if (jobsErr) {
                 if (jobsErr.statusCode !== 404) {
-                    call.done(jobsErr);
+                    sendError(call, jobsErr);
                     return;
                 }
                 getArchivedJobFile(call, jobId, '/job.json', function (error, result) {
-                    call.done(error, result && result[0]);
+                    if (error) {
+                        sendError(call, error);
+                        return;
+                    }
+                    call.done(null, result && result[0]);
                 });
                 return;
             }
@@ -119,7 +142,7 @@ module.exports = function execute(scope) {
 
         client.cancelJob(jobId, function (err) {
             if (err) {
-                call.done(err);
+                sendError(call, err);
                 return;
             }
             var message = 'Job ' + jobId + ' was successfully canceled';
@@ -167,13 +190,13 @@ module.exports = function execute(scope) {
             var client = Manta.createClient(call);
             client.createJob(job, function (err, jobId) {
                 if (err) {
-                    call.done(err);
+                    sendError(call, err);
                     return;
                 }
                 if (jobId) {
                     client.addJobKey(jobId, inputs, {end: true}, function (err) {
                         if (err) {
-                            call.done(err);
+                            sendError(call, err);
                             return;
                         }
                         call.done(null, jobId);
@@ -193,7 +216,7 @@ module.exports = function execute(scope) {
         var client = Manta.createClient(call);
         client.ls(call.data.path, function (err, res) {
             if (err) {
-                call.done(err);
+                sendError(call, err);
                 return;
             }
             var files = [];
@@ -203,7 +226,7 @@ module.exports = function execute(scope) {
 
             res.on('directory', onEntry);
             res.on('object', onEntry);
-            res.once('error', call.error.bind(call));
+            res.once('error', sendError(call));
             res.once('end', function () {
                 files.forEach(function (file) {
                     file.path = file.name;
@@ -215,39 +238,33 @@ module.exports = function execute(scope) {
 
     server.onCall('FileManDeleteTree', function (call) {
         var client = Manta.createClient(call);
-        client.rmr(call.data.path, function (error) {
-            call.done(error, true);
-        });
+        client.rmr(call.data.path, sendError(call));
     });
 
     server.onCall('FileManDeleteFile', function (call) {
         var client = Manta.createClient(call);
-        client.unlink(call.data.path, function (error) {
-            call.done(error, true);
-        });
+        client.unlink(call.data.path, sendError(call));
     });
 
     server.onCall('FileManPut', function (call) {
         var fileStream = new MemoryStream(call.data.fileBody);
         var client = Manta.createClient(call);
-        client.put(call.data.path, fileStream, {}, call.done.bind(call));
+        client.put(call.data.path, fileStream, {size: call.data.fileBody.length}, checkResponse(call));
     });
 
     server.onCall('FileManGet', function (call) {
         var client = Manta.createClient(call);
-        client.get(call.data.path, call.done.bind(call));
+        client.get(call.data.path, checkResponse(call));
     });
 
     server.onCall('FileManInfo', function (call) {
         var client = Manta.createClient(call);
-        client.info(call.data.path, call.done.bind(call));
+        client.info(call.data.path, checkResponse(call));
     });
 
     server.onCall('FileManCreateFolder', function (call) {
         var client = Manta.createClient(call);
-        client.mkdir(call.data.path, function (error) {
-            call.done(error, true);
-        });
+        client.mkdir(call.data.path, sendError(call));
     });
 
     server.onCall('FileManStorageReport', function (call) {
@@ -255,17 +272,29 @@ module.exports = function execute(scope) {
         var reportPath = '/' + client.user + '/reports/usage/storage/' + call.data.originPath;
         client.get(reportPath, function (err, stream) {
             if (err) {
-                call.done(err);
+                sendError(call, err);
                 return;
             }
-            var data;
+            var data = '';
             stream.setEncoding('utf8');
             stream.on('data', function (chunk) {
-                data = chunk;
+                data += chunk;
             });
             stream.on('end', function () {
                 call.done(null, data);
             });
+            stream.on('error', sendError(call));
+        });
+    });
+
+    server.onCall('StoragePing', function (call) {
+        var client = Manta.createClient(call);
+        client.ls('/' + client.user + '/', function (error) {
+            if (error) {
+                sendError(call, error);
+                return;
+            }
+            call.done(null, 'pong');
         });
     });
 };

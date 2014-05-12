@@ -3,11 +3,15 @@
 (function (app) {
     app.controller(
         'Storage.FilemanController',
-        ['$scope', 'requestContext', 'localization',
-            function ($scope, requestContext, localization) {
+        ['$scope', 'requestContext', 'localization', 'Storage', '$location',
+            function ($scope, requestContext, localization, Storage, $location) {
                 localization.bind('storage', $scope);
                 $scope.filePath = '';
                 requestContext.setUpRenderContext('storage.fileman', $scope);
+                Storage.ping(true).then(angular.noop, function () {
+                    $location.url('/manta/intro');
+                    $location.replace();
+                });
             }]
     );
 }(window.JP.getModule('Storage')));

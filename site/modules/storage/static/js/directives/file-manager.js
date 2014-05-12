@@ -32,6 +32,9 @@
                 };
 
                 function showPopupDialog(level, title, message, callback) {
+                    if (level === 'error') {
+                        $scope.loading = false;
+                    }
                     return PopupDialog[level](
                         title ? localization.translate(
                             $scope,
@@ -210,6 +213,10 @@
                 $scope.createFilesTree = function (userAction, path, callback) {
                     path = path || $scope.currentPath;
                     fileman.ls(path, function (error, result) {
+                        if (error) {
+                            return showPopupDialog('error', 'Error', error);
+                        }
+
                         $scope.files = result.__read();
                         if (!error && ($scope.filesTree[path] !== $scope.files)) {
                             $scope.filesTree[path] = $scope.files;
