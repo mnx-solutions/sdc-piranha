@@ -1,10 +1,13 @@
 <div class="container-fluid container-position" data-ng-controller="slb.EditController">
     <div data-breadcrumbs></div>
     <div data-notification></div>
+    <div class="page-header row-fluid">
+        <h3 class="page-title" data-ng-show="balancerId" data-translate>Edit Load Balancer</h3>
+        <h3 class="page-title" data-ng-hide="balancerId" data-translate>Create Load Balancer</h3>
+        <div class="beta-sticker">beta</div>
+    </div>
     <div data-ng-form name="editForm">
-            <h3 class="page-title" data-ng-show="balancerId" data-translate>Edit Load Balancer</h3>
-            <h3 class="page-title" data-ng-hide="balancerId" data-translate>Create Load Balancer</h3>
-            <div class="clearfix"></div>
+        <div class="clearfix"></div>
         <div class="loading-large" data-ng-hide="allLoading"></div>
         <div class="row-fluid lb-edit" data-ng-show="allLoading">
             <div class="span5 table-right-border">
