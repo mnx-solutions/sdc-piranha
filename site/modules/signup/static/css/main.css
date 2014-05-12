@@ -181,34 +181,26 @@ body{
     width: 175px;
     height: 53px;
 }
-.left{
+.left {
     position: fixed;
-    height: 100%;
-    width: 175px;
     top: 53px;
     left: 0;
+    z-index: 999999;
+    width: 175px;
+    height: 100%;
     background-color: #3d3d3d;
 }
-.page-title{
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 30px;
+.page-title {
     display: block;
-    color: #3d3d3d;
-    font-weight: 200;
-    line-height: 30px;
-    border-bottom: 1px solid #cccccc;
     padding-bottom: 15px;
-    max-width: 1020px;
-    width: 1020px;
+    width: 1005px;
+    border-bottom: 1px solid #ccc;
+    color: #3d3d3d;
+    font: 200 30px/30px 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-.main{
-    padding-left: 203px;
-    padding-top: 75px;
-    top: 0;
-    bottom: 60px;
-    position: fixed;
-    overflow-y: auto;
-    overflow-x: hidden;
+.main {
+    padding: 75px 0 60px 203px;
+    min-height: 1000px;
 }
 .login-form{
     font-size: 16px;
@@ -540,13 +532,20 @@ body{
     float: left;
 }
 
-/*.content-container-signup-billing span{*/
-    /*float: right;*/
-/*}*/
-.content-container-signup-billing, content-container-ssh{
+
+.content-container-signup-billing,
+.content-container-ssh {
     margin-top: 11px;
-    /*margin-left: 9px;*/
+    width: 1005px;
     line-height: 21px;
+}
+.blocked-info p {
+    font-size: 16px;
+    line-height: 24px;
+}
+.blocked-info p a {
+    color: #f60;
+    text-decoration: none;
 }
 legend {
     border-bottom: none;
