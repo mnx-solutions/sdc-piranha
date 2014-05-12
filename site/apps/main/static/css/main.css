@@ -2283,56 +2283,6 @@ label.checkbox {
     position: absolute;
 }
 
-.ribbon-wrapper-beta {
-    width: 85px;
-    height: 88px;
-    overflow: hidden;
-    position: absolute;
-    top: -3px;
-    right: -3px;
-}
-
-.ribbon-beta {
-    font-size: 14px;
-    color: white;
-    text-align: center;
-    -webkit-transform: rotate(45deg);
-    -moz-transform:    rotate(45deg);
-    -ms-transform:     rotate(45deg);
-    -o-transform:      rotate(45deg);
-    position: relative;
-    padding: 4px 0;
-    left: 0;
-    top: 12px;
-    width: 120px;
-    background-color: #999;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#C8C8C8), to(#828282));
-    background-image: -webkit-linear-gradient(top,#C8C8C8,#828282);
-    background-image:    -moz-linear-gradient(top,#C8C8C8,#828282);
-    background-image:     -ms-linear-gradient(top,#C8C8C8,#828282);
-    background-image:      -o-linear-gradient(top,#C8C8C8,#828282);
-    -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.3);
-    -moz-box-shadow:    0 0 3px rgba(0,0,0,0.3);
-    box-shadow:         0 0 3px rgba(0,0,0,0.3);
-    z-index: 3000;
-}
-
-.ribbon-beta:before, .ribbon-beta:after {
-    content: "";
-    border-top:   3px solid #457b98;
-    border-left:  3px solid transparent;
-    border-right: 3px solid transparent;
-    position:absolute;
-    bottom: -3px;
-}
-
-.ribbon-beta:before {
-    left: 0;
-}
-.ribbon-beta:after {
-    right: 0;
-}
-
 .feedback-tab {
     position: fixed;
     top: 23%;
