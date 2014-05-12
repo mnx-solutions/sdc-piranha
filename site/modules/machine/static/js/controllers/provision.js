@@ -320,8 +320,19 @@
 
             $scope.$on('creditCardUpdate', function (event, cc) {
                 $scope.account.provisionEnabled = true;
-                $scope.setCurrentStep(4);
-                $scope.slideCarousel();
+                if ($scope.keys.length > 0) {
+                    $scope.clickProvision();
+                } else {
+                    $scope.setCurrentStep(4);
+                    $scope.slideCarousel();
+                    $timeout(function () {
+                        $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
+                            $scope.currentSlidePageIndex -= 1;
+                            return item.name != 'Account Information';
+                        });
+                    }, 400);
+                }
+
             });
 
             $scope.$on('ssh-form:onKeyUpdated', function (event, keys) {
@@ -633,11 +644,6 @@
                 if ($scope.keys.length > 0) {
                     $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
                         return item.name != 'SSH Key';
-                    });
-                }
-                if ($scope.account.provisionEnabled) {
-                    $scope.provisionSteps = $scope.provisionSteps.filter(function (item) {
-                        return item.name != 'Account Information';
                     });
                 }
                 if ($scope.currentSlidePageIndex === $scope.provisionSteps.length - 1) {

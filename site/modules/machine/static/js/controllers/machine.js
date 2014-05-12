@@ -471,11 +471,12 @@
                                     function () {
                                     }
                             );
+
                             if ($location.url() === '/compute/instance/' + machineid) {
                                 $location.url('/compute');
                                 $location.replace();
                             }
-                            if (!$scope.machines.length && currentLocation === $location.path()) {
+                            if (!$scope.machines.length && ($location.path() === '/compute' || $location.path() === currentLocation)) {
                                 $location.path('/compute/create/simple')
                             }
                         });
