@@ -5,7 +5,7 @@
         <a class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
         </a>
         <ul class="nav pull-right">
-            <li class="dropdown" data-ng-show="!provisionEnabled && account">
+            <li class="dropdown" data-ng-show="!account.provisionEnabled && account">
                 <button data-ng-click="completeAccount()" class="btn-old-style btn-joyent-orange">Complete Account Information</button>
             </li>
             <li class="dropdown" data-ng-show="features.skinChange == 'enabled'">
