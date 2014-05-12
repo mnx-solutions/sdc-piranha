@@ -242,6 +242,11 @@ input {
     float: right;
     margin-top: -60px;
 }
+
+.uninstall-lb-btn {
+    margin-top: -13px;
+}
+
 .table-bordered{
     border-top: 0;
     border-bottom: 0;

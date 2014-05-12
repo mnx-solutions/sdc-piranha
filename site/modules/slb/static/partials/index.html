@@ -4,7 +4,10 @@
     <div class="loading-large" data-ng-show="!loaded || creating"></div>
     <div data-operation-log></div>
     <div data-ng-show="loaded && !creating">
-        <h3 data-translate>Joyent Simple Load Balancer Powered by Riverbed</h3>
+        <div class="page-header row-fluid">
+            <h3 class="page-title ng-scope" data-translate>Joyent Simple Load Balancer Powered by Riverbed</h3>
+            <div class="beta-sticker">beta</div>
+        </div>
 
         <div data-ng-include="'slb/static/templates/eula.html'"></div>
         <div class="accept-checkbox">
