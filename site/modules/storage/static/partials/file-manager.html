@@ -1,6 +1,23 @@
 <div class="loading-large span12" data-ng-show="loading"></div>
 
-<div class="header-btn-panel" data-ng-hide="loading || !showControls">
+    <div class="row-fluid blue-manta" data-ng-show="!provisionEnabled && !loading && !popup">
+        <div class="pull-left content">
+            <h3>Big Compute for Big Data</h3>
+            <h4>Introducing the Joyent Manta Storage Service</h4>
+            <p>
+                Joyent Manta Storage Service is a highly scalable, distributed object storage service with integrated compute. Developers can store and process any amount of data at any time where a simple web API call replaces the need for spinning up instances. Joyent Manta Compute operates directly on objects with virtually zero data latency. It is a massively parallel, high performance compute environment including R, Python, node.js, Perl, Ruby, Java, C/C++, ffmpeg, grep, awk and others. Metering is by the second with zero provisioning, data movement or scheduling latency costs.
+            </p>
+        </div>
+        <div class="pull-right">
+            <img src="/main/storage/static/img/manta.svg" class="manta">
+        </div>
+        <div class="manta">
+            <button class="btn orange pull-right" data-ng-click="completeAccount()">Complete Account Information and Access Manta</button>
+        </div>
+    </div>
+
+    <div data-ng-show="provisionEnabled && !loading">
+        <div class="header-btn-panel" data-ng-hide="loading || !showControls">
     <div id="address" class="upload-btn">
         <input type="file" id="uploadInput" name="uploadInput" style="display: none" multiple
                data-fileman-upload="uploadPath" data-existing-files="files">
