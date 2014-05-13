@@ -392,7 +392,7 @@
 
     </fieldset>
 
-    <div data-ng-show="isSignUpForm">
+    <div data-ng-show="isSignUpForm" class="signup-btn-group">
         <div class="pull-right">
             <a data-ng-show="isSignUpForm" data-ng-click="signOut()" class="btn light effect-orange-button" data-translate>Cancel Signup Process</a>
             <a data-ng-show="isSignUpForm && skipBillingVisible" data-ng-click="skipBilling()" class="btn light effect-orange-button" data-translate>Skip</a>
@@ -405,7 +405,7 @@
         <div class="fieldset-spacer"></div>
         <br>
     </div>
-    <div data-ng-hide="isSignUpForm">
+    <div data-ng-hide="isSignUpForm" class="signup-btn-group">
         <div data-ng-hide="loading" class="required-txt">
             <span class="orange-asterix">*</span>&nbsp;required fields
         </div>

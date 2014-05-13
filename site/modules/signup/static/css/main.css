@@ -200,7 +200,6 @@ body{
 }
 .main {
     padding: 75px 0 60px 203px;
-    min-height: 1000px;
 }
 .login-form{
     font-size: 16px;
@@ -612,4 +611,8 @@ legend {
     margin-top: -5px;
     margin-right: -6px;
     font-weight: normal;
+}
+
+.signup-btn-group {
+    margin-bottom: 80px;
 }
