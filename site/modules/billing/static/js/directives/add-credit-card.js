@@ -385,6 +385,7 @@
                                     }
                                     $scope.errs = null;
                                     $q.when(BillingService.getDefaultCreditCard(), function (credit) {
+                                        $scope.prev = credit;
                                         $scope.loading = false;
                                         $rootScope.$broadcast('creditCardUpdate', credit);
                                     });
@@ -469,6 +470,11 @@
                             );
                             window.scrollTo(0, 0);
                         });
+                    };
+
+                    $scope.isPromoVisible = function () {
+                        return ($scope.isSignUpForm || $rootScope.features.allowSkipBilling === 'enabled' && !$scope.prev.cardNumber) &&
+                            $scope.promocodeVisible;
                     };
 
                     function isCCNumberValid() {
