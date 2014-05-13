@@ -26,6 +26,7 @@
             });
 
             $scope.loading = true;
+            $scope.datasetsInfo = {};
 
             // Pagination
             $scope.machines = Machine.machine();
@@ -50,16 +51,12 @@
 
             $scope.$watch('machines.final', function (final) {
                 if (final) {
-                    var datasetsInfo = {};
                     $q.when($scope.machines, function (machines) {
                         machines.forEach(function (machine) {
-                            Dataset.dataset({datacenter: machine.datacenter}).then(function () {
-                                Dataset.dataset({datacenter: machine.datacenter, id: machine.image}).then(function (ds) {
-                                    if (datasetsInfo[ds.id] !== ds.id) {
-                                        datasetsInfo[ds.id] = ds.name + '/' + ds.version;
-                                    }
+                            Dataset.dataset({datacenter: machine.datacenter}).then(function (datasets) {
+                                datasets.forEach(function (dataset) {
+                                    $scope.datasetsInfo[dataset.id] = dataset.name + '/' + dataset.version;
                                 });
-                                $scope.datasetsInfo = datasetsInfo;
                                 $scope.loading = false;
                             });
                         });
