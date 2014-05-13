@@ -927,7 +927,7 @@
                     .filter($scope.filterPackagesByProp)
                     .filter($scope.filterPackages(packageType, isPackageCollapsed))
                     .forEach(function (pkg) {
-                        if (!minimalPackage || minimalPackage.memory > pkg.memory) {
+                        if (!minimalPackage || minimalPackage.memory > pkg.memory || (minimalPackage.memory === pkg.memory && pkg.group === "Standard")) {
                             minimalPackage = pkg;
                         }
                     });
