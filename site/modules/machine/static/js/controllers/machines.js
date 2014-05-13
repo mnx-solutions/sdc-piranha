@@ -26,6 +26,7 @@
             });
             var currentLocation = $location.path();
             $scope.loading = true;
+            $scope.datasetsInfo = {};
 
             // Pagination
             $scope.machines = Machine.machine();
@@ -49,15 +50,15 @@
             }, true);
 
             $scope.$watch('machines.final', function (final) {
-                if(final) {
-                    $q.when($scope.packages, function () {
-                        Dataset.dataset().then(function (datasets) {
-                            var datasetsInfo = {};
-                            datasets.forEach(function (dataset){
-                                datasetsInfo[dataset.id] = dataset.name + '/' + dataset.version;
+                if (final) {
+                    $q.when($scope.machines, function (machines) {
+                        machines.forEach(function (machine) {
+                            Dataset.dataset({datacenter: machine.datacenter}).then(function (datasets) {
+                                datasets.forEach(function (dataset) {
+                                    $scope.datasetsInfo[dataset.id] = dataset.name + '/' + dataset.version;
+                                });
+                                $scope.loading = false;
                             });
-                            $scope.datasetsInfo = datasetsInfo;
-                            $scope.loading = false;
                         });
 
                         if (!$scope.machines.length) {
