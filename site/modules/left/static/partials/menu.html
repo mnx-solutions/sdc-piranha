@@ -2,16 +2,14 @@
     <div class="page-sidebar nav-collapse collapse" data-ng-class="{'sidebar-toggler-closed': sideBarMin}">
     <!-- BEGIN SIDEBAR MENU -->
     <ul class="page-sidebar-menu" data-ng-class="{'sidebar-min': sideBarMin}">
-        <li class="single dashboard-icon" ng-class="{active: location.path().search('dashboard') == 1}">
-            <a href="#!/dashboard">
-                <i class=""></i>
+        <li class="single" ng-class="{active: location.path().search('dashboard') == 1}">
+            <a href="#!/dashboard" class="dashboard-icon">
                 <span class="title">Dashboard</span>
                 <span class="selected"></span>
             </a>
         </li>
-        <li class="nested compute-icon" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1}">
-                <a href="#!/compute">
-                <i class=""></i>
+        <li class="nested" data-ng-class="{'active open': location.path().search('compute') == 1 || location.path().search('slb') == 1 || location.path().search('firewall') == 1 || location.path().search('images')==1}">
+                <a href="#!/compute" class="compute-icon">
                 <span class="title">Compute</span>
                 <span class="selected"></span>
             </a>
@@ -42,9 +40,8 @@
                 </li>
             </ul>
         </li>
-        <li class="nested storage-icon" data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
-            <a href="#!/manta/intro">
-                <i class=""></i>
+        <li class="nested" data-ng-class="{active: location.path().search('manta/') == 1, open: location.path().search('manta/') == 1}">
+            <a href="#!/manta/intro" class="storage-icon">
                 <span class="title">Storage</span>
                 <span class="selected"></span>
             </a>
@@ -81,7 +78,6 @@
         </li>
         <li class="nested usage-icon" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/dram') > 1 || location.path().search('/bandwidth') > 1}">
             <a data-ng-click="clickUsage()">
-                <i class=""></i>
                 <span class="title">Usage</span>
                 <span class="selected"></span>
             </a>
@@ -101,9 +97,8 @@
             </ul>
         </li>
         <li class="nested" data-ng-show="features.support == 'enabled'" data-ng-class="{'active open': location.path().search('support') == 1 || location.path().search('support.cloud') == 1}">
-            <a data-ng-click="clickSupportMenu('')">
-                <i class="glyphicon glyphicon-earphone"></i>
-                <span class="title">Support Plans</span>
+            <a data-ng-click="clickSupportMenu('')" class="support-icon">
+                <span class="title glyph-icon">Support Plans</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu">
@@ -116,8 +111,7 @@
             </ul>
         </li>
         <li class="nested" data-ng-show="features.provisioningLimits == 'enabled'" data-ng-class="{'active open': location.path().search('limits') == 1}">
-            <a href="#!/limits">
-                <i class="glyphicon glyphicon ax"></i>
+            <a href="#!/limits" class="limit-icon">
                 <span class="title">User Limits</span>
                 <span class="selected"></span>
             </a>

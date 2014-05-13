@@ -67,11 +67,11 @@ ul.page-sidebar-menu > li > a {
 }
 ul.page-sidebar-menu > li.active > a,
 ul.page-sidebar-menu > li.open > a {
-    background: #282828 !important;
-    border-top-color: transparent !important;
-    color: #ff6600;
     height: 20px;
     border-style: none;
+    border-top-color: transparent !important;
+    background-color: #282828 !important;
+    color: #ff6600;
 }
 ul.page-sidebar-menu > li > a i {
     font-size: 16px;
@@ -80,50 +80,64 @@ ul.page-sidebar-menu > li > a i {
 }
 ul.page-sidebar-menu > li > a:hover,
 ul.page-sidebar-menu > li:hover > a {
-    background: #303030;
+    background-color: #303030;
     height: 20px;
 }
-.page-sidebar-menu i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-top: 0;
-    position: relative;
-    left: 3px;
-    background-repeat: no-repeat;
-    padding-right: 8px;
-}
-.dashboard-icon i {
+.dashboard-icon {
     background-image: url("../img/dash_i_white.png");
 }
-.dashboard-icon.active i {
-    background-image: url("../img/dash_i_orange.png") ! important;
+li.active a.dashboard-icon {
+    background-image: url("../img/dash_i_orange.png") !important;
 }
-.compute-icon i {
+.compute-icon {
     background-image: url("../img/compute_i_white.png");
 }
-.compute-icon.active i {
-    background-image: url("../img/compute_i_orange.png") ! important;
+li.active a.compute-icon {
+    background-image: url("../img/compute_i_orange.png") !important;
 }
-.storage-icon i {
+.storage-icon {
     background-image: url("../img/storage_i_white.png");
 }
-.storage-icon.active i {
-    background-image: url("../img/storage_i_orange.png") ! important;
+li.active a.storage-icon {
+    background-image: url("../img/storage_i_orange.png") !important;
 }
-.usage-icon i {
+.usage-icon {
     background-image: url("../img/utilization_i_white.png");
 }
-.usage-icon.active i {
-    background-image: url("../img/utilization_i_orange.png") ! important;
+li.active a.usage-icon {
+    background-image: url("../img/utilization_i_orange.png") !important;
 }
+.limit-icon {
+    background-image: url("../img/limit-white.png");
+}
+li.active a.limit-icon {
+    background-image: url("../img/limit-orange.png") !important;
+}
+.support-icon {
+    background-image: url("../img/phone-white.png");
+}
+li.active a.support-icon {
+    background-image: url("../img/phone-orange.png") !important;
+}
+.dashboard-icon,
+.compute-icon,
+.storage-icon,
+.usage-icon,
+.limit-icon,
+.support-icon {
+    background-repeat: no-repeat;
+    background-position: 20px 8px;
+    background-size: 18px 18px;
+    height: 21px;
+}
+
 .title {
+    padding-left: 35px;
     color: #ffffff;
     font-weight: 400;
 }
 .active .title {
     color: #ff6600 !important;
-    font-weight: 400;
 }
 .sidebar-toggler {
     background-color: #242424;
@@ -156,8 +170,8 @@ ul.page-sidebar-menu > li:hover > a {
 
 .sidebar-min .nested:hover,
 .sidebar-min .single:hover {
+    width: 175px;
     height: 34px;
-    width: 175px !important;
 }
 .sidebar-min .nested:hover .sub-menu {
     margin-left: 56px !important;
@@ -167,7 +181,7 @@ ul.page-sidebar-menu > li:hover > a {
 }
 .sidebar-min .single:hover .title,
 .sidebar-min .nested:hover .title {
-    margin-left: 46px;
+    margin-left: 12px;
 }
 .nested.active .sub-menu,
 .nested.open .sub-menu {
@@ -194,14 +208,14 @@ ul.page-sidebar-menu > li:hover > a {
     background-color: #3d3d3d;
 }
 .sub-menu > li a {
-    display: block;
     position: relative;
+    display: block;
+    padding: 7px 10px 7px 51px;
     border: 0;
-    padding: 7px 10px 7px 47px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 300;
     color: #999999;
+    text-decoration: none;
+    font-weight: 300;
+    font-size: 14px;
 }
 .sub .titles {
     color: #999999;
