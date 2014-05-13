@@ -44,6 +44,7 @@
                     template:'machine/static/partials/wizard-review.html'
                 }
             ];
+            $scope.model = {};
             $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
 
@@ -263,10 +264,12 @@
                         $scope.selectedPackageInfo = provisionBundle.selectedPackageInfo;
 
                         $scope.instanceType = 'Public';
-                        $scope.filterProperty = provisionBundle.filterProperty;
+                        $scope.model = {
+                            filterProperty: provisionBundle.filterProperty,
+                            filterPropertyValue: provisionBundle.filterPropertyValue
+                        };
                         $scope.filterProps = provisionBundle.filterProps;
                         $scope.filterValues = provisionBundle.filterValues;
-                        $scope.filterPropertyValue = provisionBundle.filterPropertyValue;
                         $scope.reconfigure(2);
                         if (provisionBundle.allowCreate) {
                             provision();
@@ -473,11 +476,11 @@
                             datacenters: $scope.datacenters,
                             datasetType: $scope.datasetType,
                             selectedDataset: $scope.selectedDataset,
-                            filterProperty: $scope.filterProperty,
+                            filterProperty: $scope.model.filterProperty,
                             filterProps: $scope.filterProps,
                             filterValues: $scope.filterValues,
                             selectedPackageInfo: $scope.selectedPackageInfo,
-                            filterPropertyValue: $scope.filterPropertyValue,
+                            filterPropertyValue: $scope.model.filterPropertyValue,
                             packages: $scope.packages,
                             packageTypes: $scope.packageTypes,
                             indexPackageTypes: $scope.indexPackageTypes,
@@ -774,9 +777,8 @@
                                 return a - b;
                             });
                         });
-
-                        $scope.filterProperty = $scope.filterProps[0];
-                        $scope.onFilterChange($scope.filterProperty);
+                        $scope.model.filterProperty = $scope.filterProps[0];
+                        $scope.onFilterChange($scope.model.filterProperty);
                     }
 
                     setTimeout(expandLastSection, 600);
@@ -852,6 +854,7 @@
             $scope.filterPackages = function (packageType, isPackageTypeCollapsed) {
                 return function (item) {
                     //TODO: improve to have one exit point
+
                     if ($scope.datasetType !== item.type || item.freeTierHidden
                         || isPackageTypeCollapsed && packageType === item.group) {
                         return false;
@@ -888,14 +891,14 @@
             };
 
             $scope.filterPackagesByProp = function (obj) {
-                if (!$scope.filterProperty || !$scope.filterPropertyValue) {
+                if (!$scope.model.filterProperty || !$scope.model.filterPropertyValue) {
                     return obj;
                 }
-                return String(obj[$scope.filterProperty]) === String($scope.filterPropertyValue);
+                return String(obj[$scope.model.filterProperty]) === String($scope.model.filterPropertyValue);
             };
 
             $scope.formatFilterValue = function (value) {
-                if ($scope.filterProperty === 'vcpus') {
+                if ($scope.model.filterProperty === 'vcpus') {
                     return value + ' vCPUs';
                 }
                 return $filter('sizeFormat')(value);
@@ -918,13 +921,13 @@
 
             $scope.onFilterChange = function (newVal) {
                 if (newVal) {
-                    $scope.filterPropertyValue = $scope.filterValues[newVal][0];
+                    $scope.model.filterPropertyValue = $scope.filterValues[newVal][0];
                 }
                 selectMinimalPackage();
-       
+
                 setTimeout(function () {
                     var accordionGroup = ng.element('.accordion-group');
-                    if ($scope.filterProperty === 'No filter') {
+                    if ($scope.model.filterProperty === 'No filter') {
                         accordionGroup.not('div.active').find('.collapse').removeClass('in').css('height', 0).end()
                             .find('.accordion-toggle').addClass('collapsed').end()
                             .has('div.active').find('a.collapsed').click();
@@ -937,13 +940,13 @@
             };
             $scope.changeSelectedPackage = function (event, packageType) {
                 if (!event.target.classList.contains('collapsed')) {
-                    if ($scope.filterProperty !== 'No filter') {
+                    if ($scope.model.filterProperty !== 'No filter') {
                         $scope.collapsedPackageTypes.push(packageType);
                         selectMinimalPackage(packageType, true);
                     }
                     return;
                 }
-                if ($scope.filterProperty === 'No filter') {
+                if ($scope.model.filterProperty === 'No filter') {
                     selectMinimalPackage(packageType);
                 } else {
                     $scope.collapsedPackageTypes.splice($scope.collapsedPackageTypes.indexOf(packageType), 1);
