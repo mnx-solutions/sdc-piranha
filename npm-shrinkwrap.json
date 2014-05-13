@@ -829,8 +829,8 @@
     },
     "restify": {
       "name": "restify",
-      "version": "2.7.0",
-      "from": "restify@2.7.0",
+      "version": "2.8.0",
+      "from": "restify@2.8.0",
       "dependencies": {
         "assert-plus": {
           "version": "0.1.5",
