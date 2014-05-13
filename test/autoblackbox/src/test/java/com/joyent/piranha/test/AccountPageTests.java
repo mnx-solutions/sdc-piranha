@@ -2,6 +2,7 @@ package com.joyent.piranha.test;
 
 import com.codeborne.selenide.SelenideElement;
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobjects.AccountPage;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.AfterClass;
@@ -35,7 +36,7 @@ public class AccountPageTests extends TestWrapper {
     private static String pphone = "4155496510";
     private static String pphoneCountry = "United States (+1)";
     private static String pcompany = "test co";
-    private static String username = System.getProperty("loginusr");
+    private static String username = PropertyHolder.getTestUserLogin();
 
     private static String bName = "anton upeniek";
     private static String bCardType = "MasterCard";

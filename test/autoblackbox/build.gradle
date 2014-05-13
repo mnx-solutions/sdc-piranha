@@ -28,8 +28,8 @@ tasks.withType(Test) {
     }
     systemProperties = System.getProperties()
     systemProperties loadConf("build${env}.properties")
-    def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['endpoint'])
-    systemProperties['endpoint'] = appEndpoint
+    def appEndpoint = (systemProperties['app'] ? systemProperties[systemProperties['app']] : systemProperties['server.endpoint'])
+    systemProperties['server.endpoint'] = appEndpoint
     systemProperties['file.encoding'] = 'UTF-8'
     reports.html.enabled false
     reports.junitXml.destination = "$buildDir/test-results/" + systemProperties['browser']

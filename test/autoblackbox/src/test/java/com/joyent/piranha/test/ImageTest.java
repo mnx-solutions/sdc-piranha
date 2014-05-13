@@ -1,27 +1,26 @@
 package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static com.codeborne.selenide.Configuration.baseUrl;
 import static com.codeborne.selenide.Configuration.timeout;
-import static com.codeborne.selenide.Selenide.*;
-
-import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.page;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-
 public class ImageTest extends TestWrapper {
-    public static final String USER_NAME = System.getProperty("loginusr");
-    public static final String PASSWORD = System.getProperty("loginpw");
-    public static final String DATACENTER = System.getProperty("datacenter");
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
+    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
+    public static final String DATACENTER = PropertyHolder.getDatacenter(0);
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
 

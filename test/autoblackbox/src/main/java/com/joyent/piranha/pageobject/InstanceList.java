@@ -2,6 +2,7 @@ package com.joyent.piranha.pageobject;
 
 import com.codeborne.selenide.SelenideElement;
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.hasText;
@@ -16,8 +17,7 @@ import static com.codeborne.selenide.Selenide.$$;
  * Instance list page object. Holds methods to interact with given pages.
  */
 public class InstanceList extends AbstractPageObject {
-    private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System
-            .getProperty("statustimeout", "240000"));
+    private static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
 
     /**
      * Checks the state of a freshly created instance.

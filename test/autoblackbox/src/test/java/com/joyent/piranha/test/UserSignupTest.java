@@ -1,6 +1,7 @@
 package com.joyent.piranha.test;
 
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.pageobjects.CreateAccount;
 import com.joyent.piranha.pageobjects.SignupPhoneConfirmationPageold;
@@ -98,10 +99,10 @@ public class UserSignupTest extends TestWrapper {
     @Test
     public void useExistingUsername(){
         CreateAccountPage createAccountPage = loginPage.clickSignUp();
-        createAccountPage.setLogin(System.getProperty("loginusr"));
+        createAccountPage.setLogin(PropertyHolder.getTestUserLogin());
         createAccountPage.getSigninLink().shouldBe(visible);
         createAccountPage.getSigninLink().click();
-        loginPage.login(System.getProperty("loginusr"), System.getProperty("loginpw"));
+        loginPage.login(PropertyHolder.getTestUserLogin(), PropertyHolder.getTestUserPassword());
         page(Dashboard.class).checkTitle();
     }
 
@@ -109,10 +110,10 @@ public class UserSignupTest extends TestWrapper {
     public void useExistingUsernameWithCampaignID(){
         open("/landing/signup/701800000015696");
         CreateAccountPage createAccountPage = page(CreateAccountPage.class);
-        createAccountPage.setLogin(System.getProperty("loginusr"));
+        createAccountPage.setLogin(PropertyHolder.getTestUserLogin());
         createAccountPage.getSigninLink().shouldBe(visible);
         createAccountPage.getSigninLink().click();
-        loginPage.login(System.getProperty("loginusr"), System.getProperty("loginpw"));
+        loginPage.login(PropertyHolder.getTestUserLogin(), PropertyHolder.getTestUserPassword());
         page(Dashboard.class).checkTitle();
     }
 

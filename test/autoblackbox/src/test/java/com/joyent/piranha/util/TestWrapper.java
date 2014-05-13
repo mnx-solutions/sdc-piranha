@@ -1,5 +1,6 @@
 package com.joyent.piranha.util;
 
+import com.joyent.piranha.PropertyHolder;
 import com.saucelabs.common.SauceOnDemandSessionIdProvider;
 import com.saucelabs.junit.SauceOnDemandTestWatcher;
 import org.junit.Rule;
@@ -12,11 +13,9 @@ import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
  * A wrapper to test classes to add sauce test watcher and common constants.
  */
 public class TestWrapper implements SauceOnDemandSessionIdProvider {
-    protected static final String BASE_URL = System.getProperty("endpoint");
-    protected static final int BASE_TIMEOUT = Integer.parseInt(System
-            .getProperty("globaltimeout", "15000"));
-    protected static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(System
-            .getProperty("statustimeout", "240000"));
+    protected static final String BASE_URL = PropertyHolder.getBaseUrl();
+    protected static final int BASE_TIMEOUT = Integer.parseInt(PropertyHolder.getGlobalTimeout());
+    protected static final int CHANGE_STATUS_TIMEOUT = Integer.parseInt(PropertyHolder.getChangeStatusTimeout());
 
     SauceAuthentication sa = new SauceAuthentication();
     protected static WebDriver driver = getWebDriver();

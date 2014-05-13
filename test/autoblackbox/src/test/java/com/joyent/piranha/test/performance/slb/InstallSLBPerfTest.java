@@ -1,5 +1,6 @@
 package com.joyent.piranha.test.performance.slb;
 
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.LoadBalancers;
 import com.joyent.piranha.pageobject.Login;
 import com.joyent.piranha.pageobject.SLBLicense;
@@ -14,8 +15,8 @@ import static com.codeborne.selenide.Configuration.timeout;
 import static com.codeborne.selenide.Selenide.*;
 
 public class InstallSLBPerfTest extends TestWrapper {
-    public static final String PASSWORD = System.getProperty("slbtestpass");
-    public static final String USER_NAME = System.getProperty("slbtestuser");
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
+    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
 
     @BeforeClass
     public static void openSLBPage() {

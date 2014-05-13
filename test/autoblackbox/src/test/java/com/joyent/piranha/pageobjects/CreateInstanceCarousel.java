@@ -3,6 +3,7 @@ package com.joyent.piranha.pageobjects;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.joyent.piranha.Common;
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.vo.CreateInstanceObject;
 import org.openqa.selenium.By;
 
@@ -25,8 +26,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class CreateInstanceCarousel {
 
-    private static final int BASE_TIMEOUT = Integer.parseInt(System
-            .getProperty("globaltimeout", "25000"));
+    private static final int BASE_TIMEOUT = Integer.parseInt(PropertyHolder.getGlobalTimeout());
 
     public void waitUntilPageIsActive(int page) {
         $(".outer-provisioning-item", page).shouldHave(cssClass("active"));
@@ -108,7 +108,7 @@ public class CreateInstanceCarousel {
         assertTrue(texts[1].equals(mem));
         assertTrue(texts[2].equals(disk));
         assertTrue(texts[3].equals(cpu));
-        assertTrue(texts[4].equals(System.getProperty("datacenter")));
+        assertTrue(texts[4].equals(System.getProperty("datacenters")));
     }
 
     public void checkPaymentInfo(String h, String d) {

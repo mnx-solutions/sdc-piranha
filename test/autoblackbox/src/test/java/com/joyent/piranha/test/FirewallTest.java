@@ -1,5 +1,6 @@
 package com.joyent.piranha.test;
 
+import com.joyent.piranha.PropertyHolder;
 import com.joyent.piranha.pageobject.*;
 import com.joyent.piranha.util.TestWrapper;
 import org.junit.*;
@@ -14,8 +15,8 @@ import static com.codeborne.selenide.Selenide.page;
 
 public class FirewallTest extends TestWrapper {
 
-    public static final String USER_NAME = System.getProperty("loginusr");
-    public static final String PASSWORD = System.getProperty("loginpw");
+    public static final String USER_NAME = PropertyHolder.getTestUserLogin();
+    public static final String PASSWORD = PropertyHolder.getTestUserPassword();
     public static SideBarMenu sideBarMenu;
     public static NavBarMenu navBarMenu;
     public static FirewallRules firewallRules;
