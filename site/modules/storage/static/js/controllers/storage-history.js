@@ -3,29 +3,30 @@
 (function (app) {
     app.controller(
         'Storage.HistoryController',
-        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', '$dialog', 'Account', '$location', '$q',
-                function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, $dialog, Account, $location, $q) {
-            localization.bind('storage', $scope);
-            requestContext.setUpRenderContext('storage.history', $scope);
+        ['$rootScope', '$scope', 'requestContext', 'localization', 'Storage', 'PopupDialog', 'Account', '$location', '$q',
+            function ($rootScope, $scope, requestContext, localization, Storage, PopupDialog, Account, $location, $q) {
+                localization.bind('storage', $scope);
+                requestContext.setUpRenderContext('storage.history', $scope);
 
                 $scope.loading = true;
                 $scope.placeHolderText = 'filter jobs';
 
                 if ($scope.features.manta === 'enabled') {
-                    Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
-                        Account.getUserConfig().$load(function (err, config) {
-                            $scope.jobs = getJobsList();
+                    Storage.ping().then(function () {
+                        Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
                             $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
-                        });
-
-                        }, function () {
-                        }, function (isSuccess) {
+                            $scope.jobs = getJobsList();
+                        }, function () {}, function (isSuccess) {
                             if (isSuccess) {
                                 $location.path('/manta/jobs');
                             } else {
                                 $location.path('/manta/intro');
                             }
                         });
+                    }, function () {
+                        $location.url('/manta/intro');
+                        $location.replace();
+                    });
                 } else {
                     $location.path('/');
                 }
@@ -44,21 +45,6 @@
                     });
                     return deferred.promise;
                 }
-
-                function showMessage(dialog, type, message) {
-                    PopupDialog[dialog](
-                        localization.translate(
-                            $scope,
-                            null,
-                            type
-                        ),
-                        localization.translate(
-                            $scope,
-                            null,
-                            message
-                        )
-                    );
-                };
 
                 var getJobDetails = function (object) {
                     if (!object.details) {

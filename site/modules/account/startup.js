@@ -240,9 +240,7 @@ module.exports = function execute(scope) {
             stream.on('end', function () {
                 callback(null, result);
             });
-            stream.on('error', function (error) {
-                callback(error);
-            });
+            stream.on('error', callback);
         });
     };
 
@@ -304,8 +302,9 @@ module.exports = function execute(scope) {
 
     server.onCall('SetUserConfig', function (call) {
         var client = MantaClient.createClient(call);
-        var fileStream = new MemoryStream(JSON.stringify(call.data), {writable: false});
-        client.put(getConfigPath(call, client), fileStream, {mkdirs: true}, function (error, response) {
+        var configData = JSON.stringify(call.data);
+        var fileStream = new MemoryStream(configData, {writable: false});
+        client.put(getConfigPath(call, client), fileStream, {mkdirs: true, size: configData.length}, function (error) {
             if (error && error.statusCode !== 404) {
                 call.req.log.error({error: error}, 'Cannot write user config');
             }

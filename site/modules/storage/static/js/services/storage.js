@@ -5,157 +5,66 @@ window.fn = [];
     app.factory('Storage', [
         'serverTab',
         '$q',
-        function (serverTab, $q) {
+        'PopupDialog',
+        function (serverTab, $q, PopupDialog) {
 
             var service = {};
-
-            service.listJobs = function () {
+            function jobRequest(callName, data, suppressError, resultWrapper) {
                 var deferred = $q.defer();
                 serverTab.call({
-                    name: 'JobList',
-                    done: function (err, job) {
-                        if (err) {
-                            deferred.reject(err);
+                    name: callName,
+                    data: data,
+                    done: function (error, job) {
+                        if (error) {
+                            deferred.reject(error);
+                            if (!suppressError) {
+                                PopupDialog.error(null, error);
+                            }
                             return;
                         }
-                        deferred.resolve(job.__read());
+                        var jobResult = job.__read();
+                        deferred.resolve(typeof (resultWrapper) === 'function' ? resultWrapper(jobResult) : jobResult);
                     }
                 });
                 return deferred.promise;
+            }
+            service.listJobs = function () {
+                return jobRequest('JobList');
             };
 
             service.getJob = function (path) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobGet',
-                    data: {
-                        path: path
-                    },
-                    done: function (err, data) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve(data.__read());
-                    }
-                });
-                return deferred.promise;
+                return jobRequest('JobGet', {path: path});
             };
 
             service.getErrors = function (jobId) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobErrors',
-                    data: {
-                        id: jobId
-                    },
-                    done: function (err, data) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve(data.__read());
-                    }
-                });
-                return deferred.promise;
+                return jobRequest('JobErrors', {id: jobId});
             };
 
             service.getFailures = function (jobId) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobFailures',
-                    data: {
-                        id: jobId
-                    },
-                    done: function (err, data) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve(data.__read());
-                    }
-                });
-                return deferred.promise;
+                return jobRequest('JobFailures', {id: jobId});
             };
 
             service.getOutput = function (jobId) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobOutput',
-                    data: {
-                        id: jobId
-                    },
-                    done: function (err, data) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve(data.__read());
-                    }
-                });
-                return deferred.promise;
+                return jobRequest('JobOutput', {id: jobId});
             };
 
             service.getInput = function (jobId) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobInputs',
-                    data: {
-                        id: jobId
-                    },
-                    done: function (err, data) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve(data.__read());
-                    }
-                });
-                return deferred.promise;
+                return jobRequest('JobInputs', {id: jobId});
             };
 
             service.cancelJob = function (jobId) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobCancel',
-                    data: {
-                        id: jobId
-                    },
-                    done: function (err, data) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve(data.__read());
-                    }
-                });
-                return deferred.promise;
+                return jobRequest('JobCancel', {id: jobId});
             };
 
-            service.cloneJob = function (job) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobClone',
-                    data: job,
-                    done: function (err, jobId) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve('Job ' + jobId.__read() + ' was successfully created');
-                    }
+            service.createJob = function (data, suppressError) {
+                return jobRequest('JobCreate', data, suppressError, function (jobId) {
+                    return 'Job ' + jobId + ' was successfully created';
                 });
-                return deferred.promise;
             };
 
-            service.createJob = function (data) {
-                var deferred = $q.defer();
-                serverTab.call({
-                    name: 'JobCreate',
-                    data: data,
-                    done: function (err, job) {
-                        if (err) {
-                            return deferred.reject(err);
-                        }
-                        deferred.resolve('Job ' + job.__read() + ' was successfully created');
-                    }
-                });
-                return deferred.promise;
+            service.ping = function (suppressError) {
+                return jobRequest('StoragePing', null, suppressError);
             };
-
             return service;
         }
     ]);
