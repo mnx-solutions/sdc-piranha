@@ -31,6 +31,7 @@
             // Pagination
             $scope.machines = Machine.machine();
             $scope.packages = Package.package();
+            $scope.gotoCreatePage = Machine.gotoCreatePage;
 
             if ($scope.features.freetier === 'enabled') {
                 $scope.freetier = FreeTier.freetier();
@@ -62,7 +63,7 @@
                         });
 
                         if (!$scope.machines.length) {
-                            $location.path("compute/create/simple");
+                            Machine.gotoCreatePage();
                         }
                     });
                 }
@@ -511,7 +512,7 @@
                 $$track.event('machine', 'delete');
                 Machine.deleteMachine(el.id).getJob().done(function () {
                     if (!$scope.machines.length && currentLocation === $location.path()) {
-                        $location.path("compute/create/simple");
+                        Machine.gotoCreatePage();
                     }
                     el.checked = false;
                 });

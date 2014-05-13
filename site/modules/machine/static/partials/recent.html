@@ -20,10 +20,14 @@
                     <div class="loading-medium loading-medium-inline" data-ng-show="datasetsLoading"></div>
                 </div>
                 <div class="hotlinks pull-right">
-                    <a href="#!/compute/create/simple" data-ng-click="clickBackToQuickStart()">Back to Quick Start</a>
-                    | <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">View More Images </a>
                     <span data-ng-show="features.imageUse != 'disabled'">
-                        | <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved Images</a>
+                        <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved</a> |
+                    </span>
+                    <span>
+                        <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">All Public Images </a> |
+                    </span>
+                    <span>
+                        <a href="#!/compute/create/simple" data-ng-click="clickBackToQuickStart()">Quick</a>
                     </span>
                 </div>
             </div>
