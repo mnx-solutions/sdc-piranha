@@ -6,7 +6,7 @@ var zuoraHelpers = require('./lib/zuora-helpers');
 
 module.exports = function execute(scope, app) {
     var campaignPromoMap = {};
-    var defaultPromos = [];
+    var campaigns = [];
     if (config.features.promocode !== 'disabled' && config.ns['promo-codes']) {
         Object.keys(config.ns['campaigns']).forEach(function (campaignId) {
             var campaign = config.ns['campaigns'][campaignId];
@@ -17,17 +17,18 @@ module.exports = function execute(scope, app) {
                 campaignPromoMap[campaignId] = promo;
             }
         });
-        defaultPromos = Object.keys(config.ns['promo-codes'])
-            .map(function (promoKey) {
-                var promo = config.ns['promo-codes'][promoKey];
-                promo.code = promoKey;
-                return promo;
+        campaigns = Object.keys(config.ns['campaigns'])
+            .map(function (campaignID) {
+                var campaign = config.ns['campaigns'][campaignID];
+                campaign.campaignId = campaignID;
+                return campaign;
             })
-            .filter(function (promo) {
-                return promo.defaultDate && (!promo.expirationDate || (new Date()) < (new Date(promo.expirationDate)));
+            .filter(function (campaign) {
+                return campaign.defaultDate && (!campaignPromoMap[campaign.campaignId].expirationDate ||
+                    (new Date()) < (new Date(campaignPromoMap[campaign.campaignId].expirationDate)));
             })
-            .sort(function (promo1, promo2) {
-                return (new Date(promo2.defaultDate)).getTime() - (new Date(promo1.defaultDate)).getTime();
+            .sort(function (campaign1, campaign2) {
+                return (new Date(campaign2.defaultDate)).getTime() - (new Date(campaign1.defaultDate)).getTime();
             });
     }
 
@@ -55,27 +56,29 @@ module.exports = function execute(scope, app) {
                 return promo;
             }
         }
-        if (defaultPromos.length < 1) {
+        if (campaigns.length < 1) {
             return null;
         }
         var i = 0;
-        var defPromo = defaultPromos[i];
-        while (defPromo && ((new Date()) < (new Date(defPromo.defaultDate))) && i < 10) {
+        var defCampaign = campaigns[i];
+        while (defCampaign && ((new Date()) < (new Date(defCampaign.defaultDate))) && i < 10) {
             i += 1;
-            defPromo = defaultPromos[i];
+            defCampaign = campaigns[i];
         }
-        defPromo.hideCode = true;
-        return defPromo;
+        defCampaign.hideCode = true;
+        return defCampaign;
     }
 
-    app.get('/promocode', function (req, res, next) {
+    app.get('/campaign', function (req, res, next) {
         var promo = getPromoDetail(req.cookies.campaignId);
         var result = {code: '', hideCode: false};
+        var campaignId = req.cookies.campaignId;
         if (promo) {
             result.code = promo.code ? promo.code : '';
             result.hideCode = promo.hideCode;
+            campaignId = result.campaignId = promo.campaignId;
         }
-        req.log.debug({campaignId: req.cookies.campaignId, promocode: result}, 'Requested default promocode');
+        req.log.debug({campaignId: campaignId, promocode: result}, 'Requested default promocode');
         res.json(result);
     });
 

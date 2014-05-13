@@ -33,11 +33,13 @@
                     enc_email = data;
                     var marketoData = {
                         Email:             account.email,
-                        CAPI_UUID__c_lead: account.id || '',
-                        Campaign_ID__c:    $cookies.campaignId || '70180000000ShEu'
+                        CAPI_UUID__c_lead: account.id || ''
                     };
-                    mktoMunchkinFunction('associateLead', marketoData, enc_email);
-                    loggingService.log('debug', 'Associate Marketo lead from client', marketoData);
+                    $http.get('billing/campaign').then(function (code) {
+                        marketoData.Campaign_ID__c = $cookies.campaignId || code.data.campaignId;
+                        mktoMunchkinFunction('associateLead', marketoData, enc_email);
+                        loggingService.log('debug', 'Associate Marketo lead from client', marketoData);
+                    });
                 });
             },
             //inform marketo about machine provisioned

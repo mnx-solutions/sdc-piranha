@@ -42,7 +42,8 @@
     },
     "70180000000ag8G": {
         "promoCode": "FREEJOY",
-        "hideCode": true
+        "hideCode": true,
+        "defaultDate": "2013-11-02"
     },
     "70180000000aarN": {
         "promoCode": "FREEJOY12"
