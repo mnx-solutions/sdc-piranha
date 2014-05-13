@@ -528,8 +528,8 @@
             $scope.clickProvision = function () {
                 // add networks to data
                 $scope.data.networks = ($scope.selectedNetworks.length > 0) ? $scope.selectedNetworks : '';
-                $scope.data.metadata = $scope.metadata || {};
-                $scope.data.tags = $scope.tags || {};
+                $scope.data.metadata = this.metadata || {};
+                $scope.data.tags = this.tags || {};
 
                 if (!$scope.data.datacenter) {
                     Datacenter.datacenter().then(function (datacenters) {
