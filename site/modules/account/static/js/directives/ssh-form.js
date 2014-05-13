@@ -61,13 +61,11 @@
                         PopupDialog.confirm(null,
                             localization.translate($scope, null, 'Are you sure you want to delete "{{name}}" SSH key?', {name: name}),
                             function () {
-                                $scope.loading = true;
                                 $scope.loadingKeys = true;
                                 $scope.keys = null;
                                 var deleteKey = Account.deleteKey(fingerprint);
 
                                 $q.when(deleteKey, function () {
-                                    $scope.loading = false;
                                     $rootScope.$broadcast("ssh-form:onKeyDeleted");
                                     $scope.updateKeys(function () {
                                         if ($rootScope.downloadLink && $rootScope.downloadLink.indexOf(fingerprint) !== -1) {
