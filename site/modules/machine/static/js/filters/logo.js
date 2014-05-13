@@ -58,7 +58,11 @@
                 "ws2008std-r2-sp1": "windows",
                 "ws2012std": "windows",
                 "centos": "centos",
-                "ubuntu": "ubuntu"
+                "ubuntu": "ubuntu",
+                "elasticsearch": "elasticsearch",
+                "ghost": "ghost",
+                "postgresql": "postgresql",
+                "debian-7": "debian"
             };
 
             var result = instances[name];

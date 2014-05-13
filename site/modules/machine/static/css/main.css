@@ -1418,6 +1418,9 @@
 .small-icon.windows {background-image: url(../img/icons/windows.png);}
 .small-icon.mongodb {background-image: url(../img/icons/mongodb.png);}
 .small-icon.arch {background-image: url(../img/icons/arch.png);}
+.small-icon.elasticsearch {background-image: url(../img/icons/el-search.png);}
+.small-icon.ghost {background-image: url(../img/icons/ghost.png);}
+.small-icon.postgresql {background-image: url(../img/icons/postgresql.png);}
 
 .warn-yellow{
     background-image: url(../img/warn-yellow.png);
