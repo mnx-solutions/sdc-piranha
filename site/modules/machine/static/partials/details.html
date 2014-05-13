@@ -77,8 +77,8 @@
                                 </tr>
                                 <tr data-ng-show="machine.primaryIp">
                                     <td>Login</td>
-                                    <td data-ng-show="dataset.os != 'windows'">ssh {{defaultSshUser}}@{{machine.primaryIp}}</td>
-                                    <td data-ng-show="dataset.os == 'windows'">Use Microsoft Remote Desktop (RDP) to connect to {{machine.primaryIp}}. See Credentials section below.</td>
+                                    <td data-ng-show="dataset.os && (dataset.os != 'windows')">ssh {{defaultSshUser}}@{{machine.primaryIp}}</td>
+                                    <td data-ng-show="dataset.os && (dataset.os == 'windows')">Use Microsoft Remote Desktop (RDP) to connect to {{machine.primaryIp}}. See Credentials section below.</td>
                                 </tr>
                             </table>
             </div>
