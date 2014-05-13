@@ -12,22 +12,21 @@
                 $scope.placeHolderText = 'filter jobs';
 
                 if ($scope.features.manta === 'enabled') {
-                    Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
-                        $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
-                        Storage.ping().then(function () {
+                    Storage.ping().then(function () {
+                        Account.checkProvisioning({btnTitle: 'Submit and Access Job History'}, function () {
+                            $scope.gridUserConfig = Account.getUserConfig().$child('job_history');
                             $scope.jobs = getJobsList();
-                        }, function () {
-                            $location.url('/manta/intro');
-                            $location.replace();
-                        });
-                        }, function () {
-                        }, function (isSuccess) {
+                        }, function () {}, function (isSuccess) {
                             if (isSuccess) {
                                 $location.path('/manta/jobs');
                             } else {
                                 $location.path('/manta/intro');
                             }
                         });
+                    }, function () {
+                        $location.url('/manta/intro');
+                        $location.replace();
+                    });
                 } else {
                     $location.path('/');
                 }

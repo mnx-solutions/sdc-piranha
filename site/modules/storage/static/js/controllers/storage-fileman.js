@@ -8,7 +8,8 @@
                 localization.bind('storage', $scope);
                 $scope.filePath = '';
                 requestContext.setUpRenderContext('storage.fileman', $scope);
-                Storage.ping(true).then(angular.noop, function () {
+                Storage.ping().then(angular.noop, function () {
+                    $scope.popup = true;
                     $location.url('/manta/intro');
                     $location.replace();
                 });
