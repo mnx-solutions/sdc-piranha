@@ -132,7 +132,7 @@
   , "riskScoreFraudLimit": 20
   }
 , "slb": {
-    "slb_code_url": "https://us-east.manta.joyent.com/mriou/public/slbapi-1.tgz"
+    "slb_code_url": "https://us-east.manta.joyent.com/mriou/public/slbapi-20140512.tgz"
   , "ssc_image": "7eec9dfc-5c59-11e3-a3e4-0b8030348bec"
   , "ssc_package": "g3-standard-1-kvm"
   , "ssc_datacenter": "us-west-1"
