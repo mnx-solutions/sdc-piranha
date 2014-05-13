@@ -383,6 +383,16 @@
                         $location.path('/compute/ssh');
                     } else {
                         Machine.provisionMachine(machineData).done(function (err, job) {
+                            var quotaExceededHeader = 'QuotaExceeded: ';
+                            if (err && err.message && err.message.indexOf(quotaExceededHeader) === 0) {
+                                PopupDialog.error(null, err.message.substr(quotaExceededHeader.length), function () {
+                                    $scope.zenboxDialog({
+                                        request_subject: 'Please raise my provisioning limits'
+                                    });
+                                });
+                                return;
+                            }
+
                             var newMachine = job.__read();
                             if ($scope.features.freetier === 'enabled') {
                                 // TODO It seems like an extra call because we already have $scope.freetierOptions. Need to get rid of extra calls
@@ -1179,19 +1189,24 @@
                 ng.element('.carousel-inner').scrollTop(0);
                 ng.element('.carousel').carousel('next');
             };
+            
+            $scope.zenboxDialog = function (params) {
+                var props = angular.extend({}, $rootScope.zenboxParams, params, {
+                    requester_name: $scope.account.firstName,
+                    requester_email: $scope.account.email
+                });
+                Zenbox.show(null, props);
+            };
 
             $scope.reviewPage = function () {
-                var props = ng.copy($rootScope.zenboxParams);
-
                 if ($scope.selectedPackageInfo.createdBySupport) {
                     var el = $scope.selectedPackageInfo;
-                    props.dropboxID = props.dropboxOrderPackageId || props.dropboxID;
-                    props.request_subject = 'I want to order ' + el.description + ' compute instance';
-                    props.request_description = 'API Name: ' + el.name;
-                    props.requester_name = $scope.account.firstName;
-                    props.requester_email = $scope.account.email;
+                    $scope.zenboxDialog({
+                        dropboxID: $rootScope.zenboxParams.dropboxOrderPackageId || $rootScope.zenboxParams.dropboxID,
+                        request_subject: 'I want to order ' + el.description + ' compute instance',
+                        request_description: 'API Name: ' + el.name
+                    });
                     loggingService.log('info', 'User is ordering instance package from support', el);
-                    Zenbox.show(null, props);
                 } else {
                     $scope.slideCarousel();
                     $scope.setCurrentStep(2);
