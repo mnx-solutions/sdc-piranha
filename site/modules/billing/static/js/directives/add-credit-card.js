@@ -28,7 +28,8 @@
                     skipPromoConfirmation: '@',
                     billingUpdatePopup: '@',
                     isSignUpForm: '@',
-                    skipBillingFn: '&'
+                    skipBillingFn: '&',
+                    signOut: '&'
                 },
 
                 controller: function ($scope, $element, $attrs, $transclude) {
