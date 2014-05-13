@@ -36,13 +36,6 @@ module.exports = function execute(scope, app) {
         res.json(data);
     });
 
-    app.get('/setStep/:step', function (req, res) {
-        // This allows to skip signup, so only allowing it in test mode
-        req.session.allowSignup = true;
-        req.session.save();
-        res.redirect('/signup/#!/' + req.params.step);
-    });
-
     if (config.features.allowSkipBilling === 'enabled') {
         app.get('/signup/skipBilling', function (req, res) {
             SignupProgress.setMinProgress(req, 'billing', function () {
@@ -53,17 +46,18 @@ module.exports = function execute(scope, app) {
             });
         });
     }
+    // TODO: let's combine skipSsh and passSsh routes in one
     app.get('/signup/skipSsh', function (req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function () {
             scope.log.info('User skipped SSH step');
-            res.json({success: true});
+            SignupProgress.sendSshResponse(req, res);
         });
     });
 
     app.get('/signup/passSsh', function (req, res) {
         SignupProgress.setMinProgress(req, 'ssh', function () {
             scope.log.info('User passed SSH step');
-            res.json({success: true});
+            SignupProgress.sendSshResponse(req, res);
         });
     });
 

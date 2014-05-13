@@ -84,6 +84,7 @@
             $scope.currentStep = '';
             $scope.datasetsLoading = false;
             var osByDatasets = {};
+            var externalInstanceParams = requestContext.getParam('dc') && requestContext.getParam('package');
 
             $scope.filterValues = {
                 'No filter': [],
@@ -232,8 +233,14 @@
                 if ($scope.preSelectedImageId) {
                     $scope.preSelectedImage = Image.image($scope.preSelectedImageId);
                     $q.when($scope.preSelectedImage).then(function (image) {
-                        if (image && image.datacenter) {
-                            $scope.selectDatacenter(image.datacenter);
+                        var datacenter = null;
+                        if (externalInstanceParams) {
+                            datacenter = requestContext.getParam('dc');
+                        } else if (image && image.datacenter) {
+                            datacenter = image.datacenter;
+                        }
+                        if (datacenter) {
+                            $scope.selectDatacenter(datacenter);
                         } else {
                             $location.url('/compute/create');
                             $location.replace();
@@ -1058,7 +1065,11 @@
                 $scope.packages = packages;
 
                 if ($scope.preSelectedImageId) {
-                    $scope.selectDataset($scope.preSelectedImageId);
+                    $scope.selectDataset($scope.preSelectedImageId, externalInstanceParams);
+                    if (externalInstanceParams) {
+                        $scope.selectPackage(requestContext.getParam('package'));
+                        $scope.reconfigure(2);
+                    }
                 }
             }
 

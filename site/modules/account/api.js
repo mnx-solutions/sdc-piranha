@@ -215,5 +215,15 @@ module.exports = function execute(scope, register) {
         return _nextStep(req.session.signupStep);
     };
 
+    api.sendSshResponse = function (req, res) {
+        var result = {
+            success: true
+        };
+        if (req.session.redirectUrl) {
+            result.redirectUrl = req.session.redirectUrl;
+        }
+        res.json(result);
+    };
+
     register('SignupProgress', api);
 };

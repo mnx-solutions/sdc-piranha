@@ -22,6 +22,7 @@ module.exports = function execute(scope, app, callback) {
         }
 
         var baseUrl = new Buffer(protocol + '://' + req.headers.host + redirectUrl).toString('base64');
+        baseUrl = baseUrl.replace(/\//g, '-');
         var returnUrl = protocol + '://' + req.headers.host + '/tfa/saveToken/' + baseUrl + '/';
         var ssoUrl = config.url + '/' + method;
 
