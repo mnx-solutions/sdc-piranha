@@ -26,7 +26,8 @@
             "dialog",
             "support",
             "utilization",
-            "zendesk"
+            "zendesk",
+            "limits"
 
         ],
 		"auth": true,

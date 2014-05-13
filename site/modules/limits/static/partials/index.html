@@ -1,0 +1,29 @@
+<div data-ng-controller="LimitsController">
+    <div data-breadcrumbs></div>
+    <div class="loading-large span12" data-ng-show="loading"></div>
+    <div class="container-fluid container-position" data-ng-show="!loading">
+        <div class="page-header row-fluid">
+            <h3 class="page-title">{{pageTitle}}</h3>
+        </div>
+        <div class="row-fluid">
+            <div class="row-fluid">
+                <div data-ng-hide="limits.length">
+                    <div>You don't have any limits yet</div>
+                </div>
+                <div data-ng-show="limits.length">
+                    <div data-grid-view
+                         data-user-config="gridUserConfig"
+                         data-props="gridProps"
+                         data-columns-button="columnsButton"
+                         data-image-button-show="false"
+                         data-items="limits"
+                         data-multisort="false"
+                         data-order="gridOrder"
+                         data-export-fields="exportFields"
+                         data-paginated="false">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

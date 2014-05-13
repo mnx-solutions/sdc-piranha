@@ -186,6 +186,7 @@
   , "createdBySupportPackages": "no"
   , "systemStatusTile": "no"
   , "devCenterNewsTile": "enabled"
+  , "provisioningLimits": "no"
   , "recentInstances": "disabled"
   , "imageRename": "enabled"
   }
