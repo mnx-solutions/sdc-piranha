@@ -526,7 +526,9 @@
                 },
 
                 error: function(err, job) {
-                    showError(machine, err);
+                    if (err.message && err.message.indexOf('QuotaExceeded:') !== 0) {
+                        showError(machine, err);
+                    }
                     machines.list.splice(machines.list.indexOf(machine), 1);
                     delete machines.index[id];
                 }
