@@ -59,10 +59,10 @@
         {
             "name": "Windows Server",
             "className": "windows-logo",
-            "datasetName": "ws2008std-r2-sp1",
+            "datasetName": "ws2012std",
             "packageName": "g3-standard-4-kvm",
             "description": {
-                "text": "Windows Server 2008r2 Standard 64-bit image.",
+                "text": "Windows Server 2012 Standard 64-bit image."
                 "memory": 4,
                 "cpu": 1,
                 "disk": 131,
