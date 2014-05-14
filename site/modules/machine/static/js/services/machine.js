@@ -604,6 +604,14 @@
         bindCollectionListUpdate('tags');
         bindCollectionListUpdate('metadata');
 
+        service.checkFirstInstanceCreated = function (id) {
+            var job = serverTab.call({
+                name: 'checkFirstInstanceCreated',
+                data: {'uuid': id}
+            });
+            return job.deferred;
+        };
+
         return service;
     }]);
 }(window.angular, window.JP.getModule('Machine')));

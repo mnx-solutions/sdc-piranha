@@ -7,6 +7,7 @@ module.exports = function execute(scope) {
     var info = scope.api('Info');
     var utils = scope.get('utils');
     var machine = scope.api('Machine');
+    var metadata = scope.api('Metadata');
 
     var langs = {};
     var oldLangs = {};
@@ -406,6 +407,26 @@ module.exports = function execute(scope) {
     server.onCall('ImagesSimpleList', function (call) {
         var images = config.ns.images;
         call.done(null, images);
+    });
+
+    /* FirstInstance */
+    server.onCall('checkFirstInstanceCreated', function (call) {
+        var uuid = call.data.uuid;
+        var req = (call.done && call.req) || call;
+        metadata.get(req.session.userId, metadata.FIRST_INSTANCE, function (err, instance) {
+            if (instance) {
+                call.done(null, instance);
+                return;
+            }
+            metadata.set(req.session.userId, metadata.FIRST_INSTANCE, uuid, function (err) {
+                if (err) {
+                    call.log.error(err);
+                } else {
+                    call.log.info('Set first instance in metadata uuid: %s', uuid);
+                }
+            });
+            call.done(null);
+        });
     });
 
 

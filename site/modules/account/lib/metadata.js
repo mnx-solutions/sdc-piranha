@@ -12,5 +12,6 @@ metadataObj.PORTAL_PRIVATE_KEY = 'portal_private_key';
 metadataObj.PORTAL_FINGERPRINT = 'portal_fingerprint';
 metadataObj.ACCOUNT_HISTORY = 'accountHistory';
 metadataObj.TFA_TOGGLE = 'useMoreSecurity';
+metadataObj.FIRST_INSTANCE = 'firstInstance';
 
 module.exports = metadataObj;

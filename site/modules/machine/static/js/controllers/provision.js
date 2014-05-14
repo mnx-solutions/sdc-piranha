@@ -399,8 +399,12 @@
                                 $scope.freetier = FreeTier.freetier();
                             }
                             $q.when(Machine.machine(), function (listMachines) {
-                                if (newMachine.id && listMachines.length === 1) {
-                                    $$track.marketo_machine_provision($scope.account);
+                                if (newMachine.id) {
+                                    $q.when(Machine.checkFirstInstanceCreated(newMachine.id), function (uuid) {
+                                        if (!uuid || typeof (uuid) === 'object') {
+                                            $$track.marketo_machine_provision($scope.account);
+                                        }
+                                    });
                                 } else if (err && listMachines.length === 0) {
                                     $location.path('/compute/create/simple');
                                 }
