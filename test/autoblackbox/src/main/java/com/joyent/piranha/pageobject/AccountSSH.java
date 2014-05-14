@@ -8,7 +8,7 @@ import static com.codeborne.selenide.Selenide.page;
 
 public class AccountSSH extends AbstractPageObject {
     public SelenideElement getKeyNameLabel() {
-        return $(".accordion-package-title");
+        return $(".accordion-ssh-package-title");
     }
 
     public ELBApiForm clickELBApi() {
