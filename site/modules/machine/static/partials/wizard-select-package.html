@@ -37,7 +37,7 @@
         Filter:
         <div class="btn-group btn-group-filter">
             <button class="btn datacenter-select filter-select" data-toggle="dropdown">
-                {{filterProperty | uppercase}}
+                {{filterModel.key | uppercase}}
             </button>
 
             <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
@@ -51,16 +51,16 @@
                         <input type="radio"
                                class="filter-radio"
                                name="filterProperty"
-                               data-ng-model="$parent.filterProperty"
+                               data-ng-model="filterModel.key"
                                data-ng-change="$parent.onFilterChange(prop)"
                                value="{{prop}}" />
                     </label>
                 </li>
             </ul>
         </div>
-        <div class="btn-group btn-group-filter" data-ng-show="filterProperty != 'No filter'">
+        <div class="btn-group btn-group-filter" data-ng-show="filterModel.key != 'No filter'">
             <button class="btn datacenter-select filter-select" data-toggle="dropdown">
-                {{ formatFilterValue(filterPropertyValue) }}
+                {{ formatFilterValue(filterModel.value) }}
             </button>
 
             <button class="btn datacenter-select dropdown-toggle" data-toggle="dropdown">
@@ -68,13 +68,13 @@
             </button>
 
             <ul class="dropdown-menu dd-fixed-width">
-                <li data-ng-repeat="prop in filterValues[filterProperty]">
+                <li data-ng-repeat="prop in filterValues[filterModel.key]">
                     <label class="filter-value">
                         {{ formatFilterValue(prop) }}
                         <input type="radio"
                                class="filter-radio"
                                name="filterPropertyValue"
-                               data-ng-model="$parent.filterPropertyValue"
+                               data-ng-model="filterModel.value"
                                data-ng-change="$parent.onFilterChange()"
                                value="{{prop}}" />
                     </label>
@@ -92,7 +92,7 @@
             <div class="accordion-group" data-ng-repeat="packageType in packageTypes | filter:filterPackageTypes(datasetType)">
                 <div class="accordion-heading">
                     <a class="accordion-toggle collapsed toggle-icon" data-toggle="collapse" data-parent="#packagesAccordion"
-                       href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)" data-ng-class="{'filter-on': filterProperty != 'No filter'}">
+                       href="#collapse_{{$index}}" data-ng-click="changeSelectedPackage($event, packageType)" data-ng-class="{'filter-on': filterModel.key != 'No filter'}">
                         {{packageType}}
                         <span class="accordion-package-count">{{(packages | filter:filterPackagesByProp | filter:filterPackages(packageType)).length}}</span>
                     </a>
