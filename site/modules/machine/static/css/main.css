@@ -1378,12 +1378,28 @@
     margin-top: 20px;
 }
 
-.small-icon.cassandra, .small-icon.centos, .small-icon.chef,
-.small-icon.debian,.small-icon.fedora, .small-icon.freebsd,
-.small-icon.hadoop, .small-icon.java, .small-icon.manta,
-.small-icon.node,.small-icon.percona, .small-icon.riak,
-.small-icon.smart,.small-icon.smartmachine,.small-icon.stingray,
-.small-icon.ubuntu,.small-icon.windows,.small-icon.mongodb,.small-icon.arch {
+.small-icon.cassandra,
+.small-icon.centos,
+.small-icon.chef,
+.small-icon.debian,
+.small-icon.fedora,
+.small-icon.freebsd,
+.small-icon.hadoop,
+.small-icon.java,
+.small-icon.manta,
+.small-icon.node,
+.small-icon.percona,
+.small-icon.riak,
+.small-icon.smart,
+.small-icon.smartmachine,
+.small-icon.stingray,
+.small-icon.ubuntu,
+.small-icon.windows,
+.small-icon.mongodb,
+.small-icon.arch,
+.small-icon.elasticsearch,
+.small-icon.ghost,
+.small-icon.postgresql {
     background-repeat: no-repeat;
     background-position: 160px 15px;
     background-size: 24px;
