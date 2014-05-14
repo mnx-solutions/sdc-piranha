@@ -289,7 +289,7 @@ module.exports = function execute(scope) {
 
     server.onCall('StoragePing', function (call) {
         var client = Manta.createClient(call);
-        var retries = 3;
+        var retries = 5;
         function pingManta() {
             client.get('/' + client.user, function (error) {
                 if (error) {
