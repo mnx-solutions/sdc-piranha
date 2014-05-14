@@ -37,7 +37,7 @@
                 $location.path('/compute/create/simple');
                 return;
             }
-            if (createInstancePageConfig.page === undefined) {
+            if (createInstancePageConfig.page === undefined || (createInstancePageConfig.page === 'recent' && $rootScope.features.recentInstances !== 'enabled')) {
                 createInstancePageConfig.page = 'simple';
                 createInstancePageConfig.dirty(true);
                 createInstancePageConfig.$save();
