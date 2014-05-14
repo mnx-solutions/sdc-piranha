@@ -289,12 +289,21 @@ module.exports = function execute(scope) {
 
     server.onCall('StoragePing', function (call) {
         var client = Manta.createClient(call);
-        client.ls('/' + client.user + '/', function (error) {
-            if (error) {
-                sendError(call, error);
-                return;
-            }
-            call.done(null, 'pong');
-        });
+        var retries = 5;
+        function pingManta() {
+            client.get('/' + client.user, function (error) {
+                if (error) {
+                    if (error.name === 'AccountBlockedError' && call.req.session.provisionEnabled && retries > 0) {
+                        retries -= 1;
+                        setTimeout(pingManta, 1000);
+                        return;
+                    }
+                    sendError(call, error);
+                    return;
+                }
+                call.done(null, 'pong');
+            });
+        }
+        pingManta();
     });
 };
