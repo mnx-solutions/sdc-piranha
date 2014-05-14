@@ -44,7 +44,7 @@
                     template:'machine/static/partials/wizard-review.html'
                 }
             ];
-            $scope.model = {};
+            $scope.filterModel = {};
             $scope.provisionStep = true;
             $scope.campaignId = ($cookies.campaignId || 'default');
 
@@ -264,10 +264,7 @@
                         $scope.selectedPackageInfo = provisionBundle.selectedPackageInfo;
 
                         $scope.instanceType = 'Public';
-                        $scope.model = {
-                            filterProperty: provisionBundle.filterProperty,
-                            filterPropertyValue: provisionBundle.filterPropertyValue
-                        };
+                        $scope.filterModel = provisionBundle.filterModel;
                         $scope.filterProps = provisionBundle.filterProps;
                         $scope.filterValues = provisionBundle.filterValues;
                         $scope.reconfigure(2);
@@ -476,11 +473,10 @@
                             datacenters: $scope.datacenters,
                             datasetType: $scope.datasetType,
                             selectedDataset: $scope.selectedDataset,
-                            filterProperty: $scope.model.filterProperty,
+                            filterModel: $scope.filterModel,
                             filterProps: $scope.filterProps,
                             filterValues: $scope.filterValues,
                             selectedPackageInfo: $scope.selectedPackageInfo,
-                            filterPropertyValue: $scope.model.filterPropertyValue,
                             packages: $scope.packages,
                             packageTypes: $scope.packageTypes,
                             indexPackageTypes: $scope.indexPackageTypes,
@@ -777,8 +773,8 @@
                                 return a - b;
                             });
                         });
-                        $scope.model.filterProperty = $scope.filterProps[0];
-                        $scope.onFilterChange($scope.model.filterProperty);
+                        $scope.filterModel.key = $scope.filterProps[0];
+                        $scope.onFilterChange($scope.filterModel.key);
                     }
 
                     setTimeout(expandLastSection, 600);
@@ -891,14 +887,14 @@
             };
 
             $scope.filterPackagesByProp = function (obj) {
-                if (!$scope.model.filterProperty || !$scope.model.filterPropertyValue) {
+                if (!$scope.filterModel.key || !$scope.filterModel.value) {
                     return obj;
                 }
-                return String(obj[$scope.model.filterProperty]) === String($scope.model.filterPropertyValue);
+                return String(obj[$scope.filterModel.key]) === String($scope.filterModel.value);
             };
 
             $scope.formatFilterValue = function (value) {
-                if ($scope.model.filterProperty === 'vcpus') {
+                if ($scope.filterModel.key === 'vcpus') {
                     return value + ' vCPUs';
                 }
                 return $filter('sizeFormat')(value);
@@ -921,13 +917,13 @@
 
             $scope.onFilterChange = function (newVal) {
                 if (newVal) {
-                    $scope.model.filterPropertyValue = $scope.filterValues[newVal][0];
+                    $scope.filterModel.value = $scope.filterValues[newVal][0];
                 }
                 selectMinimalPackage();
 
                 setTimeout(function () {
                     var accordionGroup = ng.element('.accordion-group');
-                    if ($scope.model.filterProperty === 'No filter') {
+                    if ($scope.filterModel.key === 'No filter') {
                         accordionGroup.not('div.active').find('.collapse').removeClass('in').css('height', 0).end()
                             .find('.accordion-toggle').addClass('collapsed').end()
                             .has('div.active').find('a.collapsed').click();
@@ -940,13 +936,13 @@
             };
             $scope.changeSelectedPackage = function (event, packageType) {
                 if (!event.target.classList.contains('collapsed')) {
-                    if ($scope.model.filterProperty !== 'No filter') {
+                    if ($scope.filterModel.key !== 'No filter') {
                         $scope.collapsedPackageTypes.push(packageType);
                         selectMinimalPackage(packageType, true);
                     }
                     return;
                 }
-                if ($scope.model.filterProperty === 'No filter') {
+                if ($scope.filterModel.key === 'No filter') {
                     selectMinimalPackage(packageType);
                 } else {
                     $scope.collapsedPackageTypes.splice($scope.collapsedPackageTypes.indexOf(packageType), 1);
