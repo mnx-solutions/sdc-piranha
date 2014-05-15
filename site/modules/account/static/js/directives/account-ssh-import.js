@@ -151,7 +151,7 @@
 
                                 if ($scope.nextStep) {
                                     showPopupDialog('message', 'Message', 'SSH Key successfully added to your account.');
-                                    $scope.nextStep();
+                                    $scope.passSsh('/main/');
                                 } else {
                                     $scope.updateKeys(function () {
                                         showPopupDialog('message', 'Message', 'New key successfully added.');

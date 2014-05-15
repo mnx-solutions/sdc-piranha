@@ -91,10 +91,7 @@
                                                     $scope.iframe = '<iframe src="' + downloadLink + '"></iframe>';
                                                     if ($scope.nextStep) {
                                                         setTimeout(function () {
-                                                            $http.get('/signup/account/signup/passSsh').success(function () {
-                                                                // marked ssh step as passed
-                                                                window.location.href = $cookies.signupRedirectUrl || '/main/#!/account/ssh';
-                                                            });
+                                                            $scope.passSsh('/main/#!/account/ssh');
                                                         }, 1000);
                                                     }
                                                 }

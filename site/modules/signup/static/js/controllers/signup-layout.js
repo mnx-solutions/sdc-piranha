@@ -63,8 +63,15 @@
                 $scope.skipSsh = function () {
                     $http.get('/signup/account/signup/skipSsh').success(function (data) {
                         if (data.success === true) {
-                            window.top.location.href = $cookies.signupRedirectUrl || '/main';
+                            window.top.location.href = data.redirectUrl || $cookies.signupRedirectUrl || '/main';
                         }
+                    });
+                };
+
+                $scope.passSsh = function (url) {
+                    $http.get('/signup/account/signup/passSsh').success(function (result) {
+                        // marked ssh step as passed
+                        window.location.href = result.redirectUrl || $cookies.signupRedirectUrl || url;
                     });
                 };
 

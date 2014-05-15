@@ -53,9 +53,9 @@ module.exports = function execute(scope, app) {
 
     app.get('/saveToken/:url', function(req, res, next) {
         var token = req.query.token;
+        req.params.url = req.params.url.replace(/\-/g, '/');
         // redirect to this url after we're done with the token
         var redirectUrl = (new Buffer(req.params.url, 'base64')).toString('ascii');
-
         var cloud = smartCloud.cloud({token: token, log: req.log});
         cloud.getAccount(function (err, user) {
             if (err) {
@@ -82,6 +82,7 @@ module.exports = function execute(scope, app) {
                 }
                 req.session.userId = user.id;
                 req.session.userName = user.login;
+                req.session.redirectUrl = redirectUrl;
 
                 metadata.get(req.session.userId, metadata.SIGNUP_STEP, function (metaErr, signupStep) {
                     // can safely ignore possible metadata error here
@@ -99,7 +100,6 @@ module.exports = function execute(scope, app) {
                         req.log.info({userId: user.id}, 'User redirected to TFA login');
                         req.session._preToken = token;
                         req.session._tfaSecret = secret;
-                        req.session._tfaRedirect = redirectUrl;
                         req.session.save();
 
                         res.redirect('/#!/tfa');
@@ -182,8 +182,8 @@ module.exports = function execute(scope, app) {
             req.session.token = req.session._preToken;
             delete req.session._preToken;
 
-            var redirect = req.session._tfaRedirect;
-            delete req.session._tfaRedirect;
+            var redirect = req.session.redirectUrl;
+            delete req.session.redirectUrl;
             req.session.save();
 
             logUserInformation(req, redirect);
