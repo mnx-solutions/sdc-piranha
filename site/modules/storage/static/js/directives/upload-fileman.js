@@ -11,10 +11,11 @@
             },
             link: function (scope, element, attrs) {
                 function uploadFiles(files) {
-                    http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error, response) {
-                        if (!error) {
-                            scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
+                    http.uploadFiles('storage/upload', scope.filemanUpload, files, function (error) {
+                        if (error) {
+                            PopupDialog.error(null, error);
                         }
+                        scope.$parent.$emit('uploadReady', true, scope.filemanUpload);
                     });
                 }
 
