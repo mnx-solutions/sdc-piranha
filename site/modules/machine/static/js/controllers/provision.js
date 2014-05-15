@@ -128,6 +128,65 @@
 
             var recentInstances = getCreatedMachines();
 
+            function setupSimpleImages (simpleImages, networks, isFree) {
+                if (simpleImages && simpleImages.length > 0) {
+                    if ($scope.datacenters && $scope.datacenters.length > 0) {
+                        $scope.datacenters.forEach(function (datacenter) {
+                            Package.package({ datacenter: datacenter.name }).then(function (packages) {
+                                var packagesByName = {};
+                                packages.forEach(function (pkg) {
+                                    packagesByName[pkg.name] = pkg.id;
+                                });
+                                angular.copy(simpleImages).forEach(function (image) {
+                                    var params = {
+                                        datacenter: datacenter.name
+                                    };
+                                    params.name = image.datasetName;
+                                    params.forceMajorVersion = image.forceMajorVersion;
+                                    if (isFree && image.datacenters.indexOf(datacenter.name) === -1) {
+                                        return;
+                                    }
+                                    Dataset.datasetBySimpleImage(params).then(function (dataset) {
+                                        if (dataset) {
+                                            var simpleImage = {};
+                                            if (isFree) {
+                                                simpleImage.imageData = image;
+                                                simpleImage.name = image.name;
+                                                simpleImage.description = {
+                                                    text: image.original.description,
+                                                    memory: image.original.memory / 1024,
+                                                    cpu: image.original.vcpus,
+                                                    disk: image.original.disk / 1024,
+                                                    price: image.original.price
+                                                };
+                                                var smallLogoClass = $filter('logo')(simpleImage.imageData.name);
+                                                simpleImage.className = smallLogoClass.indexOf('default') === -1 ?
+                                                    smallLogoClass + '-logo' : 'joyent-logo';
+                                                simpleImage.imageData.freetier = true;
+                                                simpleImage.imageData.freeTierValidUntil = image.validUntil;
+                                            } else {
+                                                simpleImage = image;
+                                                simpleImage.imageData = {};
+                                                simpleImage.imageData.package = packagesByName[simpleImage.packageName];
+                                                simpleImage.imageData.networks = networks;
+                                            }
+                                            simpleImage.imageData.dataset = dataset;
+                                            simpleImage.imageData.datacenter = datacenter.name;
+                                            simpleImage.imageData.name = '';
+                                            delete simpleImage.packageName;
+                                            delete simpleImage.datasetName;
+                                            if (simpleImage.imageData.package) {
+                                                $scope.simpleImages.push(simpleImage);
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    }
+                }
+            }
+
             $q.all([
                 $q.when(Account.getKeys()),
                 $q.when(Datacenter.datacenter()),
@@ -148,71 +207,15 @@
                 $scope.submitTitle = $scope.keys.length > 0 ? 'Create Instance' : 'Next';
                 $scope.datacenters = result[1];
                 $scope.simpleImages = [];
-                var simpleImages = result[3]['images'];
-                var networks = result[3]['networks'];
-                if (simpleImages && simpleImages.length > 0) {
-                    if ($scope.datacenters && $scope.datacenters.length > 0) {
-                        $scope.datacenters.forEach(function (datacenter) {
-                            Package.package({ datacenter: datacenter.name }).then(function (packages) {
-                                var packagesByName = {};
-                                packages.forEach(function (pkg) {
-                                    packagesByName[pkg.name] = pkg.id;
-                                });
-                                angular.copy(simpleImages).forEach(function (simpleImage) {
-                                    Dataset.datasetByName({ datacenter: datacenter.name, name: simpleImage.datasetName }).then(function (dataset) {
-                                        if (dataset) {
-                                            simpleImage.imageData = {};
-                                            simpleImage.imageData.dataset = dataset;
-                                            simpleImage.imageData.datacenter = datacenter.name;
-                                            simpleImage.imageData.name = '';
-                                            simpleImage.imageData.package = packagesByName[simpleImage.packageName];
-                                            simpleImage.imageData.networks = networks;
-                                            delete simpleImage.packageName;
-                                            delete simpleImage.datasetName;
-                                            if (simpleImage.imageData.package) {
-                                                $scope.simpleImages.push(simpleImage);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                        });
-                    }
-                }
+                var simpleImages = result[3].images;
+                var networks = result[3].networks;
                 if ($scope.features.freetier === 'enabled') {
                     var freeImages = result[4];
                     if (freeImages.valid) {
-                        freeImages.forEach(function (freeImage) {
-                            freeImage.datacenters.forEach(function (datacenter) {
-                                var simpleImage = ng.copy({imageData: freeImage});
-                                Dataset.datasetByName({ datacenter: datacenter, name: simpleImage.imageData.datasetName }).then(function (dataset) {
-                                    if (dataset) {
-                                        simpleImage.imageData.datacenter = datacenter;
-                                        simpleImage.name = freeImage.name;
-                                        simpleImage.imageData.dataset = dataset;
-                                        simpleImage.description = {
-                                            text: freeImage.original.description,
-                                            memory: freeImage.original.memory / 1024,
-                                            cpu: freeImage.original.vcpus,
-                                            disk: freeImage.original.disk / 1024,
-                                            price: freeImage.original.price
-                                        };
-                                        var smallLogoClass = $filter('logo')(simpleImage.imageData.name);
-                                        simpleImage.className = smallLogoClass.indexOf('default') === -1 ?
-                                                smallLogoClass + '-logo' : 'joyent-logo';
-                                        simpleImage.imageData.name = ''; // Name will be autogenerated
-                                        simpleImage.imageData.freetier = true;
-                                        simpleImage.imageData.freeTierValidUntil = freeImages.validUntil;
-                                        delete simpleImage.imageData.datacenters;
-                                        delete simpleImage.imageData.original;
-                                        delete simpleImage.imageData.datasetName;
-                                        $scope.simpleImages.push(simpleImage);
-                                    }
-                                });
-                            });
-                        });
+                        setupSimpleImages(freeImages, networks, true);
                     }
                 }
+                setupSimpleImages(simpleImages, networks);
                 if ($scope.isMantaEnabled && !$scope.data.datacenter) {
                     //TODO: Handle all other DC drop-downs
                     $scope.userConfig = Account.getUserConfig().$child('datacenter');
