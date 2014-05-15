@@ -1,7 +1,7 @@
 'use strict';
 
 (function (app, ng) {
-    app.directive('mainLeft', ['$rootScope', 'localization', 'Support', function ($rootScope, localization, Support) {
+    app.directive('mainLeft', ['$rootScope', 'localization', 'Support', 'requestContext', function ($rootScope, localization, Support, requestContext) {
         return {
             templateUrl: 'left/static/partials/menu.html',
             scope: true,
@@ -38,12 +38,14 @@
                         ng.element('.footer').removeClass('leftpanel-small');
                     }
                 };
-                var now = new Date();
-                var year = now.getFullYear();
-                var month = now.getMonth() + 1;
-                $scope.usageUrl = '#!/usage/' + year + '/' + month;
-                $scope.usageDramUrl = '#!/usage/dram/' + year + '/' + month;
-                $scope.usageBandwidthUrl = '#!/usage/bandwidth/' + year + '/' + month;
+
+                $scope.clickUsage = function (usageType) {
+                    var now = new Date();
+                    var year = parseInt(requestContext.getParam('year'), 10) || now.getFullYear();
+                    var month = parseInt(requestContext.getParam('month'), 10) || now.getMonth() + 1;
+                    usageType = usageType ? (usageType + '/') : '';
+                    window.location = '#!/usage/' + usageType + year + '/' + month;
+                };
             }
         };
     }]);

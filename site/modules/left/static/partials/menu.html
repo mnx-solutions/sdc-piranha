@@ -80,20 +80,20 @@
             </ul>
         </li>
         <li class="nested usage-icon" data-ng-show="features.usageData == 'enabled'" data-ng-class="{active: location.path().search('usage') == 1, open: location.path().search('/dram') > 1 || location.path().search('/bandwidth') > 1}">
-            <a data-ng-href="{{usageUrl}}">
+            <a data-ng-click="clickUsage()">
                 <i class=""></i>
                 <span class="title">Usage</span>
                 <span class="selected"></span>
             </a>
             <ul class="sub-menu" data-ng-show="features.usageData == 'enabled'">
                 <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/dram') == 1}">
-                    <a data-ng-href="{{usageDramUrl}}">
+                    <a data-ng-click="clickUsage('dram')">
                         <span class="titles" data-translate>DRAM</span>
                         <span class="selected-sub"></span>
                     </a>
                 </li>
                 <li left-list-item class="sub" data-ng-class="{active: location.path().search('usage/bandwidth') == 1}">
-                    <a data-ng-href="{{usageBandwidthUrl}}">
+                    <a data-ng-click="clickUsage('bandwidth')">
                         <span class="titles" data-translate>Bandwidth</span>
                         <span class="selected-sub"></span>
                     </a>
