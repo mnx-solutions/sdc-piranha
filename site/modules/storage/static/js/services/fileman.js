@@ -12,9 +12,8 @@
                         callback = data;
                         data = {};
                     }
-                    Account.getAccount(true).then(function (account) {
-                        var username = account.login;
-                        data.path = '/' + username + '/' + path;
+                    Account.getAccount().then(function (account) {
+                        data.path = '/' + account.login + '/' + path;
                         data.originPath = path;
                         serverTab.call({
                             name: name,
@@ -32,7 +31,9 @@
             fileman.ls = createMethod('FileManList');
 
             fileman.get = function (path) {
-                location.href = 'storage/download?path=' + '/' + username + '/' + path;
+                Account.getAccount().then(function (account) {
+                    location.href = 'storage/download?path=' + '/' + account.login + '/' + path;
+                });
             };
 
             fileman.rmr = createMethod('FileManDeleteTree');
