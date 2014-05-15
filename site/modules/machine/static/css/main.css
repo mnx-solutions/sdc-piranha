@@ -867,6 +867,9 @@
     font-weight: 500;
     vertical-align: middle;
 }
+.hotlinks a.selected {
+    font-weight: bold;
+}
 .advanced-instance-box {
     float: left;
     margin-top: 4px;
