@@ -12,7 +12,7 @@ module.exports = function execute(scope) {
 
     function sendError(call, error) {
         function done(error) {
-            call.done(error.message || mantaNotAvailable);
+            call.done(error && (error.message || mantaNotAvailable));
         }
         if (error) {
             done(error);
