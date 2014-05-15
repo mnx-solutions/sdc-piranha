@@ -254,13 +254,6 @@
     color : #ff6600;
 }
 
-.header-btn-ci {
-    position: relative;
-    display: inline-block;
-    float: right;
-    margin-top: -73px;
-}
-
 .btn.orange {
     color: white;
     text-shadow: none;
@@ -270,10 +263,6 @@
     color: black;
     text-shadow: none;
     background-color: #afd46c;
-}
-
-.align-text-btn {
-    text-align: left !important;
 }
 
 .inst_page{

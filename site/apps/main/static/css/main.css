@@ -2248,6 +2248,7 @@ label.checkbox {
 }
 .plus-btn-icon {
     background: url("../img/plus_icon.png") no-repeat;
+    margin-right: 10px;
 }
 .chart-btn-icon {
     background: url("../img/chart-icon.png") no-repeat;
@@ -2516,7 +2517,7 @@ label.checkbox {
     text-decoration: none;
 }
 .btn-big {
-    width: 172px !important;
+    padding-right: 20px;
     height: 43px;
 }
 .btn-mini {
@@ -3268,4 +3269,11 @@ label.checkbox.folder-name-form-checkbox {
 }
 .modal-backdrop {
     z-index: 999999;
+}
+.page-title-btn {
+    float: right;
+    margin-top: -70px;
+}
+.text-to-left {
+    text-align: left !important;
 }

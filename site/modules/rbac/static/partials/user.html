@@ -1,0 +1,114 @@
+<div data-ng-controller="rbacUserController">
+    <div class="container-fluid container-position" data-ng-show="!loading">
+        <div data-breadcrumbs></div>
+        <div class="page-header row-fluid">
+            <h3 class="page-title">User Summary</h3>
+        </div>
+
+        <div class="loading-large span12" data-ng-show="loading"></div>
+        <table class="table">
+            <tr>
+                <td><label>First Name</label></td>
+                <td><input type="text" name="firstName" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Last Name</label></td>
+                <td><input type="text" name="lastName" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Company</label></td>
+                <td><input type="text" name="company" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Email</label></td>
+                <td><input type="text" name="email" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Username</label></td>
+                <td><input type="text" name="login" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Password</label></td>
+                <td><input type="password" name="password" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Repeat Password</label></td>
+                <td><input type="password" name="password2" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Address</label></td>
+                <td><input type="text" name="address" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Country</label></td>
+                <td><select name="country"
+                            data-ng-class="{error: isError('country')}"
+                            data-ng-model="country"
+                            data-ng-options="country.iso3 as country.name group by country.group for country in countries.data | orderBy: ['-group','name']"
+                            data-ng-required="true">
+                </select></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>City</label></td>
+                <td><input type="text" name="city" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>State</label></td>
+                <td><select name="state"
+                            data-ng-class="{error: isError('state')}"
+                            data-ng-model="state"
+                            data-ng-required="true"
+                            data-ng-options="value as label for (value, label) in stateSel">
+                </select></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Zip Code</label></td>
+                <td><input type="text" name="zip" data-validate=""/></td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Phone</label></td>
+                <td data-phone-number data-number="account.phone" data-country="{{account.country}}" data-is-error="isError(field, type)">/td>
+                <td>
+                    <div class="error"></div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>

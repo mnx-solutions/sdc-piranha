@@ -230,13 +230,6 @@ input.ng-invalid-field{
 .font16{
     font-size: 16px;
 }
-.header-btn-ci {
-    position: relative;
-    display: inline-block;
-    float: right;
-    margin-top: -60px;
-}
-
 .uninstall-lb-btn {
     margin-top: -13px;
 }

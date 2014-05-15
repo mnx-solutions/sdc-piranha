@@ -128,6 +128,13 @@
                 </li>
             </ul>
         </li>
+        <li class="nested" data-ng-show="features.rbac == 'enabled'" data-ng-class="{'active open': location.path().search('limits') == 1}">
+            <a href="#!/rbac">
+                <i class="glyphicon glyphicon ax"></i>
+                <span class="title">Account Maintenance</span>
+                <span class="selected"></span>
+            </a>
+        </li>
         <li>
             <div class="sidebar-toggler" data-ng-class="{'sidebar-toggler-back': sideBarMin}" data-ng-click="toggleSideBar()"></div>
         </li>

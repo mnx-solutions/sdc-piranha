@@ -1,8 +1,8 @@
 {
-	"em": {
-		"route": "/main",
+    "em": {
+        "route": "/main",
         "defaultHash": "#!/dashboard",
-		"modules": [
+        "modules": [
             "error",
             "cms",
             "account",
@@ -21,17 +21,17 @@
             "storage",
             "timeout",
             "feature-flags",
-			"maxmind",
+            "maxmind",
             "slb",
             "dialog",
             "support",
             "utilization",
             "zendesk",
             "limits",
-            "mdb"
-
+            "mdb",
+            "rbac"
         ],
-		"auth": true,
+        "auth": true,
         "error": true,
         "compress": true
 	}

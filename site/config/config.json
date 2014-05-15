@@ -204,5 +204,6 @@
   , "imageRename": "no"
   , "provisioningLimits": "no"
   , "mdb": "no"
+  , "rbac": "no"
   }
 }
