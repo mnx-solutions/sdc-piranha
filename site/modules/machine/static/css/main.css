@@ -861,11 +861,14 @@
     font-size: 14px;
     line-height: 24px;
 }
-.hotlinks a {
+.hotlinks a, .hotlinks span.active-link {
     color: #f60;
     text-decoration: none;
     font-weight: 500;
     vertical-align: middle;
+}
+.hotlinks span.active-link {
+    color: #333;
 }
 .advanced-instance-box {
     float: left;

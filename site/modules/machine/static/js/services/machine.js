@@ -37,7 +37,7 @@
                 $location.path('/compute/create/simple');
                 return;
             }
-            if (createInstancePageConfig.page === undefined) {
+            if (createInstancePageConfig.page === undefined || (createInstancePageConfig.page === 'recent' && $rootScope.features.recentInstances !== 'enabled')) {
                 createInstancePageConfig.page = 'simple';
                 createInstancePageConfig.dirty(true);
                 createInstancePageConfig.$save();
@@ -457,11 +457,6 @@
                 datacenter: data.datacenter,
                 id: id
             };
-            var createPage = 'simple';
-            if ($location.$$path.indexOf('/compute/create') !== -1) {
-                createPage = $location.$$path.split('/').slice(3).join('/');
-            }
-            service.setCreateInstancePage(createPage);
 
             machines.list.push(machine);
             machines.index[id] = machine;

@@ -35,13 +35,15 @@
 
     <div class="hotlinks pull-right">
         <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
-            <a href="#!/compute/create/recent">Recent</a> |
+            <a href="#!/compute/create/recent" data-ng-click="setCreateInstancePage('recent')">Recent</a> |
         </span>
-        <span data-ng-show="features.imageUse != 'disabled'" data-ng-hide="instanceType == 'Saved'">
-            <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved</a> |
+        <span data-ng-show="features.imageUse != 'disabled'">
+            <span class="active-link" data-ng-show="instanceType == 'Saved'">Saved </span>
+            <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')" data-ng-hide="instanceType == 'Saved'"> Saved</a> |
         </span>
-        <span data-ng-hide="instanceType == 'Public'">
-            <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">All Public Images </a> |
+        <span>
+            <span class="active-link" data-ng-show="instanceType == 'Public'">All Public Images </span>
+            <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')" data-ng-hide="instanceType == 'Public'">All Public Images </a> |
         </span>
         <span>
             <a href="#!/compute/create/simple" data-ng-click="clickBackToQuickStart()">Quick</a>
