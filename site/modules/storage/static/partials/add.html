@@ -7,14 +7,13 @@
             <p>File path</p>
             <div class="row-fluid">
                 <div class="error"
-                     data-ng-show="folderNameForm.filePath.$invalid && filePath.length"
+                     data-ng-show="folderNameForm.fullFilePath.$invalid && fullFilePath.length"
                      data-translate>
                      File path is invalid.
                 </div>
                 <input type="text"
-                       name="filePath"
-                       id="filePath"
-                       data-ng-model="filePath"
+                       name="fullFilePath"
+                       data-ng-model="fullFilePath"
                        data-file-path
                        class="popup-file-path"/>
             </div>

@@ -1,15 +1,20 @@
 'use strict';
 
 (function (app) {
-    app.directive('builderGrid', ['PopupDialog', 'localization', function (PopupDialog, localization) {
+    app.directive('builderGrid', ['PopupDialog', 'localization', 'Account', function (PopupDialog, localization, Account) {
         return {
             restrict: 'EA',
             scope: {
                 objects: '='
             },
 
-            link: function ($scope) {
+            link: function (scope) {
                 var addFilePathCtrl = function ($scope, dialog) {
+                    $scope.$watch('filePath', function (filePath) {
+                        Account.getAccount().then(function (account) {
+                            $scope.fullFilePath = '/' + account.login + filePath;
+                        });
+                    });
                     $scope.close = function (res) {
                         if (res === 'cancel') {
                             dialog.close({
@@ -19,7 +24,7 @@
                         }
                         dialog.close({
                             value: 'add',
-                            filePath: $scope.filePath
+                            filePath: $scope.fullFilePath
                         });
                     };
                     $scope.filePath = '';
@@ -40,7 +45,7 @@
                     ];
                 };
 
-                $scope.newFilePath = function () {
+                scope.newFilePath = function () {
                     var opts = {
                         templateUrl: 'storage/static/partials/add.html',
                         openCtrl: addFilePathCtrl
@@ -49,8 +54,8 @@
                     PopupDialog.custom(
                         opts,
                         function (result) {
-                            if (result.value === 'add') {
-                                $scope.objects.push({
+                            if (result && result.value === 'add') {
+                                scope.objects.push({
                                     filePath: result.filePath,
                                     create_at: new Date(),
                                     id: new Date().getTime()
@@ -67,8 +72,8 @@
                     }
                 };
 
-                $scope.gridOrder = [];
-                $scope.gridProps = [
+                scope.gridOrder = [];
+                scope.gridProps = [
                     {
                         id: 'filePath',
                         name: 'File Path',
@@ -76,7 +81,7 @@
                         active: true
                     }
                 ];
-                $scope.gridActionButtons = [
+                scope.gridActionButtons = [
                     {
                         label: 'Delete',
                         action: function () {
@@ -87,48 +92,48 @@
                 ];
 
 
-                $scope.exportFields = {
+                scope.exportFields = {
                     ignore: []
                 };
 
-                $scope.searchForm = true;
-                $scope.enabledCheckboxes = true;
-                $scope.placeHolderText = 'filter';
+                scope.searchForm = true;
+                scope.enabledCheckboxes = true;
+                scope.placeHolderText = 'filter';
 
                 var noCheckBoxChecked = function () {
                     PopupDialog.error(
                         localization.translate(
-                            $scope,
+                            scope,
                             null,
                             'Error'
                         ),
                         localization.translate(
-                            $scope,
+                            scope,
                             null,
                             'No item selected for the action.'
                         ), function () {}
                     );
                 };
 
-                $scope.getCheckedItems = function (obj) {
+                scope.getCheckedItems = function (obj) {
                     return obj.filter(function (el) {
                         return el.checked;
                     });
                 };
 
                 var deleteRecord = function (messageBody) {
-                    var checkedArray = $scope.getCheckedItems($scope.objects);
+                    var checkedArray = scope.getCheckedItems(scope.objects);
 
                     if (checkedArray.length) {
                         var message = '';
                         PopupDialog.confirm(
                             localization.translate(
-                                $scope,
+                                scope,
                                 null,
                                 'Confirm: Delete record'
                             ),
                             localization.translate(
-                                $scope,
+                                scope,
                                 null,
                                 message = function () {
                                     var result = messageBody.single;
@@ -138,7 +143,7 @@
                                     return result;
                                 }
                             ), function () {
-                                $scope.objects = $scope.objects.filter(function (el) {
+                                scope.objects = scope.objects.filter(function (el) {
                                     return !el.checked;
                                 });
                             }
