@@ -21,7 +21,7 @@
                 </div>
                 <div class="hotlinks pull-right">
                     <span data-ng-show="isMantaEnabled && isRecentInstancesEnabled && recentInstances.length > 0">
-                        <a href="#!/compute/create/recent">Recent</a> |
+                        <a href="#!/compute/create/recent" data-ng-click="setCreateInstancePage('recent')">Recent</a> |
                     </span>
                     <span data-ng-show="features.imageUse != 'disabled'">
                         <a href="#!/compute/create/custom" data-ng-click="selectInstanceType('Saved')"> Saved</a> |
@@ -30,7 +30,9 @@
                         <a href="#!/compute/create" id="link-more-images" data-ng-click="selectInstanceType('Public')">All Public Images </a> |
                     </span>
                     <span>
-                        <a class="selected">Quick</a>
+                        <span class="active-link">
+                            Quick
+                        </span>
                     </span>
                 </div>
             </div>

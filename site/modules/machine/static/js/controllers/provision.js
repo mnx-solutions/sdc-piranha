@@ -30,6 +30,7 @@
                 title: localization.translate(null, 'machine', 'Create Instances on Joyent')
             });
 
+            $scope.setCreateInstancePage = Machine.setCreateInstancePage;
             $scope.provisionSteps = [
                 {
                     name:'Choose Image',
@@ -858,8 +859,10 @@
                 $scope.instanceType = type;
                 if (type === 'Public') {
                     $location.path('/compute/create');
+                    Machine.setCreateInstancePage('')
                 } else if (type === 'Saved') {
                     $location.path('/compute/create/custom');
+                    Machine.setCreateInstancePage('custom');
                 }
             };
 
@@ -1232,6 +1235,7 @@
 
             $scope.clickBackToQuickStart = function () {
                 $location.path('/compute/create/simple');
+                Machine.setCreateInstancePage('simple');
             };
 
         }
