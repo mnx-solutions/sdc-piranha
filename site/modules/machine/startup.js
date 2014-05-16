@@ -253,7 +253,7 @@ module.exports = function execute(scope) {
                         call.log.error(machineInfo, timeoutMessage);
                         clearInterval(timer);
                         call.error(new Error(timeoutMessage));
-                    }, 60 * 1000);
+                    }, config.polling['machine' + upperCollectionName + 'Timeout'] || 60 * 1000);
                 }
 
                 var updateCollection = function () {
