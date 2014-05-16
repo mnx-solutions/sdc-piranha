@@ -1,4 +1,4 @@
-/*global angular:true, browser:true */
+'use strict';
 
 /**
  * @license HTTP Auth Interceptor Module for AngularJS
@@ -6,7 +6,6 @@
  * License: MIT
  */
 (function () {
-    'use strict';
 
     angular.module('http-auth-interceptor', ['http-auth-interceptor-buffer'])
 
@@ -32,7 +31,7 @@
      */
         .config(['$httpProvider', function($httpProvider) {
 
-            var interceptor = ['$rootScope', '$q', 'httpBuffer', function($rootScope, $q, httpBuffer) {
+            var interceptor = ['$rootScope', '$q', 'httpBuffer', function ($rootScope, $q, httpBuffer) {
                 function success(response) {
                     var contentType = response.headers('Content-Type');
                     if (contentType && contentType.indexOf('text/html') === -1) {
@@ -47,6 +46,10 @@
                         httpBuffer.append(response.config, deferred);
                         $rootScope.$broadcast('event:auth-loginRequired');
                         return deferred.promise;
+                    }
+
+                    if (response.status === 0 && response.data === '') {
+                        $rootScope.$emit('crashRequest');
                     }
                     (window.JP.get('timeoutRefresh') || angular.noop)();
                     // otherwise, default behaviour
