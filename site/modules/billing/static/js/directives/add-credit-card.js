@@ -409,8 +409,9 @@
                                 });
                                 return;
                             }
-
-                            if (errs.zuora) {
+                            if (errs === 'User blocked') {
+                                location.reload();
+                            } else if (errs.zuora) {
                                 $scope.errs = errs.zuora.reasons;
                             } else {
                                 $scope.errs = {};
