@@ -30,9 +30,13 @@
 
             fileman.ls = createMethod('FileManList');
 
-            fileman.get = function (path) {
+            fileman.get = function (path, show) {
                 Account.getAccount().then(function (account) {
-                    location.href = 'storage/download?path=' + '/' + account.login + '/' + path;
+                    if (show) {
+                        window.open('storage/show?path=' + path, '_blank');
+                    } else {
+                        location.href = 'storage/download?path=' + '/' + account.login + '/' + path;
+                    }
                 });
             };
 
