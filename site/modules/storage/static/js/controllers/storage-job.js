@@ -36,7 +36,11 @@
                                 $scope.steps[step.type].push(step.exec);
 
                                 if (step.assets) {
-                                    $scope.assets = $scope.assets.concat(step.assets);
+                                    step.assets.forEach(function (asset) {
+                                        if ($scope.assets.indexOf(asset) === -1) {
+                                            $scope.assets.push(asset);
+                                        }
+                                    });
                                 }
                             });
                             $scope.loading = false;
