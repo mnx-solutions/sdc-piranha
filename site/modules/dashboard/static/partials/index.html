@@ -53,14 +53,15 @@
         </div>
                     </div>
             <div class="pull-left widget-margin">
-                <a data-ng-href="{{(mantaEnabled && '#!/manta/files') || '#!/manta/intro'}}">
+                <a data-ng-href="{{(account.provisionEnabled && '#!/manta/files') || '#!/manta/intro'}}">
                     <div class="widget grey links2 manta-icon">
                         <h4>Manta Storage</h4>
                         <div class="details">
                             <div data-ng-show="mantaEnabled">
-                                <span class="number bignumber">{{mantaMemory.value}}</span>
-                                <span class="number measure">{{mantaMemory.measure}}</span>
+                                <span class="number bignumber">{{mantaMemory.value || ((account.provisionEnabled && '0') || '')}}</span>
+                                <span class="number measure">{{mantaMemory.measure || ((account.provisionEnabled && 'GB') || '')}}</span>
                             </div>
+
                         </div>
                         <div class="more">
                            manage storage <i class="m-icon-white-arrow"></i>

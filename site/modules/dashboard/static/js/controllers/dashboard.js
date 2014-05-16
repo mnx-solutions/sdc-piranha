@@ -32,6 +32,7 @@
             $scope.slbFeatureEnabled = $rootScope.features.slb === 'enabled';
             $scope.usageDataFeatureEnabled = $rootScope.features.usageData === 'enabled';
             $scope.mantaEnabled = $rootScope.features.manta === 'enabled';
+            $scope.mantaMemory = {};
             $scope.systemStatusTopics = [];
 
             if ($scope.slbFeatureEnabled) {
@@ -113,7 +114,6 @@
             if ($scope.mantaEnabled) {
                 fileman.storageReport('latest', function (err, res) {
                     if (err || !res.__read()) {
-                        $scope.mantaEnabled = false;
                         return false;
                     }
                     var file = JSON.parse(res.__read());
