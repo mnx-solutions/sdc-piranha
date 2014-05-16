@@ -45,12 +45,16 @@ module.exports = function execute(scope) {
                 body += data;
             });
             stream.on('end', function () {
-                try {
-                    var result = JSON.parse(body);
-                    result = Array.isArray(result) ? result : [result];
-                    callback(null, result);
-                } catch (error) {
-                    callback(null, [body]);
+                if (path === '/job.json') {
+                    try {
+                        callback(null, JSON.parse(body));
+                    } catch (error) {
+                        callback('Cannot get job details');
+                    }
+                } else {
+                    callback(null, (body || '').split('\n').filter(function (item) {
+                        return item;
+                    }));
                 }
             });
             stream.on('error', sendError(call));
@@ -101,7 +105,7 @@ module.exports = function execute(scope) {
                         sendError(call, error);
                         return;
                     }
-                    call.done(null, result && result[0]);
+                    call.done(null, result);
                 });
                 return;
             }
