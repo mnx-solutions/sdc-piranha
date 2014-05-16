@@ -868,7 +868,7 @@
     vertical-align: middle;
 }
 .hotlinks span.active-link {
-    color: #000;
+    color: #333;
 }
 .advanced-instance-box {
     float: left;
