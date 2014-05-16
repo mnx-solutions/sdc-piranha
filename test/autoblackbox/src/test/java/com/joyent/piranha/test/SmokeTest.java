@@ -26,7 +26,7 @@ import static com.joyent.piranha.pageobject.NavBarMenu.NavBarHeaderElement.Suppo
 public class SmokeTest extends TestWrapper {
     public static final String USER_NAME = PropertyHolder.getTestUserLogin();
     public static final String PASSWORD = PropertyHolder.getTestUserPassword();
-    public static final String DATACENTER = PropertyHolder.getDatacenter(1);
+    public static final String DATACENTER = PropertyHolder.getDatacenter(0);
     private static NavBarMenu navBarMenu;
     private static SideBarMenu sideBarMenu;
 

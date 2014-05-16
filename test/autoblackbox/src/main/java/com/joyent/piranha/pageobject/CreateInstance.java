@@ -67,7 +67,7 @@ public class CreateInstance extends AbstractPageObject {
     }
 
     public void selectOsImage(String os) {
-        waitForListingUpdate();
+        waitForMediumSpinnerDisappear();
         $(".advanced-instance-title").$(byText(os), 0).$(By.xpath("../..")).$(byText("Select")).click();
     }
 
