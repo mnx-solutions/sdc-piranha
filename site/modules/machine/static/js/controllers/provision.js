@@ -1152,30 +1152,42 @@
                 if (newVal) {
                     $scope.reloading = true;
                     $scope.datasetsLoading = true;
-                    $scope.networks = [];
-
-                    Network.network(newVal).then(function (networks) {
-                        if (newVal === $scope.data.datacenter) {
-                            $scope.networks = networks;
-                            $scope.selectedNetworks.length = 0;
-                            $scope.networks.forEach(function (network) {
-                                $scope.selectNetworkCheckbox(network.id);
-                            });
-                        }
-                    });
+                    $scope.networks = ['',''];
 
                     $q.all([
                         $q.when(Dataset.dataset({ datacenter: newVal })),
                         $q.when(Package.package({ datacenter: newVal })),
-                        $q.when(getCreatedMachines())
+                        $q.when(getCreatedMachines()),
+                        $q.when(Network.network(newVal))
                     ]).then(function (result) {
-                        $scope.reloading = false;
                         var datasets = result[0];
                         processDatasets(datasets);
                         processPackages(newVal, result[1]);
                         if ($scope.isRecentInstancesEnabled) {
                             processRecentInstances(result[2], datasets);
                         }
+                        if (newVal === $scope.data.datacenter) {
+                            var confNetwork = {
+                                'Joyent-SDC-Private': 0,
+                                'Joyent-SDC-Public': 1
+                            };
+                            result[3].forEach(function (network) {
+                                var orederedNetwork = confNetwork[network.name];
+                                network.active = orederedNetwork > -1;
+                                if (orederedNetwork > -1) {
+                                    $scope.networks[orederedNetwork] = network;
+                                    $scope.selectNetwork(network.id);
+                                } else {
+                                    $scope.networks.push(network);
+                                }
+                            });
+                            $scope.networks = $scope.networks.filter(function(e){return e});
+                            if ($scope.networks.length === 0) {
+                                loggingService.log('warn', 'Networks are not loaded for datacenter: ' + newVal);
+                            }
+                            $scope.selectedNetworks.length = 0;
+                        }
+                        $scope.reloading = false;
                     });
                 }
             });
