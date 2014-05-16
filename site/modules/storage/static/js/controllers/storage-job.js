@@ -11,6 +11,7 @@
                 var jobId = requestContext.getParam('jobid');
 
                 $scope.job = null;
+                $scope.assets = [];
                 $scope.loading = true;
 
                 $scope.init = function () {
@@ -33,6 +34,10 @@
                                     $scope.steps[step.type] = [];
                                 }
                                 $scope.steps[step.type].push(step.exec);
+
+                                if (step.assets) {
+                                    $scope.assets = $scope.assets.concat(step.assets);
+                                }
                             });
                             $scope.loading = false;
                         },
