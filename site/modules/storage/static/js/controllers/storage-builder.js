@@ -73,8 +73,12 @@
                                 localization.translate(
                                     $scope,
                                     null,
-                                    res
-                                )
+                                    res.message
+                                ),
+                                function () {
+                                    $location.url('/manta/jobs/' + res.id);
+                                    $location.replace();
+                                }
                             );
                         },
                         function (err) {
