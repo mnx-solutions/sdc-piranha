@@ -45,9 +45,13 @@ module.exports = function execute(scope) {
                 body += data;
             });
             stream.on('end', function () {
-                try {
-                    callback(null, JSON.parse(body));
-                } catch (error) {
+                if (path === '/job.json') {
+                    try {
+                        callback(null, JSON.parse(body));
+                    } catch (error) {
+                        callback('Cannot get job details');
+                    }
+                } else {
                     callback(null, (body || '').split('\n').filter(function (item) {
                         return item;
                     }));
