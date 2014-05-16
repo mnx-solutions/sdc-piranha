@@ -752,7 +752,7 @@
                     ng.element('#pricing').addClass('alert-info');
 
                     $scope.data.dataset = dataset.id;
-                    $scope.searchText = '';
+                    $scope.filterModel.searchText = '';
 
                     if ($scope.packages && dataset.license_price) {
                         var lPrice = getNr(dataset.license_price);
@@ -827,12 +827,12 @@
             };
 
             $scope.filterDatasets = function (item) {
-                if (!$scope.searchText) {
+                if (!$scope.filterModel.searchText) {
                     return true;
                 }
                 var props = [ 'name', 'description' ];
                 return props.some(function (prop) {
-                    if (item[prop] && item[prop].toLowerCase().indexOf($scope.searchText.toLowerCase()) !== -1) {
+                    if (item[prop] && item[prop].toLowerCase().indexOf($scope.filterModel.searchText.toLowerCase()) !== -1) {
                         return true;
                     }
                 });
