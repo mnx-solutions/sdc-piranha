@@ -160,11 +160,16 @@
 
                 reloadPackages(m.package, m.datacenter);
 
-                $scope.dataset.then(function(ds){
+                $scope.dataset.then(function (ds) {
                     $scope.imageCreateNotSupported = ds.imageCreateNotSupported || m.imageCreateNotSupported;
-
-                    if(ds.tags && ds.tags.default_user) {
+                    if (ds.tags && ds.tags.default_user) {
                         $scope.defaultSshUser = ds.tags.default_user;
+                    } else if (!ds.public && ds.origin) {
+                        Dataset.dataset({datacenter: m.datacenter, id: ds.origin}).then(function (ds) {
+                            if (ds.tags && ds.tags.default_user) {
+                                $scope.defaultSshUser = ds.tags.default_user;
+                            }
+                        });
                     }
 
                     var type = ds.type;

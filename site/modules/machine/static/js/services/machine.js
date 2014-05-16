@@ -476,7 +476,7 @@
                             name: (instance.name || ''),
                             uuid: (instance.id || '')
                         }
-                ) + '. ' + (err.message || err));
+                ) + ' ' + (err.message || err));
             }
 
             var job = serverTab.call({
